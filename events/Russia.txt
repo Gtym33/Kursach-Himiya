@@ -1,6 +1,7 @@
 ﻿add_namespace = russia
 
-#########Февральская революция######
+
+#########Волнения в Петрограде######
 country_event = {
 	id = russia.1
 	title = russia.1.t
@@ -10,41 +11,81 @@ country_event = {
 	trigger = {
 		tag = RUS
 		has_government = authoritarism
-		date > 1917.3.15
+	}
+	
+	mean_time_to_happen = {
+		days = 60
+		modifier = {
+			factor 0.7
+			OR = {
+				NOT = { controls_state = 12 }
+				NOT = { controls_state = 13 }
+				NOT = { controls_state = 191 }
+				NOT = { controls_state = 207 }
+				NOT = { controls_state = 209 }
+				NOT = { controls_state = 210 }
+			}
+		}
+		modifier = {
+			factor 0.5
+			OR = {
+				NOT = { controls_state = 208 }
+				NOT = { controls_state = 219 }
+				NOT = { controls_state = 223 }
+				NOT = { controls_state = 244 }
+				NOT = { controls_state = 246 }
+				NOT = { controls_state = 263 }
+			}
+		}
+		modifier = {
+			factor 0.2
+			controls_state = 195
+			NOT = { has_full_control_of_state = 195 }
+		}
 	}
 	
 	fire_only_once = yes
 	
-	mean_time_to_happen = {	days = 10	}
-	
 	option = {
-	name = russia.1.a
-	ai_chance = { factor = 70 }
-	create_country_leader = {
-	name = "Georgy Lvov"
-	desc = "RUS_georgy_lvov_DESC"
-	picture = "gfx/leaders/.dds"
-	expire = "1935.1.1"
-	ideology = authoritarism_ideology
-	traits = {
-		#
-	}
-}
-	set_party_name = { ideology = authoritarism long_name = RUS_government_long name = RUS_government }
-	}
-	option = {
-	name = russia.1.b
-	ai_chance = { factor = 15 }
-	RUS = { set_politics = {
-				ruling_party = social_conservatism
-				elections_allowed = yes
+		name = russia.1.a #разогнать демонстрации
+		ai_chance = {
+			factor = 90
+		}
+		set_country_flag = RUS_petrograd_miting
+		random_list = {
+			80 = {
+				custom_effect_tooltip = russia.1.a1.tt #не получилось разогнать
 			}
-	add_ideas = RUS_nicolay2
-	}
+			20 = {
+				custom_effect_tooltip = russia.1.a2.tt #получилось разогнать
+				set_country_flag = RUS_petrograd_miting_has_been_suppressed
+			}
+		}
 	}
 	option = {
-	name = russia.1.c
-	ai_chance = { factor = 15 }
+		name = russia.1.b #пойти на уступки
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_political_power = -70
+		set_country_flag = RUS_petrograd_miting
+		random_list = {
+			50 = {
+				custom_effect_tooltip = russia.1.a1.tt #волнения не прекратились
+			}
+			40 = {
+				custom_effect_tooltip = russia.1.a2.tt #волнения ослабли
+				set_country_flag = RUS_petrograd_miting_has_been_suppressed
+			}
+			10 = {
+				custom_effect_tooltip = russia.1.a2.tt #волнения прекратились
+				set_country_flag = RUS_petrograd_miting_has_been_dissolved
+			}
+		}
 	}
 }
 
@@ -55,28 +96,23 @@ country_event = {
 	desc = russia.2.d
 	picture = GFX_report_event_mexican_februrary_revolution
 	
-	trigger = {
-		tag = RUS
-		has_government = authoritarism
-		date > 1917.3.11
-	}
+	is_triggered_only = yes
 	
 	fire_only_once = yes
 	
 	option = {
-	name = russia.2.a
-	ai_chance = { factor = 70 }
-	add_political_power = 100
-	hidden_effect = { country_event = { id = russia.3 days = 2 } }
+		name = russia.2.a
+		add_political_power = 50
+		set_country_flag = RUS_duma_stopped_work
 	}
 	option = {
-	name = russia.2.b
-	ai_chance = { factor = 15 }
-	add_political_power = -100
+		name = russia.2.b
+		add_political_power = 100
+		set_country_flag = RUS_duma_dissolved
 	}
 }
 
-#########Петроградский совет######
+#########Февральская революция######
 country_event = {
 	id = russia.3
 	title = russia.3.t
@@ -86,15 +122,216 @@ country_event = {
 	trigger = {
 		tag = RUS
 		has_government = authoritarism
+		has_country_flag = RUS_petrograd_miting
+		NOT = { has_country_flag = RUS_revolution_suppressed }
 	}
 	
 	fire_only_once = yes
 	
-	option = {
-	name = russia.3.a
-	ai_chance = { factor = 70 }
-	add_ideas = RUS_dvoevlastie
+	mean_time_to_happen = {
+		days = 20
+		modifier = {
+			factor 1.1
+			has_country_flag = RUS_duma_stopped_work
+		}
+		modifier = {
+			factor 1.2
+			has_country_flag = RUS_duma_dissolved
+		}
+		modifier = {
+			factor 1.2
+			has_country_flag = RUS_petrograd_miting_has_been_suppressed
+		}
+		modifier = {
+			factor 1.5
+			has_country_flag = RUS_petrograd_miting_has_been_dissolved
+		}
+		modifier = {
+			factor 0.7
+			OR = {
+				NOT = { controls_state = 12 }
+				NOT = { controls_state = 13 }
+				NOT = { controls_state = 191 }
+				NOT = { controls_state = 207 }
+				NOT = { controls_state = 209 }
+				NOT = { controls_state = 210 }
+			}
+		}
+		modifier = {
+			factor 0.5
+			OR = {
+				NOT = { controls_state = 208 }
+				NOT = { controls_state = 219 }
+				NOT = { controls_state = 223 }
+				NOT = { controls_state = 244 }
+				NOT = { controls_state = 246 }
+				NOT = { controls_state = 263 }
+			}
+		}
+		modifier = {
+			factor 0.2
+			controls_state = 195
+			NOT = { has_full_control_of_state = 195 }
+		}
 	}
 	
+	option = {
+		name = russia.3.a #сдаться
+		ai_chance = { factor = 70 }
+		create_country_leader = {
+			name = "Georgy Lvov"
+			desc = "RUS_georgy_lvov_DESC"
+			picture = "gfx/leaders/.dds"
+			expire = "1935.1.1"
+			ideology = authoritarism_ideology
+			traits = {
+				#
+			}
+		}
+		set_country_flag = RUS_provisional_government_created
+		set_party_name = { ideology = authoritarism long_name = RUS_government_long name = RUS_government }
+	}
+	option = {
+		name = russia.3.b #Дормамму, я пришёл договориться
+		ai_chance = {
+			factor = 15
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		if = {
+			limit = { has_country_flag = RUS_duma_dissolved }
+			create_country_leader = {
+				name = "Georgy Lvov"
+				desc = "RUS_georgy_lvov_DESC"
+				picture = "gfx/leaders/RUS/RUS_georgy_lvov.dds"
+				expire = "1935.1.1"
+				ideology = authoritarism_ideology
+				traits = {
+					#
+				}
+			}
+			set_country_flag = RUS_provisional_government_created
+			set_party_name = { ideology = authoritarism long_name = RUS_government_long name = RUS_government }
+		}
+		if = {
+			limit = { has_country_flag = RUS_duma_stopped_work }
+			random_list = {
+				25 = {
+					set_politics = {
+						ruling_party = social_conservatism
+						elections_allowed = yes
+					}
+					add_ideas = RUS_nicolay2
+				}
+				75 = {
+					create_country_leader = {
+						name = "Georgy Lvov"
+						desc = "RUS_georgy_lvov_DESC"
+						picture = "gfx/leaders/.dds"
+						expire = "1935.1.1"
+						ideology = authoritarism_ideology
+						traits = {
+							#
+						}
+					}
+					set_country_flag = RUS_provisional_government_created
+					set_party_name = { ideology = authoritarism long_name = RUS_government_long name = RUS_government }
+				}
+			}
+		}
+		if = {
+			limit = { NOT = { has_country_flag = RUS_duma_dissolved has_country_flag = RUS_duma_stopped_work has_country_flag = RUS_make_concessions_with_duma } }
+			random_list = {
+				50 = {
+					set_politics = {
+						ruling_party = social_conservatism
+						elections_allowed = yes
+					}
+					add_ideas = RUS_nicolay2
+				}
+				50 = {
+					create_country_leader = {
+						name = "Georgy Lvov"
+						desc = "RUS_georgy_lvov_DESC"
+						picture = "gfx/leaders/.dds"
+						expire = "1935.1.1"
+						ideology = authoritarism_ideology
+						traits = {
+							#
+						}
+					}
+					set_country_flag = RUS_provisional_government_created
+					set_party_name = { ideology = authoritarism long_name = RUS_government_long name = RUS_government }
+				}
+			}
+		}
+		if = {
+			limit = { has_country_flag = RUS_make_concessions_with_duma }
+			random_list = {
+				75 = {
+					set_politics = {
+						ruling_party = social_conservatism
+						elections_allowed = yes
+					}
+					add_ideas = RUS_nicolay2
+				}
+				25 = {
+					create_country_leader = {
+						name = "Georgy Lvov"
+						desc = "RUS_georgy_lvov_DESC"
+						picture = "gfx/leaders/.dds"
+						expire = "1935.1.1"
+						ideology = authoritarism_ideology
+						traits = {
+							#
+						}
+					}
+					set_country_flag = RUS_provisional_government_created
+					set_party_name = { ideology = authoritarism long_name = RUS_government_long name = RUS_government }
+				}
+			}
+		}
+	}
+	option = {
+		name = russia.3.c
+		ai_chance = {
+			factor = 15
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		# не дописано
+	}
 }
 
+#########Петроградский совет######
+country_event = {
+	id = russia.4
+	title = russia.4.t
+	desc = russia.4.d
+	picture = GFX_report_event_mexican_februrary_revolution
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_petrograd_miting
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 32
+		modifier = {
+			factor = 1.4
+			has_country_flag = RUS_petrograd_miting_has_been_dissolved
+		}
+	}
+	
+	option = {
+		name = russia.4.a
+		custom_effect_tooltip = russia.4.tt
+		set_country_flag = RUS_petrograd_soviet
+	}
+}
