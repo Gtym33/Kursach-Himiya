@@ -160,70 +160,19 @@ on_actions = {
 	#}
 
 	on_border_war_lost = {
-		effect = {
-			owner = {
-				country_event = { id = china.14 }
-				country_event = { id = china.16 }
-			}
-		}
+#		effect = {
+#		}
 	}
 	
 	on_leave_faction = {
-		effect = {
-			if = {
-				limit = { 
-					AND = {
-						tag = CAN 	
-						NOT = { has_dlc = "Together for Victory" }
-					}
-				}
-				drop_cosmetic_tag = yes
-			}
-			FROM = {
-				add_opinion_modifier = {
-					modifier = faction_traitor
-					target = ROOT
-					days = 365
-				}
-			
-				add_opinion_modifier = {
-					modifier = faction_traitor_trade
-					target = ROOT
-					days = 365
-				}
-			}
-		}
+#		effect = {
+#		}
 	}
 
 	#FROM is the one that joins the faction
 	on_create_faction = {
-		effect = {
-			# Sunset invasion check
-			if = {
-				limit = {
-					FROM = { is_puppet = no }
-					OR = {
-						AND = {
-							tag = MEX
-							FROM = {
-								capital_scope = {
-									NOT = { is_on_continent = south_america }
-								}
-							}
-						}
-						AND = {
-							FROM = {
-								tag = MEX
-							}
-							capital_scope = {
-								NOT = { is_on_continent = south_america }
-							}
-						}
-					}
-				}
-				set_country_flag = achievement_failed_sunset_invasion
-			}
-		}
+#		effect = {
+#		}
 	}
 
 	#FROM is country getting invited.
@@ -444,36 +393,14 @@ on_actions = {
 	
 	# ROOT is capitulated country, FROM is winner
 	on_capitulation = {
-		effect = {
-			news_event = { id = country_capitulated.0 days = 0 }
-			if = {
-				limit = { 
-					original_tag = POL
-					has_government = authoritarism
-				}
-				retire_country_leader = yes
-			}
-			if = {
-				limit = {
-					original_tag = YUG
-				}
-				remove_ideas = YUG_idea_economic_aid
-			}
-		}
+#		effect = {
+#		}
 	}
 
 	# ROOT is previously capitualted country
 	on_uncapitulation = {
-		effect = {
-			if = {
-				limit = {
-					original_tag = FRA
-					has_government = democratic
-					is_puppet = no
-				}
-				drop_cosmetic_tag = yes
-			}
-		}
+#		effect = {
+#		}
 	}
 
 	on_government_change = {
@@ -613,13 +540,60 @@ on_actions = {
 	on_startup = {
 		effect = {
 			SER = { country_event = { id = npt.kostili.1 hours = 1 } }
+			if = {
+				limit = {
+					FROM = { state = 6 is_owned_by = GER }
+					FROM = { state = 34 is_owned_by = GER }
+					FROM = { state = 815 is_owned_by = GER }
+				}
+				set_global_flag = ger_6_occupation
+				set_global_flag = ger_34_occupation
+				set_global_flag = ger_815_occupation
+			}
 		}
 	}
 
 	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
+
 	on_state_control_changed = {
 		effect = {
-
+			if = {
+				limit = {
+					FROM = { state = 6 is_owned_by = GER }
+					BEL = { has_full_control_of_state = 6 has_war_with = GER }
+					has_global_flag = ger_6_occupation
+				}
+				BEL = {
+					transfer_state = 6
+				}
+				clr_global_flag = ger_6_occupation
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					FROM = { state = 34 is_owned_by = GER }
+					BEL = { has_full_control_of_state = 34 has_war_with = GER }
+					has_global_flag = ger_34_occupation
+				}
+				BEL = {
+					transfer_state = 34
+				}
+				clr_global_flag = ger_34_occupation
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					FROM = { state = 815 is_owned_by = GER }
+					BEL = { has_full_control_of_state = 34 has_war_with = GER }
+					has_global_flag = ger_815_occupation
+				}
+				BEL = {
+					transfer_state = 815
+				}
+				clr_global_flag = ger_815_occupation
+			}
 		}
 	}
 }
