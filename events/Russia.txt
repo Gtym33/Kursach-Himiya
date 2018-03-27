@@ -288,6 +288,10 @@ country_event = {
 				#
 			}
 		}
+		set_politics = {
+			ruling_party = market_liberalism
+			elections_allowed = yes
+		}
 		add_popularity = {
 			ideology = market_liberalism
 			popularity = 0.20
@@ -331,6 +335,10 @@ country_event = {
 				traits = {
 					#
 				}
+			}
+			set_politics = {
+				ruling_party = market_liberalism
+				elections_allowed = yes
 			}
 			add_popularity = {
 				ideology = market_liberalism
@@ -407,6 +415,10 @@ country_event = {
 							#
 						}
 					}
+					set_politics = {
+						ruling_party = market_liberalism
+						elections_allowed = yes
+					}
 					add_popularity = {
 						ideology = market_liberalism
 						popularity = 0.20
@@ -482,6 +494,10 @@ country_event = {
 							#
 						}
 					}
+					set_politics = {
+						ruling_party = market_liberalism
+						elections_allowed = yes
+					}
 					add_popularity = {
 						ideology = market_liberalism
 						popularity = 0.20
@@ -555,6 +571,10 @@ country_event = {
 						traits = {
 							#
 						}
+					}
+					set_politics = {
+						ruling_party = market_liberalism
+						elections_allowed = yes
 					}
 					add_popularity = {
 						ideology = market_liberalism
@@ -935,6 +955,12 @@ country_event = {
 			Peter_Heyden_3
 			Alexei_Rykov_4
 			Felix_Dzerzhinsky_5
+		}
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
 		}
 		add_popularity = {
 			ideology = communism
@@ -1456,6 +1482,12 @@ country_event = {
 			Alexei_Rykov_4
 			Felix_Dzerzhinsky_5
 		}
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
+		}
 		add_popularity = {
 			ideology = communism
 			popularity = 0.35
@@ -1890,6 +1922,12 @@ country_event = {
 			Alexei_Rykov_4
 			Felix_Dzerzhinsky_5
 		}
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
+		}
 		add_popularity = {
 			ideology = communism
 			popularity = 0.05
@@ -1916,9 +1954,8 @@ country_event = {
 		name = russia.35.a
 		add_popularity = {
 			ideology = communism
-			popularity = -0.125
+			popularity = -0.1
 		}
-		country_event = { id = russia.45 days = 30 } #большевики поднимают восстание в Москве
 	}
 }
 
@@ -1935,7 +1972,7 @@ country_event = {
 		name = russia.36.a
 		add_popularity = {
 			ideology = communism
-			popularity = -0.25
+			popularity = -0.15
 		}
 	}
 }
@@ -1955,199 +1992,287 @@ country_event = {
 	}
 }
 
-########Коалиция против большевиков######
+########Вопрос с Петросоветом######
 country_event = {
 	id = russia.38
 	title = russia.38.t
 	desc = russia.38.d
 	picture = GFX_report_event_all_power_to_the_soviets
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Kornilov_power
+	}
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	fire_only_once = yes
 	
 	option = {
-		name = russia.38.a #либерально-умеренносоциалистическая
-		add_political_power = 70
-		add_popularity = {
-			ideology = authoritarism
-			popularity = 0.1
+		name = russia.38.a #Разогнать
+		trigger = {
+			OR = {
+				has_country_flag = kornilov_force_solution
+				AND = {
+					communism < 0.25
+					social_democracy < 0.25
+				}
+			}
 		}
+		add_political_power = 50
 		add_popularity = {
-			ideology = market_liberalism
-			popularity = 0.1
-		}
-		add_popularity = {
-			ideology = social_conservatism
-			popularity = 0.1
-		}
-		hidden_effect = { country_event = { id = russia.39 days = 1 } }
-	}
-	option = {
-		name = russia.38.b #широкая левая
-		add_political_power = -100
-		add_popularity = {
-			ideology = social_liberalism
-			popularity = 0.15
+			ideology = communism
+			popularity = 0.05
 		}
 		add_popularity = {
 			ideology = social_democracy
-			popularity = 0.1
+			popularity = 0.05
 		}
-		hidden_effect = { country_event = { id = russia.40 days = 1 } } #образованна коалиция
+		modify_country_flag = { flag = RUS_Kornilov_power value = 1 }
+	}
+	option = {
+		name = russia.38.b #не разгонять
+		modify_country_flag = { flag = RUS_Kornilov_power value = -1 }
 	}
 }
 
-########Часть левых партий поддержала большевиков######
+########Вопрос с бывшим правительством######
 country_event = {
 	id = russia.39
 	title = russia.39.t
 	desc = russia.39.d
 	picture = GFX_report_event_all_power_to_the_soviets
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Kornilov_power
+	}
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	fire_only_once = yes
 	
 	option = {
-		name = russia.39.a #Ничего не делать
-		hidden_effect = { country_event = { id = russia.45 days = 3 } } #большевики поднимают восстание в Москве
+		name = russia.39.a #Договорится с его членами для защиты России от немцев и немецкого шпиона
+		if = {
+			limit = { social_liberalism > 0.399 }
+			modify_country_flag = { flag = RUS_Kornilov_power value = 1 }
+		}
 	}
 	option = {
 		name = russia.39.b #НКВД арестует всех
-		add_political_power = -100
-		hidden_effect = {
-			random_list = {
-				80 = {
-					country_event = { id = russia.44 days = 3 } #большевики уходят в подполье
-				}
-				20 = {
-					country_event = { id = russia.45 days = 3 } #большевики поднимают восстание в Москве
-				}
-			}
+		add_political_power = 25
+		if = {
+			limit = { social_liberalism > 0.399 }
+			modify_country_flag = { flag = RUS_Kornilov_power value = -1 }
+		}
+		if = {
+			limit = { social_liberalism < 0.35 }
+			modify_country_flag = { flag = RUS_Kornilov_power value = 1 }
 		}
 	}
 }
 
-########Образованна коалиция######
+########Волнения в Москве######
 country_event = {
 	id = russia.40
 	title = russia.40.t
 	desc = russia.40.d
 	picture = GFX_report_event_all_power_to_the_soviets
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Kornilov_power
+	}
+	
+	mean_time_to_happen = {
+		days = 14
+	}
+	
+	fire_only_once = yes
 	
 	option = {
-		name = russia.40.a #НКВД арестует всех
-		hidden_effect = { country_event = { id = russia.44 days = 3 } }#большевики уходят в подполье
+		name = russia.40.a #Дормамму, я пришёл договориться.
+		add_political_power = -50
+		if = {
+			limit = { communism > 0.199 }
+			modify_country_flag = { flag = RUS_Kornilov_power value = -1 }
+		}
+		if = {
+			limit = { communism < 0.2 communism > 0.099 }
+			modify_country_flag = { flag = RUS_Kornilov_power value = 1 }
+		}
+		if = {
+			limit = { communism < 0.1 }
+			modify_country_flag = { flag = RUS_Kornilov_power value = -1 }
+		}
+	}
+	option = {
+		name = russia.40.b #НКВД арестует всех
+		if = {
+			limit = { communism > 0.199 }
+			modify_country_flag = { flag = RUS_Kornilov_power value = -1 }
+		}
 	}
 }
 
-########Большевистский митинг######
+########Центральная рада охуела######
 country_event = {
 	id = russia.41
 	title = russia.41.t
 	desc = russia.41.d
 	picture = GFX_report_event_all_power_to_the_soviets
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Kornilov_power
+		has_country_flag = UKR_central_rada
+		has_country_flag = UKR_allukraine_national_сongress
+		has_country_flag = UKR_first_allukraine_military_сongress
+	}
+	
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	fire_only_once = yes
 	
 	option = {
 		name = russia.41.a #Дормамму, я пришёл договориться.
-		add_political_power = -50
-		add_popularity = {
-			ideology = authoritarism
-			popularity = -0.025
-		}
-		hidden_effect = {
-			random_list = {
-				40 = {
-					country_event = { id = russia.43 days = 3 } #большевики уничтожены
-				}
-				60 = {
-					country_event = { id = russia.42 days = 3 } #большевики не совсем обосрались
-				}
-			}
-		}
+		add_political_power = -25
+		set_country_flag = RUS_kornilov_accept_UKR_autonomy
 	}
 	option = {
-		name = russia.41.b #НКВД арестует всех
-		add_political_power = 50
-		hidden_effect = { country_event = { id = russia.42 days = 3 } }
+		name = russia.41.b #Ничего не отвечать
+		trigger = { has_country_flag = kornilov_force_solution }
+		if = {
+			limit = {
+				OR = {
+					has_country_flag = UKR_central_rada_demands_accepted
+					has_country_flag = UKR_2_universal
+				}
+			}
+			modify_country_flag = { flag = RUS_Kornilov_power value = -1 }
+		}
 	}
 }
 
-########Митинг был разогнан, но волнения остались######
+########Кронштадтские матросы охуели######
 country_event = {
 	id = russia.42
 	title = russia.42.t
 	desc = russia.42.d
 	picture = GFX_report_event_all_power_to_the_soviets
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_country_flag = { flag = RUS_Kornilov_power value < -2 }
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	fire_only_once = yes
 	
 	option = {
-		name = russia.42.a #Ничего не делать.
-		add_political_power = -50
-		add_popularity = {
-			ideology = authoritarism
-			popularity = -0.025
+		name = russia.42.a #Дормамму, я пришёл договориться.
+		trigger = {
+			NOT = { has_country_flag = kornilov_force_solution }
 		}
-		hidden_effect = { country_event = { id = russia.45 days = 3 } } #большевики поднимают восстание в Москве
-	}
-	option = {
-		name = russia.42.b #НКВД арестует всех
-		add_political_power = -50
-		hidden_effect = {
-			random_list = {
-				60 = {
-					country_event = { id = russia.44 days = 3 } #большевики уходят в подполье
-				}
-				40 = {
-					country_event = { id = russia.45 days = 3 } #большевики поднимают восстание в Москве
+		if = {
+			limit = {
+				OR = {
+					communism > 0.199
 				}
 			}
+			modify_country_flag = { flag = RUS_Kornilov_power value = 1 }
+			else = {
+				add_popularity = { ideology = communism popularity = 0.05 }
+			}
 		}
+		add_popularity = { ideology = communism popularity = 0.05 }
+		add_political_power = -100
+	}
+	option = {
+		name = russia.42.b #Подавить их
 	}
 }
 
-########Большевики уничтожены######
+########Керенский - возвращение######
 country_event = {
 	id = russia.43
 	title = russia.43.t
 	desc = russia.43.d
 	picture = GFX_report_event_all_power_to_the_soviets
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_country_flag = { flag = RUS_Kornilov_power value < -2 }
+	}
+	
+	mean_time_to_happen = {
+		days = 60
+	}
 	
 	option = {
 		name = russia.43.a
+		retire_country_leader = yes
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		remove_ideas_with_trait = head_of_government
+		remove_ideas_with_trait = economy_minister
+		remove_ideas_with_trait = security_minister
+		remove_ideas_with_trait = head_of_intel
+		add_ideas = {
+			Alexander_Kerensky_1
+			Sergey_Prokopovich_3
+			Nikolai_Avksentyev_4
+			Alexander_Zarudny_5
+		}
+		remove_ideas = {
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
+		}
+		add_ideas = RUS_dvoevlastie_1
+		add_popularity = { ideology = social_liberalism popularity = 0.15 }
+		add_popularity = { ideology = communism popularity = 0.10 }
 		add_political_power = 100
-		add_popularity = {
-			ideology = communism
-			popularity = -0.2
-		}
-		add_popularity = {
-			ideology = authoritarism
-			popularity = 0.1
-		}
+		clr_country_flag = RUS_Kornilov_power
+		clr_country_flag = general_kornilov
+		add_ideas = RUS_red_guards_provisional_government
+		set_country_flag = Kornilov_affair_fail
 	}
 }
 
-########Большевики загнаны в подполье######
+########Корнилов удерживает власть######
 country_event = {
-	id = russia.44
-	title = russia.44.t
-	desc = russia.44.d
+	id = russia.46
+	title = russia.46.t
+	desc = russia.46.d
 	picture = GFX_report_event_all_power_to_the_soviets
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_country_flag = { flag = RUS_Kornilov_power value > 1 }
+	}
 	
+	mean_time_to_happen = {
+		days = 60
+	}
 	option = {
-		name = russia.44.a
+		name = russia.46.a
+		add_popularity = { ideology = social_liberalism popularity = -0.05 }
+		add_popularity = { ideology = communism popularity = -0.05 }
 		add_political_power = 100
-		add_popularity = {
-			ideology = communism
-			popularity = 0.075
-		}
-		set_country_flag = RUS_Bolsheviki_pod_polom
+		clr_country_flag = RUS_Kornilov_power
 	}
 }
 
