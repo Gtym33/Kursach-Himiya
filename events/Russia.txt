@@ -300,7 +300,6 @@ country_event = {
 		set_country_flag = RUS_provisional_government_created
 		set_country_flag = RUS_monarchy_fall
 		drop_cosmetic_tag = yes
-		set_party_name = { ideology = market_liberalism long_name = RUS_provisional_government_long name = RUS_provisional_government }
 		add_political_power = 50
 		remove_ideas_with_trait = head_of_government
 		remove_ideas_with_trait = foreign_minister
@@ -348,7 +347,6 @@ country_event = {
 			set_country_flag = RUS_provisional_government_created
 			set_country_flag = RUS_monarchy_fall
 			drop_cosmetic_tag = yes
-			set_party_name = { ideology = market_liberalism long_name = RUS_provisional_government_long name = RUS_provisional_government }
 			clr_country_flag = RUS_duma_dissolved
 			add_political_power = 50
 			remove_ideas_with_trait = head_of_government
@@ -427,7 +425,6 @@ country_event = {
 					set_country_flag = RUS_provisional_government_created
 					set_country_flag = RUS_monarchy_fall
 					drop_cosmetic_tag = yes
-					set_party_name = { ideology = market_liberalism long_name = RUS_provisional_government_long name = RUS_provisional_government }
 					clr_country_flag = RUS_duma_stopped_work
 					add_political_power = 50
 					remove_ideas_with_trait = head_of_government
@@ -446,7 +443,7 @@ country_event = {
 			}
 		}
 		if = {
-			limit = { NOT = { has_country_flag = RUS_duma_dissolved has_country_flag = RUS_duma_stopped_work has_country_flag = RUS_make_concessions_with_duma } }
+			limit = { NOT = { has_country_flag = RUS_duma_dissolved has_country_flag = RUS_duma_stopped_work has_country_flag = RUS_make_concessions_with_duma has_completed_focus = RUS_extension_of_powers_of_duma } }
 			random_list = {
 				50 = {
 					set_politics = {
@@ -506,7 +503,6 @@ country_event = {
 					set_country_flag = RUS_provisional_government_created
 					set_country_flag = RUS_monarchy_fall
 					drop_cosmetic_tag = yes
-					set_party_name = { ideology = market_liberalism long_name = RUS_provisional_government_long name = RUS_provisional_government }
 					add_political_power = 50
 					remove_ideas_with_trait = head_of_government
 					remove_ideas_with_trait = foreign_minister
@@ -584,7 +580,6 @@ country_event = {
 					set_country_flag = RUS_provisional_government_created
 					set_country_flag = RUS_monarchy_fall
 					drop_cosmetic_tag = yes
-					set_party_name = { ideology = market_liberalism long_name = RUS_provisional_government_long name = RUS_provisional_government }
 					add_political_power = 50
 					remove_ideas_with_trait = head_of_government
 					remove_ideas_with_trait = foreign_minister
@@ -1424,7 +1419,6 @@ country_event = {
 		}
 		add_ideas = RUS_dvoevlastie_1
 		retire_country_leader = yes
-		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_party_long name = RUS_market_liberalism_party }
 		create_country_leader = {
 			name = "Alexander Kerensky"
 			desc=RUS_nikolai_ii_DESC
@@ -1623,6 +1617,27 @@ country_event = {
 		add_political_power = -50
 		add_ideas = RUS_red_guards_provisional_government
 		set_country_flag = Kornilov_affair_fail
+		if = {
+			limit = { has_idea = RUS_dvoevlastie_4 }
+			swap_ideas = {
+				remove_idea = RUS_dvoevlastie_4
+				add_idea = RUS_dvoevlastie_3
+			}
+		}
+		if = {
+			limit = { has_idea = RUS_dvoevlastie_3 }
+			swap_ideas = {
+				remove_idea = RUS_dvoevlastie_3
+				add_idea = RUS_dvoevlastie_2
+			}
+		}
+		if = {
+			limit = { has_idea = RUS_dvoevlastie_2 }
+			swap_ideas = {
+				remove_idea = RUS_dvoevlastie_2
+				add_idea = RUS_dvoevlastie_1
+			}
+		}
 	}
 }
 
@@ -2276,6 +2291,13 @@ country_event = {
 		add_popularity = { ideology = communism popularity = -0.05 }
 		add_political_power = 100
 		clr_country_flag = RUS_Kornilov_power
+		clr_country_flag = RUS_Kornilov_power
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
+		}
 	}
 }
 
@@ -2408,10 +2430,18 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
+		}
+	}
+	
 	option = {
 		name = russia.50.a #буржуазная республика
 		trigger = {
-			NOT = { has_country_flag = RUS_Yusupov_power }
 			NOT = { has_government = communism }
 		}
 		ai_chance = {
@@ -2468,7 +2498,6 @@ country_event = {
 		trigger = {
 			communism < 0.43
 			has_government = communism
-			NOT = { has_country_flag = RUS_Yusupov_power }
 		}
 		ai_chance = {
 			factor = 999
@@ -2482,7 +2511,6 @@ country_event = {
 		name = russia.50.f #диктатуррра
 		trigger = {
 			NOT = { has_completed_focus = RUS_russian_cincinnatus }
-			NOT = { has_country_flag = RUS_Yusupov_power }
 		}
 		ai_chance = {
 			factor = 1
@@ -2530,9 +2558,8 @@ country_event = {
 		ai_chance = {
 			factor = 1
 			modifier = {
-				factor = 2
-				NOT = { has_government = communism has_government = radical_socialism }
-				communism > 0.35
+				factor = 999
+				NOT = { has_government = communism has_government = radical_socialism has_government = social_democracy }
 			}
 		}
 		create_country_leader = {
@@ -2785,6 +2812,7 @@ country_event = {
 	
 	trigger = {
 		has_idea = RUS_dvoevlastie_4
+		NOT = { has_country_flag = general_kornilov }
 	}
 	
 	mean_time_to_happen = {
@@ -2834,6 +2862,12 @@ country_event = {
 		set_politics = {
 			ruling_party = social_democracy
 			elections_allowed = no
+		}
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
 		}
 		#news_event = { id =  }
 	}

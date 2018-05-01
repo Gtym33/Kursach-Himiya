@@ -366,11 +366,65 @@ country_event = {
 	}
 }
 
-#########Съезд советов######
+#########Ввод войск РСФСР в Харьков######
 country_event = {
 	id = ukraine.10
 	title = ukraine.10.t
 	desc = ukraine.10.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		any_state = {
+			limit = { is_core_of = UKR }
+			add_core_of = USR
+		}
+		USR = {
+			transfer_state = 221
+			transfer_state = 225
+			transfer_state = 796
+		}
+		RUS = {
+			end_puppet = UKR
+		}
+	}
+	option = {
+		name = ukraine.10.a
+		effect_tooltip = {
+			any_state = {
+				limit = { is_core_of = UKR }
+				add_core_of = USR
+			}
+			USR = {
+				transfer_state = 221
+				transfer_state = 225
+				transfer_state = 796
+				load_oob = USR_1918
+				declare_war_on = {
+					target = DON
+					type = annex_everything
+				}
+				if = {
+					limit = { RVA = { exists = yes } }
+					declare_war_on = {
+						target = RVA
+						type = annex_everything
+					}
+				}
+			}
+			RUS = {
+				end_puppet = UKR
+			}
+		}
+	}
+}
+
+#########Съезд советов######
+country_event = {
+	id = ukraine.11
+	title = ukraine.11.t
+	desc = ukraine.11.d
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
@@ -378,8 +432,8 @@ country_event = {
 		RUS = {
 			has_country_flag = RUS_Oktober_revolution_fired
 			has_country_flag = UKR_central_rada
+			NOT = { has_country_flag = UKR_central_rada_demands_accepted }
 		}
-		NOT = { has_country_flag = UKR_central_rada_demands_accepted }
 	}
 	
 	fire_only_once = yes
@@ -389,30 +443,23 @@ country_event = {
 	}
 	
 	option = {
-		name = ukraine.10.a
-		any_state = {
-			limit = { is_core_of = UKR }
-			add_core_of = USR
-		}
-		USR = {
-			transfer_state = 221
-			transfer_state = 227
-			transfer_state = 228
-			transfer_state = 796
-			transfer_state = 834
-		}
-		RUS = {
-			end_puppet = UKR
-		}
-		FRA = {
-			remove_from_faction = UKR
-		}
-		USR = {
-			load_oob = USR_1918
+		name = ukraine.11.a #обеспечить проигрышь большевиков
+		set_political_party = { ideology = communism popularity = 0 }
+		hidden_effect = {
 			declare_war_on = {
-				target = UKR
+				target = USR
 				type = annex_everything
 			}
+			RUS = {
+				declare_war_on = {
+					target = UKR
+					type = annex_everything
+				}
+			}
 		}
+	}
+	option = {
+		name = ukraine.11.b #провести съезд как обычно
+		USR = { change_tag_from = UKR annex_country = { target = UKR transfer_troops = yes } }
 	}
 }
