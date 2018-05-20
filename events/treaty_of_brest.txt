@@ -143,7 +143,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		name = treaty_of_brest.4.a
+		name = treaty_of_brest.5.a
 		RUS = { add_timed_idea = { idea = brest_negotiation_truce_Russia_and_allies days = 90 }
 		UKR = { add_timed_idea = { idea = brest_negotiation_truce_Russia_and_allies days = 90 }
 		FIN = { add_timed_idea = { idea = brest_negotiation_truce_Russia_and_allies days = 90 }
@@ -151,5 +151,349 @@ country_event = {
 		AUH = { add_timed_idea = { idea = brest_negotiation_truce_Central_powers days = 90 } }
 		TUR = { add_timed_idea = { idea = brest_negotiation_truce_Central_powers days = 90 } }
 		BUL = { add_timed_idea = { idea = brest_negotiation_truce_Central_powers days = 90 } }
+		if = {
+			limit = { controls_state = 12 controls_state = 206 202 = { OR = { is_controlled_by = THIS is_controlled_by = UKR } } }
+			country_event = { id = treaty_of_brest.6 days 9 }
+		}
+		if = {
+			limit = { NOT = { controls_state = 12 controls_state = 206 202 = { OR = { is_controlled_by = THIS is_controlled_by = UKR } } } }
+			#country_event = { id = treaty_of_brest.6 days 9 } #ветка на дороботке
+		}
+	}
+}
+
+#Переговоры по поводу Курляндииии, Литвы и Польши
+country_event = {
+	id = treaty_of_brest.6
+	title = treaty_of_brest.6.t
+	desc = treaty_of_brest.6.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.6.a #В полном согласии с открытым заявлением обеих договаривающихся сторон об отсутствии у них завоевательных планов и о желании заключить мир без аннексий. Россия выводит свои войска из занимаемых ею частей Австро-Венгрии, Турции и Персии, а державы Четверного союза — из Польши, Литвы, Курляндии и других областей России
+		GER = { country_event = treaty_of_brest.7 }
+	}
+}
+
+#Ответ немцев
+country_event = {
+	id = treaty_of_brest.7
+	title = treaty_of_brest.7.t
+	desc = treaty_of_brest.7.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.7.a #выдвинуть контрпредложение
+		RUS = { country_event = treaty_of_brest.9 }
+	}
+	option = {
+		name = treaty_of_brest.7.b #согласится с предложением большевиков
+		RUS = { country_event = treaty_of_brest.8 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#Заключение мира и референдум о независимости Польши, Литвы и Курляндии после вывода немецких войск
+country_event = {
+	id = treaty_of_brest.8
+	title = treaty_of_brest.8.t
+	desc = treaty_of_brest.8.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.8.a
+		every_country = {
+			limit = {
+				has_war_with = RUS
+				is_in_faction_with = GER
+			}
+			white_peace = RUS
+			white_peace = UKR
+			white_peace = FIN
+		}
+		release = POL
+		release = LIT
+		release = KUR
+		AUH = {
+			add_war_support = 0.05
+			add_stability = 0.05
+			add_political_power = 50
+		}
+		GER = {
+			add_war_support = 0.05
+			add_stability = 0.05
+			add_political_power = 50
+		}
+	}
+}
+
+#Заключение мира и референдум о независимости Польши, Литвы и Курляндии после вывода немецких войск
+country_event = {
+	id = treaty_of_brest.9
+	title = treaty_of_brest.9.t
+	desc = treaty_of_brest.9.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.9.a #начать затягивать переговоры
+		set_global_flag = brest_litovsk_negotiations
+	}
+	option = {
+		name = treaty_of_brest.9.b #согласится на требования немцев
+		every_country = {
+			limit = {
+				has_war_with = RUS
+				is_in_faction_with = GER
+			}
+			white_peace = RUS
+			white_peace = UKR
+			white_peace = FIN
+		}
+		add_political_power = -100
+		release = POL
+		release = LIT
+		release = KUR
+		AUH = {
+			add_war_support = 0.15
+			add_stability = 0.15
+			add_political_power = 100
+			puppet = POL
+			set_autonomy = { target = POL autonomy_state = autonomy_colony }
+		}
+		GER = {
+			add_war_support = 0.15
+			add_stability = 0.15
+			add_political_power = 100
+			puppet = LIT
+			set_autonomy = { target = LIT autonomy_state = autonomy_colony }
+			puppet = KUR
+			set_autonomy = { target = KUR autonomy_state = autonomy_colony }
+		}
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.10
+	title = treaty_of_brest.10.t
+	desc = treaty_of_brest.10.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.10.a #принять делегацию
+		set_global_flag = UKR_delegation_on_brest_litovsk_negotiations
+		set_global_flag = brest_litovsk_negotiations_extended_GER_requirements_1
+		RUS = { country_event = treaty_of_brest.15 }
+	}
+	option = {
+		name = treaty_of_brest.10.b #мы будем говорить только с СовНарКомом и законным правительством Украины в Харькове
+		UKR = { country_event = treaty_of_brest.16 }
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.11
+	title = treaty_of_brest.11.t
+	desc = treaty_of_brest.11.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.11.a
+		every_country = {
+			limit = {
+				has_war_with = RUS
+				is_in_faction_with = GER
+			}
+			white_peace = RUS
+			white_peace = UKR
+			white_peace = FIN
+			white_peace = EST
+		}
+		RUS ={
+			add_political_power = -150
+			add_stability = -0.05
+			release = POL
+			release = LIT
+			release = LAT
+			release = BLR
+			end_puppet = UKR
+			end_puppet = FIN
+		}
+		AUH = {
+			add_war_support = 0.15
+			add_stability = 0.15
+			add_political_power = 100
+			puppet = POL
+			set_autonomy = { target = POL autonomy_state = autonomy_integrated_puppet }
+		}
+		add_war_support = 0.15
+		add_stability = 0.15
+		add_political_power = 100
+		puppet = LIT
+		set_autonomy = { target = LIT autonomy_state = autonomy_integrated_puppet }
+		puppet = LAT
+		set_autonomy = { target = LAT autonomy_state = autonomy_integrated_puppet }
+		puppet = EST
+		set_autonomy = { target = EST autonomy_state = autonomy_integrated_puppet }
+		puppet = UKR
+		set_autonomy = { target = UKR autonomy_state = autonomy_colony }
+		puppet = BLR
+		set_autonomy = { target = BLR autonomy_state = autonomy_integrated_puppet }
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.12
+	title = treaty_of_brest.12.t
+	desc = treaty_of_brest.12.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.12.a
+		every_country = {
+			limit = {
+				has_war_with = RUS
+				is_in_faction_with = GER
+			}
+			white_peace = RUS
+			white_peace = UKR
+			white_peace = FIN
+			white_peace = EST
+		}
+		RUS ={
+			add_political_power = -150
+			add_stability = -0.05
+			release = POL
+			release = LIT
+			release = LAT
+			end_puppet = UKR
+			end_puppet = FIN
+		}
+		AUH = {
+			add_war_support = 0.15
+			add_stability = 0.15
+			add_political_power = 100
+			puppet = POL
+			set_autonomy = { target = POL autonomy_state = autonomy_integrated_puppet }
+		}
+		add_war_support = 0.15
+		add_stability = 0.15
+		add_political_power = 100
+		puppet = LIT
+		set_autonomy = { target = LIT autonomy_state = autonomy_colony }
+		puppet = LAT
+		set_autonomy = { target = LAT autonomy_state = autonomy_colony }
+		puppet = EST
+		set_autonomy = { target = EST autonomy_state = autonomy_colony }
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.13
+	title = treaty_of_brest.13.t
+	desc = treaty_of_brest.13.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.13.a
+		every_country = {
+			limit = {
+				has_war_with = RUS
+				is_in_faction_with = GER
+			}
+			white_peace = RUS
+			white_peace = UKR
+			white_peace = FIN
+		}
+		RUS ={
+			add_political_power = -150
+			add_stability = -0.05
+			release = POL
+			release = LIT
+			release = KUR
+		}
+		AUH = {
+			add_war_support = 0.15
+			add_stability = 0.15
+			add_political_power = 100
+			puppet = POL
+			set_autonomy = { target = POL autonomy_state = autonomy_colony }
+		}
+		add_war_support = 0.15
+		add_stability = 0.15
+		add_political_power = 100
+		puppet = LIT
+		set_autonomy = { target = LIT autonomy_state = autonomy_colony }
+		puppet = KUR
+		set_autonomy = { target = KUR autonomy_state = autonomy_colony }
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.14
+	title = treaty_of_brest.14.t
+	desc = treaty_of_brest.14.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.14.a
+		every_country = {
+			limit = {
+				has_war_with = UKR
+				is_in_faction_with = GER
+			}
+			white_peace = UKR
+		}
+		RUS ={
+			end_puppet = UKR
+		}
+		AUH = {
+			add_war_support = 0.05
+			add_stability = 0.05
+			add_political_power = 25
+		}
+		add_war_support = 0.05
+		add_political_power = 25
+		set_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+		set_global_flag = brest_litovsk_negotiations_extended_GER_requirements_2
+	}
+}
+
+#########Германия послала вас нахуй, дорогие товарищи украинцы######
+country_event = {
+	id = treaty_of_brest.16
+	title = treaty_of_brest.16.t
+	desc = treaty_of_brest.16.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.16.a
+		add_war_support = -0.15
+		add_stability = -0.10
+		USR = {
+			add_stability = 0.10
+			add_war_support = 0.15
+		}
 	}
 }
