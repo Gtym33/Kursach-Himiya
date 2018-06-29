@@ -180,12 +180,13 @@ country_event = {
 				ruling_party = social_democracy
 				elections_allowed = no
 			}
+			drop_cosmetic_tag = yes
+			leave_faction = yes
+			every_country = {
+				limit = { has_war_with = RUS has_war_with = FIN }
+				white_peace = FIN
+			}
 		}
-		add_ideas = {
-			punakaarti
-			suojeluskunta
-		}
-		hidden_effect = { drop_cosmetic_tag = yes }
 		add_political_power = 100
 	}
 }
@@ -330,12 +331,13 @@ country_event = {
 				ruling_party = social_democracy
 				elections_allowed = no
 			}
+			drop_cosmetic_tag = yes
+			leave_faction = yes
+			every_country = {
+				limit = { has_war_with = RUS has_war_with = FIN }
+				white_peace = FIN
+			}
 		}
-		add_ideas = {
-			punakaarti
-			suojeluskunta
-		}
-		hidden_effect = { drop_cosmetic_tag = yes }
 	}
 }
 
@@ -387,6 +389,219 @@ country_event = {
 	option = {
 		name = finland.11.a
 		
+	}
+}
+
+# Усиление охранных отрядов и красной гвардии
+country_event = {
+	id = finland.12
+	title = finland.12.t
+	desc = finland.12.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FIN
+		is_puppet = no
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = finland.12.a
+		add_ideas = punakaarti
+		add_ideas = suojeluskunta
+		add_stability = -0.05
+	}
+}
+
+# Разоружение российских гарнизонов
+country_event = {
+	id = finland.13
+	title = finland.13.t
+	desc = finland.13.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FIN
+		is_puppet = no
+		has_idea = suojeluskunta
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = finland.13.a
+		add_stability = -0.05
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_1
+			amount = 500
+			producer = FIN
+		}
+	}
+}
+
+# Вооружение отрядов красногвардейцев
+country_event = {
+	id = finland.14
+	title = finland.14.t
+	desc = finland.14.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FIN
+		is_puppet = no
+		has_idea = punakaarti
+	}
+	
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	option = {
+		name = finland.14.a
+		add_stability = -0.05
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_1
+			amount = -2000
+			producer = FIN
+		}
+		set_country_flag = red_guards_armed
+	}
+}
+
+# Восстание в Хельсинки
+country_event = {
+	id = finland.15
+	title = finland.15.t
+	desc = finland.15.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FIN
+		is_puppet = no
+		has_idea = punakaarti
+		has_country_flag = red_guards_armed
+		NOT = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	immediate = {
+		hidden_effect = {
+			every_state = {
+				limit = { is_core_of = FIN }
+				add_core_of = FNR
+			}
+			set_political_party = {
+				ideology = social_democracy
+				popularity = 0
+			}
+			set_political_party = {
+				ideology = communism
+				popularity = 0
+			}
+			set_political_party = {
+				ideology = social_conservatism
+				popularity = 40
+			}
+			set_capital = 149
+			clr_country_flag = political_social_democrats_in_socialist_coalition
+		}
+	}
+	option = {
+		name = finland.15.a
+		add_stability = -0.15
+		set_global_flag = FIN_civil_war_begin
+		hidden_effect = {
+			remove_ideas = punakaarti
+			country_event = { id = finland.16 days = 2 }
+		}
+		FNR = {
+			transfer_state = 111
+			declare_war_on = {
+				target = FIN
+				type = annex_everything
+			}
+			hidden_effect = {
+				set_province_controller = 3050
+				set_province_controller = 3060
+				set_province_controller = 9100
+				set_province_controller = 9105
+				set_province_controller = 9150
+				set_province_controller = 9206
+				set_province_controller = 11162
+			}
+			load_oob = "FNR_punakaarti"
+		}
+	}
+	option = {
+		name = finland.15.b
+		add_stability = -0.15
+		set_global_flag = FIN_civil_war_begin
+		hidden_effect = {
+			remove_ideas = punakaarti
+			country_event = { id = finland.16 days = 2 }
+		}
+		FNR = {
+			transfer_state = 111
+			declare_war_on = {
+				target = FIN
+				type = annex_everything
+			}
+			hidden_effect = {
+				set_province_controller = 3050
+				set_province_controller = 3060
+				set_province_controller = 9100
+				set_province_controller = 9105
+				set_province_controller = 9150
+				set_province_controller = 9206
+				set_province_controller = 11162
+			}
+			load_oob = "FNR_punakaarti"
+			change_tag_from = FIN
+		}
+	}
+}
+
+# Преобразование отрядов в войска
+country_event = {
+	id = finland.16
+	title = finland.16.t
+	desc = finland.16.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.16.a
+		if = {
+			limit = { has_idea = suojeluskunta }
+			remove_ideas = suojeluskunta
+			load_oob = "FIN_suojeluskunta"
+		}
+		if = {
+			limit = { has_idea = jaakariliike }
+			remove_ideas = jaakariliike
+			load_oob = "FIN_jaakariliike"
+		}
 	}
 }
 
