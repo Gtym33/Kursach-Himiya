@@ -4,60 +4,286 @@
 
 add_namespace = germany
 
-# Versailles Peace Treaty
+###### Дипломатические действия Германии во время Первой Мировой Войны, зарезервированы номера 1-100 ######
+
+# Телеграмма Циммермана
 country_event = {
 	id = germany.1
 	title = germany.1.t
-	desc = germany.1.d
+	desc = germany.1.desc
 	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	fire_only_once = yes
-	
-	trigger = {
-		tag = GER
-		surrender_progress > 0.9
-		has_offensive_war_with = FRA
-		has_global_flag = WWI_is_now
-	}
 
-	mean_time_to_happen = {
-		days = 3
-	}
+	is_triggered_only = yes
 	
-	option = { # Surrender
+	option = {
 		name = germany.1.a
-		FRA = {
-			any_allied_country = {
-				white_peace = GER
+		hidden_effect = {
+			if = {
+				limit = { is_historical_focus_on = yes }
+				ENG = { country_event = { id = germany.2 days = 1 } }
 			}
-			country_event = versailles.1
+			if = {
+				limit = { is_historical_focus_on = no }
+				random_list = {
+					99 = {
+						ENG = { country_event = { id = germany.2 days = 1 } }
+					}
+					1 = {
+						MEX = { country_event = { id = germany.6 days = 15 } }
+					}
+				}
+			}
 		}
 	}
-	option = { # Don't surrender
-		name = germany.1.b
-		trigger = { is_ai = no }
+}
+# Эвент Великобритании - Перехват телеграммы
+country_event = {
+	id = germany.2
+	title = germany.2.t
+	desc = germany.2.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.2.a
+		USA = { country_event = { id = germany.3 days = 35 } }
+	}
+}
+# Эвент Соединённых Штатов Америки - Передача перехваченной телеграммы
+country_event = {
+	id = germany.3
+	title = germany.3.t
+	desc = germany.3.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.3.a
+		add_war_support = 0.15
+		hidden_effect = {
+			news_event = { id = news_n.1 hours = 12 }
+			GER = { country_event = { id = germany.4 days = 39 } }
+		}
+	}
+}
+# Публичное признание
+country_event = {
+	id = germany.4
+	title = germany.4.t
+	desc = germany.4.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = { news_event = { id = news_n.2 hours = 12 } }
+	}
+	
+	option = {
+		name = germany.4.a
+		#remove_ideas = Артур Циммерман
+	}
+}
+# Эвент Мексики - Предложение Германии (телеграмма перехвачена)
+country_event = {
+	id = germany.5
+	title = germany.5.t
+	desc = germany.5.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Официальный отказ
+	option = {
+		name = germany.5.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	#А почему мы должны отказываться?
+	option = {
+		name = germany.5.b
+		hidden_effect = {
+			USA = {
+				declare_war_on = {
+					target = THIS
+					type = annex_everything
+				}
+			}
+			news_event = { id = news_n.3 hours = 12 }
+			GER = {
+				add_to_faction = MEX
+			}
+		}
+		set_global_flag = MEX_accept_cimerman_offer
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Эвент Мексики - Предложение Германии (телеграмма не перехвачена)
+country_event = {
+	id = germany.6
+	title = germany.6.t
+	desc = germany.6.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Отказ
+	option = {
+		name = germany.6.a
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	#Согласится
+	option = {
+		name = germany.6.b
+		set_global_flag = MEX_accept_cimerman_offer
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Эвент Мексики - Вступление в войну
+country_event = {
+	id = germany.7
+	title = germany.7.t
+	desc = germany.7.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.7.a
+		USA = {
+			declare_war_on = {
+				target = THIS
+				type = annex_everything
+			}
+		}
+		hidden_effect = { news_event = { id = news_n.4 hours = 12 } }
+		GER = {
+			add_to_faction = MEX
+		}
 	}
 }
 
-# End of World War I
+# Поддержка антивоенных сил в России
 country_event = {
-	id = germany.2
-	hidden = yes
-	
-	fire_only_once = yes
-	
-	trigger = {
-		tag = GER
-		NOT = { has_war_with = FRA }
-		NOT = { has_war_with = ENG }
-		has_global_flag = WWI_is_now
-	}
+	id = germany.8
+	title = germany.8.t
+	desc = germany.8.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
 
-	mean_time_to_happen = {
-		days = 3
+	is_triggered_only = yes
+	
+	#Поддержать большевиков
+	option = {
+		name = germany.8.a
+		trigger = {
+			RUS = { NOT = { has_country_flag = RUS_Oktober_revolution_fired } }
+		}
+		hidden_effect = {
+			country_event = {
+				id = germany.9
+				days = 3
+			}
+		}
+		ai_chance = {
+			factor = 0
+		}
 	}
 	
-	immediate = {
-		clr_global_flag = WWI_is_now
+	#Поддержать правые придворные круги
+	option = {
+		name = germany.8.b
+		trigger = {
+			RUS = { NOT = { has_country_flag = RUS_monarchy_fall } }
+		}
+		hidden_effect = {
+			country_event = {
+				id = germany.9
+				days = 3
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Поддержка большевиков
+country_event = {
+	id = germany.9
+	title = germany.9.t
+	desc = germany.9.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.9.a
+		RUS = {
+			add_popularity = {
+				ideology = communism
+				popularity = 0.01
+			}
+		}
+		add_timed_idea = { idea = GER_loans_to_bolsheviks days = 90 }
+	}
+}
+
+# Мир с Россией
+country_event = {
+	id = germany.20
+	title = germany.20.t
+	desc = germany.20.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		original_tag = GER
+		has_war_with = RUS
+		any_country = {
+			limit = {
+				OR = {
+					tag = THIS
+					is_in_faction_with = THIS
+				}
+			}
+			controls_state = 195
+		}
+		any_country = {
+			limit = {
+				OR = {
+					tag = THIS
+					is_in_faction_with = THIS
+				}
+			}
+			controls_state = 219
+		}
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = RUS_has_capitulated_WWI }
+	}
+	
+	option = {
+		name = germany.9.a
+		set_global_flag = RUS_has_capitulated_WWI
+		every_country = {
+			limit = { is_puppet_of = RUS has_war_with = RUS }
+			white_peace = THIS
+			leave_faction = yes
+			RUS = {
+				end_puppet = PREV
+			}
+		}
+		RUS = {
+			white_peace = THIS
+			leave_faction = yes
+		}
 	}
 }
