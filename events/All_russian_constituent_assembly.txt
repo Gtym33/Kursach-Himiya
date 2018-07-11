@@ -1,0 +1,608 @@
+﻿###########################
+# Constituent Assembly Events
+###########################
+
+add_namespace = all_rus_CA
+
+###########################
+# Учредительное собрание
+###########################
+
+#########Решение о политическом устройстве######
+country_event = {
+	id = all_rus_CA.1
+	title = all_rus_CA.1.t
+	desc = {
+		text = all_rus_CA.1.d
+		trigger = {
+			NOT = { check_variable = { authoritarian_parties > 0.3 } has_government = radical_socialism has_government = communism has_country_flag = general_kornilov }
+		}
+	}
+	desc = {
+		text = all_rus_CA.1.d_1
+		trigger = {
+			check_variable = { authoritarian_parties > 0.3 }
+		}
+	}
+	desc = {
+		text = all_rus_CA.1.d_2
+		trigger = {
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+		}
+	}
+	desc = {
+		text = all_rus_CA.1.d_3
+		trigger = {
+			has_country_flag = general_kornilov
+		}
+	}
+	picture = GFX_report_event_rus_the_constituent_assembly
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			remove_ideas = {
+				RUS_dvoevlastie_1
+				RUS_dvoevlastie_2
+				RUS_dvoevlastie_3
+				RUS_dvoevlastie_4
+			}
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+	
+	option = {
+		name = all_rus_CA.1.a #назначить буржуазные демократические выборы
+		trigger = {
+			NOT = { check_variable = { socialist_parties > 0.80 } }
+		}
+		ai_chance = {
+			factor = 1
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_first_session_bourgeois_republic
+		if = {
+			limit = { OR = { has_government = communism has_government = radical_socialism } }
+			hidden_effect = { country_event = all_rus_CA.2 }
+			else = {
+				country_event = all_rus_CA.3
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.1.b #советская республика
+		trigger = {
+			OR = {
+				check_variable = { socialist_parties > 0.80 }
+				NOT = { has_government = communism }
+			}
+		}
+		ai_chance = {
+			factor = 999
+			modifier = {
+				is_historical_focus_on = yes
+				factor = 0
+			}
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+		if = {
+			limit = { NOT = { has_government = communism has_government = radical_socialism has_government = social_democracy } }
+			hidden_effect = { country_event = all_rus_CA.2 }
+			else = {
+				country_event = all_rus_CA.3
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.1.f #диктатуррра
+		trigger = {
+			NOT = { has_country_flag = general_kornilov }
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				NOT = { has_government = communism has_government = radical_socialism }
+				check_variable = { socialist_parties > 0.35 }
+			}
+			modifier = {
+				factor = 0
+				has_government = communism
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature
+		if = {
+			limit = { OR = { has_government = communism has_government = radical_socialism has_government = social_democracy } }
+			hidden_effect = { country_event = all_rus_CA.2 }
+			else = {
+				country_event = all_rus_CA.3
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.1.g #Восстановление монархии во главе с царём Юсуповым
+		trigger = {
+			check_variable = { authoritarian_parties > 0.3 }
+		}
+		ai_chance = {
+			factor = 99999
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+		hidden_effect = { country_event = all_rus_CA.2 }
+	}
+}
+
+#########Решение о разгоне говорильни######
+country_event = {
+	id = all_rus_CA.2
+	title = all_rus_CA.2.t
+	desc = {
+		text = all_rus_CA.2.d
+		trigger = {
+			has_government = communism
+		}
+	}
+	desc = {
+		text = all_rus_CA.2.d_1
+		trigger = {
+			NOT = { has_government = communism }
+		}
+	}
+	picture = GFX_report_event_rus_dispersa_of_the_constituent_assembly
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = all_rus_CA.2.a #Караул устал
+		set_country_flag = RUS_karaul_ustal
+		hidden_effect = { country_event = all_rus_CA.6 }
+		ai_chance = {
+			factor = 999
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = market_liberalism
+					has_government = social_conservatism
+				}
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+			}
+		}
+		add_political_power = 100
+	}
+	option = {
+		name = all_rus_CA.2.b #ждать окончания срока действия учредительного собрания
+		hidden_effect = { country_event = all_rus_CA.3 }
+		add_stability = 0.05
+	}
+}
+
+#########Вопрос о Земле######
+country_event = {
+	id = all_rus_CA.3
+	title = all_rus_CA.3.t
+	desc = all_rus_CA.3.d
+	picture = GFX_report_event_all_power_to_the_soviets
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = all_rus_CA.3.a #принять программу эсеров по социализации земли (точнее если была октябрьская революция, то подтвердить большевистский декрет)
+		set_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform
+		trigger = {
+			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature }
+		}
+		if = {
+			limit = { has_war_with = GER }
+			hidden_effect = { country_event = { id = all_rus_CA.4 days = 1 } }
+			else = {
+				country_event = { id = all_rus_CA.5 days = 1 }
+				set_country_flag = RUS_all_russian_constituent_assembly_third_session_bypassed
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.3.b #вариант для буржуев
+		trigger = {
+			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic }
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_second_session_no_land_reform
+		if = {
+			limit = { has_war_with = GER }
+			hidden_effect = { country_event = { id = all_rus_CA.4 days = 1 } }
+			else = {
+				country_event = { id = all_rus_CA.5 days = 1 }
+				set_country_flag = RUS_all_russian_constituent_assembly_third_session_bypassed
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.3.c #возвращение крепостного права
+		trigger = {
+			has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom
+		if = {
+			limit = { has_war_with = GER }
+			hidden_effect = { country_event = { id = all_rus_CA.4 days = 1 } }
+			else = {
+				country_event = { id = all_rus_CA.5 days = 1 }
+				set_country_flag = RUS_all_russian_constituent_assembly_third_session_bypassed
+			}
+		}
+	}
+}
+
+#########Вопрос о Мире######
+country_event = {
+	id = all_rus_CA.4
+	title = all_rus_CA.4.t
+	desc = all_rus_CA.4.d
+	picture = GFX_report_event_rus_the_constituent_assembly_peace_question
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = all_rus_CA.4.a #Начать переговоры по миру
+		set_country_flag = RUS_all_russian_constituent_assembly_third_session_peace
+		hidden_effect = { country_event = { id = all_rus_CA.5 days = 1 } }
+		add_stability = 0.05
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = all_rus_CA.4.b #РЕВОЛЮЦИОННАЯ ВОЙНА
+		set_country_flag = RUS_all_russian_constituent_assembly_third_session_war
+		hidden_effect = { country_event = { id = all_rus_CA.5 days = 1 } }
+		add_war_support = -0.05
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0
+				surrender_progress > 0.25
+			}
+			modifier = {
+				factor = 0.25
+				surrender_progress > 0.2
+				NOT = { surrender_progress > 0.24999 }
+			}
+			modifier = {
+				factor = 0.5
+				surrender_progress > 0.15
+				NOT = { surrender_progress > 0.19999 }
+			}
+			modifier = {
+				factor = 0.75
+				surrender_progress > 0.10
+				NOT = { surrender_progress > 0.14999 }
+			}
+			modifier = {
+				factor = 999
+				surrender_progress < 0.025
+			}
+		}
+	}
+}
+
+#########Вопрос о Территориальном устройстве######
+country_event = {
+	id = all_rus_CA.5
+	title = all_rus_CA.5.t
+	desc = all_rus_CA.5.d
+	picture = GFX_report_event_all_power_to_the_soviets
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = all_rus_CA.5.a #Унитарное государство
+		trigger = {
+			NOT = { has_government = social_liberalism }
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state
+		add_political_power = 150
+		hidden_effect = { country_event = { id = all_rus_CA.6 days = 5 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.5.b #Федерализация
+		set_country_flag = RUS_all_russian_constituent_assembly_fourth_session_federal_state
+		add_political_power = 100
+		hidden_effect = { country_event = { id = all_rus_CA.6 days = 5 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = all_rus_CA.5.c #Конфедерация
+		trigger = {
+			NOT = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+			}
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_fourth_session_confederate_state
+		add_political_power = 50
+		hidden_effect = { country_event = { id = all_rus_CA.6 days = 5 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.5.e #Плаво народово на самоопределение (Горбачёв)
+		trigger = {
+			NOT = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+			}
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_fourth_session_no_more_great_russian_state
+		hidden_effect = { country_event = { id = all_rus_CA.6 days = 5 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+#########Итоги Учредительного собрания######
+country_event = {
+	id = all_rus_CA.6
+	title = all_rus_CA.6.t
+	desc = all_rus_CA.6.d
+	immediate = {
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_bourgeois_republic }
+			custom_effect_tooltip = all_rus_CA_S1_O1
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic }
+			custom_effect_tooltip = all_rus_CA_S1_O2
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature }
+			custom_effect_tooltip = all_rus_CA_S1_O3
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy }
+			custom_effect_tooltip = all_rus_CA_S1_O4
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform }
+			custom_effect_tooltip = all_rus_CA_S2_O1
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_no_land_reform }
+			custom_effect_tooltip = all_rus_CA_S2_O2
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom }
+			custom_effect_tooltip = all_rus_CA_S2_O3
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_third_session_peace }
+			custom_effect_tooltip = all_rus_CA_S3_O1
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_third_session_war }
+			custom_effect_tooltip = all_rus_CA_S3_O2
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state }
+			custom_effect_tooltip = all_rus_CA_S4_O1
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_federal_state }
+			custom_effect_tooltip = all_rus_CA_S4_O2
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_confederate_state }
+			custom_effect_tooltip = all_rus_CA_S4_O3
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_no_more_great_russian_state }
+			custom_effect_tooltip = all_rus_CA_S4_O4
+		}
+	}
+	picture = GFX_report_event_all_power_to_the_soviets
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = all_rus_CA.6.a
+		clr_country_flag = RUS_provisional_government_created
+		clr_country_flag = RUS_Order_N_1
+		set_global_flag = RUS_all_russian_constituent_assembly_ended
+		clr_country_flag = general_kornilov
+		if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_bourgeois_republic
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+				}
+			}
+			set_politics = {
+				ruling_party = social_democracy
+				elections_allowed = no
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_bourgeois_republic
+				OR = {
+					has_government = authoritarism
+					has_government = despotism
+					has_government = national_syndicalism
+					has_government = fascism
+				}
+			}
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = 0.10
+			}
+			set_politics = {
+				ruling_party = social_conservatism
+				elections_allowed = no
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				has_country_flag = RUS_Bolsheviks_majority
+			}
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.15
+			}
+			remove_ideas_with_trait = head_of_government
+			remove_ideas_with_trait = foreign_minister
+			remove_ideas_with_trait = economy_minister
+			remove_ideas_with_trait = security_minister
+			remove_ideas_with_trait = head_of_intel
+			add_ideas = {
+				Vladimir_Lenin_1
+				Lev_Trotsky_2
+				Peter_Heyden_3
+				Alexey_Rykov_4
+				Felix_Dzerjinsky_5
+				Lev_Trotsky_army_chief
+			}
+			FRA = {
+				remove_from_faction = RUS
+			}
+			create_faction = RUS_RSFSR_alliance
+			set_global_flag = legitimized_bolsheviks
+		}
+		if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				NOT = { has_country_flag = RUS_Bolsheviks_majority }
+			}
+			set_politics = {
+				ruling_party = social_democracy
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.15
+			}
+			remove_ideas_with_trait = head_of_government
+			remove_ideas_with_trait = foreign_minister
+			remove_ideas_with_trait = economy_minister
+			remove_ideas_with_trait = security_minister
+			remove_ideas_with_trait = head_of_intel
+			add_ideas = {
+				Nikolay_Chkheidze_1
+				Alexander_Martynov_2
+				Kuzma_Gvozdev_3
+				Alexey_Nikitin_4
+				Pavel_Malyantovich_5
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature
+			}
+			set_party_name = { ideology = authoritarism long_name = RUS_authoritarism_kornilov_party_long name = RUS_authoritarism_kornilov_party }
+			create_country_leader = {
+				name = "Lavr Kornilov"
+				desc=RUS_nikolai_ii_DESC
+				picture="gfx/leaders/RUS/Lavr_Kornilov.dds"
+				expire="1935.1.1"
+				ideology = authoritarism_ideology
+				traits={  }
+			}
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.15
+			}
+			remove_ideas_with_trait = head_of_government
+			remove_ideas_with_trait = foreign_minister
+			remove_ideas_with_trait = economy_minister
+			remove_ideas_with_trait = security_minister
+			remove_ideas_with_trait = head_of_intel
+			add_ideas = {
+				Nikolay_Khomyakov_1
+				Alexander_Guchkov_2
+				Peter_Heyden_3
+				Boris_Savinkov_natsind_4
+				Alexander_Kerensky_5
+			}
+			set_country_flag = general_kornilov
+		}
+		if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+			}
+			create_country_leader = {
+				name = "Felix I Usupov"
+				desc=RUS_nikolai_ii_DESC
+				picture="gfx/leaders/RUS/Felix_Usupov_tsar.dds"
+				expire="1935.1.1"
+				ideology = despotism_ideology
+				traits={  }
+			}
+			set_politics = {
+				ruling_party = despotism
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.15
+			}
+			remove_ideas_with_trait = head_of_government
+			remove_ideas_with_trait = foreign_minister
+			remove_ideas_with_trait = economy_minister
+			remove_ideas_with_trait = security_minister
+			remove_ideas_with_trait = head_of_intel
+			add_ideas = {
+				Nikolay_Khomyakov_1
+				Alexander_Guchkov_2
+				Peter_Heyden_3
+				Boris_Savinkov_natsind_4
+				Alexander_Kerensky_5
+			}
+			set_country_flag = RUS_Yusupov_tsar
+		}
+	}
+}
