@@ -71,6 +71,7 @@ country_event = {
 			transfer_state = 265
 			transfer_state = 764
 			add_ideas = alliance_neutrality
+			country_event = { id = rcw.3 days = 12 }
 		}
 	}
 	
@@ -101,6 +102,7 @@ country_event = {
 			transfer_state = 265
 			transfer_state = 764
 			add_ideas = alliance_neutrality
+			country_event = { id = rcw.3 days = 12 }
 			change_tag_from = RUS
 		}
 	}
@@ -113,16 +115,7 @@ country_event = {
 	desc = rcw.3.d
 	picture = GFX_report_event_rus_coalition
 	
-	trigger = {
-		tag = DON
-		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
-	}
-	
-	mean_time_to_happen = {
-		days = 12
-	}
-	
-	fire_only_once = yes
+	is_triggered_only = yes
 	
 	immediate = {
 		hidden_effect = {
@@ -175,9 +168,9 @@ country_event = {
 	
 	option = {
 		name = rcw.4.a #подавить выступление
-		set_country_flag = DON_red_revolt
 		add_popularity = { ideology = communism popularity = -1 }
 		add_timed_idea = { idea = DON_jidobolysheviks_revolt days = 60 }
+		hidden_effect = { country_event = { id = rcw.5 days = 40 } }
 		ai_chance = {
 			factor = 1
 		}
@@ -201,14 +194,7 @@ country_event = {
 	desc = rcw.5.d
 	picture = GFX_report_event_rcw_rva
 	
-	trigger = {
-		tag = DON
-		has_country_flag = DON_red_revolt
-	}
-	
-	mean_time_to_happen = {
-		days = 40
-	}
+	is_triggered_only = yes
 	
 	immediate = {
 		hidden_effect = {
@@ -219,13 +205,12 @@ country_event = {
 	
 	option = {
 		name = rcw.5.a
-		DON = { clr_country_flag = DON_red_revolt }
 		218 = { add_core_of = RVA }
 		233 = { add_core_of = RVA }
 		234 = { add_core_of = RVA }
 		235 = { add_core_of = RVA }
 		238 = { add_core_of = RVA }
-		RVA = { transfer_state = 218 transfer_state = 238 }
+		RVA = { transfer_state = 218 transfer_state = 238 set_state_owner = 234 }
 		RUS = { set_state_controller = 238 }
 		RVA = {
 			add_ideas = {
@@ -243,16 +228,22 @@ country_event = {
 			}
 			load_oob = RVA_alexeev
 		}
+		if = {
+			limit = { DON = { has_war_with = RUS } }
+			RVA = {
+				create_faction = south_of_russia
+				add_to_faction = DON
+			}
+		}
 	}
 	option = {
 		name = rcw.5.b
-		DON = { clr_country_flag = DON_red_revolt }
 		218 = { add_core_of = RVA }
 		233 = { add_core_of = RVA }
 		234 = { add_core_of = RVA }
 		235 = { add_core_of = RVA }
 		238 = { add_core_of = RVA }
-		RVA = { transfer_state = 218 transfer_state = 238 }
+		RVA = { transfer_state = 218 transfer_state = 238 set_state_owner = 234 }
 		RUS = { set_state_controller = 238 }
 		RVA = {
 			add_ideas = {
@@ -270,6 +261,13 @@ country_event = {
 			}
 			load_oob = RVA_alexeev
 			change_tag_from = DON
+		}
+		if = {
+			limit = { DON = { has_war_with = RUS } }
+			RVA = {
+				create_faction = south_of_russia
+				add_to_faction = DON
+			}
 		}
 	}
 }
@@ -295,6 +293,10 @@ country_event = {
 			declare_war_on = {
 				target = RVA
 				type = annex_everything
+			}
+			RVA = {
+				create_faction = south_of_russia
+				add_to_faction = DON
 			}
 		}
 		if = {
@@ -327,7 +329,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 70
+		days = 20
 	}
 	
 	fire_only_once = yes
@@ -393,7 +395,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 50
+		days = 30
 	}
 	
 	fire_only_once = yes
@@ -455,6 +457,11 @@ country_event = {
 				add_state_core = 576
 				add_state_core = 577
 				add_state_core = 590
+				add_state_core = 572
+				add_state_core = 573
+				add_state_core = 582
+				add_state_core = 652
+				add_state_core = 651
 				load_oob = SIB_1918
 			}
 		}
@@ -495,22 +502,30 @@ country_event = {
 			initiate_CCA_eser_unit_leaders = yes
 			change_tag_from = RUS
 		}
-		SIB = {
-			transfer_state = 516
-			transfer_state = 567
-			transfer_state = 568
-			transfer_state = 569
-			transfer_state = 571
-			transfer_state = 576
-			transfer_state = 577
-			add_state_core = 516
-			add_state_core = 567
-			add_state_core = 568
-			add_state_core = 569
-			add_state_core = 571
-			add_state_core = 576
-			add_state_core = 577
-			load_oob = SIB_1918
+		if = {
+			limit = { SIB = { exists = yes } }
+			SIB = {
+				transfer_state = 516
+				transfer_state = 567
+				transfer_state = 568
+				transfer_state = 569
+				transfer_state = 571
+				transfer_state = 576
+				transfer_state = 577
+				add_state_core = 516
+				add_state_core = 567
+				add_state_core = 568
+				add_state_core = 569
+				add_state_core = 571
+				add_state_core = 576
+				add_state_core = 577
+				add_state_core = 572
+				add_state_core = 573
+				add_state_core = 582
+				add_state_core = 652
+				add_state_core = 651
+				load_oob = SIB_1918
+			}
 		}
 		release = TAN
 	}
@@ -657,6 +672,7 @@ country_event = {
 		name = rcw.19.a
 		CCA = {
 			transfer_state = 399
+			add_state_core = 399
 			load_oob = "CCA_rebel"
 			country_event = { id = rcw.24 days = 1 }
 		}
@@ -904,7 +920,8 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw.31.a
+		name = rcw.32.a
+		set_country_flag = meeting_fail
 		add_ideas = FRA_disjointed_government
 		SIB = {
 		add_popularity = { ideology = authoritarism popularity = 0.15 }
@@ -963,6 +980,152 @@ country_event = {
 	}
 }
 
+
+country_event = {
+	id = rcw.38
+	title = rcw.30.t
+	desc = rcw.30.d
+	picture = GFX_report_event_sov_redarm
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.30.a
+			CCA = {
+				set_country_flag = SIB_annex_CCA
+				country_event = { id = rcw.39 days = 1 }
+				}
+	}
+	option = {
+		name = rcw.30.b
+				CCA = {
+				country_event = { id = rcw.39 days = 1 }
+				set_country_flag = RSS_annex_SIB
+				}
+	}
+}
+
+country_event = {
+	id = rcw.39
+	title = rcw.31.t
+	desc = rcw.31.d
+	picture = GFX_report_event_sov_redarm
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.31.a
+		trigger = {
+				NOT = { has_country_flag = SIB_annex_CCA }
+		}
+				SIB = {
+				country_event = { id = rcw.40 days = 1 }
+				}
+	}
+	option = {
+		name = rcw.31.a
+		trigger = {
+			has_country_flag = SIB_annex_CCA
+		}
+				SIB = {
+				country_event = { id = rcw.41 days = 1 }
+				}
+	}
+	
+	option = {
+		name = rcw.31.b
+		trigger = {
+			NOT = { has_country_flag = RSS_annex_SIB }
+		}
+				SIB = {
+				country_event = { id = rcw.40 days = 1 }
+				}
+	}
+	
+		option = {
+		name = rcw.31.b
+		trigger = {
+			has_country_flag = RSS_annex_SIB
+		}
+				SIB = {
+				country_event = { id = rcw.41 days = 1 }
+				}
+	}
+}
+
+country_event = {
+	id = rcw.40
+	title = rcw.32.t
+	desc = rcw.32.d
+	picture = GFX_report_event_sov_redarm
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.31.a
+		set_country_flag = meeting_fail
+		CCA = {
+		add_ideas = FRA_disjointed_government
+		}
+		SIB = {
+		add_popularity = { ideology = authoritarism popularity = 0.15 }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = fascism popularity = 0.1 }
+		}
+	}
+}
+
+country_event = {
+	id = rcw.41
+	title = rcw.33.t
+	desc = rcw.33.d
+	picture = GFX_report_event_sov_redarm
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.33.a
+		trigger = {
+		SIB = {
+				has_country_flag = CCA_annex_SIB
+				}
+		}
+		annex_country = { target = SIB transfer_troops = yes }
+		SIB = {
+			every_unit_leader = {
+				set_nationality = CCA
+			}
+		}
+	}
+	
+	option = {
+		name = rcw.33.b
+		trigger = {
+		SIB = {
+				has_country_flag = RSS_annex_CCA
+				}
+		}
+		RSS = {
+		annex_country = { target = CCA transfer_troops = yes }
+		annex_country = { target = SIB transfer_troops = yes }
+		}
+		change_tag_from = RSS
+		SIB = {
+			every_unit_leader = {
+				set_nationality = RSS
+			}
+		}
+		CCA = {
+			every_unit_leader = {
+				set_nationality = RSS
+			}
+		}
+	}
+}
 #########Учредительное собрание 2.0######
 country_event = {
 	id = rcw.34
@@ -1070,7 +1233,539 @@ country_event = {
 			}
 	}
 }
+#########Выбор Сибиркого правительства######
+country_event = {
+	id = rcw.42
+	title = rcw.42.t
+	desc = rcw.42.d
+	picture = GFX_report_event_rus_entente
+	
+	trigger = {
+		tag = SIB
+		is_puppet = no
+	}
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.42.a
+		
+	}
+	option = {
+		name = rcw.42.b
+		set_politics = {
+			ruling_party = market_liberalism
+			elections_allowed = yes
+		}
+	}
+}
 
+#########Давление на Комитет######
+country_event = {
+	id = rcw.43
+	title = rcw.43.t
+	desc = rcw.43.d
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.43.a
+		set_variable = {
+    	var = SIB_pressure_CCA
+   		 value = 1
+	}
+	CCA = {country_event = { id = rcw.44 days = 1 }}
+	}
+	option = {
+		name = rcw.43.b
+		set_variable = {
+    	var = SIB_pressure_CCA
+   		 value = 2
+	}
+	CCA = {country_event = { id = rcw.44 days = 1 }}
+}
+	option = {
+		name = rcw.43.c
+		set_variable = {
+    	var = SIB_pressure_CCA
+   		 value = 3
+	}
+	CCA = {country_event = { id = rcw.44 days = 1 }}
+}
+}
+
+country_event = {
+	id = rcw.44
+	title = rcw.44.t
+	desc = rcw.44.d
+	picture = GFX_report_event_rus_entente
+
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.44.a
+		if = {
+			limit = { check_variable = { SIB_pressure_CCA = 1 } }
+			add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
+			SIB = {
+				add_opinion_modifier = { target = CCA modifier = SIB_accept }
+				transfer_state = 572
+				add_state_core = 572
+				country_event = { id = rcw.46 days = 1 }
+			}
+		}
+		if = {
+			limit = { check_variable = { SIB_pressure_CCA = 2 } }
+			SIB = {
+				puppet = CCA
+				set_autonomy = {
+					target = CCA
+					autonomy_state = autonomy_integrated_puppet
+				}
+				country_event = { id = rcw.46 days = 1 }
+			}
+		}
+		if = {
+			limit = { check_variable = { SIB_pressure_CCA = 3 } }
+			SIB = {
+				annex_country = { 
+				target = CCA 
+				transfer_troops = yes 
+				}
+				add_state_core = 251
+				add_state_core = 406
+				add_state_core = 407
+				add_state_core = 572
+				add_state_core = 573
+				add_state_core = 582
+				add_state_core = 651
+				add_state_core = 652
+				country_event = { id = rcw.46 days = 1 }
+			}
+		}
+	}
+	option = {
+		name = rcw.44.b
+		SIB = { country_event = { id = rcw.45 days = 1 } }
+	}
+}
+
+country_event = {
+	id = rcw.45
+	title = rcw.45.t
+	desc = rcw.45.d
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.45.a
+		add_war_support = 0.1
+	}
+	option = {
+		name = rcw.45.b
+		add_war_support = 0.05
+}
+}
+
+country_event = {
+	id = rcw.46
+	title = rcw.46.t
+	desc = rcw.46.d
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.46.a
+		add_war_support = 0.1
+		add_stability = 0.1
+	}
+}
+
+country_event = {
+	id = rcw.47
+	title = rcw.47.t
+	desc = rcw.47.d
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.47.a
+		SIB = {country_event = { id = rcw.49 days = 1 }}
+	}
+	option = {
+		name = rcw.47.b
+		SIB = {country_event = { id = rcw.48 days = 1 }}
+	}
+}
+
+country_event = {
+	id = rcw.48
+	title = rcw.48.t
+	desc = rcw.48.d
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.48.a
+		declare_war_on = {
+				target = BKL
+				type = annex_everything
+			}
+	}
+}
+
+country_event = {
+	id = rcw.49
+	title = rcw.49.t
+	desc = rcw.49.d
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.49.a
+		annex_country = { target = BKL transfer_troops = yes }
+		BKL = {
+			every_unit_leader = {
+				set_nationality = SIB
+			}
+		}
+	}
+}
+
+#########Мир с Сибирью######
+country_event = {
+	id = rcw.50
+	title = rcw.50.t
+	desc = rcw.50.d
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.50.a
+		if = {
+			limit = { SIB = {has_full_control_of_state = 251} }
+			SIB = {
+			set_major = yes
+			add_political_power = -500
+			if = { limit = { RUS = { owns_state = 579 } } transfer_state = 579 add_state_core = 579 }
+			if = { limit = { RUS = { owns_state = 580 } } transfer_state = 580 add_state_core = 580 }
+			if = { limit = { RUS = { owns_state = 403 } } transfer_state = 403 add_state_core = 403 }
+			if = { limit = { RUS = { owns_state = 398 } } transfer_state = 398 add_state_core = 398 }
+			if = { limit = { RUS = { owns_state = 572 } } transfer_state = 572 add_state_core = 572 }
+			if = { limit = { RUS = { owns_state = 644 } } transfer_state = 644 add_state_core = 644 }
+			if = { limit = { RUS = { owns_state = 807 } } transfer_state = 807 add_state_core = 807 }
+			if = { limit = { RUS = { owns_state = 562 } } transfer_state = 562 add_state_core = 562 }
+			if = { limit = { RUS = { owns_state = 637 } } transfer_state = 637 add_state_core = 637 }
+			if = { limit = { RUS = { owns_state = 655 } } transfer_state = 655 add_state_core = 655 }
+			if = { limit = { RUS = { owns_state = 408 } } transfer_state = 408 add_state_core = 408 }
+			if = { limit = { RUS = { owns_state = 409 } } transfer_state = 409 add_state_core = 409 }
+			if = { limit = { RUS = { owns_state = 560 } } transfer_state = 560 add_state_core = 560 }
+			if = { limit = { RUS = { owns_state = 657 } } transfer_state = 657 add_state_core = 657 }
+			if = { limit = { RUS = { owns_state = 561 } } transfer_state = 561 add_state_core = 561 }
+			if = { limit = { RUS = { owns_state = 566 } } transfer_state = 566 add_state_core = 566 }
+			if = { limit = { RUS = { owns_state = 565 } } transfer_state = 565 add_state_core = 565 }
+			if = { limit = { RUS = { owns_state = 575 } } transfer_state = 575 add_state_core = 575 }
+			if = { limit = { RUS = { owns_state = 574 } } transfer_state = 574 add_state_core = 574 }
+			if = { limit = { RUS = { owns_state = 564 } } transfer_state = 564 add_state_core = 564 }
+			if = { limit = { RUS = { owns_state = 563 } } transfer_state = 563 add_state_core = 563 }
+			if = { limit = { RUS = { owns_state = 653 } } transfer_state = 653 add_state_core = 653 }
+			if = { limit = { RUS = { owns_state = 761 } } transfer_state = 761 add_state_core = 761 }
+			if = { limit = { RUS = { owns_state = 714 } } transfer_state = 714 add_state_core = 714 }
+			if = { limit = { RUS = { owns_state = 798 } } transfer_state = 798 add_state_core = 798 }
+			if = { limit = { RUS = { owns_state = 573 } } transfer_state = 573 add_state_core = 573 }
+			if = { limit = { RUS = { owns_state = 582 } } transfer_state = 582 add_state_core = 582 }
+			if = { limit = { RUS = { owns_state = 651 } } transfer_state = 651 add_state_core = 651 }
+			if = { limit = { RUS = { owns_state = 652 } } transfer_state = 652 add_state_core = 652 }
+			if = { limit = { RUS = { owns_state = 717 } } transfer_state = 717 add_state_core = 717 }
+			if = { limit = { RUS = { owns_state = 40 } } transfer_state = 40 add_state_core = 40 }
+			if = { limit = { RUS = { owns_state = 569 } } transfer_state = 569 add_state_core = 569 }
+			if = { limit = { RUS = { owns_state = 570 } } transfer_state = 570 add_state_core = 570 }
+			if = { limit = { RUS = { owns_state = 578 } } transfer_state = 578 add_state_core = 578 }
+			if = { limit = { RUS = { owns_state = 654 } } transfer_state = 654 add_state_core = 654 }
+			if = { limit = { RUS = { owns_state = 909 } } transfer_state = 909 add_state_core = 909 }
+			if = { limit = { RUS = { owns_state = 581 } } transfer_state = 581 add_state_core = 581 }
+		}
+		every_state = {limit = {is_core_of = SIB} remove_core_of = RUS}
+		every_state = {limit = {is_core_of = RUS is_owned_by = SIB} RUS = {transfer_state = PREV}}
+		every_country = {
+				limit = {
+					OR = {
+						has_war_with = SIB
+					}
+					is_in_faction_with = RUS
+				}
+				white_peace = SIB
+			}
+			if = {
+			limit = {KAZ = {exist=yes}
+				every_country = {
+				limit = {
+					OR = {
+						has_war_with = KAZ
+					}
+					is_in_faction_with = RUS
+				}
+				white_peace = KAZ
+				}
+				every_state = {
+				limit = {
+					is_core_of = KAZ
+				}
+				KAZ = {
+				transfer_state = PREV
+				}
+				remove_core_of = RUS
+				}
+				}
+			}
+			}
+			
+		if = {
+			limit = { has_full_control_of_state = 651 NOT = {has_full_control_of_state = 572} }
+			SIB = {
+			set_major = yes
+			add_political_power = -200
+			if = { limit = { RUS = { owns_state = 579 } } transfer_state = 579 add_state_core = 579 }
+			if = { limit = { RUS = { owns_state = 580 } } transfer_state = 580 add_state_core = 580 }
+			if = { limit = { RUS = { owns_state = 403 } } transfer_state = 403 add_state_core = 403 }
+			if = { limit = { RUS = { owns_state = 398 } } transfer_state = 398 add_state_core = 398 }
+			if = { limit = { RUS = { owns_state = 572 } } transfer_state = 572 add_state_core = 572 }
+			if = { limit = { RUS = { owns_state = 644 } } transfer_state = 644 add_state_core = 644 }
+			if = { limit = { RUS = { owns_state = 807 } } transfer_state = 807 add_state_core = 807 }
+			if = { limit = { RUS = { owns_state = 562 } } transfer_state = 562 add_state_core = 562 }
+			if = { limit = { RUS = { owns_state = 637 } } transfer_state = 637 add_state_core = 637 }
+			if = { limit = { RUS = { owns_state = 655 } } transfer_state = 655 add_state_core = 655 }
+			if = { limit = { RUS = { owns_state = 408 } } transfer_state = 408 add_state_core = 408 }
+			if = { limit = { RUS = { owns_state = 409 } } transfer_state = 409 add_state_core = 409 }
+			if = { limit = { RUS = { owns_state = 560 } } transfer_state = 560 add_state_core = 560 }
+			if = { limit = { RUS = { owns_state = 657 } } transfer_state = 657 add_state_core = 657 }
+			if = { limit = { RUS = { owns_state = 561 } } transfer_state = 561 add_state_core = 561 }
+			if = { limit = { RUS = { owns_state = 566 } } transfer_state = 566 add_state_core = 566 }
+			if = { limit = { RUS = { owns_state = 565 } } transfer_state = 565 add_state_core = 565 }
+			if = { limit = { RUS = { owns_state = 575 } } transfer_state = 575 add_state_core = 575 }
+			if = { limit = { RUS = { owns_state = 574 } } transfer_state = 574 add_state_core = 574 }
+			if = { limit = { RUS = { owns_state = 564 } } transfer_state = 564 add_state_core = 564 }
+			if = { limit = { RUS = { owns_state = 563 } } transfer_state = 563 add_state_core = 563 }
+			if = { limit = { RUS = { owns_state = 653 } } transfer_state = 653 add_state_core = 653 }
+			if = { limit = { RUS = { owns_state = 761 } } transfer_state = 761 add_state_core = 761 }
+			if = { limit = { RUS = { owns_state = 714 } } transfer_state = 714 add_state_core = 714 }
+			if = { limit = { RUS = { owns_state = 798 } } transfer_state = 798 add_state_core = 798 }
+			if = { limit = { RUS = { owns_state = 573 } } transfer_state = 573 add_state_core = 573 }
+			if = { limit = { RUS = { owns_state = 582 } } transfer_state = 582 add_state_core = 582 }
+			if = { limit = { RUS = { owns_state = 651 } } transfer_state = 651 add_state_core = 651 }
+			if = { limit = { RUS = { owns_state = 652 } } transfer_state = 652 add_state_core = 652 }
+			if = { limit = { RUS = { owns_state = 717 } } transfer_state = 717 add_state_core = 717 }
+			if = { limit = { RUS = { owns_state = 40 } } transfer_state = 40 add_state_core = 40 }
+			if = { limit = { RUS = { owns_state = 569 } } transfer_state = 569 add_state_core = 569 }
+			if = { limit = { RUS = { owns_state = 570 } } transfer_state = 570 add_state_core = 570 }
+			if = { limit = { RUS = { owns_state = 578 } } transfer_state = 578 add_state_core = 578 }
+			if = { limit = { RUS = { owns_state = 654 } } transfer_state = 654 add_state_core = 654 }
+			if = { limit = { RUS = { owns_state = 909 } } transfer_state = 909 add_state_core = 909 }
+			if = { limit = { RUS = { owns_state = 581 } } transfer_state = 581 add_state_core = 581 }
+			remove_state_core = 398
+			remove_state_core = 651
+			remove_state_core = 652
+			remove_state_core = 582
+			remove_state_core = 573
+			remove_state_core = 581
+			remove_state_core = 590
+		}
+		every_state = {limit = {is_core_of = SIB} remove_core_of = RUS}
+		every_state = {limit = {is_core_of = RUS is_owned_by = SIB} RUS = {transfer_state = PREV}}
+		every_country = {
+				limit = {
+					OR = {
+						has_war_with = SIB
+					}
+					is_in_faction_with = RUS
+				}
+				white_peace = SIB
+			}
+			if = {
+			limit = {KAZ = {exist=yes}
+				every_country = {
+				limit = {
+					OR = {
+						has_war_with = KAZ
+					}
+					is_in_faction_with = RUS
+				}
+				white_peace = KAZ
+				}
+				every_state = {
+				limit = {
+					is_core_of = KAZ
+				}
+				KAZ = {
+				transfer_state = PREV
+				}
+				remove_core_of = RUS
+				}
+				}
+			}
+			}
+			
+		if = {
+			limit = { has_full_control_of_state = 572 has_full_control_of_state = 651 }
+			give_military_access = SIB
+			SIB = {
+			add_political_power = -50
+			if = { limit = { RUS = { owns_state = 580 } } transfer_state = 580 add_state_core = 580 }
+			if = { limit = { RUS = { owns_state = 579 } } transfer_state = 579 add_state_core = 579 }
+			if = { limit = { RUS = { owns_state = 403 } } transfer_state = 403 add_state_core = 403 }
+			if = { limit = { RUS = { owns_state = 644 } } transfer_state = 644 add_state_core = 644 }
+			if = { limit = { RUS = { owns_state = 566 } } transfer_state = 566 add_state_core = 566 }
+			give_military_access = RUS
+			remove_state_core = 398
+			remove_state_core = 651
+			remove_state_core = 652
+			remove_state_core = 582
+			remove_state_core = 573
+			remove_state_core = 581
+			remove_state_core = 590
+		}
+		every_state = {limit = {is_core_of = SIB} remove_core_of = RUS}
+		every_state = {limit = {is_core_of = RUS is_owned_by = SIB} RUS = {transfer_state = PREV}}
+		every_country = {
+				limit = {
+					OR = {
+						has_war_with = SIB
+					}
+					is_in_faction_with = RUS
+				}
+				white_peace = SIB
+			}
+			if = {
+			limit = {KAZ = {exist=yes}
+				every_country = {
+				limit = {
+					OR = {
+						has_war_with = KAZ
+					}
+					is_in_faction_with = RUS
+				}
+				white_peace = KAZ
+				}
+				every_state = {
+				limit = {
+					is_core_of = KAZ
+				}
+				KAZ = {
+				transfer_state = PREV
+				}
+				remove_core_of = RUS
+				}
+				}
+			}
+			}
+			}
+	option = {
+		name = rcw.50.b
+		add_political_power = -100
+		add_war_support = -0.15
+	}
+}
+
+#########Унгрен и все все все######
+country_event = {
+	id = rcw.51
+	title = rcw.51.t
+	desc = rcw.51.d
+	picture = GFX_report_event_sov_redarm
+	
+	trigger = {
+		tag = SIB
+		has_country_flag = Ungren_SIB
+		MON = {
+		has_country_leader = { name = "Roman Fedorovich von Ungern-Sternberg" }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	option = {
+		name = rcw.51.a
+		puppet = MON
+	}
+}
+
+country_event = {
+	id = rcw.52
+	title = rcw.52.t
+	desc = rcw.52.d
+	picture = GFX_report_event_sov_redarm
+	
+	trigger = {
+		tag = SIB
+		has_country_flag = Ungren_SIB
+		MON = {
+		NO = {
+		has_country_leader = { name = "Roman Fedorovich von Ungern-Sternberg" }
+		}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	option = {
+		name = rcw.52.a
+		add_stability = -0.1
+		add_war_support = -0.2
+		add_popularity = { ideology = authoritarism popularity = -0.05 }
+		add_popularity = { ideology = despotism popularity = -0.05 }
+		add_popularity = { ideology = fascism popularity = -0.05 }
+	}
+}
+
+country_event = {
+	id = rcw.53
+	title = rcw.53.t
+	desc = rcw.53.d
+	picture = GFX_report_event_sov_redarm
+	
+	trigger = {
+		tag = SIB
+		has_country_flag = SIB_SEA
+	}
+	
+	fire_only_once = yes
+	
+	
+	mean_time_to_happen = {
+		days = 70
+	}
+	
+	option = {
+		name = rcw.53.a
+		remove_ideas = SIB_to_the_last_sea
+		add_ideas = SIB_to_the_last_sea_end
+	}
+}
 #########Общеказахский съезд######
 country_event = {
 	id = rcw.60
@@ -1158,7 +1853,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 25
+		days = 35
 	}
 	
 	fire_only_once = yes
@@ -1171,19 +1866,15 @@ country_event = {
 	
 	option = {
 		name = rcw.20.a
-		RUS = { load_oob = RUS_Chita_red_guard }
+		if = { limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired } } RUS = {load_oob = RUS_Chita_red_guard } }
 		BKL = {
 			transfer_state = 761
-			set_state_owner = 798
 			set_province_controller = 4677
 			set_province_controller = 4719
 			set_province_controller = 7725
 			set_province_controller = 7786
 			set_province_controller = 10559
 			set_province_controller = 12622
-			set_province_controller = 13206
-			set_province_controller = 13207
-			set_province_controller = 13208
 			load_oob = BKL_cossaks
 			add_ideas = alliance_neutrality
 		}
@@ -1200,7 +1891,7 @@ country_event = {
 				has_government = communism
 			}
 		}
-		RUS = { load_oob = RUS_Chita_red_guard }
+		if = { limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired } } RUS = {load_oob = RUS_Chita_red_guard } }
 		BKL = {
 			transfer_state = 761
 			set_state_owner = 798
@@ -1230,7 +1921,6 @@ country_event = {
 				has_government = communism
 			}
 		}
-		RUS = { load_oob = RUS_Chita_red_guard }
 		BKL = {
 			transfer_state = 761
 			set_state_owner = 798

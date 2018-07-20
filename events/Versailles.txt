@@ -4,7 +4,9 @@
 
 add_namespace = versailles
 
-# Versailles Peace Treaty
+###### Капитуляция Центральных держав ######
+
+# Болгария
 country_event = {
 	id = versailles.1
 	title = versailles.1.t
@@ -14,17 +16,618 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		always = no
+		tag = BUL
+		has_global_flag = WWI_is_now
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+		OR = {
+			has_global_flag = WWI_AUH_HAS_CAPITULATED
+			NOT = { has_full_control_of_state = 48 }
+			NOT = { has_full_control_of_state = 212 }
+			TUR = { NOT = { controls_state = 341 } }
+		}
 	}
 
+	fire_only_once = yes
+	
 	mean_time_to_happen = {
-		days = 100
+		days = 0
 	}
 	
 	option = {
 		name = versailles.1.a
+		set_global_flag = WWI_BUL_HAS_CAPITULATED
+		leave_faction = yes
+		every_country = {
+			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+			ROOT = { white_peace = PREV }
+		}
+		every_country = {
+			limit = { owns_state = 184 }
+			transfer_state = 775
+		}
+		every_country = {
+			limit = { owns_state = 46 }
+			transfer_state = 77
+			transfer_state = 855
+			transfer_state = 856
+		}
+		hidden_effect = {
+			REB = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = no
+				}
+			}
+			annex_country = {
+				target = REB
+				transfer_troops = no
+			}
+		}
+		ENG = {
+			puppet = ROOT
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+		hidden_effect = {
+			set_politics = {
+				ruling_party = authoritarism
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -1
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.3
+			}
+		}
+		if = {
+			limit = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+			TUR = { country_event = versailles.2 }
+		}
 	}
 	option = {
+		trigger = {
+			is_ai = no
+		}
 		name = versailles.1.b
+	}
+}
+# Турция
+country_event = {
+	id = versailles.2
+	title = versailles.2.t
+	desc = versailles.2.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = TUR
+		has_global_flag = WWI_is_now
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+		OR = {
+			AND = {
+				has_global_flag = WWI_BUL_HAS_CAPITULATED
+				NOT = { controls_state = 341 }
+			}
+			AND = {
+				BUL = { NOT = { controls_state = 48 } }
+				NOT = { controls_state = 341 }
+			}
+			NOT = {
+				controls_state = 676
+				controls_state = 677
+			}
+		}
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = versailles.2.a
+		set_global_flag = WWI_TUR_HAS_CAPITULATED
+		leave_faction = yes
+		every_country = {
+			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+			ROOT = { white_peace = PREV }
+		}
+		if = {
+			limit = { NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED } }
+			FRA = {
+				transfer_state = 553
+				transfer_state = 554
+				transfer_state = 677
+				transfer_state = 680
+				transfer_state = 344
+			}
+			else = {
+				ENG = {
+					transfer_state = 553
+					transfer_state = 554
+					transfer_state = 677
+					transfer_state = 680
+					transfer_state = 344
+				}
+			}
+		}
+		if = {
+			limit = { NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED } }
+			ITA = {
+				transfer_state = 342
+			}
+			else = {
+				if = {
+					limit = { NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED } }
+					FRA = { transfer_state = 342 }
+					else = {
+						ENG = { transfer_state = 342 }
+					}
+				}
+			}
+		}
+		ENG = {
+			transfer_state = 454
+			transfer_state = 455
+			transfer_state = 905
+			transfer_state = 906
+			transfer_state = 675
+			transfer_state = 291
+			transfer_state = 676
+		}
+		if = {
+			limit = { RUS = { controls_state = 341 } }
+			RUS = {
+				transfer_state = 340
+				transfer_state = 341
+				transfer_state = 860
+			}
+			else = {
+				ENG = {
+					transfer_state = 340
+					transfer_state = 341
+					transfer_state = 860
+				}
+			}
+		}
+		every_country = {
+			limit = { owns_state = 184 }
+			transfer_state = 774
+		}
+		if = {
+			limit = { RUS = { has_war_with = TUR owns_state = 231 } }
+			RUS = {
+				transfer_state = 352
+				transfer_state = 353
+				transfer_state = 354
+			}
+		}
+		hidden_effect = {
+			REB = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = no
+				}
+			}
+			annex_country = {
+				target = REB
+				transfer_troops = no
+			}
+			set_capital = 49
+		}
+		ENG = {
+			puppet = ROOT
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+		hidden_effect = {
+			set_politics = {
+				ruling_party = market_liberalism
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -1
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.3
+			}
+		}
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = versailles.2.b
+	}
+}
+# Австро-Венгрия
+country_event = {
+	id = versailles.3
+	title = versailles.3.t
+	desc = versailles.3.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = AUH
+		has_global_flag = WWI_is_now
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+		OR = {
+			has_global_flag = WWI_GER_HAS_CAPITULATED
+			AND = {
+				has_global_flag = WWI_BUL_HAS_CAPITULATED
+				has_global_flag = WWI_TUR_HAS_CAPITULATED
+				NOT = {
+					controls_state = 107
+					controls_state = 109
+				}
+			}
+			NOT = { controls_state = 9 }
+			NOT = { controls_state = 4 }
+			NOT = { controls_state = 43 }
+			AND = {
+				RUS = {
+					controls_state = 10
+					controls_state = 73
+					controls_state = 89
+					controls_state = 91
+					OR = {
+						controls_state = 71
+						controls_state = 154
+						controls_state = 664
+					}
+				}
+			}
+		}
+		NOT = { controls_state = 159 controls_state = 160 }
+		FRA = { OR = { AND = { controls_state = 16 NOT = { is_in_faction_with = GER } } AND = { NOT = { controls_state = 16 } is_in_faction_with = GER } } }
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = versailles.3.a
+		set_global_flag = WWI_AUH_HAS_CAPITULATED
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+		every_country = {
+			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+			ROOT = { white_peace = PREV }
+		}
+		AUH = { end_puppet = SER }
+		hidden_effect = {
+			REB = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = no
+				}
+			}
+			annex_country = {
+				target = REB
+				transfer_troops = no
+			}
+		}
+		SER = {
+			transfer_state = 105
+			transfer_state = 106
+			transfer_state = 777
+			transfer_state = 778
+			transfer_state = 779
+			transfer_state = 816
+			transfer_state = 817
+			transfer_state = 818
+			transfer_state = 825
+			transfer_state = 45
+			transfer_state = 82
+			transfer_state = 815
+		}
+		CRO = {
+			transfer_state = 102
+			transfer_state = 103
+			transfer_state = 104
+			transfer_state = 109
+			transfer_state = 834
+			transfer_state = 835
+			transfer_state = 837
+			transfer_state = 862
+			set_cosmetic_tag = SCS
+		}
+		ROM = {
+			transfer_state = 819
+			transfer_state = 820
+			transfer_state = 855
+			transfer_state = 856
+			transfer_state = 76
+			transfer_state = 80
+			transfer_state = 83
+			transfer_state = 84
+			transfer_state = 804
+		}
+		ITA = {
+			transfer_state = 39
+			transfer_state = 153
+			transfer_state = 163
+			transfer_state = 736
+			transfer_state = 823
+			transfer_state = 824
+		}
+		GER = {
+			transfer_state = 838
+		}
+		if = {
+			limit = { RUS = { NOT = { has_country_flag = RUS_brest_peace_white has_country_flag = RUS_brest_peace_soft has_country_flag = RUS_brest_peace_average has_country_flag = RUS_brest_peace_hard } } }
+			RUS = {
+				transfer_state = 88
+				transfer_state = 89
+				transfer_state = 91
+			}
+		}
+		if = {
+			limit = { NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED } }
+			BUL = { country_event = { id = versailles.1 days = 3 } }
+		}
+		if = {
+			limit = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+			TUR = { country_event = versailles.2 }
+		}
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = versailles.3.b
+	}
+}
+# Германия
+country_event = {
+	id = versailles.4
+	title = versailles.4.t
+	desc = versailles.4.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_is_now
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+		OR = {
+			AND = {
+				has_global_flag = WWI_BUL_HAS_CAPITULATED
+				has_global_flag = WWI_AUH_HAS_CAPITULATED
+				has_global_flag = WWI_TUR_HAS_CAPITULATED
+				FRA = { OR = { AND = { controls_state = 16 NOT = { is_in_faction_with = GER } } AND = { NOT = { controls_state = 16 } is_in_faction_with = GER } } }
+			}
+			NOT = { controls_state = 52 }
+			NOT = { controls_state = 55 }
+			NOT = { controls_state = 64 }
+		}
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = versailles.4.a
+		set_global_flag = WWI_GER_HAS_CAPITULATED
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+		every_country = {
+			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+			ROOT = { white_peace = PREV }
+		}
+		hidden_effect = {
+			REB = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = no
+				}
+			}
+			annex_country = {
+				target = REB
+				transfer_troops = no
+			}
+		}
+		if = {
+			limit = { NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED } }
+			AUH = { country_event = { id = versailles.3 days = 3 } }
+		}
+		GER = { release = LUX }
+		BEL = { transfer_state = 786 }
+		FRA = {
+			transfer_state = 28
+			transfer_state = 42
+			transfer_state = 51
+			transfer_state = 850
+		}
+		if = {
+			limit = { RUS = { NOT = { has_country_flag = RUS_brest_peace_white has_country_flag = RUS_brest_peace_soft has_country_flag = RUS_brest_peace_average has_country_flag = RUS_brest_peace_hard } owns_state = 10 } }
+			RUS = {
+				transfer_state = 86
+				transfer_state = 188
+				transfer_state = 762
+				transfer_state = 827
+			}
+		}
+		DEN = {
+			transfer_state = 771
+		}
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = versailles.4.b
+	}
+}
+
+# Капитуляция остальных, кто вступил в ЦД
+country_event = {
+	id = versailles.5
+	title = versailles.5.t
+	desc = versailles.5.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		NOT = {
+			tag = GER
+			tag = AUH
+			tag = BUL
+			tag = TUR
+			tag = RUS
+			tag = SOV
+		}
+		is_white_movement_country = no
+		has_global_flag = WWI_is_now
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+		has_global_flag = WWI_BUL_HAS_CAPITULATED
+		has_global_flag = WWI_TUR_HAS_CAPITULATED
+		has_global_flag = WWI_AUH_HAS_CAPITULATED
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = versailles.5.a
+		leave_faction = yes
+		every_country = {
+			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+			ROOT = { white_peace = PREV }
+		}
+	}
+}
+
+# Конец Первой Мировой Войны
+country_event = {
+	id = versailles.6
+	title = versailles.6.t
+	desc = versailles.6.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		OR = {
+			AND = {
+				tag = ENG
+				has_global_flag = WWI_FRA_HAS_CAPITULATED
+			}
+			AND = {
+				tag = FRA
+				NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED }
+			}
+		}
+		has_global_flag = WWI_is_now
+		has_global_flag = WWI_BUL_HAS_CAPITULATED
+		has_global_flag = WWI_TUR_HAS_CAPITULATED
+		has_global_flag = WWI_AUH_HAS_CAPITULATED
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = versailles.6.a
+		clr_global_flag = WWI_is_now
+		set_global_flag = versailles_peace_treaty
+	}
+}
+
+###### Версальская мирная конференция ######
+
+# Болгария
+country_event = {
+	id = versailles.7
+	title = versailles.7.t
+	desc = versailles.7.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ENG
+		has_global_flag = versailles_peace_treaty
+		has_global_flag = WWI_BUL_HAS_CAPITULATED
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 365
+	}
+	
+	option = {
+		name = versailles.6.a
+		end_puppet = BUL
+		clr_global_flag = WWI_BUL_HAS_CAPITULATED
+	}
+}
+
+# Болгария
+country_event = {
+	id = versailles.8
+	title = versailles.8.t
+	desc = versailles.8.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ENG
+		has_global_flag = versailles_peace_treaty
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = versailles.8.a
+		end_puppet = BUL
 	}
 }
