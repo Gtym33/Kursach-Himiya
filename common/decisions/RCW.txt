@@ -1,12 +1,57 @@
 
 rcw_intervention_desisions = {
 	
+	intervention_in_Murmansk = {
+
+		icon = generic_prepare_civil_war
+
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RUS_threat_of_intervention_more_1
+				RUS = { check_variable = { RUS_threat_of_intervention > 1 } }
+			}
+			any_country = {
+				OR = {
+					tag = RUS
+					is_in_faction_with = GER
+					is_in_faction_with = AUH
+				}
+				213 = {
+					is_controlled_by = PREV
+				}
+			}
+			has_equipment = {
+				infantry_equipment > 999
+			}
+		}
+		visible = {
+			original_tag = ENG
+		}
+
+		cost = 25
+		ai_will_do = {
+			factor = 500
+		}
+		days_remove = 30
+
+		remove_effect = {
+			load_obb = ENG_corps_213
+			transfer_state = 213
+			RUS = { country_event =  }
+		}
+		complete_effect = {
+		}
+	}
+	
 	intervention_in_Arkhangelsk = {
 
 		icon = generic_prepare_civil_war
 
 		available = {
-			check_variable = { RUS_threat_of_intervention > 1 }
+			custom_trigger_tooltip = {
+				tooltip = RUS_threat_of_intervention_more_3
+				RUS = { check_variable = { RUS_threat_of_intervention > 3 } }
+			}
 			any_country = {
 				OR = {
 					tag = RUS
@@ -29,30 +74,58 @@ rcw_intervention_desisions = {
 		days_remove = 30
 
 		remove_effect = {
+			if = {
+				limit = { NRR = { exists = no } }
+				every_country = {
+					limit = { controls_state = 214 }
+					save_event_target_as = CONTROLLER_214
+				}
+				NRR = {
+					transfer_state = 214
+					load_obb = NRR_ENG_support_214
+					declare_war_on = {
+						target = event_target:CONTROLLER_214
+						type = annex_everything
+					}
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				else = {
+					load_obb = NRR_ENG_support_214
+				}
+			}
 		}
 		complete_effect = {
 		}
 	}
 	
-	intervention_in_Murmansk = {
+	intervention_in_Far_East = {
 
 		icon = generic_prepare_civil_war
 
 		available = {
-			check_variable = { RUS_threat_of_intervention > 3 }
+			custom_trigger_tooltip = {
+				tooltip = RUS_threat_of_intervention_more_1
+				RUS = { check_variable = { RUS_threat_of_intervention > 1 } }
+			}
 			any_country = {
 				OR = {
 					tag = RUS
 					is_in_faction_with = GER
 					is_in_faction_with = AUH
 				}
-				213 = {
+				408 = {
 					is_controlled_by = PREV
 				}
 			}
 		}
 		visible = {
-			original_tag = ENG
+			OR = {
+				original_tag = JAP
+				original_tag = USA
+			}
 		}
 
 		cost = 25
@@ -62,8 +135,68 @@ rcw_intervention_desisions = {
 		days_remove = 30
 
 		remove_effect = {
+			if = {
+				limit = { NRR = { exists = no } }
+				every_country = {
+					limit = { controls_state = 213 }
+					save_event_target_as = CONTROLLER_213
+				}
+				NRR = {
+					transfer_state = 213
+					load_obb = NRR_ENG_support_213
+					declare_war_on = {
+						target = event_target:CONTROLLER_213
+						type = annex_everything
+					}
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				else = {
+					transfer_state = 213
+				}
+			}
 		}
 		complete_effect = {
+		}
+	}
+	
+	supply_North_Russia = {
+
+		icon = generic_prepare_civil_war
+
+		available = {
+			allowed_Entente_support = yes
+			has_equipment = {
+				infantry_equipment > 999
+			}
+		}
+		visible = {
+			NRR = { exists = yes has_war_with = RUS }
+		}
+
+		cost = 25
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				NRR = {
+					has_equipment = { infantry_equipment > 500 }
+				}
+			}
+			modifier = {
+				factor = 0
+				NOT = {
+					original_tag = ENG
+					original_tag = USA
+				}
+			}
+		}
+		days_remove = 30
+
+		remove_effect = {
+			NRR = { country_event = rcw.300 }
 		}
 	}
 	
