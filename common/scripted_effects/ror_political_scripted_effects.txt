@@ -16,6 +16,24 @@
 #	}
 #
 
+#socialist_parties
+#liberal_parties
+#authoritarian_parties
+#reactionary_parties
+
+#political_communists_not_in_socialist_coalition
+#political_despotists_in_reactionary_coalition
+#political_despotists_not_in_authoritarian_coalition
+#political_fascists_in_authoritarian_coalition
+#political_national_syndicalists_not_in_reactionary_coalition
+#political_radical_socialists_not_in_socialist_coalition
+#political_social_conservatives_in_authoritarian_coalition
+#political_social_conservatives_in_liberal_coalition
+#political_social_democrats_in_liberal_coalition
+#political_social_democrats_in_socialist_coalition
+#political_social_liberals_in_socialist_coalition
+#political_social_liberals_not_in_liberal_coalition
+
 	initiate_verification_of_the_popularity_of_coalitions = {
 		set_variable = {
 			var = radical_socialist_party
@@ -43,29 +61,49 @@
 			value = party_popularity@social_democracy
 		}
 
+		if = {
+			limit = { NOT = { has_country_flag = political_communists_not_in_socialist_coalition } }
+			set_variable = {
+				var = socialist_parties
+				value = party_popularity@communism
+			}
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = political_radical_socialists_not_in_socialist_coalition } }
+					set_variable = {
+						var = socialist_parties
+						value = party_popularity@radical_socialism
+					}
+					else = {
+						set_variable = {
+							var = socialist_parties
+							value = 0
+						}
+					}
+				}
+			}
+		}
 		set_variable = {
-			var = socialist_parties
-			value = party_popularity@communism
+			var = liberal_parties
+			value = party_popularity@market_liberalism
 		}
-		add_to_variable = {
-			var = socialist_parties
-			value = party_popularity@radical_socialism
-		}
-		if = {
-			limit = { has_country_flag = political_social_democrats_in_socialist_coalition }
-			add_to_variable = {
-				var = socialist_parties
-				value = party_popularity@social_democracy
-			}
+		set_variable = {
+			var = authoritarian_parties
+			value = party_popularity@authoritarism
 		}
 		if = {
-			limit = { has_country_flag = political_social_liberals_in_socialist_coalition }
-			add_to_variable = {
-				var = socialist_parties
-				value = party_popularity@social_liberalism
+			limit = { NOT = { has_country_flag = political_national_syndicalists_not_in_reactionary_coalition } }
+			set_variable = {
+				var = reactionary_parties
+				value = party_popularity@national_syndicalism
+			}
+			else = {
+				set_variable = {
+					var = reactionary_parties
+					value = 0
+				}
 			}
 		}
-
 		set_variable = {
 			var = lib_and_soclib_parties
 			value = party_popularity@market_liberalism
@@ -75,22 +113,43 @@
 			value = party_popularity@social_liberalism
 		}
 
-		set_variable = {
-			var = liberal_parties
-			value = party_popularity@market_liberalism
-		}
 		if = {
-			limit = { NOT = { has_country_flag = political_social_liberals_in_socialist_coalition } }
+			limit = { NOT = { has_country_flag = political_communists_not_in_socialist_coalition has_country_flag = political_radical_socialists_not_in_socialist_coalition } }
 			add_to_variable = {
-				var = liberal_parties
-				value = party_popularity@social_liberalism
+				var = socialist_parties
+				value = party_popularity@radical_socialism
 			}
 		}
 		if = {
-			limit = { has_country_flag = political_social_democrats_in_liberal_coalition }
+			limit = { has_country_flag = political_social_democrats_in_socialist_coalition }
 			add_to_variable = {
-				var = liberal_parties
+				var = socialist_parties
 				value = party_popularity@social_democracy
+			}
+			else = {
+				if = {
+					limit = { has_country_flag = political_social_democrats_in_liberal_coalition }
+					add_to_variable = {
+						var = liberal_parties
+						value = party_popularity@social_democracy
+					}
+				}
+			}
+		}
+		if = {
+			limit = { has_country_flag = political_social_liberals_in_socialist_coalition }
+			add_to_variable = {
+				var = socialist_parties
+				value = party_popularity@social_liberalism
+			}
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = political_social_liberals_not_in_liberal_coalition } }
+					add_to_variable = {
+						var = liberal_parties
+						value = party_popularity@social_liberalism
+					}
+				}
 			}
 		}
 		if = {
@@ -99,40 +158,163 @@
 				var = liberal_parties
 				value = party_popularity@social_conservatism
 			}
-		}
-
-		set_variable = {
-			var = authoritarian_parties
-			value = party_popularity@authoritarism
-		}
-		if = {
-			limit = { NOT = { has_country_flag = political_despotists_in_reactionary_coalition } }
-			add_to_variable = {
-				var = authoritarian_parties
-				value = party_popularity@despotism
+			else = {
+				if = {
+					limit = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
+					add_to_variable = {
+						var = authoritarian_parties
+						value = party_popularity@social_conservatism
+					}
+				}
 			}
-		}
-		if = {
-			limit = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-			add_to_variable = {
-				var = authoritarian_parties
-				value = party_popularity@social_conservatism
-			}
-		}
-
-		set_variable = {
-			var = reactionary_parties
-			value = party_popularity@fascism
-		}
-		add_to_variable = {
-			var = reactionary_parties
-			value = party_popularity@national_syndicalism
 		}
 		if = {
 			limit = { has_country_flag = political_despotists_in_reactionary_coalition }
 			add_to_variable = {
 				var = reactionary_parties
 				value = party_popularity@despotism
+			}
+			else = {
+				if = {
+					limit = { NOT = { has_country_flag = political_despotists_not_in_authoritarian_coalition } }
+					add_to_variable = {
+						var = authoritarian_parties
+						value = party_popularity@despotism
+					}
+				}
+			}
+		}
+		if = {
+			limit = { has_country_flag = political_fascists_in_authoritarian_coalition }
+			add_to_variable = {
+				var = authoritarian_parties
+				value = party_popularity@fascism
+			}
+			else = {
+				add_to_variable = {
+					var = reactionary_parties
+					value = party_popularity@fascism
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				has_country_flag = political_radical_socialists_not_in_socialist_coalition
+				check_variable = {
+					var = socialist_parties
+					value = party_popularity@radical_socialism
+					compare = less_than
+				}
+				set_variable = {
+					var = socialist_parties
+					value = party_popularity@radical_socialism
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = political_communists_not_in_socialist_coalition
+				check_variable = {
+					var = socialist_parties
+					value = party_popularity@communism
+					compare = less_than
+				}
+				set_variable = {
+					var = socialist_parties
+					value = party_popularity@communism
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = political_social_democrats_in_liberal_coalition
+					has_country_flag = political_social_democrats_in_socialist_coalition
+				}
+				check_variable = {
+					var = liberal_parties
+					value = party_popularity@social_democracy
+					compare = less_than
+				}
+				set_variable = {
+					var = liberal_parties
+					value = party_popularity@social_democracy
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = political_social_liberals_not_in_liberal_coalition
+				check_variable = {
+					var = liberal_parties
+					value = party_popularity@social_liberalism
+					compare = less_than
+				}
+				set_variable = {
+					var = liberal_parties
+					value = party_popularity@social_liberalism
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = political_social_liberals_not_in_liberal_coalition
+				check_variable = {
+					var = liberal_parties
+					value = party_popularity@social_liberalism
+					compare = less_than
+				}
+				set_variable = {
+					var = liberal_parties
+					value = party_popularity@social_liberalism
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = political_social_conservatives_in_liberal_coalition
+					has_country_flag = political_social_conservatives_in_authoritarian_coalition
+				}
+				check_variable = {
+					var = liberal_parties
+					value = party_popularity@social_conservatism
+					compare = less_than
+				}
+				set_variable = {
+					var = liberal_parties
+					value = party_popularity@social_conservatism
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = political_despotists_not_in_authoritarian_coalition
+				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
+				check_variable = {
+					var = authoritarian_parties
+					value = party_popularity@despotism
+					compare = less_than
+				}
+				set_variable = {
+					var = authoritarian_parties
+					value = party_popularity@despotism
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_country_flag = political_national_syndicalists_not_in_reactionary_coalition
+				check_variable = {
+					var = reactionary_parties
+					value = party_popularity@national_syndicalism
+					compare = less_than
+				}
+				set_variable = {
+					var = reactionary_parties
+					value = party_popularity@national_syndicalism
+				}
 			}
 		}
 	}
