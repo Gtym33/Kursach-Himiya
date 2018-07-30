@@ -11,7 +11,7 @@ focus_tree = {
 	focus = {
 		id = SIB_siberian_army
 		icon = GFX_goal_generic_propaganda
-		cost = 10
+		cost = 5
 		x = 14
 		y = 0
 		completion_reward = {
@@ -19,7 +19,7 @@ focus_tree = {
 		add_ideas = SIB_siberian_army
 			add_equipment_to_stockpile = {
 				type = infantry_equipment_1
-				amount = 1000
+				amount = 5000
 				producer = RUS
 			}
 			add_ideas = service_by_requirement
@@ -30,7 +30,7 @@ focus_tree = {
 	focus = {
 		id = SIB_land_fund
 		icon = GFX_goal_generic_construct_civilian
-		cost = 0
+		cost = 5
 		prerequisite = {
 			focus = SIB_siberian_army
 		}
@@ -104,9 +104,16 @@ focus_tree = {
 	focus = {
 		id = SIB_komuch
 		icon = GFX_goal_generic_demand_territory
-		cost = 10
+		cost = 5
 		prerequisite = {
 			focus = SIB_siberian_army
+		}
+		bypass = {
+			OR = {
+				has_war_with = CCA
+				CCA = { exists = no}
+				is_puppet = yes
+			}
 		}
 		x = 14
 		y = 1
@@ -118,7 +125,7 @@ focus_tree = {
 	focus = {
 		id = SIB_annex_bkl
 		icon = GFX_goal_generic_cavalry
-		cost = 10
+		cost = 5
 		bypass = {
 			OR = {
 				has_war_with = BKL
@@ -143,7 +150,7 @@ focus_tree = {
 	focus = {
 		id = SIB_usa_intervention
 		icon = GFX_goal_generic_air_doctrine
-		cost = 10
+		cost = 5
 		prerequisite = {
 			focus = SIB_annex_bkl
 		}
@@ -278,7 +285,7 @@ focus_tree = {
 	focus = {
 		id = SIB_jap_intervention
 		icon = GFX_goal_generic_CAS
-		cost = 10
+		cost = 5
 		prerequisite = {
 			focus = SIB_komuch
 		}
@@ -298,12 +305,12 @@ focus_tree = {
 	give_military_access = JAP
 	add_equipment_to_stockpile = {
 				type = infantry_equipment_great_war
-				amount = 10000
+				amount = 20000
 				producer = JAP
 			}
 	add_equipment_to_stockpile = {
 				type = support_equipment
-				amount = 10000
+				amount = 20000
 				producer = JAP
 			}
 	}
@@ -340,6 +347,7 @@ focus_tree = {
 		x = 13
 		y = 5
 		completion_reward = {
+		create_faction = siberian_axis
 		add_political_power = -50
 		add_stability = 0.05
 		add_war_support = 0.15
@@ -358,22 +366,22 @@ focus_tree = {
 		}
 completion_reward = {
 		set_technology = {
-    armored_car_1 = 1
-	gwheavytank = 1
+    ww1_light_tank = 1
+	ww1_heavy_tank = 1
 	gwtank = 1
     }
 	add_equipment_to_stockpile = {
-				type = armored_car_equipment_1
+				type = ww1_armored_car_equipment
 				amount = 1000
 				producer = JAP
 			}
 	add_equipment_to_stockpile = {
-				type = gw_tank_equipment
+				type = ww1_light_tank_equipment_1
 				amount = 500
 				producer = JAP
 			}
 			add_equipment_to_stockpile = {
-				type = gw_heavy_tank_equipment
+				type = ww1_heavy_tank_equipment_1
 				amount = 500
 				producer = JAP
 			}
@@ -436,30 +444,6 @@ completion_reward = {
 
 	}
 	focus = {
-		id = SIB_state_meeting
-		icon = GFX_goal_generic_forceful_treaty
-		cost = 10
-		prerequisite = {
-			focus = SIB_siberian_army
-		}
-		available = {
-		NOT = {
-		has_country_flag = meeting_fail
-		}
-		}
-		bypass = {
-			OR = {
-				has_war_with = SIB
-				SIB = { exists = no}
-			}
-		}
-		x = 16
-		y = 1
-		completion_reward = {
-		country_event = { id = rcw.38 days = 1 }
-		}
-	}
-	focus = {
 		id = SIB_ungern
 		icon = GFX_goal_generic_cavalry
 		cost = 10
@@ -473,8 +457,10 @@ completion_reward = {
 		x = 17
 		y = 6
 		completion_reward = {
+		create_faction = siberian_blood_purge
 		set_country_flag = Ungren_SIB
-		MON = {
+		puppet = TAN
+		TAN = {
 	create_country_leader = {
 	name = "Roman Fedorovich von Ungern-Sternberg"
 	picture = "gfx/leaders/RUS/Roman_Fedorovich_von_Ungern-Sternberg.dds"
@@ -491,10 +477,6 @@ set_politics = {
 	}
 	
 	ruling_party = despotism
-}
-start_civil_war = {
-    ideology = communism
-    size = 0.5
 }
 		}
 		}
@@ -540,10 +522,14 @@ start_civil_war = {
 		CHI = {		
 end_puppet = SIK
 		}
-		declare_war_on = {
-    	target = SIK
-    	type = puppet_wargoal_focus
-	}
+		SIK = {
+		add_to_faction = siberian_blood_purge
+		start_civil_war = {
+    ruling_party = despotism
+	ideology = ROOT
+    size = 0.1
+}
+		}
 		}
 	}
 	focus = {
@@ -928,7 +914,7 @@ end_puppet = SIK
 				producer = JAP
 			}
 	add_equipment_to_stockpile = {
-				type = gw_tank_equipment
+				type = ww1_light_tank_equipment_1
 				amount = 250
 				producer = JAP
 			}
