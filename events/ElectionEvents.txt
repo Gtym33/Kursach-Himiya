@@ -560,83 +560,6 @@ country_event = {
 	}
 }
 
-# Fascist Majority
-country_event = {
-	id = election.11
-	title = election.11.t
-	desc = election.11.d
-	picture = GFX_report_event_fascist_gathering
-	
-	is_triggered_only = yes
-
-	trigger = {
-		is_democratic_country = yes
-		fascism > 0.5
-		is_puppet = no
-	}
-	
-	option = {	
-		name = election.11.a
-		ai_chance = {
-			base = 75			
-		}
-		set_politics = {
-			ruling_party = fascism
-			elections_allowed = no
-		}
-	}
-
-	option = {
-		name = election.11.b
-		ai_chance = {
-			base = 35			
-		}
-		start_civil_war = {
-			ideology = fascism
-			size = 0.5
-		}
-	}
-}
-
-# Communist Majority
-country_event = {
-	id = election.12
-	title = election.12.t
-	desc = election.12.d
-	picture = GFX_report_event_gathering_protest
-	
-	is_triggered_only = yes
-
-	trigger = {
-
-		is_democratic_country = yes
-		communism > 0.5
-		is_puppet = no
-	}
-	
-	option = {
-		name = election.12.a
-		ai_chance = {
-			base = 75
-		}
-		set_politics = {
-			ruling_party = communism
-			elections_allowed = no
-		}
-	}
-
-	option = {
-		name = election.12.b
-		ai_chance = {
-			base = 35			
-		}
-		start_civil_war = {
-			ideology = communism
-			size = 0.5
-		}
-	}
-}
-
 # Magnate Favors Fascism
 country_event = {
 	id = election.13
@@ -819,65 +742,11 @@ country_event = {
 	}
 }
 
-# Election in Fascist Country (Supports Government)
-country_event = {
-	id = election.16
-	title = election.16.t
-	desc = election.16.d
-	picture = GFX_report_event_gathering_protest
-	
-	is_triggered_only = yes
-
-	trigger = {
-		NOT = { 
-			AND = { 
-				tag = USA 
-				date < 1.1.1949
-			} 
-		}
-		OR = { NOT = { tag = SPR } NOT = { date < 1937.1.1 } }
-		has_government = fascism
-		fascism > 0.5
-	}
-	
-	option = {
-		name = election.16.a
-		add_stability = 0.05
-	}
-}
-
-# Rigged Election in Fascist Country
-country_event = {
-	id = election.17
-	title = election.17.t
-	desc = election.17.d
-	picture = GFX_report_event_gathering_protest
-	
-	is_triggered_only = yes
-
-	trigger = {
-		NOT = { 
-			AND = { 
-				tag = USA 
-				date < 1.1.1949
-			}
-		}
-		OR = { NOT = { tag = SPR } NOT = { date < 1937.1.1 } }
-		has_government = fascism
-		NOT = { fascism > 0.5 }
-	}
-	
-	option = {
-		name = election.17.a
-		add_stability = -0.05
-	}
-}
-
 # Победа левых на выборах
 country_event = {
-	id = election.18
-	title = election.18.t
-	desc = election.18.d
+	id = election.101
+	title = election.101.t
+	desc = election.101.d
 	picture = GFX_report_event_gathering_protest
 	
 	is_triggered_only = yes
@@ -902,23 +771,174 @@ country_event = {
 	}
 	
 	option = {
-		trigger = {
-			OR = {
-				has_government = social_democracy
-				AND = {
-					has_government = social_liberalism
-					has_country_flag = political_social_democrats_in_socialist_coalition
-				}
-			}
-		}
-		name = election.18.a
+		name = election.101.a
 		ruling_left_coalition = yes
 	}
-	option = {
-		trigger = {
-			NOT = { has_government = social_democracy has_government = social_liberalism has_country_flag = political_social_democrats_in_socialist_coalition }
+}
+
+# Победа либеральной коалиции на выборах
+country_event = {
+	id = election.102
+	title = election.102.t
+	desc = election.102.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = {
+			AND = {
+				tag = RUS
+				has_country_flag = RUS_provisional_government_created
+			}
 		}
-		name = election.18.b
-		
+		NOT = { has_government = market_liberalism }
+		OR = {
+			AND = {
+				NOT = { has_country_flag = political_social_democrats_in_liberal_coalition }
+				has_government = social_democracy
+			}
+			AND = {
+				has_country_flag = political_social_democrats_in_liberal_coalition
+				NOT = { has_government = social_democracy }
+			}
+		}
+		OR = {
+			AND = {
+				NOT = { has_country_flag = political_social_conservatives_in_liberal_coalition }
+				has_government = social_conservatism
+			}
+			AND = {
+				has_country_flag = political_social_conservatives_in_liberal_coalition
+				NOT = { has_government = social_conservatism }
+			}
+		}
+		OR = {
+			AND = {
+				has_country_flag = political_social_liberals_not_in_liberal_coalition
+				has_government = social_liberalism
+			}
+			AND = {
+				NOT = { has_country_flag = political_social_liberals_not_in_liberal_coalition }
+				NOT = { has_government = social_liberalism }
+			}
+		}
+		check_variable = { liberal_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.102.a
+		ruling_liberal_coalition = yes
+	}
+}
+
+# Победа авторитарной коалиции на выборах
+country_event = {
+	id = election.103
+	title = election.103.t
+	desc = election.103.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = {
+			AND = {
+				tag = RUS
+				has_country_flag = RUS_provisional_government_created
+			}
+		}
+		NOT = { has_government = authoritarism }
+		OR = {
+			AND = {
+				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
+				has_government = fascism
+			}
+			AND = {
+				has_country_flag = political_fascists_in_authoritarian_coalition
+				NOT = { has_government = fascism }
+			}
+		}
+		OR = {
+			AND = {
+				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
+				has_government = social_conservatism
+			}
+			AND = {
+				has_country_flag = political_social_conservatives_in_authoritarian_coalition
+				NOT = { has_government = social_conservatism }
+			}
+		}
+		OR = {
+			AND = {
+				has_country_flag = political_despotists_not_in_authoritarian_coalition
+				has_government = despotism
+			}
+			AND = {
+				NOT = { has_country_flag = political_despotists_not_in_authoritarian_coalition }
+				NOT = { has_government = despotism }
+			}
+		}
+		check_variable = { authoritarian_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.103.a
+		ruling_authoritarian_coalition = yes
+	}
+}
+
+# Победа реакционной коалиции на выборах
+country_event = {
+	id = election.104
+	title = election.104.t
+	desc = election.104.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = {
+			AND = {
+				tag = RUS
+				has_country_flag = RUS_provisional_government_created
+			}
+		}
+		OR = {
+			AND = {
+				has_country_flag = political_fascists_in_authoritarian_coalition
+				has_government = fascism
+			}
+			AND = {
+				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
+				NOT = { has_government = fascism }
+			}
+		}
+		OR = {
+			AND = {
+				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
+				has_government = despotism
+			}
+			AND = {
+				has_country_flag = political_despotists_in_reactionary_coalition
+				NOT = { has_government = despotism }
+			}
+		}
+		OR = {
+			AND = {
+				has_country_flag = political_national_syndicalists_not_in_reactionary_coalition
+				has_government = national_syndicalism
+			}
+			AND = {
+				NOT = { has_country_flag = political_national_syndicalists_not_in_reactionary_coalition }
+				NOT = { has_government = national_syndicalism }
+			}
+		}
+		check_variable = { reactionary_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.104.a
+		ruling_reactionary_coalition = yes
 	}
 }
