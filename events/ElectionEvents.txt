@@ -742,6 +742,147 @@ country_event = {
 	}
 }
 
+# 
+country_event = {
+	id = election.51
+	title = election.51.t
+	desc = election.51.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	immediate = {
+		set_variable = { ruling_party_popularity_change = -0.03 }
+	}
+
+	trigger = {
+		NOT = {
+			AND = {
+				tag = RUS
+				has_country_flag = RUS_provisional_government_created
+			}
+		}
+		is_socialist_country = no
+		if = {
+			limit = { has_country_flag = political_social_liberals_in_socialist_coalition }
+			NOT = { has_government = social_liberalism }
+		}
+		OR = {
+			AND = {
+				has_idea = no_legislation
+				OR = {
+					check_variable = { sociallll_parties_without_coalition > 0.2 }
+					check_variable = { socialist_parties_without_coalition > 0.1 }
+					check_variable = { socialist_parties > 0.1 }
+				}
+			}
+			AND = {
+				has_idea = minimum_legislation
+				has_idea = corporate_etics
+				OR = {
+					check_variable = { sociallll_parties_without_coalition > 0.3 }
+					check_variable = { socialist_parties_without_coalition > 0.2 }
+					check_variable = { socialist_parties > 0.2 }
+				}
+			}
+			AND = {
+				has_idea = acceptable_legislation
+				OR = {
+					check_variable = { socialist_parties_without_coalition > 0.3 }
+					check_variable = { socialist_parties > 0.3 }
+				}
+			}
+			AND = {
+				has_idea = good_legislation
+				OR = {
+					check_variable = { socialist_parties_without_coalition > 0.4 }
+					check_variable = { socialist_parties > 0.4 }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = election.51.a
+		add_stability = -0.05
+		if = {
+			limit = { has_idea = acceptable_legislation has_government = social_democracy }
+			add_popularity = {
+				ideology = communism
+				popularity = 0.03
+			}
+			else = {
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.03
+				}
+			}
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_unity = yes
+			}
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = election.51.b
+		add_ruling_party_popularity = yes
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = election.51.c
+		if = {
+			limit = {
+				has_idea = good_legislation
+			}
+			swap_ideas = {
+				remove_idea = good_legislation
+				add_idea = workers_control
+			}
+		}
+		if = {
+			limit = {
+				has_idea = acceptable_legislation
+			}
+			swap_ideas = {
+				remove_idea = acceptable_legislation
+				add_idea = good_legislation
+			}
+		}
+		if = {
+			limit = {
+				has_idea = minimum_legislation
+			}
+			swap_ideas = {
+				remove_idea = minimum_legislation
+				add_idea = acceptable_legislation
+			}
+		}
+		if = {
+			limit = {
+				has_idea = no_legislation
+			}
+			swap_ideas = {
+				remove_idea = no_legislation
+				add_idea = minimum_legislation
+			}
+		}
+		if = {
+			limit = {
+				has_idea = corporate_etics
+			}
+			swap_ideas = {
+				remove_idea = corporate_etics
+				add_idea = acceptable_legislation
+			}
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+}
+
 # Победа левых на выборах
 country_event = {
 	id = election.101
@@ -773,6 +914,7 @@ country_event = {
 	option = {
 		name = election.101.a
 		ruling_left_coalition = yes
+		set_politics = { elections_allowed = yes }
 	}
 }
 
@@ -829,6 +971,7 @@ country_event = {
 	option = {
 		name = election.102.a
 		ruling_liberal_coalition = yes
+		set_politics = { elections_allowed = yes }
 	}
 }
 
@@ -885,6 +1028,7 @@ country_event = {
 	option = {
 		name = election.103.a
 		ruling_authoritarian_coalition = yes
+		set_politics = { elections_allowed = yes }
 	}
 }
 
@@ -940,5 +1084,6 @@ country_event = {
 	option = {
 		name = election.104.a
 		ruling_reactionary_coalition = yes
+		set_politics = { elections_allowed = yes }
 	}
 }
