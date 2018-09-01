@@ -2,10 +2,10 @@ focus_tree = {
 	id = russia_bolsheviks_focus
 	country = {
 		factor = 0
-#		modifier = { #убрать при заливке на гитхаб
+#		modifier = {
 #			add = 100
 #			tag = RUS
-#		} #убрать при заливке на гитхаб
+#		} #убрать... потом
 	}
 	default = no
 
@@ -132,6 +132,10 @@ focus_tree = {
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
 			country_event = rcw.10
+			add_to_variable = {
+				var = global.red_alert
+				value = 2
+			}
 		}
 
 	}
@@ -185,6 +189,8 @@ focus_tree = {
 				add_to_variable = { var = RUS_party_power_control value = 2 }
 			}
 			add_stability = 0.1
+			remove_ideas = RUS_weak_state_suppression_apparatus
+			add_ideas = RUS_weak_state_suppression_apparatus_1
 		}
 
 	}
@@ -203,7 +209,41 @@ focus_tree = {
 		relative_position_id = RUS_vchk
 		completion_reward = {
 			add_stability = 0.1
-			set_global_flag = red_terror
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.025
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+			set_global_flag = RUS_red_terror
+			add_political_power = 50
+			remove_ideas = RUS_weak_state_suppression_apparatus_1
 		}
 
 	}
@@ -221,6 +261,72 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_vchk
 		completion_reward = {
+			set_country_flag = RUS_secularization
+			add_political_power = -50
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+		}
+
+	}
+
+	focus = {
+		id = RUS_comintern
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		available = {
+		}
+		prerequisite = {
+			focus = RUS_vchk
+		}
+		x = 1
+		y = 2
+		relative_position_id = RUS_vchk
+		completion_reward = {
+			hidden_effect = {
+				GER = {
+					add_popularity = {
+						ideology = communism
+						popularity = 0.05
+					}
+				}
+				ENG = {
+					add_popularity = {
+						ideology = communism
+						popularity = 0.025
+					}
+				}
+				FRA = {
+					add_popularity = {
+						ideology = communism
+						popularity = 0.025
+					}
+				}
+				HUN = {
+					add_popularity = {
+						ideology = communism
+						popularity = 0.05
+					}
+				}
+				USA = {
+					add_popularity = {
+						ideology = communism
+						popularity = 0.05
+					}
+				}
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			set_global_flag = COMINTERN
+			add_to_variable = {
+				var = global.red_alert
+				value = 8
+			}
+			set_rule = { can_create_factions = yes }
+			create_faction = Comintern
 		}
 
 	}
@@ -238,6 +344,10 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_vchk
 		completion_reward = {
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
 		}
 
 	}
@@ -264,7 +374,7 @@ focus_tree = {
 	focus = {
 		id = RUS_war_communism
 		icon = GFX_goal_RUS_war_communism
-		cost = 10
+		cost = 5
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = RUS_party_power_control_more_then_5
@@ -319,6 +429,26 @@ focus_tree = {
 	}
 
 	focus = {
+		id = RUS_workers_control
+		icon = GFX_goal_RUS_workers_control
+		cost = 10
+		prerequisite = {
+			focus = RUS_war_communism
+		}
+		bypass = {
+			has_country_flag = war_communism_abolished
+		}
+		x = -2
+		y = 5
+		relative_position_id = RUS_sovnarkom
+		completion_reward = {
+			add_ideas = workers_control
+			add_political_power = 70
+		}
+
+	}
+
+	focus = {
 		id = RUS_trudovaya_povinnost
 		icon = GFX_goal_RUS_trudovaya_povinnost
 		cost = 10
@@ -330,7 +460,7 @@ focus_tree = {
 		bypass = {
 			has_country_flag = war_communism_abolished
 		}
-		x = -1
+		x = 0
 		y = 5
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
@@ -347,6 +477,9 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = RUS_trudovaya_povinnost
+		}
+		prerequisite = {
+			focus = RUS_workers_control
 		}
 		bypass = {
 			has_country_flag = war_communism_abolished
@@ -627,14 +760,93 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = RUS_new_economic_policy
+		complete_tooltip = {
+			every_state = {
+				limit = { has_state_flag = RUS_concessions_1IC }
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
 		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = RUS_concessions_1IC
+			}
+			random_owned_controlled_state = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = RUS_concessions_1IC
+			}
+			random_owned_controlled_state = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = RUS_concessions_1IC
+			}
+			random_owned_controlled_state = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = RUS_concessions_1IC
+			}
 		}
 
 	}
 
 	focus = {
-		id = RUS_syndicates
-		icon = GFX_goal_RUS_syndicates
+		id = RUS_cost_accounting
+		icon = GFX_goal_RUS_trusts
 		cost = 10
 		available = {
 		}
@@ -645,6 +857,13 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
+			if = {
+				limit = { has_idea = workers_control }
+				swap_ideas = {
+					remove_idea = workers_control
+					add_idea = good_legislation
+				}
+			}
 		}
 
 	}
@@ -657,13 +876,35 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = RUS_prodnalog
-			focus = RUS_syndicates
+			focus = RUS_cost_accounting
+		}
+		bypass = {
+			NOT = { has_idea = foodstuffs_supply_crisis_1 has_idea = foodstuffs_supply_crisis_2 has_idea = foodstuffs_supply_crisis_3 }
 		}
 		x = -1
 		y = 3
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
-			add_ideas = RUS_agricultural_cooperatives_idea
+			if = {
+				limit = { has_idea = foodstuffs_supply_crisis_1 }
+				remove_ideas = foodstuffs_supply_crisis_1
+			}
+			if = {
+				limit = { has_idea = foodstuffs_supply_crisis_2 }
+				swap_ideas = {
+					remove_idea = foodstuffs_supply_crisis_2
+					add_idea = foodstuffs_supply_crisis_1
+				}
+				add_ideas = RUS_agricultural_cooperatives_idea
+			}
+			if = {
+				limit = { has_idea = foodstuffs_supply_crisis_3 }
+				swap_ideas = {
+					remove_idea = foodstuffs_supply_crisis_3
+					add_idea = foodstuffs_supply_crisis_2
+				}
+				add_ideas = RUS_agricultural_cooperatives_idea
+			}
 		}
 
 	}
@@ -687,13 +928,14 @@ focus_tree = {
 				RUS_hyper_inflation_3
 				RUS_hyper_inflation_4
 			}
+			add_ideas = RUS_silver_ruble_gold_chervonets_idea_1
 		}
 
 	}
 
 	focus = {
-		id = RUS_trusts
-		icon = GFX_goal_RUS_trusts
+		id = RUS_trusts_and_syndicates
+		icon = GFX_goal_RUS_syndicates
 		cost = 10
 		available = {
 		}
@@ -703,7 +945,53 @@ focus_tree = {
 		x = 2
 		y = 2
 		relative_position_id = RUS_new_economic_policy
+		complete_tooltip = {
+			every_state = {
+				limit = { has_state_flag = RUS_trusts_and_syndicates_1IC }
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
 		completion_reward = {
+			add_ideas = RUS_trusts_and_syndicates_idea
+			random_owned_controlled_state = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = RUS_trusts_and_syndicates_1IC
+			}
+			random_owned_controlled_state = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				set_state_flag = RUS_trusts_and_syndicates_1IC
+			}
 		}
 
 	}
@@ -715,15 +1003,19 @@ focus_tree = {
 		available = {
 		}
 		prerequisite = {
-			focus = RUS_syndicates
+			focus = RUS_cost_accounting
 		}
 		prerequisite = {
-			focus = RUS_trusts
+			focus = RUS_trusts_and_syndicates
 		}
 		x = 1
 		y = 3
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
+			swap_ideas = {
+				remove_idea = RUS_silver_ruble_gold_chervonets_idea_1
+				add_idea = RUS_silver_ruble_gold_chervonets_idea_2
+			}
 		}
 
 	}
@@ -740,10 +1032,17 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_voluntary_agriculture_cooperatives
 		}
+		bypass = {
+			NOT = { has_idea = traditional_agriculture }
+		}
 		x = 1
 		y = 4
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
+			swap_ideas = {
+				remove_idea = traditional_agriculture
+				add_idea = moderate_agriculture
+			}
 		}
 
 	}
@@ -1022,6 +1321,7 @@ focus_tree = {
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			add_ideas = RUS_vsevobuch_idea
+			add_war_support = 0.1
 		}
 
 	}
@@ -1039,8 +1339,9 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_WPRA
 		completion_reward = {
-			add_war_support = 0.2
+			add_war_support = 0.1
 			add_ideas = RUS_military_commissars_idea
+			add_command_power = 50
 		}
 
 	}
@@ -1169,6 +1470,7 @@ focus_tree = {
 		relative_position_id = RUS_forced_mobilization
 		completion_reward = {
 			add_ideas = RUS_fight_against_deserters_idea
+			add_command_power = 50
 		}
 
 	}
@@ -1188,6 +1490,7 @@ focus_tree = {
 		relative_position_id = RUS_forced_mobilization
 		completion_reward = {
 			add_ideas = RUS_red_cavalry_idea
+			load_oob = RUS_pervaya_konarmiya
 		}
 
 	}
