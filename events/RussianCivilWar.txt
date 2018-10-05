@@ -281,51 +281,108 @@ country_event = {
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
-	tag = RVA
-	NOT = { has_country_flag =  Lavr_Kornilov_dead }
+		tag = RVA
+		has_country_leader = { name = "Lavr Kornilov" ruling_only = no }
+		RUS = { NOT = { has_country_flag = Lavr_Kornilov_dead } }
 	}
-		
+	
 	mean_time_to_happen = {
 		days = 15
 	}
+	
 	fire_only_once = yes
 	
 	option = {
 		name = rcw.6.a
 		retire_country_leader = yes
+		hidden_effect = {
+			random_list = {
+				90 = {
+					set_country_flag = Kornilov_will_dead
+				}
+				10 = {
+					set_country_flag = Kornilov_will_not_dead
+				}
+			}
+		}
 	}
 }
 
-# Убийство (?) Корнилова
+# Смерть или не смерть Корнилова
 country_event = {
 	id = rcw.7
-	title = rcw.7.t
-	desc = rcw.7.d
+	title = {
+		text = tcw.7.t
+		trigger = {
+			has_country_flag = Kornilov_will_dead
+		}
+	}
+	title = {
+		text = tcw.7.t1
+		trigger = {
+			has_country_flag = Kornilov_will_not_dead
+		}
+	}
+	desc = {
+		text = rcw.7.d
+		trigger = {
+			has_country_flag = Kornilov_will_dead
+		}
+	}
+	desc = {
+		text = rcw.7.d1
+		trigger = {
+			has_country_flag = Kornilov_will_not_dead
+		}
+	}
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
-	tag = RVA
-	controls_state = 234
-	has_country_leader = { name = "Lavr Kornilov" }
+		tag = RVA
+		controls_state = 234
+		has_country_leader = { name = "Lavr Kornilov" ruling_only = yes }
 	}
-		
+	
 	mean_time_to_happen = {
 		days = 1
 	}
 	
 	fire_only_once = yes
 	
+	immediate = {
+		if = {
+			limit = { has_country_flag = Kornilov_will_dead }
+			if = { limit = { any_unit_leader = { has_id = 76547 } } remove_unit_leader = 76547 }
+			kill_country_leader = yes
+			RUS = { set_country_flag = Lavr_Kornilov_dead }
+		}
+		if = {
+			limit = { has_country_flag = Kornilov_will_not_dead }
+			add_country_leader_trait = assassination_survivor
+			every_unit_leader = { limit = { OR = { has_id = 76547 } } add_timed_unit_leader_trait = { trait = wounded days = 90 } }
+		}
+	}
+	
 	option = {
 		name = rcw.7.a
-		random_list = {
-		90 = {
-		#news_event
-		kill_country_leader = yes
+		trigger = {
+			has_country_flag = Kornilov_will_dead
 		}
-		10 = {
 		#news_event
-		add_country_leader_trait = assassination_survivor
+		effect_tooltip = {
+			if = { limit = { any_unit_leader = { has_id = 76547 } } remove_unit_leader = 76547 }
+			kill_country_leader = yes
 		}
+	}
+	
+	option = {
+		name = rcw.7.b
+		trigger = {
+			has_country_flag = Kornilov_will_not_dead
+		}
+		effect_tooltip = {
+			add_country_leader_trait = assassination_survivor
+			every_unit_leader = { limit = { OR = { has_id = 76547 } } add_timed_unit_leader_trait = { trait = wounded days = 90 } }
 		}
 	}
 }
@@ -338,23 +395,23 @@ country_event = {
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
-	tag = RUS
-	OR = {
-	has_government = communism
-	has_government = radical_socialism
+		tag = RUS
+		OR = {
+			has_government = communism
+			has_government = radical_socialism
+		}
+		OR = {
+			AND = {
+				DON = { exists = no }
+				has_country_flag = DON_RISE
+			}
+			AND = {
+				has_war_with = DON
+				DON = { has_capitulated = yes }
+			}
+		}
 	}
-	OR = {
-	AND = {
-	DON = {exists = no}
-	has_country_flag = DON_RISE
-	}
-	AND = {
-	has_war_with = DON
-	DON = {has_capitulated = yes}
-	}
-	}
-	}
-		
+	
 	mean_time_to_happen = {
 		days = 10
 	}
@@ -363,11 +420,11 @@ country_event = {
 	
 	option = {
 		name = rcw.8.a
-		RUS = { annex_country = { target = DON }}
+		RUS = { annex_country = { target = DON } }
 		release_puppet = DON
-		DON = {load_oob = DON_red_cossack}
+		DON = { load_oob = DON_red_cossack }
 		DON = {
-		load_focus_tree = generic_focus
+			load_focus_tree = generic_focus
 		}
 		set_country_flag = DON_resovet
 		#
@@ -383,10 +440,9 @@ country_event = {
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
-	tag = RVA
-	#
+		tag = RVA
 	}
-		
+	
 	mean_time_to_happen = {
 		days = 30
 	}
@@ -395,7 +451,7 @@ country_event = {
 	
 	option = {
 		name = rcw.9.a
-		#
+		REB = { every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = RVA } }
 		load_oob = RVA_Drozdov
 	}
 }
@@ -1233,6 +1289,8 @@ country_event = {
 		NOT = { has_completed_focus = RUS_prodnalog }
 		NOT = { has_completed_focus = RUS_voluntary_agriculture_cooperatives }
 		NOT = { has_completed_focus = RUS_organization_of_agricultural_cooperatives }
+		has_country_flag = RUS_monarchy_fall
+		NOT = { has_country_flag = RUS_provisional_government_created }
 	}
 	
 	mean_time_to_happen = {
