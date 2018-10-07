@@ -102,6 +102,9 @@ country_event = {
 		}
 	}
 	option = {
+		trigger = {
+			is_ai = no
+		}
 		name = rcw_tc.1.b #Грузия
 			AZR = {
 				transfer_state = 890
@@ -179,6 +182,9 @@ country_event = {
 		}
 	}
 	option = {
+		trigger = {
+			is_ai = no
+		}
 		name = rcw_tc.1.c #Армения
 			AZR = {
 				transfer_state = 890
@@ -256,6 +262,9 @@ country_event = {
 		}
 	}
 	option = {
+		trigger = {
+			is_ai = no
+		}
 		name = rcw_tc.1.e #Азербайджан
 			AZR = {
 				transfer_state = 890
@@ -480,21 +489,42 @@ country_event = {
 	trigger = {
 		tag = GEO
 		has_global_flag = WWI_is_now
-		RUS = { has_country_flag = RUS_brest_peace_hard }
+		GER = {
+			controls_state = 907
+		}
 	}
 	
 	mean_time_to_happen = {
 		days = 30
 	}
 	
-	#НЭЗАЛЭЖНОСТЬ
-	option = {
-		name = rcw_tc.9
-	}
 	#Попросить покровительства у Германии
 	option = {
-		name = rcw_tc.9
+		name = rcw_tc.9.a
 		hidden_effect = { country_event = { id = rcw_tc.10 days = 20 } }
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				TUR = {
+					OR = {
+						controls_state = 863
+						controls_state = 864
+					}
+				}
+			}
+		}
+	}
+	#Не просить
+	option = {
+		name = rcw_tc.9.b
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				TUR = { NOT = { controls_state = 863 controls_state = 864 } }
+			}
+		}
 	}
 }
 
@@ -521,13 +551,12 @@ country_event = {
 		AZR = {
 			leave_faction = yes
 			dismantle_faction = yes
-			country_event = rcw_tc.11
+			country_event = rcw_tc.12
 		}
 		every_country = {
 			limit = {
 				is_in_faction_with = TUR
 			}
-			white_peace = AZR
 			white_peace = GEO
 		}
 		GER = {
@@ -549,5 +578,98 @@ country_event = {
 	
 	option = {
 		name = rcw_tc.11.a
+	}
+}
+country_event = {
+	id = rcw_tc.12
+	title = rcw_tc.12.t
+	desc = rcw_tc.12.d
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.12.a
+		every_country = {
+			limit = {
+				is_in_faction_with = TUR
+			}
+			white_peace = AZR
+		}
+		TUR = { add_to_faction = AZR }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_tc.12.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Мир с Турцией в случае если вы долго держитесь
+country_event = {
+	id = rcw_tc.20
+	title = rcw_tc.20.t
+	desc = rcw_tc.20.d
+	picture = GFX_report_event_sov_redarmy
+	
+	trigger = {
+		tag = GEO
+		is_puppet = no
+		has_war_with = TUR
+		has_global_flag = WWI_is_now
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 180
+	}
+	
+	immidiate = {
+		hidden_effect = {
+			every_country = {
+				limit = { controls_state = 352 }
+				save_event_target_as = 352_controller
+			}
+			every_country = {
+				limit = { controls_state = 353 }
+				save_event_target_as = 353_controller
+			}
+			every_country = {
+				limit = { controls_state = 354 }
+				save_event_target_as = 354_controller
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_tc.20.a
+		event_target:352_controller = {
+			transfer_state = 352
+		}
+		event_target:353_controller = {
+			transfer_state = 353
+		}
+		event_target:354_controller = {
+			transfer_state = 354
+		}
+		every_country = {
+			limit = {
+				is_in_faction_with = GEO
+			}
+			every_country = {
+				limit = {
+					is_in_faction_with = TUR
+				}
+				white_peace = PREV
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
 	}
 }

@@ -438,16 +438,26 @@ country_event = {
 	trigger = {
 		tag = GER
 		has_global_flag = brest_litovsk_negotiations
-		NOT = { has_global_flag = brest_litovsk_negotiations_GER_UKR_peace }
 		OR = {
 			UKR = { OR = { exists = no has_government = communism has_government = radical_socialism } }
 			has_global_flag = brest_litovsk_GER_UKR_negotiations_refused
+		}
+		OR = {
+			AND = {
+				NOT = { has_global_flag = brest_litovsk_negotiations_GER_UKR_peace }
+				NOT = {
+					any_country = {
+						is_in_faction_with = GER
+						controls_state = 202
+					}
+				}
+			}
 		}
 		has_war_with = RUS
 	}
 	
 	mean_time_to_happen = {
-		days = 122
+		days = 82
 	}
 	
 	fire_only_once = yes
@@ -514,7 +524,13 @@ country_event = {
 	trigger = {
 		tag = GER
 		has_global_flag = brest_litovsk_negotiations
-		has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+		OR = {
+			has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+			any_country = {
+				is_in_faction_with = GER
+				controls_state = 202
+			}
+		}
 		has_war_with = RUS
 	}
 	
@@ -814,15 +830,132 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 20
+		days = 50
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.2
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.22
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.24
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.26
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.28
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.3
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.32
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.34
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.36
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.38
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.4
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.42
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.44
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.46
+		}
+		modifier = {
+			factor = 0.9
+			surrender_progress > 0.48
+		}
+		modifier = {
+			factor = 0.5
+			surrender_progress > 0.5
+		}
+		modifier = {
+			factor = 0.4
+			surrender_progress > 0.6
+		}
+		modifier = {
+			factor = 0.3
+			surrender_progress > 0.7
+		}
+		modifier = {
+			factor = 0.2
+			surrender_progress > 0.8
+		}
 		modifier = {
 			factor = 0.01
-			surrender_progress > 0.7
+			surrender_progress > 0.9
+		}
+		modifier = {
+			factor = 0.01
+			GER = { controls_state = 202 }
 		}
 	}
 	
 	option = {
 		name = treaty_of_brest.19.a
+		if = {
+			limit = { GER = { controls_state = 202 } }
+			UKR = {
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.15
+				}
+				set_politics = {
+					ruling_party = authoritarism
+				}
+				add_ideas = {
+					limited_exports
+					extensive_conscription
+					minimum_legislation
+					interventionalism
+					war_economy
+				}
+				GER = {
+					add_ideas = UKR_zerno_out
+					diplomatic_relation = {
+						country = UKR
+						relation = military_access
+						active = yes
+					}
+				}
+				AUH = {
+					diplomatic_relation = {
+						country = UKR
+						relation = military_access
+						active = yes
+					}
+				}
+			}
+			else = {
+				GER = { set_country_flag = influence_to_UKR }
+			}
+		}
 		UKR = {
 			dismantle_faction = yes
 			leave_faction = yes
@@ -992,8 +1125,41 @@ country_event = {
 		}
 		RUS = {
 			white_peace = UKR
+			end_puppet = UKR
 			end_puppet = USR
 			remove_from_faction = USR
+		}
+		USR = {
+			if {
+				limit = { OR = { controls_state = 227 RUS = { controls_state = 227 } } }
+				transfer_state = 227
+				else = {
+					UKR = { transfer_state = 227 }
+				}
+			}
+			if {
+				limit = { OR = { controls_state = 228 RUS = { controls_state = 228 } } }
+				transfer_state = 228
+				else = {
+					UKR = { transfer_state = 228 }
+				}
+			}
+			if = {
+				limit = { UKR = { is_puppet = no } }
+				every_country = {
+					limit = { OR = { is_white_movement_country = yes is_in_faction_with = GER } NOT = { tag = UKR } }
+					white_peace = PREV
+				}
+				else = {
+					every_country = {
+						limit = { is_white_movement_country = yes NOT = { tag = UKR } }
+						white_peace = PREV
+					}
+				}
+			}
+			
+			white_peace = DON
+			white_peace = RVA
 		}
 		add_to_variable = {
 			var = global.red_alert
