@@ -1,0 +1,445 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_udktc
+
+
+###### Антисоветские восстания в России ######
+
+# Восстание Каледина
+country_event = {
+	id = rcw_udktc.1
+	title = rcw_udktc.1.t
+	desc = {
+		text = rcw_udktc.1.d
+		trigger = {
+			UKR = { OR = { exists = no has_government = communism has_government = radical_socialism } }
+		}
+	}
+	desc = {
+		text = rcw_udktc.1.d_ukr
+		trigger = {
+			UKR = { exists = yes NOT = { has_government = communism has_government = radical_socialism } }
+		}
+	}
+	picture = GFX_report_event_rus_kaledin_uprising
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = { has_country_flag = RUS_cossacks_were_disbanded }
+		NOT = { has_country_flag = RUS_cossacks_bolshevized }
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	immediate = {
+		every_unit_leader = { limit = { OR = { has_id = 76546 has_id = 77300 } } set_nationality = DON }
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_udktc.1.a
+		218 = { add_core_of = DON }
+		238 = { add_core_of = DON }
+		245 = { add_core_of = DON }
+		265 = { add_core_of = DON }
+		764 = { add_core_of = DON }
+		set_country_flag = DON_RISE
+		DON = {
+			set_cosmetic_tag = DON_Kaledin
+			transfer_state = 218
+			transfer_state = 227
+			transfer_state = 228
+			transfer_state = 238
+			transfer_state = 245
+			transfer_state = 265
+			transfer_state = 764
+			add_ideas = alliance_neutrality
+			country_event = { id = rcw_udktc.2 days = 12 }
+		}
+	}
+	
+	option = {
+		name = rcw_udktc.1.b
+		trigger = {
+			is_ai = no
+		}
+		218 = {
+			add_core_of = DON
+		}
+		238 = {
+			add_core_of = DON
+		}
+		245 = {
+			add_core_of = DON
+		}
+		265 = {
+			add_core_of = DON
+		}
+		764 = {
+			add_core_of = DON
+		}
+		DON = {
+			set_cosmetic_tag = DON_Kaledin
+			transfer_state = 218
+			transfer_state = 227
+			transfer_state = 228
+			transfer_state = 238
+			transfer_state = 245
+			transfer_state = 265
+			transfer_state = 764
+			add_ideas = alliance_neutrality
+			country_event = { id = rcw_udktc.2 days = 12 }
+			change_tag_from = RUS
+		}
+	}
+}
+
+# Итоги местного Учредительного собрания не радуют правительство, и начинаются попытки создания коалиционного правительства против большевиков
+country_event = {
+	id = rcw_udktc.2
+	title = rcw_udktc.2.t
+	desc = rcw_udktc.2.d
+	picture = GFX_report_event_rus_coalition
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+	
+	option = {
+		name = rcw_udktc.2.a # не идти на компромисы
+		add_political_power = 50
+		load_oob = DON_kaledin
+		ai_chance = {
+			factor = 90
+		}
+		country_event = { id = rcw_udktc.3  days = 11 }
+	}
+	
+	option = {
+		name = rcw_udktc.2.b # согласится на требования умеренных
+		initiate_verification_of_the_popularity_of_coalitions = yes
+		if = {
+			limit = { check_variable = { socialist_parties > 0.5 } }
+			RUS = { annex_country = { target = DON transfer_troops = yes } }
+		}
+		if = {
+			limit = { NOT = { check_variable = { socialist_parties > 0.5 } } }
+			set_politics = { ruling_party = market_liberalism elections_allowed = no }
+			add_popularity = { ideology = market_liberalism popularity = 0.2 }
+			add_popularity = { ideology = social_liberalism popularity = 0.1 }
+			load_oob = DON_not_kaledin
+		}
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+# Ультиматум Военно-Революционного комитета
+country_event = {
+	id = rcw_udktc.3
+	title = rcw_udktc.3.t
+	desc = rcw_udktc.3.d
+	picture = GFX_report_event_sov_military_rev_comitet
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_udktc.3.a #подавить выступление
+		add_popularity = { ideology = communism popularity = -1 }
+		add_timed_idea = { idea = DON_jidobolysheviks_revolt days = 60 }
+		hidden_effect = { RUS = { country_event = { id = rcw_udktc.5 days = 25 } } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_udktc.3.b #принять ультиматум
+		set_politics = {
+			ruling_party = communism
+		}
+		add_popularity = { ideology = communism popularity = 0.2 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Появление Добровольческой Армии
+country_event = {
+	id = rcw_udktc.5
+	title = rcw_udktc.5.t
+	desc = rcw_udktc.5.d
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 } } set_nationality = RVA }
+		}
+	}
+	
+	option = {
+		name = rcw_udktc.5.a
+		218 = { add_core_of = RVA }
+		233 = { add_core_of = RVA }
+		234 = { add_core_of = RVA }
+		235 = { add_core_of = RVA }
+		238 = { add_core_of = RVA }
+		RVA = {
+			transfer_state = 218
+			transfer_state = 238
+			add_ideas = alliance_neutrality
+			load_oob = RVA_alexeev
+		}
+		RUS = { add_popularity = { ideology = communism popularity = 0.05 } add_popularity = { ideology = despotism popularity = -0.05 } }
+	}
+	option = {
+		name = rcw_udktc.5.b
+		trigger = {
+			is_ai = no
+		}
+		218 = { add_core_of = RVA }
+		233 = { add_core_of = RVA }
+		234 = { add_core_of = RVA }
+		235 = { add_core_of = RVA }
+		238 = { add_core_of = RVA }
+		RVA = {
+			transfer_state = 218
+			transfer_state = 238
+			add_ideas = alliance_neutrality
+			load_oob = RVA_alexeev
+			change_tag_from = RUS
+		}
+		RUS = { add_popularity = { ideology = communism popularity = 0.05 } add_popularity = { ideology = despotism popularity = -0.05 } }
+	}
+}
+
+# Лавр Корнилов берёт командование
+country_event = {
+	id = rcw_udktc.6
+	title = rcw_udktc.6.t
+	desc = rcw_udktc.6.d
+	picture = GFX_report_event_rcw_rva
+	
+	trigger = {
+		tag = RVA
+		has_country_leader = { name = "Lavr Kornilov" ruling_only = no }
+		RUS = { NOT = { has_country_flag = Lavr_Kornilov_dead } }
+		has_war_with = RUS
+	}
+	
+	mean_time_to_happen = {
+		days = 15
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_udktc.6.a
+		retire_country_leader = yes
+	}
+}
+
+# Взятие Екатеринодара
+country_event = {
+	id = rcw_udktc.7
+	hidden = yes
+	
+	trigger = {
+		tag = RVA
+		controls_state = 234
+		has_country_leader = { name = "Lavr Kornilov" ruling_only = yes }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	immediate = {
+		random_list = {
+			90 = {
+				set_country_flag = Kornilov_will_dead
+			}
+			10 = {
+				set_country_flag = Kornilov_will_not_dead
+			}
+		}
+		set_state_owner = 234
+		set_capital = 234
+		country_event = rcw_udktc.8
+	}
+}
+
+# Смерть или не смерть Корнилова
+country_event = {
+	id = rcw_udktc.8
+	title = {
+		text = rcw_udktc.8.t
+		trigger = {
+			has_country_flag = Kornilov_will_dead
+		}
+	}
+	title = {
+		text = rcw_udktc.8.t1
+		trigger = {
+			has_country_flag = Kornilov_will_not_dead
+		}
+	}
+	desc = {
+		text = rcw_udktc.8.d
+		trigger = {
+			has_country_flag = Kornilov_will_dead
+		}
+	}
+	desc = {
+		text = rcw_udktc.8.d1
+		trigger = {
+			has_country_flag = Kornilov_will_not_dead
+		}
+	}
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		if = {
+			limit = { has_country_flag = Kornilov_will_dead }
+			if = { limit = { any_unit_leader = { has_id = 76547 } } remove_unit_leader = 76547 }
+			kill_country_leader = yes
+			RUS = { set_country_flag = Lavr_Kornilov_dead }
+		}
+		if = {
+			limit = { has_country_flag = Kornilov_will_not_dead }
+			add_country_leader_trait = assassination_survivor
+			every_unit_leader = { limit = { OR = { has_id = 76547 } } add_timed_unit_leader_trait = { trait = wounded days = 90 } }
+		}
+	}
+	
+	option = {
+		name = rcw_udktc.8.a
+		trigger = {
+			has_country_flag = Kornilov_will_dead
+		}
+		#news_event
+		effect_tooltip = {
+			if = { limit = { any_unit_leader = { has_id = 76547 } } remove_unit_leader = 76547 }
+			kill_country_leader = yes
+		}
+	}
+	
+	option = {
+		name = rcw_udktc.8.b
+		trigger = {
+			has_country_flag = Kornilov_will_not_dead
+		}
+		effect_tooltip = {
+			add_country_leader_trait = assassination_survivor
+			every_unit_leader = { limit = { OR = { has_id = 76547 } } add_timed_unit_leader_trait = { trait = wounded days = 90 } }
+		}
+	}
+}
+
+# Установление Советской власти на Дону повторно
+country_event = {
+	id = rcw_udktc.9
+	title = rcw_udktc.9.t
+	desc = rcw_udktc.9.d
+	picture = GFX_report_event_rcw_rva
+	
+	trigger = {
+		tag = RUS
+		OR = {
+			has_government = communism
+			has_government = radical_socialism
+		}
+		OR = {
+			AND = {
+				DON = { exists = no }
+				has_country_flag = DON_RISE
+			}
+			AND = {
+				has_war_with = DON
+				DON = { has_capitulated = yes }
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_udktc.9.a
+		RUS = { annex_country = { target = DON } }
+		release_puppet = DON
+		DON = { load_oob = DON_red_cossack }
+		DON = {
+			load_focus_tree = generic_focus
+		}
+		set_country_flag = DON_resovet
+		add_to_war = { targeted_alliance = RUS enemy = RVA }
+		#
+	}
+}
+
+# Генерал Дроздов прорвался на Дон
+country_event = {
+	id = rcw_udktc.10
+	title = rcw_udktc.10.t
+	desc = rcw_udktc.10.d
+	picture = GFX_report_event_rcw_rva
+	
+	trigger = {
+		tag = RVA
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_udktc.10.a
+		REB = { every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = RVA } }
+		load_oob = RVA_Drozdov
+	}
+}
+
+# ...
+country_event = {
+	id = rcw_udktc.999
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		remove_ideas = {
+			RVA_volunteer_army_1
+			RVA_volunteer_army_2
+			RVA_volunteer_army_3
+			RVA_volunteer_army_4
+			RVA_volunteer_army_5
+		}
+	}
+}
