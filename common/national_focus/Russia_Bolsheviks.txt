@@ -65,7 +65,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
-			RUS_Order_N_1_fall = yes
+			country_event = { id = rcw.115 days = 15 }
 		}
 
 	}
@@ -97,6 +97,7 @@ focus_tree = {
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
 			country_event = treaty_of_brest.1
+			country_event = { id = rcw.115 days = 15 }
 		}
 
 	}
@@ -184,8 +185,17 @@ focus_tree = {
 				add_to_variable = { var = RUS_soviet_power_control value = -2 }
 			}
 			add_stability = 0.1
-			remove_ideas = RUS_weak_state_suppression_apparatus
-			add_ideas = RUS_weak_state_suppression_apparatus_1
+			if = {
+				limit = { has_idea = RUS_weak_state_suppression_apparatus_1 }
+				remove_ideas = RUS_weak_state_suppression_apparatus_1
+			}
+			else_if = {
+				limit = { has_idea = RUS_weak_state_suppression_apparatus }
+				swap_ideas = {
+					remove_idea = RUS_weak_state_suppression_apparatus
+					add_idea = RUS_weak_state_suppression_apparatus_1
+				}
+			}
 		}
 
 	}
@@ -238,7 +248,6 @@ focus_tree = {
 			}
 			set_global_flag = RUS_red_terror
 			add_political_power = 50
-			remove_ideas = RUS_weak_state_suppression_apparatus_1
 		}
 
 	}
@@ -1272,29 +1281,41 @@ focus_tree = {
 ###Workers' and Peasants' Red Army ###
 
 	focus = {
-		id = RUS_WPRA
+		id = RUS_old_army_demobilisation
 		icon = GFX_goal_RUS_agrocultural_investment_banks
 		cost = 5
 		available = {
-			OR = {
-				has_completed_focus = RUS_revolutionary_war
-				AND = {
-					has_completed_focus = RUS_red_separate_peace
-					OR = {
-						has_idea = disorganization_of_army
-						NOT = { has_war_with = GER }
-						AND = {
-							has_global_flag = russia_rejects_german_ultimatum
-							NOT = { has_idea = disorganization_of_army }
-						}
-					}
+			always = no
+		}
+		bypass = {
+			has_country_flag = RUS_full_demobilisation
+		}
+		x = 22
+		y = 0
+
+	}
+
+	focus = {
+		id = RUS_WPRA
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 3
+		prerequisite = {
+			focus = RUS_old_army_demobilisation
+		}
+		x = 0
+		y = 1
+		relative_position_id = RUS_old_army_demobilisation
+		completion_reward = {
+			if = {
+				limit = { has_idea = disorganization_of_army }
+				swap_ideas = {
+					remove_idea = disorganization_of_army
+					add_idea = RUS_new_red_army_idea
+				}
+				else = {
+					add_ideas = RUS_new_red_army_idea
 				}
 			}
-		}
-		x = 19
-		y = 0
-		completion_reward = {
-			remove_ideas = disorganization_of_army
 			RUS_Order_N_1_fall = yes
 		}
 
@@ -1314,7 +1335,7 @@ focus_tree = {
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			add_ideas = RUS_vsevobuch_idea
-			add_war_support = 0.1
+			add_war_support = 0.05
 		}
 
 	}
@@ -1332,23 +1353,21 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_WPRA
 		completion_reward = {
-			add_war_support = 0.1
+			add_war_support = 0.05
 			add_ideas = RUS_military_commissars_idea
-			add_command_power = 50
+			add_stability = 0.02
 		}
 
 	}
-
-###Volunteer Army ###
 	focus = {
-		id = RUS_volunteer_army
+		id = RUS_power_of_elected_committees
 		icon = GFX_goal_RUS_agrocultural_investment_banks
 		cost = 5
 		available = {
 			always = no
 		}
 		mutually_exclusive = {
-			focus = RUS_forced_mobilization
+			focus = RUS_cancellation_of_election_of_officers
 		}
 		prerequisite = {
 			focus = RUS_vsevobuch
@@ -1356,8 +1375,77 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_military_commissars
 		}
-		x = -1
+		x = -2
 		y = 2
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			
+		}
+
+	}
+	focus = {
+		id = RUS_cancellation_of_election_of_officers
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 5
+		available = {
+			
+		}
+		mutually_exclusive = {
+			focus = RUS_power_of_elected_committees
+		}
+		prerequisite = {
+			focus = RUS_vsevobuch
+		}
+		prerequisite = {
+			focus = RUS_military_commissars
+		}
+		x = 2
+		y = 2
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_war_support = -0.025
+			add_political_power = 100
+			add_stability = 0.03
+			add_ideas = {
+				Lev_Trotsky_6
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_vseroglavshtab
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_cancellation_of_election_of_officers
+			focus = RUS_power_of_elected_committees
+		}
+		x = 0
+		y = 3
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_command_power = 50
+		}
+
+	}
+	focus = {
+		id = RUS_volunteer_army
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 5
+		available = {
+			always = no
+		}
+		prerequisite = {
+			focus = RUS_vseroglavshtab
+		}
+		prerequisite = {
+			focus = RUS_power_of_elected_committees
+		}
+		x = -2
+		y = 4
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			
@@ -1366,20 +1454,82 @@ focus_tree = {
 	}
 
 	focus = {
-		id = RUS_community_divisions
+		id = RUS_forced_mobilization
 		icon = GFX_goal_RUS_agrocultural_investment_banks
 		cost = 5
 		available = {
 			
 		}
 		prerequisite = {
+			focus = RUS_cancellation_of_election_of_officers
+		}
+		prerequisite = {
+			focus = RUS_vseroglavshtab
+		}
+		x = 2
+		y = 4
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_ideas = RUS_forced_mobilization_idea
+			if = {
+				limit = { has_idea = extensive_conscription }
+				swap_ideas = {
+					remove_idea = extensive_conscription
+					add_idea = service_by_requirement
+				}
+			}
+			if = {
+				limit = { has_idea = limited_conscription }
+				swap_ideas = {
+					remove_idea = limited_conscription
+					add_idea = extensive_conscription
+				}
+			}
+			if = {
+				limit = { has_idea = volunteer_only }
+				swap_ideas = {
+					remove_idea = volunteer_only
+					add_idea = limited_conscription
+				}
+			}
+			if = {
+				limit = { has_idea = disarmed_nation }
+				swap_ideas = {
+					remove_idea = disarmed_nation
+					add_idea = volunteer_only
+				}
+			}
+		}
+
+	}
+
+	focus = {
+		id = RUS_council_of_workers_and_peasants_defense
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_forced_mobilization
 			focus = RUS_volunteer_army
 		}
 		x = 0
-		y = 1
-		relative_position_id = RUS_volunteer_army
+		y = 5
+		relative_position_id = RUS_WPRA
 		completion_reward = {
-			
+			add_command_power = 50
+			if = {
+				limit = { has_idea = RUS_weak_state_suppression_apparatus_1 }
+				remove_ideas = RUS_weak_state_suppression_apparatus_1
+			}
+			else_if = {
+				limit = { has_idea = RUS_weak_state_suppression_apparatus }
+				swap_ideas = {
+					remove_idea = RUS_weak_state_suppression_apparatus
+					add_idea = RUS_weak_state_suppression_apparatus_1
+				}
+			}
 		}
 
 	}
@@ -1392,58 +1542,16 @@ focus_tree = {
 			
 		}
 		prerequisite = {
-			focus = RUS_community_divisions
-		}
-		x = 0
-		y = 2
-		relative_position_id = RUS_volunteer_army
-		completion_reward = {
-			
-		}
-
-	}
-
-	focus = {
-		id = RUS_schools_of_peoples_officers
-		icon = GFX_goal_RUS_agrocultural_investment_banks
-		cost = 5
-		available = {
-			
-		}
-		prerequisite = {
-			focus = RUS_community_divisions
-		}
-		x = 0
-		y = 2
-		relative_position_id = RUS_volunteer_army
-		completion_reward = {
-			
-		}
-
-	}
-
-###Forsed mobilization ###
-	focus = {
-		id = RUS_forced_mobilization
-		icon = GFX_goal_RUS_agrocultural_investment_banks
-		cost = 5
-		available = {
-			
-		}
-		mutually_exclusive = {
 			focus = RUS_volunteer_army
 		}
 		prerequisite = {
-			focus = RUS_vsevobuch
+			focus = RUS_council_of_workers_and_peasants_defense
 		}
-		prerequisite = {
-			focus = RUS_military_commissars
-		}
-		x = 1
-		y = 2
+		x = -2
+		y = 6
 		relative_position_id = RUS_WPRA
 		completion_reward = {
-			add_ideas = RUS_forced_mobilization_idea
+			
 		}
 
 	}
@@ -1458,32 +1566,14 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_forced_mobilization
 		}
-		x = 0
-		y = 1
-		relative_position_id = RUS_forced_mobilization
+		prerequisite = {
+			focus = RUS_council_of_workers_and_peasants_defense
+		}
+		x = 2
+		y = 6
+		relative_position_id = RUS_WPRA
 		completion_reward = {
 			add_ideas = RUS_fight_against_deserters_idea
-			add_command_power = 50
-		}
-
-	}
-
-	focus = {
-		id = RUS_mobile_military_formations
-		icon = GFX_goal_RUS_agrocultural_investment_banks
-		cost = 5
-		available = {
-			
-		}
-		prerequisite = {
-			focus = RUS_fight_against_deserters
-		}
-		x = 0
-		y = 2
-		relative_position_id = RUS_forced_mobilization
-		completion_reward = {
-			add_ideas = RUS_red_cavalry_idea
-			load_oob = RUS_pervaya_konarmiya
 		}
 
 	}
@@ -1496,16 +1586,58 @@ focus_tree = {
 			
 		}
 		prerequisite = {
-			focus = RUS_schools_of_peoples_officers
-			focus = RUS_mobile_military_formations
+			focus = RUS_federation_of_armed_forces
+			focus = RUS_fight_against_deserters
 		}
-		x = -1
-		y = 3
-		relative_position_id = RUS_forced_mobilization
+		x = 0
+		y = 7
+		relative_position_id = RUS_WPRA
 		completion_reward = {
+			add_command_power = 100
 			remove_ideas = RUS_new_red_army_idea
 			remove_ideas = RUS_forced_mobilization_idea
 			remove_ideas = RUS_fight_against_deserters_idea
+		}
+
+	}
+
+	focus = {
+		id = RUS_schools_of_peoples_officers
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_federation_of_armed_forces
+			focus = RUS_reform_of_high_command_structure
+		}
+		x = -2
+		y = 8
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			
+		}
+
+	}
+
+	focus = {
+		id = RUS_mobile_military_formations
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_reform_of_high_command_structure
+			focus = RUS_fight_against_deserters
+		}
+		x = 2
+		y = 8
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_ideas = RUS_red_cavalry_idea
+			load_oob = RUS_pervaya_konarmiya
 		}
 
 	}
