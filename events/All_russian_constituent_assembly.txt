@@ -102,6 +102,8 @@ country_event = {
 		name = all_rus_CA.1.f #диктатуррра
 		trigger = {
 			NOT = { has_country_flag = general_kornilov }
+			NOT = { has_government = communism }
+			NOT = { has_government = radical_socialism }
 		}
 		ai_chance = {
 			factor = 1
@@ -251,6 +253,9 @@ country_event = {
 	
 	option = {
 		name = all_rus_CA.4.a #Начать переговоры по миру
+		trigger = {
+			NOT = { has_completed_focus = RUS_revolutionary_war }
+		}
 		set_country_flag = RUS_all_russian_constituent_assembly_third_session_peace
 		hidden_effect = { country_event = { id = all_rus_CA.5 days = 1 } }
 		add_stability = 0.05
@@ -260,6 +265,9 @@ country_event = {
 	}
 	option = {
 		name = all_rus_CA.4.b #РЕВОЛЮЦИОННАЯ ВОЙНА
+		trigger = {
+			NOT = { has_completed_focus = RUS_red_separate_peace }
+		}
 		set_country_flag = RUS_all_russian_constituent_assembly_third_session_war
 		hidden_effect = { country_event = { id = all_rus_CA.5 days = 1 } }
 		add_war_support = -0.05
@@ -474,36 +482,14 @@ country_event = {
 		if = {
 			limit = {
 				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
-				OR = {
-					has_country_flag = RUS_Bolsheviks_majority
-					has_country_flag = RUS_Oktober_revolution_fired
-				}
-			}
-			set_politics = {
-				ruling_party = communism
-				elections_allowed = no
+				has_country_flag = RUS_Bolsheviks_majority
+				NOT = { has_country_flag = RUS_Oktober_revolution_fired }
 			}
 			add_popularity = {
 				ideology = communism
 				popularity = 0.15
 			}
-			remove_ideas_with_trait = head_of_government
-			remove_ideas_with_trait = foreign_minister
-			remove_ideas_with_trait = economy_minister
-			remove_ideas_with_trait = security_minister
-			remove_ideas_with_trait = head_of_intel
-			add_ideas = {
-				Vladimir_Lenin_1
-				Lev_Trotsky_2
-				Peter_Heyden_3
-				Alexey_Rykov_4
-				Felix_Dzerjinsky_5
-				Lev_Trotsky_army_chief
-			}
-			FRA = {
-				remove_from_faction = RUS
-			}
-			create_faction = RUS_RSFSR_alliance
+			bolsheviks_victory = yes
 			set_global_flag = legitimized_bolsheviks
 			hidden_effect = {
 				if = {
@@ -512,7 +498,7 @@ country_event = {
 				}
 			}
 		}
-		if = {
+		else_if = {
 			limit = {
 				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
 				NOT = { has_country_flag = RUS_Bolsheviks_majority has_country_flag = RUS_Oktober_revolution_fired }
@@ -537,6 +523,17 @@ country_event = {
 				Alexey_Nikitin_4
 				Pavel_Malyantovich_5
 			}
+		}
+		else_if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				has_country_flag = RUS_Oktober_revolution_fired
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			set_global_flag = legitimized_bolsheviks
 		}
 		if = {
 			limit = {
