@@ -1,0 +1,1155 @@
+focus_tree = {
+	id = russia_monarchy_focus
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = RUS
+		}
+	}
+	default = no
+
+	continuous_focus_position = { x = 50 y = 1520 }
+
+
+	shared_focus = RUS_main_economic_committee
+	
+#####################
+# Politics Focuses
+#####################
+
+	focus = {
+		id = RUS_political_instability
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		x = 7
+		y = 0
+		completion_reward = {
+			add_political_power = 5
+		}
+	}
+
+#Make consessions branch
+
+	focus = {
+		id = RUS_make_concessions
+		icon = GFX_goal_tripartite_pact
+		cost = 1
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_political_instability
+		}
+		mutually_exclusive = {
+			focus = RUS_dissolution_of_duma
+		}
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		relative_position_id = RUS_political_instability
+		x = -3
+		y = 1
+		completion_reward = {
+			add_political_power = -30
+			add_stability = 0.04
+			set_country_flag = RUS_make_concessions_with_duma
+		}
+
+	}
+	focus = {
+		id = RUS_extension_of_powers_of_duma
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 9
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_make_concessions
+		}
+		relative_position_id = RUS_political_instability
+		x = -3
+		y = 2
+		completion_reward = {
+			add_political_power = -50
+			add_ideas = RUS_power_of_duma
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = 0.20
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.20
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.10
+			}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.10
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_support_left
+		icon = GFX_goal_support_communism
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_extension_of_powers_of_duma
+		}
+		mutually_exclusive = {
+			focus = RUS_support_progressive_block
+			focus = RUS_support_autoritarism
+		}
+		relative_position_id = RUS_political_instability
+		x = -6
+		y = 3
+		completion_reward = {
+			add_ideas = RUS_left_parties
+		}
+
+	}
+	focus = {
+		id = RUS_theocratic_socialism
+		icon = GFX_goal_tfv_burn_the_royal_portraits
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_support_left
+		}
+		mutually_exclusive = {
+			focus = RUS_social_monarchism
+		}
+		relative_position_id = RUS_support_left
+		x = -1
+		y = 1
+		completion_reward = {
+			add_ideas = RUS_red_theocracy
+			create_country_leader={
+				name = "Nicolai II Romanov"
+				desc=RUS_nikolai_ii_DESC
+				picture="gfx/leaders/RUS/Nikolai_II_rezerv.dds"
+				expire="1935.1.1"
+				ideology = agrarian_communism
+				traits={  }
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_social_monarchism
+		icon = GFX_goal_tfv_burn_the_royal_portraits
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_support_left
+		}
+		mutually_exclusive = {
+			focus = RUS_theocratic_socialism
+		}
+		relative_position_id = RUS_support_left
+		x = 1
+		y = 1
+		completion_reward = {
+			add_ideas = RUS_social_monarchism
+			create_country_leader={
+				name = "Nicolai II Romanov"
+				desc=RUS_nikolai_ii_DESC
+				picture="gfx/leaders/RUS/Nikolai_II_rezerv.dds"
+				expire="1935.1.1"
+				ideology = social_democracy_ideology
+				traits={  }
+			}
+			create_country_leader={
+				name = "Nicolai II Romanov"
+				desc=RUS_nikolai_ii_DESC
+				picture="gfx/leaders/RUS/Nikolai_II_rezerv.dds"
+				expire="1935.1.1"
+				ideology = social_liberalism_ideology
+				traits={  }
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_peasant_question_socmon
+		icon = GFX_goal_peasants
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		bypass = {
+			NOT = { has_idea = RUS_peasant_question }
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_social_monarchism
+		}
+		relative_position_id = RUS_support_left
+		x = 1
+		y = 2
+		completion_reward = {
+			country_event = russia.203
+		}
+
+	}
+	focus = {
+		id = RUS_christian_asceticism
+		icon = GFX_goal_christian_democracy
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_theocratic_socialism
+		}
+		bypass = {
+			NOT = { has_idea = RUS_peasant_question }
+		}
+		relative_position_id = RUS_support_left
+		x = -1
+		y = 2
+		completion_reward = {
+			add_ideas = RUS_christian_asceticism_idea
+		}
+
+	}
+	focus = {
+		id = RUS_white_and_red_tsar
+		icon = GFX_goal_tfv_burn_the_royal_portraits
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_christian_asceticism
+			focus = RUS_peasant_question_socmon
+		}
+		relative_position_id = RUS_support_left
+		x = 0
+		y = 3
+		completion_reward = {
+			remove_ideas = RUS_power_of_duma
+			if = {
+				limit = { has_completed_focus = RUS_theocratic_socialism }
+				set_politics = {
+					ruling_party = radical_socialism
+					elections_allowed = no
+				}
+				add_popularity = { ideology = radical_socialism popularity = 30 }
+			}
+			if = {
+				limit = { has_completed_focus = RUS_social_monarchism }
+				set_politics = {
+					ruling_party = communism
+					elections_allowed = no
+				}
+				add_popularity = { ideology = communism popularity = 30 }
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_support_autoritarism
+		icon = GFX_goal_generic_neutrality_focus
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_extension_of_powers_of_duma
+		}
+		mutually_exclusive = {
+			focus = RUS_support_progressive_block
+			focus = RUS_support_left
+		}
+		relative_position_id = RUS_political_instability
+		x = -3
+		y = 3
+		completion_reward = {
+			add_ideas = RUS_autoritarian_parties
+		}
+
+	}
+	focus = {
+		id = RUS_imaginary_constitution
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_support_autoritarism
+		}
+		relative_position_id = RUS_support_autoritarism
+		x = 0
+		y = 1
+		completion_reward = {
+			add_political_power = 140
+		}
+
+	}
+	focus = {
+		id = RUS_autoritarism
+		icon = GFX_goal_demand_sudetenland
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_imaginary_constitution
+		}
+		relative_position_id = RUS_support_autoritarism
+		x = 0
+		y = 2
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = RUS_autoritarian_parties
+				add_idea = RUS_autoritarism_idea
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_prussian_constitutionalism
+		icon = GFX_goal_tfv_burn_the_royal_portraits
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_autoritarism
+		}
+		mutually_exclusive = {
+			focus = RUS_nalional_reactionism
+		}
+		relative_position_id = RUS_support_autoritarism
+		x = -1
+		y = 3
+		completion_reward = {
+			add_political_power = 140
+			add_ideas = RUS_prussian_constitutionalism_idea_1
+		}
+
+	}
+	focus = {
+		id = RUS_strengthening_power_of_monarch
+		icon = GFX_goal_tfv_burn_the_royal_portraits
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_prussian_constitutionalism
+		}
+		mutually_exclusive = {
+			focus = RUS_nalional_reactionism
+		}
+		relative_position_id = RUS_support_autoritarism
+		x = -1
+		y = 4
+		completion_reward = {
+			add_ideas = RUS_prussian_constitutionalism_idea_2
+		}
+
+	}
+	focus = {
+		id = RUS_nalional_reactionism
+		icon = GFX_goal_support_fascism
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_autoritarism
+		}
+		mutually_exclusive = {
+			focus = RUS_prussian_constitutionalism
+		}
+		relative_position_id = RUS_support_autoritarism
+		x = 1
+		y = 3
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = RUS_autoritarism_idea
+				add_idea = RUS_monarch_nationalism_idea
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_totalitarism
+		icon = GFX_goal_support_fascism
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_nalional_reactionism
+		}
+		relative_position_id = RUS_support_autoritarism
+		x = 1
+		y = 4
+		completion_reward = {
+			remove_ideas = RUS_power_of_duma
+			swap_ideas = {
+				remove_idea = RUS_monarch_nationalism_idea
+				add_idea = RUS_monarcho-syndicalism_idea
+			}
+			set_politics = {
+				ruling_party = national_syndicalism
+				elections_allowed = yes
+			}
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.10
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.20
+			}
+			create_country_leader={
+				name = "Nikolay II"
+				desc=RUS_nikolai_ii_DESC
+				picture="gfx/leaders/RUS/Nikolai_II.dds"
+				expire="1935.1.1"
+				ideology = national_syndicalism_ideology
+				traits={  }
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_continuation_of_Stolypins_reform_2
+		icon = GFX_goal_RUS_continuation_of_Stolypins_reform
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		bypass = {
+			NOT = { has_idea = RUS_peasant_question }
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_strengthening_power_of_monarch
+			focus = RUS_totalitarism
+		}
+		relative_position_id = RUS_support_autoritarism
+		x = 0
+		y = 5
+		completion_reward = {
+			country_event = russia.201
+		}
+
+	}
+	focus = {
+		id = RUS_support_progressive_block
+		icon = GFX_goal_RUS_support_progressive_block
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_extension_of_powers_of_duma
+		}
+		mutually_exclusive = {
+			focus = RUS_support_autoritarism
+			focus = RUS_support_left
+		}
+		relative_position_id = RUS_political_instability
+		x = 0
+		y = 3
+		completion_reward = {
+			add_ideas = RUS_liberal_parties
+		}
+
+	}
+	focus = {
+		id = RUS_octobrists
+		icon = GFX_goal_generic_defence
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_support_progressive_block
+		}
+		mutually_exclusive = {
+			focus = RUS_kadets
+		}
+		relative_position_id = RUS_support_progressive_block
+		x = -1
+		y = 1
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = RUS_liberal_parties
+				add_idea = RUS_liberal_parties_okt
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_kadets
+		icon = GFX_goal_support_democracy
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_support_progressive_block
+		}
+		mutually_exclusive = {
+			focus = RUS_octobrists
+		}
+		relative_position_id = RUS_support_progressive_block
+		x = 1
+		y = 1
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = RUS_liberal_parties
+				add_idea = RUS_liberal_parties_cad
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_parliamentary_monarchy
+		icon = GFX_goal_tfv_burn_the_royal_portraits
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_octobrists
+		}
+		relative_position_id = RUS_support_progressive_block
+		x = -1
+		y = 2
+		completion_reward = {
+			set_politics = {
+				ruling_party = social_conservatism
+				elections_allowed = yes
+			}
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = 0.10
+			}
+			add_ideas = RUS_Nicolay_II_idea
+		}
+
+	}
+	focus = {
+		id = RUS_universal_electoral_rights
+		icon = GFX_goal_RUS_universal_electoral_rights
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_kadets
+		}
+		relative_position_id = RUS_support_progressive_block
+		x = 1
+		y = 2
+		completion_reward = {
+			set_politics = {
+				ruling_party = market_liberalism
+				elections_allowed = yes
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.10
+			}
+			add_ideas = RUS_Nicolay_II_idea
+		}
+
+	}
+	focus = {
+		id = RUS_liberal_liberty
+		icon = GFX_goal_liberal_liberty
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_universal_electoral_rights
+			focus = RUS_parliamentary_monarchy
+		}
+		relative_position_id = RUS_support_progressive_block
+		x = 0
+		y = 3
+		completion_reward = {
+			add_ideas = RUS_liberal_libirties_idea
+		}
+
+	}
+	focus = {
+		id = RUS_peasant_question_lib
+		icon = GFX_goal_peasants
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		bypass = {
+			NOT = { has_idea = RUS_peasant_question }
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_liberal_liberty
+		}
+		relative_position_id = RUS_support_progressive_block
+		x = 0
+		y = 4
+		completion_reward = {
+			country_event = russia.203
+		}
+
+	}
+
+# Samoderzavie branch
+
+	focus = {
+		id = RUS_dissolution_of_duma
+		icon = GFX_goal_generic_demand_territory
+		cost = 1
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_political_instability
+		}
+		mutually_exclusive = {
+			focus = RUS_make_concessions
+		}
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_political_instability
+		x = 3
+		y = 1
+		completion_reward = {
+			set_country_flag = RUS_duma_dissolved
+			add_political_power = 100
+		}
+
+	}
+	focus = {
+		id = RUS_enlist_support_of_army
+		icon = GFX_goal_rhineland
+		cost = 9
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+			NOT = { has_country_flag = RUS_make_concessions_with_duma }
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_dissolution_of_duma
+		}
+		relative_position_id = RUS_dissolution_of_duma
+		x = 0
+		y = 1
+		completion_reward = {
+			add_political_power = 50
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.10
+			}
+			clr_country_flag = RUS_Order_N_1
+			set_country_flag = RUS_army_support_monarchy
+		}
+
+	}
+	focus = {
+		id = RUS_purges_in_capital
+		icon = GFX_goal_support_fascism
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_enlist_support_of_army
+		}
+		mutually_exclusive = {
+			focus = RUS_chernaya_sotnya
+		}
+		relative_position_id = RUS_dissolution_of_duma
+		x = 0
+		y = 2
+		completion_reward = {
+			add_political_power = -25
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.10
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_samoderzavie
+		icon = GFX_goal_RUS_samoderzavie
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_purges_in_capital
+		}
+		relative_position_id = RUS_dissolution_of_duma
+		x = 0
+		y = 3
+		completion_reward = {
+			add_political_power = 70
+			add_ideas = RUS_pravoslaviye_samoderzavie_narodost
+		}
+
+	}
+	focus = {
+		id = RUS_reform_Okhranka
+		icon = GFX_goal_National_Security_Act
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_samoderzavie
+		}
+		relative_position_id = RUS_samoderzavie
+		x = 0
+		y = 1
+		completion_reward = {
+			add_ideas = RUS_Okhranka
+		}
+
+	}
+	focus = {
+		id = RUS_Zubatov_socialism
+		icon = GFX_goal_RUS_Zubatov_socialism
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_reform_Okhranka
+		}
+		relative_position_id = RUS_samoderzavie
+		x = -1
+		y = 2
+		completion_reward = {
+			add_ideas = RUS_Zubatov_socialism_idea
+		}
+
+	}
+	focus = {
+		id = RUS_indulgence_to_peasants
+		icon = GFX_goal_demand_sudetenland
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_reform_Okhranka
+		}
+		relative_position_id = RUS_samoderzavie
+		x = 0
+		y = 3
+		completion_reward = {
+			add_stability = 0.10
+		}
+
+	}
+	focus = {
+		id = RUS_chernaya_sotnya
+		icon = GFX_goal_generic_small_arms
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_enlist_support_of_army
+		}
+		mutually_exclusive = {
+			focus = RUS_purges_in_capital
+		}
+		relative_position_id = RUS_dissolution_of_duma
+		x = 2
+		y = 2
+		completion_reward = {
+			add_political_power = 25
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.10
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_displacement_of_Nicholas_II
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_chernaya_sotnya
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 0
+		y = 1
+		completion_reward = {
+			add_political_power = 25
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.15
+			}
+			retire_country_leader = yes
+			set_politics = {
+				ruling_party = despotism
+				elections_allowed = no
+			}
+			remove_ideas_with_trait = head_of_government
+			remove_ideas_with_trait = foreign_minister
+			remove_ideas_with_trait = economy_minister
+			remove_ideas_with_trait = security_minister
+			remove_ideas_with_trait = head_of_intel
+			add_ideas = {
+				Alexander_Trepov_1
+				Sergey_Sazonov_2
+				Vsevolod_Shakhovskoy_3
+				Nikolay_Shcherbatov_4
+				Alexander_Krasilnikov_5
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_tsar_Alexey
+		icon = GFX_goal_RUS_tsar_Alexey
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_displacement_of_Nicholas_II
+		}
+		mutually_exclusive = {
+			focus = RUS_regent_konsort_Alexandra_Feodorovna
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 0
+		y = 2
+		completion_reward = {
+			create_country_leader={
+				name = "Alexey II"
+				desc=RUS_alexei_ii_DESC
+				picture="gfx/leaders/RUS/Alexey_Romanov.dds"
+				expire="1935.1.1"
+				ideology = despotism_ideology
+				traits={  }
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_remove_chernaya_sotnya_from_power
+		icon = GFX_goal_generic_cavalry
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_tsar_Alexey
+		}
+		mutually_exclusive = {
+			focus = RUS_save_chernaya_sotnya_on_power
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 0
+		y = 3
+		completion_reward = {
+			kill_country_leader = yes
+			create_country_leader={
+				name = "Vasily Grigoryevich Orlov"
+				desc=RUS_nikolai_ii_DESC
+				picture="gfx/leaders/RUS/Grigory_Orlov.dds"
+				expire="1935.1.1"
+				ideology=despotism_ideology
+				traits={  }
+			}
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+			create_country_leader={
+				name = "Alexei II"
+				desc=RUS_alexei_ii_DESC
+				picture="gfx/leaders/RUS/Alexey_Romanov.dds"
+				expire="1935.1.1"
+				ideology = authoritarism_ideology
+				traits={  }
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.15
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_enlightened_absolutism
+		icon = GFX_goal_generic_cavalry
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_remove_chernaya_sotnya_from_power
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 0
+		y = 4
+		completion_reward = {
+			add_ideas = RUS_pravoslaviye_samoderzavie_narodost
+		}
+
+	}
+	focus = {
+		id = RUS_save_chernaya_sotnya_on_power
+		icon = GFX_goal_generic_cavalry
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_tsar_Alexey
+		}
+		mutually_exclusive = {
+			focus = RUS_remove_chernaya_sotnya_from_power
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 2
+		y = 3
+		completion_reward = {
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.10
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_tehi_dlya_lohov_pravoslaviye_dla_pacanov
+		icon = GFX_goal_generic_cavalry
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_save_chernaya_sotnya_on_power
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 2
+		y = 4
+		completion_reward = {
+			add_ideas = RUS_pravoslaviye_samoderzavie_narodost
+		}
+
+	}
+	focus = {
+		id = RUS_regent_konsort_Alexandra_Feodorovna
+		icon = GFX_goal_RUS_regent_konsort_Alexandra_Feodorovna
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_displacement_of_Nicholas_II
+		}
+		mutually_exclusive = {
+			focus = RUS_tsar_Alexey
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 4
+		y = 2
+		completion_reward = {
+			create_country_leader={
+				name = "Alexandra Feodorovna"
+				desc=RUS_alexei_ii_DESC
+				picture="gfx/leaders/RUS/Alexandra_Feodorovna.dds"
+				expire="1935.1.1"
+				ideology = despotism_ideology
+				traits={  }
+			}
+		}
+
+	}
+	focus = {
+		id = RUS_kult_of_holy_Rasputin
+		icon = GFX_goal_RUS_kult_of_holy_Rasputin
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_regent_konsort_Alexandra_Feodorovna
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 4
+		y = 3
+		completion_reward = {
+			add_ideas = RUS_kult_of_holy_Rasputin
+		}
+
+	}
+	focus = {
+		id = RUS_increase_in_power_of_chernaya_sotnya
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_kult_of_holy_Rasputin
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 4
+		y = 4
+		completion_reward = {
+			add_ideas = RUS_power_of_chernaya_sotnya
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.1
+			}
+			add_political_power = 200
+		}
+
+	}
+	focus = {
+		id = RUS_heavenly_mandate
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_increase_in_power_of_chernaya_sotnya
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 4
+		y = 5
+		completion_reward = {
+			add_ideas = RUS_heavenly_mandate_idea
+		}
+
+	}
+	focus = {
+		id = RUS_yunarmiya
+		icon = GFX_goal_generic_cavalry
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_heavenly_mandate
+			focus = RUS_tehi_dlya_lohov_pravoslaviye_dla_pacanov
+			focus = RUS_enlightened_absolutism
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 2
+		y = 6
+		completion_reward = {
+			add_ideas = RUS_yunarmiya_idea
+		}
+
+	}
+	focus = {
+		id = RUS_continuation_of_Stolypins_reform
+		icon = GFX_goal_RUS_continuation_of_Stolypins_reform
+		cost = 10
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		bypass = {
+			NOT = { has_idea = RUS_peasant_question }
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_heavenly_mandate
+			focus = RUS_tehi_dlya_lohov_pravoslaviye_dla_pacanov
+			focus = RUS_enlightened_absolutism
+			focus = RUS_indulgence_to_peasants
+		}
+		relative_position_id = RUS_chernaya_sotnya
+		x = 0
+		y = 6
+		completion_reward = {
+			country_event = russia.201
+		}
+
+	}
+}
