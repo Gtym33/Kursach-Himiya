@@ -1,6 +1,6 @@
 on_actions = {
 	# country 
-	on_new_term_election = {
+#	on_new_term_election = {
 #		random_events = {
 #			100 = election.2
 #			100 = election.3
@@ -12,8 +12,20 @@ on_actions = {
 #			100 = election.13
 #			100 = election.14
 #			100 = election.15
+#			
+#			100 = election.2
+#			100 = election.3
+#			100 = election.4
+#			100 = election.5
+#			100 = election.6
+#			100 = election.13
+#			100 = election.14
+#			100 = election.101
+#			100 = election.102
+#			100 = election.103
+#			100 = election.104
 #		}
-	}
+#	}
 
 	# Ace pilots
 	# country, FROM = ace
@@ -93,15 +105,6 @@ on_actions = {
 	on_nuke_drop = {
 
 		effect = {
-			set_global_flag = first_nuke_dropped
-			if = {
-				limit = { NOT = { has_global_flag = first_nuke_dropped } }
-				country_event = { id = generic.8 }
-			}
-			if = {
-				limit = { has_idea = race_for_the_bomb_outclassed }
-				remove_ideas = race_for_the_bomb_outclassed
-			}
 			if = {
 				limit = { NOT = { has_country_flag = achievement_has_dropped_nuke } }
 				goto_state = FROM
@@ -129,30 +132,6 @@ on_actions = {
 				}
 				set_country_flag = achievement_med_plutonium
 			}
-			if = {
-				limit = {
-					FROM = {
-						is_core_of = JAP
-					}
-					has_global_flag = JAP_nuke_1
-					NOT = {
-						has_global_flag = JAP_nuke_2
-					}
-				}
-				set_global_flag = JAP_nuke_2
-			}
-			if = {
-				limit = {
-					FROM = {
-						is_core_of = JAP
-					}
-					NOT = {
-						has_global_flag = JAP_nuke_1
-					}
-				}
-				set_global_flag = JAP_nuke_1
-			}
-			
 			news_event = { id = nuke_dropped.2 days = 1}
 			news_event = { id = nuke_dropped.3 days = 1}
 			news_event = { id = nuke_dropped.4 days = 1}
@@ -313,6 +292,28 @@ on_actions = {
 					}
 				}
 			}
+
+			if = {
+				limit = {
+					ROOT = {
+						tag = RUS
+					}
+					FROM = {
+						OR = {
+							tag = RVA
+							tag = DON
+						}
+					}
+				}
+				every_country = {
+					diplomatic_relation = {
+						country = FROM
+						relation = guarantee
+						active = no
+					}
+				}
+			}
+
 		}
 	}
 	
@@ -327,6 +328,16 @@ on_actions = {
 	on_capitulation = {
 		effect = {
 			news_event = { id = country_capitulated.0 days = 0 }
+			if = {
+				limit = { original_tag = RVA }
+				remove_ideas = {
+					RVA_volunteer_army_1
+					RVA_volunteer_army_2
+					RVA_volunteer_army_3
+					RVA_volunteer_army_4
+					RVA_volunteer_army_5
+				}
+			}
 		}
 	}
 
@@ -344,9 +355,76 @@ on_actions = {
 		}
 	}
 
+
 	on_government_change = {
 		effect = {
-			
+#			if = {
+#				limit = { is_democratic_country = yes }
+#				if = {
+#					limit = { has_idea = democratic_opposition_voicing_protests }
+#					remove_ideas = democratic_opposition_voicing_protests
+#				}
+#				if = {
+#					limit = { has_idea = democratic_revolutionaries }
+#					remove_ideas = democratic_revolutionaries
+#				}
+#				if = {
+#					limit = { has_idea = reign_of_terror }
+#					remove_ideas = reign_of_terror
+#				}
+#			}
+			if = {
+				limit = { has_government = communism }
+				if = {
+					limit = { original_tag = SAF }
+					set_cosmetic_tag = SAF_COM
+				}
+				if = {
+					limit = { has_idea = communist_partisans_recruiting }
+					remove_ideas = communist_partisans_recruiting
+				}
+				if = {
+					limit = { has_idea = communist_revolutionaries }
+					remove_ideas = communist_revolutionaries
+				}
+				if = {
+					limit = { has_idea = communism_defeated }
+					remove_ideas = communism_defeated
+				}
+
+				#Remove anti_soviet_pact
+				if = {
+					limit = { has_idea = anti_soviet_pact }
+					remove_ideas = anti_soviet_pact
+				}
+			}
+			if = {
+				limit = { has_government = fascism }
+				if = {
+					limit = { has_idea = fascist_assault_divisions }
+					remove_ideas = fascist_assault_divisions
+				}
+				if = {
+					limit = { has_idea = fascist_revolutionaries }
+					remove_ideas = fascist_revolutionaries
+				}
+				if = {
+					limit = { has_idea = fascism_defeated }
+					remove_ideas = fascism_defeated
+				}
+				if = {
+					limit = { has_idea = anti_nazi_coup }
+					remove_ideas = anti_nazi_coup
+				}
+			}
+			if = {
+				limit = { NOT = { has_government = communism has_government = radical_socialism has_government = social_democracy } }
+				fall_of_red_alert_level_when_one_country_turns_to_communism = yes
+			}
+			if = {
+				limit = { OR = { has_government = communism has_government = radical_socialism } }
+				rise_of_red_alert_level_when_one_country_turns_to_communism = yes
+			}
 		}
 	}
 
@@ -400,7 +478,12 @@ on_actions = {
 	#Not run on a specific country.
 	on_startup = {
 		effect = {
-			
+			GER = {
+				country_event = { id = npt.kostili.1 hours = 1 }
+			}
+			every_country = {
+				initiate_verification_of_the_popularity_of_coalitions = yes
+			}
 		}
 	}
 	
