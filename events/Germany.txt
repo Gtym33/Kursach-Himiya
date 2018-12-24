@@ -22,18 +22,31 @@ country_event = {
 		}
 		hidden_effect = {
 			if = {
-				limit = { is_historical_focus_on = yes }
+				limit = { is_historical_focus_on = yes surrender_progress < 0.03 }
 				ENG = { country_event = { id = germany.2 days = 1 } }
-			}
-			if = {
-				limit = { is_historical_focus_on = no }
-				random_list = {
-					95 = {
-						ENG = { country_event = { id = germany.2 days = 1 } }
-						MEX = { country_event = { id = germany.10 days = 15 } }
-					}
-					5 = {
-						MEX = { country_event = { id = germany.10 days = 15 } }
+				else = {
+					if = {
+						limit = { surrender_progress < 0.03 }
+						random_list = {
+							95 = {
+								ENG = { country_event = { id = germany.2 days = 1 } }
+								MEX = { country_event = { id = germany.10 days = 15 } }
+							}
+							5 = {
+								MEX = { country_event = { id = germany.10 days = 15 } }
+							}
+						}
+						else = {
+							random_list = {
+								25 = {
+									ENG = { country_event = { id = germany.2 days = 1 } }
+									MEX = { country_event = { id = germany.10 days = 15 } }
+								}
+								75 = {
+									MEX = { country_event = { id = germany.10 days = 15 } }
+								}
+							}
+						}
 					}
 				}
 			}
@@ -343,10 +356,10 @@ country_event = {
 		add_stability = -0.1
 		add_popularity = {
 			ideology = social_conservatism
-			popularity = -0.2
+			popularity = -0.1
 		}
 		ai_chance = {
-			factor = 100
+			factor = 70
 		}
 	}
 	option = {
@@ -355,7 +368,7 @@ country_event = {
 		add_political_power = -50
 		add_timed_idea = { idea = ITA_antiwar_strikes days = 15 }
 		ai_chance = {
-			factor = 0
+			factor = 30
 		}
 	}
 }
@@ -372,22 +385,16 @@ country_event = {
 	trigger = {
 		tag = GER
 		has_war_with = RUS
-		any_country = {
-			OR = {
-				tag = GER
-				is_in_faction_with = GER
-			}
-			has_full_control_of_state = 195
-		}
-		any_country = {
-			OR = {
-				tag = GER
-				is_in_faction_with = GER
-			}
-			has_full_control_of_state = 219
-		}
 		has_global_flag = WWI_is_now
-		NOT = { has_global_flag = RUS_has_capitulated_WWI }
+		NOT = { has_global_flag = WWI_RUS_HAS_CAPITULATED }
+		RUS = {
+			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
+			OR = {
+				surrender_progress > 0.5
+				NOT = { controls_state = 195 }
+				NOT = { controls_state = 219 }
+			}
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -396,7 +403,7 @@ country_event = {
 	
 	option = {
 		name = germany.20.a
-		set_global_flag = RUS_has_capitulated_WWI
+		set_global_flag = WWI_RUS_HAS_CAPITULATED
 		if = {
 			limit = { AUH = { has_war_with = RUS is_in_faction_with = GER } }
 			AUH = { country_event = germany.21 }
