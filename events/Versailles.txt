@@ -216,17 +216,17 @@ country_event = {
 			RUS = {
 				transfer_state = 340
 				transfer_state = 341
+				transfer_state = 860
+				transfer_state = 949
 			}
 			else = {
 				ENG = {
 					transfer_state = 340
 					transfer_state = 341
+					transfer_state = 860
+					transfer_state = 949
 				}
 			}
-		}
-		every_country = {
-			limit = { owns_state = 184 }
-			transfer_state = 860
 		}
 		if = {
 			limit = { RUS = { has_war_with = TUR owns_state = 231 } }
@@ -2004,7 +2004,16 @@ country_event = {
 		}
 		if = {
 			limit = { check_variable = { global.LIT_Memelland < 0.5 } }
-			GER = { transfer_state = 188 }
+			if = {
+				limit = { check_variable = { global.RUS_East_Prussia_ind > global.RUS_East_Prussia_annex } check_variable = { global.RUS_East_Prussia_ind > global.RUS_East_Prussia_GER } }
+				PRS = { transfer_state = 188 }
+				else = {
+					every_country = {
+						limit = { controls_state = 189 }
+						transfer_state = 188
+					}
+				}
+			}
 			else = {
 				if = {
 					limit = { LIT = { exists = yes } }
@@ -2046,5 +2055,66 @@ country_event = {
 				}
 			}
 		}
+	}
+}
+
+
+
+# Переговоры о мире
+country_event = {
+	id = versailles.201
+	title = versailles.201.t
+	desc = versailles.201.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	#Затягивать
+	option = {
+		name = versailles.201.b
+		ai_chance = {
+			factor = 1
+		}
+		GER = { country_event = { id = versailles.202 days = 3 } }
+	}
+	
+	#Конечно, сразу примим
+	option = {
+		name = versailles.201.b
+		ai_chance = {
+			factor = 0
+			modifier ={
+				add = 99999
+				OR = {
+					GER = { controls_state = 29 }
+					controls_state = 18
+					controls_state = 27
+					FRA = { surrender_progress > 0.15 NOT = { is_in_faction_with = GER } }
+				}
+				GER = { controls_state = 34 }
+				GER = { controls_state = 833 }
+				GER = { controls_state = 786 }
+				GER = { controls_state = 8 }
+				GER = { controls_state = 42 }
+				GER = { controls_state = 850 }
+				GER = { controls_state = 28 }
+				GER = { controls_state = 50 }
+			}
+		}
+	}
+}
+# Ответ амеров
+country_event = {
+	id = versailles.202
+	title = versailles.202.t
+	desc = versailles.202.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	option = {
+		name = versailles.202.a
+		add_war_support = -0.05
+		add_stability = -0.03
 	}
 }
