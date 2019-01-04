@@ -511,9 +511,12 @@ country_event = {
 	
 	option = {
 		name = versailles.4.a
-		end_puppet = FRA
-		FRA = { leave_faction = yes }
-		ENG = { add_to_faction = FRA }
+		if ={
+			limit = { FRA = { is_subject_of = GER } }
+			GER = { end_puppet = FRA }
+			FRA = { leave_faction = yes }
+			ENG = { add_to_faction = FRA }
+		}
 		set_global_flag = WWI_GER_HAS_CAPITULATED
 		leave_faction = yes
 		add_ideas = alliance_neutrality
@@ -760,6 +763,7 @@ country_event = {
 	option = {
 		name = versailles.10.a
 		clr_global_flag = WWI_is_now
+		set_global_flag = WWI_end_Entente_victory
 		ENG = {
 			remove_ideas = guarantee_neutrality
 		}
@@ -1132,9 +1136,9 @@ country_event = {
 					NOT = { has_country_flag = WWI_Entente_member }
 					NOT = { has_country_flag = RUS_brest_peace_fired }
 				}
-				set_country_flag = WWI_Entente_member
-				add_to_variable = { global.vers_peace_conf_members = 1 }
 			}
+			set_country_flag = WWI_Entente_member
+			add_to_variable = { global.vers_peace_conf_members = 1 }
 		}
 		if = {
 			limit = { RUS = { has_country_flag = WWI_Entente_member } }
@@ -1804,7 +1808,7 @@ country_event = {
 				FRA = { transfer_state = 829 transfer_state = 42 transfer_state = 51 }
 				else = {
 					if = {
-						limit = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex }
+						limit = { check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex } }
 						GER = { transfer_state = 829 transfer_state = 42 transfer_state = 50 transfer_state = 51 }
 						829 = { set_demilitarized_zone = yes }
 						42 = { set_demilitarized_zone = yes }
@@ -1842,7 +1846,7 @@ country_event = {
 						FRA = { transfer_state = 850 }
 						else = {
 							if = {
-								limit = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex }
+								limit = { check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex } }
 								GER = { transfer_state = 850 }
 								850 = { set_demilitarized_zone = yes }
 								else = {
@@ -1960,7 +1964,7 @@ country_event = {
 					FRA = { transfer_state = 786 }
 					else = {
 						if = {
-							limit = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex }
+							limit = { check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex } }
 							GER = { transfer_state = 786 }
 							786 = { set_demilitarized_zone = yes }
 							else = { RHE = { transfer_state = 786 } }
@@ -2084,7 +2088,7 @@ country_event = {
 	
 	#Затягивать
 	option = {
-		name = versailles.201.b
+		name = versailles.201.a
 		ai_chance = {
 			factor = 1
 		}
@@ -2094,6 +2098,7 @@ country_event = {
 	#Конечно, сразу примим
 	option = {
 		name = versailles.201.b
+		GER = { country_event = { id = versailles.210 days = 5 } }
 		ai_chance = {
 			factor = 0
 			modifier ={
@@ -2127,7 +2132,105 @@ country_event = {
 	
 	option = {
 		name = versailles.202.a
-		add_war_support = -0.05
-		add_stability = -0.03
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = GER_monarchy_fall }
+				country_event = { id = versailles.4 days = 1 }
+				else = {
+					set_country_flag = GER_peace_negotiations_with_Entente
+					add_war_support = -0.05
+					add_stability = -0.03
+				}
+			}
+		}
+	}
+}
+
+# Мир
+country_event = {
+	id = versailles.210
+	title = versailles.210.t
+	desc = versailles.210.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	option = {
+		name = versailles.210.a
+		GER = {
+			add_war_support = -0.1
+			add_stability = 0.1
+			release = LUX
+			delete_unit_template_and_units = {
+				division_template = "Mobilized infanterie Division"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Mobilized garnison Division"
+			}
+			end_puppet = FRA
+		}
+		FRA = {
+			transfer_state = 17
+			transfer_state = 18
+			transfer_state = 29
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 291 } } }
+			ENG = { transfer_state = 291 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 676 } } }
+			ENG = { transfer_state = 676 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 675 } } }
+			ENG = { transfer_state = 675 transfer_state = 906 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 454 } } }
+			ENG = { transfer_state = 454 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 455 } } }
+			ENG = { transfer_state = 455 transfer_state = 905 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 553 } } }
+			FRA = { transfer_state = 553 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 554 } } }
+			FRA = { transfer_state = 554 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 677 } } }
+			FRA = { transfer_state = 677 }
+		}
+		if = {
+			limit = { TUR = { NOT = { controls_state = 680 } } }
+			FRA = { transfer_state = 680 }
+		}
+		
+		if = {
+			limit = { ENG = { NOT = { controls_state = 656 } } }
+			TUR = { transfer_state = 656 }
+		}
+		if = {
+			limit = { ENG = { NOT = { controls_state = 413 } } }
+			TUR = { transfer_state = 413 }
+		}
+		if = {
+			limit = { ENG = { NOT = { controls_state = 917 } } }
+			ENG = { end_puppet = EGY }
+		}
+		every_country = {
+			limit = { is_in_faction_with = GER }
+			every_country = {
+				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+				ROOT = { white_peace = PREV }
+			}
+		}
+		clr_global_flag = WWI_is_now
+		set_global_flag = WWI_end_white_peace
 	}
 }
