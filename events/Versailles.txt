@@ -24,9 +24,7 @@ country_event = {
 		}
 		OR = {
 			has_global_flag = WWI_AUH_HAS_CAPITULATED
-			NOT = { has_full_control_of_state = 48 }
-			NOT = { has_full_control_of_state = 212 }
-			TUR = { NOT = { controls_state = 341 } }
+			surrender_progress > 0.1
 		}
 	}
 
@@ -48,22 +46,37 @@ country_event = {
 	
 	option = {
 		name = versailles.1.a
+		if = {
+			limit = {
+				any_country = {
+					is_socialist_country = yes
+					OR = { controls_state = 48 controls_state = 780 controls_state = 211 controls_state = 946 controls_state = 212 controls_state = 945 controls_state = 944 }
+				}
+			}
+			set_country_flag = communist_occ
+		}
+
 		set_global_flag = WWI_BUL_HAS_CAPITULATED
 		leave_faction = yes
 		every_country = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
-			ROOT = { white_peace = PREV }
+			ROOT = { white_peace = PREV give_military_access = PREV }
 		}
 		every_country = {
-			limit = { owns_state = 184 }
+			limit = { is_subject_of = ROOT }
+			ROOT = { end_puppet = PREV }
+		}
+		if = {
+			limit = { RUS = { OR = { controls_state = 211 controls_state = 945 controls_state = 780 controls_state = 946 } } }
+			RUS = {
+				transfer_state = 211
+				transfer_state = 945
+			}
+		}
+		every_country = {
+			limit = { owns_state = 731 }
 			transfer_state = 774
 			transfer_state = 775
-		}
-		every_country = {
-			limit = { owns_state = 46 }
-			transfer_state = 77
-			transfer_state = 855
-			transfer_state = 856
 		}
 		hidden_effect = {
 			REB = {
@@ -77,29 +90,35 @@ country_event = {
 				transfer_troops = no
 			}
 		}
-		ENG = {
-			puppet = ROOT
-			set_autonomy = {
-				target = ROOT
-				autonomy_state = autonomy_dominion
-			}
-		}
 		hidden_effect = {
-			set_politics = {
-				ruling_party = authoritarism
+			if = {
+				limit = { has_country_flag = communist_occ }
+				set_politics = {
+					ruling_party = communism
+				}
+				clr_country_flag = communist_occ
+				add_popularity = {
+					ideology = authoritarism
+					popularity = -1
+				}
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -1
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.2
+				}
+				else = {
+					set_politics = {
+						ruling_party = authoritarism
+					}
+					add_popularity = {
+						ideology = authoritarism
+						popularity = 0.3
+					}
+				}
 			}
-			add_popularity = {
-				ideology = authoritarism
-				popularity = -1
-			}
-			add_popularity = {
-				ideology = authoritarism
-				popularity = 0.3
-			}
-		}
-		if = {
-			limit = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
-			TUR = { country_event = { id = versailles.2 days = 0 } }
 		}
 		hidden_effect = { news_event = { id = news_n.101 hours = 3 } }
 	}
@@ -138,17 +157,18 @@ country_event = {
 		}
 		OR = {
 			AND = {
-				has_global_flag = WWI_BUL_HAS_CAPITULATED
-				NOT = { controls_state = 341 }
+				has_global_flag = WWI_GER_HAS_CAPITULATED
+				has_global_flag = WWI_AUH_HAS_CAPITULATED
+				surrender_progress > 0.3
 			}
 			AND = {
-				BUL = { NOT = { controls_state = 48 } }
-				NOT = { controls_state = 341 }
+				OR = {
+					has_global_flag = WWI_GER_HAS_CAPITULATED
+					has_global_flag = WWI_AUH_HAS_CAPITULATED
+				}
+				surrender_progress > 0.35
 			}
-			NOT = {
-				controls_state = 676
-				controls_state = 677
-			}
+			surrender_progress > 0.4
 		}
 	}
 
@@ -160,12 +180,18 @@ country_event = {
 	
 	option = {
 		name = versailles.2.a
+		if = {
+			limit = {
+				any_country = {
+					is_socialist_country = yes
+					OR = { controls_state = 49 controls_state = 341 controls_state = 347 controls_state = 343 controls_state = 348 }
+				}
+			}
+			set_country_flag = communist_occ
+		}
+		
 		set_global_flag = WWI_TUR_HAS_CAPITULATED
 		leave_faction = yes
-		every_country = {
-			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
-			ROOT = { white_peace = PREV }
-		}
 		if = {
 			limit = { NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED } }
 			FRA = {
@@ -219,13 +245,49 @@ country_event = {
 				transfer_state = 860
 				transfer_state = 949
 			}
-			else = {
-				ENG = {
-					transfer_state = 340
-					transfer_state = 341
-					transfer_state = 860
-					transfer_state = 949
-				}
+		}
+		else_if = {
+			limit = { FRA = { controls_state = 341 } }
+			FRA = {
+				transfer_state = 340
+				transfer_state = 341
+				transfer_state = 860
+				transfer_state = 949
+			}
+		}
+		else_if = {
+			limit = { ITA = { controls_state = 341 } }
+			ITA = {
+				transfer_state = 340
+				transfer_state = 341
+				transfer_state = 860
+				transfer_state = 949
+			}
+		}
+		else_if = {
+			limit = { GRE = { controls_state = 341 } }
+			GRE = {
+				transfer_state = 340
+				transfer_state = 341
+				transfer_state = 860
+				transfer_state = 949
+			}
+		}
+		else_if = {
+			limit = { GRR = { controls_state = 341 } }
+			GRR = {
+				transfer_state = 340
+				transfer_state = 341
+				transfer_state = 860
+				transfer_state = 949
+			}
+		}
+		else = {
+			ENG = {
+				transfer_state = 340
+				transfer_state = 341
+				transfer_state = 860
+				transfer_state = 949
 			}
 		}
 		if = {
@@ -235,6 +297,26 @@ country_event = {
 				transfer_state = 353
 				transfer_state = 354
 			}
+		}
+		if = {
+			limit = {
+				GRE = { controls_state = 339 }
+			}
+			GRE = { transfer_state = 339 }
+		}
+		if = {
+			limit = {
+				GRR = { controls_state = 339 }
+			}
+			GRR = { transfer_state = 339 }
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+			ROOT = { white_peace = PREV give_military_access = PREV }
+		}
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			ROOT = { end_puppet = PREV }
 		}
 		hidden_effect = {
 			REB = {
@@ -249,24 +331,33 @@ country_event = {
 			}
 			set_capital = 49
 		}
-		ENG = {
-			puppet = ROOT
-			set_autonomy = {
-				target = ROOT
-				autonomy_state = autonomy_dominion
-			}
-		}
 		hidden_effect = {
-			set_politics = {
-				ruling_party = market_liberalism
-			}
-			add_popularity = {
-				ideology = market_liberalism
-				popularity = -1
-			}
-			add_popularity = {
-				ideology = market_liberalism
-				popularity = 0.3
+			if = {
+				limit = { has_country_flag = communist_occ }
+				set_politics = {
+					ruling_party = communism
+				}
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.1
+				}
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.1
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.3
+				}
+				else = {
+					set_politics = {
+						ruling_party = market_liberalism
+					}
+					add_popularity = {
+						ideology = market_liberalism
+						popularity = 0.1
+					}
+				}
 			}
 		}
 		hidden_effect = { news_event = { id = news_n.102 hours = 3 } }
@@ -305,34 +396,32 @@ country_event = {
 			has_war_with = FRA
 		}
 		OR = {
-			has_global_flag = WWI_GER_HAS_CAPITULATED
 			AND = {
-				has_global_flag = WWI_BUL_HAS_CAPITULATED
+				has_global_flag = WWI_GER_HAS_CAPITULATED
+				surrender_progress > 0.08
+			}
+			AND = {
 				has_global_flag = WWI_TUR_HAS_CAPITULATED
-				NOT = {
-					controls_state = 107
-					controls_state = 109
-				}
+				surrender_progress > 0.1
 			}
-			NOT = { controls_state = 9 }
-			NOT = { controls_state = 4 }
-			NOT = { controls_state = 43 }
 			AND = {
-				RUS = {
-					controls_state = 10
-					controls_state = 73
-					controls_state = 89
-					controls_state = 91
-					OR = {
-						controls_state = 71
-						controls_state = 154
-						controls_state = 664
-					}
-				}
+				has_stability < 0.2
+				surrender_progress > 0.2
 			}
+			AND = {
+				has_stability < 0.15
+				surrender_progress > 0.15
+			}
+			AND = {
+				has_stability < 0.1
+				surrender_progress > 0.1
+			}
+			AND = {
+				has_stability < 0.05
+				surrender_progress > 0.05
+			}
+			surrender_progress > 0.25
 		}
-		NOT = { controls_state = 159 controls_state = 160 }
-		FRA = { OR = { AND = { controls_state = 16 NOT = { is_in_faction_with = GER } } AND = { NOT = { controls_state = 16 } is_in_faction_with = GER } } }
 	}
 
 	fire_only_once = yes
@@ -345,12 +434,366 @@ country_event = {
 		name = versailles.3.a
 		set_global_flag = WWI_AUH_HAS_CAPITULATED
 		leave_faction = yes
-		add_ideas = alliance_neutrality
+		CZE = {
+			if = {
+				limit = {
+					any_country = {
+						NOT = {
+							tag = CZE
+						}
+						is_socialist_country = yes
+						OR = { controls_state = 9 controls_state = 75 }
+					}
+				}
+				set_politics = {
+					ruling_party = communism
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.2
+				}
+			}
+		}
+		HUN = {
+			if = {
+				limit = {
+					any_country = {
+						NOT = {
+							tag = HUN
+						}
+						is_socialist_country = yes
+						OR = { controls_state = 43 controls_state = 154 controls_state = 155 }
+					}
+				}
+				set_politics = {
+					ruling_party = communism
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.2
+				}
+			}
+		}
+		SLO = {
+			if = {
+				limit = {
+					any_country = {
+						NOT = {
+							tag = SLO
+							tag = CZE
+							tag = HUN
+						}
+						is_socialist_country = yes
+						controls_state = 70
+					}
+				}
+				set_politics = {
+					ruling_party = communism
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.2
+				}
+			}
+		}
+		if = {
+			limit = {
+				any_country = {
+					NOT = {
+						tag = AUH
+						tag = AUS
+					}
+					is_socialist_country = yes
+					OR = { controls_state = 4 controls_state = 841 controls_state = 152 }
+				}
+			}
+			add_stability = -1
+		}
+		every_country = {
+			limit = { owns_state = 776 }
+			transfer_state = 776
+		}
+		SER = {
+			if = {
+				limit = {
+					any_country = {
+						is_socialist_country = yes
+						OR = { controls_state = 107 controls_state = 108 controls_state = 948 }
+					}
+				}
+				set_politics = {
+					ruling_party = communism
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.2
+				}
+			}
+			transfer_state = 107
+			transfer_state = 108
+			transfer_state = 948
+			transfer_state = 947
+			transfer_state = 817
+			transfer_state = 778
+			transfer_state = 818
+			transfer_state = 106
+			transfer_state = 777
+			
+			transfer_state = 779
+			transfer_state = 105
+			transfer_state = 825
+		}
+		ROM = {
+			transfer_state = 819
+			transfer_state = 820
+			transfer_state = 804
+		}
+		CRO = {
+			if = {
+				limit = {
+					any_country = {
+						NOT = {
+							tag = SER
+						}
+						is_socialist_country = yes
+						OR = { controls_state = 109 controls_state = 104 }
+					}
+				}
+				set_politics = {
+					ruling_party = communism
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = 0.2
+				}
+			}
+			set_cosmetic_tag = SCS
+		}
+		ITA = { transfer_state = 158 }
+		ITA = { transfer_state = 159 }
+		ITA = { transfer_state = 160 }
+		ITA = { transfer_state = 161 }
+		
+		ITA = { transfer_state = 823 }
+		ITA = { transfer_state = 824 }
+		ITA = { transfer_state = 39 }
+		ITA = { transfer_state = 823 }
+		if = {
+			limit = { ITA = { controls_state = 163 } }
+			ITA = { transfer_state = 163 }
+		}
+		else_if = {
+			limit = { SER = { controls_state = 163 } }
+			SER = { transfer_state = 163 }
+		}
+		else = {
+			CRO = { transfer_state = 163 }
+		}
+		if = {
+			limit = { ITA = { controls_state = 103 } }
+			ITA = { transfer_state = 103 }
+		}
+		else_if = {
+			limit = { SER = { controls_state = 103 } }
+			SER = { transfer_state = 103 }
+		}
+		else = {
+			CRO = { transfer_state = 103 }
+		}
+		if = {
+			limit = { ITA = { controls_state = 834 } }
+			ITA = { transfer_state = 834 }
+		}
+		else_if = {
+			limit = { SER = { controls_state = 834 } }
+			SER = { transfer_state = 834 }
+		}
+		else = {
+			CRO = { transfer_state = 834 }
+		}
+		if = {
+			limit = { SER = { controls_state = 109 } }
+			SER = { transfer_state = 109 }
+			else = { CRO = { transfer_state = 109 } }
+		}
+		if = {
+			limit = { SER = { controls_state = 104 } }
+			SER = { transfer_state = 104 }
+			else = { CRO = { transfer_state = 104 } }
+		}
+		if = {
+			limit = { SER = { controls_state = 862 } }
+			SER = { transfer_state = 862 }
+			else = { CRO = { transfer_state = 862 } }
+		}
+		if = {
+			limit = { SER = { controls_state = 962 } }
+			SER = { transfer_state = 962 }
+			else = { CRO = { transfer_state = 962 } }
+		}
+		if = {
+			limit = { SER = { controls_state = 45 } }
+			SER = { transfer_state = 45 }
+		}
+		if = {
+			limit = { ITA = { controls_state = 736 } }
+			ITA = { transfer_state = 736 }
+			else = { CRO = { transfer_state = 736 } }
+		}
+		if = {
+			limit = { ITA = { controls_state = 102 } }
+			ITA = { transfer_state = 102 }
+			else = { CRO = { transfer_state = 102 } }
+		}
+		if = {
+			limit = { ITA = { controls_state = 337 } }
+			ITA = { transfer_state = 337 }
+			else = { CRO = { transfer_state = 337 } }
+		}
+		if = {
+			limit = { ITA = { controls_state = 836 } }
+			ITA = { transfer_state = 836 }
+			else = { CRO = { transfer_state = 836 } }
+		}
+		if = {
+			limit = { ITA = { controls_state = 835 } }
+			ITA = { transfer_state = 835 }
+			else = { CRO = { transfer_state = 835 } }
+		}
+		
+		if = {
+			limit = { NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED } }
+			if = {
+				limit = { controls_state = 838 }
+				GER = { transfer_state = 838 }
+				else = {
+					every_country = {
+						limit = { controls_state = 838 }
+						transfer_state = 838
+					}
+				}
+			}
+			if = {
+				limit = { controls_state = 153 }
+				GER = { transfer_state = 153 }
+				else = {
+					every_country = {
+						limit = { controls_state = 153 }
+						transfer_state = 153
+					}
+				}
+			}
+			if = {
+				limit = { controls_state = 98 }
+				GER = { set_state_controller = 98 }
+			}
+			if = {
+				limit = { controls_state = 97 }
+				GER = { set_state_controller = 97 }
+			}
+			if = {
+				limit = { controls_state = 822 }
+				GER = { set_state_controller = 822 }
+			}
+			if = {
+				limit = { controls_state = 87 }
+				GER = { set_state_controller = 87 }
+			}
+			if = {
+				limit = { controls_state = 10 }
+				GER = { set_state_controller = 10 }
+			}
+			if = {
+				limit = { controls_state = 90 }
+				GER = { set_state_controller = 90 }
+			}
+			if = {
+				limit = { controls_state = 92 }
+				GER = { set_state_controller = 92 }
+			}
+			if = {
+				limit = { controls_state = 904 }
+				GER = { set_state_controller = 904 }
+			}
+			if = {
+				limit = { controls_state = 93 }
+				GER = { set_state_controller = 93 }
+			}
+			if = {
+				limit = { controls_state = 204 }
+				GER = { set_state_controller = 204 }
+			}
+			if = {
+				limit = { controls_state = 194 }
+				GER = { set_state_controller = 194 }
+			}
+		}
+		
+		if = {
+			limit = { controls_state = 10 }
+			POL = { transfer_state = 10 transfer_state = 87 transfer_state = 98 transfer_state = 90 }
+		}
+		if = {
+			limit = { controls_state = 92 }
+			POL = { transfer_state = 92 }
+		}
+		if = {
+			limit = { controls_state = 904 }
+			POL = { transfer_state = 904 }
+		}
+		if = {
+			limit = { controls_state = 822 }
+			POL = { transfer_state = 822 }
+		}
+		if = {
+			limit = { controls_state = 97 }
+			POL = { transfer_state = 97 }
+		}
+		
+		if = {
+			limit = { RUS = { controls_state = 88 } }
+			RUS = { transfer_state = 88 }
+			else = {
+				POL = { transfer_state = 88 }
+			}
+		}
+		if = {
+			limit = { RUS = { controls_state = 91 } }
+			RUS = {
+				transfer_state = 89
+				transfer_state = 91
+				transfer_state = 925
+			}
+		}
+		else_if ={
+			limit = { UKR = { controls_state = 91 } }
+			UKR = {
+				transfer_state = 89
+				transfer_state = 91
+				transfer_state = 925
+			}
+		}
+		else = {
+			GAL = {
+				transfer_state = 89
+				transfer_state = 91
+				transfer_state = 925
+			}
+		}
+		if = {
+			limit = { OR = { ROM = { controls_state = 80 } GAL = { exists = no } } }
+			ROM = { transfer_state = 80 }
+			else = { GAL = { transfer_state = 80 } }
+		}
+	
 		every_country = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
-			ROOT = { white_peace = PREV }
+			ROOT = { white_peace = PREV give_military_access = PREV }
 		}
-		AUH = { end_puppet = SER }
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			ROOT = { end_puppet = PREV }
+		}
 		hidden_effect = {
 			REB = {
 				annex_country = {
@@ -362,99 +805,6 @@ country_event = {
 				target = REB
 				transfer_troops = no
 			}
-		}
-		SER = {
-			transfer_state = 105
-			transfer_state = 106
-			transfer_state = 943
-			transfer_state = 777
-			transfer_state = 778
-			transfer_state = 779
-			transfer_state = 816
-			transfer_state = 942
-			transfer_state = 817
-			transfer_state = 818
-			transfer_state = 825
-			transfer_state = 45
-			transfer_state = 82
-			transfer_state = 815
-		}
-		CRO = {
-			transfer_state = 102
-			transfer_state = 103
-			transfer_state = 104
-			transfer_state = 109
-			transfer_state = 834
-			transfer_state = 837
-			transfer_state = 862
-			set_cosmetic_tag = SCS
-		}
-		ROM = {
-			transfer_state = 819
-			transfer_state = 820
-			transfer_state = 855
-			transfer_state = 856
-			transfer_state = 76
-			transfer_state = 80
-			transfer_state = 83
-			transfer_state = 84
-			transfer_state = 804
-		}
-		ITA = {
-			transfer_state = 39
-			transfer_state = 153
-			transfer_state = 163
-			transfer_state = 736
-			transfer_state = 823
-			transfer_state = 824
-		}
-		GER = {
-			transfer_state = 838
-		}
-		if = {
-			limit = { 88 = { NOT = { is_controlled_by = RUS } } }
-			POL = { transfer_state = 88 }
-		}
-		if = {
-			limit = { 91 = { NOT = { is_controlled_by = RUS } } }
-			GAL = {
-				transfer_state = 89
-				transfer_state = 91
-				transfer_state = 925
-			}
-			if = {
-				limit = { 80 = { NOT = { is_controlled_by = ROM } } }
-				GAL = { transfer_state = 80 }
-			}
-		}
-		else_if = {
-			limit = { RUS = { NOT = { has_country_flag = RUS_brest_peace_white has_country_flag = RUS_brest_peace_soft has_country_flag = RUS_brest_peace_average has_country_flag = RUS_brest_peace_hard } surrender_progress < 0.10 } }
-			RUS = {
-				transfer_state = 88
-			}
-			if = {
-				limit = { UKR = { exists = yes } }
-				UKR = {
-					transfer_state = 89
-					transfer_state = 91
-					transfer_state = 925
-				}
-				else = {
-					RUS = {
-						transfer_state = 89
-						transfer_state = 91
-						transfer_state = 925
-					}
-				}
-			}
-		}
-		if = {
-			limit = { NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED } }
-			BUL = { country_event = { id = versailles.1 days = 3 } }
-		}
-		if = {
-			limit = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
-			TUR = { country_event = versailles.2 }
 		}
 		hidden_effect = { news_event = { id = news_n.103 hours = 3 } }
 	}
@@ -491,16 +841,22 @@ country_event = {
 		}
 		OR = {
 			AND = {
-				has_global_flag = WWI_BUL_HAS_CAPITULATED
 				has_global_flag = WWI_AUH_HAS_CAPITULATED
-				has_global_flag = WWI_TUR_HAS_CAPITULATED
-				FRA = { OR = { AND = { controls_state = 16 NOT = { is_in_faction_with = GER } } AND = { NOT = { controls_state = 16 } is_in_faction_with = GER } } }
+				has_country_flag = GER_monarchy_fall
+				surrender_progress > 0.15
 			}
-			NOT = { controls_state = 52 }
-			NOT = { controls_state = 55 }
-			NOT = { controls_state = 64 }
+			AND = {
+				has_global_flag = WWI_AUH_HAS_CAPITULATED
+				NOT = { has_country_flag = GER_monarchy_fall }
+				surrender_progress > 0.3
+			}
+			AND = {
+				NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+				has_country_flag = GER_monarchy_fall
+				surrender_progress > 0.3
+			}
+			surrender_progress > 0.4
 		}
-		surrender_progress > 0.05
 	}
 
 	fire_only_once = yes
@@ -511,10 +867,17 @@ country_event = {
 	
 	option = {
 		name = versailles.4.a
+		if = {
+			limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired } }
+			every_state = {
+				limit = { is_owned_by = GER is_controlled_by = RUS }
+				RUS = { transfer_state = PREV }
+			}
+		}
 		if ={
 			limit = { FRA = { is_subject_of = GER } }
 			GER = { end_puppet = FRA }
-			FRA = { leave_faction = yes }
+			FRA = { leave_faction = yes transfer_state = 17 transfer_state = 18 transfer_state = 29 }
 			ENG = { add_to_faction = FRA }
 		}
 		set_global_flag = WWI_GER_HAS_CAPITULATED
@@ -523,6 +886,10 @@ country_event = {
 		every_country = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
 			ROOT = { white_peace = PREV }
+		}
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			ROOT = { end_puppet = PREV }
 		}
 		if = {
 			limit = { 10 = { NOT = { is_controlled_by = RUS } } }
@@ -660,18 +1027,55 @@ country_event = {
 			clr_global_flag = russia_rejects_german_ultimatum
 			RUS = { country_event = treaty_of_brest.1917 }
 		}
-		if = {
-			limit = { owns_state = 919 }
-			every_country = {
-				limit = { owns_state = 197 }
-				transfer_state = 919
+		GER = {
+			if = {
+				limit = { owns_state = 919 }
+				every_country = {
+					limit = { owns_state = 197 }
+					transfer_state = 919
+				}
 			}
-		}
-		if = {
-			limit = { owns_state = 137 }
-			every_country = {
-				limit = { owns_state = 196 }
-				transfer_state = 137
+			if = {
+				limit = { owns_state = 137 }
+				every_country = {
+					limit = { owns_state = 196 }
+					transfer_state = 137
+				}
+			}
+			if = {
+				limit = { owns_state = 209 }
+				every_country = {
+					limit = { owns_state = 208 }
+					transfer_state = 209
+				}
+			}
+			if = {
+				limit = { owns_state = 210 }
+				every_country = {
+					limit = { owns_state = 209 }
+					transfer_state = 210
+				}
+			}
+			if = {
+				limit = { owns_state = 865 }
+				every_country = {
+					limit = { owns_state = 12 }
+					transfer_state = 865
+				}
+			}
+			if = {
+				limit = { owns_state = 207 }
+				every_country = {
+					limit = { owns_state = 926 }
+					transfer_state = 207
+				}
+			}
+			if = {
+				limit = { owns_state = 940 }
+				every_country = {
+					limit = { owns_state = 912 }
+					transfer_state = 940
+				}
 			}
 		}
 	}
