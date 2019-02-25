@@ -27,7 +27,9 @@ country_event = {
 	
 	trigger = {
 		tag = RUS
+		DON = { exists = no }
 		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = { has_country_flag = DON_revolt }
 		NOT = { has_country_flag = RUS_cossacks_were_disbanded }
 		NOT = { has_country_flag = RUS_cossacks_bolshevized }
 	}
@@ -57,7 +59,7 @@ country_event = {
 		764 = { add_core_of = DON }
 		953 = { add_core_of = DON }
 		954 = { add_core_of = DON }
-		set_country_flag = DON_RISE
+		set_country_flag = DON_revolt
 		DON = {
 			set_cosmetic_tag = DON_Kaledin
 			transfer_state = 218
@@ -106,6 +108,7 @@ country_event = {
 		764 = { add_core_of = DON }
 		953 = { add_core_of = DON }
 		954 = { add_core_of = DON }
+		set_country_flag = DON_revolt
 		DON = {
 			set_cosmetic_tag = DON_Kaledin
 			transfer_state = 218
@@ -428,7 +431,7 @@ country_event = {
 		OR = {
 			AND = {
 				DON = { exists = no }
-				has_country_flag = DON_RISE
+				has_country_flag = DON_revolt
 			}
 			AND = {
 				has_war_with = DON
@@ -482,9 +485,176 @@ country_event = {
 	}
 }
 
+# Восстание Каледина, но если не разгоняли учредительное
+country_event = {
+	id = rcw_udktc.200
+	title = rcw_udktc.200.t
+	desc = {
+		text = rcw_udktc.200.d
+		trigger = {
+			OR = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				has_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform
+			}
+		}
+	}
+	desc = {
+		text = rcw_udktc.200.d_1
+		trigger = {
+			NOT = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				has_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform
+			}
+		}
+	}
+	picture = GFX_report_event_rus_kazaks_war
+	
+	trigger = {
+		tag = RUS
+		DON = { exists = no }
+		NOT = { has_country_flag = RUS_Oktober_revolution_fired }
+		NOT = { has_country_flag = DON_revolt }
+		NOT = { has_country_flag = RUS_cossacks_were_disbanded }
+		OR = {
+			AND = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				has_government = communism
+			}
+			AND = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+				OR = {
+					AND = {
+						NOT = { has_country_flag = RUS_cossacks_bolshevized }
+						has_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform
+					}
+					has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom
+				}
+			}
+			AND = {
+				has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state
+				OR = {
+					AND = {
+						NOT = { has_country_flag = RUS_cossacks_bolshevized }
+						has_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform
+					}
+					has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			every_unit_leader = { limit = { OR = { has_id = 76546 has_id = 77300 } } set_nationality = DON }
+			delete_unit_template_and_units = {
+				division_template = "Kazach'ya brigada"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_udktc.200.a
+		218 = { add_core_of = DON }
+		228 = { add_core_of = DON }
+		238 = { add_core_of = DON }
+		245 = { add_core_of = DON }
+		265 = { add_core_of = DON }
+		764 = { add_core_of = DON }
+		953 = { add_core_of = DON }
+		954 = { add_core_of = DON }
+		set_country_flag = DON_revolt
+		DON = {
+			set_cosmetic_tag = DON_Kaledin
+			transfer_state = 218
+			transfer_state = 228
+			transfer_state = 238
+			transfer_state = 245
+			transfer_state = 953
+			transfer_state = 954
+			transfer_state = 918
+			transfer_state = 227
+			add_ideas = alliance_neutrality
+		}
+		set_temp_variable = { temp1 = DON.num_controlled_states }
+		set_temp_variable = { temp2 = RUS.num_controlled_states }
+		
+		set_temp_variable = { temp3 = DON.party_popularity@market_liberalism }
+		divide_temp_variable = { temp3 = temp2 }
+		multiply_temp_variable = { temp3 = temp1 }
+		multiply_temp_variable = { temp3 = -1 }
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = temp3
+		}
+		
+		set_temp_variable = { temp4 = DON.party_popularity@authoritarism }
+		divide_temp_variable = { temp4 = temp2 }
+		multiply_temp_variable = { temp4 = temp1 }
+		multiply_temp_variable = { temp4 = -1 }
+		add_popularity = {
+			ideology = authoritarism
+			popularity = temp4
+		}
+	}
+	option = {
+		name = rcw_udktc.200.b
+		trigger = {
+			is_ai = no
+		}
+		218 = { add_core_of = DON }
+		228 = { add_core_of = DON }
+		238 = { add_core_of = DON }
+		245 = { add_core_of = DON }
+		265 = { add_core_of = DON }
+		764 = { add_core_of = DON }
+		953 = { add_core_of = DON }
+		954 = { add_core_of = DON }
+		set_country_flag = DON_revolt
+		DON = {
+			set_cosmetic_tag = DON_Kaledin
+			transfer_state = 218
+			transfer_state = 228
+			transfer_state = 238
+			transfer_state = 245
+			transfer_state = 953
+			transfer_state = 954
+			transfer_state = 918
+			transfer_state = 227
+			add_ideas = alliance_neutrality
+			change_tag_from = RUS
+		}
+		set_temp_variable = { temp1 = DON.num_controlled_states }
+		set_temp_variable = { temp2 = RUS.num_controlled_states }
+		
+		set_temp_variable = { temp3 = DON.party_popularity@market_liberalism }
+		divide_temp_variable = { temp3 = temp2 }
+		multiply_temp_variable = { temp3 = temp1 }
+		multiply_temp_variable = { temp3 = -1 }
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = temp3
+		}
+		
+		set_temp_variable = { temp4 = DON.party_popularity@authoritarism }
+		divide_temp_variable = { temp4 = temp2 }
+		multiply_temp_variable = { temp4 = temp1 }
+		multiply_temp_variable = { temp4 = -1 }
+		add_popularity = {
+			ideology = authoritarism
+			popularity = temp4
+		}
+	}
+}
+
 # ...
 country_event = {
-	id = rcw_udktc.20
+	id = rcw_udktc.998
 	
 	trigger ={
 		tag = RVA
@@ -500,7 +670,7 @@ country_event = {
 	hidden = yes
 	
 	mean_time_to_happen = {
-		days = 15
+		days = 35
 	}
 	
 	fire_only_once = yes
