@@ -29,6 +29,21 @@ focus_tree = {
 		completion_reward = {
 			add_stability = 0.05
 			add_political_power = 50
+			custom_effect_tooltip = RUS_soviet_power_tt
+			hidden_effect = {
+				set_country_flag = RUS_soviet_power_flag
+				
+				set_variable = { var = total_members_of_central_committee value = 21 }
+				set_variable = { var = total_members_of_central_executive_committee value = 300 }
+				
+				set_variable = { var = left_faction_CC value = 11 }
+				set_variable = { var = right_faction_CC value = 4 }
+				set_variable = { var = left_faction_CEC value = 63 }
+				set_variable = { var = right_faction_CEC value = 100 }
+				check_overlap_of_CC_n_CEC_deputies_add_right = yes
+				
+				set_frame_of_CC_n_CEC = yes
+			}
 		}
 
 	}
@@ -168,7 +183,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_struggle_against_counterrevolution
 		}
-		x = 0
+		x = 1
 		y = 3
 		mutually_exclusive = {
 			focus = RUS_left_eser_focus
@@ -176,12 +191,13 @@ focus_tree = {
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
 			set_party_name = { ideology = communism long_name = RUS_communism_Bolshebiks_party_long name = RUS_communism_Bolshebiks_party }
-			custom_effect_tooltip = RUS_soviet_power_tt
-			hidden_effect = {
-				set_country_flag = RUS_soviet_power_flag
-				set_variable = { var = RUS_soviet_power_control value = 6 }
-			}
 			add_stability = 0.1
+				set_variable = { var = RUS_soviet_power_control value = 6 }
+			
+			custom_effect_tooltip = changes_size_of_CC_to_15
+			hidden_effect = {
+				set_variable = { var = total_members_of_central_committee value = 15 }
+			}
 		}
 
 	}
@@ -430,9 +446,11 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = RUS_soviet_power
+			focus = RUS_left_eser_focus
 		}
 		mutually_exclusive = {
 			focus = RUS_new_economic_policy
+			focus = RUS_new_economic_policy_left_eser
 		}
 		x = -1
 		y = 4
@@ -490,9 +508,9 @@ focus_tree = {
 		bypass = {
 			has_country_flag = war_communism_abolished
 		}
-		x = -2
-		y = 5
-		relative_position_id = RUS_sovnarkom
+		x = -1
+		y = 1
+		relative_position_id = RUS_war_communism
 		completion_reward = {
 			add_ideas = workers_control
 			add_political_power = 70
@@ -515,9 +533,9 @@ focus_tree = {
 		bypass = {
 			has_country_flag = war_communism_abolished
 		}
-		x = 0
-		y = 5
-		relative_position_id = RUS_sovnarkom
+		x = 1
+		y = 1
+		relative_position_id = RUS_war_communism
 		completion_reward = {
 			add_ideas = RUS_trudovaya_povinnost_idea
 		}
@@ -542,9 +560,9 @@ focus_tree = {
 		bypass = {
 			has_country_flag = war_communism_abolished
 		}
-		x = -1
-		y = 6
-		relative_position_id = RUS_sovnarkom
+		x = 0
+		y = 2
+		relative_position_id = RUS_war_communism
 		completion_reward = {
 			add_ideas = RUS_prodrazverstka_idea
 		}
@@ -570,13 +588,14 @@ focus_tree = {
 		}
 		mutually_exclusive = {
 			focus = RUS_new_economic_policy
+			focus = RUS_new_economic_policy_left_eser
 		}
 		prerequisite = {
 			focus = RUS_prodrazverstka
 		}
-		x = -3
-		y = 7
-		relative_position_id = RUS_sovnarkom
+		x = -2
+		y = 1
+		relative_position_id = RUS_prodrazverstka
 		completion_reward = {
 			add_to_variable = { var = RUS_soviet_power_control value = 2 }
 			add_political_power = 100
@@ -596,32 +615,11 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_strengthening_war_communism_policy
 		}
-		x = -2
+		x = -1
 		y = 1
 		relative_position_id = RUS_strengthening_war_communism_policy
 		completion_reward = {
 			add_to_variable = { var = RUS_soviet_power_control value = -1 }
-		}
-
-	}
-
-	focus = {
-		id = RUS_organization_of_agricultural_cooperatives
-		icon = GFX_goal_RUS_organization_of_agricultural_cooperatives
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = RUS_combeds
-		}
-		x = -2
-		y = 2
-		relative_position_id = RUS_strengthening_war_communism_policy
-		completion_reward = {
-			add_ideas = RUS_agricultural_cooperatives_idea
 		}
 
 	}
@@ -636,16 +634,37 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_organization_of_agricultural_cooperatives
+			focus = RUS_combeds
 		}
-		x = -2
-		y = 3
+		x = -1
+		y = 2
 		relative_position_id = RUS_strengthening_war_communism_policy
 		completion_reward = {
 			swap_ideas = {
 				remove_idea = RUS_prodrazverstka_idea
 				add_idea = RUS_weakened_prodrazverstka_idea
 			}
+		}
+
+	}
+
+	focus = {
+		id = RUS_organization_of_agricultural_cooperatives
+		icon = GFX_goal_RUS_organization_of_agricultural_cooperatives
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_weakening_prodrazverstka_policy
+		}
+		x = -1
+		y = 3
+		relative_position_id = RUS_strengthening_war_communism_policy
+		completion_reward = {
+			add_ideas = RUS_agricultural_cooperatives_idea
 		}
 
 	}
@@ -662,8 +681,8 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_strengthening_war_communism_policy
 		}
-		x = 0
-		y = 1
+		x = 1
+		y = 2
 		relative_position_id = RUS_strengthening_war_communism_policy
 		completion_reward = {
 			add_timed_idea = { idea = RUS_labor_armies days = 730 }
@@ -683,8 +702,8 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_reorganization_of_labor_armies
 		}
-		x = 0
-		y = 2
+		x = 1
+		y = 3
 		relative_position_id = RUS_strengthening_war_communism_policy
 		completion_reward = {
 			add_to_variable = { var = RUS_soviet_power_control value = -1 }
@@ -717,8 +736,8 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_abolishment_of_railway_self-government
 		}
-		x = 0
-		y = 3
+		x = 1
+		y = 4
 		relative_position_id = RUS_strengthening_war_communism_policy
 		completion_reward = {
 			remove_ideas = RUS_collapse_of_railway_system_1
@@ -745,13 +764,13 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_weakening_prodrazverstka_policy
+			focus = RUS_organization_of_agricultural_cooperatives
 		}
 		prerequisite = {
 			focus = RUS_centralization_of_transport_system
 		}
-		x = -1
-		y = 4
+		x = 0
+		y = 5
 		relative_position_id = RUS_strengthening_war_communism_policy
 		completion_reward = {
 			add_timed_idea = { idea = RUS_centralized_economy_planning days = 730 }
@@ -780,6 +799,7 @@ focus_tree = {
 		}
 		mutually_exclusive = {
 			focus = RUS_strengthening_war_communism_policy
+			focus = RUS_new_economic_policy_left_eser
 		}
 		prerequisite = {
 			focus = RUS_soviet_power
@@ -839,7 +859,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_new_economic_policy
 		}
-		x = 0
+		x = 1
 		y = 1
 		relative_position_id = RUS_new_economic_policy
 		complete_tooltip = {
@@ -938,7 +958,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_concessions
 		}
-		x = 0
+		x = 1
 		y = 2
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
@@ -969,7 +989,7 @@ focus_tree = {
 		bypass = {
 			NOT = { has_idea = foodstuffs_supply_crisis_1 has_idea = foodstuffs_supply_crisis_2 has_idea = foodstuffs_supply_crisis_3 }
 		}
-		x = -1
+		x = 0
 		y = 3
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
@@ -1009,7 +1029,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_new_economic_policy
 		}
-		x = 2
+		x = 3
 		y = 1
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
@@ -1036,7 +1056,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_monetary_reform
 		}
-		x = 2
+		x = 3
 		y = 2
 		relative_position_id = RUS_new_economic_policy
 		complete_tooltip = {
@@ -1105,7 +1125,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_trusts_and_syndicates
 		}
-		x = 1
+		x = 2
 		y = 3
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
@@ -1135,7 +1155,7 @@ focus_tree = {
 		bypass = {
 			NOT = { has_idea = traditional_agriculture }
 		}
-		x = 1
+		x = 2
 		y = 4
 		relative_position_id = RUS_new_economic_policy
 		completion_reward = {
@@ -1166,7 +1186,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_struggle_against_counterrevolution
 		}
-		x = -2
+		x = -1
 		y = 3
 		mutually_exclusive = {
 			focus = RUS_soviet_power
@@ -1190,7 +1210,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_left_eser_focus
 		}
-		x = -3
+		x = -4
 		y = 1
 		relative_position_id = RUS_left_eser_focus
 		completion_reward = {
@@ -1214,9 +1234,30 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = RUS_coalition_sovnarkom
 		}
-		x = -6
-		y = 2
-		relative_position_id = RUS_left_eser_focus
+		x = -4
+		y = 1
+		relative_position_id = RUS_split_of_sovnarkom
+		completion_reward = {
+			
+		}
+
+	}
+
+	focus = {
+		id = RUS_repression_of_communists
+		icon = GFX_goal_RUS_soviet_power
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_left_eser_coup
+		}
+		x = -1
+		y = 1
+		relative_position_id = RUS_left_eser_coup
 		completion_reward = {
 			
 		}
@@ -1238,9 +1279,9 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = RUS_left_eser_coup
 		}
-		x = -2
-		y = 2
-		relative_position_id = RUS_left_eser_focus
+		x = -1
+		y = 1
+		relative_position_id = RUS_split_of_sovnarkom
 		completion_reward = {
 			
 		}
@@ -1256,13 +1297,17 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		mutually_exclusive = {
+			focus = RUS_new_economic_policy
+			focus = RUS_strengthening_war_communism_policy
+		}
 		prerequisite = {
 			focus = RUS_left_eser_coup
 			focus = RUS_coalition_sovnarkom
 		}
-		x = -5
+		x = -1
 		y = 3
-		relative_position_id = RUS_left_eser_focus
+		relative_position_id = RUS_split_of_sovnarkom
 		completion_reward = {
 			
 		}
@@ -1281,9 +1326,9 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_new_economic_policy_left_eser
 		}
-		x = -5
-		y = 4
-		relative_position_id = RUS_left_eser_focus
+		x = -1
+		y = 1
+		relative_position_id = RUS_new_economic_policy_left_eser
 		completion_reward = {
 			
 		}
@@ -1302,9 +1347,9 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_factory_community
 		}
-		x = -5
-		y = 5
-		relative_position_id = RUS_left_eser_focus
+		x = -1
+		y = 1
+		relative_position_id = RUS_factory_community
 		completion_reward = {
 			
 		}
@@ -1326,9 +1371,9 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_left_eser_coup
 		}
-		x = -6
-		y = 6
-		relative_position_id = RUS_left_eser_focus
+		x = -1
+		y = 1
+		relative_position_id = RUS_federation_of_communities
 		completion_reward = {
 			
 		}
@@ -1347,30 +1392,9 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_reorganization_of_government
 		}
-		x = -6
-		y = 7
-		relative_position_id = RUS_left_eser_focus
-		completion_reward = {
-			
-		}
-
-	}
-
-	focus = {
-		id = RUS_repression_of_communists
-		icon = GFX_goal_RUS_soviet_power
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = RUS_left_eser_coup
-		}
-		x = -7
-		y = 3
-		relative_position_id = RUS_left_eser_focus
+		x = 0
+		y = 1
+		relative_position_id = RUS_reorganization_of_government
 		completion_reward = {
 			
 		}

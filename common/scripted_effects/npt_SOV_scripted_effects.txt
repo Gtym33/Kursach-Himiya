@@ -1,0 +1,260 @@
+#
+# The scripts for manipulations with Soviet democracy variables
+#
+
+
+# Use it with:
+# total_members_of_central_committee - total amount of party (RSDLP(b), RCP(b), AUCP(b), CPSU) Central Committee members. Should be set when gets RUS_soviet_power_flag flag.
+# total_members_of_central_executive_committee - total amount of (All-Russian or Soviet Union) Central Executive Committee members. Should be set when gets RUS_soviet_power_flag flag.
+# left_faction_CC(left_faction_CEC) - left wing, can be set between 0 and total amount of deputies.
+# right_faction_CC(right_faction_CEC) - right wing, can be set between 0 and total amount of deputies.
+# center_faction_CC - difference between total amount and left and right wings. Do not set this if effects.
+
+# Use check_overlap_of_CC_n_CEC_deputies_add_left and check_overlap_of_CC_n_CEC_deputies_add_right after set or changing left and right wings, this scripts removes potential errors.
+
+# Use set_frame_of_CC_n_CEC after all of previous scripts, it will set numbers of frames for scripted GUI.
+
+
+
+set_frame_of_CC_n_CEC = {
+	set_variable = {
+		var = center_faction_CC
+		value = total_members_of_central_committee
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = left_faction_CC
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = right_faction_CC
+	}
+	
+	set_variable = {
+		var = left_faction_of_CC_frame
+		value = left_faction_CC
+	}
+	multiply_variable = {
+		var = left_faction_of_CC_frame
+		value = 25
+	}
+	divide_variable = {
+		var = left_faction_of_CC_frame
+		value = total_members_of_central_committee
+	}
+	round_variable = left_faction_of_CC_frame
+	add_to_variable = {
+		var = left_faction_of_CC_frame
+		value = 1
+	}
+	
+	set_variable = {
+		var = right_faction_of_CC_frame
+		value = right_faction_CC
+	}
+	multiply_variable = {
+		var = right_faction_of_CC_frame
+		value = 25
+	}
+	divide_variable = {
+		var = right_faction_of_CC_frame
+		value = total_members_of_central_committee
+	}
+	round_variable = right_faction_of_CC_frame
+	add_to_variable = {
+		var = right_faction_of_CC_frame
+		value = 1
+	}
+	
+
+	set_variable = {
+		var = center_faction_CEC
+		value = total_members_of_central_executive_committee
+	}
+	subtract_from_variable = {
+		var = center_faction_CEC
+		value = left_faction_CEC
+	}
+	subtract_from_variable = {
+		var = center_faction_CEC
+		value = right_faction_CEC
+	}
+	
+	set_variable = {
+		var = left_faction_of_CEC_frame
+		value = left_faction_CEC
+	}
+	multiply_variable = {
+		var = left_faction_of_CEC_frame
+		value = 30
+	}
+	divide_variable = {
+		var = left_faction_of_CEC_frame
+		value = total_members_of_central_executive_committee
+	}
+	round_variable = left_faction_of_CEC_frame
+	add_to_variable = {
+		var = left_faction_of_CEC_frame
+		value = 1
+	}
+	
+	set_variable = {
+		var = right_faction_of_CEC_frame
+		value = right_faction_CEC
+	}
+	multiply_variable = {
+		var = right_faction_of_CEC_frame
+		value = 30
+	}
+	divide_variable = {
+		var = right_faction_of_CEC_frame
+		value = total_members_of_central_executive_committee
+	}
+	round_variable = right_faction_of_CEC_frame
+	add_to_variable = {
+		var = right_faction_of_CEC_frame
+		value = 1
+	}
+}
+check_overlap_of_CC_n_CEC_deputies_add_left = {
+	set_variable = {
+		var = center_faction_CC
+		value = total_members_of_central_committee
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = left_faction_CC
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = right_faction_CC
+	}
+	if = {
+		limit = { check_variable = { center_faction_CC < 0 } }
+		add_to_variable = {
+			var = right_faction_CC
+			value = center_faction_CC
+		}
+		set_variable = {
+			var = center_faction_CC
+			value = 0
+		}
+	}
+	if = {
+		limit = {
+			check_variable = {
+				left_faction_CC > total_members_of_central_committee
+			}
+		}
+		set_temp_variable = { temp1 = left_faction_CC }
+		subtract_from_temp_variable = { temp1 = total_members_of_central_committee }
+		subtract_from_variable = { var = left_faction_CC value = temp1 }
+		set_variable = { right_faction_CC = 0 }
+	}
+
+	set_variable = {
+		var = center_faction_CEC
+		value = total_members_of_central_executive_committee
+	}
+	subtract_from_variable = {
+		var = center_faction_CEC
+		value = left_faction_CEC
+	}
+	subtract_from_variable = {
+		var = center_faction_CEC
+		value = right_faction_CEC
+	}
+	if = {
+		limit = { check_variable = { center_faction_CC < 0 } }
+		add_to_variable = {
+			var = right_faction_CEC
+			value = center_faction_CEC
+		}
+		set_variable = {
+			var = center_faction_CEC
+			value = 0
+		}
+	}
+	if = {
+		limit = {
+			check_variable = {
+				left_faction_CEC > total_members_of_central_executive_committee
+			}
+		}
+		set_temp_variable = { temp1 = left_faction_CEC }
+		subtract_from_temp_variable = { temp1 = total_members_of_central_executive_committee }
+		subtract_from_variable = { var = left_faction_CEC value = temp1 }
+		set_variable = { right_faction_CEC = 0 }
+	}
+}
+check_overlap_of_CC_n_CEC_deputies_add_right = {
+	set_variable = {
+		var = center_faction_CC
+		value = total_members_of_central_committee
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = left_faction_CC
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = right_faction_CC
+	}
+	if = {
+		limit = { check_variable = { center_faction_CC < 0 } }
+		add_to_variable = {
+			var = left_faction_CC
+			value = center_faction_CC
+		}
+		set_variable = {
+			var = center_faction_CC
+			value = 0
+		}
+	}
+	if = {
+		limit = {
+			check_variable = {
+				right_faction_CC > total_members_of_central_committee
+			}
+		}
+		set_temp_variable = { temp1 = right_faction_CC }
+		subtract_from_temp_variable = { temp1 = total_members_of_central_committee }
+		subtract_from_variable = { var = right_faction_CC value = temp1 }
+		set_variable = { left_faction_CC = 0 }
+	}
+
+	set_variable = {
+		var = center_faction_CEC
+		value = total_members_of_central_executive_committee
+	}
+	subtract_from_variable = {
+		var = center_faction_CEC
+		value = left_faction_CEC
+	}
+	subtract_from_variable = {
+		var = center_faction_CEC
+		value = right_faction_CEC
+	}
+	if = {
+		limit = { check_variable = { center_faction_CEC < 0 } }
+		add_to_variable = {
+			var = left_faction_CEC
+			value = center_faction_CEC
+		}
+		set_variable = {
+			var = center_faction_CEC
+			value = 0
+		}
+	}
+	if = {
+		limit = {
+			check_variable = {
+				right_faction_CEC > total_members_of_central_executive_committee
+			}
+		}
+		set_temp_variable = { temp1 = right_faction_CEC }
+		subtract_from_temp_variable = { temp1 = total_members_of_central_executive_committee }
+		subtract_from_variable = { var = right_faction_CEC value = temp1 }
+		set_variable = { left_faction_CEC = 0 }
+	}
+}
