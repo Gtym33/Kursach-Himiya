@@ -547,6 +547,8 @@ country_event = {
 			}
 		}
 	}
+	
+	#Играть за белых
 	option = {
 		name = finland.15.a
 		add_stability = -0.15
@@ -575,6 +577,8 @@ country_event = {
 		}
 		hidden_effect = { news_event = { id = news_n.15 hours = 12 } }
 	}
+	
+	#Играть за красных
 	option = {
 		name = finland.15.b
 		add_stability = -0.15
@@ -671,7 +675,7 @@ country_event = {
 			}
 		}
 		remove_ideas = alliance_neutrality
-		set_province_name = { id = 11105 name = "Хельсинки" }
+		set_province_name = { id = 11105 name = "helsinki" }
 	}
 }
 # Конец гражданской войны для Красных
@@ -704,8 +708,16 @@ country_event = {
 		clr_global_flag = FIN_civil_war_begin
 		set_global_flag = FIN_civil_war_end
 		if = {
-		limit = {RUS = {exists = yes} OR = {RUS = {has_government = communism} RUS = {has_government = radical_socialism}}}
-		RUS = {country_event = finland.19}
+			limit = {
+				RUS = {
+					exists = yes
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+					}
+				}
+			}
+			RUS = { country_event = { if = finland.19 days = 7 }
 		}
 		every_state = {
 			limit = { is_core_of = FIN }
@@ -719,11 +731,11 @@ country_event = {
 			}
 		}
 		remove_ideas = alliance_neutrality
-		set_province_name = { id = 11105 name = "Хельсинки" }
+		set_province_name = { id = 11105 name = "helsinki" }
 	}
 }
 
-# РСФСР передаёт спорные территори красной Финляндии
+# Установление границы между Красной Финляндией и РСФСР
 country_event = {
 	id = finland.19
 	title = finland.19.t
@@ -732,15 +744,38 @@ country_event = {
 
 	is_triggered_only = yes
 	
+	#Согласиться отдать все спорные пограничные территории
 	option = {
 		name = finland.19.a
 		every_state = {
-		limit = { is_core_of = FNR }
-		remove_core_of = RUS
+			limit = { is_core_of = FNR }
+			remove_core_of = RUS
 		}
-		every_state = { 
-		limit = { is_core_of = FNR is_owned_by = RUS } 
-		FNR = { transfer_state = PREV }
+		every_state = {
+			limit = { is_core_of = FNR is_owned_by = RUS }
+			FNR = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	
+	#Не соглашаться
+	option = {
+		name = finland.19.b
+		trigger = {
+			always = no
+		}
+		every_state = {
+			limit = { is_core_of = FNR is_core_of = RUS }
+			remove_core_of = FNR
+		}
+		every_state = {
+			limit = { is_core_of = RUS is_owned_by = FNR }
+			RUS = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 0
 		}
 	}
 }
