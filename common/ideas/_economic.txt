@@ -1,41 +1,535 @@
 ideas = {
 
-	agriculture_law = {
+	agriculture_type_law = {
 		law = yes
-		traditional_agriculture = {
+		individual_homesteads = {
 			removal_cost = -1
 			available = {
 				always = no
 			}
 			modifier = {
-				consumer_goods_factor = 0.1
-				monthly_population = -0.2
-				stability_weekly = -0.001
+				consumer_goods_factor = 0.05
 			}
 			cancel_if_invalid = no
 		}
-		moderate_agriculture = {
+		small_farms = {
 			removal_cost = -1
 			available = {
 				always = no
 			}
 			default = yes
 			modifier = {
+				global_building_slots_factor = 0.05
 			}
 			cancel_if_invalid = no
 		}
-		modern_agriculture = {
+		large_mechanized_farms = {
 			removal_cost = -1
 			available = {
 				always = no
 			}
 			modifier = {
-				consumer_goods_factor = -0.1
-				monthly_population = 0.1
-				cavalry_attack_factor = 0.05
-				cavalry_defence_factor = 0.05
+				production_speed_buildings_factor = 0.05
+				consumer_goods_factor = -0.0125
+				monthly_population = 0.05
+				global_building_slots_factor = 0.1
 			}
 			cancel_if_invalid = no
+		}
+		agro_industrial_farms = {
+			removal_cost = -1
+			available = {
+				always = no
+			}
+			modifier = {
+				production_speed_buildings_factor = 0.1
+				consumer_goods_factor = -0.025
+				monthly_population = 0.1
+				global_building_slots_factor = 0.2
+			}
+			cancel_if_invalid = no
+		}
+	}
+	
+	agriculture_property_law = {
+		law = yes
+		common_agriculture_property = {
+			removal_cost = -1
+			available = {
+				OR = {
+					has_government = radical_socialism
+					AND = {
+						is_former_russian_empire_russian_settled_non_cossack_country = yes
+						OR = {
+							has_government = social_democracy
+							has_government = social_liberalism
+							AND = {
+								has_government = communism
+								has_country_flag = RUS_soviet_power_flag
+								has_country_flag = RUS_soviet_power_set_common_land_property
+							}
+						}
+					}
+				}
+			}
+			allowed_to_remove = {
+				NOT = { has_idea = laissez_faire_law }
+			}
+			modifier = {
+				
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		feudal_agriculture_property = {
+			removal_cost = -1
+			available = {
+				OR = {
+					has_government = authoritarism
+					has_government = social_conservatism
+				}
+			}
+			allowed_to_remove = {
+				NOT = { has_idea = laissez_faire_law }
+				NOT = { has_idea = corporatocracy_law }
+				OR = {
+					any_neighbor_country = {
+						has_government = communism
+					}
+					has_country_flag = authoritarism_reforms
+					NOT = { has_government = authoritarism }
+				}
+			}
+			default = yes
+			modifier = {
+				authoritarism_drift = 0.01
+				social_conservatism_drift = 0.01
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		private_bourgeois_agriculture_property = {
+			removal_cost = -1
+			available = {
+				NOT = {
+					has_government = authoritarism
+					has_government = social_conservatism
+				}
+			}
+			modifier = {
+				
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		corporate_agriculture_property = {
+			removal_cost = 50
+			available = {
+				OR = {
+					has_government = fascism
+					has_government = despotism
+					has_government = authoritarism
+					has_government = social_conservatism
+					has_government = market_liberalism
+				}
+			}
+			allowed_to_remove = {
+				NOT = { has_idea = corporatocracy_law }
+				NOT = { has_idea = laissez_faire_law }
+				NOT = { has_government = fascism }
+				is_subject = no
+			}
+			modifier = {
+				fascism_drift = 0.01
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		state_agriculture_property = {
+			removal_cost = -1
+			available = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					custom_trigger_tooltip = {
+						tooltip = socialist_parties_without_coalition_more_then_50_tt
+						check_variable = { socialist_parties_without_coalition > 0.5 }
+					}
+				}
+			}
+			allowed_to_remove = {
+				NOT = {
+					has_government = communism
+					has_government = social_democracy
+				}
+			}
+			modifier = {
+				
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+	}
+	
+	economic_controll = {
+		law = yes
+		laissez_faire_law = {
+			available = {
+				OR = {
+					market_liberalism > 0.4
+					AND = {
+						has_government = despotism
+						has_country_flag = junta_chicago_school_of_economics
+					}
+				}
+				has_war = no
+			}
+			allowed_to_remove = {
+				OR = {
+					NOT = { has_government = market_liberalism }
+					NOT = { has_government = despotism }
+					AND = {
+						has_government = despotism
+						NOT = { has_country_flag = junta_chicago_school_of_economics }
+					}
+					has_war = yes
+				}
+			}
+			removal_cost = -1
+			modifier = {
+				production_speed_buildings_factor = -0.1
+				production_factory_max_efficiency_factor = 0.05
+				min_export = 0.1
+				local_resources_factor = 0.05
+				consumer_goods_factor = -0.025
+			}
+			ai_will_do = {
+				factor = 0
+			}
+			cancel_if_invalid = no
+		}
+		interventionalism_law = {
+			available = {
+				OR = {
+					has_idea = laissez_faire_law
+					AND = {
+						NOT = { has_government = radical_socialism }
+						NOT = { has_government = communism }
+						NOT = { has_government = social_democracy }
+						NOT = { has_government = social_liberalism }
+					}
+				}
+			}
+			default = yes
+			removal_cost = -1
+			modifier = {
+				consumer_goods_factor = -0.025
+				production_factory_max_efficiency_factor = 0.025
+			}
+			ai_will_do = {
+				factor = 0
+			}
+			cancel_if_invalid = no
+		}
+		mixed_economy_law = {
+			available = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					has_government = social_liberalism
+				}
+			}
+			allowed_to_remove = {
+				OR = {
+					has_government = market_liberalism
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					AND = {
+						has_government = despotism
+						has_country_flag = junta_chicago_school_of_economics
+					}
+				}
+			}
+			removal_cost = -1
+			modifier = {
+				production_factory_max_efficiency_factor = 0.05
+				production_factory_start_efficiency_factor = 0.05
+				production_speed_buildings_factor = 0.05
+			}
+			ai_will_do = {
+				factor = 0
+			}
+			cancel_if_invalid = no
+		}
+		state_capitalism_law = {
+			available = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					AND = {
+						has_government = social_liberalism
+						custom_trigger_tooltip = {
+							tooltip = socialist_parties_without_coalition_more_then_30_tt
+							check_variable = { socialist_parties_without_coalition > 0.3 }
+						}
+					}
+				}
+			}
+			removal_cost = -1
+			modifier = {
+				production_factory_max_efficiency_factor = 0.1
+				production_factory_start_efficiency_factor = 0.05
+				production_speed_buildings_factor = 0.05
+				consumer_goods_factor = 0.025
+			}
+			ai_will_do = {
+				factor = 0
+			}
+			cancel_if_invalid = no
+		}
+		corporatocracy_law = {
+			available = {
+				check_variable = { lib_and_soclib_parties < 0.5 }
+			}
+			removal_cost = -1
+			modifier = {
+				production_factory_max_efficiency_factor = -0.1
+				production_speed_buildings_factor = -0.1
+				min_export = 0.1
+				local_resources_factor = 0.15
+				consumer_goods_factor = 0.05
+				political_power_gain = -0.25
+			}
+			ai_will_do = {
+				factor = 0
+			}
+			cancel_if_invalid = no
+		}
+		planed_economy_law = {
+			available = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					AND = {
+						has_government = social_democracy
+						custom_trigger_tooltip = {
+							tooltip = socialist_parties_more_then_50_tt
+							check_variable = { socialist_parties > 0.5 }
+						}
+					}
+				}
+			}
+			allowed_to_remove = {
+				NOT = {
+					has_government = communism
+					has_government = social_democracy
+				}
+			}
+			removal_cost = -1
+			modifier = {
+				production_factory_max_efficiency_factor = 0.2
+				production_factory_start_efficiency_factor = 0.05
+				production_speed_buildings_factor = 0.1
+				consumer_goods_factor = 0.05
+			}
+			ai_will_do = {
+				factor = 0
+			}
+			cancel_if_invalid = no
+		}
+		workers_control_law = {
+			removal_cost = -1
+			available = {
+				OR = {
+					has_government = radical_socialism
+					AND = {
+						is_former_russian_empire_russian_settled_non_cossack_country = yes
+						OR = {
+							has_government = social_democracy
+							has_government = social_liberalism
+							AND = {
+								has_government = communism
+								has_country_flag = RUS_soviet_power_flag
+								has_country_flag = RUS_soviet_power_set_workers_control
+							}
+						}
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = socialist_parties_more_then_50_tt
+					check_variable = { socialist_parties > 0.5 }
+				}
+			}
+			allowed_to_remove = {
+				OR = {
+					NOT = { has_government = radical_socialism }
+					AND = {
+						is_former_russian_empire_russian_settled_non_cossack_country = yes
+						has_country_flag = RUS_soviet_power_flag
+						NOT = { has_country_flag = RUS_soviet_power_set_workers_control }
+					}
+				}
+			}
+			modifier = {
+				production_factory_max_efficiency_factor = 0.1
+				production_factory_start_efficiency_factor = -0.05
+				production_factory_efficiency_gain_factor = -0.05
+				consumer_goods_factor = 0.025
+				radical_socialism_drift = 0.01
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+	}
+	
+	labor_legislation = {
+		law = yes
+		no_legislation = {
+			removal_cost = -1
+			available = {
+				custom_trigger_tooltip = {
+					tooltip = sociallll_parties_without_coalition_less_then_20_tt
+					check_variable = { sociallll_parties_without_coalition < 0.2 }
+				}
+			}
+			allowed_to_remove = {
+				OR = {
+					AND = {
+						NOT = { has_government = social_conservatism }
+						NOT = { has_government = authoritarism }
+						NOT = { has_government = despotism }
+						NOT = { has_government = fascism }
+					}
+					custom_trigger_tooltip = {
+						tooltip = sociallll_parties_without_coalition_more_then_10_tt
+						check_variable = { sociallll_parties_without_coalition > 0.1 }
+					}
+				}
+			}
+			modifier = {
+				production_factory_max_efficiency_factor = 0.2
+				local_resources_factor = 0.1
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		minimum_legislation = {
+			removal_cost = -1
+			available = {
+				OR = {
+					has_idea = no_legislation
+					custom_trigger_tooltip = {
+						tooltip = sociallll_parties_without_coalition_less_then_20_tt
+						check_variable = { sociallll_parties_without_coalition < 0.2 }
+					}
+				}
+			}
+			default = yes
+			
+			modifier = {
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		acceptable_legislation = {
+			removal_cost = -1
+			available = {
+				OR = {
+					AND = {
+						OR = {
+							has_idea = no_legislation
+							has_idea = minimum_legislation
+						}
+						custom_trigger_tooltip = {
+							tooltip = sociallll_parties_without_coalition_more_then_25_tt
+							check_variable = { sociallll_parties_without_coalition > 0.25 }
+						}
+					}
+					custom_trigger_tooltip = {
+						tooltip = sociallll_parties_without_coalition_less_then_30_tt
+						check_variable = { sociallll_parties_without_coalition < 0.30 }
+					}
+				}
+			}
+			modifier = {
+				production_factory_max_efficiency_factor = -0.1
+				local_resources_factor = -0.1
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		good_legislation = {
+			removal_cost = -1
+			available = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					custom_trigger_tooltip = {
+						tooltip = sociallll_parties_without_coalition_more_then_40_tt
+						check_variable = { sociallll_parties_without_coalition > 0.4 }
+					}
+				}
+			}
+			modifier = {
+				production_factory_max_efficiency_factor = -0.1
+				local_resources_factor = -0.1
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
+		}
+		great_legislation = {
+			removal_cost = -1
+			available = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					custom_trigger_tooltip = {
+						tooltip = socialist_parties_without_coalition_more_then_50_tt
+						check_variable = { socialist_parties_without_coalition > 0.5 }
+					}
+				}
+			}
+			allowed_to_remove = {
+				NOT = { has_government = radical_socialism }
+				NOT = { has_government = communism }
+				custom_trigger_tooltip = {
+					tooltip = socialist_parties_without_coalition_less_then_40_tt
+					check_variable = { socialist_parties_without_coalition < 0.4 }
+				}
+			}
+			modifier = {
+				production_factory_max_efficiency_factor = -0.1
+				local_resources_factor = -0.1
+			}
+			cancel_if_invalid = no
+			ai_will_do = {
+				factor = 0
+			}
 		}
 	}
 
@@ -63,7 +557,7 @@ ideas = {
 		export_focus = {
 			
 			available = {
-				NOT = { has_government = market_liberalism }
+				
 			}
 			cost = 150
 			removal_cost = -1
@@ -86,19 +580,7 @@ ideas = {
 			
 			
 			available = {
-				OR = {
-					AND = {
-						OR = { has_government = market_liberalism has_government = social_conservatism has_government = social_liberalism }
-						has_war = yes
-						any_enemy_country = {
-							ic_ratio = { 
-								tag = ROOT 
-								ratio > 0.2
-							}
-						}
-					}
-					OR = { has_idea = decentralized_planed_economy has_idea = planed_economy has_idea = gov_cap }
-				}
+				
 			}
 		
 			cost = 150
@@ -133,7 +615,7 @@ ideas = {
 			
 			available = {
 				has_war = yes
-				OR = { has_idea = decentralized_planed_economy has_idea = planed_economy has_idea = gov_cap }
+				OR = { has_idea = planed_economy_law has_idea = state_capitalism_law }
 				NOT = { has_idea = dependence_on_grain_imports }
 			}
 			
@@ -164,499 +646,6 @@ ideas = {
 			}
 		}
 	}
-	
-	labor_legislation = {
-		law = yes
-		no_legislation = {
-			removal_cost = -1
-			available = {
-				custom_trigger_tooltip = {
-					tooltip = sociallll_parties_without_coalition_less_then_20_tt
-					check_variable = { sociallll_parties_without_coalition < 0.2 }
-				}
-			}
-			modifier = {
-				production_factory_max_efficiency_factor = 0.2
-				local_resources_factor = 0.1
-			}
-			cancel_if_invalid = no
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 10
-					OR = {
-						has_government = social_conservatism
-						has_government = authoritarism
-						AND = {
-							has_government = despotism
-							NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-						}
-					}
-				}
-				modifier = {
-					add = -100
-					has_idea = corporate_etics
-				}
-			}
-		}
-		minimum_legislation = {
-			removal_cost = -1
-			available = {
-				OR = {
-					AND = {
-						OR = {
-							has_idea = no_legislation
-							has_idea = corporate_etics
-						}
-						OR = {
-							custom_trigger_tooltip = {
-								tooltip = socialist_parties_more_then_15_tt
-								check_variable = { socialist_parties > 0.15 }
-							}
-							custom_trigger_tooltip = {
-								tooltip = socialist_parties_without_coalition_more_then_15_tt
-								check_variable = { socialist_parties_without_coalition > 0.15 }
-							}
-							custom_trigger_tooltip = {
-								tooltip = sociallll_parties_without_coalition_more_then_25_tt
-								check_variable = { sociallll_parties_without_coalition > 0.25 }
-							}
-						}
-					}
-					AND = {
-						OR = {
-							has_idea = acceptable_legislation
-							has_idea = good_legislation
-							has_idea = workers_control
-						}
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_less_then_20_tt
-							check_variable = { socialist_parties < 0.2 }
-						}
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_without_coalition_less_then_20_tt
-							check_variable = { socialist_parties_without_coalition < 0.2 }
-						}
-						custom_trigger_tooltip = {
-							tooltip = sociallll_parties_without_coalition_less_then_30_tt
-							check_variable = { sociallll_parties_without_coalition < 0.3 }
-						}
-					}
-				}
-			}
-			default = yes
-			
-			modifier = {
-			}
-			cancel_if_invalid = no
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 10
-					check_variable = { socialist_parties_without_coalition > 0.2 }
-					NOT = { has_idea = no_legislation }
-					OR = {
-						has_government = social_conservatism
-						has_government = authoritarism
-						AND = {
-							has_government = despotism
-							NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-						}
-					}
-				}
-			}
-		}
-		acceptable_legislation = {
-			removal_cost = -1
-			available = {
-				OR = {
-					AND = {
-						OR = {
-							has_idea = no_legislation
-							has_idea = minimum_legislation
-							has_idea = corporate_etics
-						}
-						OR = {
-							custom_trigger_tooltip = {
-								tooltip = socialist_parties_more_then_25_tt
-								check_variable = { socialist_parties > 0.25 }
-							}
-							custom_trigger_tooltip = {
-								tooltip = socialist_parties_without_coalition_more_then_25_tt
-								check_variable = { socialist_parties_without_coalition > 0.25 }
-							}
-							custom_trigger_tooltip = {
-								tooltip = sociallll_parties_without_coalition_more_then_35_tt
-								check_variable = { sociallll_parties_without_coalition > 0.35 }
-							}
-						}
-					}
-					AND = {
-						has_idea = workers_control
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_without_coalition_less_then_30_tt
-							check_variable = { socialist_parties_without_coalition < 0.3 }
-						}
-					}
-					AND = {
-						has_idea = good_legislation
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_less_then_30_tt
-							check_variable = { socialist_parties < 0.3 }
-						}
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_without_coalition_less_then_30_tt
-							check_variable = { socialist_parties_without_coalition < 0.3 }
-						}
-					}
-				}
-			}
-			modifier = {
-				production_factory_max_efficiency_factor = -0.1
-				local_resources_factor = -0.1
-			}
-			cancel_if_invalid = no
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 10
-					check_variable = { socialist_parties_without_coalition > 0.3 }
-					NOT = { has_idea = no_legislation }
-					OR = {
-						has_government = social_conservatism
-						has_government = authoritarism
-						AND = {
-							has_government = despotism
-							NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-						}
-					}
-				}
-				modifier = {
-					add = 10
-					OR = {
-						has_idea = no_legislation
-						has_idea = minimum_legislation
-						has_idea = corporate_etics
-					}
-					OR = {
-						has_government = radical_socialism
-						has_government = communism
-						has_government = social_democracy
-						has_government = social_liberalism
-					}
-				}
-				modifier = {
-					add = -100
-					OR = {
-						has_government = fascism
-						has_government = national_syndicalism
-						AND = {
-							has_government = despotism
-							has_country_flag = political_despotists_in_reactionary_coalition
-						}
-					}
-				}
-			}
-		}
-		good_legislation = {
-			removal_cost = -1
-			available = {
-				OR = {
-					AND = {
-						OR = {
-							has_idea = no_legislation
-							has_idea = minimum_legislation
-							has_idea = corporate_etics
-							has_idea = acceptable_legislation
-						}
-						OR = {
-							custom_trigger_tooltip = {
-								tooltip = socialist_parties_more_then_35_tt
-								check_variable = { socialist_parties > 0.35 }
-							}
-							custom_trigger_tooltip = {
-								tooltip = socialist_parties_without_coalition_more_then_35_tt
-								check_variable = { socialist_parties_without_coalition > 0.35 }
-							}
-						}
-					}
-					AND = {
-						has_idea = workers_control
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_less_then_40_tt
-							check_variable = { socialist_parties < 0.4 }
-						}
-					}
-				}
-			}
-			modifier = {
-				production_factory_max_efficiency_factor = -0.1
-				local_resources_factor = -0.1
-			}
-			cancel_if_invalid = no
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 15
-					OR = {
-						has_idea = no_legislation
-						has_idea = minimum_legislation
-						has_idea = acceptable_legislation
-						has_idea = corporate_etics
-					}
-					OR = {
-						has_government = radical_socialism
-						has_government = communism
-						has_government = social_democracy
-					}
-				}
-				modifier = {
-					add = -100
-					OR = {
-						has_government = fascism
-						has_government = national_syndicalism
-						AND = {
-							has_government = despotism
-							has_country_flag = political_despotists_in_reactionary_coalition
-						}
-					}
-				}
-			}
-		}
-
-		workers_control = {
-			removal_cost = -1
-			available = {
-				OR = {
-					AND = {
-						OR = {
-							has_idea = no_legislation
-							has_idea = minimum_legislation
-							has_idea = corporate_etics
-							has_idea = good_legislation
-						}
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_without_coalition_more_then_45_tt
-							check_variable = { socialist_parties_without_coalition > 0.45 }
-						}
-					}
-					has_government = radical_socialism
-					has_government = communism
-					AND = {
-						has_government = social_democracy
-						has_country_flag = political_social_democrats_in_socialist_coalition
-					}
-				}
-			}
-			modifier = {
-				production_factory_max_efficiency_factor = 0.1
-				line_change_production_efficiency_factor = 0.05
-			}
-			cancel_if_invalid = no
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 20
-					OR = {
-						has_government = communism
-						has_government = radical_socialism
-						AND = {
-							has_country_flag = political_social_democrats_in_socialist_coalition
-							has_government = social_democracy
-						}
-					}
-				}
-				modifier = {
-					add = -100
-					OR = {
-						has_government = fascism
-						has_government = national_syndicalism
-						AND = {
-							has_government = despotism
-							has_country_flag = political_despotists_in_reactionary_coalition
-						}
-					}
-				}
-			}
-		}
-		
-		corporate_etics = {
-			removal_cost = -1
-			available = {
-				custom_trigger_tooltip = {
-					tooltip = reactionary_parties_more_then_50_tt
-					check_variable = { reactionary_parties > 0.5 }
-				}
-			}
-			modifier = {
-				fascism_drift = 0.02
-				production_factory_max_efficiency_factor = 0.15
-				local_resources_factor = 0.1
-			}
-			cancel_if_invalid = no
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 100
-					OR = {
-						has_government = fascism
-						has_government = national_syndicalism
-						AND = {
-							has_country_flag = political_despotists_in_reactionary_coalition
-							has_government = despotism
-						}
-					}
-				}
-			}
-		}
-	}
-	economic_controll = {
-		law = yes
-		laissez_faire = {
-			available = {
-				custom_trigger_tooltip = {
-					tooltip = socialist_parties_without_coalition_less_then_50_tt
-					check_variable = { socialist_parties_without_coalition < 0.5 }
-				}
-				OR = {
-					has_idea = no_legislation
-					has_idea = minimum_legislation
-					has_idea = corporate_etics
-				}
-			}
-			removal_cost = -1
-			modifier = {
-			}
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 10
-					market_liberalism > 0.5
-					NOT = { any_war_score < 0 }
-				}
-			}
-			cancel_if_invalid = no
-		}
-		interventionalism = {
-			available = {
-				OR = {
-					market_liberalism < 0.5
-					has_war = yes
-				}
-			}
-			default = yes
-			removal_cost = -1
-			modifier = {
-				production_factory_max_efficiency_factor = 0.025
-			}
-			ai_will_do = {
-				factor = 10
-				modifier = {
-					add = 10
-					any_war_score < 0
-				}
-			}
-			cancel_if_invalid = no
-		}
-		gov_cap = {
-			available = {
-				check_variable = { lib_and_soclib_parties < 0.5 }
-			}
-			removal_cost = -1
-			modifier = {
-				production_factory_max_efficiency_factor = 0.05
-			}
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 10
-					OR = {
-						has_government = despotism
-						has_government = fascism
-						has_government = national_syndicalism
-					}
-				}
-			}
-			cancel_if_invalid = no
-		}
-		planed_economy = {
-			available = {
-				custom_trigger_tooltip = {
-					tooltip = socialist_parties_more_then_50_tt
-					check_variable = { socialist_parties > 0.5 }
-				}
-			}
-			removal_cost = -1
-			modifier = {
-				production_factory_max_efficiency_factor = 0.1
-			}
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 10
-					OR = {
-						has_government = radical_socialism
-						has_government = communism
-						AND = {
-							has_government = social_democracy
-							has_country_flag = political_social_democrats_in_socialist_coalition
-						}
-					}
-				}
-				modifier = {
-					add = -10
-					has_idea = workers_control
-					OR = {
-						has_government = radical_socialism
-						AND = {
-							has_country_flag = political_social_democrats_in_socialist_coalition
-							has_government = social_democracy
-						}
-					}
-					has_country_flag = decentralized_plan
-				}
-			}
-			cancel_if_invalid = no
-		}
-		decentralized_planed_economy = {
-			removal_cost = -1
-			available = {
-				custom_trigger_tooltip = {
-					tooltip = socialist_parties_more_then_50_tt
-					check_variable = { socialist_parties > 0.5 }
-				}
-				has_idea = workers_control
-				OR = {
-					AND = {
-						NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
-						check_variable = { radical_socialist_party > communist_party }
-					}
-					AND = {
-						has_country_flag = political_social_democrats_in_socialist_coalition
-						check_variable = { radical_socialist_party > communist_party }
-						check_variable = { radical_socialist_party > social_democratic_party }
-					}
-				}
-			}
-			modifier = {
-			}
-			ai_will_do = {
-				factor = 0
-				modifier = {
-					add = 10
-					OR = {
-						has_government = radical_socialism
-						AND = {
-							has_country_flag = political_social_democrats_in_socialist_coalition
-							has_government = social_democracy
-						}
-					}
-					has_country_flag = decentralized_plan
-				}
-			}
-			cancel_if_invalid = no
-		}
-	}
 	economy = {
 		law = yes
 		undisturbed_isolation = {
@@ -682,7 +671,7 @@ ideas = {
 			
 			allowed_to_remove = {
 				OR = {
-					threat > 0.5
+					has_war_support > 0.5
 					has_war = yes
 				}
 			}
@@ -712,7 +701,7 @@ ideas = {
 			}
 			allowed_to_remove = {
 				OR = {
-					threat > 0.75
+					has_war_support > 0.75
 					has_war = yes
 				}
 			}
@@ -742,12 +731,7 @@ ideas = {
 		low_economic_mobilisation = {
 			
 			available = {
-				OR = {
-					has_idea = decentralized_planed_economy
-					has_idea = planed_economy
-					has_idea = gov_cap
-					has_idea = interventionalism
-				}
+				has_war_support > 0.15
 			}
 			
 			cost = 150
@@ -776,12 +760,7 @@ ideas = {
 		partial_economic_mobilisation = {
 			
 			available = {
-				OR = {
-					has_idea = decentralized_planed_economy
-					has_idea = planed_economy
-					has_idea = gov_cap
-					has_idea = interventionalism
-				}
+				has_war_support > 0.25
 			}
 
 			cost = 150
@@ -811,24 +790,20 @@ ideas = {
 			
 			
 			available = {
+				has_war_support > 0.5
 				OR = {
+					NOT = { has_idea = interventionalism_law }
 					AND = {
 						has_war = yes
 						any_enemy_country = {
-							ic_ratio = {
-								tag = ROOT
-								ratio > 0.2
+							ic_ratio = { 
+								tag = ROOT 
+								ratio > 0.4
 							}
 						}
 					}
-					threat > 0.15
 				}
-				OR = {
-					has_idea = decentralized_planed_economy
-					has_idea = planed_economy
-					has_idea = gov_cap
-					has_idea = interventionalism
-				}
+				NOT = { has_idea = laissez_faire_law }
 			}
 		
 			cost = 150
@@ -860,17 +835,15 @@ ideas = {
 			
 			available = {
 				has_war = yes
-				threat > 0.2
+				has_war_support > 0.8
 				any_enemy_country = {
 					ic_ratio = { 
 						tag = ROOT 
 						ratio > 0.5
 					}
 				}
-				OR = {
-					has_idea = planed_economy
-					has_idea = gov_cap
-				}
+				NOT = { has_idea = laissez_faire_law }
+				NOT = { has_idea = interventionalism_law }
 			}
 
 			ai_will_do = {
