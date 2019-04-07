@@ -50,6 +50,7 @@ country_event = {
 				load_oob = "GEO_1917"
 				country_event = { id = rcw_tc.2 hours = 3 }
 				country_event = { id = rcw_tc.4 days = 22 }
+				country_event = { id = rcw_tc.31 days = 7 }
 			}
 		RUS = {
 			if = {
@@ -111,6 +112,13 @@ country_event = {
 					active = yes
 				}
 			}
+			RUS = {
+				diplomatic_relation = {
+					country = GEO
+					relation = military_access
+					active = yes
+				}
+			}
 		}
 	}
 	
@@ -139,6 +147,7 @@ country_event = {
 				load_oob = "GEO_1917"
 				country_event = { id = rcw_tc.2 hours = 3 }
 				country_event = { id = rcw_tc.4 days = 22 }
+				country_event = { id = rcw_tc.31 days = 7 }
 			}
 		RUS = {
 			if = {
@@ -196,6 +205,13 @@ country_event = {
 			GEO = {
 				diplomatic_relation = {
 					country = RUS
+					relation = military_access
+					active = yes
+				}
+			}
+			RUS = {
+				diplomatic_relation = {
+					country = GEO
 					relation = military_access
 					active = yes
 				}
@@ -325,6 +341,20 @@ country_event = {
 					active = yes
 				}
 			}
+			RUS = {
+				diplomatic_relation = {
+					country = ARM
+					relation = military_access
+					active = yes
+				}
+			}
+			RUS = {
+				diplomatic_relation = {
+					country = AZR
+					relation = military_access
+					active = yes
+				}
+			}
 		}
 	}
 	option = {
@@ -436,6 +466,20 @@ country_event = {
 			AZR = {
 				diplomatic_relation = {
 					country = RUS
+					relation = military_access
+					active = yes
+				}
+			}
+			RUS = {
+				diplomatic_relation = {
+					country = ARM
+					relation = military_access
+					active = yes
+				}
+			}
+			RUS = {
+				diplomatic_relation = {
+					country = AZR
 					relation = military_access
 					active = yes
 				}
@@ -552,6 +596,20 @@ country_event = {
 			AZR = {
 				diplomatic_relation = {
 					country = RUS
+					relation = military_access
+					active = yes
+				}
+			}
+			RUS = {
+				diplomatic_relation = {
+					country = ARM
+					relation = military_access
+					active = yes
+				}
+			}
+			RUS = {
+				diplomatic_relation = {
+					country = AZR
 					relation = military_access
 					active = yes
 				}
@@ -1113,7 +1171,284 @@ country_event = {
 	}
 }
 
+# Самостоятельная Абхазия
+country_event = {
+	id = rcw_tc.31
+	title = rcw_tc.31.t
+	desc = rcw_tc.31.d
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.31.a
+		ABK = {
+		transfer_state = 803
+		inherit_technology = RUS
+		add_ideas = alliance_neutrality
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = rcw_tc.31.b
+		ABK = {
+		transfer_state = 803
+		inherit_technology = RUS
+		add_ideas = alliance_neutrality
+		}
+		change_tag_from = ABK
+	}
+}
 
+# Восстание большевиков в Абхазии
+country_event = {
+	id = rcw_tc.32
+	title = rcw_tc.32.t
+	desc = rcw_tc.32.d
+	picture = GFX_report_event_sov_redarmy
+	
+	trigger = {
+		tag = ABK
+		is_puppet = no
+		RUS = {
+		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = {has_war_with = GER}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	option = {
+		name = rcw_tc.32.a
+		set_politics = { ruling_party = communism } 
+		load_oob = "ABK_1917"
+		create_field_marshal = {  name = "Nestor Lakoba"  portrait_path = "gfx/leaders/ABK/Nestor_Lakoba.dds" traits = { thorough_planner } skill = 2 }
+		create_corps_commander = {  name = "George Atarbekov"  portrait_path = "gfx/leaders/ABK/George_Atarbekov.dds" traits = { thorough_planner } skill = 2 }
+		add_ideas = extensive_conscription
+		add_ideas = workers_control_law
+		add_ideas = good_legislation
+		add_ideas = war_economy
+		if = {
+		limit = {NOT = {GEO = {has_government = communism has_government = radical_socialism}} GEO = {is_in_faction = no exists = yes}}
+		GEO = {country_event = rcw_tc.33}
+		else = {
+		remove_ideas = alliance_neutrality
+		}
+		}
+	}
+}
+
+# Грузия вводит войска в Абхазию
+country_event = {
+	id = rcw_tc.33
+	title = rcw_tc.33.t
+	desc = rcw_tc.33.d
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.33.a
+		declare_war_on = {
+			target = ABK
+			type = annex_everything
+		}
+		add_popularity = { ideology = social_democracy popularity = -0.1 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = rcw_tc.33.b
+		add_political_power = -50
+	}
+}
+
+# Мир с Грузией в случае если вы долго держитесь
+country_event = {
+	id = rcw_tc.34
+	title = rcw_tc.34.t
+	desc = rcw_tc.34.d
+	picture = GFX_report_event_sov_redarmy
+	
+	trigger = {
+		tag = GEO
+		is_puppet = no
+		has_war_with = ABK
+		has_capitulated = no
+		is_in_faction = no
+		}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 180
+	}
+	
+	option = {
+		name = rcw_tc.34.a
+		every_country = {
+			limit = {
+				is_in_faction_with = GEO
+			}
+			white_peace = ABK
+			}
+		ABK = {
+		remove_ideas = alliance_neutrality
+		}
+	}
+}
+
+# Сочинский конфликт
+country_event = {
+	id = rcw_tc.35
+	title = rcw_tc.35.t
+	desc = rcw_tc.35.d
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		tag = GEO
+		OR = {
+		controls_state = 803
+		ABK = {is_puppet_of = GEO controls_state = 803}
+		}
+		OR = {
+		AND = {
+		RUS = { controls_state = 902 has_country_flag = RUS_czechoslovak_legion_uprising }
+		NOT = { has_war_with = RUS }
+		}
+		AND = {
+		is_white_movement_country = yes
+		controls_state = 902 
+		NOT = { has_war_with = GEO }
+		}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	#Начать вторжение
+	option = {
+		name = rcw_tc.35.a
+		add_political_power = 50
+		add_war_support = 0.02
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 803
+				num_provinces = 2
+				on_win = rcw_tc.36
+				on_lose = rcw_tc.37
+				on_cancel = rcw_tc.38
+			}
+			
+			defender = {
+				state = 902
+				num_provinces = 2
+				on_win = rcw_tc.37
+				on_lose = rcw_tc.36
+				on_cancel = rcw_tc.38
+			}
+		}
+		hidden_effect = { country_event = { id = rcw_tc.38 days = 7 } }
+		#hidden_effect = {
+			#137 = {
+				#create_unit = {
+					#division = "name = \"Diviziya Opolcheniya\" division_template = \"Diviziya Opolcheniya\" start_experience_factor = 0.3 start_equipment_factor = 0.5"
+					#owner = RUS
+					#prioritize_location = 3722
+				#}
+			#}
+		#}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	#Не начинать
+	option = {
+		name = rcw_tc.35.b
+		add_political_power = -50
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Перемога
+country_event = {
+	id = rcw_tc.36
+	title = rcw_tc.36.t
+	desc = rcw_tc.36.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.36.a
+		if = {
+			limit = { tag = RUS }
+			add_political_power = -50
+			add_war_support = -0.02
+			GEO = {
+				transfer_state = 902
+			}
+		}
+	}
+}
+# Зрада
+country_event = {
+	id = rcw_tc.37
+	title = rcw_tc.37.t
+	desc = rcw_tc.37.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.37.a
+		if = {
+			limit = { NOT = { tag = GEO } }
+			add_political_power = 50
+			add_war_support = 0.02
+		}
+		if = {
+			limit = { tag = GEO }
+			add_political_power = -50
+			add_war_support = -0.02
+		}
+	}
+}
+# Конец
+country_event = {
+	id = rcw_tc.38
+	title = rcw_tc.38.t
+	desc = rcw_tc.38.d
+	picture = GFX_report_event_februrary_revolution
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.38.a
+		cancel_border_war = {
+			attacker = 196
+			defender = 137
+		}
+	}
+}
 
 # Отделение горской республики
 country_event = {

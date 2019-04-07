@@ -786,22 +786,30 @@ country_event = {
 	desc = rcw_usfev.26.d
 	picture = GFX_report_event_sov_redarm
 	
-	trigger = {
-		tag = CCA
-		has_country_flag = CCA_purge
-	}
-	
-	mean_time_to_happen = {
-		days = 100
-	}
+	is_triggered_only = yes
 	
 	fire_only_once = yes
 	
 	option = {
 		name = rcw_usfev.26.a
 				start_civil_war = {
-					ideology = communism
+					ideology = radical_socialism
 					size = 0.4
+				}
+				if = {
+				limit = {has_war_with = RUS}
+				random_other_country = {
+				limit = {
+					original_tag = CCA
+					has_government = radical_socialism
+				}
+				set_stability = 0.9
+				set_war_support = 0.8
+				declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+			}
 				}
 	}
 }
@@ -1093,12 +1101,15 @@ country_event = {
 	set_politics = {ruling_party = authoritarism}
 	load_focus_tree = nicolai_II_remake
 	every_unit_leader = { limit = { OR = { has_id = 88150 } } promote_leader = yes }
-	start_civil_war = {
+	hidden_effect = {
+			set_stability = 0.2
+			set_war_support = 0.11
+			country_event = { id = rcw_usfev.26 days = 7 }
+			start_civil_war = {
 				ruling_party = authoritarism
 				ideology = social_liberalism
 				size = 0.1
 			}
-	hidden_effect = {
 			random_other_country = {
 				limit = {
 					original_tag = CCA
@@ -1120,7 +1131,7 @@ country_event = {
 			start_civil_war = {
 				ruling_party = social_liberalism
 				ideology = authoritarism
-				size = 0.2
+				size = 0.01
 			}
 			hidden_effect = {
 			random_other_country = {
@@ -1148,7 +1159,6 @@ country_event = {
 	trigger = {
 		tag = SIB
 		is_puppet = no
-		has_country_flag = RUS_czechoslovak_legion_uprising
 		NOT = { has_government = communism has_government = radical_socialism }
 		has_country_flag = SIB_start_political_instability
 	}
@@ -1156,7 +1166,7 @@ country_event = {
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
-		days = 1
+		days = 0
 	}
 	
 	option = {
@@ -1189,10 +1199,10 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.43.a
-		set_variable = {
-    	var = SIB_pressure_CCA
-   		 value = 1
-	}
+		#set_variable = {
+    	#var = SIB_pressure_CCA
+   		#value = 1
+	#}
 	CCA = {country_event = { id = rcw_usfev.44 days = 1 }}
 	}
 	#option = {
@@ -1226,45 +1236,52 @@ country_event = {
 		add_popularity = { ideology = authoritarism popularity = 0.1 }
 		add_popularity = { ideology = despotism popularity = 0.1 }
 		add_popularity = { ideology = fascism popularity = 0.1 }
-		if = {
-			limit = { check_variable = { SIB_pressure_CCA = 1 } }
-			add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
+		add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
 			SIB = {
 				add_opinion_modifier = { target = CCA modifier = SIB_accept }
 				transfer_state = 572
 				add_state_core = 572
 				country_event = { id = rcw_usfev.46 days = 1 }
 			}
-		}
-		if = {
-			limit = { check_variable = { SIB_pressure_CCA = 2 } }
-			SIB = {
-				puppet = CCA
-				set_autonomy = {
-					target = CCA
-					autonomy_state = autonomy_integrated_puppet
-				}
-				country_event = { id = rcw_usfev.46 days = 1 }
-			}
-		}
-		if = {
-			limit = { check_variable = { SIB_pressure_CCA = 3 } }
-			SIB = {
-				annex_country = { 
-				target = CCA 
-				transfer_troops = yes 
-				}
-				add_state_core = 251
-				add_state_core = 406
-				add_state_core = 407
-				add_state_core = 572
-				add_state_core = 573
-				add_state_core = 582
-				add_state_core = 651
-				add_state_core = 652
-				country_event = { id = rcw_usfev.46 days = 1 }
-			}
-		}
+		#if = {
+		#	limit = { check_variable = { SIB_pressure_CCA = 1 } }
+		#	add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
+		#	SIB = {
+		#		add_opinion_modifier = { target = CCA modifier = SIB_accept }
+		#		transfer_state = 572
+		#		add_state_core = 572
+		#		country_event = { id = rcw_usfev.46 days = 1 }
+		#	}
+		#}
+		#if = {
+		#	limit = { check_variable = { SIB_pressure_CCA = 2 } }
+		#	SIB = {
+		#		puppet = CCA
+		#		set_autonomy = {
+		#			target = CCA
+		#			autonomy_state = autonomy_integrated_puppet
+		#		}
+		#		country_event = { id = rcw_usfev.46 days = 1 }
+		#	}
+		#}
+		#if = {
+		#	limit = { check_variable = { SIB_pressure_CCA = 3 } }
+		#	SIB = {
+		#		annex_country = { 
+		#		target = CCA 
+		#		transfer_troops = yes 
+		#		}
+		#		add_state_core = 251
+		#		add_state_core = 406
+		#		add_state_core = 407
+		#		add_state_core = 572
+		#		add_state_core = 573
+		#		add_state_core = 582
+		#		add_state_core = 651
+		#		add_state_core = 652
+		#		country_event = { id = rcw_usfev.46 days = 1 }
+		#	}
+		#}
 	}
 	option = {
 		name = rcw_usfev.44.b
@@ -1469,7 +1486,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.50.a
 		if = {
-			limit = { SIB = { has_full_control_of_state = 251} }
+			limit = { SIB = { controls_state = 251 } }
 			SIB = {
 				set_major = yes
 				add_political_power = -500
@@ -1542,7 +1559,7 @@ country_event = {
 		}
 		
 		if = {
-			limit = { has_full_control_of_state = 651 NOT = {has_full_control_of_state = 572} }
+			limit = { SIB = { controls_state = 651 } }
 			SIB = {
 			set_major = yes
 			add_political_power = -200
@@ -1625,7 +1642,7 @@ country_event = {
 			}
 			
 		if = {
-			limit = { has_full_control_of_state = 572 has_full_control_of_state = 651 }
+			limit = { SIB = { controls_state = 572 } }
 			give_military_access = SIB
 			SIB = {
 			add_political_power = -50
@@ -1761,6 +1778,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.55.a
 		set_politics = {ruling_party = despotism}
+		trigger = { any_unit_leader = { has_id = 92345 } }
 		add_stability = -0.15
 		add_war_support = 0.02
 	}
@@ -1792,14 +1810,7 @@ country_event = {
 		trigger = { any_unit_leader = { has_id = 77400 } }
 		set_politics = {ruling_party = despotism}
 		hidden_effect = {
-		create_country_leader = {
-		name = "Michael Diterihs"
-		desc = ""
-		picture = "gfx/leaders/SIB/Michael_Diterihs.dds"
-		expire = "1934.10.9"
-		ideology = despotism_ideology
-		traits = { staunch_monarchist anti_democrat }
-		}
+		retire_country_leader = yes
 		}
 		add_stability = -0.15
 		add_war_support = 0.02
@@ -1870,7 +1881,6 @@ country_event = {
 	has_country_flag = Ungren_SIB
 	TAN = {
 	OR = {
-	has_capitulated = yes
 	exists = no
 	is_puppet_of = MON
 	}
@@ -1898,7 +1908,14 @@ country_event = {
 	trigger = {
 	tag = TAN
 	has_country_flag = Ungren_SIB
-	has_full_control_of_state = 330
+	OR = {
+	MON = {exists = no}
+	AND = {
+	controls_state = 330
+	MON = {exists = yes}
+	}
+	MON = {is_puppet_of = TAN}
+	}
 	}
 	fire_only_once = yes
 	
@@ -1913,6 +1930,8 @@ country_event = {
 				}
 				white_peace = MON
 			}
+		if = {
+		limit = {SIB = {exists = yes} NOT = {SIB = {has_government = communism has_government = radical_socialism}}}
 		SIB = {annex_country = { target = TAN transfer_troops = yes }}
 		MON = {
 		create_country_leader = {
@@ -1931,10 +1950,30 @@ country_event = {
 		every_unit_leader = { limit = { OR = { has_id = 77402 } } set_nationality = SIB }
 		set_politics = {ruling_party = authoritarism}
 		change_tag_from = SIB
+		else = {
+		TAN = {
+			every_unit_leader = {
+				set_nationality = MON
+			}
+		}
+		change_tag_from = MON
+		MON = {
+		annex_country = { target = TAN transfer_troops = yes }
+		create_country_leader = {
+		name = "Roman Fedorovich von Ungern-Sternberg"
+		picture = "gfx/leaders/RUS/Roman_Fedorovich_von_Ungern-Sternberg.dds"
+		expire = "1965.1.1"
+		ideology = authoritarism_ideology
+		traits = { spirit_of_genghis warmonger }
+		}
+		}
+		}
+		}
 	}
 	
 	option = {
 		name = rcw_usfev.60.b
+		trigger = {SIB = {exists = yes} NOT = {SIB = {has_government = communism has_government = radical_socialism}}}
 		every_country = {
 				limit = {
 					OR = {
@@ -1976,13 +2015,13 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.61.a
-	create_country_leader = {
-	name = "Roman Fedorovich von Ungern-Sternberg"
-	picture = "gfx/leaders/RUS/Roman_Fedorovich_von_Ungern-Sternberg.dds"
-	expire = "1965.1.1"
-	ideology = authoritarism_ideology
-	traits = { spirit_of_genghis warmonger }
-}
+		create_country_leader = {
+		name = "Roman Fedorovich von Ungern-Sternberg"
+		picture = "gfx/leaders/RUS/Roman_Fedorovich_von_Ungern-Sternberg.dds"
+		expire = "1965.1.1"
+		ideology = authoritarism_ideology
+		traits = { spirit_of_genghis warmonger }
+		}
 
 set_politics = {
 	ruling_party = authoritarism
@@ -2041,7 +2080,7 @@ country_event = {
 
 ###ЦАРЬ берёт прямое управление###
 country_event = {
-id = rcw_usfev.63
+	id = rcw_usfev.63
 	title = rcw_usfev.63.t
 	desc = rcw_usfev.63.d
 	picture = GFX_report_event_comre_reorgonize_of_headquarters
@@ -2352,7 +2391,10 @@ country_event = {
 	
 	trigger = {
 		tag = SIB
-		surrender_progress > 0.4  
+		surrender_progress > 0.4 
+		NOT = {
+			has_country_leader = { name = "Alexandr Kolchak" }
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -2695,7 +2737,7 @@ country_event = {
 			create_country_leader = { name = "Wilfrid Malleson" desc = "" picture = "gfx/leaders/ENG/Wilfrid_Malleson.dds" expire = "1947.1.1" ideology = despotism_ideology traits = { warmonger } }
 			every_unit_leader = { limit = { has_id = 88160 } set_nationality = CPG }
 			set_country_flag = CPG_eng
-			#hidden_effect = { country_event = { id = rcw_usfev.77 days = 10 } }
+			hidden_effect = { country_event = { id = rcw_usfev.77 days = 250 } }
 		}
 	}
 	option = {
@@ -2721,7 +2763,7 @@ country_event = {
 			factor = 999
 		}
 		set_politics = { ruling_party = despotism elections_allowed = no}
-		hidden_effect = { country_event = { id = rcw_usfev.78 days = 10 } }
+		#hidden_effect = { country_event = { id = rcw_usfev.78 days = 10 } }
 	}
 	#option = {
 		#name = rcw_usfev.77.b
@@ -3224,7 +3266,7 @@ country_event = {
 		transfer_state = 585
 		add_ideas = limited_conscription
 		add_ideas = workers_control_law
-		add_ideas = great_legislation
+		add_ideas = good_legislation
 		add_ideas = war_economy
 	}
 }
@@ -4790,11 +4832,12 @@ country_event = {
 		create_country_leader = { name = "Nicolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Nicolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = { } }
 		set_politics = {ruling_party = social_democracy elections_allowed = no}
 		retire_country_leader = yes
-		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
+		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
 		create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 		set_politics = {ruling_party = despotism elections_allowed = no}
+		load_focus_tree = kolchak_rss_focus
 		}
 	}
 	
@@ -5135,7 +5178,7 @@ country_event = {
 		create_country_leader = { name = "Nicolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Nicolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = { } }
 		set_politics = {ruling_party = social_democracy elections_allowed = no}
 		retire_country_leader = yes
-		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
+		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
 		create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
@@ -5179,7 +5222,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.128.c
-		create_country_leader = { name = "Victor Chernov" desc = RUS_Victor_Chernov_DESC picture = "gfx/leaders/RUS/Victor_Chernov.dds" expire = "1935.1.1" ideology = social_liberalism_ideology  traits = {  } }
+		create_country_leader = { name = "Victor Chernov" desc = RUS_Victor_Chernov_DESC picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_liberalism_ideology  traits = {  } }
 		add_popularity = { ideology = social_liberalism popularity = 0.15 }
 		add_political_power = -150
 		drop_cosmetic_tag = yes
@@ -5304,11 +5347,13 @@ country_event = {
 		create_country_leader = { name = "Nicolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Nicolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = { } }
 		set_politics = {ruling_party = social_democracy elections_allowed = no}
 		retire_country_leader = yes
-		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
+		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
 		create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 		set_politics = {ruling_party = market_liberalism elections_allowed = no}
+		set_politics = {ruling_party = despotism elections_allowed = no}
+		load_focus_tree = kolchak_rss_focus
 		}
 	}
 	
@@ -5648,10 +5693,30 @@ country_event = {
 		}
 		SOV = {annex_country = { target = CCA transfer_troops = yes }
 		set_politics = { ruling_party = radical_socialism elections_allowed = yes}
-		add_popularity = { ideology = radical_socialism popularity = 20 }
-		add_popularity = { ideology = social_liberalism popularity = 20 }
-		add_popularity = { ideology = communism popularity = 10 }}
+		add_popularity = { ideology = radical_socialism popularity = 0.2 }
+		add_popularity = { ideology = social_liberalism popularity = 0.1 }
+		add_popularity = { ideology = communism popularity = 0.1 }}
 		change_tag_from = SOV
+	}
+}
+
+# Последствия чисток в КОМУЧ
+country_event = {
+	id = rcw_usfev.142
+	title = rcw_usfev.142.t
+	desc = rcw_usfev.142.d
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.142.a
+		add_political_power = -50
+		add_stability = -0.05
+		set_politics = { ruling_party = market_liberalism elections_allowed = no}
+		add_popularity = { ideology = social_liberalism popularity = -0.25 }
 	}
 }
 
@@ -6567,6 +6632,10 @@ country_event = {
 					limit = { has_idea = SIB_transsib }
 					#####RSS = { add_ideas = SIB_transsib }
 					RSS = { add_timed_idea = { idea = SIB_transsib days = 365 } }
+				}
+				if = {
+				limit = {has_country_leader = { name = "Alexandr Kolchak" }}
+				load_focus_tree = kolchak_rss_focus
 				}
 			}
 		}
