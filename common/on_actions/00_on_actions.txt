@@ -327,7 +327,58 @@ on_actions = {
 	# ROOT is capitulated country, FROM is winner
 	on_capitulation = {
 		effect = {
-			news_event = { id = country_capitulated.0 days = 0 }
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = TUR }
+					341 = {
+						is_claimed_by = ENG
+						is_claimed_by = RUS
+						is_controlled_by = RUS
+					}
+				}
+				ENG = {
+					remove_state_claim = 340
+					remove_state_claim = 341
+					remove_state_claim = 860
+					remove_state_claim = 949
+				}
+			}
+			else_if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = TUR }
+					341 = {
+						is_claimed_by = ENG
+						is_claimed_by = RUS
+						NOT = { is_controlled_by = RUS }
+					}
+				}
+				RUS = {
+					remove_state_claim = 340
+					remove_state_claim = 341
+					remove_state_claim = 860
+					remove_state_claim = 949
+				}
+			}
+			if = {
+				limit = {
+					NOT = {
+						OR = {
+							has_global_flag = WWI_BUL_HAS_CAPITULATED
+							ROOT = { tag = GER }
+							ROOT = { tag = AUH }
+							ROOT = { tag = BUL }
+							ROOT = { tag = TUR }
+							ROOT = { tag = ITA }
+							ROOT = { tag = FRA }
+							ROOT = { tag = RUS }
+							ROOT = { tag = ENG }
+						}
+					}
+				}
+				news_event = { id = country_capitulated.0 days = 0 }
+			}
 			if = {
 				limit = { original_tag = RVA }
 				remove_ideas = {
@@ -338,11 +389,71 @@ on_actions = {
 					RVA_volunteer_army_5
 				}
 			}
-			if ={
-				limit = { tag = FRA has_global_flag = WWI_is_now is_subject_of = GER }
-				GER = { end_puppet = FRA }
-				FRA = { leave_faction = yes add_to_war = { targeted_alliance = ENG enemy = GER } }
-				ENG = { add_to_faction = FRA }
+			
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					ROOT = { tag = BUL }
+					NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+				}
+				news_event = { id = news_n.101 days = 0 }
+				random_country = {
+					limit = { original_tag = SER exists = yes NOT = { has_war_with = BUL } }
+					every_state = {
+						limit = { is_owned_by = ROOT OR = { is_core_of = PREV is_claimed_by = PREV } }
+						PREV = {
+							transfer_state = PREV
+						}
+					}
+				}
+				random_country = {
+					limit = { original_tag = ROM exists = yes NOT = { has_war_with = BUL } }
+					every_state = {
+						limit = { is_owned_by = ROOT OR = { is_core_of = PREV is_claimed_by = PREV } }
+						PREV = {
+							transfer_state = PREV
+						}
+					}
+				}
+				BUL = {
+					set_global_flag = WWI_BUL_HAS_CAPITULATED
+					country_event = { id = versailles.0 hours = 1 }
+				}
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					ROOT = { tag = TUR }
+					NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+				}
+				news_event = { id = news_n.102 days = 0 }
+				TUR = {
+					set_global_flag = WWI_TUR_HAS_CAPITULATED
+					country_event = { id = versailles.0 hours = 1 }
+					set_capital = 49
+				}
+			}
+		}
+	}
+	
+	#ROOT is the winner, FROM is the loser.
+	on_peaceconference_ended = {
+		effect = {
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = TUR }
+					has_global_flag = WWI_TUR_HAS_CAPITULATED
+				}
+				FROM = { country_event = versailles.1 }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = BUL }
+					has_global_flag = WWI_BUL_HAS_CAPITULATED
+				}
+				FROM = { country_event = versailles.2 }
 			}
 		}
 	}
@@ -520,6 +631,42 @@ on_actions = {
 	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
 	on_state_control_changed = {
 		effect = {
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = TUR }
+					FROM.FROM = {
+						state = 341
+						is_claimed_by = ENG
+						is_claimed_by = RUS
+					}
+					OR = { tag = RUS is_subject_of = RUS }
+				}
+				ENG = {
+					remove_state_claim = 340
+					remove_state_claim = 341
+					remove_state_claim = 860
+					remove_state_claim = 949
+				}
+			}
+			else_if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = TUR }
+					FROM.FROM = {
+						state = 341
+						is_claimed_by = ENG
+						is_claimed_by = RUS
+					}
+					NOT = { tag = RUS is_subject_of = RUS }
+				}
+				RUS = {
+					remove_state_claim = 340
+					remove_state_claim = 341
+					remove_state_claim = 860
+					remove_state_claim = 949
+				}
+			}
 			if = {
 				limit = {
 					NOT = { has_global_flag = RUS_civil_war_over }
