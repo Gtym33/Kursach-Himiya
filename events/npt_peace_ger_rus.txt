@@ -65,25 +65,27 @@ country_event = {
 			}
 		}
 		
-		set_global_flag = WWI_RUS_HAS_CAPITULATED
-		if = {
-			limit = { AUH = { has_war_with = RUS is_in_faction_with = GER } }
-			AUH = { country_event = ger_rus_peace.21 }
-			else = { GER = { country_event = ger_rus_peace.21 } }
+		ROM = {
+			if = { limit = { RUS = { owns_state = 78 } } transfer_state = 78 }
+			if = { limit = { RUS = { owns_state = 766 } } transfer_state = 766 }
 		}
+		set_global_flag = WWI_RUS_HAS_CAPITULATED
 		if = {
 			limit = { AUH = { has_war_with = RUS is_in_faction_with = GER } GER = { NOT = { controls_state = 202 } } }
 			AUH = { country_event = ger_rus_peace.22 }
 			else = { GER = { country_event = ger_rus_peace.22 } }
 		}
 		if = {
-			limit = { TUR = { has_war_with = RUS is_in_faction_with = GER } GEO = { exists = no} }
+			limit = { TUR = { has_war_with = RUS is_in_faction_with = GER } GEO = { exists = no } }
 			TUR = { country_event = ger_rus_peace.23 }
 		}
 		country_event = ger_rus_peace.24
 		country_event = ger_rus_peace.25
-		country_event = ger_rus_peace.26
 		country_event = ger_rus_peace.30
+		every_country = {
+			limit = { controls_state = 137 has_war_with = RUS is_in_faction_with = GER }
+			country_event = ger_rus_peace.27
+		}
 		RUS = {
 			leave_faction = yes
 			end_puppet = UKR
@@ -156,47 +158,6 @@ country_event = {
 		}
 	}
 }
-#Бессарабия
-country_event = {
-	id = ger_rus_peace.21
-	title = ger_rus_peace.21.t
-	desc = ger_rus_peace.21.desc
-	picture = GFX_report_event_germany_civil_war_soldiers
-
-	is_triggered_only = yes
-	
-	#Отдать Румынии
-	option = {
-		name = ger_rus_peace.21.a
-		trigger = {
-			NOT = { has_war_with = ROM }
-		}
-		ROM = {
-			if = { limit = { RUS = { owns_state = 78 } } transfer_state = 78 }
-			if = { limit = { RUS = { owns_state = 766 } } transfer_state = 766 }
-		}
-		ai_chance = {
-			factor = 999
-		}
-	}
-	#Забрать себе
-	option = {
-		name = ger_rus_peace.21.b
-		if = { limit = { RUS = { owns_state = 78 } } transfer_state = 78 }
-		if = { limit = { RUS = { owns_state = 766 } } transfer_state = 766 }
-		if = {
-			limit = { NOT = { has_war_with = ROM } }
-			add_political_power = -100
-		}
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				NOT = { has_war_with = ROM }
-			}
-		}
-	}
-}
 #Украина
 country_event = {
 	id = ger_rus_peace.22
@@ -206,110 +167,55 @@ country_event = {
 
 	is_triggered_only = yes
 	
-	immediate = {
-		hidden_effect = {
-			RUS = {
-				release = UKR
-				end_puppet = UKR
-			}
-			UKR = {
-				if = { limit = { RUS = { owns_state = 204 } } transfer_state = 204 }
-				if = { limit = { RUS = { owns_state = 241 } } transfer_state = 241 }
-				if = { limit = { RUS = { owns_state = 923 } } transfer_state = 923 }
-				if = { limit = { RUS = { owns_state = 961 } } transfer_state = 961 }
-			}
-			every_country = {
-				limit = { owns_state = 220 }
-				transfer_state = 960
-			}
-			every_country = {
-				limit = { owns_state = 245 }
-				transfer_state = 954
-			}
-			every_country = {
-				limit = { owns_state = 228 }
-				transfer_state = 953
-			}
-		}
-	}
-	
-	#Оставить Украину России
-	option = {
-		name = ger_rus_peace.22.a
-		if = {
-			limit = { TUR = { controls_state = 137 } }
-			TUR = { country_event = ger_rus_peace.27 }
-			else = {
-				if = { limit = { AUH = { controls_state = 137 } }
-					AUH = { country_event = ger_rus_peace.27 }
-					else = { GER = { country_event = ger_rus_peace.27 } }
-				}
-			}
-		}
-		ai_chance = {
-			factor = 0
-		}
-	}
-	#Оставить независимую Украину
+	#Оставить независимую Украину на правом берегу и на левом чуть-чуть
 	option = {
 		name = ger_rus_peace.22.b
-		add_political_power = -50
-		if = {
-			limit = { TUR = { controls_state = 137 } }
-			TUR = { country_event = ger_rus_peace.27 }
-			else = {
-				if = { limit = { AUH = { controls_state = 137 } }
-					AUH = { country_event = ger_rus_peace.27 }
-					else = { GER = { country_event = ger_rus_peace.27 } }
+		
+		every_state = {
+			limit = {
+				NOT = { is_core_of = POL }
+				OR = {
+					is_core_of = UKR
+					AND = { is_core_of = BLR is_claimed_by = UKR }
 				}
+				is_owned_by = RUS
+				NOT = { state = 904 state = 957 state = 218 state = 228 state = 953 state = 918 state = 954 state = 958 state = 814 state = 227 state = 221 state = 225 state = 960 state = 812 state = 961 state = 923 state = 224 state = 241 }
 			}
+			UKR = { transfer_state = PREV }
 		}
+		GER = { country_event = ger_rus_peace.26 }
+		
 		ai_chance = {
 			factor = 1
-		}
-	}
-	#Создать марионеточное правительство
-	option = {
-		name = ger_rus_peace.22.c
-		puppet = UKR
-		set_autonomy = {
-			target = UKR
-			autonomy_state = autonomy_colony
-		}
-		add_political_power = -100
-		add_stability = -0.03
-		UKR = { white_peace = RUS }
-		if = {
-			limit = { TUR = { controls_state = 137 } }
-			TUR = { country_event = ger_rus_peace.27 }
-			else = {
-				if = { limit = { AUH = { controls_state = 137 } }
-					AUH = { country_event = ger_rus_peace.27 }
-					else = { GER = { country_event = ger_rus_peace.27 } }
-				}
-			}
-		}
-		ai_chance = {
-			factor = 99
 			modifier = {
 				factor = 0
-				has_stability < 0.1
+				RUS = { NOT = { has_country_flag = RUS_monarchy_not_fall } }
 			}
-			modifier = {
-				factor = 0.2
-				has_stability < 0.15
+		}
+	}
+	#Оставить независимую Украину в максимальных границах
+	option = {
+		name = ger_rus_peace.22.b
+		
+		every_state = {
+			limit = {
+				NOT = { is_core_of = POL }
+				OR = {
+					is_core_of = UKR
+					AND = { is_core_of = BLR is_claimed_by = UKR }
+				}
+				is_owned_by = RUS
+				NOT = { state = 904 state = 957 state = 218 state = 228 state = 953 state = 918 state = 954 state = 958 state = 814 state = 227 state = 221 state = 225 state = 960 state = 812 state = 961 state = 923 state = 224 state = 241 }
 			}
+			UKR = { transfer_state = PREV }
+		}
+		GER = { country_event = ger_rus_peace.26 }
+		
+		ai_chance = {
+			factor = 1
 			modifier = {
-				factor = 0.4
-				has_stability < 0.2
-			}
-			modifier = {
-				factor = 0.6
-				has_stability < 0.25
-			}
-			modifier = {
-				factor = 0.8
-				has_stability < 0.3
+				factor = 0
+				RUS = { has_country_flag = RUS_monarchy_not_fall }
 			}
 		}
 	}
@@ -323,29 +229,6 @@ country_event = {
 
 	is_triggered_only = yes
 	
-	#Оставить России
-	option = {
-		name = ger_rus_peace.23.a
-		ai_chance = {
-			factor = 0
-		}
-		if = {
-			limit = { RUS = { owns_state = 420 } }
-			PER = { transfer_state = 420 }
-		}
-		if = {
-			limit = { RUS = { owns_state = 419 } }
-			PER = { transfer_state = 419 }
-		}
-		if = {
-			limit = { RUS = { owns_state = 421 } }
-			PER = { transfer_state = 421 }
-		}
-		if = {
-			limit = { RUS = { owns_state = 417 } }
-			PER = { transfer_state = 417 }
-		}
-	}
 	#Забрать себе Карс
 	option = {
 		name = ger_rus_peace.23.b
@@ -399,14 +282,6 @@ country_event = {
 			autonomy_state = autonomy_dominion
 		}
 		AZR = { white_peace = RUS }
-		GER = {
-		puppet = GEO
-		set_autonomy = {
-			target = GEO
-			autonomy_state = autonomy_dominion
-		}
-		GEO = { white_peace = RUS }
-		}
 		if = {
 			limit = { RUS = { owns_state = 420 } }
 			PER = { transfer_state = 420 }
@@ -463,71 +338,27 @@ country_event = {
 	desc = ger_rus_peace.24.desc
 	picture = GFX_report_event_germany_civil_war_soldiers
 
-	immediate = {
-		hidden_effect = {
-			UKR = {
-				if = { limit = { RUS = { owns_state = 904 } } transfer_state = 904 }
-			}
-		}
-	}
 	is_triggered_only = yes
 	
-	#Оставить независимой
-	option = {
-		name = ger_rus_peace.24.a
-		POL = {
-			if = { limit = { RUS = { owns_state = 10 } } transfer_state = 10 }
-			if = { limit = { RUS = { owns_state = 87 } } transfer_state = 87 }
-			if = { limit = { RUS = { owns_state = 90 } } transfer_state = 90 }
-			if = { limit = { RUS = { owns_state = 92 } } transfer_state = 92 }
-			if = { limit = { RUS = { owns_state = 98 } } transfer_state = 98 }
-			if = { limit = { RUS = { owns_state = 822 } } transfer_state = 822 }
-			if = { limit = { RUS = { owns_state = 910 } } transfer_state = 910 }
-			if = { limit = { RUS = { owns_state = 97 } } transfer_state = 97 }
-		}
-		ai_chance = {
-			factor = 0
-		}
-	}
 	#Отдать Австро-Венгрии
 	option = {
 		name = ger_rus_peace.24.b
-		AUH = {
-			if = { limit = { RUS = { owns_state = 10 } } transfer_state = 10 }
-			if = { limit = { RUS = { owns_state = 87 } } transfer_state = 87 }
-			if = { limit = { RUS = { owns_state = 90 } } transfer_state = 90 }
-			if = { limit = { RUS = { owns_state = 92 } } transfer_state = 92 }
-			if = { limit = { RUS = { owns_state = 98 } } transfer_state = 98 }
-			if = { limit = { RUS = { owns_state = 822 } } transfer_state = 822 }
-			if = { limit = { RUS = { owns_state = 910 } } transfer_state = 910 }
-			if = { limit = { RUS = { owns_state = 97 } } transfer_state = 97 }
+		every_state = {
+			limit = { NOT = { is_core_of = LIT } is_core_of = POL is_owned_by = RUS }
+			AUH = { transfer_state = PREV }
 		}
 		add_political_power = -25
 		ai_chance = {
 			factor = 50
 		}
 	}
-	#Создать марионеточное правительство
+	#Аннексировать
 	option = {
 		name = ger_rus_peace.24.c
-		POL = {
-			if = { limit = { RUS = { owns_state = 10 } } transfer_state = 10 }
-			if = { limit = { RUS = { owns_state = 87 } } transfer_state = 87 }
-			if = { limit = { RUS = { owns_state = 90 } } transfer_state = 90 }
-			if = { limit = { RUS = { owns_state = 92 } } transfer_state = 92 }
-			if = { limit = { RUS = { owns_state = 98 } } transfer_state = 98 }
-			if = { limit = { RUS = { owns_state = 822 } } transfer_state = 822 }
-			if = { limit = { RUS = { owns_state = 910 } } transfer_state = 910 }
-			if = { limit = { RUS = { owns_state = 97 } } transfer_state = 97 }
+		every_state = {
+			limit = { NOT = { is_core_of = LIT } is_core_of = POL is_owned_by = RUS }
+			GER = { transfer_state = PREV }
 		}
-		puppet = POL
-		set_autonomy = {
-			target = POL
-			autonomy_state = autonomy_dominion
-		}
-		add_political_power = -50
-		add_stability = -0.01
-		POL = { white_peace = RUS }
 		ai_chance = {
 			factor = 50
 			modifier = {
@@ -544,23 +375,6 @@ country_event = {
 			}
 		}
 	}
-	#Аннексировать
-	option = {
-		name = ger_rus_peace.24.d
-		if = { limit = { RUS = { owns_state = 10 } } transfer_state = 10 }
-		if = { limit = { RUS = { owns_state = 87 } } transfer_state = 87 }
-		if = { limit = { RUS = { owns_state = 90 } } transfer_state = 90 }
-		if = { limit = { RUS = { owns_state = 92 } } transfer_state = 92 }
-		if = { limit = { RUS = { owns_state = 98 } } transfer_state = 98 }
-		if = { limit = { RUS = { owns_state = 822 } } transfer_state = 822 }
-		if = { limit = { RUS = { owns_state = 910 } } transfer_state = 910 }
-		if = { limit = { RUS = { owns_state = 97 } } transfer_state = 97 }
-		add_political_power = -100
-		add_stability = -0.03
-		ai_chance = {
-			factor = 0
-		}
-	}
 }
 #Прибалтика
 country_event = {
@@ -571,102 +385,32 @@ country_event = {
 
 	is_triggered_only = yes
 	
-	#Выделить Литву
+	#Взять Литву и Курляндию с Ригой
 	option = {
 		name = ger_rus_peace.25.a
-		RUS = {
-			release = LIT
+		every_state = {
+			limit = { is_core_of = LIT is_owned_by = RUS }
+			GER = { transfer_state = PREV }
 		}
-		puppet = LIT
-		set_autonomy = {
-			target = LIT
-			autonomy_state = autonomy_colony
+		every_state = {
+			limit = { OR = { is_core_of = KUR state = 12 } is_owned_by = RUS }
+			GER = { transfer_state = PREV }
 		}
-		LIT = { white_peace = RUS }
 		ai_chance = {
 			factor = 0
 		}
 	}
-	#Выделить Литву, Латвию и Эстонию
+	#Взять всю Прибалтику
 	option = {
 		name = ger_rus_peace.25.b
-		RUS = {
-			release = LIT
-			release = EST
+		every_state = {
+			limit = { is_core_of = LIT is_owned_by = RUS }
+			GER = { transfer_state = PREV }
 		}
-		LIT = {
-			if = { limit = { RUS = { owns_state = 95 } } transfer_state = 95 }
-			if = { limit = { RUS = { owns_state = 998 } } transfer_state = 998 }
-			if = { limit = { RUS = { owns_state = 784 } } transfer_state = 784 transfer_state = 999 }
+		every_state = {
+			limit = { OR = { is_core_of = UBD is_core_of = LAT is_core_of = EST is_core_of = KUR } is_owned_by = RUS }
+			GER = { transfer_state = PREV }
 		}
-		LAT = {
-			if = { limit = { RUS = { owns_state = 12 } } transfer_state = 12 }
-			if = { limit = { RUS = { owns_state = 1001 } } transfer_state = 1001 }
-			if = { limit = { RUS = { owns_state = 190 } } transfer_state = 190 }
-			if = { limit = { RUS = { owns_state = 866 } } transfer_state = 866 }
-			if = { limit = { RUS = { owns_state = 867 } } transfer_state = 867 }
-		}
-		puppet = LIT
-		set_autonomy = {
-			target = LIT
-			autonomy_state = autonomy_colony
-		}
-		puppet = LAT
-		set_autonomy = {
-			target = LAT
-			autonomy_state = autonomy_colony
-		}
-		puppet = EST
-		set_autonomy = {
-			target = EST
-			autonomy_state = autonomy_colony
-		}
-		country_event = ger_rus_peace.29
-		LIT = { white_peace = RUS }
-		LAT = { white_peace = RUS }
-		EST = { white_peace = RUS }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	#Выделить Литву, и Балтийское Герцогство
-	option = {
-		name = ger_rus_peace.25.c
-		RUS = {
-			release = LIT
-		}
-		LIT = {
-			if = { limit = { RUS = { owns_state = 95 } } transfer_state = 95 }
-			if = { limit = { RUS = { owns_state = 998 } } transfer_state = 998 }
-			if = { limit = { RUS = { owns_state = 784 } } transfer_state = 784 transfer_state = 999 }
-		}
-		UBD = {
-			if = { limit = { RUS = { owns_state = 12 } } transfer_state = 12 }
-			if = { limit = { RUS = { owns_state = 1001 } } transfer_state = 1001 }
-			if = { limit = { RUS = { owns_state = 13 } } transfer_state = 13 }
-			if = { limit = { RUS = { owns_state = 190 } } transfer_state = 190 }
-			if = { limit = { RUS = { owns_state = 191 } } transfer_state = 191 }
-			if = { limit = { RUS = { owns_state = 866 } } transfer_state = 866 }
-			if = { limit = { RUS = { owns_state = 867 } } transfer_state = 867 }
-			if = { limit = { RUS = { owns_state = 914 } } transfer_state = 914 }
-			if = { limit = { RUS = { owns_state = 915 } } transfer_state = 915 }
-			if = { limit = { RUS = { owns_state = 916 } } transfer_state = 916 }
-			if = { limit = { RUS = { owns_state = 920 } } transfer_state = 920 }
-			if = { limit = { RUS = { owns_state = 921 } } transfer_state = 921 }
-		}
-		puppet = LIT
-		set_autonomy = {
-			target = LIT
-			autonomy_state = autonomy_colony
-		}
-		puppet = UBD
-		set_autonomy = {
-			target = UBD
-			autonomy_state = autonomy_colony
-		}
-		country_event = ger_rus_peace.29
-		UBD = { white_peace = RUS }
-		LIT = { white_peace = RUS }
 		ai_chance = {
 			factor = 1
 		}
@@ -691,30 +435,15 @@ country_event = {
 	#Выделить марионеточное правительство
 	option = {
 		name = ger_rus_peace.26.b
-		BLR = {
-			if = { limit = { RUS = { owns_state = 94 } } transfer_state = 94 }
-			if = { limit = { RUS = { owns_state = 194 } } transfer_state = 194 }
-			if = { limit = { RUS = { owns_state = 994 } } transfer_state = 994 }
-			if = { limit = { RUS = { owns_state = 206 } } transfer_state = 206 }
-			if = { limit = { RUS = { owns_state = 926 } } transfer_state = 926 }
-			if = { limit = { RUS = { owns_state = 96 } } transfer_state = 96 }
-			if = { limit = { RUS = { owns_state = 924 } } transfer_state = 924 }
-			if = { limit = { RUS = { owns_state = 912 } } transfer_state = 912 }
-			if = { limit = { RUS = { owns_state = 922 } } transfer_state = 922 }
-			if = { limit = { RUS = { owns_state = 927 } } transfer_state = 927 }
-			if = { limit = { RUS = { owns_state = 927 } } transfer_state = 927 }
-			if = { limit = { RUS = { owns_state = 955 } } transfer_state = 955 }
-			if = { limit = { RUS = { owns_state = 956 } } transfer_state = 956 }
-			#if = { limit = { RUS = { owns_state = 207 } } transfer_state = 207 }
-			#if = { limit = { RUS = { owns_state = 940 } } transfer_state = 940 }
-			if = { limit = { OR = { RUS = { owns_state = 957 } UKR = { owns_state = 957 } } } transfer_state = 957 }
+		every_state = {
+			limit = { NOT = { is_core_of = POL } is_core_of = BLR is_owned_by = RUS NOT = { state = 207 state = 940 state = 241 } }
+			BLR = { transfer_state = PREV }
 		}
 		puppet = BLR
 		set_autonomy = {
 			target = BLR
 			autonomy_state = autonomy_colony
 		}
-		BLR = { white_peace = RUS }
 		ai_chance = {
 			factor = 1
 		}
@@ -732,38 +461,25 @@ country_event = {
 	#Аннексировать
 	option = {
 		name = ger_rus_peace.27.a
-		if = { limit = { RUS = { owns_state = 137 } } transfer_state = 137 }
-		ai_chance = {
-			factor = 0
+		every_state = {
+			limit = { is_core_of = CRI is_owned_by = RUS }
+			ROOT = { transfer_state = PREV }
 		}
-	}
-	#Аннексировать с Херсоном
-	option = {
-		name = ger_rus_peace.27.a
-		if = { limit = { OR = { 137 = { is_owned_by = RUS } AND = { 137 = { is_owned_by = UKR } UKR = { is_puppet = yes } } } } transfer_state = 137 }
-		if = { limit = { RUS = { owns_state = 919 } } transfer_state = 919 }
-		add_political_power = -25
-		add_stability = -0.01
-		country_event = ger_rus_peace.28
 		ai_chance = {
 			factor = 1
-		}
-	}
-	#Отдать Украине
-	option = {
-		name = ger_rus_peace.27.b
-		trigger = {
-			UKR = { exists = yes }
-		}
-		UKR = { if = { limit = { RUS = { owns_state = 137 } } transfer_state = 137 } }
-		ai_chance = {
-			factor = 0
+			modifier = {
+				factor = 0
+				NOT = { tag = TUR tag = ROM tag = BUL }
+			}
 		}
 	}
 	#Сделать марионеткой Крым
 	option = {
 		name = ger_rus_peace.27.c
-		CRI = { if = { limit = { RUS = { owns_state = 137 } } transfer_state = 137 } }
+		every_state = {
+			limit = { is_core_of = CRI is_owned_by = RUS }
+			CRI = { transfer_state = PREV }
+		}
 		puppet = CRI
 		set_autonomy = {
 			target = CRI
@@ -771,78 +487,7 @@ country_event = {
 		}
 		CRI = { white_peace = RUS }
 		ai_chance = {
-			factor = 0
-		}
-	}
-}
-#Черноморское побережье
-country_event = {
-	id = ger_rus_peace.28
-	title = ger_rus_peace.28.t
-	desc = ger_rus_peace.28.desc
-	picture = GFX_report_event_germany_civil_war_soldiers
-
-	is_triggered_only = yes
-	
-	#Оставить как есть
-	option = {
-		name = ger_rus_peace.28.a
-		ai_chance = {
 			factor = 1
-		}
-	}
-	#Аннексировать
-	option = {
-		name = ger_rus_peace.28.b
-		if = { limit = { RUS = { owns_state = 233 } } transfer_state = 233 }
-		if = { limit = { RUS = { owns_state = 902 } } transfer_state = 902 }
-		if = { limit = { RUS = { owns_state = 907 } } transfer_state = 907 }
-		add_political_power = -50
-		add_stability = -0.03
-		ai_chance = {
-			factor = 10
-			modifier = {
-				factor = 0.5
-				has_stability < 0.45
-			}
-			modifier = {
-				factor = 0
-				has_stability < 0.4
-			}
-		}
-	}
-}
-#Латгалия
-country_event = {
-	id = ger_rus_peace.29
-	title = ger_rus_peace.29.t
-	desc = ger_rus_peace.29.desc
-	picture = GFX_report_event_germany_civil_war_soldiers
-
-	is_triggered_only = yes
-	
-	#Оставить России
-	option = {
-		name = ger_rus_peace.29.a
-		add_political_power = 25
-		every_country = {
-			limit = { owns_state = 12 }
-			add_political_power = 50
-		}
-		ai_chance = {
-			factor = 1
-		}
-	}
-	#Включить в состав того что вы там создали
-	option = {
-		name = ger_rus_peace.29.b
-		every_country = {
-			limit = { owns_state = 1001 }
-			if = { limit = { RUS = { owns_state = 865 } } transfer_state = 865 }
-		}
-		add_political_power = -25
-		ai_chance = {
-			factor = 0
 		}
 	}
 }

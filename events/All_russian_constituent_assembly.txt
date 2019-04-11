@@ -58,7 +58,7 @@ country_event = {
 	option = {
 		name = all_rus_CA.1.a #назначить буржуазные демократические выборы
 		trigger = {
-			NOT = { check_variable = { socialist_parties > 0.60 } }
+			NOT = { check_variable = { socialist_parties > 0.70 } }
 			NOT = { has_country_flag = homogeneous_socialist_government }
 		}
 		ai_chance = {
@@ -77,7 +77,7 @@ country_event = {
 		name = all_rus_CA.1.b #советская республика
 		trigger = {
 			OR = {
-				check_variable = { socialist_parties > 0.60 }
+				check_variable = { socialist_parties > 0.50 }
 				AND = {
 					NOT = { has_government = communism }
 					NOT = { has_government = radical_socialism }
@@ -87,11 +87,7 @@ country_event = {
 			}
 		}
 		ai_chance = {
-			factor = 999
-			modifier = {
-				#is_historical_focus_on = yes
-				#factor = 0
-			}
+			factor = 10
 		}
 		set_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
 		if = {
@@ -105,12 +101,14 @@ country_event = {
 	option = {
 		name = all_rus_CA.1.f #диктатуррра
 		trigger = {
+			check_variable = { authoritarian_parties > 0.2 }
 			NOT = { has_country_flag = general_kornilov }
 			NOT = { has_government = communism }
 			NOT = { has_government = radical_socialism }
+			NOT = { check_variable = { socialist_parties > 0.40 } }
 		}
 		ai_chance = {
-			factor = 1
+			factor = 10
 			modifier = {
 				factor = 2
 				NOT = { has_government = communism has_government = radical_socialism }
@@ -132,12 +130,12 @@ country_event = {
 		}
 	}
 	option = {
-		name = all_rus_CA.1.g #Восстановление монархии во главе с царём Юсуповым
+		name = all_rus_CA.1.g #Конституционная монархия
 		trigger = {
 			check_variable = { authoritarian_parties > 0.3 }
 		}
 		ai_chance = {
-			factor = 99999
+			factor = 10
 			modifier = {
 				factor = 0
 				is_historical_focus_on = yes
@@ -539,48 +537,19 @@ country_event = {
 			limit = {
 				has_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature
 			}
-			set_party_name = { ideology = authoritarism long_name = RUS_authoritarism_kornilov_party_long name = RUS_authoritarism_kornilov_party }
-			create_country_leader = {
-				name = "Lavr Kornilov"
-				desc=RUS_nikolai_ii_DESC
-				picture="gfx/leaders/RUS/Lavr_Kornilov.dds"
-				expire="1935.1.1"
-				ideology = authoritarism_ideology
-				traits={  }
-			}
-			set_politics = {
-				ruling_party = authoritarism
-				elections_allowed = no
-			}
-			add_popularity = {
-				ideology = authoritarism
-				popularity = 0.15
-			}
-			remove_ideas_with_trait = head_of_government
-			remove_ideas_with_trait = foreign_minister
-			remove_ideas_with_trait = economy_minister
-			remove_ideas_with_trait = security_minister
-			remove_ideas_with_trait = head_of_intel
-			add_ideas = {
-				Nikolay_Khomyakov_1
-				Alexander_Guchkov_2
-				Peter_Heyden_3
-				Boris_Savinkov_natsind_4
-				Alexander_Kerensky_5
-			}
-			set_country_flag = general_kornilov
-		}
-		if = {
-			limit = {
-				has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
-			}
-			create_country_leader = {
-				name = "Felix I Usupov"
-				desc=RUS_nikolai_ii_DESC
-				picture="gfx/leaders/RUS/Felix_Usupov_tsar.dds"
-				expire="1935.1.1"
-				ideology = despotism_ideology
-				traits={  }
+			if = {
+				limit = { NOT = { has_country_leader = { name = "Lavr Kornilov" } } }
+				hidden_effect = {
+					set_party_name = { ideology = despotism long_name = RUS_authoritarism_kornilov_party_long name = RUS_authoritarism_kornilov_party }
+					create_country_leader = {
+						name = "Lavr Kornilov"
+						desc=RUS_Lavr_Kornilov_DESC
+						picture="gfx/leaders/RUS/Lavr_Kornilov.dds"
+						expire="1935.1.1"
+						ideology = despotism_ideology
+						traits={ great_war_hero warmonger dictator }
+					}
+				}
 			}
 			set_politics = {
 				ruling_party = despotism
@@ -588,7 +557,34 @@ country_event = {
 			}
 			add_popularity = {
 				ideology = despotism
-				popularity = 0.15
+				popularity = 0.05
+			}
+			remove_ideas_with_trait = head_of_government
+			remove_ideas_with_trait = foreign_minister
+			remove_ideas_with_trait = economy_minister
+			remove_ideas_with_trait = security_minister
+			remove_ideas_with_trait = head_of_intel
+			remove_ideas_with_trait = military_minister
+			add_ideas = {
+				Nikolay_Khomyakov_1
+				Pavel_Milyukov_2
+				Alexander_Konovalov_3
+				Boris_Savinkov_natsind_4
+				Alexander_Manuilov_5
+			}
+			set_country_flag = general_kornilov
+		}
+		if = {
+			limit = {
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+			}
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.05
 			}
 			remove_ideas_with_trait = head_of_government
 			remove_ideas_with_trait = foreign_minister
@@ -601,6 +597,16 @@ country_event = {
 				Peter_Heyden_3
 				Boris_Savinkov_natsind_4
 				Alexander_Kerensky_5
+			}
+			set_cosmetic_tag = RUS_MONARCHY
+			
+			create_country_leader = {
+				name = "Felix I Usupov"
+				desc=RUS_Nikolay_ii_DESC
+				picture="gfx/leaders/RUS/Felix_Usupov_tsar.dds"
+				expire="1935.1.1"
+				ideology = authoritarism_ideology
+				traits={  }
 			}
 			set_country_flag = RUS_Yusupov_tsar
 		}
