@@ -60,7 +60,6 @@ country_event = {
 		add_stability = -0.05
 		set_country_flag = RUS_czechoslovak_legion_uprising
 		SIB = {
-			inherit_technology = ROOT
 			add_ideas = alliance_neutrality
 			transfer_state = 40
 			transfer_state = 569
@@ -83,6 +82,7 @@ country_event = {
 			add_state_core = 574
 			hidden_effect = {
 				set_major = yes
+				inherit_technology = ROOT
 				country_event = { id = rcw_usfev.54 days = 60 }
 				country_event = { id = rcw_usfev.56 days = 120 }
 				add_timed_idea = {
@@ -152,7 +152,6 @@ country_event = {
 		add_stability = -0.05
 		set_country_flag = RUS_czechoslovak_legion_uprising
 		SIB = {
-			inherit_technology = ROOT
 			add_ideas = alliance_neutrality
 			transfer_state = 40
 			transfer_state = 569
@@ -166,6 +165,24 @@ country_event = {
 			add_state_core = 578
 			add_state_core = 654
 			add_state_core = 909
+			
+			add_state_core = 566
+			add_state_core = 575
+			add_state_core = 564
+			add_state_core = 565
+			add_state_core = 644
+			add_state_core = 574
+			hidden_effect = {
+				set_major = yes
+				inherit_technology = ROOT
+				country_event = { id = rcw_usfev.54 days = 60 }
+				country_event = { id = rcw_usfev.56 days = 120 }
+				add_timed_idea = {
+					idea = SIB_right_oficers
+					days = 200
+				}
+				set_country_flag = SIB_start_political_instability
+			}
 			change_tag_from = RUS
 		}
 		set_temp_variable = { temp1 = SIB.num_controlled_states }
@@ -1108,7 +1125,7 @@ country_event = {
 			start_civil_war = {
 				ruling_party = authoritarism
 				ideology = social_liberalism
-				size = 0.1
+				size = 0.3
 			}
 			random_other_country = {
 				limit = {
@@ -1369,11 +1386,25 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.47.a
+		if = {
+		limit = {SIB = {exists = yes} RSS = {exists = no}}
 		SIB = {country_event = { id = rcw_usfev.49 days = 1 }}
+		}
+		if = {
+		limit = {RSS = {exists = yes}}
+		RSS = {country_event = { id = rcw_usfev.49 days = 1 }}
+		}
 	}
 	option = {
 		name = rcw_usfev.47.b
+		if = {
+		limit = {SIB = {exists = yes} RSS = {exists = no}}
 		SIB = {country_event = { id = rcw_usfev.48 days = 1 }}
+		}
+		if = {
+		limit = {RSS = {exists = yes}}
+		RSS = {country_event = { id = rcw_usfev.48 days = 1 }}
+		}
 	}
 }
 
@@ -1408,10 +1439,21 @@ country_event = {
 	option = {
 		name = rcw_usfev.49.a
 		annex_country = { target = BKL transfer_troops = yes }
+		if = {
+		limit = {SIB = {exists = yes} RSS = {exists = no}}
 		BKL = {
 			every_unit_leader = {
 				set_nationality = SIB
 			}
+		}
+		}
+		if = {
+		limit = {RSS = {exists = yes}}
+		BKL = {
+			every_unit_leader = {
+				set_nationality = RSS
+			}
+		}
 		}
 	}
 }
@@ -1427,11 +1469,25 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.47.a
+		if = {
+		limit = {SIB = {exists = yes} RSS = {exists = no}}
 		SIB = {country_event = { id = rcw_usfev.83 days = 1 }}
+		}
+		if = {
+		limit = {RSS = {exists = yes}}
+		RSS = {country_event = { id = rcw_usfev.83 days = 1 }}
+		}
 	}
 	option = {
 		name = rcw_usfev.47.b
+		if = {
+		limit = {SIB = {exists = yes} RSS = {exists = no}}
 		SIB = {country_event = { id = rcw_usfev.82 days = 1 }}
+		}
+		if = {
+		limit = {RSS = {exists = yes}}
+		RSS = {country_event = { id = rcw_usfev.82 days = 1 }}
+		}
 	}
 }
 
@@ -1753,6 +1809,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.54.b
 		if = { limit = { any_unit_leader = { has_id = 92345 } } remove_unit_leader = 92345}
+		set_country_flag = SIB_grishin_almazov_dissolved
 	}
 }
 
@@ -1778,7 +1835,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.55.a
 		set_politics = {ruling_party = despotism}
-		trigger = { any_unit_leader = { has_id = 92345 } }
+		trigger = { any_unit_leader = { has_id = 92345 } NOT = { has_country_flag = SIB_grishin_almazov_dissolved } }
 		add_stability = -0.15
 		add_war_support = 0.02
 	}
@@ -1807,7 +1864,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.e
-		trigger = { any_unit_leader = { has_id = 77400 } }
+		trigger = { any_unit_leader = { has_id = 77400 } has_country_flag = SIB_grishin_almazov_dissolved }
 		set_politics = {ruling_party = despotism}
 		hidden_effect = {
 		retire_country_leader = yes
@@ -2090,7 +2147,7 @@ country_event = {
 	
 	option = { #Николай, Николай, Коооляяяя.....
 		name = rcw_usfev.63.a
-		create_corps_commander = { name = "Nicolay II Romanov" id = 77401 portrait_path = "gfx/leaders/RUS/Nicolay_II_ALT2.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		create_field_marshal = { name = "Nicolay II Romanov" id = 77401 portrait_path = "gfx/leaders/RUS/Nicolay_II_ALT2.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
 	}
 	
 	option = {
@@ -2148,6 +2205,7 @@ id = rcw_usfev.64
 	
 	option = { #Антата, етит твою мать
 		name = rcw_usfev.64.a
+		trigger = {ENG = {is_puppet = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
 		ENG = {country_event = rcw_usfev.65}
 		add_political_power = -50
 		add_opinion_modifier = { target = ENG modifier = sazonov_cca_1 }
@@ -2155,7 +2213,7 @@ id = rcw_usfev.64
 	
 	option = { #Гермашка. Не ну а вдруг?
 		name = rcw_usfev.64.b
-		trigger = {NOT = { has_country_flag = GER_monarchy_fall }}
+		trigger = {GER = {NOT = { has_country_flag = GER_monarchy_fall }}}
 		GER = {country_event = rcw_usfev.65}
 		add_opinion_modifier = { target = GER modifier = sazonov_cca_1 }
 		add_political_power = -50
@@ -2691,6 +2749,7 @@ country_event = {
 				set_province_controller = 7477
 			}
 		CPG = {
+			inherit_technology = RUS
 			hidden_effect = { ENG = { country_event = { id = rcw_usfev.76 days = 10 } } }
 			add_ideas = {
 				alliance_neutrality
@@ -3608,7 +3667,7 @@ country_event = {
 		}
 		name = rcw_usfev.95.b
 			add_to_variable = { var = global.RUS_threat_of_intervention value = 1 }
-		PRM = { transfer_state = 717 set_state_owner = 717 set_state_owner = 560 transfer_state = 560 set_state_owner = 409 transfer_state = 409 set_state_owner = 408 transfer_state = 408 set_state_owner = 655 transfer_state = 655 }
+		PRM = { transfer_state = 717 transfer_state = 560 transfer_state = 409 transfer_state = 408 transfer_state = 655 }
 		PRM = {
 		country_event = { id = rcw_usfev.96 days = 6 }
 			add_state_core = 714
@@ -4625,7 +4684,8 @@ country_event = {
 		CCA = { save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR capital_scope = { set_state_flag = new_capital } }
 		RVA = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR }
 		RSS = { save_global_event_target_as = UNITED_COUNTRY transfer_state = 238 } #load_focus_tree = russian_state_focus set_cosmetic_tag = RSS_All_russian_provisional_government
-		RSS = { inherit_technology = CCA inherit_technology = RVA}
+		RSS = { inherit_technology = CCA }
+		RSS = { inherit_technology = RVA }
 		party_populatiry_addition_script_1 = yes
 		country_event = { id = rcw_usfev.1918 hours = 1 }
 	}
@@ -5723,6 +5783,420 @@ country_event = {
 	}
 }
 
+# Финансовая реформа РСС
+country_event = {
+	id = rcw_usfev.143
+	title = rcw_usfev.143.t
+	desc = rcw_usfev.143.d
+	picture = GFX_report_event_rss_kolchak_finances
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.143.a
+		random_list = {
+		50 = {
+			remove_ideas = hyper_inflation_2
+		}
+		25 = {
+			remove_ideas = RUS_hyper_inflation_2
+			add_ideas = RUS_hyper_inflation_3
+		}
+		25 = {
+			remove_ideas = RUS_hyper_inflation_2
+			add_ideas = RUS_hyper_inflation_4
+		}
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.143.b
+		remove_ideas = hyper_inflation_2
+		add_timed_idea = { idea = hyper_inflation_2 days = 70 }
+	}
+}
+
+# Генерал-губернаторы РСС
+country_event = {
+	id = rcw_usfev.144
+	title = rcw_usfev.144.t
+	desc = rcw_usfev.144.d
+	picture = GFX_report_event_sib_kolchak_general
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.144.a
+		RSS = {
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = ROOT
+				expire = 0
+			} 
+			add_war_support = -0.05
+			add_opinion_modifier = { target = ROOT modifier = white_no_accept_RSS }
+		}
+		add_political_power = 75
+	}
+	
+	option = {
+		name = rcw_usfev.144.b
+		RSS = {
+			puppet = ROOT
+			set_autonomy = { target = ROOT autonomy_state = autonomy_dominion }
+			add_political_power = 10
+			add_war_support = 0.05
+		}
+	}
+}
+
+# Реакция Казахстана на аннексию РСС
+country_event = {
+	id = rcw_usfev.145
+	title = rcw_usfev.145.t
+	desc = rcw_usfev.145.d
+	picture = GFX_report_event_kaz_kaput
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.145.a
+		RSS = {
+			annex_country = {
+				target = ROOT 
+				transfer_troops = yes 
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.145.b
+		add_popularity = { ideology = communism popularity = 0.3 }
+		RSS = {
+		declare_war_on = {
+					target = KAZ
+					type = annex_everything
+		}
+		}
+	}
+}
+
+# Запрет Атаманщины РСС
+country_event = {
+	id = rcw_usfev.146
+	title = rcw_usfev.146.t
+	desc = rcw_usfev.146.d
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	hidden = yes
+	fire_only_once = yes
+	
+	immediate = {
+	}
+	
+	option = {
+		name = rcw_usfev.146.a
+		random_list = {
+			70 = {}
+			30 = {
+			if = {
+			limit = {PRM = {exists = yes}}
+			PRM = {
+			start_civil_war = {
+					ideology = national_syndicalism
+					size = 0.4
+				}
+				if = {
+				limit = {RSS = {has_war_with = RUS}}
+				random_other_country = {
+				limit = {
+					original_tag = PRM
+					has_government = national_syndicalism
+				}
+				set_stability = 0.9
+				set_war_support = 0.8
+				declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+			}
+			}
+			}
+			else = {
+			PRM = {
+			transfer_state = 717 transfer_state = 560 transfer_state = 409 transfer_state = 408 transfer_state = 655
+			add_state_core = 714 add_state_core = 561 add_state_core = 560 add_state_core = 657 add_state_core = 409 add_state_core = 408 add_state_core = 717 add_state_core = 655
+			add_ideas =  alliance_neutrality
+			load_oob = PRM_contra
+			set_politics = {
+					    parties = {
+							national_syndicalism = { popularity = 37 }
+							despotism = { popularity = 10 }
+							fascism = { popularity = 18 }
+							radical_socialism = { popularity = 0 }
+							authoritarism = { popularity = 10 }
+							social_democracy = { popularity = 0 }
+							social_liberalism = { popularity = 0 }
+							market_liberalism = { popularity = 0 }
+							social_conservatism = { popularity = 15 }
+							communism = { popularity = 10 }
+	 				   }
+	 				   ruling_party = national_syndicalism
+					}
+			}
+			RSS = {
+			declare_war_on = {
+				target = PRM
+				type = annex_everything
+			}
+			}
+			}
+			}
+			}
+			}
+		random_list = {
+		70 = {}
+		30 = {
+		if = {limit = {BKL = {exists = yes}}
+		BKL = {
+		declare_war_on = {
+				target = RSS
+				type = annex_everything
+			}
+			}
+		else = {
+		BKL = {
+				transfer_state = 761
+				transfer_state = 563
+				add_ideas = alliance_neutrality
+				set_politics = {ruling_party = authoritarism}
+		}
+		RSS = {
+		declare_war_on = {
+				target = BKL
+				type = annex_everything
+			}
+		}
+		}
+		}
+		}
+		}
+		random_list = {
+		70 = {}
+		30 = {
+		RSS = {
+		start_civil_war = {
+					ideology = national_syndicalism
+					size = 0.3
+				}
+				random_other_country = {
+				limit = {
+					original_tag = RSS
+					has_government = national_syndicalism
+				}
+				create_country_leader = { name = "Boris Annecov" desc = "" picture = "gfx/leaders/SIB/Boris_Annecov.dds" expire = "1995.3.12" ideology = national_syndicalism_ideology traits = { warmonger } }
+				}
+				if = {
+				limit = {RSS = {has_war_with = RUS}}
+				random_other_country = {
+				limit = {
+					original_tag = RSS
+					has_government = national_syndicalism
+				}
+				set_stability = 0.9
+				set_war_support = 0.8
+				declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+			}
+				}
+		}
+		}
+		}
+	}
+}
+
+# Выбор ориентации РСС
+country_event = {
+	id = rcw_usfev.147
+	title = rcw_usfev.147.t
+	desc = rcw_usfev.147.d
+	picture = GFX_report_event_rss_kolchak_real_politic
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.148.a
+		trigger = {ENG = {is_puppet = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
+		add_political_power = -50
+		add_opinion_modifier = { target = ENG modifier = sazonov_cca_1 }
+		ENG = {country_event = { id = rcw_usfev.148 days = 1 }}
+	}
+	
+	option = {
+		name = rcw_usfev.148.b
+		trigger = {GER = {is_puppet = no NOT = {OR = {GER = {has_government = communism has_government = radical_socialism}}}}}
+		add_political_power = -50
+		add_opinion_modifier = { target = GER modifier = sazonov_cca_1 }
+		GER = {country_event = { id = rcw_usfev.148 days = 1 }}
+	}
+}
+
+# Посольство РСС
+country_event = {
+	id = rcw_usfev.148
+	title = rcw_usfev.148.t
+	desc = rcw_usfev.148.d
+	picture = GFX_report_event_rss_kolchak_real_politic
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = { #А чоб собсна нет?
+		name = rcw_usfev.65.a
+		ROOT = {
+				add_opinion_modifier = { target = RSS modifier = sazonov_cca_2 }
+		}
+		add_political_power = 25
+		RSS = {country_event = rcw_usfev.149}
+	}
+	
+	option = { #Ну а я не хочу
+		name = rcw_usfev.65.b
+		ROOT = {
+				add_opinion_modifier = { target = RSS modifier = sazonov_cca_3 }
+		}
+		RSS= {country_event = rcw_usfev.150}
+	}
+	
+}
+
+###Признание РСС###
+country_event = {
+id = rcw_usfev.149
+	title = rcw_usfev.149.t
+	desc = rcw_usfev.149.d
+	picture = GFX_report_event_rss_kolchak_real_politic
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.149.a
+		add_stability = 0.05
+		add_war_support = 0.05
+	}
+
+}
+
+###НЕ Признание РСС###
+country_event = {
+	id = rcw_usfev.150
+	title = rcw_usfev.150.t
+	desc = rcw_usfev.150.d
+	picture = GFX_report_event_rss_kolchak_real_politic
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.150.a
+		add_stability = -0.1
+	}
+
+}
+
+###Финны узнали о признании РСС###
+country_event = {
+	id = rcw_usfev.151
+	title = rcw_usfev.151.t
+	desc = rcw_usfev.151.d
+	picture = GFX_report_event_rss_kolchak_finland
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.151.a
+		create_wargoal = {
+   			type = take_core_state
+    		target = RUS
+			}
+		add_stability = -0.05
+	}
+	
+	option = {
+		name = rcw_usfev.151.b
+	}
+
+}
+
+###Царьки средней азии РСС###
+country_event = {
+	id = rcw_usfev.152
+	title = rcw_usfev.152.t
+	desc = rcw_usfev.152.d
+	picture = GFX_report_event_rss_kolchak_finland
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.152.a
+		add_political_power = 100
+		RSS = {
+		puppet = ROOT
+		set_autonomy = {
+					target = ROOT
+					autonomy_state = autonomy_colony
+				}
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.152.b
+		RSS = {
+		add_political_power = -20
+		}
+	}
+
+}
+
+###Укриана узнала о признании РСС###
+country_event = {
+	id = rcw_usfev.153
+	title = rcw_usfev.153.t
+	desc = rcw_usfev.153.d
+	picture = GFX_report_event_rss_kolchak_finland
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.153.a
+		create_wargoal = {
+   			type = take_core_state
+    		target = RUS
+			}
+		add_stability = -0.05
+	}
+	
+	option = {
+		name = rcw_usfev.153.b
+	}
+
+}
 # Китайцы начинают конфликт с Россией за КВЖД
 country_event = {
 	id = rcw_usfev.301
@@ -6542,7 +7016,8 @@ country_event = {
 		hidden_effect = {
 			CCA = { save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR save_global_event_target_as = INTEGRATING_COUNTRY_MINOR capital_scope = { set_state_flag = new_capital } }
 			RSS = { save_global_event_target_as = UNITED_COUNTRY transfer_state = 581 set_cosmetic_tag = RSS_All_russian_provisional_government }
-			RSS = { inherit_technology = CCA inherit_technology = SIB }
+			RSS = { inherit_technology = CCA }
+			RSS = { inherit_technology = SIB }
 			party_populatiry_addition_script_1 = yes
 			country_event = { id = rcw_usfev.1919 hours = 1 }
 			
