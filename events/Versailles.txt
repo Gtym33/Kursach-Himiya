@@ -57,11 +57,35 @@ country_event = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
 			ROOT = { give_military_access = PREV }
 		}
-		every_country = {
-			limit = { is_subject_of = ROOT }
-			ROOT = { end_puppet = PREV }
-		}
 		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = communist_occ has_government = communism } }
+					OVERLORD = {
+						end_puppet = ROOT
+					}
+					leave_faction = yes
+					every_country = {
+						limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = BUL } is_faction_leader = yes }
+						ROOT = { white_peace = PREV }
+					}
+					white_peace = BAK
+					
+					set_politics = {
+						ruling_party = market_liberalism
+					}
+					add_popularity = {
+						ideology = social_conservatism
+						popularity = -1
+					}
+					add_popularity = {
+						ideology = market_liberalism
+						popularity = -1
+					}
+					add_popularity = {
+						ideology = market_liberalism
+						popularity = 0.3
+					}
+			}
 			if = {
 				limit = { OR = { has_country_flag = communist_occ has_government = communism } }
 				
@@ -81,32 +105,6 @@ country_event = {
 					}
 					add_popularity = {
 						ideology = communism
-						popularity = 0.3
-					}
-				}
-				else = {
-					OVERLORD = {
-						end_puppet = ROOT
-					}
-					leave_faction = yes
-					every_country = {
-						limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = BUL } is_faction_leader = yes }
-						ROOT = { white_peace = PREV }
-					}
-					
-					set_politics = {
-						ruling_party = market_liberalism
-					}
-					add_popularity = {
-						ideology = social_conservatism
-						popularity = -1
-					}
-					add_popularity = {
-						ideology = market_liberalism
-						popularity = -1
-					}
-					add_popularity = {
-						ideology = market_liberalism
 						popularity = 0.3
 					}
 				}
@@ -131,34 +129,9 @@ country_event = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
 			ROOT = { give_military_access = PREV }
 		}
-		every_country = {
-			limit = { is_subject_of = ROOT }
-			ROOT = { end_puppet = PREV }
-		}
 		hidden_effect = {
 			if = {
-				limit = { OR = { has_country_flag = communist_occ has_government = communism } }
-				
-				clr_country_flag = communist_occ
-				if = {
-					limit = { NOT = { has_government = communism } }
-					set_politics = {
-						ruling_party = communism
-					}
-					add_popularity = {
-						ideology = authoritarism
-						popularity = -1
-					}
-					add_popularity = {
-						ideology = market_liberalism
-						popularity = -0.5
-					}
-					add_popularity = {
-						ideology = communism
-						popularity = 0.2
-					}
-				}
-				else = {
+				limit = { NOT = { has_country_flag = communist_occ has_government = communism } }
 					OVERLORD = {
 						end_puppet = ROOT
 					}
@@ -167,6 +140,7 @@ country_event = {
 						limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = OTT } is_faction_leader = yes }
 						ROOT = { white_peace = PREV }
 					}
+					white_peace = BAK
 					
 					set_politics = {
 						ruling_party = authoritarism
@@ -190,6 +164,28 @@ country_event = {
 					add_popularity = {
 						ideology = market_liberalism
 						popularity = 0.1
+					}
+			}
+			if = {
+				limit = { OR = { has_country_flag = communist_occ has_government = communism } }
+				
+				clr_country_flag = communist_occ
+				if = {
+					limit = { NOT = { has_government = communism } }
+					set_politics = {
+						ruling_party = communism
+					}
+					add_popularity = {
+						ideology = authoritarism
+						popularity = -1
+					}
+					add_popularity = {
+						ideology = market_liberalism
+						popularity = -0.5
+					}
+					add_popularity = {
+						ideology = communism
+						popularity = 0.2
 					}
 				}
 			}
@@ -777,6 +773,7 @@ country_event = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
 			ROOT = { white_peace = PREV }
 		}
+		white_peace = BAK
 		every_country = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
 			ROOT = { give_military_access = PREV }
@@ -1252,6 +1249,7 @@ country_event = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
 			ROOT = { white_peace = PREV }
 		}
+		white_peace = BAK
 		if = {
 			limit = { owns_state = 11 }
 			release = LIT
@@ -1272,6 +1270,7 @@ country_event = {
 				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
 				ROOT = { white_peace = PREV }
 			}
+			white_peace = BAK
 		}
 		end_puppet = LIT
 		end_puppet = UKR
@@ -1312,6 +1311,137 @@ country_event = {
 	}
 }
 
+# Мир Турции и Антанты в случае лимита капитуляции 0
+country_event = {
+	id = versailles.5
+	title = versailles.5.t
+	desc = versailles.5.d
+	picture = GFX_report_event_ott_peace_ww1
+	
+	trigger = {
+		tag = OTT
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_OTT_HAS_CAPITULATED }
+		NOT = { surrender_progress > 0 }
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = versailles.5.a
+		OTT = {
+			leave_faction = yes
+			add_ideas = alliance_neutrality
+		}
+		every_state = {
+			limit = {
+				is_on_continent = middle_east
+				OR = {
+					is_controlled_by = OTT
+					is_controlled_by = OTT
+				}
+				OR = {
+					is_owned_by = ENG
+					state = 453
+				}
+			}
+			OTT = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
+			ROOT = { white_peace = PREV }
+		}
+		white_peace = BAK
+	}
+}
+
+# Мир Турции и Антанты в случае лимита капитуляции более 10 и не более 40
+country_event = {
+	id = versailles.6
+	title = versailles.6.t
+	desc = versailles.6.d
+	picture = GFX_report_event_ott_peace_ww1
+	
+	trigger = {
+		tag = OTT
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_OTT_HAS_CAPITULATED }
+		NOT = { surrender_progress > 40 }
+		surrender_progress > 10
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	#мир
+	option = {
+		name = versailles.6.a
+		ENG = { country_event = versailles.7 }
+	}
+	#не мир
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = versailles.6.b
+	}
+}
+country_event = {
+	id = versailles.7
+	title = versailles.7.t
+	desc = versailles.7.d
+	picture = GFX_report_event_ott_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = versailles.7.a
+		OTT = {
+			every_state = {
+				limit = { is_owned_by = OTT OR = { state = 291 state = 675 state = 676 state = 455 state = 454 state = 906 state = 905 } }
+				ENG = { transfer_state = PREV }
+			}
+			every_state = {
+				limit = { is_owned_by = OTT OR = { state = 553 state = 554 } }
+				if = {
+					limit = { FRA = { has_war_with = OTT } }
+					FRA = { transfer_state = PREV }
+					else = {
+						ENG = { transfer_state = PREV }
+					}
+				}
+			}
+			every_country = {
+				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
+				ROOT = { white_peace = PREV }
+			}
+			white_peace = BAK
+			OTT = {
+				leave_faction = yes
+				add_ideas = alliance_neutrality
+			}
+		}
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = versailles.7.b
+	}
+}
+
 # Капитуляция остальных, кто вступил в альянс Центральных Держав
 country_event = {
 	id = versailles.9
@@ -1343,6 +1473,7 @@ country_event = {
 				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
 				white_peace = PREV
 			}
+			white_peace = BAK
 			leave_faction = yes
 		}
 		clr_global_flag = WWI_GER_HAS_CAPITULATED
@@ -2979,6 +3110,7 @@ country_event = {
 				ROOT = { white_peace = PREV }
 			}
 		}
+		white_peace = BAK
 		set_global_flag = WWI_end_white_peace
 	}
 }
