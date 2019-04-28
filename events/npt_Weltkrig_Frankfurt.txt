@@ -1,0 +1,889 @@
+﻿###########################
+# German Events
+###########################
+
+add_namespace = weltkrieg_frankfurt
+
+# Оповещение о мире
+country_event = {
+	id = weltkrieg_frankfurt.0
+	title = weltkrieg_frankfurt.0.t
+	desc = weltkrieg_frankfurt.0.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.0.a
+	}
+}
+
+# Ультимативная победа Германии
+country_event = {
+	id = weltkrieg_frankfurt.1
+	title = weltkrieg_frankfurt.1.t
+	desc = weltkrieg_frankfurt.1.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = ENG
+		OR = {
+			FRA = { has_capitulated = yes }
+			ENG = { has_capitulated = yes }
+			ENG = { surrender_progress > 0.3 }
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { ENG = { surrender_progress > 0.3 } }
+				set_global_flag = WWI_ENG_HAS_CAPITULATED
+			}
+		}
+	}
+	
+	option = {
+		name = weltkrieg_frankfurt.1.a
+		GER = { country_event = weltkrieg_frankfurt.0 }
+		FRA = { country_event = weltkrieg_frankfurt.11 } # слив
+		ENG = { country_event = weltkrieg_frankfurt.13 } # слив
+		if = { limit = { OTT = { has_war_with = ENG } } OTT = { country_event = { id = versailles.5 days = 1 } } } # белый мир с Османией
+		if = { limit = { AUH = { has_war_with = ITA } } ITA = { country_event = { id = weltkrieg_frankfurt.15 days = 1 } } } # слив Италии
+		SER = { country_event = { id = weltkrieg_frankfurt.17 hours = 1 } } # слив
+		ROM = { country_event = { id = weltkrieg_frankfurt.19 hours = 1 } } # слив
+		set_global_flag = WWI_GER_sieg_im_Weltkrieg
+	}
+	option = {
+		trigger = {
+			is_ai = no
+			NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+		}
+		name = weltkrieg_frankfurt.1.b
+	}
+}
+
+# Мир с честью
+country_event = {
+	id = weltkrieg_frankfurt.2
+	title = weltkrieg_frankfurt.2.t
+	desc = weltkrieg_frankfurt.2.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.2.a
+		GER = { country_event = weltkrieg_frankfurt.0 }
+		FRA = { country_event = weltkrieg_frankfurt.11 } # слив
+		ENG = { country_event = weltkrieg_frankfurt.14 } # не слив
+		if = { limit = { OTT = { has_war_with = ENG NOT = { surrender_progress > 0.1 } } } OTT = { country_event = { id = versailles.5 days = 1 } } } # белый мир с Османией
+		else_if = { limit = { OTT = { has_war_with = ENG surrender_progress > 0.1 } } OTT = { country_event = { id = versailles.6 days = 1 } } } # мир с Османией
+		else = { OTT = { leave_faction = yes add_ideas = alliance_neutrality } } # слив Османии
+		if = { limit = { AUH = { has_war_with = ITA OR = { controls_state = 159 controls_state = 160 } } } ITA = { country_event = { id = weltkrieg_frankfurt.15 days = 1 } } } # слив Италии
+		if = {
+			limit = { NOT = { GRR = { controls_state = 731 } GRE = { controls_state = 731 } } }
+			SER = { country_event = { id = weltkrieg_frankfurt.17 hours = 1 } } # слив
+			ROM = { country_event = { id = weltkrieg_frankfurt.19 hours = 1 } } # слив
+			else = {
+				SER = { country_event = { id = weltkrieg_frankfurt.18 hours = 1 } } # не слив
+				if = {
+					limit = { ROM = { NOT = { controls_state = 46 } } }
+					ROM = { country_event = { id = weltkrieg_frankfurt.19 hours = 1 } } # слив
+					else = {
+						ROM = { country_event = { id = weltkrieg_frankfurt.20 hours = 1 } } # не слив
+					}
+				}
+			}
+		}
+		set_global_flag = WWI_GER_sieg_im_Weltkrieg
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = weltkrieg_frankfurt.2.b
+	}
+}
+
+# Белый мир
+country_event = {
+	id = weltkrieg_frankfurt.3
+	title = weltkrieg_frankfurt.3.t
+	desc = weltkrieg_frankfurt.3.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.3.a
+		GER = { country_event = weltkrieg_frankfurt.0 }
+		FRA = { country_event = weltkrieg_frankfurt.12 } # не слив
+		ENG = { country_event = weltkrieg_frankfurt.14 } # не слив
+		if = { limit = { OTT = { has_war_with = ENG NOT = { surrender_progress > 0.1 } } } OTT = { country_event = { id = versailles.5 days = 1 } } } # белый мир с Османией
+		else_if = { limit = { OTT = { has_war_with = ENG surrender_progress > 0.1 } } OTT = { country_event = { id = versailles.6 days = 1 } } } # мир с Османией
+		else = { OTT = { leave_faction = yes add_ideas = alliance_neutrality } } # слив Османии
+		SER = { country_event = { id = weltkrieg_frankfurt.18 hours = 1 } } # не слив
+		ROM = { country_event = { id = weltkrieg_frankfurt.20 hours = 1 } } # не слив
+		set_global_flag = WWI_white_peace
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = weltkrieg_frankfurt.3.b
+	}
+}
+
+###### Капитуляция держав Антанты ######
+
+# Франция слив
+country_event = {
+	id = weltkrieg_frankfurt.11
+	title = weltkrieg_frankfurt.11.t
+	desc = weltkrieg_frankfurt.11.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.11.a
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = FRA
+						tag = BEL
+						tag = LUX
+						tag = HOL
+						is_subject_of = FRA
+						is_subject_of = GER
+					}
+				}
+				state = 833
+			}
+			GER = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = FRA
+						tag = BEL
+						is_subject_of = FRA
+					}
+				}
+				OR = {
+					region = 140
+					region = 183
+					region = 17
+					region = 185
+					region = 184
+					region = 139
+					region = 181
+					
+					region = 159
+					region = 188
+					region = 142
+					region = 165
+				}
+				NOT = {
+					state = 557
+					state = 556
+					state = 781
+					state = 1005
+					state = 774
+					state = 1006
+					state = 549
+					state = 269
+					state = 559
+					state = 991
+					state = 542
+					state = 681
+					state = 275
+					state = 719
+				}
+			}
+			GER = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = FRA
+						is_subject_of = FRA
+					}
+				}
+				OR = {
+					is_core_of = GER
+					is_claimed_by = GER
+					state = 28
+					state = 17
+					state = 18
+					state = 785
+					state = 29
+					region = 5
+					region = 7
+				}
+			}
+			GER = { transfer_state = PREV }
+		}
+		if = {
+			limit = { ITA = { has_war_with = FRA } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = FRA
+							is_subject_of = FRA
+						}
+					}
+					OR = {
+						is_core_of = ITA
+						state = 665
+						state = 458
+						state = 1
+						state = 853
+						state = 735
+					}
+				}
+				ITA = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { SPR = { has_war_with = FRA } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = FRA
+							is_subject_of = FRA
+						}
+					}
+					OR = {
+						is_core_of = SPR
+						state = 461
+						state = 462
+					}
+				}
+				SPR = { transfer_state = PREV }
+			}
+		}
+		set_global_flag = WWI_FRA_HAS_CAPITULATED
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			ROOT = { white_peace = PREV }
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } has_war_with = GER }
+			white_peace = GER
+		}
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+	}
+}
+# Франция не слив
+country_event = {
+	id = weltkrieg_frankfurt.11
+	title = weltkrieg_frankfurt.11.t
+	desc = weltkrieg_frankfurt.11.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.11.a
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = FRA
+						tag = BEL
+						is_subject_of = FRA
+					}
+				}
+				OR = {
+					region = 140
+					region = 183
+					region = 17
+					region = 185
+					region = 184
+					region = 139
+					region = 181
+					
+					region = 159
+					region = 188
+					region = 142
+					region = 165
+				}
+				NOT = {
+					state = 557
+					state = 556
+					state = 781
+					state = 1005
+					state = 774
+					state = 1006
+					state = 549
+					state = 269
+					state = 559
+					state = 991
+					state = 542
+					state = 681
+					state = 275
+					state = 719
+				}
+			}
+			GER = { transfer_state = PREV }
+		}
+		if = {
+			limit = { ITA = { has_war_with = FRA } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = FRA
+							is_subject_of = FRA
+						}
+					}
+					OR = {
+						state = 665
+						state = 458
+					}
+				}
+				ITA = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { SPR = { has_war_with = FRA } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = FRA
+							is_subject_of = FRA
+						}
+					}
+					OR = {
+						state = 461
+						state = 462
+					}
+				}
+				SPR = { transfer_state = PREV }
+			}
+		}
+		set_global_flag = WWI_FRA_HAS_CAPITULATED
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			ROOT = { white_peace = PREV }
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } has_war_with = GER }
+			white_peace = GER
+		}
+	}
+}
+
+# Великобритания слив
+country_event = {
+	id = weltkrieg_frankfurt.13
+	title = weltkrieg_frankfurt.13.t
+	desc = weltkrieg_frankfurt.13.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.13.a
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ENG
+						is_subject_of = ENG
+					}
+				}
+				OR = {
+					region = 140
+					region = 183
+					region = 17
+					region = 185
+					region = 184
+					region = 139
+					region = 181
+					
+					region = 159
+					region = 188
+					region = 142
+					region = 165
+				}
+				NOT = {
+					state = 557
+					state = 556
+					state = 781
+					state = 1005
+					state = 774
+					state = 1006
+					state = 549
+					state = 269
+					state = 559
+					state = 991
+					state = 542
+					state = 681
+					state = 275
+					state = 719
+				}
+			}
+			GER = { transfer_state = PREV }
+		}
+		if = {
+			limit = { ITA = { has_war_with = FRA } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = ENG
+							is_subject_of = ENG
+						}
+					}
+					OR = {
+						is_core_of = ITA
+						state = 116
+					}
+				}
+				ITA = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { SPR = { has_war_with = FRA } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = ENG
+							is_subject_of = ENG
+						}
+					}
+					OR = {
+						is_core_of = SPR
+						state = 118
+					}
+				}
+				SPR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = {
+				SAF = { exists = yes is_subject_of = ENG }
+			}
+			every_state = {
+				limit = { is_owned_by = ENG OR = { region = 139 region = 184 region = 185 } }
+				SAF = { transfer_state = PREV }
+			}
+		}
+		set_global_flag = WWI_ENG_HAS_CAPITULATED
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			ROOT = { white_peace = PREV }
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } has_war_with = GER }
+			white_peace = GER
+		}
+	}
+}
+# Великобритания не слив
+country_event = {
+	id = weltkrieg_frankfurt.14
+	title = weltkrieg_frankfurt.14.t
+	desc = weltkrieg_frankfurt.14.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.14.a
+		if = {
+			limit = { SPR = { has_war_with = FRA } }
+			every_state = {
+				limit = {
+					is_owned_by = FRA
+					OR = {
+						is_core_of = SPR
+						state = 118
+					}
+				}
+				SPR = { transfer_state = PREV }
+			}
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			ROOT = { white_peace = PREV }
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } has_war_with = GER }
+			white_peace = GER
+		}
+	}
+}
+
+# Италия
+country_event = {
+	id = weltkrieg_frankfurt.15
+	title = weltkrieg_frankfurt.15.t
+	desc = weltkrieg_frankfurt.15.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ITA
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED }
+		OR = {
+			has_war_with = GER
+			has_war_with = AUH
+		}
+		surrender_progress > 0.22
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = weltkrieg_frankfurt.15.a
+		every_state = {
+			limit = {
+				is_owned_by = ITA
+				OR = {
+					state = 981
+					state = 273
+					state = 663
+					state = 451
+					state = 450
+					state = 662
+					state = 449
+					state = 661
+					state = 448
+				}
+			}
+			ENG = { transfer_state = PREV }
+		}
+		if = {
+			limit = { AUH = { has_war_with = ITA } }
+			every_state = {
+				limit = {
+					is_owned_by = ITA
+					OR = {
+						state = 160
+						state = 159
+						state = 161
+						state = 158
+					}
+				}
+				AUH = { transfer_state = PREV }
+			}
+		}
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+		every_country = {
+			limit = { has_war_with = ITA OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			ROOT = { white_peace = PREV }
+		}
+		if = {
+			limit = { NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED } }
+			hidden_effect = { news_event = { id = news_n.111 hours = 3 } }
+		}
+		set_global_flag = WWI_ITA_HAS_CAPITULATED
+	}
+}
+
+# Сербия слив
+country_event = {
+	id = weltkrieg_frankfurt.17
+	title = weltkrieg_frankfurt.17.t
+	desc = weltkrieg_frankfurt.17.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.17.a
+		if = {
+			limit = { BUL = { has_war_with = SER } }
+			every_state = {
+				limit = {
+					OWNER = { has_war_with = BUL }
+					OR = {
+						state = 942
+						state = 943
+						state = 982
+						state = 983
+						state = 184
+						state = 993
+						state = 106
+						state = 947
+						state = 184
+					}
+				}
+				BUL = { transfer_state = PREV }
+			}
+		}
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+	}
+}
+# Сербия не слив
+country_event = {
+	id = weltkrieg_frankfurt.18
+	title = weltkrieg_frankfurt.18.t
+	desc = weltkrieg_frankfurt.18.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.18.a
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+	}
+}
+# Румыния слив
+country_event = {
+	id = weltkrieg_frankfurt.19
+	title = weltkrieg_frankfurt.19.t
+	desc = weltkrieg_frankfurt.19.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.19.a
+		if = {
+			limit = { BUL = { has_war_with = ROM } }
+			every_state = {
+				limit = {
+					is_owned_by = ROM
+					OR = {
+						state = 77
+						state = 856
+					}
+				}
+				BUL = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { AUH = { has_war_with = ROM } }
+			every_state = {
+				limit = {
+					is_owned_by = ROM
+					OR = {
+						state = 819
+						state = 820
+						state = 84
+						state = 76
+						state = 82
+						state = 83
+						state = 154
+						state = 804
+						state = 80
+					}
+				}
+				AUH = { transfer_state = PREV }
+			}
+		}
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+	}
+}
+# Румыния не слив
+country_event = {
+	id = weltkrieg_frankfurt.20
+	title = weltkrieg_frankfurt.20.t
+	desc = weltkrieg_frankfurt.20.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.20.a
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+	}
+}
+
+# Великобритания
+country_event = {
+	id = weltkrieg_frankfurt.205
+	title = weltkrieg_frankfurt.205.t
+	desc = weltkrieg_frankfurt.205.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+	fire_only_once = yes
+	
+	immediate = {
+		every_country = {
+			limit = { OR = { is_subject = no tag = AST tag = SAF tag = CAN tag = NZL } NOT = { has_country_flag = WWI_Entente_member } has_war_with = GER OR = { is_in_faction_with = ENG is_in_faction_with = FRA } NOT = { is_in_faction_with = GER } NOT = { tag = BUL tag = OTT tag = GER tag = AUH } }
+			set_country_flag = WWI_Entente_member
+		}
+		every_country = {
+			limit = { has_country_flag = WWI_Entente_member OR = { NOT = { is_in_faction_with = ENG is_in_faction_with = FRA } is_in_faction_with = GER is_in_faction_with = AUH } AND ={ is_subject = yes NOT = { tag = AST tag = SAF tag = CAN tag = NZL } } }
+			clr_country_flag = WWI_Entente_member
+		}
+		every_country = {
+			limit = { NOT = { has_country_flag = WWI_Central_Powers_member } has_war_with = ENG OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = BUL is_in_faction_with = OTT } NOT = { tag = ENG tag = FRA tag = ITA tag = RUS } }
+			set_country_flag = WWI_Central_Powers_member
+		}
+		every_country = {
+			limit = { has_country_flag = WWI_Central_Powers_member OR = { is_in_faction_with = ENG has_war_with = GER has_war_with = AUH NOT = { has_war_with = ENG } } }
+			clr_country_flag = WWI_Central_Powers_member
+		}
+	}
+	
+	trigger = {
+		always = no
+		tag = ENG
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+		has_war_with = GER
+		surrender_progress > 0.5
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = weltkrieg_frankfurt.205.a
+		every_country = {
+			limit = { is_subject_of = ENG }
+			set_country_flag = former_ENG_puppet
+		}
+		end_puppet = EGY
+		end_puppet = RAJ
+		set_global_flag = WWI_ENG_HAS_CAPITULATED
+		release = IRE
+		leave_faction = yes
+		add_ideas = alliance_neutrality
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			ROOT = { white_peace = PREV }
+		}
+		hidden_effect = {
+			REB = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = no
+				}
+			}
+			annex_country = {
+				target = REB
+				transfer_troops = no
+			}
+		}
+		hidden_effect = {
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.1
+			}
+		}
+		hidden_effect = { news_event = { id = news_n.113 hours = 3 } }
+		EGY = {
+			transfer_state = 917
+		}
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = weltkrieg_frankfurt.205.b
+	}
+}
+
+# Мир с остальными членами Антанты
+country_event = {
+	id = weltkrieg_frankfurt.30
+	title = weltkrieg_frankfurt.30.t
+	desc = weltkrieg_frankfurt.30.d
+	picture = GFX_report_event_ita_peace_ww1
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_is_now
+		has_global_flag = WWI_ITA_HAS_CAPITULATED
+		has_global_flag = WWI_FRA_HAS_CAPITULATED
+		has_global_flag = WWI_ENG_HAS_CAPITULATED
+		GER = { NOT = { has_war_with = RUS } }
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = weltkrieg_frankfurt.30.a
+		if = {
+			limit = { EGY = { surrender_progress > 0.24 } }
+			set_global_flag = WWI_EGY_HAS_CAPITULATED
+		}
+		if = {
+			limit = { RAJ = { surrender_progress > 0.1 } }
+			set_global_flag = WWI_RAJ_HAS_CAPITULATED
+		}
+		every_country = {
+			limit = { has_country_flag = former_ENG_puppet }
+			every_country = {
+				limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+				white_peace = PREV
+			}
+			leave_faction = yes
+		add_ideas = alliance_neutrality
+		}
+		every_country = {
+			limit = { has_country_flag = WWI_Entente_member OR = { has_war_with = GER has_war_with = AUH has_war_with = BUL has_war_with = OTT } }
+			clr_country_flag = WWI_Entente_member
+			every_country = {
+				limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+				white_peace = PREV
+			}
+			leave_faction = yes
+		add_ideas = alliance_neutrality
+		}
+		if = {
+			limit = { AUH = { exists = yes } }
+			AUH = {
+				transfer_state = 107
+			}
+		}
+		clr_global_flag = WWI_OTT_HAS_CAPITULATED
+		clr_global_flag = WWI_AUH_HAS_CAPITULATED
+		clr_global_flag = WWI_BUL_HAS_CAPITULATED
+		if = {
+			limit = { BUL = { exists = yes } }
+			BUL = {
+				transfer_state = 77
+				transfer_state = 106
+				transfer_state = 184
+				transfer_state = 983
+				transfer_state = 993
+				transfer_state = 856
+			}
+		}
+	}
+}
