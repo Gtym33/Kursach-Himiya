@@ -644,7 +644,6 @@ country_event = {
 		BAK = {
 			inherit_technology = AZR
 			transfer_state = 229
-			add_to_war = { targeted_alliance = RUS enemy = OTT }
 			load_oob = "BAK_1917"
 			add_ideas = alliance_neutrality
 		}
@@ -657,7 +656,6 @@ country_event = {
 		news_event = { id = news_n.110 hours = 12 }
 		BAK = {
 			transfer_state = 229
-			add_to_war = { targeted_alliance = RUS enemy = OTT }
 			load_oob = "BAK_1917"
 			add_ideas = alliance_neutrality
 			change_tag_from = RUS
@@ -942,7 +940,7 @@ country_event = {
 	
 	option = {
 		name = rcw_tc.12.a
-		GEO = { leave_faction = yes dismantle_faction = yes }
+		GEO = { dismantle_faction = yes leave_faction = yes }
 		ARM = { leave_faction = yes }
 		AZR = { leave_faction = yes }
 		every_country = {
@@ -951,26 +949,27 @@ country_event = {
 			white_peace = AZR
 			white_peace = BAK
 		}
-		if = {
-			limit = { GEO = { owns_state = 863 } }
-			transfer_state = 863
-		}
-		if = {
-			limit = { GEO = { owns_state = 898 } }
-			transfer_state = 898
-		}
-		if = {
-			limit = { GEO = { owns_state = 864 } }
-			transfer_state = 864
-		}
-		if = {
-			limit = { GEO = { owns_state = 863 } }
-			transfer_state = 863
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = GEO
+					is_owned_by = ARM
+					is_owned_by = AZR
+					is_owned_by = BAK
+				}
+				OR = {
+					state = 863
+					state = 898
+					state = 864
+					state = 863
+				}
+			}
+			OTT = { transfer_state = PREV }
 		}
 	}
 }
 
-#Попросить Германского покровительства
+# Попросить Германского покровительства
 country_event = {
 	id = rcw_tc.13
 	title = rcw_tc.13.t
@@ -983,17 +982,7 @@ country_event = {
 	option = {
 		name = rcw_tc.13.a
 		ai_chance = {
-			factor = 99
-			modifier = {
-				factor = 0
-				OTT = {
-					OR = {
-						controls_state = 863
-						controls_state = 864
-					}
-				}
-				surrender_progress < 0.05
-			}
+			factor = 1
 		}
 		if = {
 			limit = { surrender_progress > 0.1 }
@@ -1007,20 +996,17 @@ country_event = {
 			OTT = { transfer_state = 863 transfer_state = 898 set_state_owner = 864 }
 		}
 	}
+	
 	#Не просить
 	option = {
 		name = rcw_tc.13.b
 		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				OTT = { NOT = { controls_state = 863 controls_state = 864 } }
-			}
+			factor = 0
 		}
 	}
 }
 
-#########Ликвидация ЗДФР######
+# Ликвидация ЗДФР
 country_event = {
 	id = rcw_tc.14
 	title = rcw_tc.14.t
@@ -1088,11 +1074,32 @@ country_event = {
 			white_peace = AZR
 			white_peace = BAK
 		}
-		GER = {
+		OTT = {
 			white_peace = AZR
 			white_peace = BAK
+			set_truce = {
+				target = AZR
+				days = 90
+			}
+			diplomatic_relation = {
+				country = AZR
+				relation = non_aggression_pact
+				active = yes
+			}
+			diplomatic_relation = {
+				country = AZR
+				relation = military_access
+				active = yes
+			}
+			diplomatic_relation = {
+				country = AZR
+				relation = guarantee
+				active = yes
+			}
 		}
-		OTT = { add_to_faction = AZR }
+		AZR = {
+			load_oob = AZR_1918
+		}
 		ai_chance = {
 			factor = 1
 		}
@@ -1117,10 +1124,16 @@ country_event = {
 		is_puppet = no
 		has_war_with = OTT
 		has_global_flag = WWI_is_now
-		OTT = {
-			NOT = {
-				controls_state = 863
-				controls_state = 864
+		GEO = {
+			OR = {
+				NOT = { has_war_with = OTT }
+				NOT = { surrender_progress > 0 }
+			}
+		}
+		ARM = {
+			OR = {
+				NOT = { has_war_with = OTT }
+				NOT = { surrender_progress > 0 }
 			}
 		}
 	}
@@ -1131,33 +1144,25 @@ country_event = {
 		days = 180
 	}
 	
-	immediate = {
-		hidden_effect = {
-			every_country = {
-				limit = { controls_state = 352 }
-				save_event_target_as = 352_controller
-			}
-			every_country = {
-				limit = { controls_state = 353 }
-				save_event_target_as = 353_controller
-			}
-			every_country = {
-				limit = { controls_state = 354 }
-				save_event_target_as = 354_controller
-			}
-		}
-	}
-	
 	option = {
 		name = rcw_tc.30.a
-		event_target:352_controller = {
-			transfer_state = 352
-		}
-		event_target:353_controller = {
-			transfer_state = 353
-		}
-		event_target:354_controller = {
-			transfer_state = 354
+		every_state = {
+			limit = {
+				is_owned_by = OTT
+				CONTROLLER = {
+					OR = {
+						tag = GEO
+						tag = ARM
+						tag = AZR
+						tag = BAK
+					}
+				}
+				OR = {
+					state = 352
+					state = 353
+					state = 354
+				}
+			}
 		}
 		every_country = {
 			limit = {
