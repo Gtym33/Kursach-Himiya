@@ -267,7 +267,7 @@ country_event = {
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
-		days = 0
+		days = 1
 	}
 	
 	option = {
@@ -503,11 +503,6 @@ country_event = {
 			CRO = { transfer_state = 163 }
 		}
 		if = {
-			limit = { SER = { controls_state = 109 } }
-			SER = { transfer_state = 109 }
-			else = { CRO = { transfer_state = 109 } }
-		}
-		if = {
 			limit = { SER = { controls_state = 963 } }
 			SER = { transfer_state = 963 }
 			else = { CRO = { transfer_state = 963 } }
@@ -531,7 +526,7 @@ country_event = {
 			CRO = { transfer_state = 45 }
 		}
 		if = {
-			limit = { SER = { controls_state = 962 OR = { owns_state = 45 owns_state = 963 } } }
+			limit = { SER = { OR = { owns_state = 45 owns_state = 963 } } }
 			SER = { transfer_state = 962 }
 		}
 		else_if = {
@@ -556,13 +551,9 @@ country_event = {
 		if = {
 			limit = { ITA = { controls_state = 835 owns_state = 837 } }
 			ITA = { transfer_state = 835 }
-		}
-		else_if = {
-			limit = { CRO = { NOT = { owns_state = 837 } } SER = { owns_state = 109 } }
-			SER = { transfer_state = 835 }
-		}
-		else = {
-			CRO = { transfer_state = 835 }
+			else = {
+				CRO = { transfer_state = 835 }
+			}
 		}
 		if = {
 			limit = { ITA = { controls_state = 965 owns_state = 736 } }
@@ -620,6 +611,12 @@ country_event = {
 			limit = { ITA = { OR = { owns_state = 967 owns_state = 837 } } }
 			ITA = { transfer_state = 836 }
 			else = { CRO = { transfer_state = 836 } }
+		}
+		
+		if = {
+			limit = { CRO = { OR = { owns_state = 835 owns_state = 837 owns_state = 102 owns_state = 834 owns_state = 104 owns_state = 963 } } }
+			CRO = { transfer_state = 109 }
+			else = { SER = { transfer_state = 109 } }
 		}
 		
 		if = {
@@ -833,38 +830,8 @@ country_event = {
 			clr_country_flag = WWI_Central_Powers_member
 		}
 	}
-	trigger = {
-		tag = GER
-		has_global_flag = WWI_is_now
-		OR = {
-			has_war_with = ENG
-			has_war_with = FRA
-		}
-		OR = {
-			AND = {
-				has_global_flag = WWI_AUH_HAS_CAPITULATED
-				has_country_flag = GER_monarchy_fall
-				surrender_progress > 0.02
-			}
-			AND = {
-				has_global_flag = WWI_AUH_HAS_CAPITULATED
-				NOT = { has_country_flag = GER_monarchy_fall }
-				surrender_progress > 0.25
-			}
-			AND = {
-				NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
-				has_country_flag = GER_monarchy_fall
-				surrender_progress > 0.1
-			}
-			surrender_progress > 0.4
-		}
-	}
 
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 0
-	}
+	is_triggered_only = yes
 	
 	option = {
 		name = versailles.4.a
@@ -1238,44 +1205,50 @@ country_event = {
 	}
 }
 
-# Капитуляция остальных, кто вступил в альянс Центральных Держав
 country_event = {
 	id = versailles.9
 	title = versailles.9.t
 	desc = versailles.9.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
+	hidden = yes
+	
 	fire_only_once = yes
 	
 	trigger = {
+		tag = GER
 		has_global_flag = WWI_is_now
-		has_global_flag = WWI_GER_HAS_CAPITULATED
-		has_global_flag = WWI_AUH_HAS_CAPITULATED
-		has_global_flag = WWI_BUL_HAS_CAPITULATED
-		has_global_flag = WWI_OTT_HAS_CAPITULATED
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+		OR = {
+			AND = {
+				has_global_flag = WWI_AUH_HAS_CAPITULATED
+				has_country_flag = GER_monarchy_fall
+				surrender_progress > 0.02
+			}
+			AND = {
+				has_global_flag = WWI_AUH_HAS_CAPITULATED
+				NOT = { has_country_flag = GER_monarchy_fall }
+				surrender_progress > 0.25
+			}
+			AND = {
+				NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+				has_country_flag = GER_monarchy_fall
+				surrender_progress > 0.1
+			}
+			surrender_progress > 0.4
+		}
 	}
 	
 	mean_time_to_happen = {
-		days = 0
+		days = 1
 	}
 	
 	option = {
 		name = versailles.9.a
-		leave_faction = yes
-		every_country = {
-			limit = { has_country_flag = WWI_Central_Powers_member }
-			clr_country_flag = WWI_Central_Powers_member
-			every_country = {
-				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
-				white_peace = PREV
-			}
-			white_peace = BAK
-			leave_faction = yes
-		}
-		clr_global_flag = WWI_GER_HAS_CAPITULATED
-		clr_global_flag = WWI_AUH_HAS_CAPITULATED
-		clr_global_flag = WWI_BUL_HAS_CAPITULATED
-		clr_global_flag = WWI_OTT_HAS_CAPITULATED
+		country_event = versailles.4
 	}
 }
 
