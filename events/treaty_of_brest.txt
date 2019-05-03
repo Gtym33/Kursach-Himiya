@@ -174,6 +174,10 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
+	}
+	
 	option = {
 		name = treaty_of_brest.2.a
 		clr_global_flag = brest_litovsk_negotiations
@@ -234,7 +238,7 @@ country_event = {
 			set_country_flag = RUS_brest_peace_white
 			set_country_flag = RUS_brest_peace_fired
 		}
-		RUS = { country_event = { id = rcw.109 days = 30 } }
+		RUS = { country_event = { id = rcw.1009 days = 30 } }
 		add_to_variable = {
 			var = global.red_alert
 			value = 5
@@ -250,6 +254,10 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
+	}
 	
 	option = {
 		name = treaty_of_brest.4.a
@@ -288,6 +296,7 @@ country_event = {
 	
 	option = {
 		name = treaty_of_brest.5.a
+		set_country_flag = brest_negotiation_Lenin_can_threaten_resignation
 		RUS = { add_timed_idea = { idea = brest_negotiation_truce_Russia_and_allies days = 170 } }
 		UKR = { add_timed_idea = { idea = brest_negotiation_truce_Russia_and_allies days = 170 } }
 		USR = { add_timed_idea = { idea = brest_negotiation_truce_Russia_and_allies days = 170 } }
@@ -385,6 +394,10 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
+	}
+	
 	option = {
 		name = treaty_of_brest.8.a
 		clr_global_flag = brest_litovsk_negotiations
@@ -411,7 +424,7 @@ country_event = {
 		if = { limit = { RUS = { owns_state = 998 } } LIT = { transfer_state = 998 } }
 		release = KUR
 		RUS = { set_country_flag = RUS_brest_peace_white set_country_flag = RUS_brest_peace_fired }
-		RUS = { country_event = { id = rcw.109 days = 30 } }
+		RUS = { country_event = { id = rcw.1009 days = 30 } }
 		every_country = {
 			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes tag = AUH } }
 			white_peace = RUS
@@ -462,12 +475,28 @@ country_event = {
 	desc = {
 		text = treaty_of_brest.9.d
 		trigger = {
+			NOT = { check_variable = { percent_left_faction_CC > 0.5 } }
 			has_global_flag = GER_soft_peace_brest_tech_flag
 		}
 	}
 	desc = {
 		text = treaty_of_brest.9.d_1
 		trigger = {
+			check_variable = { percent_left_faction_CC > 0.5 }
+			has_global_flag = GER_soft_peace_brest_tech_flag
+		}
+	}
+	desc = {
+		text = treaty_of_brest.9.d_2
+		trigger = {
+			NOT = { check_variable = { percent_left_faction_CC > 0.5 } }
+			NOT = { has_global_flag = GER_soft_peace_brest_tech_flag }
+		}
+	}
+	desc = {
+		text = treaty_of_brest.9.d_3
+		trigger = {
+			check_variable = { percent_left_faction_CC > 0.5 }
 			NOT = { has_global_flag = GER_soft_peace_brest_tech_flag }
 		}
 	}
@@ -490,6 +519,9 @@ country_event = {
 		}
 	}
 	option = {
+		trigger = {
+			NOT = { check_variable = { percent_left_faction_CC > 0.5 } }
+		}
 		name = treaty_of_brest.9.b #согласится на требования немцев
 		RUS = {
 			add_popularity = {
@@ -608,6 +640,19 @@ country_event = {
 				controls_state = 202
 			}
 		}
+		RUS = { surrender_progress > 0.1 }
+		OR = {
+			NOT = { owns_state = 763 }
+			controls_state = 763
+		}
+		OR = {
+			NOT = { owns_state = 85 }
+			controls_state = 85
+		}
+		OR = {
+			NOT = { owns_state = 66 }
+			controls_state = 66
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -632,6 +677,9 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
+		trigger = {
+			check_variable = { percent_left_faction_CC < 0.5 }
+		}
 		name = treaty_of_brest.13.a #согласится на требования Германии
 		add_war_support = -0.05
 		GER = { country_event = { id = treaty_of_brest.33 days = 1 } }
@@ -670,6 +718,10 @@ country_event = {
 				brest_negotiation_truce_Russia_and_allies
 				brest_negotiation_truce_Central_powers
 			}
+		}
+		if = {
+			limit = { has_country_flag = Lenin_threatens_his_resignation }
+			country_event = { id = treaty_of_brest.51 days = 3 }
 		}
 	}
 }
@@ -885,6 +937,10 @@ country_event = {
 		modifier = {
 			factor = 0.9 RUS = { surrender_progress > 0.40 }
 		}
+	}
+	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
 	}
 	
 	fire_only_once = yes
@@ -1190,12 +1246,125 @@ country_event = {
 }
 
 country_event = {
+	id = treaty_of_brest.21
+	title = treaty_of_brest.21.t
+	desc = treaty_of_brest.21.d
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		tag = GER
+		has_global_flag = brest_litovsk_negotiations
+		has_war_with = RUS
+		OR = {
+			UKR = { OR = { exists = no has_government = communism has_government = radical_socialism } }
+			has_global_flag = brest_litovsk_GER_UKR_negotiations_refused
+		}
+		NOT = { has_global_flag = brest_litovsk_negotiations_GER_UKR_peace }
+		NOT = {
+			any_country = {
+				is_in_faction_with = GER
+				controls_state = 202
+			}
+		}
+		OR = {
+			RUS = { NOT = { surrender_progress > 0.1 } }
+			AND = {
+				owns_state = 763
+				NOT = { controls_state = 763 }
+			}
+			AND = {
+				owns_state = 85
+				NOT = { controls_state = 85 }
+			}
+			AND = {
+				owns_state = 66
+				NOT = { controls_state = 66 }
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = treaty_of_brest.21.a #запросить мир
+		add_war_support = -0.05
+		RUS = { country_event = { id = treaty_of_brest.22 days = 1 } }
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.22
+	title = treaty_of_brest.22.t
+	desc = treaty_of_brest.22.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			check_variable = { percent_left_faction_CC < 0.5 }
+		}
+		name = treaty_of_brest.22.a #согласится на мир
+		add_stability = 0.05
+		add_popularity = {
+			ideology = communism
+			popularity = 0.1
+		}
+		country_event = treaty_of_brest.3
+	}
+	option = {
+		name = treaty_of_brest.22.b #добить германскую сволочь
+		every_country = {
+			limit = {
+				OR = {
+					has_idea = brest_negotiation_truce_Russia_and_allies
+					has_idea = brest_negotiation_truce_Central_powers
+				}
+			}
+			remove_ideas = {
+				brest_negotiation_truce_Russia_and_allies
+				brest_negotiation_truce_Central_powers
+			}
+		}
+		clr_global_flag = brest_litovsk_negotiations
+		clr_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+		clr_global_flag = brest_litovsk_GER_UKR_negotiations
+		clr_global_flag = GER_soft_peace_brest_tech_flag
+		set_global_flag = russia_rejects_german_ultimatum
+		every_country = {
+			limit = {
+				OR = {
+					has_idea = brest_negotiation_truce_Russia_and_allies
+					has_idea = brest_negotiation_truce_Central_powers
+				}
+			}
+			remove_ideas = {
+				brest_negotiation_truce_Russia_and_allies
+				brest_negotiation_truce_Central_powers
+			}
+		}
+		if = {
+			limit = { has_country_flag = Lenin_threatens_his_resignation }
+			country_event = { id = treaty_of_brest.51 days = 3 }
+		}
+	}
+}
+
+country_event = {
 	id = treaty_of_brest.31
 	title = treaty_of_brest.31.t
 	desc = treaty_of_brest.31.d
 	picture = GFX_report_event_februrary_revolution
 	
 	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
+	}
 	
 	option = {
 		name = treaty_of_brest.31.a
@@ -1370,6 +1539,10 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
+	}
+	
 	option = {
 		name = treaty_of_brest.32.a
 		clr_global_flag = brest_litovsk_negotiations
@@ -1496,6 +1669,10 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
+	}
+	
 	option = {
 		name = treaty_of_brest.33.a
 		clr_global_flag = brest_litovsk_negotiations
@@ -1571,7 +1748,7 @@ country_event = {
 			
 			transfer_state = 190
 		}
-		RUS = { country_event = { id = rcw.109 days = 30 } }
+		RUS = { country_event = { id = rcw.1009 days = 30 } }
 		every_country = {
 			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = OTT NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes tag = AUH } }
 			white_peace = RUS
@@ -1640,6 +1817,10 @@ country_event = {
 	
 	fire_only_once = yes
 	
+	immediate = {
+		hidden_effect = { RUS = { clr_country_flag = brest_negotiation_Lenin_can_threaten_resignation } }
+	}
+	
 	mean_time_to_happen = {
 		days = 0
 	}
@@ -1693,7 +1874,7 @@ country_event = {
 			if = {
 				limit = { RUS = { NOT = { controls_state = 11 } } }
 				RUS = { release = LIT }
-				RUS = { country_event = { id = rcw.109 days = 3 } }
+				RUS = { country_event = { id = rcw.1009 days = 3 } }
 			}
 			if = {
 				limit = { RUS = { NOT = { controls_state = 867 } } }
@@ -1788,5 +1969,37 @@ country_event = {
 			}
 		}
 		set_country_flag = Trotskys_strategy_is_successful
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.51
+	title = treaty_of_brest.51.t
+	desc = treaty_of_brest.51.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.51.a
+		clr_country_flag = Lenin_threatens_his_resignation
+		if = {
+			limit = { has_country_leader = { name = "Vladimir Lenin" ruling_only = yes } }
+			retire_country_leader = yes
+		}
+		custom_effect_tooltip = add_1_lefts_to_CC
+		hidden_effect = {
+			add_to_variable = { var = left_faction_CC value = 1 }
+			check_overlap_of_CC_n_CEC_deputies_add_left = yes
+			set_frame_of_CC_n_CEC = yes
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = -0.1
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.1
+		}
 	}
 }

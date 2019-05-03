@@ -4,8 +4,6 @@
 
 add_namespace = versailles
 
-###### Капитуляция Центральных держав ######
-
 country_event = {
 	id = versailles.0
 	
@@ -15,16 +13,6 @@ country_event = {
 	
 	option = {
 		name = versailles.0.a
-		if = {
-			limit = {
-				tag = BUL
-				any_country = {
-					is_socialist_country = yes
-					count_triggers = { amount = 3 controls_state = 48 controls_state = 987 controls_state = 211 controls_state = 946 controls_state = 212 controls_state = 945 controls_state = 944 }
-				}
-			}
-			set_country_flag = communist_occ
-		}
 		if = {
 			limit = {
 				tag = OTT
@@ -39,6 +27,8 @@ country_event = {
 		add_ideas = alliance_neutrality
 	}
 }
+
+###### Капитуляция Центральных держав ######
 
 # Османия
 country_event = {
@@ -123,57 +113,122 @@ country_event = {
 	
 	fire_only_once = yes
 	
-	is_triggered_only = yes
+	immediate = {
+		every_country = {
+			limit = { OR = { is_subject = no tag = AST tag = SAF tag = CAN tag = NZL } NOT = { has_country_flag = WWI_Entente_member } has_war_with = AUH OR = { is_in_faction_with = ENG is_in_faction_with = FRA } NOT = { is_in_faction_with = GER } NOT = { tag = BUL tag = OTT tag = GER tag = AUH } }
+			set_country_flag = WWI_Entente_member
+		}
+		every_country = {
+			limit = { has_country_flag = WWI_Entente_member OR = { NOT = { is_in_faction_with = ENG is_in_faction_with = FRA } is_in_faction_with = GER is_in_faction_with = AUH } AND ={ is_subject = yes NOT = { tag = AST tag = SAF tag = CAN tag = NZL } } }
+			clr_country_flag = WWI_Entente_member
+		}
+		every_country = {
+			limit = { NOT = { has_country_flag = WWI_Central_Powers_member } has_war_with = ENG OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = BUL is_in_faction_with = OTT } NOT = { tag = ENG tag = FRA tag = ITA tag = RUS } }
+			set_country_flag = WWI_Central_Powers_member
+		}
+		every_country = {
+			limit = { has_country_flag = WWI_Central_Powers_member OR = { is_in_faction_with = ENG has_war_with = GER has_war_with = AUH NOT = { has_war_with = ENG } } }
+			clr_country_flag = WWI_Central_Powers_member
+		}
+	}
+	trigger = {
+		tag = BUL
+		has_global_flag = WWI_is_now
+		OR = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+		OR = {
+			has_global_flag = WWI_AUH_HAS_CAPITULATED
+			AND = {
+				has_global_flag = WWI_GER_HAS_CAPITULATED
+				surrender_progress > 0.05
+			}
+			AND = {
+				has_stability < 0.55
+				surrender_progress > 0.35
+			}
+			AND = {
+				has_stability < 0.5
+				surrender_progress > 0.3
+			}
+			AND = {
+				has_stability < 0.45
+				surrender_progress > 0.25
+			}
+			AND = {
+				has_stability < 0.4
+				surrender_progress > 0.2
+			}
+			AND = {
+				has_stability < 0.35
+				surrender_progress > 0.15
+			}
+			AND = {
+				has_stability < 0.3
+				surrender_progress > 0.1
+			}
+			AND = {
+				has_stability < 0.25
+				surrender_progress > 0.05
+			}
+			surrender_progress > 0.25
+			has_capitulated = yes
+		}
+	}
 	
 	option = {
 		name = versailles.2.a
+		set_global_flag = WWI_BUL_HAS_CAPITULATED
 		BUL = {
-			transfer_state = 48
-			transfer_state = 212
-			transfer_state = 987
-			transfer_state = 946
-			transfer_state = 211
+			if = {
+				limit = {
+					any_country = {
+						is_socialist_country = yes
+						count_triggers = { amount = 3 controls_state = 48 controls_state = 987 controls_state = 211 controls_state = 946 controls_state = 212 controls_state = 945 controls_state = 944 }
+					}
+				}
+				set_country_flag = communist_occ
+			}
+			if = {
+				limit = { has_war_with = ROM }
+				every_state = {
+					limit = { is_owned_by = BUL OR = { is_core_of = ROM is_claimed_by = ROM } }
+					ROM = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { has_war_with = GRE }
+				every_state = {
+					limit = { is_owned_by = BUL OR = { is_core_of = GRE is_claimed_by = GRE } }
+					ROM = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { has_war_with = GRR }
+				every_state = {
+					limit = { is_owned_by = BUL OR = { is_core_of = GRR is_claimed_by = GRR } }
+					ROM = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { has_war_with = SER }
+				every_state = {
+					limit = { is_owned_by = BUL OR = { is_core_of = SER is_claimed_by = SER } }
+					ROM = { transfer_state = PREV }
+				}
+			}
+			leave_faction = yes
+			add_ideas = alliance_neutrality
+			every_country = {
+				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+				BUL = { white_peace = PREV }
+			}
 			every_country = {
 				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
 				PREV = { give_military_access = PREV }
 			}
 			hidden_effect = {
-				if = {
-					limit = { NOT = { has_country_flag = communist_occ has_government = communism } }
-						OVERLORD = {
-							end_puppet = PREV
-						}
-						leave_faction = yes
-						every_country = {
-							limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = OTT } is_faction_leader = yes }
-							PREV = { white_peace = PREV }
-						}
-						white_peace = BAK
-						
-						set_politics = {
-							ruling_party = authoritarism
-						}
-						add_popularity = {
-							ideology = social_conservatism
-							popularity = -1
-						}
-						add_popularity = {
-							ideology = market_liberalism
-							popularity = -1
-						}
-						add_popularity = {
-							ideology = authoritarism
-							popularity = 0.3
-						}
-						add_popularity = {
-							ideology = social_conservatism
-							popularity = 0.1
-						}
-						add_popularity = {
-							ideology = market_liberalism
-							popularity = 0.1
-						}
-				}
 				if = {
 					limit = { OR = { has_country_flag = communist_occ has_government = communism } }
 					
@@ -839,6 +894,14 @@ country_event = {
 		add_ideas = alliance_neutrality
 		remove_from_faction = OTT
 		remove_from_faction = BUL
+		every_country = {
+			limit = { is_in_faction_with = GER NOT = { tag = GER tag = AUH tag = BUL tag = OTT } is_subject = no has_war_with = ENG }
+			leave_faction = yes
+			every_country = {
+				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
+				white_peace = PREV
+			}
+		}
 		leave_faction = yes
 		if = {
 			limit = {
@@ -920,6 +983,7 @@ country_event = {
 				limit = {
 					is_owned_by = RUS
 					OR = {
+						state = 10
 						state = 87
 						state = 98
 						state = 90
@@ -1076,6 +1140,7 @@ country_event = {
 	trigger = {
 		tag = OTT
 		has_global_flag = WWI_is_now
+		has_country_flag = OTT_has_war_with_ENG
 		OR = {
 			has_global_flag = WWI_GER_HAS_CAPITULATED
 			NOT = { is_in_faction_with = GER }
@@ -1096,6 +1161,7 @@ country_event = {
 	
 	option = {
 		name = versailles.5.a
+		clr_country_flag = OTT_has_war_with_ENG
 		OTT = {
 			leave_faction = yes
 			add_ideas = alliance_neutrality
@@ -1132,6 +1198,7 @@ country_event = {
 	trigger = {
 		tag = OTT
 		has_global_flag = WWI_is_now
+		has_country_flag = OTT_has_war_with_ENG
 		OR = {
 			has_global_flag = WWI_GER_HAS_CAPITULATED
 			NOT = { is_in_faction_with = GER }
@@ -1173,6 +1240,7 @@ country_event = {
 	
 	option = {
 		name = versailles.7.a
+		clr_country_flag = OTT_has_war_with_ENG
 		OTT = {
 			every_state = {
 				limit = { is_owned_by = OTT OR = { state = 291 state = 675 state = 676 state = 455 state = 454 state = 906 state = 905 } }
@@ -1252,50 +1320,253 @@ country_event = {
 	}
 }
 
-# Конец Первой Мировой Войны
 country_event = {
 	id = versailles.10
 	title = versailles.10.t
 	desc = versailles.10.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
+	hidden = yes
+	
 	fire_only_once = yes
 	
 	trigger = {
-		OR = {
-			AND = {
-				tag = ENG
-				has_global_flag = WWI_FRA_HAS_CAPITULATED
-			}
-			AND = {
-				tag = FRA
-				NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED }
+		tag = OTT
+		has_country_flag = OTT_has_war_with_ENG
+		NOT = {
+			has_war_with = ENG
+			has_war_with = FRA
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = versailles.10.a
+		clr_country_flag = OTT_has_war_with_ENG
+	}
+}
+
+# Переговоры о мире
+country_event = {
+	id = versailles.21
+	title = versailles.21.t
+	desc = versailles.21.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	#Потребовать капитуляции
+	option = {
+		name = versailles.21.a
+		GER = { country_event = { id = versailles.22 days = 3 } }
+		ai_chance = {
+			factor = 3
+		}
+	}
+	
+	#Потребовать отречения кайзера и капитуляции
+	option = {
+		trigger = {
+			GER = { NOT = { has_country_flag = GER_monarchy_fall } }
+		}
+		name = versailles.21.a
+		GER = { country_event = { id = versailles.23 days = 3 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 99999
+				tag = USA
 			}
 		}
-		has_global_flag = WWI_is_now
-		has_global_flag = WWI_BUL_HAS_CAPITULATED
-		has_global_flag = WWI_OTT_HAS_CAPITULATED
-		has_global_flag = WWI_AUH_HAS_CAPITULATED
-		has_global_flag = WWI_GER_HAS_CAPITULATED
 	}
+	
+	#Принять предложение о мире
+	option = {
+		name = versailles.21.b
+		GER = { country_event = weltkrieg_frankfurt.0 }
+		FRA = { country_event = weltkrieg_frankfurt.12 } # не слив
+		ENG = { country_event = weltkrieg_frankfurt.14 } # не слив
+		if = { limit = { OTT = { has_war_with = ENG NOT = { surrender_progress > 0.1 } } } OTT = { country_event = { id = versailles.5 days = 1 } } } # белый мир с Османией
+		else_if = { limit = { OTT = { has_war_with = ENG surrender_progress > 0.1 } } OTT = { country_event = { id = versailles.6 days = 1 } } } # мир с Османией
+		else = { OTT = { leave_faction = yes add_ideas = alliance_neutrality } } # слив Османии
+		SER = { country_event = { id = weltkrieg_frankfurt.18 hours = 1 } } # не слив
+		ROM = { country_event = { id = weltkrieg_frankfurt.20 hours = 1 } } # не слив
+		set_global_flag = WWI_white_peace
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				FRA = { surrender_progress < 0.15 }
+			}
+		}
+	}
+}
+# Требование капитуляции
+country_event = {
+	id = versailles.22
+	title = versailles.22.t
+	desc = versailles.22.desc
+	picture = GFX_report_event_ger_november_revolution
 
-	fire_only_once = yes
+	is_triggered_only = yes
+	
+	#Это неприемлимо
+	option = {
+		name = versailles.22.a
+		set_country_flag = GER_peace_negotiations_with_Entente
+		add_war_support = -0.05
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = GER_monarchy_fall
+			}
+		}
+	}
+	
+	#Мы согласны
+	option = {
+		name = versailles.22.b
+		country_event = { id = versailles.4 days = 1 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { has_country_flag = GER_monarchy_fall }
+			}
+		}
+	}
+}
+# Требование отречения кайзера и капитуляции
+country_event = {
+	id = versailles.23
+	title = versailles.23.t
+	desc = versailles.23.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	#Это неприемлимо
+	option = {
+		name = versailles.23.a
+		set_country_flag = GER_peace_negotiations_with_Entente
+		add_war_support = -0.05
+		ai_chance = {
+			factor = 3
+			modifier = {
+				factor = 0
+				GER = { surrender_progress > 0.02 }
+			}
+		}
+	}
+	
+	#Мы согласны
+	option = {
+		name = versailles.23.b
+		country_event = germany.141
+		country_event = { id = versailles.4 days = 1 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Требование отречения кайзера и капитуляции
+country_event = {
+	id = versailles.24
+	title = versailles.24.t
+	desc = versailles.24.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	trigger = {
+		GER = { has_country_flag = GER_peace_negotiations_with_Entente }
+		GER = { has_war_with = ENG }
+		OR = {
+			AND = {
+				tag = USA
+				has_war_with = GER
+			}
+			AND = {
+				tag  = ENG
+				USA = { NOT = { has_war_with = GER } }
+			}
+		}
+	}
 	
 	mean_time_to_happen = {
 		days = 10
 	}
 	
+	#Потребовать капитуляции и отречения кайзера
 	option = {
-		name = versailles.10.a
-		set_global_flag = WWI_end_Entente_victory
-		ENG = {
-			remove_ideas = guarantee_neutrality
+		trigger = {
+			GER = { NOT = { has_country_flag = GER_monarchy_fall } }
 		}
-		FRA = {
-			remove_ideas = guarantee_neutrality
+		name = versailles.24.a
+		GER = { country_event = { id = versailles.25 days = 3 } }
+		ai_chance = {
+			factor = 1
 		}
-		USA = {
-			remove_ideas = guarantee_neutrality
+	}
+	
+	#Свернуть переговоры
+	option = {
+		name = versailles.24.b
+		GER = { country_event = { id = versailles.26 days = 0 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Требование отречения кайзера и капитуляции
+country_event = {
+	id = versailles.25
+	title = versailles.25.t
+	desc = versailles.25.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	#Это неприемлимо
+	option = {
+		name = versailles.25.a
+		clr_country_flag = GER_peace_negotiations_with_Entente
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.05
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	#Мы согласны
+	option = {
+		name = versailles.25.b
+		country_event = germany.141
+		country_event = { id = versailles.4 days = 1 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Сворачивание переговоров
+country_event = {
+	id = versailles.26
+	title = versailles.26.t
+	desc = versailles.26.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	option = {
+		name = versailles.26.a
+		clr_country_flag = GER_peace_negotiations_with_Entente
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.05
 		}
 	}
 }
@@ -1304,9 +1575,9 @@ country_event = {
 
 # Начало конференции
 country_event = {
-	id = versailles.21
-	title = versailles.21.t
-	desc = versailles.21.d
+	id = versailles.201
+	title = versailles.201.t
+	desc = versailles.201.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	trigger = {
@@ -1321,7 +1592,7 @@ country_event = {
 	}
 	
 	option = {
-		name = versailles.21.a
+		name = versailles.201.a
 		set_variable = { global.vers_peace_conf_members = 0 }
 		every_country = {
 			limit = { has_country_flag = WWI_Entente_member }
@@ -1403,45 +1674,45 @@ country_event = {
 		
 		every_country = {
 			limit = { has_country_flag = WWI_Entente_member }
-			country_event = { id = versailles.22 days = 1 }
-			country_event = { id = versailles.23 days = 10 }
-			country_event = { id = versailles.24 days = 14 }
+			country_event = { id = versailles.202 days = 1 }
+			country_event = { id = versailles.203 days = 10 }
+			country_event = { id = versailles.204 days = 14 }
 			
-			country_event = { id = versailles.25 days = 20 }
+			country_event = { id = versailles.205 days = 20 }
 			
-			country_event = { id = versailles.26 days = 32 }
-			country_event = { id = versailles.27 days = 34 }
-			country_event = { id = versailles.28 days = 46 }
-			country_event = { id = versailles.29 days = 48 }
+			country_event = { id = versailles.206 days = 32 }
+			country_event = { id = versailles.207 days = 34 }
+			country_event = { id = versailles.208 days = 46 }
+			country_event = { id = versailles.209 days = 48 }
 			
-			country_event = { id = versailles.30 days = 54 }
-			country_event = { id = versailles.31 days = 56 }
+			country_event = { id = versailles.210 days = 54 }
+			country_event = { id = versailles.211 days = 56 }
 			
-			country_event = { id = versailles.32 days = 60 }
+			country_event = { id = versailles.212 days = 60 }
 			
-			country_event = { id = versailles.33 days = 74 }
+			country_event = { id = versailles.213 days = 74 }
 			
-			country_event = { id = versailles.34 days = 78 }
+			country_event = { id = versailles.214 days = 78 }
 			
 			hidden_effect = {
-				country_event = { id = versailles.40 days = 174 }
-				country_event = { id = versailles.41 days = 175 }
+				country_event = { id = versailles.220 days = 174 }
+				country_event = { id = versailles.221 days = 175 }
 			}
 		}
 	}
 }
 # Эльзас-Лоррейн
 country_event = {
-	id = versailles.22
-	title = versailles.22.t
-	desc = versailles.22.d
+	id = versailles.202
+	title = versailles.202.t
+	desc = versailles.202.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Франции
 	option = {
-		name = versailles.22.a
+		name = versailles.202.a
 		add_to_variable = { global.FRA_Alsace_Lorraine = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1453,21 +1724,21 @@ country_event = {
 		trigger = {
 			NOT = { tag = FRA }
 		}
-		name = versailles.22.b
+		name = versailles.202.b
 	}
 }
 # Саар
 country_event = {
-	id = versailles.23
-	title = versailles.23.t
-	desc = versailles.23.d
+	id = versailles.203
+	title = versailles.203.t
+	desc = versailles.203.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Франции
 	option = {
-		name = versailles.23.a
+		name = versailles.203.a
 		add_to_variable = { global.FRA_Saar_annex = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1483,7 +1754,7 @@ country_event = {
 	
 	#Отдать Франции до референдума
 	option = {
-		name = versailles.23.b
+		name = versailles.203.b
 		add_to_variable = { global.FRA_Saar_referendum = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1492,21 +1763,21 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.23.c
+		name = versailles.203.c
 	}
 }
 # Рейнленд
 country_event = {
-	id = versailles.24
-	title = versailles.24.t
-	desc = versailles.24.d
+	id = versailles.204
+	title = versailles.204.t
+	desc = versailles.204.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Франции
 	option = {
-		name = versailles.24.a
+		name = versailles.204.a
 		add_to_variable = { global.FRA_Rheiland_annex = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1522,7 +1793,7 @@ country_event = {
 	
 	#Демилитаризовать
 	option = {
-		name = versailles.24.b
+		name = versailles.204.b
 		add_to_variable = { global.FRA_Rheiland_demilitarization = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1542,7 +1813,7 @@ country_event = {
 	
 	#Независимый Рейнленд
 	option = {
-		name = versailles.24.c
+		name = versailles.204.c
 		add_to_variable = { global.FRA_Rheiland_ind = vote_power }
 		ai_chance = {
 			factor = 0.5
@@ -1555,21 +1826,21 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.24.e
+		name = versailles.204.e
 	}
 }
 # Эйпен
 country_event = {
-	id = versailles.25
-	title = versailles.25.t
-	desc = versailles.25.d
+	id = versailles.205
+	title = versailles.205.t
+	desc = versailles.205.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Бельгии
 	option = {
-		name = versailles.25.a
+		name = versailles.205.a
 		add_to_variable = { global.BEL_Eupen_Malmedy = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1578,21 +1849,21 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.25.b
+		name = versailles.205.b
 	}
 }
 # Познань
 country_event = {
-	id = versailles.26
-	title = versailles.26.t
-	desc = versailles.26.d
+	id = versailles.206
+	title = versailles.206.t
+	desc = versailles.206.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Польше/России
 	option = {
-		name = versailles.26.a
+		name = versailles.206.a
 		add_to_variable = { global.POL_Poznan = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1601,21 +1872,21 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.26.b
+		name = versailles.206.b
 	}
 }
 # Верхняя Силезия
 country_event = {
-	id = versailles.27
-	title = versailles.27.t
-	desc = versailles.27.d
+	id = versailles.207
+	title = versailles.207.t
+	desc = versailles.207.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Польше/России
 	option = {
-		name = versailles.27.a
+		name = versailles.207.a
 		add_to_variable = { global.POL_Upper_Silesia_annex = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1628,7 +1899,7 @@ country_event = {
 	
 	#Референдум
 	option = {
-		name = versailles.27.b
+		name = versailles.207.b
 		add_to_variable = { global.POL_Upper_Silesia_referendum = vote_power }
 		ai_chance = {
 			factor = 2
@@ -1637,27 +1908,27 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.27.c
+		name = versailles.207.c
 	}
 }
 # Данциг/Гданьск
 country_event = {
-	id = versailles.28
-	title = versailles.28.t
-	desc = versailles.28.d
+	id = versailles.208
+	title = versailles.208.t
+	desc = versailles.208.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Польше/России
 	option = {
-		name = versailles.28.a
+		name = versailles.208.a
 		add_to_variable = { global.POL_Gdansk_annex = vote_power }
 	}
 	
 	#Вольный город
 	option = {
-		name = versailles.28.b
+		name = versailles.208.b
 		add_to_variable = { global.POL_Gdansk_ind = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1666,21 +1937,21 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.28.c
+		name = versailles.208.c
 	}
 }
 # Западная Прусия
 country_event = {
-	id = versailles.29
-	title = versailles.29.t
-	desc = versailles.29.d
+	id = versailles.209
+	title = versailles.209.t
+	desc = versailles.209.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Польше/России
 	option = {
-		name = versailles.29.a
+		name = versailles.209.a
 		add_to_variable = { global.POL_West_Prussia = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1689,27 +1960,27 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.29.b
+		name = versailles.209.b
 	}
 }
 # Восточная Прусия
 country_event = {
-	id = versailles.30
-	title = versailles.30.t
-	desc = versailles.30.d
+	id = versailles.210
+	title = versailles.210.t
+	desc = versailles.210.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Польше/России
 	option = {
-		name = versailles.30.a
+		name = versailles.210.a
 		add_to_variable = { global.RUS_East_Prussia_annex = vote_power }
 	}
 	
 	#Независимая Прусия
 	option = {
-		name = versailles.30.b
+		name = versailles.210.b
 		add_to_variable = { global.RUS_East_Prussia_ind = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1723,7 +1994,7 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.30.c
+		name = versailles.210.c
 		ai_chance = {
 			factor = 1
 			modifier = {
@@ -1735,16 +2006,16 @@ country_event = {
 }
 # Лужица
 country_event = {
-	id = versailles.31
-	title = versailles.31.t
-	desc = versailles.31.d
+	id = versailles.211
+	title = versailles.211.t
+	desc = versailles.211.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Польше/России
 	option = {
-		name = versailles.31.a
+		name = versailles.211.a
 		add_to_variable = { global.RUS_Lusatia_annex = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1757,13 +2028,13 @@ country_event = {
 	
 	#Независимая Лужица
 	option = {
-		name = versailles.31.b
+		name = versailles.211.b
 		add_to_variable = { global.RUS_Lusatia_ind = vote_power }
 	}
 	
 	#Оставить Германии
 	option = {
-		name = versailles.31.c
+		name = versailles.211.c
 		ai_chance = {
 			factor = 1
 		}
@@ -1771,16 +2042,16 @@ country_event = {
 }
 # Шлезевиг
 country_event = {
-	id = versailles.32
-	title = versailles.32.t
-	desc = versailles.32.d
+	id = versailles.212
+	title = versailles.212.t
+	desc = versailles.212.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Дании север Шлезевига
 	option = {
-		name = versailles.32.a
+		name = versailles.212.a
 		add_to_variable = { global.DEN_Schleswig = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1789,7 +2060,7 @@ country_event = {
 	
 	#Отдать Дании весь Шлезевиг
 	option = {
-		name = versailles.32.b
+		name = versailles.212.b
 		add_to_variable = { global.DEN_Schleswig_all = vote_power }
 		ai_chance = {
 			factor = 0.5
@@ -1802,21 +2073,21 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.32.c
+		name = versailles.212.c
 	}
 }
 # Мемель
 country_event = {
-	id = versailles.33
-	title = versailles.33.t
-	desc = versailles.33.d
+	id = versailles.213
+	title = versailles.213.t
+	desc = versailles.213.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Отдать Литве/России
 	option = {
-		name = versailles.33.a
+		name = versailles.213.a
 		add_to_variable = { global.LIT_Memelland = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1825,21 +2096,21 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.33.b
+		name = versailles.213.b
 	}
 }
 # Бавария
 country_event = {
-	id = versailles.34
-	title = versailles.34.t
-	desc = versailles.34.d
+	id = versailles.214
+	title = versailles.214.t
+	desc = versailles.214.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	#Независимая Бавария
 	option = {
-		name = versailles.34.a
+		name = versailles.214.a
 		add_to_variable = { global.BAV_Bavaria = vote_power }
 		ai_chance = {
 			factor = 1
@@ -1852,7 +2123,7 @@ country_event = {
 	
 	#Оставить Германии
 	option = {
-		name = versailles.34.b
+		name = versailles.214.b
 		ai_chance = {
 			factor = 2
 		}
@@ -1860,9 +2131,9 @@ country_event = {
 }
 
 country_event = {
-	id = versailles.40
-	title = versailles.40.t
-	desc = versailles.40.d
+	id = versailles.220
+	title = versailles.220.t
+	desc = versailles.220.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	hidden = yes
@@ -1870,7 +2141,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		name = versailles.40.a
+		name = versailles.220.a
 		divide_variable = {
 			var = global.FRA_Alsace_Lorraine
 			value = global.vers_peace_conf_members
@@ -1989,15 +2260,15 @@ country_event = {
 }
 
 country_event = {
-	id = versailles.41
-	title = versailles.41.t
-	desc = versailles.41.d
+	id = versailles.221
+	title = versailles.221.t
+	desc = versailles.221.d
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = versailles.41.a
+		name = versailles.221.a
 		
 		if = {
 			limit = { check_variable = { global.FRA_Rheiland_GER < 0.5 } }
@@ -2273,226 +2544,31 @@ country_event = {
 	}
 }
 
-
-
-# Переговоры о мире
+# Конец Войны
 country_event = {
-	id = versailles.201
-	title = versailles.201.t
-	desc = versailles.201.desc
-	picture = GFX_report_event_ger_november_revolution
-
-	is_triggered_only = yes
+	id = versailles.1918
+	title = versailles.1918.t
+	desc = versailles.1918.d
+	picture = GFX_report_event_germany_civil_war_soldiers
 	
-	#Потребовать капитуляции
-	option = {
-		name = versailles.201.a
-		GER = { country_event = { id = versailles.202 days = 3 } }
-		ai_chance = {
-			factor = 3
-		}
-	}
+	hidden = yes
 	
-	#Потребовать отречения кайзера и капитуляции
-	option = {
-		trigger = {
-			GER = { NOT = { has_country_flag = GER_monarchy_fall } }
-		}
-		name = versailles.201.a
-		GER = { country_event = { id = versailles.203 days = 3 } }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 99999
-				tag = USA
-			}
-		}
-	}
-	
-	#Принять предложение о мире
-	option = {
-		name = versailles.201.b
-		GER = { country_event = weltkrieg_frankfurt.0 }
-		FRA = { country_event = weltkrieg_frankfurt.12 } # не слив
-		ENG = { country_event = weltkrieg_frankfurt.14 } # не слив
-		if = { limit = { OTT = { has_war_with = ENG NOT = { surrender_progress > 0.1 } } } OTT = { country_event = { id = versailles.5 days = 1 } } } # белый мир с Османией
-		else_if = { limit = { OTT = { has_war_with = ENG surrender_progress > 0.1 } } OTT = { country_event = { id = versailles.6 days = 1 } } } # мир с Османией
-		else = { OTT = { leave_faction = yes add_ideas = alliance_neutrality } } # слив Османии
-		SER = { country_event = { id = weltkrieg_frankfurt.18 hours = 1 } } # не слив
-		ROM = { country_event = { id = weltkrieg_frankfurt.20 hours = 1 } } # не слив
-		set_global_flag = WWI_white_peace
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				FRA = { surrender_progress < 0.15 }
-			}
-		}
-	}
-}
-# Требование капитуляции
-country_event = {
-	id = versailles.202
-	title = versailles.202.t
-	desc = versailles.202.desc
-	picture = GFX_report_event_ger_november_revolution
-
-	is_triggered_only = yes
-	
-	#Это неприемлимо
-	option = {
-		name = versailles.202.a
-		set_country_flag = GER_peace_negotiations_with_Entente
-		add_war_support = -0.05
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				has_country_flag = GER_monarchy_fall
-			}
-		}
-	}
-	
-	#Мы согласны
-	option = {
-		name = versailles.202.b
-		country_event = { id = versailles.4 days = 1 }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				NOT = { has_country_flag = GER_monarchy_fall }
-			}
-		}
-	}
-}
-# Требование отречения кайзера и капитуляции
-country_event = {
-	id = versailles.203
-	title = versailles.203.t
-	desc = versailles.203.desc
-	picture = GFX_report_event_ger_november_revolution
-
-	is_triggered_only = yes
-	
-	#Это неприемлимо
-	option = {
-		name = versailles.203.a
-		set_country_flag = GER_peace_negotiations_with_Entente
-		add_war_support = -0.05
-		ai_chance = {
-			factor = 3
-			modifier = {
-				factor = 0
-				GER = { surrender_progress > 0.02 }
-			}
-		}
-	}
-	
-	#Мы согласны
-	option = {
-		name = versailles.203.b
-		country_event = germany.141
-		country_event = { id = versailles.4 days = 1 }
-		ai_chance = {
-			factor = 1
-		}
-	}
-}
-# Требование отречения кайзера и капитуляции
-country_event = {
-	id = versailles.204
-	title = versailles.204.t
-	desc = versailles.204.desc
-	picture = GFX_report_event_ger_november_revolution
-
 	trigger = {
-		GER = { has_country_flag = GER_peace_negotiations_with_Entente }
-		GER = { has_war_with = ENG }
-		OR = {
-			AND = {
-				tag = USA
-				has_war_with = GER
-			}
-			AND = {
-				tag  = ENG
-				USA = { NOT = { has_war_with = GER } }
-			}
-		}
+		has_global_flag = WWI_is_now
+		NOT = { GER = { has_war_with = ENG has_war_with = FRA } }
+		NOT = { AUH = { has_war_with = ENG has_war_with = FRA } }
+		NOT = { BUL = { has_war_with = ENG has_war_with = FRA } }
+		NOT = { OTT = { has_war_with = ENG has_war_with = FRA } }
 	}
+
+	fire_only_once = yes
 	
 	mean_time_to_happen = {
-		days = 10
+		days = 1
 	}
 	
-	#Потребовать капитуляции и отречения кайзера
 	option = {
-		trigger = {
-			GER = { NOT = { has_country_flag = GER_monarchy_fall } }
-		}
-		name = versailles.204.a
-		GER = { country_event = { id = versailles.205 days = 3 } }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Свернуть переговоры
-	option = {
-		name = versailles.204.b
-		GER = { country_event = { id = versailles.206 days = 0 } }
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-# Требование отречения кайзера и капитуляции
-country_event = {
-	id = versailles.205
-	title = versailles.205.t
-	desc = versailles.205.desc
-	picture = GFX_report_event_ger_november_revolution
-
-	is_triggered_only = yes
-	
-	#Это неприемлимо
-	option = {
-		name = versailles.205.a
-		clr_country_flag = GER_peace_negotiations_with_Entente
-		add_popularity = {
-			ideology = authoritarism
-			popularity = -0.05
-		}
-		ai_chance = {
-			factor = 0
-		}
-	}
-	
-	#Мы согласны
-	option = {
-		name = versailles.205.b
-		country_event = germany.141
-		country_event = { id = versailles.4 days = 1 }
-		ai_chance = {
-			factor = 1
-		}
-	}
-}
-# Сворачивание переговоров
-country_event = {
-	id = versailles.206
-	title = versailles.206.t
-	desc = versailles.206.desc
-	picture = GFX_report_event_ger_november_revolution
-
-	is_triggered_only = yes
-	
-	option = {
-		name = versailles.206.a
-		clr_country_flag = GER_peace_negotiations_with_Entente
-		add_popularity = {
-			ideology = authoritarism
-			popularity = -0.05
-		}
+		name = versailles.1918.a
+		clr_global_flag = WWI_is_now
 	}
 }

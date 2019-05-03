@@ -329,76 +329,29 @@ on_actions = {
 		effect = {
 			if = {
 				limit = {
-					has_global_flag = WWI_is_now
-					NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
-					ROOT = { tag = ENG }
-				}
-				set_global_flag = WWI_ENG_HAS_CAPITULATED
-				news_event = { id = news_n.113 days = 0 }
-			}
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED }
-					ROOT = { tag = FRA }
-				}
-				set_global_flag = WWI_FRA_HAS_CAPITULATED
-				news_event = { id = news_n.112 days = 0 }
-			}
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED }
-					ROOT = { tag = ITA }
-				}
-				news_event = { id = news_n.111 days = 0 }
-				set_global_flag = WWI_ITA_HAS_CAPITULATED
-				ITA = { country_event = weltkrieg_frankfurt.15 }
-			}
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					ROOT = { tag = OTT }
-					341 = {
-						is_claimed_by = ENG
-						is_claimed_by = RUS
-						is_controlled_by = RUS
-					}
-				}
-				ENG = {
-					remove_state_claim = 340
-					remove_state_claim = 341
-					remove_state_claim = 860
-					remove_state_claim = 949
-				}
-			}
-			else_if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					ROOT = { tag = OTT }
-					341 = {
-						is_claimed_by = ENG
-						is_claimed_by = RUS
-						NOT = { is_controlled_by = RUS }
-					}
-				}
-				RUS = {
-					remove_state_claim = 340
-					remove_state_claim = 341
-					remove_state_claim = 860
-					remove_state_claim = 949
-				}
-			}
-			if = {
-				limit = {
 					NOT = {
+						has_global_flag = WWI_is_now
 						OR = {
-							has_global_flag = WWI_BUL_HAS_CAPITULATED
-							ROOT = { tag = BUL }
-							ROOT = { tag = OTT }
-							ROOT = { tag = ITA }
-							ROOT = { tag = FRA }
-							ROOT = { tag = ENG }
+							AND = {
+								ROOT = { tag = BUL }
+								NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+							}
+							AND = {
+								ROOT = { tag = OTT }
+								NOT = { has_global_flag = WWI_OTT_HAS_CAPITULATED }
+							}
+							AND = {
+								ROOT = { tag = ITA }
+								NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED }
+							}
+							AND = {
+								ROOT = { tag = FRA }
+								NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED }
+							}
+							AND = {
+								ROOT = { tag = ENG }
+								NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+							}
 						}
 					}
 				}
@@ -414,50 +367,6 @@ on_actions = {
 					RVA_volunteer_army_5
 				}
 			}
-			
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					ROOT = { tag = BUL }
-					NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
-				}
-				news_event = { id = news_n.101 days = 0 }
-				random_country = {
-					limit = { original_tag = SER exists = yes NOT = { has_war_with = BUL } }
-					every_state = {
-						limit = { is_owned_by = ROOT OR = { is_core_of = PREV is_claimed_by = PREV } }
-						PREV = {
-							transfer_state = PREV
-						}
-					}
-				}
-				random_country = {
-					limit = { original_tag = ROM exists = yes NOT = { has_war_with = BUL } }
-					every_state = {
-						limit = { is_owned_by = ROOT OR = { is_core_of = PREV is_claimed_by = PREV } }
-						PREV = {
-							transfer_state = PREV
-						}
-					}
-				}
-				BUL = {
-					set_global_flag = WWI_BUL_HAS_CAPITULATED
-					country_event = { id = versailles.0 hours = 1 }
-				}
-			}
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					ROOT = { tag = OTT }
-					NOT = { has_global_flag = WWI_OTT_HAS_CAPITULATED }
-				}
-				news_event = { id = news_n.102 days = 0 }
-				OTT = {
-					set_global_flag = WWI_OTT_HAS_CAPITULATED
-					country_event = { id = versailles.0 hours = 1 }
-					set_capital = 49
-				}
-			}
 		}
 	}
 	
@@ -467,40 +376,6 @@ on_actions = {
 			if = {
 				limit = { FROM = { tag = RGR } NOT = { has_global_flag = RUS_RCW_green_over } }
 				set_global_flag = RUS_RCW_green_over
-			}
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					FROM = { tag = OTT }
-					has_global_flag = WWI_OTT_HAS_CAPITULATED
-				}
-				if = {
-					limit = { OTT = { exists = yes} }
-					FROM = { country_event = versailles.1 }
-					else = {
-						every_country = {
-							limit = { owns_state = 49 }
-							country_event = versailles.1
-						}
-					}
-				}
-			}
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					FROM = { tag = BUL }
-					has_global_flag = WWI_BUL_HAS_CAPITULATED
-				}
-				if = {
-					limit = { BUL = { exists = yes} }
-					FROM = { country_event = versailles.2 }
-					else = {
-						every_country = {
-							limit = { owns_state = 48 }
-							country_event = versailles.2
-						}
-					}
-				}
 			}
 		}
 	}
@@ -691,42 +566,6 @@ on_actions = {
 					ROOT = { OR = { AND = { NOT = { tag = RUS } original_tag = RUS } tag = CCA tag = SIB tag = PRM tag = TRK tag = CPG tag = KAZ } }
 				}
 				FROM = { country_event = { id = rcw.92 days = 0 } }
-			}
-			if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					FROM = { tag = OTT }
-					FROM.FROM = {
-						state = 341
-						is_claimed_by = ENG
-						is_claimed_by = RUS
-					}
-					OR = { tag = RUS is_subject_of = RUS }
-				}
-				ENG = {
-					remove_state_claim = 340
-					remove_state_claim = 341
-					remove_state_claim = 860
-					remove_state_claim = 949
-				}
-			}
-			else_if = {
-				limit = {
-					has_global_flag = WWI_is_now
-					FROM = { tag = OTT }
-					FROM.FROM = {
-						state = 341
-						is_claimed_by = ENG
-						is_claimed_by = RUS
-					}
-					NOT = { tag = RUS is_subject_of = RUS }
-				}
-				RUS = {
-					remove_state_claim = 340
-					remove_state_claim = 341
-					remove_state_claim = 860
-					remove_state_claim = 949
-				}
 			}
 			if = {
 				limit = {

@@ -4,7 +4,6 @@
 
 add_namespace = rcw
 
-
 ###### Антисоветские восстания в России ######
 
 # Выступление Керенского-Краснова
@@ -1747,20 +1746,23 @@ country_event = {
 		name = rcw.108.a
 		GER = { country_event = treaty_of_brest.31 }
 		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
+		clr_country_flag = Lenin_threatens_his_resignation
 	}
 	# Мир с Германией
 	option = {
-		trigger = { has_country_flag = brest_average }
+		trigger = { has_country_flag = brest_average check_variable = { percent_left_faction_CC < 0.5 } }
 		name = rcw.108.b
 		GER = { country_event = treaty_of_brest.32 }
 		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
+		clr_country_flag = Lenin_threatens_his_resignation
 	}
 	# Мир с Германией
 	option = {
-		trigger = { has_country_flag = brest_soft }
+		trigger = { has_country_flag = brest_soft check_variable = { percent_left_faction_CC < 0.5 } }
 		name = rcw.108.c
 		GER = { country_event = treaty_of_brest.33 }
 		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
+		clr_country_flag = Lenin_threatens_his_resignation
 	}
 	# Мир с Германией
 	option = {
@@ -1768,10 +1770,11 @@ country_event = {
 		name = rcw.108.e
 		GER = { country_event = treaty_of_brest.31 }#GER = { country_event = treaty_of_brest.34 }
 		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
+		clr_country_flag = Lenin_threatens_his_resignation
 	}
 	# Продолжение войны
 	option = {
-		trigger = { NOT = { has_country_flag = brest_hard has_country_flag = brest_average has_country_flag = brest_hardest } }
+		trigger = { OR = { NOT = { has_country_flag = brest_hard has_country_flag = brest_average has_country_flag = brest_hardest } NOT = { check_variable = { percent_left_faction_CC < 0.5 } } } }
 		name = rcw.108.f
 		add_to_variable = {
 			var = global.red_alert
@@ -1781,49 +1784,55 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
+		if = {
+			limit = { has_country_flag = Lenin_threatens_his_resignation OR = { has_country_flag = brest_soft has_country_flag = brest_hard has_country_flag = brest_average has_country_flag = brest_hardest } }
+			country_event = { id = treaty_of_brest.51 days = 3 }
+		}
 	}
 }
 
-# Отделение Эстонии
+# Декрет «О земле»
 country_event = {
 	id = rcw.109
 	title = rcw.109.t
 	desc = rcw.109.d
-	picture = GFX_report_event_sov_demobilisation
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
 	
 	is_triggered_only = yes
-	immediate = {
-		hidden_effect = {
-			EST = {
-				transfer_state = 13
-				transfer_state = 914
-				transfer_state = 915
-				transfer_state = 920
-				transfer_state = 921
-				transfer_state = 1002
-				transfer_state = 1003
-			}
-		}
-	}
 	
-	#Выжидать
 	option = {
 		name = rcw.109.a
-		ai_chance = {
-			factor = 1
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		if = {
+			limit = { has_idea = RUS_peasant_question }
+			swap_ideas = {
+				remove_idea = RUS_peasant_question
+				add_idea = RUS_peasant_question_0_5
+			}
+			else = { add_war_support = 0.05 }
 		}
 	}
+}
+# Декрет «Об отмене смертной казни на фронте»
+country_event = {
+	id = rcw.110
+	title = rcw.110.t
+	desc = rcw.110.d
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
 	
-	#Признать независимость
+	is_triggered_only = yes
+	
 	option = {
-		name = rcw.109.b
-		EST = {
-			transfer_state = 191
-			transfer_state = 916
+		name = rcw.110.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.025
 		}
-		ai_chance = {
-			factor = 0
-		}
+		add_war_support = 0.025
+		set_country_flag = death_penalty_moratorium
 	}
 }
 
@@ -2613,11 +2622,11 @@ country_event = {
 	trigger = {
 		tag = RUS
 		has_country_flag = RUS_Oktober_revolution_fired
+		has_completed_focus = RUS_WPRA
 		OR = {
 			has_country_flag = RUS_fourth_allrussian_congress_of_soviets
 			has_completed_focus = RUS_vsevobuch
 		}
-		has_completed_focus = RUS_WPRA
 	}
 	
 	mean_time_to_happen = {
@@ -2696,6 +2705,21 @@ country_event = {
 	}
 }
 
+# Убийство Моисея Урицкого
+country_event = {
+	id = rcw.134
+	title = rcw.134.t
+	desc = rcw.134.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.134.a
+		set_country_flag = Moisey_Uritskiy_dead
+	}
+}
+
 # Разгром Чёрной гвардии
 country_event = {
 	id = rcw.198
@@ -2729,6 +2753,7 @@ country_event = {
 	picture = GFX_report_event_sov_protest_of_moderate_socialists_against_the_bolsheviksv
 	
 	trigger = {
+		always = no
 		tag = RUS
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_country_flag = RUS_brest_peace_fired
@@ -2764,6 +2789,7 @@ country_event = {
 	picture = GFX_report_event_sov_felix_VCHK
 	
 	trigger = {
+		always = no
 		tag = RUS
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_country_flag = RUS_brest_peace_fired
@@ -3329,6 +3355,48 @@ country_event = {
 }
 
 
+# Отделение Эстонии
+country_event = {
+	id = rcw.1009
+	title = rcw.1009.t
+	desc = rcw.1009.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			EST = {
+				transfer_state = 13
+				transfer_state = 914
+				transfer_state = 915
+				transfer_state = 920
+				transfer_state = 921
+				transfer_state = 1002
+				transfer_state = 1003
+			}
+		}
+	}
+	
+	#Выжидать
+	option = {
+		name = rcw.1009.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	#Признать независимость
+	option = {
+		name = rcw.1009.b
+		EST = {
+			transfer_state = 191
+			transfer_state = 916
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
 
 # Notification event that leader has been killed
 country_event = {

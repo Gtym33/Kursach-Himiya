@@ -1,0 +1,145 @@
+on_actions = {
+	# ROOT is capitulated country, FROM is winner
+	on_capitulation = {
+		effect = {
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+					ROOT = { tag = ENG }
+				}
+				set_global_flag = WWI_ENG_HAS_CAPITULATED
+				news_event = { id = news_n.113 days = 0 }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED }
+					ROOT = { tag = FRA }
+				}
+				set_global_flag = WWI_FRA_HAS_CAPITULATED
+				news_event = { id = news_n.112 days = 0 }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED }
+					ROOT = { tag = ITA }
+				}
+				news_event = { id = news_n.111 days = 0 }
+				set_global_flag = WWI_ITA_HAS_CAPITULATED
+				ITA = { country_event = weltkrieg_frankfurt.15 }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					ROOT = { tag = BUL }
+					NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+				}
+				news_event = { id = news_n.101 days = 0 }
+				BUL = {
+					country_event = { id = versailles.2 hours = 1 }
+				}
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					ROOT = { tag = OTT }
+					NOT = { has_global_flag = WWI_OTT_HAS_CAPITULATED }
+				}
+				news_event = { id = news_n.102 days = 0 }
+				OTT = {
+					set_global_flag = WWI_OTT_HAS_CAPITULATED
+					country_event = { id = versailles.0 hours = 1 }
+					set_capital = 49
+				}
+			}
+		}
+	}
+	
+	#ROOT is the winner, FROM is the loser.
+	on_peaceconference_ended = {
+		effect = {
+			if = {
+				limit = { FROM = { tag = OTT has_country_flag = OTT_has_war_with_ENG } ROOT = { tag = ENG } }
+				FROM = { clr_country_flag = OTT_has_war_with_ENG }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = OTT }
+					has_global_flag = WWI_OTT_HAS_CAPITULATED
+				}
+				if = {
+					limit = { OTT = { exists = yes} }
+					FROM = { country_event = versailles.1 }
+					else = {
+						every_country = {
+							limit = { owns_state = 49 }
+							country_event = versailles.1
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = BUL }
+					has_global_flag = WWI_BUL_HAS_CAPITULATED
+				}
+				if = {
+					limit = { BUL = { exists = yes} }
+					FROM = { country_event = versailles.2 }
+					else = {
+						every_country = {
+							limit = { owns_state = 48 }
+							country_event = versailles.2
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = OTT }
+					FROM.FROM = {
+						state = 341
+						is_claimed_by = ENG
+						is_claimed_by = RUS
+					}
+					OR = { tag = RUS is_subject_of = RUS }
+				}
+				ENG = {
+					remove_state_claim = 340
+					remove_state_claim = 341
+					remove_state_claim = 860
+					remove_state_claim = 949
+				}
+			}
+			else_if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM = { tag = OTT }
+					FROM.FROM = {
+						state = 341
+						is_claimed_by = ENG
+						is_claimed_by = RUS
+					}
+					NOT = { tag = RUS is_subject_of = RUS }
+				}
+				RUS = {
+					remove_state_claim = 340
+					remove_state_claim = 341
+					remove_state_claim = 860
+					remove_state_claim = 949
+				}
+			}
+		}
+	}
+}
