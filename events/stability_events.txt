@@ -19,8 +19,8 @@ country_event = {
 		has_war = yes
 		has_civil_war = no
 		OR = {
-			has_stability < 0.25
-			has_war_support < 0.35
+			has_stability < 0.5
+			has_war_support < 0.5
 		}
 		NOT = {
 			AND = {
@@ -33,19 +33,50 @@ country_event = {
 		NOT = { 
 			has_country_flag = crisis_in_progress
 		}
+		NOT = { # Don't fire stability events if the country is not mobilising at all
+			OR = {
+				has_idea = disarmed_nation
+				has_idea = volunteer_only
+			}
+			OR = {
+				has_idea = undisturbed_isolation
+				has_idea = isolation
+				has_idea = civilian_economy
+			}
+		}
 	}
 
 	mean_time_to_happen = { 
 		days = 360 
 		modifier = {
+			factor = 2.0
+			has_idea = disarmed_nation
+		}
+		modifier = {
+			factor = 1.5
+			has_idea = volunteer_only
+		}
+		modifier = {
+			factor = 2.5
+			has_idea = undisturbed_isolation
+		}
+		modifier = {
+			factor = 2.0
+			has_idea = isolation
+		}
+		modifier = {
+			factor = 1.5
+			has_idea = civilian_economy
+		}
+		modifier = {
 			factor = 2
-			NOT = { has_government = social_democracy has_government = social_liberalism has_government = market_liberalism }
+			NOT = { is_democratic_country = yes }
 		}
 		modifier = {
 			factor = 0.75
 			OR = {
-				has_stability < 0.2
-				has_war_support < 0.3
+				has_stability < 0.4
+				has_war_support < 0.4
 			}
 		}
 		modifier = {
@@ -63,6 +94,18 @@ country_event = {
 				modifier = {
 					factor = 0
 					has_country_flag = draft_dodging_resolved
+				}
+				modifier = {
+					factor = 0
+					has_idea = disarmed_nation
+				}
+				modifier = {
+					factor = 0
+					has_idea = volunteer_only
+				}
+				modifier = {
+					factor = 0.1
+					has_war_support > 0.5
 				}
 				modifier = {
 					factor = 0.6
@@ -88,6 +131,10 @@ country_event = {
 					factor = 0
 					has_country_flag = strikes_resolved
 				}
+				modifier = {
+					factor = 0.1
+					has_stability > 0.5
+				}
 				add_ideas = strikes_1 
 				country_event = stability.22
 			} #strikes
@@ -95,6 +142,10 @@ country_event = {
 				modifier = {
 					factor = 0
 					has_country_flag = mutiny_resolved
+				}
+				modifier = {
+					factor = 0.1
+					has_war_support > 0.5
 				}
 				modifier = {
 					factor = 0.2
@@ -193,7 +244,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.2
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -207,7 +258,7 @@ country_event = {
 		set_country_flag = crisis_solution_in_progress
 		if = {
 			limit = {
-				has_stability > 0.2
+					has_stability > 0.3
 			}
 			random_list = {
 				60 = { country_event = { id = stability.31 days = 15 } } #success
@@ -216,12 +267,12 @@ country_event = {
 		}
 		if = {
 			limit = {
-				has_stability < 0.2
+				has_stability < 0.3
 			}
 			random_list = {
 				60 = { country_event = { id = stability.31 days = 15 } } #success
 				30 = { country_event = { id = stability.32 days = 15 } } #failure
-#				5 = { country_event = { id = stability.33 days = 15 } } #civil war
+				5 = { country_event = { id = stability.33 days = 15 } } #civil war
 			}
 		}
 	}
@@ -239,7 +290,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.2
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -265,7 +316,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.2
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -278,7 +329,7 @@ country_event = {
 		set_country_flag = crisis_solution_in_progress
 		if = {
 			limit = {
-				has_stability > 0.2
+				has_stability > 0.3
 			}
 			random_list = {
 				60 = { country_event = { id = stability.35 days = 15 } } #success
@@ -287,7 +338,7 @@ country_event = {
 		}
 		if = {
 			limit = {
-				has_stability < 0.2
+				has_stability < 0.3
 			}
 			random_list = {
 				55 = { country_event = { id = stability.35 days = 15 } } #success
@@ -305,7 +356,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.2
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -331,7 +382,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.2
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -344,7 +395,7 @@ country_event = {
 		set_country_flag = crisis_solution_in_progress
 		if = {
 			limit = {
-				has_stability > 0.2
+				has_stability > 0.3
 			}
 			random_list = {
 				60 = { country_event = { id = stability.38 days = 15 } } #success
@@ -353,7 +404,7 @@ country_event = {
 		}
 		if = {
 			limit = {
-				has_stability < 0.2
+				has_stability < 0.3
 			}
 			random_list = {
 				45 = { country_event = { id = stability.38 days = 15 } } #success
@@ -371,7 +422,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -408,7 +459,7 @@ country_event = {
 		text = stability.22.desc.c
 		trigger = { has_idea = strikes_3 }
 	}	#
-	picture = GFX_report_event_workers_protest					# 
+	picture = GFX_report_event_worker_protests					# 
 		
 	is_triggered_only = yes
 
@@ -436,7 +487,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -462,7 +513,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -485,7 +536,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -510,7 +561,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -534,7 +585,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -558,7 +609,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -622,7 +673,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -647,7 +698,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -688,7 +739,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -713,7 +764,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
@@ -754,7 +805,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 0
 			}
 			modifier = {
@@ -778,7 +829,7 @@ country_event = {
 		ai_chance = {
 			base = 50
 			modifier = {
-				has_stability < 0.3
+				has_stability < 0.4
 				factor = 2
 			}
 			modifier = {
