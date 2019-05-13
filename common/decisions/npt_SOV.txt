@@ -1,6 +1,100 @@
 
 SOV_VChK_desisions = {
+	organization_of_railway_militia = {
 
+		icon = generic_army_support
+
+		available = {
+			OR = {
+				has_idea = RUS_collapse_of_railway_system_2
+				has_idea = RUS_collapse_of_railway_system_3
+				has_idea = RUS_collapse_of_railway_system_4
+				has_idea = RUS_collapse_of_railway_system_5
+			}
+		}
+		visible = {
+			NOT = { has_country_flag = railway_militia }
+			has_country_flag = railway_self_government
+		}
+		cost = 10
+		days_remove = 20
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 100
+		}
+		remove_effect = {
+			set_country_flag = railway_militia
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_2 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_2
+					add_idea = RUS_collapse_of_railway_system_1
+				}
+			}
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_3 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_3
+					add_idea = RUS_collapse_of_railway_system_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_4 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_4
+					add_idea = RUS_collapse_of_railway_system_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_5 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_5
+					add_idea = RUS_collapse_of_railway_system_4
+				}
+			}
+		}
+	}
+	abolish_railway_militia = {
+
+		icon = generic_army_support
+
+		available = {
+			
+		}
+		visible = {
+			has_country_flag = railway_militia
+			has_country_flag = railway_self_government
+		}
+		cost = 25
+		days_remove = 50
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 100
+		}
+		remove_effect = {
+			clr_country_flag = railway_militia
+		}
+	}
+	abolish_railway_self_government = {
+
+		icon = generic_army_support
+
+		available = {
+			NOT = { has_country_flag = railway_militia }
+			has_country_flag = railway_militia_abolished
+		}
+		visible = {
+			has_country_flag = railway_self_government
+		}
+		cost = 50
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 100
+		}
+		complete_effect = {
+			clr_country_flag = railway_self_government
+		}
+	}
 	abolish_death_penalty_moratorium = {
 
 		icon = generic_army_support
@@ -171,7 +265,10 @@ SOV_soviet_power_desisions = {
 
 		available = {
 			has_country_flag = RUS_soviet_power_flag
-			has_government = communism
+			OR = {
+				has_government = communism
+				has_government = social_democracy
+			}
 		}
 		visible = {
 			has_country_flag = RUS_soviet_power_flag
@@ -191,6 +288,39 @@ SOV_soviet_power_desisions = {
 			hidden_effect = {
 				subtract_from_variable = { var = left_faction_CC value = 1 }
 				check_overlap_of_CC_n_CEC_deputies_add_right = yes
+				set_frame_of_CC_n_CEC = yes
+			}
+		}
+	}
+	pressure_on_right_faction = {
+
+		icon = generic_prepare_civil_war
+
+		available = {
+			has_country_flag = RUS_soviet_power_flag
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+		}
+		visible = {
+			has_country_flag = RUS_soviet_power_flag
+		}
+		cost = 25
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				check_variable = { percent_right_faction_CC < 0.4 }
+			}
+		}
+		remove_effect = {
+		}
+		complete_effect = {
+			custom_effect_tooltip = remove_1_rights_from_CC
+			hidden_effect = {
+				subtract_from_variable = { var = right_faction_CC value = 1 }
+				check_overlap_of_CC_n_CEC_deputies_add_left = yes
 				set_frame_of_CC_n_CEC = yes
 			}
 		}
@@ -286,6 +416,10 @@ SOV_soviet_power_desisions = {
 			has_country_flag = RUS_soviet_power_flag
 			has_completed_focus = RUS_war_communism
 			NOT = { has_completed_focus = RUS_strengthening_war_communism_policy }
+			custom_trigger_tooltip = {
+				tooltip = percent_left_faction_CC_less_40
+				check_variable = { percent_left_faction_CC < 0.4 }
+			}
 		}
 		visible = {
 			has_country_flag = RUS_soviet_power_flag
@@ -324,6 +458,10 @@ SOV_soviet_power_desisions = {
 
 		available = {
 			has_country_flag = RUS_soviet_power_flag
+			custom_trigger_tooltip = {
+				tooltip = percent_right_faction_CC_less_30
+				check_variable = { percent_right_faction_CC < 0.3 }
+			}
 		}
 		visible = {
 			has_country_flag = RUS_soviet_power_flag
@@ -365,6 +503,10 @@ SOV_soviet_power_desisions = {
 		available = {
 			has_country_flag = RUS_soviet_power_flag
 			PRM = { communism > 0.38 }
+			custom_trigger_tooltip = {
+				tooltip = percent_right_faction_CC_less_50
+				check_variable = { percent_right_faction_CC < 0.5 }
+			}
 		}
 		visible = {
 			has_country_flag = RUS_soviet_power_flag
@@ -553,6 +695,10 @@ SOV_soviet_power_desisions = {
 			has_war = no
 			FER = {
 				is_puppet_of = ROOT
+			}
+			custom_trigger_tooltip = {
+				tooltip = percent_right_faction_CC_less_50
+				check_variable = { percent_right_faction_CC < 0.5 }
 			}
 		}
 		
