@@ -4,6 +4,432 @@
 
 add_namespace = rcw_bfk
 
+# Отделение Эстонии после революции
+country_event = {
+	id = rcw_bfk.1
+	title = rcw_bfk.1.t
+	desc = rcw_bfk.1.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = GER
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.1.a
+		add_political_power = 25
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.1.b
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				is_controlled_by = ROOT
+				is_core_of = EST
+			}
+			EST = { transfer_state = PREV }
+		}
+		EST = {
+			set_politics = { ruling_party = despotism }
+			load_oob = EST_1917
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Германский империализм
+country_event = {
+	id = rcw_bfk.2
+	title = rcw_bfk.2.t
+	desc = rcw_bfk.2.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = GER
+		EST = { exists = yes is_subject = no NOT = { has_war_with = GER } }
+		any_country = {
+			is_neighbor_of = EST
+			OR = {
+				tag = GER
+				is_subject_of = GER
+				is_in_faction_with = GER
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.2.a
+		add_political_power = -25
+		annex_country = {
+			target = EST
+			transfer_troops = no
+		}
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.2.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Эстляндская трудовая коммуна
+country_event = {
+	id = rcw_bfk.4
+	title = rcw_bfk.4.t
+	desc = rcw_bfk.4.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = EST
+		controls_state = 915
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.4.a
+		every_state = {
+			limit = {
+				is_owned_by = EST
+				is_core_of = EST
+				is_controlled_by = RUS
+			}
+			set_state_flag = EST_RUS_occ
+		}
+		EST = {
+			start_civil_war = {
+				ideology = communism
+				size = 0.1
+				capital = 915
+				states_filter = { has_state_flag = EST_RUS_occ }
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		every_state = {
+			limit = {
+				has_state_flag = EST_RUS_occ
+			}
+			clr_state_flag = EST_RUS_occ
+		}
+		every_country = {
+			limit = { original_tag = EST has_government = communism }
+			set_cosmetic_tag = EST_labor_commune
+		}
+		if = {
+			limit = { has_war_with = NWA }
+			every_country = {
+				limit = { original_tag = EST has_government = communism }
+				declare_war_on = {
+					target = NWA
+					type = annex_everything
+				}
+			}
+		}
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.4.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Самоопределение Латышей на брестских мирных переговорах
+country_event = {
+	id = rcw_bfk.21
+	title = rcw_bfk.21.t
+	desc = rcw_bfk.21.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RUS
+		has_war_with = GER
+		OR = {
+			has_idea = brest_negotiation_truce_Russia_and_allies
+			has_idea = brest_negotiation_truce_Central_powers
+		}
+		any_state = {
+			OR = {
+				state = 12
+				state = 190
+				state = 865
+				state = 867
+				state = 1001
+			}
+			is_owned_by = ROOT
+			is_controlled_by = ROOT
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = rcw_bfk.21.a
+		every_state = {
+			limit = { is_core_of = LAT }
+			add_core_of = SLT
+		}
+		every_state = {
+			limit = {
+				is_core_of = SLT
+				is_owned_by = ROOT
+				is_controlled_by = ROOT
+			}
+			SLT = { transfer_state = PREV }
+		}
+		SLT = { load_oob = SLT_1917 add_ideas = alliance_neutrality give_military_access = RUS }
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.21.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Германский империализм
+country_event = {
+	id = rcw_bfk.22
+	title = rcw_bfk.22.t
+	desc = rcw_bfk.22.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = GER
+		KUR = { exists = yes is_subject_of = GER }
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		SLT = { exists = yes is_subject = no NOT = { has_war_with = GER } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.22.a
+		add_political_power = -25
+		declare_war_on = {
+			target = SLT
+			type = annex_everything
+		}
+	}
+	option = {
+		name = rcw_bfk.22.b
+		KUR = { add_autonomy_score = { value = 100 localization = ind_points_100_for_KUR } }
+	}
+}
+
+# Вывод немецких войск из Пскова
+country_event = {
+	id = rcw_bfk.101
+	title = rcw_bfk.101.t
+	desc = rcw_bfk.101.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		has_start_date < 1918.11.11
+		tag = GER
+		OR = { has_country_flag = GER_monarchy_fall has_global_flag = WWI_GER_HAS_CAPITULATED }
+		owns_state = 209
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		NOT = { has_war_with = RUS }
+		NOT = { has_war_with = UBD }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.101.a
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					region = 132
+					state = 1004
+					state = 207
+				}
+			}
+			NWA = { transfer_state = PREV }
+		}
+		if = {
+			limit = { NWA = { exists = yes } }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps }
+		}
+		if = {
+			limit = { UBD = { exists = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LAT
+					region = 37
+				}
+				UBD = { transfer_state = PREV }
+			}
+			else = {
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						is_core_of = LAT
+						region = 37
+					}
+					LAT = { transfer_state = PREV }
+				}
+			}
+		}
+		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = rcw_bfk.101.b
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					region = 132
+					state = 1004
+					state = 207
+					state = 191
+				}
+			}
+			NWA = { transfer_state = PREV }
+		}
+		if = {
+			limit = { NWA = { exists = yes } }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps }
+		}
+		if = {
+			limit = { UBD = { exists = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LAT
+					region = 37
+				}
+				UBD = { transfer_state = PREV }
+			}
+			else = {
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						is_core_of = LAT
+						region = 37
+					}
+					LAT = { transfer_state = PREV }
+				}
+			}
+		}
+		NWA = { change_tag_from = ROOT }
+		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
+	}
+}
+
+# Воззвания северного корпуса
+country_event = {
+	id = rcw_bfk.102
+	title = rcw_bfk.102.t
+	desc = rcw_bfk.102.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.102.a
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_bfk.102.b
+		declare_war_on = {
+			target = NWA
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { is_ai = no NWA = { is_ai = no } }
+		name = rcw_bfk.102.c
+		NWA = { change_tag_from = ROOT }
+	}
+}
+
+# Воззвания северного корпуса
+country_event = {
+	id = rcw_bfk.103
+	title = rcw_bfk.103.t
+	desc = rcw_bfk.103.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.103.a
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_bfk.103.b
+		declare_war_on = {
+			target = NWA
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { is_ai = no NWA = { is_ai = no } }
+		name = rcw_bfk.102.c
+		NWA = { change_tag_from = ROOT }
+	}
+}
+
 # Распад мирный
 country_event = {
 	id = rcw_bfk.1918
@@ -36,12 +462,11 @@ country_event = {
 	
 	# Играть за Латвию
 	option = {
-		name = rcw_bfk.1.a
+		name = rcw_bfk.21.a
 		every_state = {
 			limit = {
-				is_core_of = EST
 				is_owned_by = ROOT
-				OR = {
+				NOT = {
 					state = 914
 					state = 921
 					state = 13
@@ -59,10 +484,10 @@ country_event = {
 					state = 1015
 				}
 			}
-			EST = { transfer_state = PREV }
+			LAT = { transfer_state = PREV }
 		}
 		if = {
-			limit = { OR = { LIT = { exists = yes } owns = 11 owns = 189 owns = 847 owns = 784 } }
+			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 847 owns_state = 784 } }
 			every_state = {
 				limit = {
 					is_owned_by = ROOT
@@ -71,10 +496,10 @@ country_event = {
 				LIT = { transfer_state = PREV }
 			}
 		}
-		LAT = {
+		EST = {
 			annex_country = {
 				target = ROOT
-				transfer_troops = no
+				transfer_troops = yes
 			}
 		}
 		LAT = { change_tag_from = ROOT }
@@ -82,12 +507,11 @@ country_event = {
 	
 	# Играть за Эстонию
 	option = {
-		name = rcw_bfk.1.b
+		name = rcw_bfk.21.b
 		every_state = {
 			limit = {
-				is_core_of = EST
 				is_owned_by = ROOT
-				OR = {
+				NOT = {
 					state = 914
 					state = 921
 					state = 13
@@ -105,10 +529,10 @@ country_event = {
 					state = 1015
 				}
 			}
-			EST = { transfer_state = PREV }
+			LAT = { transfer_state = PREV }
 		}
 		if = {
-			limit = { OR = { LIT = { exists = yes } owns = 11 owns = 189 owns = 847 owns = 784 } }
+			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 847 owns_state = 784 } }
 			every_state = {
 				limit = {
 					is_owned_by = ROOT
@@ -117,10 +541,10 @@ country_event = {
 				LIT = { transfer_state = PREV }
 			}
 		}
-		LAT = {
+		EST = {
 			annex_country = {
 				target = ROOT
-				transfer_troops = no
+				transfer_troops = yes
 			}
 		}
 		EST = { change_tag_from = ROOT }
