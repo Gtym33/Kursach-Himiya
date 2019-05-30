@@ -93,7 +93,8 @@ country_event = {
 		}
 	}
 }
-# Создание эстонской армии
+
+# Начало формирование добровольческих отрядов эстонской армии
 country_event = {
 	id = rcw_bfk.3
 	title = rcw_bfk.3.t
@@ -117,15 +118,90 @@ country_event = {
 		remove_ideas_with_trait = mobilization_laws
 		add_ideas = volunteer_only
 		load_oob = EST_1917
-		country_event = { id = rcw_bfk.5 days = 7 }
-		country_event = { id = rcw_bfk.6 days = 14 }
+		country_event = { id = rcw_bfk.7 days = 14 }
 	}
 }
+
+# Мобилизация в армию Эстонии
+country_event = {
+	id = rcw_bfk.7
+	title = rcw_bfk.7.t
+	desc = rcw_bfk.7.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.6.a
+		add_ideas = service_by_requirement
+		load_oob = EST_1918
+	}
+}
+
+# Финны отправляют помощь в Эстонию
+country_event = {
+	id = rcw_bfk.8
+	title = rcw_bfk.8.t
+	desc = rcw_bfk.8.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = FIN
+		NOT = { has_global_flag = RUS_civil_war_over }
+		is_subject = no
+		has_war = no
+		has_global_flag = FIN_civil_war_end
+		NOT = { has_government = radical_socialsim has_government = communism has_government = social_democracy }
+		EST = {
+			exists = yes
+			NOT = { has_government = radical_socialsim has_government = communism }
+			OR = {
+				has_civil_war = yes
+				AND = {
+					has_war_with = RUS
+					RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+				}
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.8.a
+		trigger = {
+			has_equipment = {
+				#infantry_equipment > 999
+			}
+		}
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = EST
+		}
+		ai_chance = {
+			factor = 999
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.8.b
+		add_political_power = -50
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
 # Эстляндская трудовая коммуна
 country_event = {
-	id = rcw_bfk.4
-	title = rcw_bfk.4.t
-	desc = rcw_bfk.4.d
+	id = rcw_bfk.9
+	title = rcw_bfk.9.t
+	desc = rcw_bfk.9.d
 	picture = GFX_report_event_north_corps_Pskov
 	
 	trigger = {
@@ -142,29 +218,25 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_bfk.4.a
-		every_state = {
-			limit = {
-				is_owned_by = EST
-				is_core_of = EST
-				is_controlled_by = RUS
-			}
-			set_state_flag = EST_RUS_occ
-		}
+		name = rcw_bfk.9.a
 		EST = {
 			start_civil_war = {
 				ideology = communism
-				size = 0.1
+				size = 0.3
 				capital = 915
-				states_filter = { has_state_flag = EST_RUS_occ }
+				states = { 915 }
 				keep_unit_leaders_trigger = { always = yes }
 			}
 		}
 		every_state = {
 			limit = {
-				has_state_flag = EST_RUS_occ
+				is_owned_by = EST
+				is_controlled_by = RUS
 			}
-			clr_state_flag = EST_RUS_occ
+			every_country = {
+				limit = { original_tag = EST has_government = communism }
+				transfer_state = PREV
+			}
 		}
 		every_country = {
 			limit = { original_tag = EST has_government = communism }
@@ -180,166 +252,29 @@ country_event = {
 				}
 			}
 		}
+		if = {
+			limit = { has_war_with = WVA }
+			every_country = {
+				limit = { original_tag = EST has_government = communism }
+				declare_war_on = {
+					target = WVA
+					type = annex_everything
+				}
+			}
+		}
 		ai_chance = {
 			factor = 999
 		}
 	}
 	option = {
-		name = rcw_bfk.4.b
+		name = rcw_bfk.9.b
 		ai_chance = {
 			factor = 0
 		}
 	}
 }
-# Договор с северным корпусом
-#country_event = {
-#	id = rcw_bfk.5
-#	title = rcw_bfk.5.t
-#	desc = rcw_bfk.5.d
-#	picture = GFX_report_event_north_corps_Pskov
-#	
-#	is_triggered_only = yes
-#	
-#	fire_only_once = yes
-#	
-#	mean_time_to_happen = {
-#		days = 2
-#	}
-#	
-#	option = {
-#		name = rcw_bfk.5.a
-#		add_political_power = -25
-#		add_manpower = 8000
-#		load_oob = EST_north_corp
-#	}
-#}
-# Конец мобилизации
-country_event = {
-	id = rcw_bfk.6
-	title = rcw_bfk.6.t
-	desc = rcw_bfk.6.d
-	picture = GFX_report_event_north_corps_Pskov
-	
-	trigger = {
-		tag = EST
-		is_puppet = no
-		exists = yes
-	}
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 2
-	}
-	
-	option = {
-		name = rcw_bfk.6.a
-		remove_ideas_with_trait = mobilization_laws
-		add_ideas = service_by_requirement
-		load_oob = EST_1918
-	}
-}
-# Финны отправляют помощь в Эстонию
-country_event = {
-	id = rcw_bfk.7
-	title = rcw_bfk.7.t
-	desc = rcw_bfk.7.d
-	picture = GFX_report_event_north_corps_Pskov
-	
-	trigger = {
-		tag = FIN
-		is_puppet = no
-		has_global_flag = FIN_civil_war_end
-		NOT = {OR = {has_government = radical_socialsim has_government = communism}}
-		EST = {exists = yes NOT = {OR = {has_government = radical_socialsim has_government = communism}} OR = {has_war_with = SLT AND = {has_war_with = RUS RUS = {OR = {has_government = radical_socialsim has_government = communism}}}}}
-	}
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	#option = {
-		#name = rcw_bfk.7.a
-		#trigger = {
-		#has_equipment = {
-				#infantry_equipment > 999
-			#}
-		#}
-		#send_equipment = {
-				#type = infantry_equipment
-				#amount = 1000
-				#target = EST
-			#}
-	#}
-		
-	option = {
-		name = rcw_bfk.7.b
-		trigger = {
-		has_equipment = {
-				infantry_equipment > 999
-			}
-		}
-		send_equipment = {
-				type = infantry_equipment
-				amount = 1000
-				target = EST
-			}
-		ai_chance = {
-			factor = 999
-		}
-	}
-	
-	option = {
-		name = rcw_bfk.7.c
-		add_political_power = -50
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-# Белые просят отдать оккупированные территории России у Эстонии
-#country_event = {
-#	id = rcw_bfk.9
-#	title = rcw_bfk.9.t
-#	desc = rcw_bfk.9.d
-#	picture = GFX_report_event_north_corps_Pskov
-#	
-#	trigger = {
-#		tag = EST
-#		has_war_with = RUS
-#		NWA = {exists = yes has_war_with = RUS}
-#		NOT = {has_war_with = NWA}
-#	}
-#	is_triggered_only = yes
-#	
-#	fire_only_once = yes
-#	
-#	mean_time_to_happen = {
-#		days = 0
-#	}
-#	
-#	option = {
-#		name = rcw_bfk.9.a
-#		delete_unit_template_and_units = "Pekhotnyy polk"
-#		every_state = {
-#		limit = {is_owned_by = RUS is_controlled_by = EST}
-#		set_controller = NWA
-#		}
-#		ai_chance = {
-#			factor = 999
-#		}
-#	}
-#	
-#	option = {
-#		name = rcw_bfk.9.b
-#		ai_chance = {
-#			factor = 0
-#		}
-#	}
-#}
-# Эстония может помочь Латвии в борьбе с ЗДА
+
+# Вступление Эстонии в войну с ЗДА на стороне Латвии
 country_event = {
 	id = rcw_bfk.10
 	title = rcw_bfk.10.t
@@ -348,9 +283,10 @@ country_event = {
 	
 	trigger = {
 		tag = EST
+		NOT = { has_global_flag = RUS_civil_war_over }
 		is_puppet = no
-		LAT = {has_war_with = WVA}
-		NOT = {has_war_with = WVA has_war_with = LAT}
+		LAT = { has_war_with = WVA }
+		NOT = { has_war_with = WVA has_war_with = LAT }
 	}
 	
 	fire_only_once = yes
@@ -360,20 +296,19 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_bfk.7.a
-		WVA = {
+		name = rcw_bfk.10.a
 		declare_war_on = {
-    		target = EST
-    		type = annex_everything
-			}
+			target = WVA
+			type = annex_everything
 		}
 	}
 	
 	option = {
-		name = rcw_bfk.7.b
+		name = rcw_bfk.10.b
 		add_popularity = { ideology = despotism popularity = -0.1 }
 	}
 }
+
 # Самоопределение Латышей на брестских мирных переговорах
 country_event = {
 	id = rcw_bfk.21
@@ -498,14 +433,13 @@ country_event = {
 				OR = {
 					region = 132
 					state = 1004
-					state = 207
 				}
 			}
 			NWA = { transfer_state = PREV }
 		}
 		if = {
 			limit = { NWA = { exists = yes } }
-			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_counrty_flag = NWA_North_corps }
 		}
 		if = {
 			limit = { UBD = { exists = yes } }
@@ -539,15 +473,13 @@ country_event = {
 				OR = {
 					region = 132
 					state = 1004
-					state = 207
-					state = 191
 				}
 			}
 			NWA = { transfer_state = PREV }
 		}
 		if = {
 			limit = { NWA = { exists = yes } }
-			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_counrty_flag = NWA_North_corps }
 		}
 		if = {
 			limit = { UBD = { exists = yes } }
@@ -607,35 +539,168 @@ country_event = {
 	}
 }
 
-# Воззвания северного корпуса
+# Принятие Северного корпуса на службу к эстонцам
 country_event = {
 	id = rcw_bfk.103
 	title = rcw_bfk.103.t
 	desc = rcw_bfk.103.d
 	picture = GFX_report_event_north_corps_Pskov
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = NWA
+		NOT = { has_global_flag = RUS_civil_war_over }
+		NWA = { has_counrty_flag = NWA_North_corps }
+		EST = { exists = yes }
+		NOT = { has_war_with = EST }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 7
+		modifier = {
+			factor = 2
+			controls_state = 209
+		}
+	}
 	
 	option = {
 		name = rcw_bfk.103.a
+		EST = { country_event = rcw_bfk.104 }
+	}
+}
+country_event = {
+	id = rcw_bfk.104
+	title = rcw_bfk.104.t
+	desc = rcw_bfk.104.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.102.a
+		add_political_power = -25
+		add_manpower = 8000
+		NWA = { drop_cosmetic_tag = yes clr_counrty_flag = NWA_North_corps }
+		every_state = {
+			limit = {
+				is_owned_by = NWA
+				is_controlled_by = RUS
+			}
+			RUS = { transfer_state = PREV }
+		}
+		if = {
+			limit = { RUS = { owns_state = 209 } }
+			RUS = { transfer_state = 210 transfer_state = 1015 }
+		}
+		if = {
+			limit = { RUS = { NOT = { owns_state = 210 } } }
+			LAT = { transfer_state = 210 }
+		}
+		annex_country = {
+			target = NWA
+			transfer_troops = yes
+		}
+		if = {
+			limit = { 191 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
+			transfer_state = 191
+		}
+		EST = { change_tag_from = NWA }
+	}
+}
+
+# Формирование СЗА на территориях, оккупированных Эстонией у России
+country_event = {
+	id = rcw_bfk.105
+	title = rcw_bfk.105.t
+	desc = rcw_bfk.105.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = EST
+		has_war_with = RUS
+		NWA = { exists = no }
+		controls_state = 209
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = rcw_bfk.105.a
 		ai_chance = {
 			factor = 0
 		}
 	}
+	
 	option = {
-		name = rcw_bfk.103.b
-		declare_war_on = {
-			target = NWA
-			type = annex_everything
+		name = rcw_bfk.105.b
+		EST = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnyy polk"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kavaleristskiy polk"
+			}
+		}
+		NWA = {
+			transfer_state = 209
+			declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+			load_oob = NWA_north_corps
+		}
+		every_state = {
+			limit = {
+				is_controlled_by = EST
+				NOT = { is_core_of = EST }
+				OR = {
+					region = 132
+					is_owned_by = RUS
+				}
+			}
+			NWA = { transfer_state = PREV }
 		}
 		ai_chance = {
-			factor = 1
+			factor = 999
 		}
 	}
+	
 	option = {
-		trigger = { is_ai = no NWA = { is_ai = no } }
-		name = rcw_bfk.102.c
-		NWA = { change_tag_from = ROOT }
+		trigger = { is_ai = no }
+		name = rcw_bfk.105.c
+		EST = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnyy polk"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kavaleristskiy polk"
+			}
+		}
+		NWA = {
+			transfer_state = 209
+			declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+			load_oob = NWA_north_corps
+		}
+		every_state = {
+			limit = {
+				is_controlled_by = EST
+				NOT = { is_core_of = EST }
+				OR = {
+					region = 132
+					is_owned_by = RUS
+				}
+			}
+			NWA = { transfer_state = PREV }
+		}
+		NWA = { change_tag_from = EST }
 	}
 }
 
