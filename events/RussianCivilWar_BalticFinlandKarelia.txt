@@ -309,6 +309,498 @@ country_event = {
 	}
 }
 
+# Латвия беззащитна
+country_event = {
+	id = rcw_bfk.11
+	title = rcw_bfk.11.t
+	desc = rcw_bfk.11.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = LAT
+		NOT = { has_global_flag = RUS_civil_war_over }
+		LAT = { has_war_with = RUS }
+		has_army_manpower = {
+   			 size < 10000
+			}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.11.a
+		load_oob = LAT_1918_mil
+		hidden_effect = {
+		random_list = {
+		70 = {country_event = { id = rcw_bfk.12 days = 7 }}
+		30 = {}
+		}
+		}
+		set_country_flag = LAT_1918_mil
+	}
+	
+	option = {
+		name = rcw_bfk.11.b
+		load_oob = LAT_1918_ger
+		add_ideas = LAT_german_mercenary
+		hidden_effect = {
+		 country_event = { id = rcw_bfk.13 days = 14 }
+		}
+		set_country_flag = LAT_1918_ger
+	}
+	
+	option = {
+		name = rcw_bfk.11.c
+		load_oob = LAT_1918_ger_mil
+		country_event = { id = rcw_bfk.12 days = 5 }
+		set_country_flag = LAT_1918_ger_mil
+	}
+}
+
+# Бунт в войсках
+country_event = {
+	id = rcw_bfk.12
+	title = rcw_bfk.12.t
+	desc = rcw_bfk.12.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.12.a
+		add_political_power = -50
+		add_timed_idea = {
+			idea = mutiny_1
+			days = 3
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.12.b
+		add_political_power = -25
+		add_timed_idea = {
+			idea = mutiny_1
+			days = 7
+		}
+	}
+}
+
+# Социал-демократы покидают советы
+country_event = {
+	id = rcw_bfk.13
+	title = rcw_bfk.13.t
+	desc = rcw_bfk.13.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.13.a
+		add_stability = -0.05
+		add_popularity = { ideology = social_democracy popularity = -0.1 }
+	}
+}
+
+# Угроза поражения Латвии
+country_event = {
+	id = rcw_bfk.14
+	title = rcw_bfk.14.t
+	desc = rcw_bfk.14.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = LAT
+		NOT = { has_global_flag = RUS_civil_war_over }
+		OR = { 	surrender_progress > 0.49 NOT = { controls_state = 12 } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.14.a
+		trigger = {has_country_flag = LAT_1918_mil}
+		load_oob = LAT_1918_ger
+		add_ideas = LAT_german_mercenary
+		hidden_effect = {
+		 country_event = { id = rcw_bfk.13 days = 14 }
+		}
+		set_country_flag = LAT_1918_ger
+	}
+	
+	option = {
+		name = rcw_bfk.14.b
+		trigger = {has_country_flag = LAT_1918_ger}
+		load_oob = LAT_1918_mil
+		hidden_effect = {
+		random_list = {
+		70 = {country_event = { id = rcw_bfk.12 days = 7 }}
+		30 = {}
+		}
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.14.c
+		trigger = {has_country_flag = LAT_1918_ger_mil}
+		add_ideas = LAT_latvian_nationalism
+	}
+}
+
+# Угроза поражения Латвии (Германия)
+country_event = {
+	id = rcw_bfk.15
+	title = rcw_bfk.15.t
+	desc = rcw_bfk.15.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = GER
+		NOT = { has_global_flag = RUS_civil_war_over }
+		LAT = { surrender_progress > 0.79 }
+		LAT = { OR = { has_country_flag = LAT_1918_ger has_country_flag = LAT_1918_ger_mil } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.15.a
+		LAT = {
+		add_popularity = { ideology = authoritarism popularity = -0.1 }
+		load_oob = LAT_GER_VOL
+		}
+		every_unit_leader = { limit = { OR = { has_id = 88169 } } set_nationality = LAT }
+	}
+	
+	option = {
+		name = rcw_bfk.15.b
+		add_popularity = { ideology = fascism popularity = 0.03 }
+	}
+	
+}
+
+# Немецкий переворот в Латвии
+country_event = {
+	id = rcw_bfk.16
+	title = rcw_bfk.16.t
+	desc = rcw_bfk.16.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = LAT
+		OR = { has_idea = LAT_german_mercenary has_idea = LAT_latvian_nationalism }
+		authoritarism > 0.11
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.16.a
+		remove_ideas = LAT_latvian_nationalism
+		remove_ideas_with_trait = head_of_government
+		remove_ideas_with_trait = foreign_minister
+		remove_ideas_with_trait = economy_minister
+		remove_ideas_with_trait = security_minister
+		remove_ideas_with_trait = head_of_intel
+		set_politics = { ruling_party = authoritarism }
+		set_country_flag = LAT_ger_gov
+	}
+	
+}
+
+# Неблагонадёжная армия после переворота
+country_event = {
+	id = rcw_bfk.17
+	title = rcw_bfk.17.t
+	desc = rcw_bfk.17.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = LAT
+		has_government = authoritarism
+		controls_state = 12
+		controls_state = 865
+		has_civil_war = no
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.17.a
+		add_manpower = -4000
+		hidden_effect = {
+		random_list = {
+		90 = {
+			delete_unit_template_and_units = {
+				division_template = "Vācijas Landwehr"
+			}
+			if = {
+			limit = {controls_state = 865}
+			set_capital = 865
+			start_civil_war = {
+    			ruling_party = social_conservatism
+    			ideology = authoritarism
+    			size = 0.1
+    			only_own_territory = no
+    			capital = 12
+				states = { 190 867 12 1001 866 }
+     			keep_unit_leaders_trigger = {NOT = { has_id = 88169 }}
+			}
+			else_if = {
+			limit = {controls_state = 1001}
+			set_capital = 1001
+			start_civil_war = {
+    			ruling_party = social_conservatism
+    			ideology = authoritarism
+    			size = 0.1
+    			only_own_territory = no
+    			capital = 12
+				states = { 190 867 12 866 }
+     			keep_unit_leaders_trigger = {NOT = { has_id = 88169 }}
+			}
+			}
+			else = {
+			start_civil_war = {
+    			ruling_party = social_conservatism
+    			ideology = authoritarism
+    			size = 0.1
+    			only_own_territory = no
+     			keep_unit_leaders_trigger = {NOT = { has_id = 88169 }}
+			}
+			}
+			}
+			set_country_flag = LAT_civil
+			random_other_country = {
+				limit = {
+					original_tag = LAT
+					has_government = authoritarism
+				}
+				load_oob = LAT_1918_ger_civ
+				set_country_flag = LAT_germanization
+			}
+		}
+		10 = {
+			set_country_flag = LAT_germanization
+			if = {
+			limit = {EST = {exists = yes}}
+				EST = {
+					load_oob = EST_LIT_ulm
+				}
+			}
+		}
+		}
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.17.b
+		add_stability = -0.1
+	}
+}
+
+# Западная русская армия Ульманис
+country_event = {
+	id = rcw_bfk.18
+	title = rcw_bfk.18.t
+	desc = rcw_bfk.18.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = LAT
+		has_country_flag = LAT_civil
+		has_civil_war = no
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.18.a
+		add_political_power = 50
+		add_opinion_modifier = { target = NWA modifier = white_no_accept_LAT }
+		add_opinion_modifier = { target = RSS modifier = white_no_accept_LAT }
+		add_opinion_modifier = { target = RVA modifier = white_no_accept_LAT }
+		190 = { add_core_of = WVA }
+		867 = { add_core_of = WVA }
+		12 = { add_core_of = WVA }
+		1001 = { add_core_of = WVA }
+		865 = { add_core_of = WVA }
+		866 = { add_core_of = WVA }
+		WVA = {
+			inherit_technology = LAT
+			transfer_state = 190
+			transfer_state = 867
+			add_ideas = alliance_neutrality
+			load_oob = WVA_not_avalov
+		}
+		declare_war_on = {
+			target = WVA
+			type = annex_everything
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.18.b
+		country_event = { id = rcw_bfk.18 days = 35}
+	}
+	
+}
+
+# ЗДА идёт на восток
+country_event = {
+	id = rcw_bfk.19
+	title = rcw_bfk.19.t
+	desc = rcw_bfk.19.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.19.a
+		random_list = {
+			65 = {
+				190 = { add_core_of = WVA }
+				867 = { add_core_of = WVA }
+				12 = { add_core_of = WVA }
+				1001 = { add_core_of = WVA }
+				865 = { add_core_of = WVA }
+				866 = { add_core_of = WVA }
+				WVA = {
+					inherit_technology = LAT
+					transfer_state = 190
+					transfer_state = 867
+					transfer_state = 12
+					add_ideas = alliance_neutrality
+					load_oob = WVA_avalov_riga
+				}
+				declare_war_on = {
+					target = WVA
+					type = annex_everything
+				}
+			}
+			35 = {
+				WVA = {
+					every_unit_leader = {
+						set_nationality = NWA
+					}
+				}
+				NWA = { add_popularity = { ideology = authoritarism popularity = 0.1 } load_oob = NWA_avalov }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.19.b
+				190 = { add_core_of = WVA }
+				867 = { add_core_of = WVA }
+				12 = { add_core_of = WVA }
+				1001 = { add_core_of = WVA }
+				865 = { add_core_of = WVA }
+				866 = { add_core_of = WVA }
+				WVA = {
+					inherit_technology = LAT
+					transfer_state = 190
+					add_ideas = alliance_neutrality
+					load_oob = WVA_avalov
+				}
+				declare_war_on = {
+					target = WVA
+					type = annex_everything
+				}
+	}
+	
+}
+
+# Ландвер устанавливает свои порядки в Литве и Эстонии
+country_event = {
+	id = rcw_bfk.20
+	title = rcw_bfk.20.t
+	desc = rcw_bfk.20.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		OR = {
+			original_tag = LAT
+			tag = LAT
+		}
+		has_government = authoritarism
+		has_country_flag = LAT_germanization
+		has_civil_war = no
+		OR = {
+			EST = {exists = yes}
+			LIT = {exists = yes}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.20.a
+		add_war_support = -0.05
+		add_stability = 0.05
+	}
+	
+	option = {
+		name = rcw_bfk.20.b
+		every_state = {
+			limit = {is_core_of = EST}
+			add_claim_by = LAT
+		}
+		every_state = {
+			limit = {is_core_of = LIT}
+			add_claim_by = LAT
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.20.c
+		if = {
+			limit = {EST = {exists = yes}}
+			declare_war_on = {
+					target = EST
+					type = annex_everything
+			}
+		}
+		if = {
+			limit = {LIT = {exists = yes}}
+			declare_war_on = {
+					target = LIT
+					type = annex_everything
+			}
+		}
+	}
+}
+
 # Самоопределение Латышей на брестских мирных переговорах
 country_event = {
 	id = rcw_bfk.21
@@ -402,6 +894,49 @@ country_event = {
 	}
 }
 
+# Ландвер установил контроль над Прибалтикой
+country_event = {
+	id = rcw_bfk.23
+	title = rcw_bfk.23.t
+	desc = rcw_bfk.23.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		OR = {
+			original_tag = LAT
+			tag = LAT
+		}
+		has_government = authoritarism
+		has_country_flag = LAT_germanization
+		AND = {
+			OR = {
+				EST = {is_puppet_of = ROOT}
+				AND = {EST = {exists = no} controls_state = 13}
+			}
+			OR = {
+				LIT = {is_puppet_of = ROOT}
+				AND = {LIT = {exists = no} controls_state = 11}
+			}
+		}
+		always = no
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.23.a
+		#
+	}
+	
+	option = {
+		name = rcw_bfk.23.b
+	}
+}
+
 # Вывод немецких войск из Пскова
 country_event = {
 	id = rcw_bfk.101
@@ -439,7 +974,7 @@ country_event = {
 		}
 		if = {
 			limit = { NWA = { exists = yes } }
-			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_counrty_flag = NWA_North_corps }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_country_flag = NWA_North_corps }
 		}
 		if = {
 			limit = { UBD = { exists = yes } }
@@ -479,7 +1014,7 @@ country_event = {
 		}
 		if = {
 			limit = { NWA = { exists = yes } }
-			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_counrty_flag = NWA_North_corps }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_country_flag = NWA_North_corps }
 		}
 		if = {
 			limit = { UBD = { exists = yes } }
@@ -549,7 +1084,7 @@ country_event = {
 	trigger = {
 		tag = NWA
 		NOT = { has_global_flag = RUS_civil_war_over }
-		NWA = { has_counrty_flag = NWA_North_corps }
+		NWA = { has_country_flag = NWA_North_corps }
 		EST = { exists = yes }
 		NOT = { has_war_with = EST }
 	}
@@ -581,7 +1116,7 @@ country_event = {
 		name = rcw_bfk.102.a
 		add_political_power = -25
 		add_manpower = 8000
-		NWA = { drop_cosmetic_tag = yes clr_counrty_flag = NWA_North_corps }
+		NWA = { drop_cosmetic_tag = yes clr_country_flag = NWA_North_corps }
 		every_state = {
 			limit = {
 				is_owned_by = NWA
