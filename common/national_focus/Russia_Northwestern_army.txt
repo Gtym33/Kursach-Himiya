@@ -2,10 +2,10 @@ focus_tree = {
 	id = Russian_northwestern_army_focus
 	country = {
 		factor = 0
-		#modifier = {
-			#add = 10
-			#tag = NOR
-		#}
+		modifier = {
+			add = 10
+			tag = NWA
+		}
 	}
 		continuous_focus_position = { x = 30 y = 2000 }
 	default = no
@@ -13,23 +13,26 @@ focus_tree = {
 	focus = {
 		id = NWA_choice_strategy
 		icon = GFX_goal_NWA_choice_strategy
-		cost = 2
+		cost = 1
 		available = {
 		
 		}
 		x = 5
 		y = 0
 		completion_reward = {
-			
+			country_event = { id = rcw_bfk.106 days = 1 }
 		}
 	}
 	
 	focus = {
 		id = NWA_appeal_allies
 		icon = GFX_goal_NWA_Antente
-		cost = 2
+		cost = 4
 		available = {
-		
+			ENG = {is_subject = no}
+			FRA = {is_subject = no}
+			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_GER_HAS_CAPITULATED }
+			NOT = {has_war_with = ENG has_war_with = USA has_war_with = FRA}
 		}
 		prerequisite = {
 			focus = NWA_choice_strategy
@@ -40,7 +43,10 @@ focus_tree = {
 		x = 5
 		y = 1
 		completion_reward = {
-			
+			set_country_flag = NWA_entente
+			ENG = {country_event = { id = rcw_usfev.156 days = 1 }}
+			FRA = {country_event = { id = rcw_usfev.156 days = 1 }}
+			USA = {country_event = { id = rcw_usfev.156 days = 1 }}
 		}
 	}
 	
@@ -49,7 +55,9 @@ focus_tree = {
 		icon = GFX_goal_NWA_focus_berlin
 		cost = 2
 		available = {
-		
+			GER = {is_subject = no}
+			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_FRA_HAS_CAPITULATED }
+			NOT = {has_war_with = GER has_war_with = AUH}
 		}
 		prerequisite = {
 			focus = NWA_choice_strategy
@@ -60,7 +68,8 @@ focus_tree = {
 		x = 3
 		y = 1
 		completion_reward = {
-			
+			set_country_flag = NWA_germany
+			GER = {country_event = { id = rcw_usfev.157 days = 1 }}
 		}
 	}
 	
@@ -78,7 +87,16 @@ focus_tree = {
 		x = 3
 		y = 2
 		completion_reward = {
-			
+		if = {
+			limit = { has_country_flag = NWA_germany }
+			GER = {country_event = { id = rcw_usfev.159 days = 14 }}
+			}
+		if = {
+			limit = { has_country_flag = NWA_entente }
+			ENG = {country_event = { id = rcw_usfev.159 days = 14 }}
+			FRA = {country_event = { id = rcw_usfev.159 days = 14 }}
+			USA = {country_event = { id = rcw_usfev.159 days = 14 }}
+			}
 		}
 	}
 	
@@ -99,7 +117,7 @@ focus_tree = {
 		x = 5
 		y = 2
 		completion_reward = {
-			
+			add_ideas = NWA_independent_government
 		}
 	}
 	
@@ -119,7 +137,16 @@ focus_tree = {
 		x = 7
 		y = 2
 		completion_reward = {
-			
+			set_country_flag = NWA_puppet
+			add_ideas = NWA_general_governorship
+			if ={
+				limit = {RSS = {exists = yes is_puppet = no}}
+				puppet = NWA
+				set_autonomy = {
+					target = NWA
+					autonomy_state = autonomy_dominion
+				}
+			}
 		}
 	}
 	
@@ -128,7 +155,21 @@ focus_tree = {
 		icon = GFX_goal_NWA_finland
 		cost = 2
 		available = {
-		
+			OR = {
+				has_completed_focus = NWA_independent_government
+				OR = {
+				has_completed_focus = NWA_recognition_allrussian_government
+				OR = {
+				RSS = { exists = no }
+				NOT = { is_puppet_of = RSS }
+				RSS = { NOT = { has_country_leader = { name = "Alexandr Kolchak" } } }
+				}
+				}
+			}
+			RUS = { controls_state = 216 }
+		}
+		bypass = {
+			FIN = { exists = no }
 		}
 		prerequisite = {
 			focus = NWA_recognition_allrussian_government
@@ -137,7 +178,7 @@ focus_tree = {
 		x = 7
 		y = 3
 		completion_reward = {
-			
+			FIN = { country_event = { id = rcw_bfk.109 days = 2 } }
 		}
 	}
 	
@@ -146,7 +187,7 @@ focus_tree = {
 		icon = GFX_goal_NWA_merge_with_the_army
 		cost = 2
 		available = {
-		
+			controls_state = 195
 		}
 		prerequisite = {
 			focus = NWA_finnish_question
@@ -158,7 +199,8 @@ focus_tree = {
 		x = 7
 		y = 6
 		completion_reward = {
-			
+			add_war_support = 0.15
+			country_event = { id = rcw_bfk.113 days = 1 }
 		}
 	}
 	
@@ -178,7 +220,7 @@ focus_tree = {
 		x = 5
 		y = 3
 		completion_reward = {
-			
+			add_ideas = NWA_center_agents
 		}
 	}
 	
@@ -187,7 +229,7 @@ focus_tree = {
 		icon = GFX_goal_NWA_merge_with_the_army
 		cost = 2
 		available = {
-		
+		always = no
 		}
 		prerequisite = {
 			focus = NWA_independent_government
@@ -286,7 +328,7 @@ focus_tree = {
 		x = 5
 		y = 4
 		completion_reward = {
-			
+			country_event = { id = rcw_bfk.107 days = 1 }
 		}
 	}
 	
@@ -303,7 +345,7 @@ focus_tree = {
 		x = 5
 		y = 5
 		completion_reward = {
-			
+			country_event = { id = rcw_bfk.108 days = 1 }
 		}
 	}
 
