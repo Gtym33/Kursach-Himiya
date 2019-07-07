@@ -1068,6 +1068,7 @@ country_event = {
 		modifier = {
 			factor = 0.5
 			has_country_flag = RUS_1_July_meeting_gov_inactivity
+			NOT = { has_country_flag = RUS_dacha_Durnovo_cleared }
 		}
 		modifier = {
 			factor = 0.05
@@ -1185,6 +1186,9 @@ country_event = {
 	
 	option = {
 		name = russia.24.a
+		clr_country_flag = RUS_24_June_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_gov_inactivity
 		set_country_flag = RUS_second_coalition_gov
 		set_country_flag = RUS_July_crisis_fired
 		set_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk
@@ -1198,7 +1202,6 @@ country_event = {
 			Sergey_Prokopovich_3
 			Nikolay_Avksentyev_4
 			Alexander_Zarudny_5
-			Lavr_Kornilov_army_chief
 		}
 		remove_ideas = {
 			RUS_dvoevlastie_2
@@ -1236,6 +1239,10 @@ country_event = {
 			popularity = 0.1
 		}
 		news_event = { id = news_n.11 hours = 72 }
+		if = {
+			limit = { has_idea = Lavr_Kornilov_army_chief }
+			country_event = russia.30
+		}
 	}
 }
 
@@ -1244,12 +1251,15 @@ country_event = {
 	id = russia.25
 	title = russia.25.t
 	desc = russia.25.d
-	picture = GFX_report_event_rus_chinovniki
+	picture = GFX_report_event_first_coalition_gov
 	
 	is_triggered_only = yes
 	
 	option = {
 		name = russia.25.a
+		clr_country_flag = RUS_24_June_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_gov_inactivity
 		set_country_flag = RUS_July_crisis_fired
 		remove_ideas = RUS_red_guards_provisional_government
 		remove_ideas = {
@@ -1259,18 +1269,26 @@ country_event = {
 		}
 		add_ideas = RUS_dvoevlastie_1
 		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.1
+		}
+		add_popularity = {
 			ideology = market_liberalism
 			popularity = 0.15
 		}
 		add_popularity = {
-			ideology = communism
-			popularity = -0.08
+			ideology = social_democracy
+			popularity = -0.05
 		}
 		add_popularity = {
-			ideology = social_liberalism
-			popularity = -0.1
+			ideology = communism
+			popularity = 0.1
 		}
 		news_event = { id = news_n.11 hours = 72 }
+		if = {
+			limit = { has_idea = Lavr_Kornilov_army_chief }
+			country_event = russia.30
+		}
 	}
 }
 
@@ -1285,6 +1303,9 @@ country_event = {
 	
 	option = {
 		name = russia.26.a
+		clr_country_flag = RUS_24_June_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_gov_inactivity
 		set_country_flag = RUS_July_crisis_fired
 		bolsheviks_victory = yes
 		hidden_effect = { country_event = { id = rcw.102 days = 4 } }
@@ -1292,6 +1313,35 @@ country_event = {
 		add_red_unit_leaders = yes
 		
 		news_event = { id = news_n.12 hours = 36 }
+	}
+}
+
+# Назначение Корнилова главкомом
+country_event = {
+	id = russia.30
+	title = russia.30.t
+	desc = russia.30.d
+	picture = GFX_report_event_rus_kornilov_something_coming
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russia.30.a
+		add_ideas = Lavr_Kornilov_army_chief
+		RUS_Order_N_1_fall_not_0 = yes
+	}
+	option = {
+		name = russia.30.b
+		add_ideas = Lavr_Kornilov_army_chief
+		RUS_Order_N_1_fall_not_0 = yes
+	}
+	option = {
+		name = russia.30.c
+		add_ideas = Lavr_Kornilov_army_chief
+		RUS_Order_N_1_fall_not_0 = yes
+	}
+	option = {
+		name = russia.30.e
 	}
 }
 
@@ -1389,6 +1439,7 @@ country_event = {
 		tag = RUS
 		has_country_flag = RUS_July_crisis_fired
 		has_country_flag = Kornilov_affair_near
+		has_country_flag = Lavr_Kornilov_army_chief
 		has_country_flag = RUS_provisional_government_created
 		NOT = { has_country_flag = general_kornilov }
 	}
@@ -2268,6 +2319,10 @@ country_event = {
 	}
 	mean_time_to_happen = {
 		days = 40
+		modifier = {
+			factor = 3
+			has_idea = Lavr_Kornilov_army_chief
+		}
 	}
 	option = {
 		RUS_Order_N_1_rise = yes
@@ -2570,5 +2625,89 @@ country_event = {
 		name = excellent
 		remove_ideas = RUS_peasant_question
 		add_stability = 0.10
+	}
+}
+
+
+# Снятие корок с Польши
+country_event = {
+	id = russia.1918
+	title = russia.1918.t
+	desc = russia.1918.d
+	picture = GFX_report_event_all_power_to_the_soviets
+	
+	trigger = {
+		has_start_date < 1918.6.8
+		tag = RUS
+		OR = {
+			NOT = { has_war_with = GER }
+			NOT = { owns_state = 10 }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	hidden = yes
+	
+	option = {
+		name = excellent
+		every_state = {
+			limit = {
+				region = 38
+				is_core_of = RUS
+			}
+			remove_core_of = RUS
+		}
+		every_state = {
+			limit = {
+				region = 39
+				is_core_of = RUS
+				NOT = {
+					is_core_of = BLR
+					is_core_of = UKR
+				}
+				is_core_of = POL
+			}
+			remove_core_of = RUS
+		}
+	}
+}
+# Снятие корок с Прибалтики
+country_event = {
+	id = russia.1919
+	title = russia.1919.t
+	desc = russia.1919.d
+	picture = GFX_report_event_all_power_to_the_soviets
+	
+	trigger = {
+		has_start_date < 1918.6.8
+		tag = RUS
+		NOT = { owns_state = 12 }
+		NOT = { owns_state = 13 }
+	}
+	
+	fire_only_once = yes
+	
+	hidden = yes
+	
+	option = {
+		name = excellent
+		every_state = {
+			limit = {
+				region = 37
+				is_core_of = RUS
+				NOT = {
+					state = 865
+					state = 1002
+					state = 1004
+				}
+				OR = {
+					is_core_of = EST
+					is_core_of = LAT
+					is_core_of = LIT
+				}
+			}
+			remove_core_of = RUS
+		}
 	}
 }

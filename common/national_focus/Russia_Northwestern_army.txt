@@ -15,7 +15,7 @@ focus_tree = {
 		icon = GFX_goal_NWA_choice_strategy
 		cost = 1
 		available = {
-		
+			NOT = { has_country_flag = NWA_North_corps }
 		}
 		x = 5
 		y = 0
@@ -117,7 +117,7 @@ focus_tree = {
 		x = 5
 		y = 2
 		completion_reward = {
-			add_ideas = NWA_independent_government
+			add_ideas = NWA_independent_government_idea
 		}
 	}
 	
@@ -140,7 +140,7 @@ focus_tree = {
 			set_country_flag = NWA_puppet
 			add_ideas = NWA_general_governorship
 			if ={
-				limit = {RSS = {exists = yes is_puppet = no}}
+				limit = {RSS = {exists = yes is_subject = no}}
 				RSS = {
 				NWA = { subjecting_script_with_transfer_parties = yes }
 				set_autonomy = {
@@ -163,7 +163,7 @@ focus_tree = {
 				has_completed_focus = NWA_recognition_allrussian_government
 				OR = {
 				RSS = { exists = no }
-				NOT = { is_puppet_of = RSS }
+				NOT = { is_subject_of = RSS }
 				RSS = { NOT = { has_country_leader = { name = "Alexandr Kolchak" } } }
 				}
 				}
@@ -217,7 +217,7 @@ focus_tree = {
 			focus = NWA_independent_government
 		}
 		mutually_exclusive = {
-			focus = NWA_merger_western_germany
+			focus = NWA_merge_with_WVA
 		}
 		x = 5
 		y = 3
@@ -227,11 +227,11 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = NWA_merger_western_germany
+		id = NWA_merge_with_WVA
 		icon = GFX_goal_NWA_merge_with_the_army
-		cost = 2
+		cost = 4
 		available = {
-		always = no
+			NOT = { has_war_with = WVA }
 		}
 		prerequisite = {
 			focus = NWA_independent_government
@@ -242,33 +242,74 @@ focus_tree = {
 		x = 3
 		y = 3
 		completion_reward = {
-			
+			if = {
+				limit = { WVA = { exists = yes } }
+				WVA = { country_event = rcw_bfk.121 }
+				else = {
+					WVA = {
+						every_unit_leader = {
+							set_nationality = NWA
+						}
+					}
+					add_manpower = 10000
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 10000
+					producer = NWA
+				}
+				add_stability = -0.05
+			}
 		}
 	}
 	
 	focus = {
 		id = NWA_displacement_latvian_government
 		icon = GFX_goal_NWA_latvia
-		cost = 2
+		cost = 4
 		available = {
-		
+			WVA = { exists = no }
+			OR = {
+				has_war_with = LAT
+				LAT = { exists = no }
+				LAT = { has_country_flag = LAT_Avalov_affair_fired }
+			}
 		}
 		prerequisite = {
-			focus = NWA_merger_western_germany
+			focus = NWA_merge_with_WVA
 		}
 		x = 3
 		y = 4
 		completion_reward = {
-			
+			transfer_state = 190
+			load_oob = WVA_not_avalov
+			if = {
+				limit = { LAT = { exists = yes } NOT = { has_war_with = LAT } }
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = NWA_ultimatum_baltic_countries
 		icon = GFX_goal_NWA_Pribaltic_countrys
-		cost = 2
+		cost = 5
 		available = {
-		
+			OR = {
+				EST = { exists = yes is_subject = no }
+				LAT = { exists = yes is_subject = no }
+				LIT = { exists = yes is_subject = no }
+				UBD = { exists = yes is_subject = no }
+			}
+		}
+		bypass = {
+			EST = { exists = no }
+			LAT = { exists = no }
+			LIT = { exists = no }
+			UBD = { exists = no }
 		}
 		prerequisite = {
 			focus = NWA_displacement_latvian_government
@@ -276,7 +317,18 @@ focus_tree = {
 		x = 3
 		y = 5
 		completion_reward = {
-			
+			every_country = {
+				limit = {
+					is_subject = no
+					OR = {
+						tag = EST
+						tag = LAT
+						tag = LIT
+						tag = UBD
+					}
+				}
+				country_event = rcw_bfk.122
+			}
 		}
 	}
 	
@@ -296,7 +348,12 @@ focus_tree = {
 		x = 3
 		y = 6
 		completion_reward = {
-			
+			every_state = {
+				limit = { OR = { region = 37 state = 1002 } }
+				add_core_of = NWA
+			}
+			set_cosmetic_tag = NWA_BLT
+			country_event = rcw_bfk.123
 		}
 	}
 	
