@@ -30,6 +30,7 @@ country_event = {
 		hidden_effect = {
 			country_event = { id = rcw.2 days = 3 }
 		}
+		set_country_flag = RUS_Ker_Kras_revolt
 	}
 }
 # Восстание юнкеров в Петрограде
@@ -45,28 +46,18 @@ country_event = {
 	
 	option = {
 		name = rcw.2.a
-		add_political_power = -40
-		add_stability = -0.02
 		add_manpower = -500
-		hidden_effect = {
-			country_event = { id = rcw.3 days = 2 }
-		}
+		country_event = { id = rcw.3 hours = 8 }
 	}
 	
 	option = {
 		name = rcw.2.b
-		add_political_power = -25
-		add_stability = -0.01
 		add_manpower = -200
-		hidden_effect = {
-			random_list = {
-				80 = { country_event = { id = rcw.3 days = 2 } }
-				20 = { country_event = { id = rcw.4 days = 2 } }
-			}
-		}
+		set_country_flag = RUS_yunkersrevoldsafgdgad
+		country_event = { id = rcw.3 hours = 16 }
 	}
 }
-# Перемога
+# Восстание юнкеров подавлено
 country_event = {
 	id = rcw.3
 	title = rcw.3.t
@@ -78,17 +69,13 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw.3.a
-		add_political_power = 25
-		add_stability = 0.05
-		add_manpower = -300
-		add_popularity = {
-			ideology = communism
-			popularity = 0.01
+		name = rcw.2.a
+		hidden_effect = {
+			country_event = { id = rcw.4 hours = 12 }
 		}
 	}
 }
-# Зрада
+# Наступление на Гатчину
 country_event = {
 	id = rcw.4
 	title = rcw.4.t
@@ -101,14 +88,71 @@ country_event = {
 	
 	option = {
 		name = rcw.4.a
-		add_political_power = -200
-		add_stability = -0.05
-		set_country_flag = RUS_Ker_Kras_rev_win_maybe
-		add_manpower = -1000
+		random_list = {
+			50 = {
+				country_event = { id = rcw.5 days = 2 }
+			}
+			50 = {
+				modifier = {
+					factor = 0
+					NOT = { has_country_flag = RUS_yunkersrevoldsafgdgad }
+					has_country_flag = Kornilov_affair_fail
+				}
+				modifier = {
+					factor = 0.4
+					NOT = { has_country_flag = RUS_yunkersrevoldsafgdgad }
+				}
+				modifier = {
+					factor = 0.6
+					has_country_flag = Kornilov_affair_fail
+				}
+				country_event = { id = rcw.6 days = 7 }
+			}
+		}
+		clr_country_flag = RUS_yunkersrevoldsafgdgad
+	}
+}
+# Перемога
+country_event = {
+	id = rcw.5
+	title = rcw.5.t
+	desc = rcw.5.d
+	picture = GFX_report_event_rus_krodshtat_refuse
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.5.a
+		clr_country_flag = RUS_Ker_Kras_revolt
+		add_political_power = 25
+		add_stability = 0.02
+		add_manpower = -500
 		add_popularity = {
 			ideology = communism
-			popularity = -0.04
+			popularity = 0.01
 		}
+	}
+}
+# Зрада
+country_event = {
+	id = rcw.6
+	title = rcw.6.t
+	desc = rcw.6.d
+	picture = GFX_report_event_rus_krodshtat_refuse
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.6.a
+		clr_country_flag = RUS_Ker_Kras_revolt
+		set_country_flag = RUS_Ker_Kras_revolt_not_so_easy_to_supress
+		add_political_power = -25
+		add_stability = -0.02
+		add_manpower = -2000
 	}
 }
 
@@ -719,100 +763,6 @@ country_event = {
 		name = rcw.107.b
 		trigger = { NOT = { has_country_flag = RUS_karaul_ustal } }
 		set_country_flag = RUS_third_allrussian_congress_of_soviets
-	}
-}
-
-# IV Всероссийский съезд Советов
-country_event = {
-	id = rcw.108
-	title = rcw.108.t
-	desc = rcw.108.d
-	picture = GFX_report_event_sov_3rd-5th_congress_of_soviets_of_russia_and_other
-	
-	trigger = {
-		has_country_flag = RUS_Oktober_revolution_fired
-	}
-	
-	is_triggered_only = yes
-	
-	immediate = {
-		set_capital = 219
-		add_to_variable = { var = global.num_of_allrussian_congress_of_soviets value = 1 }
-	}
-	
-	# Мир с Германией
-	option = {
-		trigger = { has_country_flag = brest_hard }
-		name = rcw.108.a
-		GER = { country_event = treaty_of_brest.31 }
-		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
-		clr_country_flag = Lenin_threatens_his_resignation
-		ai_chance = {
-			factor = 1
-		}
-	}
-	# Мир с Германией
-	option = {
-		trigger = { has_country_flag = brest_average check_variable = { percent_left_faction_CC < 0.5 } }
-		name = rcw.108.b
-		GER = { country_event = treaty_of_brest.32 }
-		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
-		clr_country_flag = Lenin_threatens_his_resignation
-		ai_chance = {
-			factor = 1
-		}
-	}
-	# Мир с Германией
-	option = {
-		trigger = { has_country_flag = brest_soft check_variable = { percent_left_faction_CC < 0.5 } }
-		name = rcw.108.c
-		GER = { country_event = treaty_of_brest.33 }
-		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
-		clr_country_flag = Lenin_threatens_his_resignation
-		ai_chance = {
-			factor = 1
-		}
-	}
-	# Мир с Германией
-	option = {
-		trigger = { has_country_flag = brest_hardest }
-		name = rcw.108.e
-		GER = { country_event = treaty_of_brest.31 }#GER = { country_event = treaty_of_brest.34 }
-		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
-		clr_country_flag = Lenin_threatens_his_resignation
-		ai_chance = {
-			factor = 1
-		}
-	}
-	# Продолжение войны
-	option = {
-		trigger = { OR = { NOT = { has_country_flag = brest_hard has_country_flag = brest_average has_country_flag = brest_hardest } NOT = { check_variable = { percent_left_faction_CC < 0.5 } } } }
-		name = rcw.108.f
-		add_to_variable = {
-			var = global.red_alert
-			value = 5
-		}
-		set_country_flag = RUS_fourth_allrussian_congress_of_soviets
-		if = {
-			limit = { has_country_flag = Lenin_threatens_his_resignation OR = { has_country_flag = brest_soft has_country_flag = brest_hard has_country_flag = brest_average has_country_flag = brest_hardest } }
-			country_event = { id = treaty_of_brest.51 days = 3 }
-		}
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				NOT = { has_government = radical_socialism }
-				surrender_progress > 0.099
-			}
-			modifier = {
-				factor = 999
-				has_government = radical_socialism
-			}
-			modifier = {
-				factor = 999
-				surrender_progress < 0.1
-			}
-		}
 	}
 }
 
@@ -1973,15 +1923,15 @@ country_event = {
 
 # Поставки вооружение от Антанты
 country_event = {
-	id = rcw.300
-	title = rcw.300.t
-	desc = rcw.300.d
+	id = rcw.500
+	title = rcw.500.t
+	desc = rcw.500.d
 	picture = GFX_report_event_rus_krodshtat_refuse
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw.300.a
+		name = rcw.500.a
 		FROM = {
 			send_equipment = {
 				equipment = infantry_equipment
@@ -1993,7 +1943,7 @@ country_event = {
 		add_to_variable = { global.Entente_support_count = 1 }
 	}
 	option = {
-		name = rcw.300.b
+		name = rcw.500.b
 		trigger = {
 			is_ai = no
 		}

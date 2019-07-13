@@ -8,6 +8,61 @@ add_namespace = all_rus_CA
 # Учредительное собрание
 ###########################
 
+country_event = {
+	id = all_rus_CA.0
+	title = all_rus_CA.0.t
+	desc = all_rus_CA.0.d
+	picture = GFX_report_event_rus_the_constituent_assembly
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = all_rus_CA.0.a
+		country_event = { id = all_rus_CA.1 days = 14 }
+		ai_chance = {
+			factor = 6
+			modifier = {
+				factor = 0
+				has_government = market_liberalism
+				market_liberalism < 0.4
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.0.b
+		country_event = { id = all_rus_CA.1 days = 150 }
+		ai_chance = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				has_government = market_liberalism
+				market_liberalism < 0.25
+			}
+			modifier = {
+				factor = 0
+				has_government = market_liberalism
+				market_liberalism < 0.2
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.0.c
+		set_country_flag = CA_after_victory
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					has_government = social_liberalism
+				}
+			}
+		}
+	}
+}
+
 #########Решение о политическом устройстве######
 country_event = {
 	id = all_rus_CA.1
@@ -41,7 +96,13 @@ country_event = {
 	}
 	picture = GFX_report_event_rus_the_constituent_assembly
 	
-	is_triggered_only = yes
+	trigger = {
+		tag = RUS
+		has_war = no
+		has_country_flag = CA_after_victory
+	}
+	
+	fire_only_once = yes
 	
 	immediate = {
 		hidden_effect = {
@@ -52,6 +113,7 @@ country_event = {
 				RUS_dvoevlastie_4
 			}
 			initiate_verification_of_the_popularity_of_coalitions = yes
+			clr_country_flag = CA_after_victory
 		}
 	}
 	
@@ -156,13 +218,13 @@ country_event = {
 	desc = {
 		text = all_rus_CA.2.d
 		trigger = {
-			has_government = communism
+			has_focus_tree = Russia_bolsheviks_focus
 		}
 	}
 	desc = {
 		text = all_rus_CA.2.d_1
 		trigger = {
-			NOT = { has_government = communism }
+			NOT = { has_focus_tree = Russia_bolsheviks_focus }
 		}
 	}
 	picture = GFX_report_event_rus_dispersa_of_the_constituent_assembly
@@ -178,6 +240,9 @@ country_event = {
 		add_political_power = 100
 	}
 	option = {
+		trigger = {
+			NOT = { has_focus_tree = Russia_bolsheviks_focus }
+		}
 		name = all_rus_CA.2.b #ждать окончания срока действия учредительного собрания
 		hidden_effect = { country_event = all_rus_CA.3 }
 		add_stability = 0.05
@@ -200,7 +265,7 @@ country_event = {
 	
 	option = {
 		name = all_rus_CA.3.a #принять программу эсеров по социализации земли (точнее если была октябрьская революция, то подтвердить большевистский декрет)
-		set_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform
+		set_country_flag = RUS_all_russian_constituent_assembly_second_session_socialization_of_land
 		trigger = {
 			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_military_dictature }
 		}
@@ -214,7 +279,22 @@ country_event = {
 		}
 	}
 	option = {
-		name = all_rus_CA.3.b #вариант для буржуев
+		name = all_rus_CA.3.b #тупо подтвердить чёрный передел и дело с концом
+		trigger = {
+			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic }
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_second_session_confirm_black_redistribution
+		if = {
+			limit = { has_war_with = GER }
+			hidden_effect = { country_event = { id = all_rus_CA.4 days = 1 } }
+			else = {
+				country_event = { id = all_rus_CA.5 days = 1 }
+				set_country_flag = RUS_all_russian_constituent_assembly_third_session_bypassed
+			}
+		}
+	}
+	option = {
+		name = all_rus_CA.3.c #вариант для буржуев
 		trigger = {
 			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic }
 		}
@@ -229,9 +309,10 @@ country_event = {
 		}
 	}
 	option = {
-		name = all_rus_CA.3.c #возвращение крепостного права
+		name = all_rus_CA.3.e #возвращение крепостного права
 		trigger = {
 			has_country_flag = RUS_all_russian_constituent_assembly_first_session_monarchy
+			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic }
 		}
 		set_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom
 		if = {
@@ -324,6 +405,10 @@ country_event = {
 		name = all_rus_CA.5.a #Унитарное государство
 		trigger = {
 			NOT = { has_government = social_liberalism }
+			OR = {
+				NOT = { has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic }
+				NOT = { has_country_flag = RUS_Bolsheviks_majority }
+			}
 		}
 		set_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state
 		add_political_power = 150
@@ -338,6 +423,7 @@ country_event = {
 	}
 	option = {
 		name = all_rus_CA.5.b #Унитарное государство с автономиями
+		set_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state
 		set_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state_with_autonomies
 		add_political_power = 100
 		hidden_effect = { country_event = { id = all_rus_CA.6 days = 5 } }
@@ -398,16 +484,20 @@ country_event = {
 			custom_effect_tooltip = all_rus_CA_S1_O4
 		}
 		if = {
-			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_land_reform }
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_socialization_of_land }
 			custom_effect_tooltip = all_rus_CA_S2_O1
 		}
 		if = {
-			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_no_land_reform }
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_confirm_black_redistribution }
 			custom_effect_tooltip = all_rus_CA_S2_O2
 		}
 		if = {
-			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom }
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_no_land_reform }
 			custom_effect_tooltip = all_rus_CA_S2_O3
+		}
+		if = {
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom }
+			custom_effect_tooltip = all_rus_CA_S2_O4
 		}
 		if = {
 			limit = { has_country_flag = RUS_all_russian_constituent_assembly_third_session_peace }
@@ -418,7 +508,7 @@ country_event = {
 			custom_effect_tooltip = all_rus_CA_S3_O2
 		}
 		if = {
-			limit = { has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state }
+			limit = { has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state NOT = { has_country_flag = RUS_all_russian_constituent_assembly_fourth_session_unitary_state_with_autonomies } }
 			custom_effect_tooltip = all_rus_CA_S4_O1
 		}
 		if = {
@@ -458,7 +548,6 @@ country_event = {
 				ruling_party = social_democracy
 				elections_allowed = no
 			}
-			load_focus_tree = Russia_republic_focus
 		}
 		if = {
 			limit = {
@@ -478,7 +567,6 @@ country_event = {
 				ruling_party = social_conservatism
 				elections_allowed = no
 			}
-			load_focus_tree = Russia_republic_focus
 		}
 		if = {
 			limit = {
@@ -522,7 +610,6 @@ country_event = {
 				Alexey_Nikitin_4
 				Pavel_Malyantovich_5
 			}
-			load_focus_tree = Russia_republic_focus
 		}
 		else_if = {
 			limit = {
@@ -575,7 +662,6 @@ country_event = {
 				Alexander_Manuilov_5
 			}
 			set_country_flag = general_kornilov
-			load_focus_tree = Russia_republic_focus #dictatorship
 		}
 		if = {
 			limit = {
@@ -612,7 +698,6 @@ country_event = {
 				traits={  }
 			}
 			set_country_flag = RUS_Yusupov_tsar
-			load_focus_tree = Russia_republic_focus #monarchy
 		}
 	}
 }
