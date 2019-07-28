@@ -27,6 +27,7 @@ country_event = {
 	option = {
 		name = all_rus_CA.-1.a
 		country_event = { id = all_rus_CA.1 days = 1 }
+		clr_country_flag = CA_after_victory
 	}
 }
 
@@ -41,6 +42,7 @@ country_event = {
 	option = {
 		name = all_rus_CA.0.a
 		country_event = { id = all_rus_CA.1 days = 14 }
+		set_country_flag = CA_wait
 		ai_chance = {
 			factor = 6
 			modifier = {
@@ -53,6 +55,7 @@ country_event = {
 	option = {
 		name = all_rus_CA.0.b
 		country_event = { id = all_rus_CA.1 days = 150 }
+		set_country_flag = CA_wait
 		ai_chance = {
 			factor = 3
 			modifier = {
@@ -70,6 +73,7 @@ country_event = {
 	option = {
 		name = all_rus_CA.0.c
 		set_country_flag = CA_after_victory
+		set_country_flag = CA_wait
 		ai_chance = {
 			factor = 1
 			modifier = {
@@ -92,27 +96,29 @@ country_event = {
 	desc = {
 		text = all_rus_CA.1.d
 		trigger = {
-			NOT = { check_variable = { authoritarian_parties > 0.3 } has_government = radical_socialism has_government = communism has_country_flag = general_kornilov }
+			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
+			NOT = { check_variable = { authoritarian_parties > 0.3 } }
+			NOT = { has_country_flag = general_kornilov }
 		}
 	}
 	desc = {
 		text = all_rus_CA.1.d_1
 		trigger = {
+			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
 			check_variable = { authoritarian_parties > 0.3 }
+			NOT = { has_country_flag = general_kornilov }
 		}
 	}
 	desc = {
 		text = all_rus_CA.1.d_2
 		trigger = {
-			OR = {
-				has_government = radical_socialism
-				has_government = communism
-			}
+			has_country_flag = RUS_Oktober_revolution_fired
 		}
 	}
 	desc = {
 		text = all_rus_CA.1.d_3
 		trigger = {
+			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
 			has_country_flag = general_kornilov
 		}
 	}
@@ -131,8 +137,25 @@ country_event = {
 				RUS_dvoevlastie_4
 			}
 			initiate_verification_of_the_popularity_of_coalitions = yes
-			clr_country_flag = CA_after_victory
+			clr_country_flag = CA_wait
 		}
+	}
+	
+	option = {
+		name = all_rus_CA.1.h #подтвердить большевистские декреты
+		trigger = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			OR = {
+				check_variable = { socialist_parties > 0.50 }
+				has_country_flag = homogeneous_socialist_government
+			}
+		}
+		ai_chance = {
+			factor = 99999
+		}
+		set_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+		set_country_flag = RUS_all_russian_constituent_assembly_second_session_socialization_of_land
+		country_event = all_rus_CA.8
 	}
 	
 	option = {
@@ -156,17 +179,10 @@ country_event = {
 	option = {
 		name = all_rus_CA.1.b #советская республика
 		trigger = {
+			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
 			OR = {
-				check_variable = { socialist_parties > 0.50 }
-				AND = {
-					NOT = { has_government = communism }
-					NOT = { has_government = radical_socialism }
-					OR = {
-						check_variable = { sociallll_parties_without_coalition > 0.8 }
-						check_variable = { socialist_parties_without_coalition > 0.5 }
-					}
-				}
-				has_country_flag = homogeneous_socialist_government
+				check_variable = { sociallll_parties_without_coalition > 0.8 }
+				check_variable = { socialist_parties_without_coalition > 0.5 }
 			}
 		}
 		ai_chance = {
@@ -253,9 +269,16 @@ country_event = {
 	
 	option = {
 		name = all_rus_CA.2.a #Караул устал
-		set_country_flag = RUS_karaul_ustal
-		hidden_effect = { country_event = all_rus_CA.7 }
 		add_political_power = 100
+		set_country_flag = RUS_karaul_ustal
+		clr_country_flag = RUS_provisional_government_created
+		hidden_effect = { news_event = { id = news_n.14 hours = 12 } }
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = RUS_Oktober_revolution_fired }
+				country_event = { id = rcw.107 days = 1 }
+			}
+		}
 	}
 	option = {
 		trigger = {
@@ -479,7 +502,7 @@ country_event = {
 	}
 }
 
-#########Итоги Учредительного собрания######
+# Итоги Учредительного собрания
 country_event = {
 	id = all_rus_CA.6
 	title = all_rus_CA.6.t
@@ -554,6 +577,7 @@ country_event = {
 		clr_country_flag = RUS_Order_N_1
 		set_global_flag = RUS_all_russian_constituent_assembly_ended
 		clr_country_flag = general_kornilov
+		remove_ideas = RUS_red_guards_provisional_government
 		if = {
 			limit = {
 				has_country_flag = RUS_all_russian_constituent_assembly_first_session_bourgeois_republic
@@ -720,27 +744,24 @@ country_event = {
 	}
 }
 
-#########Решение о разгоне говорильни######
+# Легитимизация большевиков
 country_event = {
-	id = all_rus_CA.7
-	title = all_rus_CA.7.t
-	desc = all_rus_CA.7.d
-	picture = GFX_report_event_rus_dispersa_of_the_constituent_assembly
+	id = all_rus_CA.8
+	title = all_rus_CA.8.t
+	desc = all_rus_CA.8.d
+	picture = GFX_report_event_all_power_to_the_soviets
 	
 	is_triggered_only = yes
 	
 	fire_only_once = yes
 	
 	option = {
-		name = all_rus_CA.7.a
-		set_country_flag = RUS_karaul_ustal
+		name = all_rus_CA.8.a
 		clr_country_flag = RUS_provisional_government_created
-		hidden_effect = { news_event = { id = news_n.14 hours = 12 } }
-		hidden_effect = {
-			if = {
-				limit = { has_country_flag = RUS_Oktober_revolution_fired }
-				country_event = { id = rcw.107 days = 1 }
-			}
-		}
+		clr_country_flag = RUS_Order_N_1
+		set_global_flag = RUS_all_russian_constituent_assembly_ended
+		clr_country_flag = general_kornilov
+		remove_ideas = RUS_red_guards_provisional_government
+		set_country_flag = legitimized_bolsheviks
 	}
 }
