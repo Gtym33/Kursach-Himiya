@@ -50,7 +50,7 @@ country_event = {
 		}
 	}
 }
-# Германский империализм
+# Германский империализм, "Отношение к Эстонской государственности"
 country_event = {
 	id = rcw_bfk.2
 	title = rcw_bfk.2.t
@@ -153,10 +153,10 @@ country_event = {
 		is_subject = no
 		has_war = no
 		has_global_flag = FIN_civil_war_end
-		NOT = { has_government = radical_socialsim has_government = communism has_government = social_democracy }
+		NOT = { has_government = radical_socialism has_government = communism has_government = social_democracy }
 		EST = {
 			exists = yes
-			NOT = { has_government = radical_socialsim has_government = communism }
+			NOT = { has_government = radical_socialism has_government = communism }
 			OR = {
 				has_civil_war = yes
 				AND = {
@@ -174,7 +174,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_bfk.8.a
+		name = rcw_bfk.8.b
 		trigger = {
 			has_equipment = {
 				#infantry_equipment > 999
@@ -191,7 +191,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_bfk.8.b
+		name = rcw_bfk.8.c
 		add_political_power = -50
 		ai_chance = {
 			factor = 1
@@ -267,6 +267,10 @@ country_event = {
 		ai_chance = {
 			factor = 999
 		}
+		every_country = {
+			limit = { original_tag = EST has_government = communism }
+			RUS = { puppet = PREV }
+		}
 	}
 	option = {
 		name = rcw_bfk.9.b
@@ -303,6 +307,8 @@ country_event = {
 			target = WVA
 			type = annex_everything
 		}
+		give_military_access = LAT
+		LAT = { give_military_access = EST }
 	}
 	
 	option = {
@@ -1092,6 +1098,20 @@ country_event = {
 			target = NWA
 			type = annex_everything
 		}
+		1017 = {
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = RUS
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = RUS
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = RUS
+			}
+		}
 		ai_chance = {
 			factor = 1
 		}
@@ -1099,6 +1119,24 @@ country_event = {
 	option = {
 		trigger = { is_ai = no NWA = { is_ai = yes } }
 		name = rcw_bfk.102.c
+		declare_war_on = {
+			target = NWA
+			type = annex_everything
+		}
+		1017 = {
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = RUS
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = RUS
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = RUS
+			}
+		}
 		NWA = { change_tag_from = ROOT }
 	}
 }
@@ -1158,25 +1196,40 @@ country_event = {
 		name = rcw_bfk.102.a
 		add_political_power = -25
 		add_manpower = 8000
-		NWA = { drop_cosmetic_tag = yes clr_country_flag = NWA_North_corps }
-		every_state = {
-			limit = {
-				is_owned_by = NWA
-				is_controlled_by = RUS
+		NWA = { drop_cosmetic_tag = yes }
+		if = {
+			limit = { NWA = { controls_state = 209 } }
+			if = {
+				limit = { NWA = { has_war_with = RUS } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
 			}
-			RUS = { transfer_state = PREV }
-		}
-		if = {
-			limit = { RUS = { owns_state = 209 } }
-			RUS = { transfer_state = 210 transfer_state = 1015 }
-		}
-		if = {
-			limit = { RUS = { NOT = { owns_state = 210 } } }
-			LAT = { transfer_state = 210 }
-		}
-		annex_country = {
-			target = NWA
-			transfer_troops = yes
+			give_military_access = NWA
+			NWA = { give_military_access = EST }
+			NWA = { clr_country_flag = NWA_North_corps }
+			else = {
+				every_state = {
+					limit = {
+						is_owned_by = NWA
+						is_controlled_by = RUS
+					}
+					RUS = { transfer_state = PREV }
+				}
+				if = {
+					limit = { RUS = { owns_state = 209 } }
+					RUS = { transfer_state = 210 transfer_state = 1015 }
+				}
+				if = {
+					limit = { RUS = { owns_state = 210 NOT = { controls_state = 210 } } }
+					LAT = { transfer_state = 210 }
+				}
+				annex_country = {
+					target = NWA
+					transfer_troops = yes
+				}
+			}
 		}
 		if = {
 			limit = { 191 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
@@ -1196,7 +1249,7 @@ country_event = {
 	trigger = {
 		tag = EST
 		has_war_with = RUS
-		NWA = { exists = no }
+		NWA = { exists = no has_country_flag = NWA_North_corps }
 		controls_state = 209
 	}
 	
@@ -1208,6 +1261,30 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.105.a
+		EST = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnyy polk"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kavaleristskiy polk"
+			}
+		}
+		NWA = {
+			transfer_state = 209
+			if = {
+				limit = { EST = { has_war_with = RUS } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
+			}
+			declare_war_on = {
+				target = EST
+				type = annex_everything
+			}
+			load_oob = NWA_north_corps
+			clr_country_flag = NWA_North_corps
+		}
 		ai_chance = {
 			factor = 0
 		}
@@ -1225,11 +1302,17 @@ country_event = {
 		}
 		NWA = {
 			transfer_state = 209
-			declare_war_on = {
-				target = RUS
-				type = annex_everything
+			if = {
+				limit = { EST = { has_war_with = RUS } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
 			}
+			give_military_access = EST
+			EST = { give_military_access = NWA }
 			load_oob = NWA_north_corps
+			clr_country_flag = NWA_North_corps
 		}
 		every_state = {
 			limit = {
@@ -1260,11 +1343,17 @@ country_event = {
 		}
 		NWA = {
 			transfer_state = 209
-			declare_war_on = {
-				target = RUS
-				type = annex_everything
+			if = {
+				limit = { EST = { has_war_with = RUS } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
 			}
+			give_military_access = EST
+			EST = { give_military_access = NWA }
 			load_oob = NWA_north_corps
+			clr_country_flag = NWA_North_corps
 		}
 		every_state = {
 			limit = {
@@ -1323,27 +1412,178 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.107.b
-		trigger = {RGR = {exists = yes}}
-		add_political_power = -100
-		send_equipment = {
-				type = infantry_equipment
-				amount = 1000
-				target = RGR
+		add_political_power = -50
+		if = {
+			limit = {
+				RGR = { exists = no }
 			}
+				RGR = {
+					add_ideas = {
+						RGR_urban_rural_antogonism
+						RGR_power_decentralisation
+						RGR_supply_bonus
+					}
+					remove_ideas = {
+						RGR_consolidation_of_units_idea
+						RGR_fraternizing_with_proletariat_idea
+						RGR_red_banditry_idea
+						RGR_councils_without_communists_idea
+						RGR_working_peasantry_unions_idea
+						RGR_uprisings_coordination_idea
+						RGR_peasant_gatherings_idea
+						RGR_associations_of_veterans_idea
+						RGR_recruitment_officers_idea
+						RGR_single_headquarters_idea
+						RGR_peasant_army_idea
+						RGR_punitive_forces_idea
+						RGR_atamanshina_idea
+						RGR_forest_brothers_idea
+						RGR_deserters_collection_idea
+						RGR_free_cossackship_idea
+						RGR_cavalry_raiding_idea
+						RGR_voluntary_mobilization_idea
+					}
+					load_focus_tree = { tree = Russian_green_rebels keep_completed = no }
+					set_politics = { ruling_party = radical_socialism elections_allowed = no }
+				}
+			RUS = { set_country_flag = RGR_dont_exists }
+			add_political_power = -50
+		}
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = RGR
+		}
 		RGR = { transfer_state = 244 load_oob = NWA_rice_people }
+		244 = { set_state_flag = RCW_green_state_revolt }
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = RGR_dont_exists }
+				RGR = {
+					if = {
+						limit = { RUS = { exists = yes is_subject = no } }
+						declare_war_on = { target = RUS type = annex_everything }
+					}
+					if = {
+						limit = { RSS = { exists = yes is_subject = no } }
+						declare_war_on = { target = RSS type = annex_everything }
+					}
+					if = {
+						limit = { CCA = { exists = yes is_subject = no } }
+						declare_war_on = { target = CCA type = annex_everything }
+					}
+					if = {
+						limit = { SIB = { exists = yes is_subject = no } }
+						declare_war_on = { target = SIB type = annex_everything }
+					}
+					if = {
+						limit = { RVA = { exists = yes is_subject = no } }
+						declare_war_on = { target = RVA type = annex_everything }
+					}
+					if = {
+						limit = { DON = { exists = yes is_subject = no } }
+						declare_war_on = { target = DON type = annex_everything }
+					}
+					if = {
+						limit = { PRM = { exists = yes is_subject = no } }
+						declare_war_on = { target = PRM type = annex_everything }
+					}
+				}
+			}
+		}
+		hidden_effect = { if = { limit = { has_country_flag = RGR_dont_exists } RUS = { country_event = { id = rcw_g.4 days = 60 random = 960 } clr_country_flag = RGR_dont_exists } } }
 	}
 	
 	option = {
 		name = rcw_bfk.107.с
-		trigger = {RGR = {exists = yes}}
-		add_political_power = -150
+		add_political_power = -50
 		send_equipment = {
-				type = infantry_equipment
-				amount = 1500
-				target = RGR
+			type = infantry_equipment
+			amount = 500
+			target = REB
+		}
+		load_oob = NWA_rice_officers
+		
+		add_political_power = -50
+		if = {
+			limit = {
+				RGR = { exists = no }
 			}
-			load_oob = NWA_rice_officers
-			RGR = { transfer_state = 244 load_oob = NWA_rice_people }
+				RGR = {
+					add_ideas = {
+						RGR_urban_rural_antogonism
+						RGR_power_decentralisation
+						RGR_supply_bonus
+					}
+					remove_ideas = {
+						RGR_consolidation_of_units_idea
+						RGR_fraternizing_with_proletariat_idea
+						RGR_red_banditry_idea
+						RGR_councils_without_communists_idea
+						RGR_working_peasantry_unions_idea
+						RGR_uprisings_coordination_idea
+						RGR_peasant_gatherings_idea
+						RGR_associations_of_veterans_idea
+						RGR_recruitment_officers_idea
+						RGR_single_headquarters_idea
+						RGR_peasant_army_idea
+						RGR_punitive_forces_idea
+						RGR_atamanshina_idea
+						RGR_forest_brothers_idea
+						RGR_deserters_collection_idea
+						RGR_free_cossackship_idea
+						RGR_cavalry_raiding_idea
+						RGR_voluntary_mobilization_idea
+					}
+					load_focus_tree = { tree = Russian_green_rebels keep_completed = no }
+					set_politics = { ruling_party = radical_socialism elections_allowed = no }
+				}
+			RUS = { set_country_flag = RGR_dont_exists }
+			add_political_power = -50
+		}
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = RGR
+		}
+		RGR = { transfer_state = 244 load_oob = NWA_rice_people }
+		244 = { set_state_flag = RCW_green_state_revolt }
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = RGR_dont_exists }
+				RGR = {
+					if = {
+						limit = { RUS = { exists = yes is_subject = no } }
+						declare_war_on = { target = RUS type = annex_everything }
+					}
+					if = {
+						limit = { RSS = { exists = yes is_subject = no } }
+						declare_war_on = { target = RSS type = annex_everything }
+					}
+					if = {
+						limit = { CCA = { exists = yes is_subject = no } }
+						declare_war_on = { target = CCA type = annex_everything }
+					}
+					if = {
+						limit = { SIB = { exists = yes is_subject = no } }
+						declare_war_on = { target = SIB type = annex_everything }
+					}
+					if = {
+						limit = { RVA = { exists = yes is_subject = no } }
+						declare_war_on = { target = RVA type = annex_everything }
+					}
+					if = {
+						limit = { DON = { exists = yes is_subject = no } }
+						declare_war_on = { target = DON type = annex_everything }
+					}
+					if = {
+						limit = { PRM = { exists = yes is_subject = no } }
+						declare_war_on = { target = PRM type = annex_everything }
+					}
+				}
+			}
+		}
+		hidden_effect = { if = { limit = { has_country_flag = RGR_dont_exists } RUS = { country_event = { id = rcw_g.4 days = 60 random = 960 } clr_country_flag = RGR_dont_exists } } }
 	}
 }
 
