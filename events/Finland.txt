@@ -402,6 +402,7 @@ country_event = {
 	#Признать независимость
 	option = {
 		name = finland.10.a
+		FIN = { remove_opinion_modifier = { target = RUS modifier = unrecognized_state } }
 	}
 	
 	#Не признавать независимость
@@ -476,12 +477,10 @@ country_event = {
 	option = {
 		name = finland.13.a
 		add_stability = -0.05
-		RUS = {
-			send_equipment = {
-				type = infantry_equipment
-				amount = 500
-				target = FIN
-			}
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 500
+			producer = RUS
 		}
 	}
 }
@@ -577,7 +576,7 @@ country_event = {
 			remove_ideas = punakaarti
 			country_event = { id = finland.16 days = 1 }
 		}
-		set_capital = 1057
+		set_capital = 149
 		FNR = {
 			transfer_state = 111
 			transfer_state = 1049
@@ -593,6 +592,8 @@ country_event = {
 			load_oob = "FNR_punakaarti"
 			add_ideas = alliance_neutrality
 			inherit_technology = FIN
+			FNR = { add_opinion_modifier = { target = RUS modifier = socialist_social_democracy } }
+			RUS = { add_opinion_modifier = { target = FNR modifier = socialist_social_democracy } }
 		}
 		hidden_effect = { news_event = { id = news_n.15 hours = 12 } }
 	}
@@ -606,7 +607,7 @@ country_event = {
 			remove_ideas = punakaarti
 			country_event = { id = finland.16 days = 1 }
 		}
-		set_capital = 1057
+		set_capital = 149
 		FNR = {
 			transfer_state = 111
 			transfer_state = 1049
@@ -622,9 +623,11 @@ country_event = {
 			load_oob = "FNR_punakaarti"
 			add_ideas = alliance_neutrality
 			inherit_technology = FIN
-			change_tag_from = FIN
+			FNR = { add_opinion_modifier = { target = RUS modifier = socialist_social_democracy } }
+			RUS = { add_opinion_modifier = { target = FNR modifier = socialist_social_democracy } }
 		}
 		hidden_effect = { news_event = { id = news_n.15 hours = 12 } }
+		FNR = { change_tag_from = FIN }
 	}
 }
 
@@ -700,6 +703,7 @@ country_event = {
 		1050 = { set_state_name = "Viipuri" }
 		set_province_name = { id = 3122 name = "Vaasa" }
 		149 = { set_state_name = "Vaasa" }
+		set_capital = 111
 	}
 }
 # Конец гражданской войны для Красных
@@ -732,18 +736,6 @@ country_event = {
 		clr_global_flag = FIN_civil_war_begin
 		set_global_flag = FIN_civil_war_end
 		drop_cosmetic_tag = yes
-		if = {
-			limit = {
-				RUS = {
-					exists = yes
-					OR = {
-						has_government = radical_socialism
-						has_government = communism
-					}
-				}
-			}
-			RUS = { country_event = { id = finland.19 days = 7 } }
-		}
 		every_state = {
 			limit = { is_core_of = FIN }
 			remove_core_of = FIN
@@ -762,6 +754,19 @@ country_event = {
 		1050 = { set_state_name = "Viipuri" }
 		set_province_name = { id = 3122 name = "Vaasa" }
 		149 = { set_state_name = "Vaasa" }
+		set_capital = 111
+		if = {
+			limit = {
+				RUS = {
+					exists = yes
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+					}
+				}
+			}
+			RUS = { country_event = { id = finland.19 days = 1 } }
+		}
 	}
 }
 
@@ -774,7 +779,7 @@ country_event = {
 
 	is_triggered_only = yes
 	
-	#Согласиться отдать все спорные пограничные территории
+	#Отдать все спорные пограничные территории
 	option = {
 		name = finland.19.a
 		every_state = {
@@ -788,24 +793,134 @@ country_event = {
 			FNR = { transfer_state = PREV }
 		}
 		ai_chance = {
-			factor = 100
+			factor = 0
 		}
 	}
 	
-	#Не соглашаться
+	#Установить границу какая есть сейчас такую и оставить
 	option = {
 		name = finland.19.b
-		trigger = {
-			always = no
-		}
 		every_state = {
-			limit = { is_core_of = FNR is_core_of = RUS }
+			limit = { is_core_of = FNR is_owned_by = RUS }
 			remove_core_of = FNR
 		}
 		every_state = {
 			limit = { is_core_of = RUS is_owned_by = FNR }
+			remove_core_of = RUS
+			remove_core_of = RSS
+			remove_core_of = CCA
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	
+	#Потребовать все пограничные земли
+	option = {
+		name = finland.19.b
+		effect_tooltip = {
+			every_state = {
+				limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FNR }
+				RUS = { transfer_state = PREV }
+			}
+			every_state = {
+				limit = { is_core_of = FNR is_owned_by = RUS }
+				remove_core_of = FNR
+			}
+		}
+		hidden_effect = { FNR = { country_event = finland.20 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Требования России
+country_event = {
+	id = finland.20
+	title = finland.20.t
+	desc = finland.20.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	#Согласиться
+	option = {
+		name = finland.20.a
+		every_state = {
+			limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FNR }
 			RUS = { transfer_state = PREV }
 		}
+		every_state = {
+			limit = { is_core_of = FNR is_owned_by = RUS }
+			remove_core_of = FNR
+		}
+		ai_chance = {
+			factor = 50
+		}
+	}
+	
+	#Отклонить
+	option = {
+		name = finland.20.b
+		hidden_effect = { RUS = { country_event = finland.21 } }
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+# Отказ Финляндии
+country_event = {
+	id = finland.21
+	title = finland.21.t
+	desc = finland.21.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.21.a
+	}
+}
+
+# Вступление в Коминтерн
+country_event = {
+	id = finland.22
+	title = finland.22.t
+	desc = finland.22.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FNR
+		is_socialist_country = yes
+		is_in_faction = no
+		is_subject = no
+		OR = {
+			RUS = { is_socialist_country = yes is_faction_leader = yes }
+			SOV = { is_socialist_country = yes is_faction_leader = yes }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	#Присоединиться к России
+	option = {
+		name = finland.22.a
+		random_country = {
+			limit = { OR = { tag = RUS tag = SOV } is_socialist_country = yes is_faction_leader = yes }
+			country_event = generic.2
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	#Нет
+	option = {
+		name = finland.22.a
 		ai_chance = {
 			factor = 0
 		}
@@ -817,9 +932,9 @@ country_event = {
 
 ###Выбор короля
 country_event = {
-	id = finland.20
-	title = finland.20.t
-	desc = finland.20.desc
+	id = finland.31
+	title = finland.31.t
+	desc = finland.31.desc
 	picture = GFX_report_event_spain_civil_war_soldiers
 
 	fire_only_once = yes
@@ -841,7 +956,7 @@ country_event = {
 	
 	#Аату I
 	option = {
-		name = finland.20.a
+		name = finland.31.a
 		ai_chance = { factor = 20 }
 		hidden_effect = {
 		FIN = {
@@ -864,7 +979,7 @@ country_event = {
 		
 	#Оскари I
 	option = {
-		name = finland.20.b
+		name = finland.31.b
 		ai_chance = { factor = 10 }
 		hidden_effect = {
 		FIN = {
@@ -885,7 +1000,7 @@ country_event = {
 	}	
 	#Фридрих Карл Гессен-Кассельский // Вяйнё I
 	option = {
-		name = finland.20.c
+		name = finland.31.c
 		ai_chance = { factor = 30 }
 		hidden_effect = {
 		FIN = {
@@ -909,7 +1024,7 @@ country_event = {
 	
 	#Вилйо I
 	option = {
-		name = finland.20.d
+		name = finland.31.d
 		ai_chance = { factor = 20 }
 		hidden_effect = {
 		FIN = {
@@ -932,7 +1047,7 @@ country_event = {
 	
 	#Леннарт I
 	option = {
-		name = finland.20.e
+		name = finland.31.e
 		ai_chance = { factor = 20 }
 		hidden_effect = {
 		FIN = {

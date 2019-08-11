@@ -1,6 +1,5 @@
 monarchy_fall = {
 	clr_country_flag = RUS_monarchy_not_fall
-	news_event = { id = news_n.5 hours = 36 }
 	213 = { set_state_name = "Murnansk" }
 	set_province_name = { id = 3134 name = "Murnansk" }
 	clr_country_flag = RUS_duma_dissolved
@@ -206,20 +205,43 @@ bolsheviks_victory = {
 	add_ideas = limited_conscription
 	every_country = {
 		limit = {
-			OR = {
-				is_in_faction_with = ENG
-				is_in_faction_with = GER
-				capital_scope = {
-					is_on_continent = europe
-				}
-			}
 			NOT = {
+				tag = ROOT
 				has_government = communism
 				has_government = radical_socialism
+				has_government = social_democracy
+				is_subject = yes
+				has_war_with = ROOT
+				is_in_faction_with = ROOT
 			}
 		}
-		add_opinion_modifier = { target = RUS modifier = Red_october }
-		RUS = { add_opinion_modifier = { target = PREV modifier = Red_october } }
+		add_opinion_modifier = { target = RUS modifier = unrecognized_state }
+	}
+	every_country = {
+		limit = {
+			NOT = {
+				tag = ROOT
+				has_government = communism
+				has_government = radical_socialism
+				has_government = social_democracy
+				is_subject = yes
+				has_war_with = ROOT
+				is_in_faction_with = ROOT
+			}
+			OR = {
+				is_major = yes
+				is_faction_leader = yes
+				is_in_faction_with = FRA
+				is_in_faction_with = ENG
+				is_in_faction_with = USA
+				is_in_faction_with = JAP
+				tag = FRA
+				tag = ENG
+				tag = USA
+				tag = JAP
+			}
+		}
+		add_opinion_modifier = { target = RUS modifier = expropriation_of_capital }
 	}
 	set_variable = { var = RUS_decossackization_autonomy value = 0 }
 	set_variable = { var = RUS_decossackization_crush value = 0 }
@@ -320,10 +342,17 @@ bolsheviks_fall = {
 	add_ideas = limited_conscription
 	every_country = {
 		limit = {
-			has_opinion_modifier = Red_october
+			has_opinion_modifier = expropriation_of_capital
 		}
-		remove_opinion_modifier = { target = RUS modifier = Red_october }
-		RUS = { remove_opinion_modifier = { target = PREV modifier = Red_october } }
+		remove_opinion_modifier = { target = RUS modifier = expropriation_of_capital }
+		RUS = { remove_opinion_modifier = { target = PREV modifier = expropriation_of_capital } }
+	}
+	every_country = {
+		limit = {
+			has_opinion_modifier = unrecognized_state
+		}
+		remove_opinion_modifier = { target = RUS modifier = unrecognized_state }
+		RUS = { remove_opinion_modifier = { target = PREV modifier = unrecognized_state } }
 	}
 }
 homogeneous_socialist_government_bolsheviks = {
@@ -663,85 +692,131 @@ initiate_CCA_eser_unit_leaders = {
 	create_navy_leader = { name = "Georgiy Starck" id = 88156 portrait_path = "gfx/leaders/RUS/Georgiy_Starck.dds" traits = { superior_tactician } skill = 2 }
 }
 
-spawn_red_guard = {
+spawn_red_guard_in_state = {
 	create_unit = {
 		division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
 		owner = RUS
 	}
 }
-spawn_red_guard_with_var = {
-	if = {
-		limit = { OWNER = { has_variable = red_guard_var_spawn_limit check_variable = { red_guard_var_spawn_limit > 0 } } }
-		create_unit = {
-			division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
-			owner = RUS
-		}
-		OWNER = { subtract_from_variable = { red_guard_var_spawn_limit = 1 } }
-	}
-}
 
-spawn_red_guard_zavesa_with_var_cycle = {
-	if = {
-		limit = { has_variable = red_guard_var_spawn_limit check_variable = { red_guard_var_spawn_limit > 0 } }
-		random_state = {
+spawn_red_guard = {
+		if = {
 			limit = {
-				NOT = { has_state_category = wasteland }
-				is_on_continent = europe
-				is_owned_by = ROOT
-				is_core_of = ROOT
-				is_controlled_by = ROOT
-				is_in_home_area = yes
-				any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+				any_state = {
+					any_state = {
+						NOT = { has_state_category = wasteland }
+						is_owned_by = RUS
+						is_core_of = RUS
+						is_controlled_by = RUS
+						is_in_home_area = yes
+						any_neighbor_state = { CONTROLLER = { has_war_with = RUS is_white_movement_country = yes } }
+					}
+				}
 			}
-			create_unit = {
-				division = "name = \"Krasnoarmetskaya Diviziya\" division_template = \"Krasnoarmetskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
-				owner = RUS
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+				}
+				create_unit = {
+					division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = RUS
+				}
 			}
-			OWNER = { subtract_from_variable = { red_guard_var_spawn_limit = 1 } }
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
 		}
-		spawn_red_guard_zavesa_with_var_cycle_2 = yes
-	}
 }
 
-spawn_red_guard_zavesa_with_var_cycle_2 = {
-	if = {
-		limit = {
-			has_variable = red_guard_var_spawn_limit check_variable = { red_guard_var_spawn_limit > 0 }
-		}
-		spawn_red_guard_zavesa_with_var_cycle = yes
-	}
-}
-
-spawn_vseroglavshtab_with_var_cycle = {
-	if = {
-		limit = { has_variable = red_guard_var_spawn_limit check_variable = { red_guard_var_spawn_limit > 0 } }
-		random_state = {
+spawn_red_guard_zavesa = {
+		if = {
 			limit = {
-				NOT = { has_state_category = wasteland }
-				is_on_continent = europe
-				is_owned_by = ROOT
-				is_core_of = ROOT
-				is_controlled_by = ROOT
-				is_in_home_area = yes
+				any_state = {
+					any_state = {
+						NOT = { has_state_category = wasteland }
+						is_on_continent = europe
+						is_owned_by = ROOT
+						is_core_of = ROOT
+						is_controlled_by = ROOT
+						is_in_home_area = yes
+						any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+					}
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+				}
+				create_unit = {
+					division = "name = \"Krasnoarmetskaya Diviziya\" division_template = \"Krasnoarmetskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = RUS
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnoarmetskaya Diviziya\" division_template = \"Krasnoarmetskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
+		}
+}
+
+spawn_vseroglavshtab = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
 					any_neighbor_state = { CONTROLLER = { has_war_with = RUS is_white_movement_country = yes } }
+				}
 			}
-			create_unit = {
-				division = "name = \"Krasnoarmetskaya Diviziya\" division_template = \"Krasnoarmetskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
-				owner = RUS
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { CONTROLLER = { has_war_with = RUS is_white_movement_country = yes } }
+				}
+				create_unit = {
+					division = "name = \"Krasnoarmetskaya Diviziya\" division_template = \"Krasnoarmetskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = RUS
+				}
 			}
-			OWNER = { subtract_from_variable = { red_guard_var_spawn_limit = 1 } }
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnoarmetskaya Diviziya\" division_template = \"Krasnoarmetskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
 		}
-		spawn_vseroglavshtab_with_var_cycle_2 = yes
-	}
-}
-
-spawn_vseroglavshtab_with_var_cycle_2 = {
-	if = {
-		limit = {
-			has_variable = red_guard_var_spawn_limit check_variable = { red_guard_var_spawn_limit > 0 }
-		}
-		spawn_vseroglavshtab_with_var_cycle = yes
-	}
 }
 
 spawn_pervaya_konarmiya = {
@@ -843,6 +918,9 @@ kill_Lavr_Kornilov = {
 		set_country_flag = Lavr_Kornilov_dead
 	}
 	every_country = {
+		if = { limit = { any_unit_leader = { has_id = 76547 } } remove_unit_leader = 76547 }
+	}
+	every_country = {
 		limit = {
 			is_main_former_russian_empire_country = yes
 			has_country_leader = { name = "Lavr Kornilov" }
@@ -861,7 +939,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = national_syndicalism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = fascism
 				}
@@ -869,7 +947,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = fascism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = authoritarism
 				}
@@ -877,7 +955,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = authoritarism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = social_conservatism
 				}
@@ -885,7 +963,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = social_conservatism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = market_liberalism
 				}
@@ -893,7 +971,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = market_liberalism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = social_liberalism
 				}
@@ -901,7 +979,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = social_liberalism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = social_democracy
 				}
@@ -909,7 +987,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = social_democracy }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = communism
 				}
@@ -917,7 +995,7 @@ kill_Lavr_Kornilov = {
 				kill_country_leader = yes
 				set_politics = { ruling_party = communism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = radical_socialism
 				}
@@ -929,9 +1007,6 @@ kill_Lavr_Kornilov = {
 		remove_ideas = {
 			Lavr_Kornilov_army_chief
 		}
-	}
-	every_country = {
-		if = { limit = { any_unit_leader = { has_id = 76547 } } remove_unit_leader = 76547 }
 	}
 }
 wound_Lavr_Kornilov = {
@@ -954,7 +1029,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = national_syndicalism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = fascism
 				}
@@ -962,7 +1037,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = fascism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = authoritarism
 				}
@@ -970,7 +1045,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = authoritarism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = social_conservatism
 				}
@@ -978,7 +1053,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = social_conservatism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = market_liberalism
 				}
@@ -986,7 +1061,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = market_liberalism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = social_liberalism
 				}
@@ -994,7 +1069,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = social_liberalism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = social_democracy
 				}
@@ -1002,7 +1077,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = social_democracy }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = communism
 				}
@@ -1010,7 +1085,7 @@ wound_Lavr_Kornilov = {
 				add_country_leader_trait = assassination_survivor
 				set_politics = { ruling_party = communism }
 			}
-			if = {
+			else_if = {
 				limit = {
 					has_government = radical_socialism
 				}

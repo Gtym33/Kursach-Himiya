@@ -41,8 +41,8 @@ rcw_intervention_desisions = {
 
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = RUS_threat_of_intervention_more_3
-				check_variable = { global.RUS_threat_of_intervention > 3 }
+				tooltip = RUS_threat_of_intervention_more_2
+				check_variable = { global.RUS_threat_of_intervention > 2 }
 			}
 			any_country = {
 				OR = {
@@ -70,10 +70,6 @@ rcw_intervention_desisions = {
 		remove_effect = {
 			if = {
 				limit = { NRR = { exists = no } }
-				every_country = {
-					limit = { controls_state = 214 }
-					save_event_target_as = CONTROLLER_214
-				}
 				every_state = {
 					limit = { is_core_of = RUS OR = { state = 213 state = 964 state = 722 state = 215 state = 913 state = 216 state = 214 } }
 					add_core_of = NRR
@@ -85,14 +81,23 @@ rcw_intervention_desisions = {
 					set_state_owner = 913
 					load_oob = NRR_ENG_support_214
 					declare_war_on = {
-						target = event_target:CONTROLLER_214
-						type = annex_everything
-					}
-					declare_war_on = {
 						target = RUS
 						type = annex_everything
 					}
 					RUS = { country_event = rcw.203 }
+				}
+				every_country = {
+					limit = { controls_state = 214 }
+					NRR = {
+						declare_war_on = {
+							target = PREV
+							type = annex_everything
+						}
+					}
+				}
+				every_state = {
+					limit = { is_core_of = NRR is_owned_by = ROOT }
+					NRR = { transfer_state = PREV }
 				}
 				else = {
 					load_oob = NRR_ENG_support_214
