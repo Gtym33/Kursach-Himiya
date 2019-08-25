@@ -23,8 +23,9 @@
 
 #political_communists_not_in_socialist_coalition
 #political_despotists_in_reactionary_coalition
-#political_despotists_not_in_authoritarian_coalition
+#political_despotists_in_authoritarian_coalition
 #political_fascists_in_authoritarian_coalition
+#political_authoritarists_in_reactionary_coalition
 #political_national_syndicalists_not_in_reactionary_coalition
 #political_radical_socialists_not_in_socialist_coalition
 #political_social_conservatives_in_authoritarian_coalition
@@ -34,63 +35,6 @@
 #political_social_liberals_in_socialist_coalition
 #political_social_liberals_not_in_liberal_coalition
 
-	rise_of_red_alert_level_when_one_country_turns_to_communism = {
-		set_variable = { states_divider = 0 }
-		set_variable = { factories_divider = 0 }
-		every_country = {
-			add_to_variable = {
-				var = ROOT.states_divider
-				value = num_owned_controlled_states
-			}
-			add_to_variable = {
-				var = ROOT.factories_divider
-				value = num_of_factories
-			}
-		}
-		set_variable = { change_of_red_alert_level = 1 }
-		multiply_variable = { change_of_red_alert_level = num_owned_controlled_states }
-		multiply_variable = { change_of_red_alert_level = num_of_factories }
-		divide_variable = { change_of_red_alert_level = states_divider }
-		divide_variable = { change_of_red_alert_level = factories_divider }
-		multiply_variable = { change_of_red_alert_level = 250 }
-		
-		add_to_variable = {
-			var = global.red_alert
-			value = change_of_red_alert_level
-		}
-		clear_variable = states_divider
-		clear_variable = factories_divider
-		clear_variable = change_of_red_alert_level
-	}
-	fall_of_red_alert_level_when_one_country_turns_to_communism = {
-		set_variable = { states_divider = 0 }
-		set_variable = { factories_divider = 0 }
-		every_country = {
-			add_to_variable = {
-				var = ROOT.states_divider
-				value = num_owned_controlled_states
-			}
-			add_to_variable = {
-				var = ROOT.factories_divider
-				value = num_of_factories
-			}
-		}
-		set_variable = { change_of_red_alert_level = 1 }
-		multiply_variable = { change_of_red_alert_level = num_owned_controlled_states }
-		multiply_variable = { change_of_red_alert_level = num_of_factories }
-		divide_variable = { change_of_red_alert_level = states_divider }
-		divide_variable = { change_of_red_alert_level = factories_divider }
-		multiply_variable = { change_of_red_alert_level = -250 }
-		
-		add_to_variable = {
-			var = global.red_alert
-			value = change_of_red_alert_level
-		}
-		clear_variable = states_divider
-		clear_variable = factories_divider
-		clear_variable = change_of_red_alert_level
-	}
-	
 	add_ruling_party_popularity = {
 		if = {
 			limit = { has_government = radical_socialism }
@@ -162,7 +106,6 @@
 				popularity = var:ruling_party_popularity_change
 			}
 		}
-		clear_variable = ruling_party_popularity_change
 	}
 
 	initiate_verification_of_the_popularity_of_coalitions = {
@@ -364,12 +307,23 @@
 			}
 			else = {
 				if = {
-					limit = { NOT = { has_country_flag = political_despotists_not_in_authoritarian_coalition } }
+					limit = { has_country_flag = political_despotists_in_authoritarian_coalition }
 					add_to_variable = {
 						var = authoritarian_parties
 						value = party_popularity@despotism
 					}
 				}
+			}
+		}
+		if = {
+			limit = { has_country_flag = political_authoritarists_in_reactionary_coalition }
+			add_to_variable = {
+				var = reactionary_parties
+				value = party_popularity@authoritarism
+			}
+			subtract_from_variable = {
+				var = authoritarian_parties
+				value = party_popularity@authoritarism
 			}
 		}
 		if = {
@@ -421,13 +375,13 @@
 					has_country_flag = political_social_democrats_in_socialist_coalition
 				}
 				check_variable = {
-					var = liberal_parties
+					var = socialist_parties
 					value = party_popularity@social_democracy
 					compare = less_than
 				}
 			}
 			set_variable = {
-				var = liberal_parties
+				var = socialist_parties
 				value = party_popularity@social_democracy
 			}
 		}
@@ -478,7 +432,7 @@
 		}
 		if = {
 			limit = {
-				has_country_flag = political_despotists_not_in_authoritarian_coalition
+				NOT = { has_country_flag = political_despotists_in_authoritarian_coalition }
 				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
 				check_variable = {
 					var = authoritarian_parties
@@ -507,856 +461,411 @@
 		}
 	}
 
-	ruling_left_coalition = {
+	ruling_socialist_coalition = {
+		set_temp_variable = { temp0 = 0 }
+		set_temp_variable = { tempradsoc = radical_socialism_party }
+		set_temp_variable = { tempcommi = communism_party }
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { radical_socialism_party > communism_party }
-				}
-				set_politics = {
-					ruling_party = radical_socialism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = communism
-						#elections_allowed = yes
-					}
-				}
+			limit = { NOT = { has_country_flag = political_social_democrats_in_liberal_coalition } }
+			set_temp_variable = { tempsocdem = social_democracy_party }
+			else = {
+				set_temp_variable = { tempsocdem = 0 }
 			}
 		}
 		if = {
-			limit = {
-				has_country_flag = political_social_democrats_in_socialist_coalition
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { social_democracy_party > radical_socialism_party }
-					check_variable = { social_democracy_party > communism_party }
-				}
-				set_politics = {
-					ruling_party = social_democracy
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { radical_socialism_party > communism_party }
-							check_variable = { radical_socialism_party > social_democracy_party }
-						}
-						set_politics = {
-							ruling_party = radical_socialism
-							#elections_allowed = yes
-						}
-						else = {
-							set_politics = {
-								ruling_party = communism
-								#elections_allowed = yes
-							}
-						}
-					}
-				}
+			limit = { has_country_flag = political_social_liberals_in_socialist_coalition }
+			set_temp_variable = { tempsoclib = social_liberalism_party }
+			else = {
+				set_temp_variable = { tempsoclib = 0 }
 			}
 		}
+
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
-				has_country_flag = political_social_liberals_in_socialist_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { social_liberalism_party > radical_socialism_party }
-					check_variable = { social_liberalism_party > communism_party }
-				}
-				set_politics = {
-					ruling_party = social_liberalism
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { radical_socialism_party > communism_party }
-							check_variable = { radical_socialism_party > social_liberalism_party }
-						}
-						set_politics = {
-							ruling_party = radical_socialism
-							#elections_allowed = yes
-						}
-						else = {
-							set_politics = {
-								ruling_party = communism
-								#elections_allowed = yes
-							}
-						}
-					}
-				}
-			}
+			limit = { check_variable = { tempradsoc > temp0 } }
+			set_temp_variable = { temp0 = tempradsoc }
 		}
 		if = {
-			limit = {
-				has_country_flag = political_social_democrats_in_socialist_coalition
-				has_country_flag = political_social_liberals_in_socialist_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { social_democracy_party > radical_socialism_party }
-					check_variable = { social_democracy_party > communism_party }
-					check_variable = { social_democracy_party > social_liberalism_party }
-				}
-				set_politics = {
-					ruling_party = social_democracy
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { radical_socialism_party > communism_party }
-							check_variable = { radical_socialism_party > social_democracy_party }
-							check_variable = { radical_socialism_party > social_liberalism_party }
-						}
-						set_politics = {
-							ruling_party = radical_socialism
-							#elections_allowed = yes
-						}
-						else = {
-							if = {
-								limit = {
-									check_variable = { social_liberalism_party > communism_party }
-									check_variable = { social_liberalism_party > social_democracy_party }
-									check_variable = { social_liberalism_party > radical_socialism_party }
-								}
-								set_politics = {
-									ruling_party = social_liberalism
-									#elections_allowed = yes
-								}
-								else = {
-									set_politics = {
-										ruling_party = communism
-										#elections_allowed = yes
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+			limit = { check_variable = { tempcommi > temp0 } }
+			set_temp_variable = { temp0 = tempcommi }
+		}
+		if = {
+			limit = { check_variable = { tempsocdem > temp0 } }
+			set_temp_variable = { temp0 = tempsocdem }
+		}
+		if = {
+			limit = { check_variable = { tempsoclib > temp0 } }
+			set_temp_variable = { temp0 = tempsoclib }
+		}
+
+		if = {
+			limit = { check_variable = { social_democracy_party > socialist_parties } check_variable = { social_democracy_party > communism_party } check_variable = { radical_socialism_party > communism_party } }
+			set_politics = { ruling_party = social_democracy }
+		}
+		else_if = {
+			limit = { check_variable = { radical_socialism_party > socialist_parties } check_variable = { radical_socialism_party > communism_party } }
+			set_politics = { ruling_party = radical_socialism }
+		}
+		else_if = {
+			limit = { check_variable = { communism_party > socialist_parties } }
+			set_politics = { ruling_party = communism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempradsoc } }
+			set_politics = { ruling_party = radical_socialism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempcommi } }
+			set_politics = { ruling_party = communism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempsocdem } }
+			set_politics = { ruling_party = social_democracy }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempsoclib } }
+			set_politics = { ruling_party = social_liberalism }
+		}
+		else = {
+			set_politics = { ruling_party = communism }
 		}
 	}
 
 	ruling_liberal_coalition = {
+		set_temp_variable = { temp0 = 0 }
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { social_democracy_party > market_liberalism_party }
-					check_variable = { social_democracy_party > social_conservatism_party }
-					check_variable = { social_democracy_party > social_liberalism_party }
-				}
-				set_politics = {
-					ruling_party = social_democracy
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { social_conservatism_party > market_liberalism_party }
-							check_variable = { social_conservatism_party > social_democracy_party }
-							check_variable = { social_conservatism_party > social_liberalism_party }
-						}
-						set_politics = {
-							ruling_party = social_conservatism
-							#elections_allowed = yes
-						}
-						else = {
-							if = {
-								limit = {
-									check_variable = { social_liberalism_party > market_liberalism_party }
-									check_variable = { social_liberalism_party > social_democracy_party }
-									check_variable = { social_liberalism_party > social_conservatism_party }
-								}
-								set_politics = {
-									ruling_party = social_liberalism
-									#elections_allowed = yes
-								}
-								else = {
-									set_politics = {
-										ruling_party = market_liberalism
-										#elections_allowed = yes
-									}
-								}
-							}
-						}
-					}
-				}
+			limit = { has_country_flag = political_social_democrats_in_liberal_coalition }
+			set_temp_variable = { tempsocdem = social_democracy_party }
+			else = {
+				set_temp_variable = { tempsocdem = 0 }
 			}
 		}
 		if = {
-			limit = {
-				has_country_flag = political_social_conservatives_in_authoritarian_coalition
-				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { social_democracy_party > market_liberalism_party }
-					check_variable = { social_democracy_party > social_liberalism_party }
-				}
-				set_politics = {
-					ruling_party = social_democracy
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						if = {
-							limit = {
-								check_variable = { social_liberalism_party > market_liberalism_party }
-								check_variable = { social_liberalism_party > social_democracy_party }
-							}
-							set_politics = {
-								ruling_party = social_liberalism
-								#elections_allowed = yes
-							}
-							else = {
-								set_politics = {
-									ruling_party = market_liberalism
-									#elections_allowed = yes
-								}
-							}
-						}
-					}
-				}
+			limit = { NOT = { has_country_flag = political_social_liberals_in_socialist_coalition has_country_flag = political_social_liberals_not_in_liberal_coalition } }
+			set_temp_variable = { tempsoclib = social_liberalism_party }
+			else = {
+				set_temp_variable = { tempsoclib = 0 }
 			}
 		}
+		set_temp_variable = { tempmarketlib = market_liberalism_party }
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
-				has_country_flag = political_social_liberals_in_socialist_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { social_conservatism_party > market_liberalism_party }
-					check_variable = { social_conservatism_party > social_democracy_party }
-				}
-				set_politics = {
-					ruling_party = social_conservatism
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						if = {
-							limit = {
-								check_variable = { social_democracy_party > market_liberalism_party }
-								check_variable = { social_democracy_party > social_conservatism_party }
-							}
-							set_politics = {
-								ruling_party = social_democracy
-								#elections_allowed = yes
-							}
-							else = {
-								set_politics = {
-									ruling_party = market_liberalism
-									#elections_allowed = yes
-								}
-							}
-						}
-					}
-				}
+			limit = { NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition } }
+			set_temp_variable = { tempcons = social_conservatism_party }
+			else = {
+				set_temp_variable = { tempcons = 0 }
 			}
 		}
+
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-				has_country_flag = political_social_democrats_in_socialist_coalition
-				has_country_flag = political_social_liberals_in_socialist_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { social_conservatism_party > market_liberalism_party }
-				}
-				set_politics = {
-					ruling_party = social_conservatism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = market_liberalism
-						#elections_allowed = yes
-					}
-				}
-			}
+			limit = { check_variable = { tempsocdem > temp0 } }
+			set_temp_variable = { temp0 = tempsocdem }
 		}
 		if = {
-			limit = {
-				has_country_flag = political_social_conservatives_in_authoritarian_coalition
-				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
-				has_country_flag = political_social_liberals_in_socialist_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { social_democracy_party > market_liberalism_party }
-				}
-				set_politics = {
-					ruling_party = social_democracy
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = market_liberalism
-						#elections_allowed = yes
-					}
-				}
-			}
+			limit = { check_variable = { tempsoclib > temp0 } }
+			set_temp_variable = { temp0 = tempsoclib }
 		}
 		if = {
-			limit = {
-				has_country_flag = political_social_conservatives_in_authoritarian_coalition
-				has_country_flag = political_social_democrats_in_socialist_coalition
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { social_liberalism_party > market_liberalism_party }
-				}
-				set_politics = {
-					ruling_party = social_liberalism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = market_liberalism
-						#elections_allowed = yes
-					}
-				}
-			}
+			limit = { check_variable = { tempmarketlib > temp0 } }
+			set_temp_variable = { temp0 = tempmarketlib }
 		}
 		if = {
-			limit = {
-				has_country_flag = political_social_conservatives_in_authoritarian_coalition
-				has_country_flag = political_social_democrats_in_socialist_coalition
-				has_country_flag = political_social_liberals_in_socialist_coalition
-			}
-			set_politics = {
-				ruling_party = market_liberalism
-				#elections_allowed = yes
-			}
+			limit = { check_variable = { tempcons > temp0 } }
+			set_temp_variable = { temp0 = tempcons }
+		}
+
+		if = {
+			limit = { check_variable = { social_conservatism_party > liberal_parties } check_variable = { social_conservatism_party > social_liberalism_party } }
+			set_politics = { ruling_party = social_conservatism }
+		}
+		else_if = {
+			limit = { check_variable = { social_liberalism_party > liberal_parties } }
+			set_politics = { ruling_party = social_liberalism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempsocdem } }
+			set_politics = { ruling_party = social_democracy }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempsoclib } }
+			set_politics = { ruling_party = social_liberalism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempmarketlib } }
+			set_politics = { ruling_party = market_liberalism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempcons } }
+			set_politics = { ruling_party = social_conservatism }
+		}
+		else = {
+			set_politics = { ruling_party = market_liberalism }
 		}
 	}
 
 	ruling_authoritarian_coalition = {
+		set_temp_variable = { temp0 = 0 }
 		if = {
-			limit = {
-				has_country_flag = political_fascists_in_authoritarian_coalition
-				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-				has_country_flag = political_social_conservatives_in_authoritarian_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { fascism_party > despotism_party }
-					check_variable = { fascism_party > authoritarism_party }
-					check_variable = { fascism_party > social_conservatism_party }
-				}
-				set_politics = {
-					ruling_party = fascism
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { despotism_party > fascism_party }
-							check_variable = { despotism_party > authoritarism_party }
-							check_variable = { despotism_party > social_conservatism_party }
-						}
-						set_politics = {
-							ruling_party = despotism
-							#elections_allowed = yes
-						}
-						else = {
-							if = {
-								limit = {
-									check_variable = { social_conservatism_party > fascism_party }
-									check_variable = { social_conservatism_party > authoritarism_party }
-									check_variable = { social_conservatism_party > despotism_party }
-								}
-								set_politics = {
-									ruling_party = social_conservatism
-									#elections_allowed = yes
-								}
-								else = {
-									set_politics = {
-										ruling_party = authoritarism
-										#elections_allowed = yes
-									}
-								}
-							}
-						}
-					}
-				}
+			limit = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
+			set_temp_variable = { tempcons = social_conservatism_party }
+			else = {
+				set_temp_variable = { tempcons = 0 }
 			}
 		}
 		if = {
-			limit = {
-				has_country_flag = political_fascists_in_authoritarian_coalition
-				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { fascism_party > despotism_party }
-					check_variable = { fascism_party > authoritarism_party }
-				}
-				set_politics = {
-					ruling_party = fascism
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { despotism_party > fascism_party }
-							check_variable = { despotism_party > authoritarism_party }
-						}
-						set_politics = {
-							ruling_party = despotism
-							#elections_allowed = yes
-						}
-						else = {
-							set_politics = {
-								ruling_party = authoritarism
-								#elections_allowed = yes
-							}
-						}
-					}
-				}
+			limit = { NOT = { has_country_flag = political_authoritarists_in_reactionary_coalition } }
+			set_temp_variable = { tempauth = authoritarism_party }
+			else = {
+				set_temp_variable = { tempauth = 0 }
 			}
 		}
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
-				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-				has_country_flag = political_social_conservatives_in_authoritarian_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { social_conservatism_party > despotism_party }
-					check_variable = { social_conservatism_party > authoritarism_party }
-				}
-				set_politics = {
-					ruling_party = social_conservatism
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { despotism_party > social_conservatism_party }
-							check_variable = { despotism_party > authoritarism_party }
-						}
-						set_politics = {
-							ruling_party = despotism
-							#elections_allowed = yes
-						}
-						else = {
-							set_politics = {
-								ruling_party = authoritarism
-								#elections_allowed = yes
-							}
-						}
-					}
-				}
+			limit = { has_country_flag = political_despotists_in_authoritarian_coalition }
+			set_temp_variable = { tempdesp = despotism_party }
+			else = {
+				set_temp_variable = { tempdesp = 0 }
 			}
 		}
 		if = {
-			limit = {
-				has_country_flag = political_fascists_in_authoritarian_coalition
-				has_country_flag = political_despotists_in_reactionary_coalition
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { social_conservatism_party > fascism_party }
-					check_variable = { social_conservatism_party > authoritarism_party }
-				}
-				set_politics = {
-					ruling_party = social_conservatism
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { fascism_party > social_conservatism_party }
-							check_variable = { fascism_party > authoritarism_party }
-						}
-						set_politics = {
-							ruling_party = fascism
-							#elections_allowed = yes
-						}
-						else = {
-							set_politics = {
-								ruling_party = authoritarism
-								#elections_allowed = yes
-							}
-						}
-					}
-				}
+			limit = { has_country_flag = political_fascists_in_authoritarian_coalition }
+			set_temp_variable = { tempfasc = fascism_party }
+			else = {
+				set_temp_variable = { tempfasc = 0 }
 			}
 		}
+
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
-				has_country_flag = political_despotists_in_reactionary_coalition
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-			}
-			set_politics = {
-				ruling_party = authoritarism
-				#elections_allowed = yes
-			}
+			limit = { check_variable = { tempcons > temp0 } }
+			set_temp_variable = { temp0 = tempcons }
 		}
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
-				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { despotism_party > authoritarism_party }
-				}
-				set_politics = {
-					ruling_party = despotism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = authoritarism
-						#elections_allowed = yes
-					}
-				}
-			}
+			limit = { check_variable = { tempauth > temp0 } }
+			set_temp_variable = { temp0 = tempauth }
 		}
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
-				has_country_flag = political_despotists_in_reactionary_coalition
-				has_country_flag = political_social_conservatives_in_authoritarian_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { social_conservatism_party > authoritarism_party }
-				}
-				set_politics = {
-					ruling_party = social_conservatism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = authoritarism
-						#elections_allowed = yes
-					}
-				}
-			}
+			limit = { check_variable = { tempdesp > temp0 } }
+			set_temp_variable = { temp0 = tempdesp }
 		}
 		if = {
-			limit = {
-				has_country_flag = political_fascists_in_authoritarian_coalition
-				has_country_flag = political_despotists_in_reactionary_coalition
-				NOT = { has_country_flag = political_social_conservatives_in_authoritarian_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { fascism_party > authoritarism_party }
-				}
-				set_politics = {
-					ruling_party = fascism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = authoritarism
-						#elections_allowed = yes
-					}
-				}
-			}
+			limit = { check_variable = { tempfasc > temp0 } }
+			set_temp_variable = { temp0 = tempfasc }
+		}
+
+		if = {
+			limit = { check_variable = { despotism_party > authoritarian_parties } }
+			set_politics = { ruling_party = despotism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempcons } }
+			set_politics = { ruling_party = social_conservatism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempauth } }
+			set_politics = { ruling_party = authoritarism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempdesp } }
+			set_politics = { ruling_party = despotism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempfasc } }
+			set_politics = { ruling_party = fascism }
+		}
+		else = {
+			set_politics = { ruling_party = authoritarism }
 		}
 	}
 
 	ruling_reactionary_coalition = {
+		set_temp_variable = { tempreactcoal = 0 }
+		set_temp_variable = { temp0 = 0 }
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
-				NOT = { has_country_flag = political_national_syndicalists_not_in_reactionary_coalition }
-				has_country_flag = political_despotists_in_reactionary_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { despotism_party > national_syndicalism_party }
-					check_variable = { despotism_party > fascism_party }
-				}
-				set_politics = {
-					ruling_party = despotism
-					#elections_allowed = yes
-				}
-				else = {
-					if = {
-						limit = {
-							check_variable = { national_syndicalism_party > fascism_party }
-							check_variable = { national_syndicalism_party > despotism_party }
-						}
-						set_politics = {
-							ruling_party = national_syndicalism
-							#elections_allowed = yes
-						}
-						else = {
-							set_politics = {
-								ruling_party = fascism
-								#elections_allowed = yes
-							}
-						}
-					}
-				}
+			limit = { has_country_flag = political_authoritarists_in_reactionary_coalition }
+			set_temp_variable = { tempauth = authoritarism_party }
+			else = {
+				set_temp_variable = { tempdesp = 0 }
 			}
 		}
 		if = {
-			limit = {
-				has_country_flag = political_fascists_in_authoritarian_coalition
-				has_country_flag = political_despotists_in_reactionary_coalition
-			}
-			if = {
-				limit = {
-					check_variable = { despotism_party > national_syndicalism_party }
-				}
-				set_politics = {
-					ruling_party = despotism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = national_syndicalism
-						#elections_allowed = yes
-					}
-				}
+			limit = { has_country_flag = political_despotists_in_reactionary_coalition }
+			set_temp_variable = { tempdesp = despotism_party }
+			else = {
+				set_temp_variable = { tempdesp = 0 }
 			}
 		}
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
-				NOT = { has_country_flag = political_national_syndicalists_not_in_reactionary_coalition }
-				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-			}
-			if = {
-				limit = {
-					check_variable = { national_syndicalism_party > fascism_party }
-				}
-				set_politics = {
-					ruling_party = national_syndicalism
-					#elections_allowed = yes
-				}
-				else = {
-					set_politics = {
-						ruling_party = fascism
-						#elections_allowed = yes
-					}
-				}
+			limit = { NOT = { has_country_flag = political_fascists_in_authoritarian_coalition } }
+			set_temp_variable = { tempfasc = fascism_party }
+			else = {
+				set_temp_variable = { tempfasc = 0 }
 			}
 		}
 		if = {
-			limit = {
-				NOT = { has_country_flag = political_fascists_in_authoritarian_coalition }
-				has_country_flag = political_national_syndicalists_not_in_reactionary_coalition
-				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-			}
-			set_politics = {
-				ruling_party = fascism
-				#elections_allowed = yes
+			limit = { NOT = { has_country_flag = political_national_syndicalists_not_in_reactionary_coalition } }
+			set_temp_variable = { tempnatsynd = national_syndicalism_party }
+			else = {
+				set_temp_variable = { tempnatsynd = 0 }
 			}
 		}
+
 		if = {
-			limit = {
-				has_country_flag = political_fascists_in_authoritarian_coalition
-				NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-			}
-			set_politics = {
-				ruling_party = national_syndicalism
-				#elections_allowed = yes
-			}
+			limit = { check_variable = { tempauth > temp0 } }
+			set_temp_variable = { temp0 = tempauth }
+		}
+		if = {
+			limit = { check_variable = { tempdesp > temp0 } }
+			set_temp_variable = { temp0 = tempdesp }
+		}
+		if = {
+			limit = { check_variable = { tempfasc > temp0 } }
+			set_temp_variable = { temp0 = tempfasc }
+		}
+		if = {
+			limit = { check_variable = { tempnatsynd > temp0 } }
+			set_temp_variable = { temp0 = tempnatsynd }
+		}
+
+		if = {
+			limit = { check_variable = { national_syndicalism_party > reactionary_parties } }
+			set_politics = { ruling_party = national_syndicalism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempauth } }
+			set_politics = { ruling_party = authoritarism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempdesp } }
+			set_politics = { ruling_party = despotism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempfasc } }
+			set_politics = { ruling_party = fascism }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = tempnatsynd } }
+			set_politics = { ruling_party = national_syndicalism }
+		}
+		else = {
+			set_politics = { ruling_party = national_syndicalism }
 		}
 	}
 
+	elections_allowed_0 = {
+	if = { limit = { has_government = radical_socialism } set_politics = { ruling_party = radical_socialism elections_allowed = yes } }
+	if = { limit = { has_government = communism } set_politics = { ruling_party = communism elections_allowed = yes } }
+	if = { limit = { has_government = social_democracy } set_politics = { ruling_party = social_democracy elections_allowed = yes } }
+	if = { limit = { has_government = social_liberalism } set_politics = { ruling_party = social_liberalism elections_allowed = yes } }
+	if = { limit = { has_government = market_liberalism } set_politics = { ruling_party = market_liberalism elections_allowed = yes } }
+	if = { limit = { has_government = social_conservatism } set_politics = { ruling_party = social_conservatism elections_allowed = yes } }
+	if = { limit = { has_government = authoritarism } set_politics = { ruling_party = authoritarism elections_allowed = yes } }
+	if = { limit = { has_government = despotism } set_politics = { ruling_party = despotism elections_allowed = yes } }
+	if = { limit = { has_government = fascism } set_politics = { ruling_party = fascism elections_allowed = yes } }
+	if = { limit = { has_government = national_syndicalism } set_politics = { ruling_party = national_syndicalism elections_allowed = yes } }
+	}
+	
 	elections_allowed_36 = {
-	if = {
-	limit = {has_government = radical_socialism}
-	set_politics = {ruling_party = radical_socialism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = communism}
-	set_politics = {ruling_party = communism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = social_democracy}
-	set_politics = {ruling_party = social_democracy elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = social_liberalism}
-	set_politics = {ruling_party = social_liberalism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = market_liberalism}
-	set_politics = {ruling_party = market_liberalism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = social_conservatism}
-	set_politics = {ruling_party = social_conservatism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = authoritarism}
-	set_politics = {ruling_party = authoritarism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = despotism}
-	set_politics = {ruling_party = despotism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = fascism}
-	set_politics = {ruling_party = fascism elections_allowed = yes election_frequency = 36}
-	}
-	if = {
-	limit = {has_government = national_syndicalism}
-	set_politics = {ruling_party = national_syndicalism elections_allowed = yes election_frequency = 36}
-	}
+	if = { limit = { has_government = radical_socialism } set_politics = { ruling_party = radical_socialism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = communism } set_politics = { ruling_party = communism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = social_democracy } set_politics = { ruling_party = social_democracy elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = social_liberalism } set_politics = { ruling_party = social_liberalism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = market_liberalism } set_politics = { ruling_party = market_liberalism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = social_conservatism } set_politics = { ruling_party = social_conservatism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = authoritarism } set_politics = { ruling_party = authoritarism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = despotism } set_politics = { ruling_party = despotism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = fascism } set_politics = { ruling_party = fascism elections_allowed = yes election_frequency = 36 } }
+	if = { limit = { has_government = national_syndicalism } set_politics = { ruling_party = national_syndicalism elections_allowed = yes election_frequency = 36 } }
 	}
 	
 	elections_allowed_48 = {
-	if = {
-	limit = {has_government = radical_socialism}
-	set_politics = {ruling_party = radical_socialism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = communism}
-	set_politics = {ruling_party = communism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = social_democracy}
-	set_politics = {ruling_party = social_democracy elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = social_liberalism}
-	set_politics = {ruling_party = social_liberalism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = market_liberalism}
-	set_politics = {ruling_party = market_liberalism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = social_conservatism}
-	set_politics = {ruling_party = social_conservatism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = authoritarism}
-	set_politics = {ruling_party = authoritarism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = despotism}
-	set_politics = {ruling_party = despotism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = fascism}
-	set_politics = {ruling_party = fascism elections_allowed = yes election_frequency = 48}
-	}
-	if = {
-	limit = {has_government = national_syndicalism}
-	set_politics = {ruling_party = national_syndicalism elections_allowed = yes election_frequency = 48}
-	}
+	if = { limit = { has_government = radical_socialism } set_politics = { ruling_party = radical_socialism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = communism } set_politics = { ruling_party = communism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = social_democracy } set_politics = { ruling_party = social_democracy elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = social_liberalism } set_politics = { ruling_party = social_liberalism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = market_liberalism } set_politics = { ruling_party = market_liberalism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = social_conservatism } set_politics = { ruling_party = social_conservatism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = authoritarism } set_politics = { ruling_party = authoritarism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = despotism } set_politics = { ruling_party = despotism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = fascism } set_politics = { ruling_party = fascism elections_allowed = yes election_frequency = 48 } }
+	if = { limit = { has_government = national_syndicalism } set_politics = { ruling_party = national_syndicalism elections_allowed = yes election_frequency = 48 } }
 	}
 	
 	elections_allowed_60 = {
-	if = {
-	limit = {has_government = radical_socialism}
-	set_politics = {ruling_party = radical_socialism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = communism}
-	set_politics = {ruling_party = communism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = social_democracy}
-	set_politics = {ruling_party = social_democracy elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = social_liberalism}
-	set_politics = {ruling_party = social_liberalism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = market_liberalism}
-	set_politics = {ruling_party = market_liberalism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = social_conservatism}
-	set_politics = {ruling_party = social_conservatism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = authoritarism}
-	set_politics = {ruling_party = authoritarism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = despotism}
-	set_politics = {ruling_party = despotism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = fascism}
-	set_politics = {ruling_party = fascism elections_allowed = yes election_frequency = 60}
-	}
-	if = {
-	limit = {has_government = national_syndicalism}
-	set_politics = {ruling_party = national_syndicalism elections_allowed = yes election_frequency = 60}
-	}
+	if = { limit = { has_government = radical_socialism } set_politics = { ruling_party = radical_socialism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = communism } set_politics = { ruling_party = communism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = social_democracy } set_politics = { ruling_party = social_democracy elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = social_liberalism } set_politics = { ruling_party = social_liberalism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = market_liberalism } set_politics = { ruling_party = market_liberalism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = social_conservatism } set_politics = { ruling_party = social_conservatism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = authoritarism } set_politics = { ruling_party = authoritarism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = despotism } set_politics = { ruling_party = despotism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = fascism } set_politics = { ruling_party = fascism elections_allowed = yes election_frequency = 60 } }
+	if = { limit = { has_government = national_syndicalism } set_politics = { ruling_party = national_syndicalism elections_allowed = yes election_frequency = 60 } }
 	}
 	
 	elections_allowed_no = {
-	if = {
-	limit = {has_government = radical_socialism}
-	set_politics = {ruling_party = radical_socialism elections_allowed = no}
+	if = { limit = { has_government = radical_socialism } set_politics = { ruling_party = radical_socialism elections_allowed = no } }
+	if = { limit = { has_government = communism } set_politics = { ruling_party = communism elections_allowed = no } }
+	if = { limit = { has_government = social_democracy } set_politics = { ruling_party = social_democracy elections_allowed = no } }
+	if = { limit = { has_government = social_liberalism } set_politics = { ruling_party = social_liberalism elections_allowed = no } }
+	if = { limit = { has_government = market_liberalism } set_politics = { ruling_party = market_liberalism elections_allowed = no } }
+	if = { limit = { has_government = social_conservatism } set_politics = { ruling_party = social_conservatism elections_allowed = no } }
+	if = { limit = { has_government = authoritarism } set_politics = { ruling_party = authoritarism elections_allowed = no } }
+	if = { limit = { has_government = despotism } set_politics = { ruling_party = despotism elections_allowed = no } }
+	if = { limit = { has_government = fascism } set_politics = { ruling_party = fascism elections_allowed = no } }
+	if = { limit = { has_government = national_syndicalism } set_politics = { ruling_party = national_syndicalism elections_allowed = no } }
 	}
-	if = {
-	limit = {has_government = communism}
-	set_politics = {ruling_party = communism elections_allowed = no}
+
+	rise_of_red_alert_level_when_one_country_turns_to_communism = {
+		set_variable = { states_divider = 0 }
+		set_variable = { factories_divider = 0 }
+		every_country = {
+			add_to_variable = {
+				var = ROOT.states_divider
+				value = num_owned_controlled_states
+			}
+			add_to_variable = {
+				var = ROOT.factories_divider
+				value = num_of_factories
+			}
+		}
+		set_variable = { change_of_red_alert_level = 1 }
+		multiply_variable = { change_of_red_alert_level = num_owned_controlled_states }
+		multiply_variable = { change_of_red_alert_level = num_of_factories }
+		divide_variable = { change_of_red_alert_level = states_divider }
+		divide_variable = { change_of_red_alert_level = factories_divider }
+		multiply_variable = { change_of_red_alert_level = 250 }
+		
+		add_to_variable = {
+			var = global.red_alert
+			value = change_of_red_alert_level
+		}
+		clear_variable = states_divider
+		clear_variable = factories_divider
+		clear_variable = change_of_red_alert_level
 	}
-	if = {
-	limit = {has_government = social_democracy}
-	set_politics = {ruling_party = social_democracy elections_allowed = no}
-	}
-	if = {
-	limit = {has_government = social_liberalism}
-	set_politics = {ruling_party = social_liberalism elections_allowed = no}
-	}
-	if = {
-	limit = {has_government = market_liberalism}
-	set_politics = {ruling_party = market_liberalism elections_allowed = no}
-	}
-	if = {
-	limit = {has_government = social_conservatism}
-	set_politics = {ruling_party = social_conservatism elections_allowed = no}
-	}
-	if = {
-	limit = {has_government = authoritarism}
-	set_politics = {ruling_party = authoritarism elections_allowed = no}
-	}
-	if = {
-	limit = {has_government = despotism}
-	set_politics = {ruling_party = despotism elections_allowed = no}
-	}
-	if = {
-	limit = {has_government = fascism}
-	set_politics = {ruling_party = fascism elections_allowed = no}
-	}
-	if = {
-	limit = {has_government = national_syndicalism}
-	set_politics = {ruling_party = national_syndicalism elections_allowed = no}
-	}
+	fall_of_red_alert_level_when_one_country_turns_to_communism = {
+		set_variable = { states_divider = 0 }
+		set_variable = { factories_divider = 0 }
+		every_country = {
+			add_to_variable = {
+				var = ROOT.states_divider
+				value = num_owned_controlled_states
+			}
+			add_to_variable = {
+				var = ROOT.factories_divider
+				value = num_of_factories
+			}
+		}
+		set_variable = { change_of_red_alert_level = 1 }
+		multiply_variable = { change_of_red_alert_level = num_owned_controlled_states }
+		multiply_variable = { change_of_red_alert_level = num_of_factories }
+		divide_variable = { change_of_red_alert_level = states_divider }
+		divide_variable = { change_of_red_alert_level = factories_divider }
+		multiply_variable = { change_of_red_alert_level = -250 }
+		
+		add_to_variable = {
+			var = global.red_alert
+			value = change_of_red_alert_level
+		}
+		clear_variable = states_divider
+		clear_variable = factories_divider
+		clear_variable = change_of_red_alert_level
 	}

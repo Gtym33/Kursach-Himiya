@@ -119,11 +119,11 @@ focus_tree = {
 		x = -1
 		y = 2
 		completion_reward = {
-			remove_ideas_with_trait = head_of_government
-			remove_ideas_with_trait = foreign_minister
-			remove_ideas_with_trait = economy_minister
-			remove_ideas_with_trait = security_minister
-			remove_ideas_with_trait = head_of_intel
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_ministe_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
 			add_ideas = {
 				Alexander_Kerensky_1
 				Mikhail_Tereshchenko_2
@@ -448,11 +448,11 @@ focus_tree = {
 		x = -1
 		y = 5
 		completion_reward = {
-			remove_ideas_with_trait = head_of_government
-			remove_ideas_with_trait = foreign_minister
-			remove_ideas_with_trait = economy_minister
-			remove_ideas_with_trait = security_minister
-			remove_ideas_with_trait = head_of_intel
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_ministe_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
 			add_ideas = {
 				Nikolay_Chkheidze_1
 				Alexander_Martynov_2
@@ -1036,6 +1036,10 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_russian_cincinnatus
 		completion_reward = {
+			add_ideas = {
+				soviet_republic_gov_form
+				local_assembly_decisions_b_law
+			}
 		}
 
 	}
@@ -1064,6 +1068,10 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_russian_cincinnatus
 		completion_reward = {
+			add_ideas = {
+				parliamentary_republic_gov_form
+				constitution_b_law
+			}
 		}
 
 	}
@@ -1091,6 +1099,10 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_russian_cincinnatus
 		completion_reward = {
+			add_ideas = {
+				military_dictatorship_gov_form
+				decrees_of_ruler_b_law
+			}
 		}
 
 	}
@@ -1119,6 +1131,10 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_russian_cincinnatus
 		completion_reward = {
+			add_ideas = {
+				limited_monarchy_gov_form
+				constitution_b_law
+			}
 		}
 
 	}
@@ -1317,6 +1333,9 @@ focus_tree = {
 		y = 3
 		relative_position_id = RUS_soviet_republic_after_CA
 		completion_reward = {
+			add_ideas = {
+				confederal_gov_terr
+			}
 		}
 
 	}
@@ -1342,6 +1361,9 @@ focus_tree = {
 		y = 3
 		relative_position_id = RUS_soviet_republic_after_CA
 		completion_reward = {
+			add_ideas = {
+				federal_gov_terr
+			}
 		}
 
 	}
@@ -1367,6 +1389,9 @@ focus_tree = {
 		y = 3
 		relative_position_id = RUS_soviet_republic_after_CA
 		completion_reward = {
+			add_ideas = {
+				unitary_gov_terr
+			}
 		}
 
 	}
@@ -1375,6 +1400,9 @@ focus_tree = {
 		id = RUS_CA_form_USSR
 		icon = GFX_goal_RSS_comissars_psr
 		cost = 5
+		available = {
+			has_war = no
+		}
 		prerequisite = {
 			focus = RUS_soviet_republic_after_CA
 			focus = RUS_republic_after_CA
@@ -1399,6 +1427,44 @@ focus_tree = {
 		y = 4
 		relative_position_id = RUS_soviet_republic_after_CA
 		completion_reward = {
+			hidden_effect = {
+				SOV = {
+					save_global_event_target_as = UNITED_COUNTRY
+				}
+				ROOT = {
+					save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR
+					capital_scope = { set_state_flag = new_capital SOV = { transfer_state = PREV } }
+					party_populatiry_addition_script_1 = yes
+				}
+				if = {
+					limit = {
+						USR = { is_in_faction_with = ROOT } SOV = { has_country_flag = SOV_start_pos_federal_plan }
+					}
+					USR = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR } event_target:UNITED_COUNTRY = { inherit_technology = USR }
+				}
+				else_if = {
+					limit = {
+						UKR = { is_in_faction_with = ROOT } SOV = { has_country_flag = SOV_start_pos_federal_plan }
+					}
+					UKR = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR } event_target:UNITED_COUNTRY = { inherit_technology = UKR }
+				}
+				else = {
+					ROOT = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR }
+				}
+				if = {
+					limit = { has_idea = unitary_gov_terr }
+					SOV = { add_ideas = unitary_gov_terr }
+				}
+				if = {
+					limit = { has_idea = federal_gov_terr }
+					SOV = { add_ideas = federal_gov_terr }
+				}
+				if = {
+					limit = { has_idea = confederal_gov_terr }
+					SOV = { add_ideas = confederal_gov_terr }
+				}
+			}
+			country_event = soviet.1
 		}
 
 	}
