@@ -4,7 +4,6 @@
 
 add_namespace = ukraine
 
-
 # Українська Центральна Рада 22 марта
 country_event = {
 	id = ukraine.1
@@ -101,6 +100,7 @@ country_event = {
 	option = {
 		name = budem_sledit_za_situaciey
 		add_political_power = -25
+		clr_country_flag = UKR_allukraine_national_congress
 		set_country_flag = UKR_first_allukraine_military_congress
 	}
 }
@@ -132,65 +132,95 @@ country_event = {
 	
 	fire_only_once = yes
 	
-	immediate = {
-		UKR = { add_ideas = UKR_bonus_against_Central_powers }
-	}
-	
-	option = { #проигнорировать требования и ждать учредительного собрания
+	#Проигнорировать требования и ждать учредительного собрания
+	option = {
 		name = etot_vopros_doljen_bit_reshyon_na_uchrenitelnom_sobranii
 		add_political_power = 50
+		clr_country_flag = UKR_first_allukraine_military_congress
 		set_country_flag = UKR_central_rada_demands_refused
 	}
-	option = { #дать Украине ограниченную автономию
+	#Дать Украине ограниченную автономию
+	option = {
 		name = ukraine.4.b
-		add_political_power = -100
+		clr_country_flag = UKR_first_allukraine_military_congress
 		set_country_flag = UKR_central_rada_demands_accepted
-		UKR = {
-			set_state_owner = 202
-			if = { limit = { RUS = { controls_state = 202 } } transfer_state = 202 }
-			add_to_war = { targeted_alliance = RUS enemy = GER }
-			add_to_war = { targeted_alliance = RUS enemy = AUH }
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					state = 202
+					state = 93
+					state = 193
+					state = 198
+					state = 199
+					state = 201
+					state = 203
+					state = 259
+					state = 959
+					state = 812
+					state = 868
+					state = 200
+					state = 221
+					state = 225
+					state = 226
+					state = 1063
+					state = 814
+					state = 958
+					state = 852
+					#state = 923
+					#state = 961
+				}
+			}
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
+			}
 		}
+		RUS = { UKR = { subjecting_script_with_transfer_parties_dominion = yes } }
 		UKR = {
-			set_state_owner = 93
-			if = { limit = { RUS = { controls_state = 93 } } transfer_state = 93 }
-			set_state_owner = 193
-			if = { limit = { RUS = { controls_state = 193 } } transfer_state = 193 }
-			set_state_owner = 198
-			if = { limit = { RUS = { controls_state = 198 } } transfer_state = 198 }
-			set_state_owner = 199
-			if = { limit = { RUS = { controls_state = 199 } } transfer_state = 199 }
-			set_state_owner = 201
-			if = { limit = { RUS = { controls_state = 201 } } transfer_state = 201 }
-			set_state_owner = 203
-			if = { limit = { RUS = { controls_state = 203 } } transfer_state = 203 }
-			set_state_owner = 259
-			if = { limit = { RUS = { controls_state = 259 } } transfer_state = 259 }
-			set_state_owner = 959
-			if = { limit = { RUS = { controls_state = 959 } } transfer_state = 959 }
-			set_state_owner = 812
-			if = { limit = { RUS = { controls_state = 812 } } transfer_state = 812 }
-			set_state_owner = 868
-			if = { limit = { RUS = { controls_state = 868 } } transfer_state = 868 }
+			add_to_war = { targeted_alliance = RUS enemy = GER }
+			inherit_technology = RUS
+			hidden_effect = { add_ideas = UKR_bonus_against_Central_powers }
 			load_oob = UKR_1917
 		}
-		puppet = UKR
-		set_autonomy = { target = UKR autonomy_state = autonomy_dominion }
-		UKR = {
-			UKR = { inherit_technology = RUS }
-			hidden_effect = {
-				set_politics={
-					ruling_party=market_liberalism
+		ai_chance = {
+			factor = 0
+		}
+	}
+	#Дать Украине ограниченную автономию а потом за неё играть
+	option = {
+		name = ukraine.4.c
+		clr_country_flag = UKR_first_allukraine_military_congress
+		set_country_flag = UKR_central_rada_demands_accepted
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					state = 202
+					state = 93
+					state = 193
+					state = 198
+					state = 199
+					state = 201
+					state = 203
+					state = 259
+					state = 959
+					state = 812
+					state = 868
 				}
-				set_popularities={
-						communism = 14
-						social_liberalism = 16
-						market_liberalism = 35
-						authoritarism = 16
-						despotism = 14
-						national_syndicalism = 5
-					}
 			}
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
+			}
+		}
+		RUS = { UKR = { subjecting_script_with_transfer_parties_dominion = yes } }
+		UKR = {
+			add_to_war = { targeted_alliance = RUS enemy = GER }
+			hidden_effect = { inherit_technology = RUS add_ideas = UKR_bonus_against_Central_powers }
+			load_oob = UKR_1917
 		}
 		ai_chance = {
 			factor = 0
@@ -226,64 +256,59 @@ country_event = {
 	
 	fire_only_once = yes
 	
-	option = { #переговоры типо
+	#Будем следить за ситуацией
+	option = {
 		name = budem_sledit_za_situaciey
+		clr_country_flag = UKR_central_rada_demands_refused
 		UKR = {
 			transfer_state = 202
-			add_to_war = { targeted_alliance = RUS enemy = GER }
-			add_to_war = { targeted_alliance = RUS enemy = AUH }
 		}
-		puppet = UKR
-		set_autonomy = { target = UKR autonomy_state = autonomy_integrated_puppet }
+		RUS = { UKR = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
 		UKR = {
-			hidden_effect = {
-			UKR = { inherit_technology = RUS }
-				set_politics={
-					ruling_party=market_liberalism last_election = "1919.1.1"
-					election_frequency = 48
-					elections_allowed = yes
-				}
-				set_popularities={
-						communism = 14
-						social_liberalism = 16
-						market_liberalism = 35
-						authoritarism = 16
-						despotism = 14
-						national_syndicalism = 5
-					}
-			}
+			add_to_war = { targeted_alliance = RUS enemy = GER }
+			hidden_effect = { inherit_technology = RUS add_ideas = UKR_bonus_against_Central_powers }
+		}
+		ai_chance = {
+			factor = 0
 		}
 	}
-	option = { #ще не вмерла (играть за Украину)
-		name = ukraine.5.b
+	
+	#Ехать на переговоры
+	option = {
+		name = budem_sledit_za_situaciey
+		clr_country_flag = UKR_central_rada_demands_refused
+		UKR = {
+			transfer_state = 202
+		}
+		RUS = { UKR = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
+		UKR = {
+			add_to_war = { targeted_alliance = RUS enemy = GER }
+			hidden_effect = { inherit_technology = RUS add_ideas = UKR_bonus_against_Central_powers }
+		}
+		UKR = { country_event = { id = ukraine.6 days = 18 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	#Ще не вмерла (играть за Украину)
+	option = {
 		trigger = {
 			is_ai = no
 		}
+		name = ukraine.5.c
+		clr_country_flag = UKR_central_rada_demands_refused
 		UKR = {
 			transfer_state = 202
-			add_to_war = { targeted_alliance = RUS enemy = GER }
-			add_to_war = { targeted_alliance = RUS enemy = AUH }
 		}
-		puppet = UKR
-		set_autonomy = { target = UKR autonomy_state = autonomy_integrated_puppet }
+		RUS = { UKR = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
+		UKR = {
+			add_to_war = { targeted_alliance = RUS enemy = GER }
+			hidden_effect = { inherit_technology = RUS add_ideas = UKR_bonus_against_Central_powers }
+		}
+		UKR = { country_event = { id = ukraine.6 days = 18 } }
 		UKR = {
 			change_tag_from = RUS
-			hidden_effect = {
-			UKR = { inherit_technology = RUS }
-				set_politics={
-					ruling_party=market_liberalism last_election = "1919.1.1"
-					election_frequency = 48
-					elections_allowed = yes
-				}
-				set_popularities={
-						communism = 14
-						social_liberalism = 16
-						market_liberalism = 35
-						authoritarism = 16
-						despotism = 14
-						national_syndicalism = 5
-					}
-			}
 		}
 		ai_chance = {
 			factor = 0
@@ -299,49 +324,20 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
-		tag = UKR
-		RUS = {
-			exists = yes
-			has_country_flag = UKR_central_rada_demands_refused
-			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
-		}
+		UKR = { exists = yes is_subject_of = ROOT }
+		RUS = { NOT = { has_country_flag = RUS_Oktober_revolution_fired } }
 	}
 	
-	mean_time_to_happen = {
-		days = 19
-	}
+	is_triggered_only = yes
 	
-	fire_only_once = yes
-	
-	option = { #принять условия временного правительства
-		name = ukraine.5.a
-		UKR = {
-			set_state_owner = 93
-			if = { limit = { RUS = { controls_state = 93 } } transfer_state = 93 }
-			set_state_owner = 193
-			if = { limit = { RUS = { controls_state = 193 } } transfer_state = 193 }
-			set_state_owner = 198
-			if = { limit = { RUS = { controls_state = 198 } } transfer_state = 198 }
-			set_state_owner = 199
-			if = { limit = { RUS = { controls_state = 199 } } transfer_state = 199 }
-			set_state_owner = 201
-			if = { limit = { RUS = { controls_state = 201 } } transfer_state = 201 }
-			set_state_owner = 203
-			if = { limit = { RUS = { controls_state = 203 } } transfer_state = 203 }
-			set_state_owner = 259
-			if = { limit = { RUS = { controls_state = 259 } } transfer_state = 259 }
-			set_state_owner = 959
-			if = { limit = { RUS = { controls_state = 959 } } transfer_state = 959 }
-			set_state_owner = 812
-			if = { limit = { RUS = { controls_state = 812 } } transfer_state = 812 }
-			set_state_owner = 868
-			if = { limit = { RUS = { controls_state = 868 } } transfer_state = 868 }
-			load_oob = UKR_1917
-		}
+	#Принять условия
+	option = {
+		name = ukraine.6.a
 		RUS = { country_event = ukraine.8 }
 	}
-	option = { #не принимать
-		name = ukraine.5.b
+	#Потребовать большей автономии
+	option = {
+		name = ukraine.6.b
 		add_political_power = 25
 		ai_chance = {
 			factor = 0
@@ -363,67 +359,52 @@ country_event = {
 	
 	option = { #согласиться
 		name = ukraine.5.a
-		ai_chance = {
-			factor = 0
-		}
-		UKR = {
-			set_state_owner = 193
-			if = { limit = { RUS = { controls_state = 193 } } transfer_state = 193 }
-			set_state_owner = 198
-			if = { limit = { RUS = { controls_state = 198 } } transfer_state = 198 }
-			set_state_owner = 199
-			if = { limit = { RUS = { controls_state = 199 } } transfer_state = 199 }
-			set_state_owner = 201
-			if = { limit = { RUS = { controls_state = 201 } } transfer_state = 201 }
-			set_state_owner = 202
-			if = { limit = { RUS = { controls_state = 202 } } transfer_state = 202 }
-			set_state_owner = 203
-			if = { limit = { RUS = { controls_state = 203 } } transfer_state = 203 }
-			set_state_owner = 259
-			if = { limit = { RUS = { controls_state = 259 } } transfer_state = 259 }
-			set_state_owner = 959
-			if = { limit = { RUS = { controls_state = 959 } } transfer_state = 959 }
-			set_state_owner = 812
-			if = { limit = { RUS = { controls_state = 812 } } transfer_state = 812 }
-			set_state_owner = 868
-			if = { limit = { RUS = { controls_state = 868 } } transfer_state = 868 }
-			set_state_owner = 200
-			if = { limit = { RUS = { controls_state = 200 } } transfer_state = 200 }
-			set_state_owner = 221
-			if = { limit = { RUS = { controls_state = 221 } } transfer_state = 221 }
-			set_state_owner = 225
-			if = { limit = { RUS = { controls_state = 225 } } transfer_state = 225 }
-			set_state_owner = 226
-			if = { limit = { RUS = { controls_state = 226 } } transfer_state = 226 }
-			load_oob = UKR_1917
-		}
-		puppet = UKR
-		set_autonomy = { target = UKR autonomy_state = autonomy_dominion }
-		UKR = {
-			hidden_effect = {
-				set_politics={
-					ruling_party=market_liberalism last_election = "1919.1.1"
-					election_frequency = 48
-					elections_allowed = yes
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					state = 202
+					state = 93
+					state = 193
+					state = 198
+					state = 199
+					state = 201
+					state = 203
+					state = 259
+					state = 959
+					state = 812
+					state = 868
+					state = 200
+					state = 221
+					state = 225
+					state = 226
+					state = 1063
+					state = 814
+					state = 958
+					state = 852
+					#state = 923
+					#state = 961
 				}
-				set_popularities={
-						communism = 14
-						social_liberalism = 16
-						market_liberalism = 35
-						authoritarism = 16
-						despotism = 14
-						national_syndicalism = 5
-					}
 			}
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
+			}
+		}
+		UKR = { load_oob = UKR_1917 }
+		RUS = { UKR = { subjecting_script_with_transfer_parties_dominion = yes } }
+		ai_chance = {
+			factor = 50
 		}
 	}
 	option = { #не согласиться
 		name = ukraine.5.b
 		add_political_power = 25
-		ai_chance = {
-			factor = 100
-		}
 		annex_country = { target = UKR }
+		ai_chance = {
+			factor = 50
+		}
 	}
 }
 
@@ -440,23 +421,32 @@ country_event = {
 	
 	option = {
 		name = excellent
-		set_country_flag = UKR_2_universal
-		set_autonomy = { target = UKR autonomy_state = autonomy_colony }
-		UKR = {
-			hidden_effect = {
-				set_politics={
-					ruling_party=market_liberalism
+		UKR = { set_country_flag = UKR_2_universal }
+		subjecting_script_with_transfer_parties_colony = yes
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					state = 202
+					state = 93
+					state = 193
+					state = 198
+					state = 199
+					state = 201
+					state = 203
+					state = 259
+					state = 959
+					state = 812
+					state = 868
 				}
-				set_popularities={
-						communism = 14
-						social_liberalism = 16
-						market_liberalism = 35
-						authoritarism = 16
-						despotism = 14
-						national_syndicalism = 5
-					}
+			}
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
 			}
 		}
+		UKR = { load_oob = UKR_1917 }
 	}
 }
 
@@ -494,23 +484,11 @@ country_event = {
 			active = yes
 		}
 		UKR = {
+			clr_country_flag = UKR_2_universal
 			add_ideas = alliance_neutrality
 			load_oob = UKR_1918
 			add_to_war = { targeted_alliance = RUS enemy = GER }
 			add_to_war = { targeted_alliance = RUS enemy = AUH }
-			set_politics={
-				ruling_party=market_liberalism last_election = "1919.1.1"
-				election_frequency = 48
-				elections_allowed = yes
-			}
-			set_popularities={
-					communism = 14
-					social_liberalism = 16
-					market_liberalism = 35
-					authoritarism = 16
-					despotism = 14
-					national_syndicalism = 5
-				}
 		}
 		if = {
 			limit = { RUS = { owns_state = 78 } }
@@ -602,19 +580,6 @@ country_event = {
 			load_oob = UKR_1918
 			add_to_war = { targeted_alliance = RUS enemy = GER }
 			add_to_war = { targeted_alliance = RUS enemy = AUH }
-			set_politics={
-				ruling_party=market_liberalism last_election = "1919.1.1"
-				election_frequency = 48
-				elections_allowed = yes
-			}
-			set_popularities={
-					communism = 14
-					social_liberalism = 16
-					market_liberalism = 35
-					authoritarism = 16
-					despotism = 14
-					national_syndicalism = 5
-				}
 			change_tag_from = RUS
 		}
 		set_temp_variable = { temp1 = UKR.num_controlled_states }
@@ -685,21 +650,40 @@ country_event = {
 				limit = { is_core_of = UKR }
 				add_core_of = USR
 			}
+			every_state = {
+				limit = {
+					is_owned_by = UKR
+					OR = {
+						state = 200
+						state = 221
+						state = 225
+						state = 960
+						state = 814
+						state = 852
+						state = 958
+						state = 954
+						state = 918
+						state = 227
+						state = 953
+						state = 228
+						state = 1044
+						state = 218
+					}
+				}
+				USR = { transfer_state = PREV }
+			}
 			USR = {
 				set_cosmetic_tag = USR_Ukr_People_Rep_Sov
 				inherit_technology = RUS
-				transfer_state = 200
-				transfer_state = 221
-				transfer_state = 225
-				transfer_state = 814
-				transfer_state = 852
-				transfer_state = 958
-				declare_war_on = {
-					target = DON
-					type = annex_everything
+				if = {
+					limit = { DON = { exists = yes has_war_with = RUS } }
+					declare_war_on = {
+						target = DON
+						type = annex_everything
+					}
 				}
 				if = {
-					limit = { RVA = { exists = yes } }
+					limit = { RVA = { exists = yes has_war_with = RUS } }
 					declare_war_on = {
 						target = RVA
 						type = annex_everything
@@ -759,28 +743,24 @@ country_event = {
 			}
 			USR = {
 				inherit_technology = RUS
-				transfer_state = 200
-				transfer_state = 221
-				transfer_state = 225
-				transfer_state = 814
-				transfer_state = 852
-				transfer_state = 958
-				declare_war_on = {
-					target = DON
-					type = annex_everything
+				if = {
+					limit = { DON = { exists = yes has_war_with = RUS } }
+					declare_war_on = {
+						target = DON
+						type = annex_everything
+					}
 				}
-				declare_war_on = {
-					target = RVA
-					type = annex_everything
+				if = {
+					limit = { RVA = { exists = yes has_war_with = RUS } }
+					declare_war_on = {
+						target = RVA
+						type = annex_everything
+					}
 				}
 				add_ideas = alliance_neutrality
 			}
-			RUS = {
-				end_puppet = UKR
-				remove_from_faction = UKR
-			}
 		}
-		RUS = { every_unit_leader = { limit = { has_id = 19194 } set_nationality = USR } }
+		#RUS = { every_unit_leader = { limit = { has_id = 19194 } set_nationality = USR } }
 		USR = {
 			load_oob = USR_1918
 		}
@@ -797,28 +777,24 @@ country_event = {
 			}
 			USR = {
 				inherit_technology = RUS
-				transfer_state = 200
-				transfer_state = 221
-				transfer_state = 225
-				transfer_state = 814
-				transfer_state = 852
-				transfer_state = 958
-				declare_war_on = {
-					target = DON
-					type = annex_everything
+				if = {
+					limit = { DON = { exists = yes has_war_with = RUS } }
+					declare_war_on = {
+						target = DON
+						type = annex_everything
+					}
 				}
-				declare_war_on = {
-					target = RVA
-					type = annex_everything
+				if = {
+					limit = { RVA = { exists = yes has_war_with = RUS } }
+					declare_war_on = {
+						target = RVA
+						type = annex_everything
+					}
 				}
 				add_ideas = alliance_neutrality
 			}
-			RUS = {
-				end_puppet = UKR
-				remove_from_faction = UKR
-			}
 		}
-		RUS = { every_unit_leader = { limit = { has_id = 19194 } set_nationality = USR } }
+		#RUS = { every_unit_leader = { limit = { has_id = 19194 } set_nationality = USR } }
 		USR = {
 			load_oob = USR_1918
 			change_tag_from = UKR
@@ -961,281 +937,6 @@ country_event = {
 	}
 }
 
-# Вторжение в Крым
-country_event = {
-	id = ukraine.26
-	title = ukraine.26.t
-	desc = ukraine.26.d
-	picture = GFX_report_event_februrary_revolution
-	
-	trigger = {
-		tag = UKR
-		controls_state = 919
-		RUS = { controls_state = 137 has_country_flag = RUS_brest_peace_fired }
-		NOT = { has_war_with = RUS }
-		NOT = { has_war_with = GER }
-	}
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 10
-	}
-	
-	#Начать вторжение
-	option = {
-		name = ukraine.26.a
-		add_political_power = 50
-		add_war_support = 0.02
-		start_border_war = {
-			change_state_after_war = no
-			attacker = {
-				state = 919
-				num_provinces = 2
-				on_win = ukraine.27
-				on_lose = ukraine.28
-				on_cancel = ukraine.29
-			}
-			
-			defender = {
-				state = 137
-				num_provinces = 2
-				on_win = ukraine.28
-				on_lose = ukraine.27
-				on_cancel = ukraine.29
-			}
-		}
-		hidden_effect = { country_event = { id = ukraine.29 days = 7 } }
-		hidden_effect = {
-			137 = {
-				create_unit = {
-					division = "name = \"Diviziya Opolcheniya\" division_template = \"Diviziya Opolcheniya\" start_experience_factor = 0.3 start_equipment_factor = 0.5"
-					owner = RUS
-					prioritize_location = 3722
-				}
-			}
-		}
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Не начинать
-	option = {
-		name = ukraine.26.b
-		add_political_power = -50
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-# Перемога
-country_event = {
-	id = ukraine.27
-	title = ukraine.27.t
-	desc = ukraine.27.d
-	picture = GFX_report_event_februrary_revolution
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = ukraine.27.a
-		if = {
-			limit = { controls_state = 137 }
-			add_political_power = -50
-			add_war_support = -0.02
-			GER = {
-				transfer_state = 137
-				hidden_effect = {
-					137 = {
-						create_unit = {
-							division = "name = \"Mobilized garnison Division\" division_template = \"Mobilized garnison Division\" start_experience_factor = 0.15 start_equipment_factor = 0.5"
-							owner = GER
-						}
-						create_unit = {
-							division = "name = \"Mobilized garnison Division\" division_template = \"Mobilized garnison Division\" start_experience_factor = 0.15 start_equipment_factor = 0.5"
-							owner = GER
-						}
-						create_unit = {
-							division = "name = \"Mobilized garnison Division\" division_template = \"Mobilized garnison Division\" start_experience_factor = 0.15 start_equipment_factor = 0.5"
-							owner = GER
-						}
-					}
-				}
-				country_event = { id = ukraine.30 days = 3 }
-			}
-		}
-	}
-}
-# Зрада
-country_event = {
-	id = ukraine.28
-	title = ukraine.28.t
-	desc = ukraine.28.d
-	picture = GFX_report_event_februrary_revolution
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = ukraine.28.a
-		if = {
-			limit = { controls_state = 137 }
-			add_political_power = 50
-			add_war_support = 0.02
-		}
-		if = {
-			limit = { NOT = { controls_state = 137 } }
-			add_political_power = -50
-			add_war_support = -0.02
-		}
-	}
-}
-# Конец
-country_event = {
-	id = ukraine.29
-	title = ukraine.29.t
-	desc = ukraine.29.d
-	picture = GFX_report_event_februrary_revolution
-	
-	hidden = yes
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = ukraine.29.a
-		cancel_border_war = {
-			attacker = 196
-			defender = 137
-		}
-	}
-}
-
-# Занятие Тамани
-country_event = {
-	id = ukraine.30
-	title = ukraine.30.t
-	desc = ukraine.30.d
-	picture = GFX_report_event_februrary_revolution
-	
-	is_triggered_only = yes
-	
-	#Начать вторжение
-	option = {
-		name = ukraine.30.a
-		add_political_power = 50
-		if = {
-			limit = { tag = GER }
-			add_war_support = -0.02
-			add_popularity = {
-				ideology = authoritarism
-				popularity = -0.03
-			}
-			else = {
-				add_war_support = 0.03
-			}
-		}
-		start_border_war = {
-			change_state_after_war = no
-			attacker = {
-				state = 137
-				num_provinces = 1
-				on_win = ukraine.31
-				on_lose = ukraine.32
-				on_cancel = ukraine.32
-			}
-			
-			defender = {
-				state = 907
-				num_provinces = 1
-				on_win = ukraine.32
-				on_lose = ukraine.31
-				on_cancel = ukraine.32
-			}
-		}
-		hidden_effect = { country_event = { id = ukraine.33 days = 7 } }
-		hidden_effect = {
-			907 = {
-				create_unit = {
-					division = "name = \"Diviziya Opolcheniya\" division_template = \"Diviziya Opolcheniya\" start_experience_factor = 0.3 start_equipment_factor = 0.5"
-					owner = RUS
-					prioritize_location = 3722
-				}
-			}
-		}
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Не начинать
-	option = {
-		name = ukraine.30.b
-		add_political_power = -25
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-# Перемога
-country_event = {
-	id = ukraine.31
-	title = ukraine.31.t
-	desc = ukraine.31.d
-	picture = GFX_report_event_februrary_revolution
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = ukraine.31.a
-		if = {
-			limit = { NOT = { controls_state = 907 } }
-			transfer_state = 907
-		}
-	}
-}
-# Зрада
-country_event = {
-	id = ukraine.32
-	title = ukraine.32.t
-	desc = ukraine.32.d
-	picture = GFX_report_event_februrary_revolution
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = ukraine.32.a
-		if = {
-			limit = { controls_state = 907 }
-			add_political_power = 25
-			add_war_support = 0.02
-		}
-		if = {
-			limit = { NOT = { controls_state = 907 } }
-			add_political_power = -50
-			add_war_support = -0.02
-		}
-	}
-}
-# Конец
-country_event = {
-	id = ukraine.33
-	title = ukraine.33.t
-	desc = ukraine.33.d
-	picture = GFX_report_event_februrary_revolution
-	
-	hidden = yes
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = ukraine.33.a
-		cancel_border_war = {
-			attacker = 137
-			defender = 907
-		}
-	}
-}
-
 # Переворот Скоропадского
 country_event = {
 	id = ukraine.24
@@ -1256,10 +957,8 @@ country_event = {
 			elections_allowed = no
 		}
 		add_ideas = {
-			limited_exports
 			extensive_conscription
 			minimum_legislation
-			interventionalism_law
 			war_economy
 		}
 		add_ideas = UKR_zerno_in
@@ -1277,6 +976,262 @@ country_event = {
 				relation = military_access
 				active = yes
 			}
+		}
+	}
+}
+
+# Переворот Петлюры aka Директории УНР
+country_event = {
+	id = ukraine.31
+	title = ukraine.31.t
+	desc = ukraine.31.d
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		tag = UKR
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = ukraine.31.a
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.3
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.3
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.1
+		}
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		set_country_flag = political_despotism_social_democratic_coalition
+		remove_ideas = UKR_zerno_in
+		GER = {
+			remove_ideas = UKR_zerno_out
+		}
+	}
+}
+
+
+# Вторжение в Крым
+country_event = {
+	id = ukraine.51
+	title = ukraine.51.t
+	desc = ukraine.51.d
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		NOT = { has_government = radical_socialism has_government = communism }
+		OR = {
+			tag = UKR
+			tag = GER
+		}
+		owns_state = 919
+		controls_state = 919
+		NOT = {
+			owns_state = 137
+			controls_state = 137
+		}
+		NOT = { has_war_with = CRI }
+		CRI = { exists = yes controls_state = 137 }
+		NOT = { has_war_with = GER }
+		NOT = { has_war_with = UKR }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	#Начать вторжение
+	option = {
+		name = ukraine.51.a
+		add_political_power = 50
+		add_war_support = 0.02
+		hidden_effect = { country_event = { id = ukraine.53 days = 30 } }
+		declare_war_on = {
+			target = CRI
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	#Не начинать
+	option = {
+		name = ukraine.51.b
+		add_political_power = -50
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Зрада
+country_event = {
+	id = ukraine.52
+	title = ukraine.52.t
+	desc = ukraine.52.d
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		CRI = { exists = yes has_capitulated = no }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = ukraine.52.a
+		add_political_power = -50
+		add_stability = -0.1
+		add_war_support = -0.1
+		add_popularity = {
+			ideology = communism
+			popularity = 0.1
+		}
+		white_peace = CRI
+	}
+}
+
+# Занятие Тамани
+country_event = {
+	id = ukraine.53
+	title = ukraine.53.t
+	desc = ukraine.53.d
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		NOT = { has_government = radical_socialism has_government = communism }
+		OR = {
+			tag = UKR
+			tag = GER
+		}
+		owns_state = 137
+		controls_state = 137
+		NOT = {
+			owns_state = 907
+			controls_state = 907
+		}
+		907 = { OWNER = { NOT = { has_war_with = ROOT } } }
+		907 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	#Начать вторжение
+	option = {
+		name = ukraine.53.a
+		add_political_power = 50
+		if = {
+			limit = { tag = GER }
+			add_war_support = -0.02
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.03
+			}
+			else = {
+				add_war_support = 0.03
+			}
+		}
+		if = {
+			limit = { 907 = { is_in_home_area = yes } }
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 137
+					num_provinces = 1
+					on_win = ukraine.54
+					on_lose = ukraine.55
+					on_cancel = ukraine.55
+				}
+				
+				defender = {
+					state = 907
+					num_provinces = 1
+					on_win = ukraine.55
+					on_lose = ukraine.54
+					on_cancel = ukraine.55
+				}
+			}
+			set_border_war_data = {
+				attacker = 137
+				defender = 907
+				combat_width = 20
+			}
+			else = {
+				transfer_state = 907
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	#Не начинать
+	option = {
+		name = ukraine.53.b
+		if = {
+			limit = { NOT = { tag = GER } }
+			add_political_power = -25
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Перемога
+country_event = {
+	id = ukraine.54
+	title = ukraine.54.t
+	desc = ukraine.54.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = ukraine.54.a
+		if = {
+			limit = { NOT = { controls_state = 907 } }
+			transfer_state = 907
+		}
+	}
+}
+# Зрада
+country_event = {
+	id = ukraine.55
+	title = ukraine.55.t
+	desc = ukraine.55.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = ukraine.55.a
+		if = {
+			limit = { controls_state = 907 }
+			add_political_power = 25
+			add_war_support = 0.02
+		}
+		if = {
+			limit = { NOT = { controls_state = 907 } }
+			add_political_power = -50
+			add_war_support = -0.02
 		}
 	}
 }

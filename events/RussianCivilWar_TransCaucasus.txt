@@ -1348,21 +1348,17 @@ country_event = {
 	trigger = {
 		tag = GEO
 		OR = {
-		controls_state = 803
-		ABK = {is_puppet_of = GEO controls_state = 803}
+			controls_state = 803
+			ABK = { is_puppet_of = GEO controls_state = 803 }
 		}
-		OR = {
-		AND = {
-		RUS = { controls_state = 902 has_country_flag = RUS_czechoslovak_legion_uprising }
-		NOT = { has_war_with = RUS }
-		}
-		AND = {
-		all_country = {
-		is_white_movement_country = yes
-		controls_state = 902
-		NOT = { has_war_with = GEO }
-		}
-		}
+		902 = {
+			CONTROLLER = {
+				NOT = { has_war_with = ROOT }
+				OR = {
+					has_country_flag = RUS_czechoslovak_legion_uprising
+					is_white_movement_country = yes
+				}
+			}
 		}
 	}
 	
@@ -1378,33 +1374,29 @@ country_event = {
 		add_political_power = 50
 		add_war_support = 0.02
 		start_border_war = {
-			change_state_after_war = no
+			change_state_after_war = yes
 			attacker = {
 				state = 803
-				num_provinces = 2
+				num_provinces = 1
 				on_win = rcw_tc.36
 				on_lose = rcw_tc.37
-				on_cancel = rcw_tc.38
+				on_cancel = rcw_tc.37
 			}
 			
 			defender = {
 				state = 902
-				num_provinces = 2
+				num_provinces = 1
 				on_win = rcw_tc.37
 				on_lose = rcw_tc.36
-				on_cancel = rcw_tc.38
+				on_cancel = rcw_tc.37
 			}
 		}
-		hidden_effect = { country_event = { id = rcw_tc.38 days = 7 } }
-		#hidden_effect = {
-			#137 = {
-				#create_unit = {
-					#division = "name = \"Diviziya Opolcheniya\" division_template = \"Diviziya Opolcheniya\" start_experience_factor = 0.3 start_equipment_factor = 0.5"
-					#owner = RUS
-					#prioritize_location = 3722
-				#}
-			#}
-		#}
+		set_border_war_data = {
+			attacker = 803
+			defender = 902
+			combat_width = 20
+		}
+		if = { limit = { 902 = { CONTROLLER = { tag = RUS } } } 902 = { spawn_red_guard_in_state = yes spawn_red_guard_in_state = yes } }
 		ai_chance = {
 			factor = 1
 		}
@@ -1434,9 +1426,6 @@ country_event = {
 			limit = { tag = RUS }
 			add_political_power = -50
 			add_war_support = -0.02
-			GEO = {
-				transfer_state = 902
-			}
 		}
 	}
 }
@@ -1460,25 +1449,6 @@ country_event = {
 			limit = { tag = GEO }
 			add_political_power = -50
 			add_war_support = -0.02
-		}
-	}
-}
-# Конец
-country_event = {
-	id = rcw_tc.38
-	title = rcw_tc.38.t
-	desc = rcw_tc.38.d
-	picture = GFX_report_event_februrary_revolution
-	
-	hidden = yes
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_tc.38.a
-		cancel_border_war = {
-			attacker = 803
-			defender = 902
 		}
 	}
 }
