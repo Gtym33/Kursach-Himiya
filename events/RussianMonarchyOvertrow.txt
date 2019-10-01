@@ -120,7 +120,6 @@ country_event = {
 			has_war_with = ENG
 		}
 		has_political_power < 0
-		date > 1917.2.1
 	}
 	
 	is_triggered_only = yes
@@ -163,7 +162,6 @@ country_event = {
 			has_war_with = ENG
 		}
 		has_political_power < 0
-		NOT = { controls_state = 64 }
 	}
 	
 	mean_time_to_happen = {
@@ -219,12 +217,24 @@ country_event = {
 		add_stability = 0.05
 		add_popularity = { ideology = market_liberalism popularity = 0.05 }
 		set_country_flag = RUS_make_concessions_with_duma
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
 	}
 	#Распустить
 	option = {
 		name = russian_ovrthrw_of_mon.6.b
 		add_political_power = 25
 		set_country_flag = RUS_duma_dissolved
+		add_to_variable = { RUS.RUS_otrecheniye = 1 }
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
+		ai_chance = {
+			factor = 2
+		}
 	}
 }
 
@@ -354,6 +364,8 @@ country_event = {
 	option = {
 		name = russian_ovrthrw_of_mon.8.a
 		set_country_flag = RUS_petrograd_soviet
+		country_event = { id = russian_ovrthrw_of_mon.9 days = 2 }
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
 		add_stability = -0.02
 		add_popularity = {
 			ideology = social_liberalism
@@ -381,17 +393,7 @@ country_event = {
 	desc = russian_ovrthrw_of_mon.9.desc
 	picture = GFX_report_event_report_event_order_n_1
 	
-	trigger = {
-		tag = RUS
-		has_country_flag = RUS_petrograd_soviet
-		NOT = { has_country_flag = RUS_revolution_suppressed }
-	}
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 2
-	}
+	is_triggered_only = yes
 	
 	option = {
 		name = russian_ovrthrw_of_mon.9.a
@@ -422,106 +424,6 @@ country_event = {
 			popularity = 0.025
 		}
 		add_political_power = -50
-	}
-}
-
-# Февральская революция
-country_event = {
-	id = russian_ovrthrw_of_mon.10
-	title = russian_ovrthrw_of_mon.10.t
-	desc = russian_ovrthrw_of_mon.10.desc
-	picture = GFX_report_event_rus_fevral
-	
-	trigger = {
-		tag = RUS
-		has_country_flag = RUS_monarchy_not_fall
-		OR = {
-			has_government = authoritarism
-			has_government = despotism
-		}
-		has_country_flag = RUS_petrograd_miting
-		has_country_flag = RUS_petrograd_miting_2
-		has_country_flag = RUS_petrograd_soviet
-		NOT = { has_country_flag = RUS_revolution_suppressed }
-		OR = {
-			has_war_with = GER
-			has_war_with = AUH
-			has_war_with = FRA
-			has_war_with = ENG
-		}
-		#has_stability < 0.05
-	}
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = russian_ovrthrw_of_mon.10.a
-		add_popularity = { ideology = authoritarism popularity = -0.15 }
-		add_popularity = { ideology = fascism popularity = -0.05 }
-		add_popularity = { ideology = market_liberalism popularity = 0.05 }
-		add_stability = 0.05
-		add_political_power = 150
-		remove_tsar_regime_unit_leaders = yes
-		monarchy_fall = yes
-		news_event = { id = news_n.5 hours = 36 }
-		hidden_effect = {
-			end_puppet = KHI
-			end_puppet = BUK
-			KHI = { leave_faction = yes }
-			BUK = { leave_faction = yes }
-			if = {
-				limit = { KHI = { has_war = yes } }
-				every_country = {
-					limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
-					white_peace = KHI
-				}
-			}
-			if = {
-				limit = { BUK = { has_war = yes } }
-				every_country = {
-					limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
-					white_peace = BUK
-				}
-			}
-		}
-		
-		hidden_effect = { lack_of_officers_rise = yes }
-		set_country_flag = railway_self_government
-		set_country_flag = RUS_provisional_government_created
-		load_focus_tree = Russia_Provisional_government_focus
-		create_country_leader = {
-			name = "Georgiy Lvov"
-			desc = "RUS_Georgiy_lvov_DESC"
-			picture = "gfx/leaders/RUS/Georgiy_Lvov.dds"
-			expire = "1935.1.1"
-			ideology = market_liberalism_ideology
-			traits = {
-				stout_defender appeaser weak_character
-			}
-		}
-		set_politics = {
-			ruling_party = market_liberalism
-			elections_allowed = no
-		}
-		add_ideas = RUS_dvoevlastie_1
-		remove_ideas_with_trait = head_of_government_trait
-		remove_ideas_with_trait = foreign_ministe_trait
-		remove_ideas_with_trait = economy_minister_trait
-		remove_ideas_with_trait = security_minister_trait
-		remove_ideas_with_trait = head_of_intel_trait
-		add_ideas = {
-			Georgiy_Lviv_1
-			Pavel_Milyukov_2
-			Alexander_Konovalov_3
-			Georgiy_Lviv_4
-			Alexander_Kerensky_5
-			Alexander_Guchkov_6
-			Mikhail_Alekseyev_army_chief
-		}
 	}
 }
 
@@ -590,6 +492,15 @@ country_event = {
 			country_event = { id = russian_ovrthrw_of_mon.13 days = 14 }
 			country_event = { id = russian_ovrthrw_of_mon.14 days = 28 }
 			country_event = { id = russian_ovrthrw_of_mon.15 days = 104 }
+			add_to_variable = { RUS.RUS_otrecheniye = 2 }
+		}
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 	}
 	option = {
@@ -598,6 +509,15 @@ country_event = {
 			country_event = { id = russian_ovrthrw_of_mon.13 days = 14 }
 			country_event = { id = russian_ovrthrw_of_mon.14 days = 28 }
 			country_event = { id = russian_ovrthrw_of_mon.15 days = 52 }
+			add_to_variable = { RUS.RUS_otrecheniye = 2 }
+		}
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 	}
 	option = {
@@ -605,8 +525,17 @@ country_event = {
 		hidden_effect = {
 			country_event = { id = russian_ovrthrw_of_mon.13 days = 14 }
 			country_event = { id = russian_ovrthrw_of_mon.14 days = 14 }
+			add_to_variable = { RUS.RUS_otrecheniye = 1 }
 		}
 		add_timed_idea = { idea = RUS_1917_tsarist_defense_focus days = 104 }
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
 	}
 }
 
@@ -625,10 +554,13 @@ country_event = {
 		if = {
 			limit = { has_country_flag = RUS_ovrtrw_mon_12_a }
 			add_ideas = RUS_collapse_of_railway_system_2
+			add_to_variable = { RUS.RUS_otrecheniye = 2 }
 			else = {
 				add_ideas = RUS_collapse_of_railway_system_1
+				add_to_variable = { RUS.RUS_otrecheniye = 1 }
 			}
 		}
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
 	}
 }
 country_event = {
@@ -644,6 +576,8 @@ country_event = {
 	option = {
 		name = russian_ovrthrw_of_mon.14.a
 		add_ideas = foodstuffs_supply_crisis_1
+		add_to_variable = { RUS.RUS_otrecheniye = 1 }
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
 	}
 }
 country_event = {
@@ -669,6 +603,347 @@ country_event = {
 			else = {
 				add_timed_idea = { idea = RUS_1917_spring_offensive days = 104 }
 			}
+		}
+	}
+}
+
+# Контрразведка: кого грести?
+country_event = {
+	id = russian_ovrthrw_of_mon.21
+	title = russian_ovrthrw_of_mon.21.t
+	desc = russian_ovrthrw_of_mon.21.d
+	picture = GFX_report_event_rus_kornilov_something_coming
+	
+	is_triggered_only = yes
+	
+	#Грести всех
+	option = {
+		name = russian_ovrthrw_of_mon.21.a
+		ai_chance = {
+			factor = 1
+		}
+		add_political_power = -20
+		add_war_support = 0.05
+		add_stability = 0.05
+		add_popularity = {
+			ideology = communism
+			popularity = -0.03
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = -0.03
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.03
+		}
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = RUS_trust_government NOT = { has_completed_focus = RUS_regent_mikhail_compromise_break } NOT = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war } }
+				country_event = { id = russian_ovrthrw_of_mon.22 days = 10 random = 240 }
+			}
+			else_if = {
+				limit = { OR = { NOT = { has_completed_focus = RUS_trust_government } has_completed_focus = RUS_regent_mikhail_compromise_break } NOT = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war } }
+				random_list = {
+					50 = {
+					}
+					50 = {
+						country_event = { id = russian_ovrthrw_of_mon.22 days = 10 random = 240 }
+					}
+				}
+			}
+		}
+	}
+	
+	#Грести радикалов, агитирующих против войны
+	option = {
+		name = russian_ovrthrw_of_mon.21.b
+		add_war_support = 0.04
+		add_stability = 0.03
+		add_popularity = {
+			ideology = communism
+			popularity = -0.03
+		}
+		hidden_effect = {
+			if = {
+				limit = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war }
+				country_event = { id = russian_ovrthrw_of_mon.23 days = 5 random = 240 }
+			}
+		}
+	}
+}
+
+# Провалы в контрразведке на фронте
+country_event = {
+	id = russian_ovrthrw_of_mon.22
+	title = russian_ovrthrw_of_mon.22.t
+	desc = russian_ovrthrw_of_mon.22.d
+	picture = GFX_report_event_rus_kornilov_something_coming
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.22.a
+		add_stability = -0.02
+		add_war_support = -0.02
+		add_political_power = -50
+		if = {
+			limit = {
+				has_government = despotism
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = {
+				has_government = social_conservatism
+			}
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = {
+				has_government = market_liberalism
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = {
+				has_government = fascism
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = {
+				has_government = national_syndicalism
+			}
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+		}
+		else = {
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.05
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.03
+		}
+		add_to_variable = { RUS.RUS_otrecheniye = 1 }
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
+	}
+}
+
+# Блять идиот у тя ГВ а ты взял чистки умеренные ну дебил блять
+country_event = {
+	id = russian_ovrthrw_of_mon.23
+	title = russian_ovrthrw_of_mon.23.t
+	desc = russian_ovrthrw_of_mon.23.d
+	picture = GFX_report_event_report_event_order_n_1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.23.a
+		add_war_support = -0.02
+		add_stability = -0.02
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.02
+		}
+		add_timed_idea = {
+			idea = mutiny_1
+			days = 10
+		}
+	}
+}
+
+country_event = {
+	id = russian_ovrthrw_of_mon.95
+	title = russian_ovrthrw_of_mon.95.t
+	desc = russian_ovrthrw_of_mon.95.desc
+	picture = GFX_report_event_narod_zemlya_svoboda_mir
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_monarchy_not_fall
+		OR = {
+			has_government = authoritarism
+			has_government = despotism
+		}
+		has_country_flag = RUS_petrograd_miting
+		has_country_flag = RUS_petrograd_miting_2
+		has_country_flag = RUS_petrograd_soviet
+		NOT = { has_country_flag = RUS_revolution_suppressed }
+		OR = {
+			check_variable = { RUS_otrecheniye > 4 }
+			has_stability < 0.03
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.95.a
+		country_event = russian_ovrthrw_of_mon.96
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0
+				always = yes #недоработанная альта пока что
+			}
+		}
+		set_country_flag = RUS_monarchy_ultimatum_of_overtrow_fired
+	}
+	option = {
+		name = russian_ovrthrw_of_mon.95.b
+		country_event = russian_ovrthrw_of_mon.100
+		ai_chance = {
+			factor = 2
+		}
+	}
+}
+country_event = {
+	id = russian_ovrthrw_of_mon.96
+	title = russian_ovrthrw_of_mon.96.t
+	desc = russian_ovrthrw_of_mon.96.desc
+	picture = GFX_report_event_narod_zemlya_svoboda_mir
+	
+	trigger = {
+		has_country_flag = RUS_monarchy_not_fall
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			KRN = { set_cosmetic_tag = KRN_Petrograd_commune }
+			set_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+		}
+	}
+	
+	option = {
+		name = russian_ovrthrw_of_mon.96.a
+		KRN = {
+			transfer_state = 195
+			transfer_state = 797
+			set_capital = 195
+			add_ideas = alliance_neutrality
+		}
+		set_capital = 209
+		declare_war_on = { target = KRN type = annex_everything }
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = russian_ovrthrw_of_mon.96.b
+		KRN = {
+			transfer_state = 195
+			transfer_state = 797
+			set_capital = 195
+			add_ideas = alliance_neutrality
+		}
+		set_capital = 209
+		declare_war_on = { target = KRN type = annex_everything }
+		KRN = { change_tag_from = RUS }
+	}
+}
+
+
+# Февральская революция
+country_event = {
+	id = russian_ovrthrw_of_mon.100
+	title = russian_ovrthrw_of_mon.100.t
+	desc = russian_ovrthrw_of_mon.100.desc
+	picture = GFX_report_event_rus_fevral
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.100.a
+		add_popularity = { ideology = authoritarism popularity = -0.15 }
+		add_popularity = { ideology = fascism popularity = -0.05 }
+		add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		add_stability = 0.05
+		add_political_power = 150
+		remove_tsar_regime_unit_leaders = yes
+		monarchy_fall = yes
+		news_event = { id = news_n.5 hours = 36 }
+		hidden_effect = {
+			end_puppet = KHI
+			end_puppet = BUK
+			KHI = { leave_faction = yes }
+			BUK = { leave_faction = yes }
+			if = {
+				limit = { KHI = { has_war = yes } }
+				every_country = {
+					limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+					white_peace = KHI
+				}
+			}
+			if = {
+				limit = { BUK = { has_war = yes } }
+				every_country = {
+					limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+					white_peace = BUK
+				}
+			}
+		}
+		
+		hidden_effect = { lack_of_officers_rise = yes }
+		set_country_flag = railway_self_government
+		set_country_flag = RUS_provisional_government_created
+		load_focus_tree = Russia_Provisional_government_focus
+		create_country_leader = {
+			name = "Georgiy Lvov"
+			desc = "RUS_Georgiy_lvov_DESC"
+			picture = "gfx/leaders/RUS/Georgiy_Lvov.dds"
+			expire = "1935.1.1"
+			ideology = market_liberalism_ideology
+			traits = {
+				stout_defender appeaser weak_character
+			}
+		}
+		set_politics = {
+			ruling_party = market_liberalism
+			elections_allowed = no
+		}
+		add_ideas = RUS_dvoevlastie_1
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_ministe_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+		add_ideas = {
+			Georgiy_Lviv_1
+			Pavel_Milyukov_2
+			Alexander_Konovalov_3
+			Georgiy_Lviv_4
+			Alexander_Kerensky_5
+			Alexander_Guchkov_6
+			Mikhail_Alekseyev_army_chief
 		}
 	}
 }

@@ -938,11 +938,22 @@ country_event = {
 }
 
 
-#########Эсеровский террор######
+# Эсеровский террор (большевики) (стартовать должен у КОМУЧа)
 country_event = {
 	id = rcw_usfev.18
 	title = rcw_usfev.18.t
-	desc = rcw_usfev.18.d
+	desc = {
+		text = rcw_usfev.18.d
+		trigger = {
+			NOT = { SOV = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy } } }
+		}
+	}
+	desc = {
+		text = rcw_usfev.18.d_1
+		trigger = {
+			SOV = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy } }
+		}
+	}
 	
 	picture = GFX_report_event_cca_esser
 	
@@ -953,23 +964,80 @@ country_event = {
 	option = {
 		name = rcw_usfev.18.a
 		hidden_effect = {
-			random_list = {
-				30 = {
-					country_event = { id = rcw_usfev.21 days = 1 }
+			if = {
+				limit = { SOV = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy } } }
+				SOV = {
+					random_list = {
+						30 = {
+							country_event = { id = rcw.131 days = 1 }
+						}
+						60 = {
+							country_event = { id = rcw.132 days = 1 }
+						}
+						10 = {
+							country_event = { id = rcw.133 days = 1 }
+						}
+					}
 				}
-				60 = {
-					country_event = { id = rcw_usfev.22 days = 1 }
-				}
-				10 = {
-					country_event = { id = rcw_usfev.23 days = 1 }
+				else = {
+					RUS = {
+						random_list = {
+							30 = {
+								country_event = { id = rcw.131 days = 1 }
+							}
+							60 = {
+								country_event = { id = rcw.132 days = 1 }
+							}
+							10 = {
+								country_event = { id = rcw.133 days = 1 }
+							}
+						}
+					}
 				}
 			}
-			random_list = {
-				50 = {
-					RUS = { country_event = { id = rcw.134 days = 1 } }
+			if = {
+				limit = { RUS = { NOT = { has_country_flag = Moisey_Uritskiy_dead } } }
+				random_list = {
+					50 = {
+						if = {
+							limit = { SOV = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy } } }
+							SOV = { country_event = { id = rcw.134 days = 1 } }
+							else = { RUS = { country_event = { id = rcw.134 days = 1 } } }
+						}
+					}
+					50 = { }
 				}
-				50 = { }
 			}
+		}
+	}
+}
+
+#########Эсеровский террор (остальные) (стартовать должен у врага)
+country_event = {
+	id = rcw_usfev.20
+	title = rcw_usfev.20.t
+	desc = rcw_usfev.20.d
+	
+	picture = GFX_report_event_cca_esser
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.20.a
+		hidden_effect = {
+				random_list = {
+					30 = {
+						country_event = { id = rcw_usfev.21 days = 1 }
+					}
+					60 = {
+						country_event = { id = rcw_usfev.22 days = 1 }
+					}
+					10 = {
+						country_event = { id = rcw_usfev.23 days = 1 }
+					}
+				}
 		}
 	}
 }
@@ -987,71 +1055,10 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.21.a
-		hidden_effect = {
-			RUS = {
-				if = {
-					limit = {
-						has_country_leader = { name = "Vladimir Lenin" ruling_only = yes }
-					}
-					set_country_flag = Vladimir_Lenin_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Alexey Rykov" ruling_only = yes }
-					}
-					set_country_flag = Alexey_Rykov_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Nikolay Bukharin" ruling_only = yes }
-					}
-					set_country_flag = Nikolay_Bukharin_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Yakov Sverdlov" ruling_only = yes }
-					}
-					set_country_flag = Yakov_Sverdlov_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Lev Trotsky" ruling_only = yes }
-					}
-					set_country_flag = Lev_Trotsky_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Lev Kamenev" ruling_only = yes }
-					}
-					set_country_flag = Lev_Kamenev_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Joseph Stalin" ruling_only = yes }
-					}
-					set_country_flag = Joseph_Stalin_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Felix Dzerjinsky" ruling_only = yes }
-					}
-					set_country_flag = Felix_Dzerjinsky_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Maria Spiridonova" ruling_only = yes }
-					}
-					set_country_flag = Maria_Spiridonova_dead
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Yuly Martov" ruling_only = yes }
-					}
-					set_country_flag = Yuly_Martov_dead
-				}
-				country_event = rcw.131
-			}
-		}
+		kill_country_leader = yes
+		add_political_power = -50
+		add_stability = -0.05
+		add_war_support = -0.05
 	}
 }
 
@@ -1067,11 +1074,8 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.22.a
-		hidden_effect = {
-			RUS = {
-				country_event = rcw.132
-			}
-		}
+		add_political_power = -50
+		add_war_support = 0.05
 	}
 }
 
@@ -1087,11 +1091,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.23.a
-		hidden_effect = {
-			RUS = {
-				country_event = rcw.133
-			}
-		}
+		add_war_support = 0.05
 	}
 }
 
@@ -5530,7 +5530,7 @@ country_event = {
 			set_politics = { ruling_party = social_democracy elections_allowed = no }
 			retire_country_leader = yes
 			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-			create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
@@ -5797,7 +5797,7 @@ country_event = {
 		hidden_effect = {
 		retire_country_leader = yes
 		create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = market_liberalism_ideology traits = { } }
-		create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+		create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 		set_politics = {ruling_party = social_liberalism elections_allowed = no}
@@ -5827,7 +5827,7 @@ country_event = {
 		set_politics = {ruling_party = social_democracy elections_allowed = no}
 		retire_country_leader = yes
 		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-		create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+		create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 		every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
@@ -5997,7 +5997,7 @@ country_event = {
 		set_politics = {ruling_party = social_democracy elections_allowed = no}
 		retire_country_leader = yes
 		create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-		create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+		create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 		create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 		every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
@@ -7888,7 +7888,7 @@ country_event = {
 							set_politics = { ruling_party = social_democracy elections_allowed = no }
 							retire_country_leader = yes
 							create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-							create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+							create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 							set_politics = { ruling_party = despotism elections_allowed = no }
@@ -7920,7 +7920,7 @@ country_event = {
 							set_politics = { ruling_party = social_democracy elections_allowed = no }
 							retire_country_leader = yes
 							create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-							create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+							create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 							set_politics = {ruling_party = fascism elections_allowed = no}
@@ -7952,7 +7952,7 @@ country_event = {
 							set_politics = { ruling_party = social_democracy elections_allowed = no }
 							retire_country_leader = yes
 							create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-							create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+							create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 							set_politics = {ruling_party = national_syndicalism elections_allowed = no}
@@ -7984,7 +7984,7 @@ country_event = {
 							set_politics = { ruling_party = social_democracy elections_allowed = no }
 							retire_country_leader = yes
 							create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-							create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+							create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 							set_politics = {ruling_party = authoritarism elections_allowed = no}
@@ -8016,7 +8016,7 @@ country_event = {
 							set_politics = { ruling_party = social_democracy elections_allowed = no }
 							retire_country_leader = yes
 							create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Victor_Chernov_ALT.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-							create_country_leader = { name = "Alexander Clafton" desc = "" picture = "gfx/leaders/RUS/Alexander_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+							create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Alexandr_Clafton.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
 							create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
 							set_politics = {ruling_party = social_conservatism elections_allowed = no}

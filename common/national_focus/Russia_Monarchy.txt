@@ -115,6 +115,10 @@ focus_tree = {
 		cancel_if_invalid = yes
 		ai_will_do = {
 			factor = 100
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		relative_position_id = RUS_order_in_our_house
 		x = 2
@@ -151,6 +155,98 @@ focus_tree = {
 			spawn_white_guard_on_front = yes
 			spawn_white_guard_on_front = yes
 			spawn_white_guard_on_front = yes
+		}
+	}
+
+	focus = {
+		id = RUS_regent_mikhail
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 1
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_order_in_our_house
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+				NOT = { has_completed_focus = RUS_trust_government }
+				NOT = { has_completed_focus = RUS_mobilization_of_monarchical_forces }
+			}
+		}
+		relative_position_id = RUS_order_in_our_house
+		x = 4
+		y = 1
+		completion_reward = {
+			add_stability = 0.05
+			effect_tooltip = {
+				create_country_leader = {
+					name = "Mikhail Romanov"
+					desc = RUS_Mikhail_Romanov_regent_DESC
+					picture = "gfx/leaders/RUS/Mikhail_Romanov_regent.dds"
+					ideology = authoritarism_ideology
+					traits = { inexperienced_imperialist stout_defender }
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_completed_focus = RUS_trust_government NOT = { has_country_flag = RUS_monarchy_ultimatum_of_overtrow_fired } }
+					country_event = russian_ovrthrw_of_mon.95
+					else = {
+						add_ideas = RUS_Nikolay_II_idea
+						create_country_leader = {
+							name = "Mikhail Romanov"
+							desc = RUS_Mikhail_Romanov_regent_DESC
+							picture = "gfx/leaders/RUS/Mikhail_Romanov_regent.dds"
+							ideology = authoritarism_ideology
+							traits = { inexperienced_imperialist stout_defender }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = RUS_regent_mikhail_compromise_break
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 1
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+			has_completed_focus = RUS_trust_government
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_regent_mikhail
+		}
+		prerequisite = {
+			focus = RUS_monarchy_on_war_Great_Zemsky_Sobor
+			focus = RUS_monarchy_on_war_military_dictatorship
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_regent_mikhail
+		x = 0
+		y = 3
+		completion_reward = {
+			add_political_power = 120
+			add_to_variable = { RUS.RUS_otrecheniye = 1 }
+			hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
+			add_ideas = {
+				Alexander_Trepov_1
+				Nikolay_Pokrovsky_2
+				Vsevolod_Shakhovskoy_3
+				Alexander_Khvostov_4
+				Alexander_Khvostov_5
+				Mikhail_Belyaev_6
+			}
 		}
 	}
 
@@ -205,6 +301,8 @@ focus_tree = {
 		cost = 5
 		available = {
 			has_country_flag = RUS_monarchy_not_fall
+			has_global_flag = WWI_is_now
+			has_war_with = GER
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -213,12 +311,17 @@ focus_tree = {
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
-			factor = 100
+			factor = 0
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 		relative_position_id = RUS_trust_government
 		x = 2
 		y = 1
 		completion_reward = {
+			country_event = treaty_of_brest.1
 		}
 	}
 
@@ -238,7 +341,7 @@ focus_tree = {
 			factor = 100
 		}
 		relative_position_id = RUS_mobilization_of_monarchical_forces
-		x = 0
+		x = 1
 		y = 1
 		completion_reward = {
 			country_event = russian_ovrthrw_of_mon.7
@@ -271,6 +374,115 @@ focus_tree = {
 		}
 	}
 	focus = {
+		id = RUS_monarchy_on_war_waiver_of_military_debts
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 2
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_Great_Zemsky_Sobor
+			focus = RUS_monarchy_on_war_military_dictatorship
+		}
+		mutually_exclusive = {
+			focus = RUS_monarchy_on_war_military_debt_buildup
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_Great_Zemsky_Sobor
+		x = -3
+		y = 1
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_military_debt_buildup
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 2
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_Great_Zemsky_Sobor
+			focus = RUS_monarchy_on_war_military_dictatorship
+		}
+		mutually_exclusive = {
+			focus = RUS_monarchy_on_war_waiver_of_military_debts
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_Great_Zemsky_Sobor
+		x = -1
+		y = 1
+		completion_reward = {
+			
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_increasing_rolling_stock_of_railways
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 2
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_military_debt_buildup
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_military_debt_buildup
+		x = 1
+		y = 1
+		completion_reward = {
+			add_stability = 0.05
+			add_political_power = -120
+			
+			if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_1 }
+				remove_ideas = RUS_collapse_of_railway_system_1
+			}
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_2 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_2
+					add_idea = RUS_collapse_of_railway_system_1
+				}
+			}
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_3 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_3
+					add_idea = RUS_collapse_of_railway_system_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_4 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_4
+					add_idea = RUS_collapse_of_railway_system_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = RUS_collapse_of_railway_system_5 }
+				swap_ideas = {
+					remove_idea = RUS_collapse_of_railway_system_5
+					add_idea = RUS_collapse_of_railway_system_4
+				}
+			}
+			else = {}
+		}
+	}
+	focus = {
 		id = RUS_monarchy_on_war_military_dictatorship
 		icon = GFX_goal_generic_forceful_treaty
 		cost = 1
@@ -280,6 +492,7 @@ focus_tree = {
 		cancel_if_invalid = yes
 		prerequisite = {
 			focus = RUS_purification_of_imperial_army
+			focus = RUS_trust_government
 		}
 		mutually_exclusive = {
 			focus = RUS_monarchy_on_war_Great_Zemsky_Sobor
@@ -289,7 +502,7 @@ focus_tree = {
 			factor = 100
 		}
 		relative_position_id = RUS_purification_of_imperial_army
-		x = 0
+		x = -1
 		y = 1
 		completion_reward = {
 			country_event = russian_ovrthrw_of_mon.11
@@ -314,29 +527,75 @@ focus_tree = {
 		x = 0
 		y = 1
 		completion_reward = {
-			if = {
-				limit = { OR = { has_idea = interventionalism_law has_idea = mixed_economy_law } }
-				add_ideas = state_capitalism_law
-			}
-			else_if = {
-				limit = { has_idea = laissez_faire_law }
-				add_ideas = mixed_economy_law
-			}
-			else_if = {
-				limit = { has_idea = corporatocracy_law }
-				add_ideas = mixed_economy_law
-			}
-			if = {
-				limit = { has_idea = war_economy NOT = { has_idea = tot_economic_mobilisation } }
-				add_ideas = tot_economic_mobilisation
-			}
-			else_if = {
-				limit = { has_idea = tot_economic_mobilisation }
-				add_political_power = 150
-			}
-			else = {
-				add_ideas = war_economy
-			}
+			add_ideas = emergency_laws_b_law
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_railways_protection_corps
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 3
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+			has_manpower > 9999
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_Great_Zemsky_Sobor
+			focus = RUS_monarchy_on_war_military_dictatorship
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_Great_Zemsky_Sobor
+		x = 2
+		y = 1
+		completion_reward = {
+			add_stability = 0.05
+			add_manpower = -10000
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_militar_field_courts
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 3
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_emergency_laws
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_emergency_laws
+		x = -2
+		y = 1
+		completion_reward = {
+			add_timed_idea = { idea = RSS_militar_field_courts_idea days = 720 }
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_prodrazvyorstka
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 3
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_emergency_laws
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_emergency_laws
+		x = 2
+		y = 1
+		completion_reward = {
 		}
 	}
 	focus = {
@@ -369,7 +628,7 @@ focus_tree = {
 						has_government = national_syndicalism
 					}
 				}
-				country_event = rcw_kcr.21
+				country_event = russian_ovrthrw_of_mon.21
 			}
 			add_ideas = RUS_counterintelligence_service
 		}
@@ -392,14 +651,243 @@ focus_tree = {
 			factor = 100
 		}
 		relative_position_id = RUS_monarchy_on_war_special_powers_of_counterintelligence_services
-		x = -2
+		x = -3
 		y = 1
 		completion_reward = {
-			add_war_support = 0.10
+			add_war_support = 0.05
 			add_command_power = 200
 			custom_effect_tooltip = lack_of_officers_fall_1_tt
 			hidden_effect = {
 				lack_of_officers_fall = yes
+			}
+			if = {
+				limit = { OR = { has_idea = interventionalism_law has_idea = mixed_economy_law } }
+				add_ideas = state_capitalism_law
+			}
+			else_if = {
+				limit = { has_idea = laissez_faire_law }
+				add_ideas = mixed_economy_law
+			}
+			else_if = {
+				limit = { has_idea = corporatocracy_law }
+				add_ideas = mixed_economy_law
+			}
+			if = {
+				limit = { has_idea = war_economy NOT = { has_idea = tot_economic_mobilisation } }
+				add_ideas = tot_economic_mobilisation
+			}
+			else_if = {
+				limit = { has_idea = tot_economic_mobilisation }
+				add_political_power = 150
+			}
+			else = {
+				add_ideas = war_economy
+			}
+		}
+	}
+
+	focus = {
+		id = RUS_ne_zsalet_snaryadov
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_war_to_the_victorious_end
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_war_to_the_victorious_end
+		x = 0
+		y = 1
+		completion_reward = {
+			add_timed_idea = { idea = RUS_ne_zsalet_snaryadov_idea days = 365 }
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_investment_in_artillery
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_ne_zsalet_snaryadov
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_ne_zsalet_snaryadov
+		x = 0
+		y = 1
+		completion_reward = {
+			add_tech_bonus = {
+				bonus = 0.5
+				uses = 1
+				category = artillery
+			}
+		}
+	}
+
+	focus = {
+		id = RUS_monarchy_on_war_iron_youth
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_war_to_the_victorious_end
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_war_to_the_victorious_end
+		x = 2
+		y = 1
+		completion_reward = {
+			add_war_support = 0.05
+			add_timed_idea = { idea = RUS_iron_youth_idea days = 365 }
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_udarniki
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_iron_youth
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_iron_youth
+		x = 0
+		y = 1
+		completion_reward = {
+			set_technology = { infantry_binoculars = 1 }
+			set_technology = { stormtroopers = 1 }
+			load_oob = RUS_monarchy_stormtroopers
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_mobile_cavalary_units
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_iron_youth
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_iron_youth
+		x = 2
+		y = 1
+		completion_reward = {
+			add_ideas = RUS_monarchy_on_war_mobile_cavalary_units_idea
+		}
+	}
+
+	focus = {
+		id = RUS_monarchy_on_war_domestic_motors
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_war_to_the_victorious_end
+		}
+		prerequisite = {
+			focus = RUS_monarchy_on_war_military_debt_buildup
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_war_to_the_victorious_end
+		x = -2
+		y = 1
+		completion_reward = {
+			add_timed_idea = { idea = RUS_domestic_motors_idea days = 720 }
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_empire_wings
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_domestic_motors
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_domestic_motors
+		x = 0
+		y = 1
+		completion_reward = {
+			add_ideas = RUS_empire_wings_idea
+		}
+	}
+	focus = {
+		id = RUS_monarchy_on_war_tank_factory
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 5
+		available = {
+			has_country_flag = RUS_monarchy_not_fall
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_monarchy_on_war_domestic_motors
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 100
+		}
+		relative_position_id = RUS_monarchy_on_war_domestic_motors
+		x = -2
+		y = 1
+		completion_reward = {
+			random_owned_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = armor
 			}
 		}
 	}
