@@ -95,6 +95,7 @@ country_event = {
 		name = russian_ovrthrw_of_mon.2.a
 		add_popularity = { ideology = authoritarism popularity = -0.01 }
 		add_timed_idea = { idea = RUS_mass_workers_strikes days = 20 }
+		add_stability = -0.01
 		hidden_effect = { country_event = { id = russian_ovrthrw_of_mon.3 days = 4 } }
 	}
 }
@@ -119,10 +120,13 @@ country_event = {
 			has_war_with = FRA
 			has_war_with = ENG
 		}
+		date > 1917.2.1
 		has_political_power < 0
 	}
 	
-	is_triggered_only = yes
+	mean_time_to_happen = {
+		days = 4
+	}
 	
 	option = {
 		name = russian_ovrthrw_of_mon.3.a
@@ -131,9 +135,14 @@ country_event = {
 		set_country_flag = RUS_petrograd_miting
 		add_popularity = { ideology = authoritarism popularity = -0.05 }
 		add_popularity = { ideology = despotism popularity = -0.05 }
-		country_event = { id = russian_ovrthrw_of_mon.5 hours = 16 }
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = RUS_ovrtrw_mon_12_tsar_edet_v_stavku }
+				country_event = { id = russian_ovrthrw_of_mon.5 hours = 16 }
+			}
+		}
 		if = {
-			limit = { NOT = { has_stability > 0.05 } }
+			limit = { NOT = { has_stability > 0.1 } }
 			hidden_effect = { country_event = { id = russian_ovrthrw_of_mon.4 days = 3 } }
 		}
 	}
@@ -161,6 +170,7 @@ country_event = {
 			has_war_with = FRA
 			has_war_with = ENG
 		}
+		date > 1917.2.1
 		has_political_power < 0
 	}
 	
@@ -168,7 +178,7 @@ country_event = {
 		days = 3
 		modifier = {
 			factor = 10
-			has_stability > 0.05
+			has_stability > 0.1
 		}
 	}
 	
@@ -192,6 +202,10 @@ country_event = {
 	desc = russian_ovrthrw_of_mon.5.desc
 	picture = GFX_report_event_rus_tsar_in_the_train
 	
+	trigger = {
+		has_country_flag = RUS_ovrtrw_mon_12_tsar_edet_v_stavku
+	}
+	
 	is_triggered_only = yes
 	
 	option = {
@@ -199,6 +213,7 @@ country_event = {
 		add_stability = -0.01
 		add_command_power = 200
 		add_war_support = 0.03
+		clr_country_flag = RUS_ovrtrw_mon_12_tsar_edet_v_stavku
 	}
 }
 
@@ -359,7 +374,9 @@ country_event = {
 		has_country_flag = RUS_petrograd_miting_2
 	}
 	
-	is_triggered_only = yes
+	mean_time_to_happen = {
+		days = 5
+	}
 	
 	option = {
 		name = russian_ovrthrw_of_mon.8.a
@@ -495,6 +512,7 @@ country_event = {
 		name = russian_ovrthrw_of_mon.12.a
 		hidden_effect = {
 			set_country_flag = RUS_ovrtrw_mon_12_a
+			set_country_flag = RUS_ovrtrw_mon_12_tsar_edet_v_stavku
 			country_event = { id = russian_ovrthrw_of_mon.13 days = 14 }
 			country_event = { id = russian_ovrthrw_of_mon.14 days = 28 }
 			country_event = { id = russian_ovrthrw_of_mon.15 days = 104 }
@@ -503,10 +521,6 @@ country_event = {
 		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 4 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
 		ai_chance = {
 			factor = 2
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
-			}
 		}
 	}
 	option = {
@@ -1384,6 +1398,7 @@ country_event = {
 	trigger = {
 		tag = RUS
 		has_country_flag = RUS_monarchy_not_fall
+		NOT = { has_country_flag = RUS_monarchy_ultimatum_of_overtrow_fired }
 		OR = {
 			has_government = authoritarism
 			has_government = despotism
@@ -1450,8 +1465,66 @@ country_event = {
 					name = "Pavel Dybenko"
 					id = 19173
 					portrait_path = "gfx/leaders/SOV/Pavel_Dybenko.dds"
-					traits = { trickster }
-					skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 4 logistics_skill = 2 }
+					traits = { naval_invader trait_reckless politically_connected }
+					skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2
+				}
+				create_country_leader = { name = "Petrosovet" desc = RUS_Petrosovet_DESC picture = "gfx/leaders/RGR/Free_Soviets.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
+				create_country_leader = {
+					name = "Alexandr Shlyapnikov"
+					desc = RUS_Alexandr_Shlyapnikov_DESC
+					picture="gfx/leaders/SOV/Alexandr_Shlyapnikov.dds"
+					expire="1935.1.1"
+					ideology = leninism
+					traits={ }
+				}
+				create_country_leader = {
+					name = "Nikolay Chkheidze"
+					desc = GEO_Nikolay_Chkheidze_DESC
+					picture = "gfx/leaders/GEO/Nikolay_Chkheidze.dds"
+					expire = "1935.1.1"
+					ideology = social_democracy_ideology
+					traits = { }
+				}
+				create_country_leader = {
+					name = "Alexandr Kerensky"
+					desc = RUS_Alexandr_Kerensky_DESC
+					picture = "gfx/leaders/RUS/Alexandr_Kerensky.dds"
+					expire = "1935.1.1"
+					ideology = social_liberalism_ideology
+					traits = { political_dancer }
+				}
+				create_country_leader = {
+					name = "Nikolay Chaikovsky"
+					desc = RUS_Nikolay_Chaikovsky_DESC
+					picture = "gfx/leaders/RUS/Nikolay_Chaikovsky.dds"
+					expire="1935.1.1"
+					ideology = market_liberalism_ideology
+					traits = { }
+				}
+				create_country_leader = {
+					name = "Kirill Romanov"
+					desc = SOV_Kirill_Vladimirovich_DESC
+					picture = "gfx/leaders/RUS/Kirill_Vladimirovich.dds"
+					expire = "1935.1.1"
+					ideology = authoritarism_ideology
+					traits = { }
+				}
+				create_country_leader = {
+					name = "Pavel Dybenko"
+					desc = SOV_Pavel_Dybenko_DESC
+					picture = "gfx/leaders/SOV/Pavel_Dybenko.dds"
+					expire = "1935.1.1"
+					ideology = despotism_ideology
+					traits = { }
+				}
+				create_country_leader = {
+					name = "Central'niy comitet KRP"
+					desc = RUS_Centralniy_comitet_KRP_DESC
+					picture = "gfx/leaders/RUS/Centralniy_comitet_KRP.dds"
+					expire = "1935.1.1"
+					ideology = national_bolshevism_ideology
+					traits = { }
+				}
 			}
 			set_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 		}
@@ -1463,14 +1536,30 @@ country_event = {
 		KRN = {
 			transfer_state = 195
 			transfer_state = 797
+			195 = { add_core_of = KRN }
+			797 = { add_core_of = KRN }
+			remove_all_foreing_locked_templates_from_liberated_country = yes
 			set_capital = 195
 			add_ideas = alliance_neutrality
 			load_focus_tree = Petrograd_commune_focus
 			load_oob = KRN_1917_Petrograd_commune
+			hidden_effect = {
+				country_event = { id = petrograd_commune.0 days = 5 }
+				set_popularities = {
+					radical_socialism = 10
+					communism = 10
+					social_democracy = 25
+					social_liberalism = 30
+					market_liberalism = 5
+					authoritarism = 5
+					despotism = 5
+					fascism = 10
+				}
+			}
 		}
 		set_capital = 209
 		declare_war_on = { target = KRN type = annex_everything }
-		country_event = russian_ovrthrw_of_mon.97
+		country_event = { id = russian_ovrthrw_of_mon.97 hours = 1 }
 		add_popularity = {
 			ideology = social_democracy
 			popularity = -0.1
@@ -1490,14 +1579,30 @@ country_event = {
 		KRN = {
 			transfer_state = 195
 			transfer_state = 797
+			195 = { add_core_of = KRN }
+			797 = { add_core_of = KRN }
+			remove_all_foreing_locked_templates_from_liberated_country = yes
 			set_capital = 195
 			add_ideas = alliance_neutrality
 			load_focus_tree = Petrograd_commune_focus
 			load_oob = KRN_1917_Petrograd_commune
+			hidden_effect = {
+				country_event = { id = petrograd_commune.0 days = 5 }
+				set_popularities = {
+					radical_socialism = 10
+					communism = 10
+					social_democracy = 25
+					social_liberalism = 30
+					market_liberalism = 5
+					authoritarism = 5
+					despotism = 5
+					fascism = 10
+				}
+			}
 		}
 		set_capital = 209
 		declare_war_on = { target = KRN type = annex_everything }
-		country_event = russian_ovrthrw_of_mon.97
+		country_event = { id = russian_ovrthrw_of_mon.97 hours = 1 }
 		add_popularity = {
 			ideology = social_democracy
 			popularity = -0.1
