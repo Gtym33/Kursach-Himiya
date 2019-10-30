@@ -1303,7 +1303,7 @@ country_event = {
 				random_country = {
 					limit = { original_tag = RUS has_government = authoritarism }
 					remove_all_foreing_locked_templates_from_liberated_country = yes
-					RUS = { every_unit_leader = { limit = { has_id = 77653 } set_nationality = PREV } }
+					RUS = { every_unit_leader = { limit = { OR = { has_id = 77653 has_id = 77532 has_id = 77649 } } set_nationality = PREV } }
 				}
 			}
 			else = {
@@ -1605,6 +1605,35 @@ country_event = {
 			popularity = -0.1
 		}
 		hidden_effect = { news_event = { id = news_n.19 hours = 12 } }
+		every_country = {
+			limit = { NOT = { tag = ROOT } has_country_flag = WWI_Entente_member }
+			hidden_effect = {
+				set_variable = { global.Entente_major_conf_members = 0 }
+				set_variable = { global.Entente_rel_for_RUS_rev = 0 }
+				set_variable = { global.Entente_major_conf_votes = 0 }
+				if = {
+					limit = { FRA = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					FRA = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { ENG = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					ENG = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { USA = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					USA = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { FRA = { has_country_flag = WWI_Entente_member } RUS = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 4 }
+					FRA = { set_variable = { vote_power = 4 } }
+				}
+			}
+			country_event = { id = russian_ovrthrw_of_mon.99 hours = 1 }
+		}
 	}
 	option = {
 		trigger = {
@@ -1648,6 +1677,35 @@ country_event = {
 			popularity = -0.1
 		}
 		hidden_effect = { news_event = { id = news_n.19 hours = 12 } }
+		every_country = {
+			limit = { NOT = { tag = ROOT } has_country_flag = WWI_Entente_member }
+			hidden_effect = {
+				set_variable = { global.Entente_major_conf_members = 0 }
+				set_variable = { global.Entente_rel_for_RUS_rev = 0 }
+				set_variable = { global.Entente_major_conf_votes = 0 }
+				if = {
+					limit = { FRA = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					FRA = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { ENG = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					ENG = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { USA = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					USA = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { FRA = { has_country_flag = WWI_Entente_member } RUS = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 4 }
+					FRA = { set_variable = { vote_power = 4 } }
+				}
+			}
+			country_event = { id = russian_ovrthrw_of_mon.99 hours = 1 }
+		}
 		KRN = { change_tag_from = RUS }
 	}
 }
@@ -1698,6 +1756,76 @@ country_event = {
 		name = russian_ovrthrw_of_mon.98.a
 		add_war_support = -0.05
 		remove_one_priziv_from_army = yes
+	}
+}
+# Отношение к новой Русской революции
+country_event = {
+	id = russian_ovrthrw_of_mon.99
+	title = russian_ovrthrw_of_mon.99.t
+	desc = russian_ovrthrw_of_mon.99.desc
+	picture = GFX_report_event_long_feb_new_capital
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.99.a
+		if = {
+			limit = { radical_socialism > var:party_popularity@communism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.03
+			}
+			else = {
+				add_popularity = {
+					ideology = communism
+					popularity = 0.03
+				}
+			}
+		}
+		add_to_variable = { global.Entente_rel_for_RUS_rev_sup_tsar = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_rel_for_RUS_rev_sup_tsar > global.Entente_rel_for_RUS_rev_not_sup_tsar } }
+					else = { RUS = { leave_faction = yes } }
+				}
+			}
+			clear_variable = global.Entente_major_conf_votes
+			clear_variable = global.Entente_major_conf_members
+			clear_variable = global.Entente_rel_for_RUS_rev_sup_tsar
+			clear_variable = global.Entente_rel_for_RUS_rev_not_sup_tsar
+		}
+		custom_effect_tooltip = russian_ovrthrw_of_mon.99.a_tt
+		
+		ai_chance = { factor = 0 }
+	}
+	option = {
+		name = russian_ovrthrw_of_mon.99.b
+		add_war_support = -0.03
+		add_to_variable = { global.Entente_rel_for_RUS_rev_not_sup_tsar = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_rel_for_RUS_rev_sup_tsar > global.Entente_rel_for_RUS_rev_not_sup_tsar } }
+					else = { RUS = { leave_faction = yes } }
+				}
+			}
+			clear_variable = global.Entente_major_conf_votes
+			clear_variable = global.Entente_major_conf_members
+			clear_variable = global.Entente_rel_for_RUS_rev_sup_tsar
+			clear_variable = global.Entente_rel_for_RUS_rev_not_sup_tsar
+		}
+		custom_effect_tooltip = russian_ovrthrw_of_mon.99.b_tt
+		
+		ai_chance = { factor = 1 }
 	}
 }
 
