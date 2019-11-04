@@ -819,12 +819,17 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = { #Просвященный абсолютизм
+		trigger = { always = no }
 		name = russian_ovrthrw_of_mon.32.a
 		country_event = { id = russian_ovrthrw_of_mon.34 days = 3 }
-		add_stability = 0.05
 		add_political_power = 120
 		add_ideas = absolute_monarchy_gov_form
 		add_ideas = ban_all_parties_law
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.2
+		}
+		add_stability = -0.1
 	}
 	option = { #Ограниченная монархия
 		name = russian_ovrthrw_of_mon.32.b
@@ -1424,26 +1429,21 @@ country_event = {
 	
 	option = {
 		name = russian_ovrthrw_of_mon.95.a
-		country_event = russian_ovrthrw_of_mon.96
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
-			}
-			modifier = {
-				factor = 0
-				always = yes #недоработанная альта пока что
-			}
-		}
-		set_country_flag = RUS_monarchy_ultimatum_of_overtrow_fired
+		country_event = russian_ovrthrw_of_mon.100
+		ai_chance = { factor = 1 }
 	}
 	option = {
 		name = russian_ovrthrw_of_mon.95.b
-		country_event = russian_ovrthrw_of_mon.100
-		ai_chance = {
-			factor = 2
-		}
+		country_event = russian_ovrthrw_of_mon.96
+		add_war_support = -0.05
+		#hidden_effect = { #Арест дебила (царя)
+		#	if = {
+		#		limit = { has_government = authoritarism has_war_with = GER NOT = { has_completed_focus = RUS_mon_on_w_military_dictatorship has_country_flag = RUS_mon_loyal_generals } }
+		#		country_event = { id = russian_ovrthrw_of_mon.101 hours = 3 }
+		#	}
+		#}
+		ai_chance = { factor = 0 }
+		set_country_flag = RUS_monarchy_ultimatum_of_overtrow_fired
 	}
 }
 # Петроградская коммуна
@@ -1579,7 +1579,7 @@ country_event = {
 			797 = { add_core_of = KRN }
 			remove_all_foreing_locked_templates_from_liberated_country = yes
 			set_capital = 195
-			add_ideas = alliance_neutrality
+			add_ideas = neutral_foreign_policy_law
 			load_focus_tree = Petrograd_commune_focus
 			load_oob = KRN_1917_Petrograd_commune
 			hidden_effect = {
@@ -1594,6 +1594,24 @@ country_event = {
 					despotism = 5
 					fascism = 10
 				}
+				set_politics = { ruling_party = social_democracy }
+				every_country = {
+					limit = {
+						NOT = {
+							tag = ROOT
+							has_government = communism
+							has_government = radical_socialism
+							has_government = social_democracy
+							is_subject = yes
+							has_war_with = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+					add_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo }
+					add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel }
+					reverse_add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					add_to_array = { unrecognized_states = PREV.id }
+				}
 			}
 		}
 		set_capital = 209
@@ -1601,11 +1619,11 @@ country_event = {
 		country_event = { id = russian_ovrthrw_of_mon.97 hours = 1 }
 		add_popularity = {
 			ideology = social_democracy
-			popularity = -0.1
+			popularity = -0.2
 		}
 		add_popularity = {
 			ideology = social_liberalism
-			popularity = -0.1
+			popularity = -0.2
 		}
 		remove_ideas = RUS_1917_spring_offensive
 		hidden_effect = { news_event = { id = news_n.19 hours = 12 } }
@@ -1652,7 +1670,7 @@ country_event = {
 			797 = { add_core_of = KRN }
 			remove_all_foreing_locked_templates_from_liberated_country = yes
 			set_capital = 195
-			add_ideas = alliance_neutrality
+			add_ideas = neutral_foreign_policy_law
 			load_focus_tree = Petrograd_commune_focus
 			load_oob = KRN_1917_Petrograd_commune
 			hidden_effect = {
@@ -1667,6 +1685,7 @@ country_event = {
 					despotism = 5
 					fascism = 10
 				}
+				set_politics = { ruling_party = social_democracy }
 			}
 		}
 		set_capital = 209
@@ -1800,7 +1819,7 @@ country_event = {
 						RUS = { leave_faction = yes }
 						every_country = {
 							limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
-							ROOT = { white_peace = PREV }
+							white_peace = KRN
 						}
 					}
 				}
@@ -1830,7 +1849,7 @@ country_event = {
 						RUS = { leave_faction = yes }
 						every_country = {
 							limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
-							ROOT = { white_peace = PREV }
+							white_peace = KRN
 						}
 					}
 				}
@@ -1919,5 +1938,38 @@ country_event = {
 			Alexander_Guchkov_6
 			Mikhail_Alexeev_army_chief
 		}
+	}
+}
+
+country_event = {
+	id = russian_ovrthrw_of_mon.101
+	title = russian_ovrthrw_of_mon.101.t
+	desc = russian_ovrthrw_of_mon.101.desc
+	picture = GFX_report_event_rus_fevral
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.101.a
+		monarchy_fall = yes
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.05
+		}
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.2
+		}
+		create_country_leader = {
+			name = "Mikhail Alexeev"
+			desc = RUS_Mikhail_Alexeev_DESC
+			picture = "gfx/leaders/RUS/Michael_Alexeev.dds"
+			ideology = despotism_ideology
+			traits = {  }
+		}
+		add_ideas = RUS_Alexeev_dictatorship_idea
+		add_ideas = military_dictatorship_gov_form
+		country_event = petrograd_commune.91
 	}
 }
