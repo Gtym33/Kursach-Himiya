@@ -476,7 +476,13 @@ country_event = {
 	option = {
 		name = budem_sledit_za_situaciey
 		end_puppet = UKR
-		release = UKR
+		every_state = {
+			limit = {
+				is_core_of = UKR
+				is_owned_by = RUS
+			}
+			UKR = { transfer_state = PREV }
+		}
 		remove_from_faction = UKR
 		diplomatic_relation = {
 			country = UKR
@@ -568,7 +574,13 @@ country_event = {
 			is_ai = no
 		}
 		end_puppet = UKR
-		release = UKR
+		every_state = {
+			limit = {
+				is_core_of = UKR
+				is_owned_by = RUS
+			}
+			UKR = { transfer_state = PREV }
+		}
 		remove_from_faction = UKR
 		diplomatic_relation = {
 			country = UKR
@@ -654,7 +666,6 @@ country_event = {
 				limit = {
 					is_owned_by = UKR
 					OR = {
-						state = 200
 						state = 221
 						state = 225
 						state = 960
@@ -693,10 +704,6 @@ country_event = {
 				if = {
 					limit = { 227 = { OR = { is_owned_by = DON is_owned_by = RVA } } }
 					set_state_owner = 227
-				}
-				if = {
-					limit = { 918 = { OR = { is_owned_by = DON is_owned_by = RVA } } }
-					set_state_owner = 918
 				}
 			}
 			RUS = {
@@ -1270,5 +1277,46 @@ country_event = {
 			}
 		}
 		RUS = { white_peace = UKR }
+	}
+}
+
+# Заключение мира советами после слива Украины подстилками немцев
+country_event = {
+	id = ukraine.101
+	title = ukraine.101.t
+	desc = ukraine.101.d
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		tag = USR
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		has_war_with = UKR
+		UKR = { is_subject_of = GER has_capitulated = yes }
+		is_subject = no
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = ukraine.101.a
+		every_state = {
+			limit = { is_owned_by = UKR is_controlled_by = FRT }
+			FRT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = { is_owned_by = UKR is_controlled_by = ODS }
+			ODS = { transfer_state = PREV }
+		}
+		USR = { annex_country = { target = UKR transfer_troops = no } }
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes tag = AUH } }
+			white_peace = USR
+			white_peace = FRT
+			white_peace = ODS
+		}
 	}
 }

@@ -97,21 +97,52 @@ focus_tree = {
 		x = 9
 		y = 4
 		completion_reward = {
-		add_stability = 0.02
-		puppet = KAZ
-		release_autonomy = {
-    	target = KAZ
-   	 	autonomy_state = autonomy_dominion
-    	freedom_level = 0.1
-	}
-	KAZ = {
-			set_state_owner = 404
-			set_state_owner = 402
-			set_state_owner = 583
-			set_state_owner = 588
-			set_state_owner = 590
-			set_state_owner = 908
-	}
+			add_stability = 0.02
+			puppet = KAZ
+			release_autonomy = {
+				target = KAZ
+				autonomy_state = autonomy_dominion
+				freedom_level = 0.1
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 402
+						state = 404
+						state = 583
+						state = 588
+						state = 590
+						state = 908
+					}
+					OR = {
+						is_owned_by = SIB
+						is_controlled_by = SIB
+						is_owned_by = CCA
+						is_controlled_by = CCA
+						is_owned_by = RUS
+						is_controlled_by = RUS
+					}
+				}
+				KAZ = { set_state_owner = PREV }
+			}
+			if = {
+				limit = { controls_state = 651 }
+				release_autonomy = {
+					target = BSH
+					autonomy_state = autonomy_puppet
+					freedom_level = 0.5
+				}
+				BSH = { load_oob = BSH_1918_CCA_autonomy }
+			}
+			if = {
+				limit = { controls_state = 249 }
+				release_autonomy = {
+					target = TAR
+					autonomy_state = autonomy_puppet
+					freedom_level = 0.5
+				}
+				TAR = { load_oob = TAR_1918_CCA_autonomy }
+			}
 		}
 
 	}
@@ -137,6 +168,103 @@ focus_tree = {
 
 	}
 	focus = {
+		id = SIB_siberian_ca
+		icon = GFX_goal_generic_national_unity
+		cost = 10
+		prerequisite = {
+			focus = SIB_cooperative_meeting
+			focus = SIB_tokio
+			focus = SIB_nationalities
+		}
+		mutually_exclusive = {
+			focus = SIB_crusade
+		}
+		x = 13
+		y = 5
+		completion_reward = {
+			create_faction = siberian_axis
+			add_political_power = -50
+			add_stability = 0.05
+			add_war_support = 0.15
+		}
+
+	}
+	focus = {
+		id = SIB_autonomous_siberia
+		icon = GFX_goal_SIB_armistice_with_Moscow
+		cost = 10
+		prerequisite = {
+			focus = SIB_siberian_ca
+		}
+		mutually_exclusive = {
+			focus = SIB_capital
+		}
+		available = {
+		}
+		relative_position_id = SIB_siberian_ca
+		x = -3
+		y = 1
+		completion_reward = {
+		
+		}
+	}
+	focus = {
+		id = SIB_moscow_peace
+		icon = GFX_goal_SIB_armistice_with_Moscow
+		cost = 10
+		prerequisite = {
+			focus = SIB_autonomous_siberia
+		}
+		available = {
+			OR = {
+				AND = {
+					controls_state = 251
+					has_political_power > 499
+				}
+				AND = {
+					controls_state = 651
+					has_political_power > 199
+				}
+				AND = {
+					controls_state = 572
+					has_political_power > 49
+				}
+			}
+		}
+		relative_position_id = SIB_autonomous_siberia
+		x = 0
+		y = 1
+		completion_reward = {
+			drop_cosmetic_tag = yes
+			RUS = {country_event = { id = rcw_usfev.50 days = 1 }}
+		}
+	}
+	focus = {
+		id = SIB_capital
+		icon = GFX_goal_SIB_new_capital
+		cost = 10
+		prerequisite = {
+			focus = SIB_siberian_ca
+		}
+		mutually_exclusive = {
+			focus = SIB_autonomous_siberia
+		}
+		relative_position_id = SIB_siberian_ca
+		x = 0
+		y = 1
+		completion_reward = {
+			add_tech_bonus = {
+				name = SIB_capital
+				bonus = 0.5
+				uses = 3
+				category = industry
+			}
+		add_research_slot = 2
+		set_cosmetic_tag = CCA_russian_federation
+		add_ideas = SIB_capital
+		}
+	}
+	focus = {
 		id = SIB_annex_bkl
 		icon = GFX_goal_SIB_Zabaikalie
 		cost = 5
@@ -148,15 +276,152 @@ focus_tree = {
 			}
 		}
 		prerequisite = {
-			focus = SIB_usa_order
+			focus = SIB_capital
 		}
-		x = 10
-		y = 7
+		relative_position_id = SIB_capital
+		x = 0
+		y = 1
 		completion_reward = {
-		BKL = {
-		country_event = { id = rcw_usfev.47 days = 1 }
+			BKL = {
+				country_event = { id = rcw_usfev.47 days = 1 }
+			}
 		}
 	}
+	focus = {
+		id = SIB_quotas
+		icon = GFX_goal_SIB_frontierman
+		cost = 10
+		prerequisite = {
+			focus = SIB_annex_bkl
+		}
+		relative_position_id = SIB_annex_bkl
+		x = 0
+		y = 1
+		completion_reward = {
+		add_stability = -0.2
+		add_war_support = 0.1
+		add_ideas = SIB_quotas
+			add_to_variable = {
+				var = global.RCW_green_var_Siberia
+				value = 2
+			}
+		}
+	}
+	focus = {
+		id = SIB_industrialisation
+		icon = GFX_goal_SIB_sib_industry
+		cost = 10
+		prerequisite = {
+			focus = SIB_quotas
+		}
+		relative_position_id = SIB_quotas
+		x = 0
+		y = 1
+		bypass = {
+			custom_trigger_tooltip =  {
+				tooltip = infrastructure_effort_tt
+				all_owned_state = {
+					free_building_slots = {
+						building = infrastructure
+						size < 3
+					}
+				}
+			}
+		}
+			complete_tooltip = {
+			every_state = {
+				limit = { has_state_flag = SOV_infrastructure_effort_3Inf }
+				add_building_construction = {
+					type = infrastructure
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+
+		completion_reward = {
+			add_offsite_building = { type = industrial_complex level = 3 }
+			add_offsite_building = { type = arms_factory level = 2 }
+			if = {
+				limit = {
+					all_owned_state = {
+						NOT = { infrastructure < 5 }
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size > 2
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 3
+						instant_build = yes						
+					}
+					set_state_flag = SOV_infrastructure_effort_3Inf
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size > 2
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 3
+						instant_build = yes
+					}
+					set_state_flag = SOV_infrastructure_effort_3Inf
+				}				
+			}
+			random_owned_controlled_state = {
+				limit = {
+					infrastructure < 5
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 3
+					instant_build = yes
+				}
+				set_state_flag = SOV_infrastructure_effort_3Inf	
+			}
+			random_owned_controlled_state = {
+				limit = {
+					infrastructure < 5
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 3
+					instant_build = yes
+				}
+				set_state_flag = SOV_infrastructure_effort_3Inf	
+			}
+			random_owned_controlled_state = {
+				limit = {
+					infrastructure < 5
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 3
+					instant_build = yes
+				}
+				set_state_flag = SOV_infrastructure_effort_3Inf	
+			}
+			random_owned_controlled_state = {
+				limit = {
+					infrastructure < 5
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 3
+					instant_build = yes
+				}
+				set_state_flag = SOV_infrastructure_effort_3Inf	
+			}
+		}
 	}
 	focus = {
 		id = SIB_usa_intervention
@@ -262,35 +527,6 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = SIB_transsib_oil
-		icon = GFX_goal_SIB_oil
-		cost = 10
-		prerequisite = {
-			focus = SIB_industrialisation
-			focus = SIB_annex_bkl
-		}
-		available = {
-			controls_state = 579
-		}
-		x = 13
-		y = 8
-		completion_reward = {
-			add_political_power = -50
-			add_resource = {
-				type = oil
-				amount = 20
-				state = 579
-			}
-			579 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-			}
-		}
-	}
-	focus = {
 		id = SIB_jap_intervention
 		icon = GFX_goal_SIB_three_dogovor
 		cost = 3
@@ -355,37 +591,15 @@ focus_tree = {
 
 	}
 	focus = {
-		id = SIB_siberian_ca
-		icon = GFX_goal_generic_national_unity
-		cost = 10
-		prerequisite = {
-			focus = SIB_cooperative_meeting 
-			focus = SIB_tokio
-			focus = SIB_nationalities
-		}
-		mutually_exclusive = {
-			focus = SIB_crusade
-		}
-		x = 13
-		y = 5
-		completion_reward = {
-			create_faction = siberian_axis
-			add_political_power = -50
-			add_stability = 0.05
-			add_war_support = 0.15
-		}
-
-	}
-	focus = {
 		id = SIB_usa_order
 		icon = GFX_goal_SIB_usa_help
 		cost = 10
 		prerequisite = {
-			focus = SIB_siberian_ca
+			focus = SIB_moscow_peace
 		}
-		mutually_exclusive = {
-			focus = SIB_quotas
-		}
+		relative_position_id = SIB_moscow_peace
+		x = 0
+		y = 1
 		completion_reward = {
 			set_technology = {
 				gwtank = 1
@@ -413,9 +627,36 @@ focus_tree = {
 			}
 			add_political_power = -200
 		}
-		x = 10
-		y = 6
 
+	}
+	focus = {
+		id = SIB_transsib_oil
+		icon = GFX_goal_SIB_oil
+		cost = 10
+		prerequisite = {
+			focus = SIB_usa_order
+		}
+		available = {
+			controls_state = 579
+		}
+		relative_position_id = SIB_usa_order
+		x = 0
+		y = 1
+		completion_reward = {
+			add_political_power = -50
+			add_resource = {
+				type = oil
+				amount = 20
+				state = 579
+			}
+			579 = {
+				add_building_construction = {
+					type = infrastructure
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
 	}
 	focus = {
 		id = SIB_crusade
@@ -563,198 +804,6 @@ end_puppet = SIK
     size = 0.1
 }
 		}
-		}
-	}
-	focus = {
-		id = SIB_quotas
-		icon = GFX_goal_SIB_frontierman
-		cost = 10
-		prerequisite = {
-			focus = SIB_siberian_ca
-		}
-		mutually_exclusive = {
-			focus = SIB_usa_order
-		}
-		x = 13
-		y = 6
-		completion_reward = {
-		add_stability = -0.2
-		add_war_support = 0.1
-		add_ideas = SIB_quotas
-			add_to_variable = {
-				var = global.RCW_green_var_Siberia
-				value = 2
-			}
-		}
-	}
-	focus = {
-		id = SIB_industrialisation
-		icon = GFX_goal_SIB_sib_industry
-		cost = 10
-		prerequisite = {
-			focus = SIB_quotas
-		}
-		x = 13
-		y = 7
-		bypass = {
-			custom_trigger_tooltip =  {
-				tooltip = infrastructure_effort_tt
-				all_owned_state = {
-					free_building_slots = {
-						building = infrastructure
-						size < 3
-					}
-				}
-			}
-		}
-			complete_tooltip = {
-			every_state = {
-				limit = { has_state_flag = SOV_infrastructure_effort_3Inf }
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-			}
-		}
-
-		completion_reward = {
-		add_offsite_building = { type = industrial_complex level = 3 }
-		add_offsite_building = { type = arms_factory level = 2 }
-			if = {
-				limit = {
-					all_owned_state = {
-						NOT = { infrastructure < 5 }
-					}
-				}
-				random_owned_controlled_state = {
-					limit = {
-						free_building_slots = {
-							building = infrastructure
-							size > 2
-						}
-					}
-					add_building_construction = {
-						type = infrastructure
-						level = 3
-						instant_build = yes						
-					}
-					set_state_flag = SOV_infrastructure_effort_3Inf
-				}
-				random_owned_controlled_state = {
-					limit = {
-						free_building_slots = {
-							building = infrastructure
-							size > 2
-						}
-					}
-					add_building_construction = {
-						type = infrastructure
-						level = 3
-						instant_build = yes
-					}
-					set_state_flag = SOV_infrastructure_effort_3Inf
-				}				
-			}
-			random_owned_controlled_state = {
-				limit = {
-					infrastructure < 5
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-				set_state_flag = SOV_infrastructure_effort_3Inf	
-			}
-			random_owned_controlled_state = {
-				limit = {
-					infrastructure < 5
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-				set_state_flag = SOV_infrastructure_effort_3Inf	
-			}
-			random_owned_controlled_state = {
-				limit = {
-					infrastructure < 5
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-				set_state_flag = SOV_infrastructure_effort_3Inf	
-			}
-			random_owned_controlled_state = {
-				limit = {
-					infrastructure < 5
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-				set_state_flag = SOV_infrastructure_effort_3Inf	
-			}
-	}
-	}
-	focus = {
-		id = SIB_capital
-		icon = GFX_goal_SIB_new_capital
-		cost = 10
-		prerequisite = {
-			focus = SIB_transsib_oil focus = SIB_moscow_peace
-		}
-		mutually_exclusive = {
-			focus = SIB_autonomous_siberia
-		}
-		x = 13
-		y = 9
-		completion_reward = {
-			add_tech_bonus = {
-				name = SIB_capital
-				bonus = 0.5
-				uses = 3
-				category = industry
-			}
-		add_research_slot = 2
-		set_cosmetic_tag = CCA_russian_federation
-		add_ideas = SIB_capital
-		}
-	}
-	focus = {
-		id = SIB_moscow_peace
-		icon = GFX_goal_SIB_armistice_with_Moscow
-		cost = 10
-		prerequisite = {
-			focus = SIB_industrialisation
-			focus = SIB_annex_bkl
-		}
-		available = {
-		OR = {
-		AND = {
-		controls_state = 251
-		has_political_power > 499
-		}
-		AND = {
-		controls_state = 651
-		has_political_power > 199
-		}
-		AND = {
-		controls_state = 572
-		has_political_power > 49
-		}
-		}
-		}
-		x = 10
-		y = 8
-		completion_reward = {
-		drop_cosmetic_tag = yes
-		RUS = {country_event = { id = rcw_usfev.50 days = 1 }}
 		}
 	}
 	focus = {
@@ -967,24 +1016,6 @@ end_puppet = SIK
 		y = 6
 		completion_reward = {
 			country_event = { id = rcw_usfev.133 days = 1 }
-		}
-	}
-	focus = {
-		id = SIB_autonomous_siberia
-		icon = GFX_goal_SIB_armistice_with_Moscow
-		cost = 10
-		prerequisite = {
-			focus = SIB_moscow_peace
-		}
-		mutually_exclusive = {
-			focus = SIB_capital
-		}
-		available = {
-		}
-		x = 10
-		y = 9
-		completion_reward = {
-		
 		}
 	}
 	focus = {

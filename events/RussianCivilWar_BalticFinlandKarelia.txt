@@ -208,6 +208,7 @@ country_event = {
 	
 	trigger = {
 		tag = RUS
+		NOT = { has_global_flag = RUS_civil_war_over }
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_war_with = EST
 		controls_state = 915
@@ -942,6 +943,7 @@ country_event = {
 		save_global_event_target_as = INTEGRATING_COUNTRY_MINOR
 		UBD = { save_global_event_target_as = UNITED_COUNTRY }
 		party_populatiry_addition_script_1 = yes
+		set_ruling_party_for_uniting_country_script = yes
 		UBD = {
 			transfer_state = 12
 			add_ideas = {
@@ -957,6 +959,140 @@ country_event = {
 		name = rcw_bfk.23.b
 		ai_chance = {
 			factor = 0
+		}
+	}
+}
+
+
+# Латвийская ССР
+country_event = {
+	id = rcw_bfk.31
+	title = rcw_bfk.31.t
+	desc = rcw_bfk.31.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RUS
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = LAT
+		SLT = { exists = no }
+		OR = {
+			AND = {
+				controls_state = 865
+				LAT = { owns_state = 865 }
+			}
+			AND = {
+				controls_state = 1001
+				LAT = { owns_state = 1001 }
+			}
+			AND = {
+				controls_state = 866
+				LAT = { owns_state = 866 }
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.31.a
+		every_state = {
+			limit = {
+				is_core_of = LAT
+			}
+			add_core_of = SLT
+		}
+		every_state = {
+			limit = {
+				is_owned_by = LAT
+				is_controlled_by = RUS
+			}
+			SLT = { set_state_owner = PREV }
+		}
+		SLT = {
+			set_politics = { ruling_party = communism }
+			declare_war_on = {
+				target = LAT
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = { has_war_with = NWA }
+			SLT = {
+				declare_war_on = {
+					target = NWA
+					type = annex_everything
+				}
+			}
+		}
+		if = {
+			limit = { has_war_with = WVA }
+			SLT = {
+				declare_war_on = {
+					target = WVA
+					type = annex_everything
+				}
+			}
+		}
+		RUS = { puppet = SLT }
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.31.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Земельный вопрос
+country_event = {
+	id = rcw_bfk.32
+	title = rcw_bfk.32.t
+	desc = rcw_bfk.32.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = SLT
+		NOT = { has_global_flag = RUS_civil_war_over }
+		is_subject_of = RUS
+		controls_state = 12
+		has_war_with = LAT
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.32.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		add_political_power = -25
+		add_manpower = -2000
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_bfk.31.b
+		add_popularity = {
+			ideology = communism
+			popularity = -0.05
+		}
+		add_timed_idea = { idea = mutiny_1 days = 15 }
+		ai_chance = {
+			factor = 1
 		}
 	}
 }
@@ -1031,7 +1167,37 @@ country_event = {
 				}
 			}
 		}
-		NWA = { inherit_technology = RUS }
+		NWA = {
+			inherit_technology = RUS
+			every_country = {
+				limit = {
+					NOT = {
+						tag = PREV
+						is_any_former_russian_empire_country = yes
+						former_russian_empire_baltic_states_country = yes
+						has_war_with = PREV
+						is_in_faction_with = PREV
+					}
+				}
+				add_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo }
+				add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel }
+				reverse_add_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+				reverse_add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+				add_to_array = { unrecognized_states = PREV.id }
+				add_ai_strategy = {
+					type = befriend
+					id = PREV
+					value = -50
+				}
+				PREV = {
+					add_ai_strategy = {
+						type = befriend
+						id = PREV
+						value = -50
+					}
+				}
+			}
+		}
 		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
 	}
 	option = {
@@ -1082,9 +1248,40 @@ country_event = {
 				}
 			}
 		}
-		NWA = { change_tag_from = ROOT }
-		NWA = { inherit_technology = RUS }
+		NWA = {
+			inherit_technology = RUS
+			every_country = {
+				limit = {
+					NOT = {
+						tag = PREV
+						is_any_former_russian_empire_country = yes
+						former_russian_empire_baltic_states_country = yes
+						former_russian_empire_finland_country = yes
+						has_war_with = PREV
+						is_in_faction_with = PREV
+					}
+				}
+				add_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo }
+				add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel }
+				reverse_add_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+				reverse_add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+				add_to_array = { unrecognized_states = PREV.id }
+				add_ai_strategy = {
+					type = befriend
+					id = PREV
+					value = -50
+				}
+				PREV = {
+					add_ai_strategy = {
+						type = befriend
+						id = PREV
+						value = -50
+					}
+				}
+			}
+		}
 		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
+		NWA = { change_tag_from = ROOT }
 	}
 }
 
@@ -1169,7 +1366,7 @@ country_event = {
 	mean_time_to_happen = {
 		days = 7
 		modifier = {
-			factor = 3
+			factor = 5
 			OR = {
 				controls_state = 209
 				EST = { exists = no }
@@ -1988,6 +2185,42 @@ country_event = {
 			amount = 10000
 			target = NWA
 		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	option = {
@@ -2002,6 +2235,42 @@ country_event = {
 			type = infantry_equipment
 			amount = 2000
 			target = NWA
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2035,6 +2304,42 @@ country_event = {
 			amount = 10000
 			target = NWA
 		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	option = {
@@ -2049,6 +2354,42 @@ country_event = {
 			type = infantry_equipment
 			amount = 2000
 			target = NWA
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2265,8 +2606,8 @@ country_event = {
 				transfer_troops = yes
 			}
 		}
-		EST = { change_tag_from = ROOT }
 		LAT = { inherit_technology = RUS }
 		EST = { inherit_technology = RUS }
+		EST = { change_tag_from = ROOT }
 	}
 }
