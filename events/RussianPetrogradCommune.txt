@@ -854,6 +854,10 @@ country_event = {
 			}
 			annex_country = { target = KRN transfer_troops = yes }
 			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+			if = {
+				limit = { has_idea = neutral_foreign_policy_law }
+				add_ideas = realpolitic_policy_law
+			}
 			
 			add_popularity = { ideology = authoritarism popularity = -0.2 }
 			add_popularity = { ideology = fascism popularity = -0.05 }
@@ -862,7 +866,6 @@ country_event = {
 			add_political_power = 150
 			remove_tsar_regime_unit_leaders = yes
 			monarchy_fall = yes
-			#news_event = { id = news_n.5 hours = 36 } #Тут особый новостной надо
 			hidden_effect = {
 				end_puppet = KHI
 				end_puppet = BUK
@@ -885,6 +888,7 @@ country_event = {
 			}
 			set_country_flag = RUS_provisional_government_created
 			load_focus_tree = Russia_Provisional_government_focus
+			set_country_flag = RUS_has_czechoslovak_legion
 			add_ideas = RUS_dvoevlastie_1
 			RUS_Order_N_1_fall_not_0 = yes
 			remove_ideas = draft_dodging_2
@@ -898,6 +902,7 @@ country_event = {
 			clr_country_flag = crisis_in_progress
 			clr_country_flag = crisis_solution_in_progress
 		}
+		hidden_effect = { news_event = { id = news_n.43 hours = 12 } }
 		if = {
 			limit = { KRN = { is_ai = no } }
 			RUS = { change_tag_from = KRN }
@@ -964,6 +969,10 @@ country_event = {
 			}
 			annex_country = { target = KRN transfer_troops = yes }
 			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+			if = {
+				limit = { has_idea = neutral_foreign_policy_law }
+				add_ideas = realpolitic_policy_law
+			}
 			
 			add_popularity = { ideology = authoritarism popularity = -0.2 }
 			add_popularity = { ideology = fascism popularity = -0.05 }
@@ -972,7 +981,6 @@ country_event = {
 			add_political_power = 150
 			remove_tsar_regime_unit_leaders = yes
 			monarchy_fall = yes
-			#news_event = { id = news_n.5 hours = 36 } #Тут особый новостной надо
 			hidden_effect = {
 				end_puppet = KHI
 				end_puppet = BUK
@@ -995,7 +1003,7 @@ country_event = {
 			}
 			set_country_flag = RUS_provisional_government_created
 			load_focus_tree = Russia_Provisional_government_focus
-			add_ideas = RUS_dvoevlastie_1
+			set_country_flag = RUS_has_czechoslovak_legion
 			RUS_Order_N_1_fall_not_0 = yes
 			remove_ideas = draft_dodging_2
 			remove_ideas = draft_dodging_3
@@ -1042,6 +1050,7 @@ country_event = {
 				Alexander_Zarudny_5
 			}
 		}
+		hidden_effect = { news_event = { id = news_n.43 hours = 12 } }
 		if = {
 			limit = { KRN = { is_ai = no } }
 			RUS = { change_tag_from = KRN }
@@ -1105,6 +1114,11 @@ country_event = {
 				has_war_with = KRN
 			}
 			KRN = { exists = no }
+			AND = {
+				NOT = { has_war_with = KRN }
+				KRN = { is_subject = no }
+			}
+			KRN = { is_subject = yes }
 		}
 	}
 	
@@ -1161,6 +1175,241 @@ country_event = {
 			limit = { has_country_leader = { name = "Alexandra Romanova" ruling_only = yes } }
 			add_country_leader_trait = valkyrie_of_the_counterrevolution
 			else = { add_country_leader_trait = executioner_of_revolutionaries }
+		}
+		if = {
+			limit = { has_idea = neutral_foreign_policy_law }
+			add_ideas = realpolitic_policy_law
+		}
+	}
+}
+
+# Победа Коммуны
+country_event = {
+	id = petrograd_commune.102
+	title = petrograd_commune.102.t
+	desc = petrograd_commune.102.desc
+	picture = GFX_report_event_rus_fevral
+	
+	trigger = {
+		tag = KRN
+		has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+		RUS = {
+			OR = {
+				exists = no
+				has_capitulated = yes
+				AND = {
+					is_subject = yes
+					NOT = { has_war_with = KRN }
+				}
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = petrograd_commune.102.a
+		hidden_effect = {
+			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+			KRN = {
+				set_politics = { ruling_party = radical_socialism }
+				retire_country_leader = yes
+				set_politics = { ruling_party = communism }
+				retire_country_leader = yes
+				set_politics = { ruling_party = social_democracy }
+				retire_country_leader = yes
+				set_politics = { ruling_party = social_liberalism }
+				retire_country_leader = yes
+				set_politics = { ruling_party = market_liberalism }
+				retire_country_leader = yes
+				set_politics = { ruling_party = authoritarism }
+				retire_country_leader = yes
+				set_politics = { ruling_party = despotism }
+				retire_country_leader = yes
+				set_politics = { ruling_party = national_syndicalism }
+				retire_country_leader = yes
+				remove_ideas = {
+					RUS_red_guards_provisional_government
+					RGR_punitive_forces_idea
+					RUS_military_commissars_idea
+					RGR_supply_bonus
+					KRN_food_rationing_idea
+					KRN_red_terror_idea
+					KRN_militants_of_revolution_idea
+				}
+				drop_cosmetic_tag = yes
+				every_state = {
+					limit = { is_core_of = KRN }
+					remove_core_of = KRN
+					RUS = { transfer_state = PREV }
+				}
+			}
+			RUS = {
+				annex_country = { target = KRN transfer_troops = yes }
+				clr_country_flag = new_temp_capital
+			}
+		}
+		RUS = {
+			hidden_effect = { OVERLORD = { end_puppet = PREV } }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.15
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.15
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.3
+			}
+			annex_country = { target = KRN transfer_troops = yes }
+			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+			if = {
+				limit = { has_idea = neutral_foreign_policy_law }
+				add_ideas = realpolitic_policy_law
+			}
+			
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = -0.1
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.1
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.2
+			}
+			add_popularity = { ideology = authoritarism popularity = -0.2 }
+			add_popularity = { ideology = fascism popularity = -0.05 }
+			add_stability = 0.05
+			add_political_power = 150
+			remove_tsar_regime_unit_leaders = yes
+			monarchy_fall = yes
+			hidden_effect = {
+				end_puppet = KHI
+				end_puppet = BUK
+				KHI = { leave_faction = yes }
+				BUK = { leave_faction = yes }
+				if = {
+					limit = { KHI = { has_war = yes } }
+					every_country = {
+						limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+						white_peace = KHI
+					}
+				}
+				if = {
+					limit = { BUK = { has_war = yes } }
+					every_country = {
+						limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+						white_peace = BUK
+					}
+				}
+			}
+			RUS_Order_N_1_fall_not_0 = yes
+			remove_ideas = draft_dodging_2
+			remove_ideas = draft_dodging_3
+			remove_ideas = strikes_1
+			remove_ideas = strikes_2
+			remove_ideas = strikes_3
+			remove_ideas = mutiny_1
+			remove_ideas = mutiny_2
+			remove_ideas = mutiny_3
+			clr_country_flag = crisis_in_progress
+			clr_country_flag = crisis_solution_in_progress
+			if = {
+				limit = { KRN = { OR = { has_government = radical_socialism has_government = communism has_government = despotism } } }
+				bolsheviks_victory = yes
+			}
+			else = {
+				remove_ideas_with_trait = head_of_government_trait
+				remove_ideas_with_trait = economy_minister_trait
+				remove_ideas_with_trait = security_minister_trait
+				remove_ideas_with_trait = head_of_intel_trait
+				add_ideas = {
+					Alexander_Kerensky_1
+					Sergey_Prokopovich_3
+					Nikolay_Avksentiev_4
+					Alexander_Zarudny_5
+				}
+				set_country_flag = RUS_provisional_government_created
+				load_focus_tree = Russia_Provisional_government_focus
+				set_country_flag = RUS_has_czechoslovak_legion
+			}
+			
+			if = {
+				limit = { KRN = { has_government = social_liberalism } }
+				create_country_leader = {
+					name = "Alexandr Kerensky"
+					desc = RUS_Alexandr_Kerensky_DESC
+					picture = "gfx/leaders/RUS/Alexandr_Kerensky.dds"
+					ideology = social_liberalism_ideology
+					traits = { political_dancer }
+				}
+				set_politics = {
+					ruling_party = social_liberalism
+					elections_allowed = no
+				}
+			}
+			else_if = {
+				limit = { KRN = { has_government = market_liberalism } }
+				create_country_leader = {
+					name = "Nikolay Chaikovsky"
+					desc = RUS_Nikolay_Chaikovsky_DESC
+					picture = "gfx/leaders/RUS/Nikolay_Chaikovsky.dds"
+					expire="1935.1.1"
+					ideology = social_democracy_ideology
+					traits = { }
+				}
+				set_politics = {
+					ruling_party = social_democracy
+					elections_allowed = no
+				}
+				set_party_name = { ideology = social_democracy long_name = KRN_market_liberalism_party_long name = KRN_market_liberalism_party }
+			}
+			else_if = {
+				limit = { KRN = { has_government = social_democracy } }
+				create_country_leader = {
+					name = "Nikolay Chkheidze"
+					desc = GEO_Nikolay_Chkheidze_DESC
+					picture = "gfx/leaders/GEO/Nikolay_Chkheidze.dds"
+					expire = "1935.1.1"
+					ideology = social_democracy_ideology
+					traits = { }
+				}
+				set_politics = {
+					ruling_party = social_democracy
+					elections_allowed = no
+				}
+			}
+			else_if = {
+				limit = { KRN = { has_government = radical_socialism } }
+				set_politics = {
+					ruling_party = radical_socialism
+					elections_allowed = no
+				}
+			}
+			else_if = {
+				limit = { KRN = { has_government = despotism } }
+				create_country_leader = {
+					name = "Pavel Dybenko"
+					desc = SOV_Pavel_Dybenko_DESC
+					picture = "gfx/leaders/SOV/Pavel_Dybenko.dds"
+					expire = "1935.1.1"
+					ideology = leninism
+					traits = { }
+				}
+			}
+		}
+		if = {
+			limit = { KRN = { is_ai = no } }
+			RUS = { change_tag_from = KRN }
 		}
 	}
 }
