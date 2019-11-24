@@ -1,0 +1,98 @@
+﻿###########################
+# National Assembly Events
+###########################
+
+add_namespace = rcw_all_rus_NA
+
+###########################
+# Учредительное собрание
+###########################
+
+#Национальное собрание
+country_event = {
+	id = rcw_all_rus_NA.1
+	title = rcw_all_rus_NA.1.t
+	desc = rcw_all_rus_NA.1.d
+	picture = GFX_report_event_rus_the_constituent_assembly
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.1.a
+		if = {
+			limit = { controls_state = 219 }
+			set_capital = 219
+		}
+		add_war_support = 0.1
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			ROOT = { annex_country = { target = PREV transfer_troops = yes } }
+		}
+		every_country = {
+			limit = { NOT = { tag = ROOT has_war_with = ROOT } is_white_movement_country = yes is_subject = no NOT = { has_government = radical_socialism has_government = communism } }
+			country_event = { id = rcw_all_rus_NA.2 }
+		}
+		every_country = {
+			limit = { NOT = { tag = ROOT has_war_with = ROOT } is_any_former_russian_empire_country = yes NOT = { is_white_movement_country = yes } is_subject = no NOT = { has_government = radical_socialism has_government = communism } }
+			country_event = { id = rcw_all_rus_NA.3 }
+		}
+	}
+}
+
+#Воля национального собрания
+country_event = {
+	id = rcw_all_rus_NA.2
+	title = rcw_all_rus_NA.2.t
+	desc = rcw_all_rus_NA.2.d
+	picture = GFX_report_event_rus_the_constituent_assembly
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.2.a
+		FROM = { declare_war_on = { target = ROOT type = annex_everything } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_all_rus_NA.2.b
+		FROM = { annex_country = { target = ROOT transfer_troops = yes } }
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				tag = RVA
+			}
+		}
+	}
+}
+
+#Обращение ко всем национальным правительствам
+country_event = {
+	id = rcw_all_rus_NA.3
+	title = rcw_all_rus_NA.3.t
+	desc = rcw_all_rus_NA.3.d
+	picture = GFX_report_event_rus_the_constituent_assembly
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.3.a
+		FROM = { create_wargoal = { type = puppet_wargoal_focus target = ROOT } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_all_rus_NA.3.b
+		FROM = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } }
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0.25
+				tag = UKR
+			}
+		}
+	}
+}
