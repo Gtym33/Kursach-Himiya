@@ -42,9 +42,12 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			set_equipment_fraction = 0.95
-			every_unit_leader = { limit = { OR = { has_id = 76546 has_id = 77300 } } set_nationality = DON }
+			every_unit_leader = { limit = { OR = { has_id = 76546 has_id = 18701 } } set_nationality = DON }
 			delete_unit_template_and_units = {
 				division_template = "Kazach'ya brigada"
+			}
+			DON = {
+				set_cosmetic_tag = DON_Kaledin
 			}
 		}
 	}
@@ -86,18 +89,20 @@ country_event = {
 					state = 245
 					state = 953
 					state = 954
+					state = 218
 					state = 227
 				}
 			}
 			DON = { transfer_state = PREV }
 		}
 		set_country_flag = DON_revolt
+		country_event = { id = rcw_udktc.2 days = 1 }
 		DON = {
 			inherit_technology = RUS
-			set_cosmetic_tag = DON_Kaledin
+			load_oob = DON_Kaledin
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
-			country_event = { id = rcw_udktc.2 days = 12 }
+			country_event = { id = rcw_udktc.3 days = 23 }
 		}
 	}
 	
@@ -132,74 +137,117 @@ country_event = {
 				}
 				OR = {
 					state = 1044
+					state = 995
 					state = 228
 					state = 238
 					state = 996
 					state = 245
 					state = 953
 					state = 954
+					state = 218
 					state = 227
 				}
 			}
 			DON = { transfer_state = PREV }
 		}
 		set_country_flag = DON_revolt
+		country_event = { id = rcw_udktc.2 days = 1 }
 		DON = {
 			inherit_technology = RUS
-			set_cosmetic_tag = DON_Kaledin
+			load_oob = DON_Kaledin
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
-			country_event = { id = rcw_udktc.2 days = 12 }
+			country_event = { id = rcw_udktc.3 days = 23 }
 			change_tag_from = RUS
 		}
 	}
 }
-
-# Итоги местного Учредительного собрания не радуют правительство, и начинаются попытки создания коалиционного правительства против большевиков
+# Выделение Кубани
 country_event = {
 	id = rcw_udktc.2
 	title = rcw_udktc.2.t
 	desc = rcw_udktc.2.d
-	picture = GFX_report_event_rus_coalition
+	picture = GFX_report_event_rus_kaledin_uprising
 	
 	is_triggered_only = yes
 	
-	immediate = {
-		hidden_effect = {
-			initiate_verification_of_the_popularity_of_coalitions = yes
-		}
-	}
-	
 	option = {
-		name = rcw_udktc.2.a # не идти на компромисы
-		add_political_power = 50
-		load_oob = DON_kaledin
-		ai_chance = {
-			factor = 90
-		}
-		country_event = { id = rcw_udktc.3  days = 11 }
-	}
-	
-	option = {
-		name = rcw_udktc.2.b # согласится на требования умеренных
-		initiate_verification_of_the_popularity_of_coalitions = yes
-		if = {
-			limit = { check_variable = { socialist_parties > 0.5 } }
-			set_politics = { ruling_party = communism elections_allowed = no }
-		}
-		if = {
-			limit = { NOT = { check_variable = { socialist_parties > 0.5 } } }
-			set_politics = { ruling_party = market_liberalism elections_allowed = no }
-			add_popularity = { ideology = market_liberalism popularity = 0.2 }
-			add_popularity = { ideology = social_liberalism popularity = 0.1 }
-			load_oob = DON_not_kaledin
-		}
-		ai_chance = {
-			factor = 0 #10
-			modifier = {
-				factor = 0
-				is_historical_focus_on = yes
+		name = rcw_udktc.2.a
+		every_state = {
+			limit = {
+				OR = {
+					state = 234
+					state = 907
+					state = 1045
+					state = 233
+					state = 902
+				}
 			}
+			add_core_of = KUB
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					OWNER = { is_subject_of = ROOT }
+				}
+				OR = {
+					state = 234
+					state = 907
+					state = 1045
+					state = 233
+					state = 902
+				}
+			}
+			KUB = { transfer_state = PREV }
+		}
+		KUB = {
+			inherit_technology = RUS
+			add_ideas = neutral_foreign_policy_law
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = KUB_1917
+		}
+	}
+	
+	option = {
+		name = rcw_udktc.2.b
+		trigger = {
+			is_ai = no
+		}
+		every_state = {
+			limit = {
+				OR = {
+					state = 234
+					state = 907
+					state = 1045
+					state = 233
+					state = 902
+				}
+			}
+			add_core_of = KUB
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					OWNER = { is_subject_of = ROOT }
+				}
+				OR = {
+					state = 234
+					state = 907
+					state = 1045
+					state = 233
+					state = 902
+				}
+			}
+			KUB = { transfer_state = PREV }
+		}
+		KUB = {
+			inherit_technology = RUS
+			add_ideas = neutral_foreign_policy_law
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = KUB_1917
+			change_tag_from = RUS
 		}
 	}
 }
@@ -215,17 +263,62 @@ country_event = {
 	
 	option = {
 		name = rcw_udktc.3.a #подавить выступление
-		add_popularity = { ideology = communism popularity = -1 }
-		add_timed_idea = { idea = DON_jidobolysheviks_revolt days = 60 }
-		hidden_effect = { RUS = { country_event = { id = rcw_udktc.5 days = 25 } } }
+		start_civil_war = {
+			ideology = communism
+			size = 0
+			only_own_territory = yes
+			capital = 218
+			states = {
+				218 228 953 227
+			}
+			keep_unit_leaders_trigger = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } }
+		}
+		hidden_effect = {
+			every_country = {
+				limit = { original_tag = DON has_government = communism }
+				add_popularity = { ideology = radical_socialism popularity = 0.3 }
+				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+				add_ideas = {
+					soviet_republic_gov_form
+					federal_gov_terr
+					local_assembly_decisions_b_law
+					two_party_system_law
+					neutral_foreign_policy_law
+				}
+				division_template = {
+					name = "Krasnaya Gvardiya"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+				RUS = { every_unit_leader = { limit = { OR = { has_id = 28003 has_id = 28004 } } set_nationality = PREV } }
+			}
+			218 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
+		}
+		hidden_effect = { RUS = { country_event = { id = rcw_udktc.5 days = 25 } } } # костыль, потом убрать надо
 		ai_chance = {
 			factor = 1
 		}
 	}
 	option = {
+		trigger = { always = no }
 		name = rcw_udktc.3.b #принять ультиматум
 		set_politics = { ruling_party = communism elections_allowed = no }
 		add_popularity = { ideology = communism popularity = 0.2 }
+		add_popularity = { ideology = radical_socialism popularity = 0.3 }
+		set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+		add_ideas = {
+			soviet_republic_gov_form
+			federal_gov_terr
+			local_assembly_decisions_b_law
+			two_party_system_law
+			neutral_foreign_policy_law
+		}
+		every_unit_leader = { set_nationality = REB }
+		RUS = { every_unit_leader = { limit = { OR = { has_id = 28003 has_id = 28004 } } set_nationality = PREV } }
 		ai_chance = {
 			factor = 0
 		}
@@ -288,7 +381,7 @@ country_event = {
 			inherit_technology = RUS
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
-			load_oob = RVA_alexeev
+			load_oob = RVA_Alexeev
 		}
 	}
 	option = {
@@ -333,7 +426,7 @@ country_event = {
 			inherit_technology = RUS
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
-			load_oob = RVA_alexeev
+			load_oob = RVA_Alexeev
 			change_tag_from = RUS
 		}
 	}
@@ -748,11 +841,11 @@ country_event = {
 	trigger ={
 		tag = RVA
 		OR = {
-			has_idea = RVA_volunteer_army_1
-			has_idea = RVA_volunteer_army_2
-			has_idea = RVA_volunteer_army_3
-			has_idea = RVA_volunteer_army_4
-			has_idea = RVA_volunteer_army_5
+			has_idea = RVA_kubanskiy_pohod_1
+			has_idea = RVA_kubanskiy_pohod_2
+			has_idea = RVA_kubanskiy_pohod_3
+			has_idea = RVA_kubanskiy_pohod_4
+			has_idea = RVA_kubanskiy_pohod_5
 		}
 	}
 	
@@ -764,28 +857,28 @@ country_event = {
 	
 	immediate = {
 		if = {
-			limit = { has_idea = RVA_volunteer_army_5 }
-			remove_ideas = RVA_volunteer_army_5
+			limit = { has_idea = RVA_kubanskiy_pohod_5 }
+			remove_ideas = RVA_kubanskiy_pohod_5
 		}
 		if = {
-			limit = { has_idea = RVA_volunteer_army_4 }
-			remove_ideas = RVA_volunteer_army_4
-			add_ideas = RVA_volunteer_army_5
+			limit = { has_idea = RVA_kubanskiy_pohod_4 }
+			remove_ideas = RVA_kubanskiy_pohod_4
+			add_ideas = RVA_kubanskiy_pohod_5
 		}
 		if = {
-			limit = { has_idea = RVA_volunteer_army_3 }
-			remove_ideas = RVA_volunteer_army_3
-			add_ideas = RVA_volunteer_army_4
+			limit = { has_idea = RVA_kubanskiy_pohod_3 }
+			remove_ideas = RVA_kubanskiy_pohod_3
+			add_ideas = RVA_kubanskiy_pohod_4
 		}
 		if = {
-			limit = { has_idea = RVA_volunteer_army_2 }
-			remove_ideas = RVA_volunteer_army_2
-			add_ideas = RVA_volunteer_army_3
+			limit = { has_idea = RVA_kubanskiy_pohod_2 }
+			remove_ideas = RVA_kubanskiy_pohod_2
+			add_ideas = RVA_kubanskiy_pohod_3
 		}
 		if = {
-			limit = { has_idea = RVA_volunteer_army_1 }
-			remove_ideas = RVA_volunteer_army_1
-			add_ideas = RVA_volunteer_army_2
+			limit = { has_idea = RVA_kubanskiy_pohod_1 }
+			remove_ideas = RVA_kubanskiy_pohod_1
+			add_ideas = RVA_kubanskiy_pohod_2
 		}
 	}
 }
