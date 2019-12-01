@@ -1410,7 +1410,6 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = RUS_soviet_republic_after_CA
-			focus = RUS_republic_after_CA
 		}
 		prerequisite = {
 			focus = RUS_CA_peace_with_GER
@@ -1418,7 +1417,6 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = RUS_CA_socialization_of_land
-			focus = RUS_CA_confirm_black_redistribution
 		}
 		prerequisite = {
 			focus = RUS_CA_confederal_state
@@ -1432,44 +1430,112 @@ focus_tree = {
 		y = 4
 		relative_position_id = RUS_soviet_republic_after_CA
 		completion_reward = {
+			set_country_flag = RUS_red_czechoslovak_legion
 			hidden_effect = {
-				SOV = {
-					save_global_event_target_as = UNITED_COUNTRY
-				}
-				ROOT = {
-					save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR
-					capital_scope = { set_state_flag = new_capital SOV = { transfer_state = PREV } }
-					party_populatiry_addition_script_1 = yes
-				}
-				if = {
-					limit = {
-						USR = { is_in_faction_with = ROOT } SOV = { has_country_flag = SOV_start_pos_federal_plan }
+					if = {
+						limit = { has_idea = unitary_gov_terr }
+						SOV = { add_ideas = unitary_gov_terr }
 					}
-					USR = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR } event_target:UNITED_COUNTRY = { inherit_technology = USR }
-				}
-				else_if = {
-					limit = {
-						UKR = { is_in_faction_with = ROOT } SOV = { has_country_flag = SOV_start_pos_federal_plan }
+					if = {
+						limit = { has_idea = federal_gov_terr }
+						SOV = { add_ideas = federal_gov_terr }
 					}
-					UKR = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR } event_target:UNITED_COUNTRY = { inherit_technology = UKR }
-				}
-				else = {
-					ROOT = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR }
+					if = {
+						limit = { has_idea = confederal_gov_terr }
+						SOV = { add_ideas = confederal_gov_terr }
+					}
+			}
+			clr_country_flag = RUS_provisional_government_created
+			clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk
+			set_country_flag = RUS_Oktober_revolution_fired
+			set_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
+			load_focus_tree = Russia_bolsheviks_focus
+			if = {
+				limit = { has_country_flag = RUS_Order_N_1 }
+				country_event = { id = rcw.111 days = 3 }
+			}
+			clr_country_flag = RUS_Order_N_1
+			clr_country_flag = Kornilov_affair_near
+			clr_country_flag = RUS_Kornilov_civil_war_near
+			clr_country_flag = RUS_kornilov_eser_and_menysheviks_are_neutral
+			clr_country_flag = RUS_kornilov_eser_and_menysheviks_are_neutralized
+			clr_country_flag = RUS_kornilov_leftish_agitators_in_army
+			clear_variable = RUS_Kornilov_gov_stability
+			clear_variable = RUS_Kornilov_power
+			clear_variable = RUS_force_uses
+			if = {
+				limit = { has_country_flag = general_kornilov }
+				clr_country_flag = general_kornilov
+				set_country_flag = Kornilov_affair_fail
+			}
+			leave_faction = yes
+			add_ideas = neutral_foreign_policy_law
+			set_politics = {
+				ruling_party = communism
+				election_frequency = 60
+				elections_allowed = no
+			}
+			set_cosmetic_tag = RUS_SOV
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_ministe_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+			add_ideas = {
+				Yakov_Sverdlov_1
+				Lev_Trotsky_2
+				Vyacheslav_Menzhinsky_3
+				Alexey_Rykov_4
+				Felix_Dzerjinsky_5
+				Lev_Trotsky_6
+				Nikolay_Krylenko_army_chief
+			}
+			remove_ideas = {
+				RUS_dvoevlastie_1
+				RUS_dvoevlastie_2
+				RUS_dvoevlastie_3
+				RUS_dvoevlastie_4
+				RUS_Order_N_1_1
+				RUS_Order_N_1_2
+				RUS_Order_N_1_3
+				RUS_counterintelligence_service
+				RUS_total_militarisation
+				RUS_red_guards_provisional_government
+				RUS_main_economic_committee_idea
+				RUS_monopoly_law_idea
+			}
+			if = {
+				limit = { has_idea = tot_economic_mobilisation }
+				add_ideas = war_economy
+			}
+			add_ideas = workers_control_law
+			set_country_flag = RUS_soviet_power_set_workers_control #Сделать ивент на декрет о рабочем контроле
+			remove_white_unit_leaders = yes
+			add_red_unit_leaders = yes
+			if = {
+				limit = { NOT = { has_global_flag = RUS_civil_war_over } }
+				if = {
+					limit = { DON = { exists = no } controls_state = 652 }
+					country_event = { id = rcw_udktc.1 days = 2 }
 				}
 				if = {
-					limit = { has_idea = unitary_gov_terr }
-					SOV = { add_ideas = unitary_gov_terr }
-				}
-				if = {
-					limit = { has_idea = federal_gov_terr }
-					SOV = { add_ideas = federal_gov_terr }
-				}
-				if = {
-					limit = { has_idea = confederal_gov_terr }
-					SOV = { add_ideas = confederal_gov_terr }
+					limit = { OCH = { exists = no } controls_state = 1044 }
+					country_event = { id = rcw.22 days = 2 }
 				}
 			}
-			country_event = soviet.1
+			if = {
+				limit = { has_political_power < 0 }
+				set_political_power = 0
+			}
+			division_template = {
+				name = "Krasnaya Gvardiya"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+				}
+				priority = 0
+				is_locked = yes
+			}
 		}
 
 	}

@@ -549,6 +549,12 @@ focus_tree = {
 		prerequisite = {
 			focus = CCA_mobilization
 		}
+		available = {
+			OR = {
+				controls_state = 652
+				OCH = { exists = yes }
+			}
+		}
 		x = 15
 		y = 2
 		completion_reward = {
@@ -560,14 +566,35 @@ focus_tree = {
 			add_popularity = { ideology = despotism popularity = 0.05 }
 			load_oob = "CCA_cossacks"
 			if = {
-				limit = { controls_state = 652 OCH = { exists = no } }
-				set_state_owner = 652
-				release_autonomy = {
-					target = OCH
-					autonomy_state = autonomy_puppet
-					freedom_level = 0.5
+				limit = { OCH = { exists = no } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 652
+							state = 407
+							state = 406
+							state = 1071
+						}
+					}
+					add_core_of = OCH
+					if = { limit = { OR = { is_owned_by = RUS is_owned_by = CCA } } OCH = { set_state_owner = PREV } }
 				}
-				OCH = { load_oob = OCH_cossaks }
+				OCH = { load_oob = OCH_cossaks subjecting_script_with_transfer_parties_colony = yes }
+				else = {
+					OCH = { subjecting_script_with_transfer_parties_dominion = yes }
+					every_state = {
+						limit = {
+							OR = {
+								state = 652
+								state = 407
+								state = 406
+								state = 1071
+							}
+						}
+						add_core_of = OCH
+						if = { limit = { OR = { is_owned_by = RUS is_owned_by = CCA } } OCH = { set_state_owner = PREV } }
+					}
+				}
 			}
 		}
 	
