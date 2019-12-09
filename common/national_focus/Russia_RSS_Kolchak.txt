@@ -280,30 +280,39 @@ focus_tree = {
 		y = 2
 		completion_reward = {
 			every_country = {
-				limit = { is_subject_of = ROOT is_neighbor_of = ROOT NOT = {tag = KAZ} }
-				RSS = {
-				annex_country = {
-				target = PREV 
-				transfer_troops = yes 
+				limit = {
+					is_subject_of = ROOT
+					is_neighbor_of = ROOT
+					NOT = {
+						tag = KAZ
+						tag = BSH
+						tag = TAR
+					}
 				}
+				RSS = {
+					annex_country = {
+						target = PREV
+						transfer_troops = yes
+					}
 				}
 				if = {
-				limit = {OR = {tag = BKL tag = PRM tag = RVA tag = DON}}
-				PREV = {
-				every_unit_leader = {
-				set_nationality = RSS
+					limit = { OR = { tag = BKL tag = OCH tag = PRM tag = RVA tag = DON } }
+					PREV = { every_unit_leader = { set_nationality = RSS } }
 				}
-				}
-				}
-				}
-			if = {
-			limit = {
-				KAZ = { is_subject_of = ROOT }
 			}
-			KAZ = {country_event = rcw_usfev.145}
-			}
+			every_country = {
+				limit = {
+					is_subject_of = ROOT
+					OR = {
+						tag = KAZ
+						tag = BSH
+						tag = TAR
+					}
+				}
+				country_event = rcw_usfev.145
 			}
 		}
+	}
 	
 	focus = {
 		id = RSS_expulsion_czechs
@@ -394,9 +403,47 @@ focus_tree = {
 			active = yes
 		}
 		FIN = {
-		country_event = rcw_usfev.151
+			country_event = rcw_usfev.151
 		}
 		hidden_effect = {country_event = news_n.17}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				if = {
+					limit = {
+						is_in_array = {
+							array = PREV.unrecognized_states
+							value = FIN.id
+						}
+					}
+					FIN = {
+						PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_embargo } }
+						PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_rel } }
+						remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+						remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+						remove_from_array = { PREV.unrecognized_states = FIN.id }
+						add_ai_strategy = {
+							type = befriend
+							id = ROOT
+							value = 50
+						}
+						ROOT = {
+							add_ai_strategy = {
+								type = befriend
+								id = PREV
+								value = 50
+							}
+						}
+					}
+				}
+			}
+		}
 		}
 	}
 	
@@ -503,6 +550,7 @@ focus_tree = {
 		y = 3
 		completion_reward = {
 			peasant_and_land_and_bread_question_fall = yes
+			add_timed_idea = { idea = peasant_and_land_and_bread_question_reformation_period days = 90 }
 			add_stability = -0.1
 			add_popularity = { ideology = authoritarism popularity = 0.05 }
 		}

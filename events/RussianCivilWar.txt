@@ -2115,7 +2115,7 @@ country_event = {
 			}
 		}
 		add_to_variable = { global.Entente_support_limit = 1 }
-		add_to_variable = { global.Entente_support_count = 1 }
+		add_to_variable = { global.Entente_support_count = 10 }
 	}
 	option = {
 		name = rcw.500.b
@@ -2124,7 +2124,6 @@ country_event = {
 		}
 	}
 }
-
 
 # Начало продовольственного кризиса
 country_event = {
@@ -2528,6 +2527,53 @@ country_event = {
 	}
 }
 
+
+# Forced recognize
+country_event = {
+	id = rcw.1921
+	hidden = yes
+	is_triggered_only = yes
+	option = {
+		name = rcw.1921.a
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 # Civil war over
 country_event = {
 	id = rcw.1922
@@ -2572,6 +2618,10 @@ country_event = {
 				is_subject = yes
 				has_capitulated = yes
 				exists = no
+				AND = {
+					tag = SIB
+					has_global_flag = RUS_civil_war_reds_n_Siberia_peace
+				}
 			}
 		}
 		OR = {
@@ -2588,6 +2638,18 @@ country_event = {
 				}
 			}
 			NOT = { tag = RUS }
+		}
+		all_country = {
+			OR = {
+				NOT = { is_any_former_russian_empire_country = yes }
+				NOT = { has_war_with = ROOT }
+			}
+		}
+		OR = {
+			NOT = { tag = SIB }
+			NOT = { has_global_flag = RUS_civil_war_reds_n_Siberia_peace }
+			RUS = { OR = { has_government = radical_socialism has_government = communism } }
+			SOV = { exists = no }
 		}
 		
 		NOT = { has_war_with = GER }
@@ -2622,6 +2684,26 @@ country_event = {
 			limit = { tag = RGR }
 			country_event = rcw.1923
 		}
+		if = {
+			limit = {
+				NOT = { tag = RGR }
+				has_government = radical_socialism
+				has_government = communism
+			}
+			remove_ideas = Entente_credit_for_Russia
+			add_timed_idea = { idea = Entente_credit_for_Russia_pay days = var:global.Entente_support_count }
+			every_country = {
+				limit = {
+					OR = {
+						tag = ENG
+						tag = FRA
+						tag = USA
+					}
+				}
+				hidden_effect = { country_event = rcw.1921 }
+			}
+		}
+		clear_variable = global.Entente_support_count
 	}
 }
 

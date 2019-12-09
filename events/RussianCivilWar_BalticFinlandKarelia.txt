@@ -953,7 +953,7 @@ country_event = {
 			}
 			create_country_leader = { name = "Andrievs Nieder" desc = "" picture = "gfx/leaders/LAT/Andrevs_Niedra.dds" expire = "1965.1.1" ideology = authoritarism_ideology traits = { } }
 		}
-		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
+		country_event = { id = rcw_bfk.24 hours = 1 }
 	}
 	
 	option = {
@@ -961,6 +961,36 @@ country_event = {
 		ai_chance = {
 			factor = 0
 		}
+	}
+}
+# Ландвер установил контроль над Прибалтикой
+country_event = {
+	id = rcw_bfk.24
+	title = rcw_bfk.24.t
+	desc = rcw_bfk.24.d
+	picture = GFX_report_event_lat_niedra
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.24.a
+		event_target:UNITED_COUNTRY = {
+			set_popularities = {
+					radical_socialism = var:radical_socialism_party
+					communism = var:communism_party
+					social_democracy = var:social_democracy_party
+					social_liberalism = var:social_liberalism_party
+					market_liberalism = var:market_liberalism_party
+					social_conservatism = var:social_conservatism_party
+					authoritarism = var:authoritarism_party
+					despotism = var:despotism_party
+					fascism = var:fascism_party
+					national_syndicalism = var:national_syndicalism_party
+			}
+		}
+		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
 	}
 }
 
@@ -2180,12 +2210,19 @@ country_event = {
 	}
 }
 
-
-# Просьба СЗА Антанте о защите
+# Просьба СЗА или Сибири о винтовках Антанты и признании Антанты
 country_event = {
 	id = rcw_bfk.156
 	title = rcw_bfk.156.t
-	desc = rcw_bfk.156.d
+	desc = {
+		text = rcw_bfk.156.d_NWA
+		trigger = { FROM = { OR = { tag = NWA tag = WVA } } }
+	}
+	desc = {
+		text = rcw_bfk.156.d_SIB
+		trigger = { FROM = { OR = { tag = SIB tag = RSS } } }
+	}
+	
 	picture = GFX_report_event_nwa_allies
 	
 	is_triggered_only = yes
@@ -2199,11 +2236,18 @@ country_event = {
 				infantry_equipment > 9999
 			}
 		}
-		add_opinion_modifier = { target = NWA modifier = Entente_accept_SIB_strong }
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept_strong }
 		send_equipment = {
 			type = infantry_equipment
 			amount = 10000
-			target = NWA
+			target = FROM
+		}
+		FROM = {
+			if = {
+				limit = { NOT = { has_variable = global.Entente_support_count } }
+				set_variable = { global.Entente_support_count = 0 }
+			}
+			add_to_variable = { global.Entente_support_count = 100 }
 		}
 		every_country = {
 			limit = {
@@ -2250,11 +2294,18 @@ country_event = {
 				infantry_equipment > 1999
 			}
 		}
-		add_opinion_modifier = { target = NWA modifier = Entente_accept_SIB }
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept }
 		send_equipment = {
 			type = infantry_equipment
 			amount = 2000
-			target = NWA
+			target = FROM
+		}
+		FROM = {
+			if = {
+				limit = { NOT = { has_variable = global.Entente_support_count } }
+				set_variable = { global.Entente_support_count = 0 }
+			}
+			add_to_variable = { global.Entente_support_count = 20 }
 		}
 		every_country = {
 			limit = {
@@ -2296,11 +2347,11 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.156.c
-		add_opinion_modifier = { target = NWA modifier = Entente_no_accept_SIB }
+		add_opinion_modifier = { target = FROM modifier = Entente_no_accept_SIB }
 	}
 }
 
-# Просьба СЗА Антанте о защите
+# Просьба СЗА Германии о защите
 country_event = {
 	id = rcw_bfk.157
 	title = rcw_bfk.157.t
@@ -2318,11 +2369,11 @@ country_event = {
 				infantry_equipment > 9999
 			}
 		}
-		add_opinion_modifier = { target = NWA modifier = Entente_accept_SIB_strong }
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept_strong }
 		send_equipment = {
 			type = infantry_equipment
 			amount = 10000
-			target = NWA
+			target = FROM
 		}
 		every_country = {
 			limit = {
@@ -2369,11 +2420,11 @@ country_event = {
 				infantry_equipment > 1999
 			}
 		}
-		add_opinion_modifier = { target = NWA modifier = Entente_accept_SIB }
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept }
 		send_equipment = {
 			type = infantry_equipment
 			amount = 2000
-			target = NWA
+			target = FROM
 		}
 		every_country = {
 			limit = {
@@ -2415,7 +2466,7 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.157.c
-		add_opinion_modifier = { target = NWA modifier = Entente_no_accept_SIB }
+		add_opinion_modifier = { target = FROM modifier = Entente_no_accept_SIB }
 	}
 }
 

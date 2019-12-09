@@ -11,18 +11,7 @@ add_namespace = rcw_udktc
 country_event = {
 	id = rcw_udktc.1
 	title = rcw_udktc.1.t
-	desc = {
-		text = rcw_udktc.1.desc
-		trigger = {
-			UKR = { OR = { exists = no has_government = communism has_government = radical_socialism } }
-		}
-	}
-	desc = {
-		text = rcw_udktc.1.desc_ukr
-		trigger = {
-			UKR = { exists = yes NOT = { has_government = communism has_government = radical_socialism } }
-		}
-	}
+	desc = rcw_udktc.1.desc
 	picture = GFX_report_event_rus_kaledin_uprising
 	
 	trigger = {
@@ -328,7 +317,14 @@ country_event = {
 country_event = {
 	id = rcw_udktc.4
 	title = rcw_udktc.4.t
-	desc = rcw_udktc.4.desc
+	desc = {
+		text = rcw_udktc.4.desc
+		trigger = { RUS = { OR = { has_country_flag = Kornilov_affair_near has_country_flag = Kornilov_affair_fail } } }
+	}
+	desc = {
+		text = rcw_udktc.4.desc_1
+		trigger = { RUS = { NOT = { has_country_flag = Kornilov_affair_near has_country_flag = Kornilov_affair_fail } } }
+	}
 	picture = GFX_report_event_rcw_rva
 	
 	is_triggered_only = yes
@@ -455,7 +451,8 @@ country_event = {
 		RUS = { has_country_flag = DON_revolt }
 		has_country_leader = { name = "Alexey Kaledin" ruling_only = yes }
 		OR = {
-			surrender_progress > 0.8
+			surrender_progress > 0.6
+			capital_scope = { NOT = { is_fully_controlled_by = ROOT } }
 			has_capitulated = yes
 		}
 		has_completed_focus = DON_help_from_Alexeyevs_organisation
@@ -691,9 +688,7 @@ country_event = {
 		every_unit_leader = { set_nationality = RVA }
 		remove_ideas = DON_volunteer_recruitment_network_idea
 		remove_ideas = DON_Volunteer_army_presence_idea
-		random_owned_state = {
-			RVA = { transfer_state = PREV }
-		}
+		RVA = { transfer_state = 996 }
 		every_country = {
 			limit = { has_war_with = ROOT }
 			RVA = {
@@ -1000,6 +995,7 @@ country_event = {
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
+		always = no
 		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = RVA
 		NOT = { has_country_leader = { name = "Lavr Kornilov"  } }
@@ -1202,6 +1198,43 @@ country_event = {
 		name = rcw_udktc.80.a
 		REB = { every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = RVA } }
 		load_oob = RVA_Drozdov
+	}
+}
+
+# Создание ВСЮР из Дона
+country_event = {
+	id = rcw_udktc.1918
+	title = rcw_udktc.1918.t
+	desc = rcw_udktc.1918.desc
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_udktc.1918.a
+		event_target:UNITED_COUNTRY = {
+			set_popularities = {
+					radical_socialism = var:radical_socialism_party
+					communism = var:communism_party
+					social_democracy = var:social_democracy_party
+					social_liberalism = var:social_liberalism_party
+					market_liberalism = var:market_liberalism_party
+					social_conservatism = var:social_conservatism_party
+					authoritarism = var:authoritarism_party
+					despotism = var:despotism_party
+					fascism = var:fascism_party
+					national_syndicalism = var:national_syndicalism_party
+			}
+		}
+		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
+		random_state = {
+			limit = { has_state_flag = new_capital }
+			event_target:UNITED_COUNTRY = { set_capital = PREV }
+			clr_state_flag = new_capital
+		}
+		clear_global_event_target = INTEGRATING_COUNTRY_MAJOR
+		clear_global_event_target = INTEGRATING_COUNTRY_MINOR
+		clear_global_event_target = UNITED_COUNTRY
 	}
 }
 
