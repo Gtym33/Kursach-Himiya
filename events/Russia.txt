@@ -4,6 +4,49 @@
 
 add_namespace = russia
 
+# Большевизация советов
+country_event = {
+	id = russia.1
+	title = russia.1.t
+	desc = {
+		text = russia.1.desc
+		trigger = { has_country_flag = Kornilov_affair_fail }
+	}
+	desc = {
+		text = russia.1.desc_1
+		trigger = { NOT = { has_country_flag = Kornilov_affair_fail } }
+	}
+	picture = GFX_report_event_sov_lenin_est_takaya_party
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_provisional_government_created
+		OR = {
+			has_country_flag = Kornilov_affair_fail
+			AND = {
+				has_country_flag = RUS_April_crisis_provisional_government_win
+				has_country_flag = RUS_first_allrussian_congress_of_soviets
+				NOT = { has_country_flag = RUS_first_allrussian_congress_of_soviets_supports_bolsheviks }
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = russia.1.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		set_country_flag = RUS_Bolsheviks_majority
+	}
+}
+
 # Манифест Петроградского Совета «К народам мира»
 country_event = {
 	id = russia.8
@@ -331,36 +374,41 @@ country_event = {
 		set_country_flag = RUS_first_allrussian_congress_of_soviets
 	}
 	option = {
-		trigger = { NOT = { has_country_flag = RUS_April_crisis_provisional_government_win } }
 		ai_chance = {
 			factor = 3
 		}
 		name = russia.16.a #съезд поддержал правительство
 		add_popularity = {
 			ideology = social_liberalism
-			popularity = 0.05
+			popularity = 0.025
 		}
 		add_popularity = {
 			ideology = social_democracy
-			popularity = 0.05
-		}
-		add_popularity = {
-			ideology = communism
-			popularity = 0.05
+			popularity = 0.025
 		}
 		add_popularity = {
 			ideology = radical_socialism
-			popularity = 0.025
+			popularity = 0.0125
 		}
 		add_political_power = 50
+		if = {
+			limit = { has_country_flag = RUS_April_crisis_provisional_government_win }
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			else = {
+				add_popularity = {
+					ideology = communism
+					popularity = 0.025
+				}
+			}
+		}
 	}
 	option = {
+		trigger = { OR = { has_country_flag = RUS_April_crisis_provisional_government_win communism > 0.3 } }
 		ai_chance = {
 			factor = 1
-			modifier = {
-				is_historical_focus_on = yes
-				factor = 0
-			}
 		}
 		name = russia.16.b #съезд поддержал большевиков
 		add_popularity = {
@@ -373,13 +421,12 @@ country_event = {
 		}
 		add_popularity = {
 			ideology = communism
-			popularity = 0.05
+			popularity = 0.15
 		}
 		add_popularity = {
 			ideology = radical_socialism
 			popularity = 0.025
 		}
-		set_country_flag = RUS_first_allrussian_congress_of_soviets
 		set_country_flag = RUS_first_allrussian_congress_of_soviets_supports_bolsheviks
 		add_political_power = -50
 	}
@@ -790,7 +837,7 @@ country_event = {
 		}
 		news_event = { id = news_n.11 hours = 72 }
 		if = {
-			limit = { has_idea = Lavr_Kornilov_army_chief }
+			limit = { NOT = { has_idea = Lavr_Kornilov_army_chief } }
 			country_event = russia.30
 		}
 	}
@@ -1085,35 +1132,6 @@ country_event = {
 				add_idea = RUS_dvoevlastie_1
 			}
 		}
-	}
-}
-
-# Большевизация советов
-country_event = {
-	id = russia.33
-	title = russia.33.t
-	desc = russia.33.desc
-	picture = GFX_report_event_sov_lenin_est_takaya_party
-	
-	trigger = {
-		tag = RUS
-		has_country_flag = Kornilov_affair_fail
-		has_country_flag = RUS_provisional_government_created
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		name = russia.33.a
-		add_popularity = {
-			ideology = communism
-			popularity = 0.05
-		}
-		set_country_flag = RUS_Bolsheviks_majority
 	}
 }
 

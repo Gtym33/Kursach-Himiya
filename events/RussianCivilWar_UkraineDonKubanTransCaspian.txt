@@ -2,16 +2,16 @@
 # Russian Civil War Events
 ###########################
 
-add_namespace = rcw_udktc
+add_namespace = rcw_dkutc
 
 
 ###### Антисоветские восстания в России ######
 
-# Восстание Каледина
+# Восстание/объявление военного положения на Дону
 country_event = {
-	id = rcw_udktc.1
-	title = rcw_udktc.1.t
-	desc = rcw_udktc.1.desc
+	id = rcw_dkutc.1
+	title = rcw_dkutc.1.t
+	desc = rcw_dkutc.1.desc
 	picture = GFX_report_event_rus_kaledin_uprising
 	
 	trigger = {
@@ -32,11 +32,12 @@ country_event = {
 		hidden_effect = {
 			set_equipment_fraction = 0.95
 			every_unit_leader = { limit = { OR = { has_id = 18702 has_id = 18701 } } set_nationality = DON }
+			REB = { every_unit_leader = { limit = { OR = { has_id = 18702 has_id = 18701 } } set_nationality = DON } }
 			delete_unit_template_and_units = {
 				division_template = "Kazach'ya brigada"
 			}
 			DON = {
-				set_cosmetic_tag = DON_Kaledin
+				set_cosmetic_tag = DON_realm
 			}
 		}
 	}
@@ -44,7 +45,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_udktc.1.a
+		name = rcw_dkutc.1.a
 		every_state = {
 			limit = {
 				OR = {
@@ -85,18 +86,18 @@ country_event = {
 			DON = { transfer_state = PREV }
 		}
 		set_country_flag = DON_revolt
-		country_event = { id = rcw_udktc.2 days = 1 }
+		country_event = { id = rcw_dkutc.2 days = 1 }
 		DON = {
 			inherit_technology = RUS
 			load_oob = DON_Kaledin
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
-			country_event = { id = rcw_udktc.3 days = 23 }
+			country_event = { id = rcw_dkutc.3 days = 23 }
 		}
 	}
 	
 	option = {
-		name = rcw_udktc.1.b
+		name = rcw_dkutc.1.b
 		trigger = {
 			is_ai = no
 		}
@@ -140,28 +141,28 @@ country_event = {
 			DON = { transfer_state = PREV }
 		}
 		set_country_flag = DON_revolt
-		country_event = { id = rcw_udktc.2 days = 1 }
+		country_event = { id = rcw_dkutc.2 days = 1 }
 		DON = {
 			inherit_technology = RUS
 			load_oob = DON_Kaledin
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
-			country_event = { id = rcw_udktc.3 days = 23 }
+			country_event = { id = rcw_dkutc.3 days = 23 }
 			change_tag_from = RUS
 		}
 	}
 }
 # Выделение Кубани
 country_event = {
-	id = rcw_udktc.2
-	title = rcw_udktc.2.t
-	desc = rcw_udktc.2.desc
+	id = rcw_dkutc.2
+	title = rcw_dkutc.2.t
+	desc = rcw_dkutc.2.desc
 	picture = GFX_report_event_rus_kaledin_uprising
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_udktc.2.a
+		name = rcw_dkutc.2.a
 		every_state = {
 			limit = {
 				OR = {
@@ -199,7 +200,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_udktc.2.b
+		name = rcw_dkutc.2.b
 		trigger = {
 			is_ai = no
 		}
@@ -243,15 +244,15 @@ country_event = {
 
 # Ультиматум Военно-Революционного комитета
 country_event = {
-	id = rcw_udktc.3
-	title = rcw_udktc.3.t
-	desc = rcw_udktc.3.desc
+	id = rcw_dkutc.3
+	title = rcw_dkutc.3.t
+	desc = rcw_dkutc.3.desc
 	picture = GFX_report_event_sov_military_rev_comitet
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_udktc.3.a #подавить выступление
+		name = rcw_dkutc.3.a #подавить выступление
 		start_civil_war = {
 			ideology = communism
 			size = 0
@@ -265,6 +266,7 @@ country_event = {
 		hidden_effect = {
 			every_country = {
 				limit = { original_tag = DON has_government = communism }
+				create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
 				add_popularity = { ideology = radical_socialism popularity = 0.3 }
 				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
 				add_ideas = {
@@ -292,21 +294,48 @@ country_event = {
 		}
 	}
 	option = {
-		trigger = { always = no }
-		name = rcw_udktc.3.b #принять ультиматум
-		set_politics = { ruling_party = communism elections_allowed = no }
-		add_popularity = { ideology = communism popularity = 0.2 }
-		add_popularity = { ideology = radical_socialism popularity = 0.3 }
-		set_country_flag = dont_rise_party_pop_in_two_party_sys_law
-		add_ideas = {
-			soviet_republic_gov_form
-			federal_gov_terr
-			local_assembly_decisions_b_law
-			two_party_system_law
-			neutral_foreign_policy_law
+		trigger = { is_ai = no }
+		name = rcw_dkutc.3.b #играть за них
+		start_civil_war = {
+			ideology = communism
+			size = 0
+			only_own_territory = yes
+			capital = 218
+			states = {
+				218 228 953 227
+			}
+			keep_unit_leaders_trigger = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } }
 		}
-		every_unit_leader = { set_nationality = REB }
-		RUS = { every_unit_leader = { limit = { OR = { has_id = 28003 has_id = 28004 } } set_nationality = PREV } }
+		hidden_effect = {
+			every_country = {
+				limit = { original_tag = DON has_government = communism }
+				create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
+				add_popularity = { ideology = radical_socialism popularity = 0.3 }
+				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+				add_ideas = {
+					soviet_republic_gov_form
+					federal_gov_terr
+					local_assembly_decisions_b_law
+					two_party_system_law
+					neutral_foreign_policy_law
+				}
+				division_template = {
+					name = "Krasnaya Gvardiya"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+				RUS = { every_unit_leader = { limit = { OR = { has_id = 28003 has_id = 28004 } } set_nationality = PREV } }
+			}
+			218 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
+		}
+		every_country = {
+			limit = { original_tag = DON has_government = communism }
+			change_tag_from = ROOT
+		}
 		ai_chance = {
 			factor = 0
 		}
@@ -315,14 +344,14 @@ country_event = {
 
 # Прибытие Керенского после приглашения членов Временного правительства
 country_event = {
-	id = rcw_udktc.4
-	title = rcw_udktc.4.t
+	id = rcw_dkutc.4
+	title = rcw_dkutc.4.t
 	desc = {
-		text = rcw_udktc.4.desc
+		text = rcw_dkutc.4.desc
 		trigger = { RUS = { OR = { has_country_flag = Kornilov_affair_near has_country_flag = Kornilov_affair_fail } } }
 	}
 	desc = {
-		text = rcw_udktc.4.desc_1
+		text = rcw_dkutc.4.desc_1
 		trigger = { RUS = { NOT = { has_country_flag = Kornilov_affair_near has_country_flag = Kornilov_affair_fail } } }
 	}
 	picture = GFX_report_event_rcw_rva
@@ -330,7 +359,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = { #На этот раз Керенский попляшет под нашу дудку
-		name = rcw_udktc.4.a
+		name = rcw_dkutc.4.a
 		set_country_flag = Kerensky_was_on_Don_terr
 		add_ideas = Alexander_Kerensky_without_briefcase
 		create_country_leader = {
@@ -350,13 +379,13 @@ country_event = {
 		}
 	}
 	option = { #пусть убирается
-		name = rcw_udktc.4.b
+		name = rcw_dkutc.4.b
 		ai_chance = {
 			factor = 3
 		}
 	}
 	option = { #За все содеянное Керенский будет повешен
-		name = rcw_udktc.4.c
+		name = rcw_dkutc.4.c
 		add_stability = -0.05
 		add_political_power = 50
 		set_country_flag = Alexander_Kerensky_dead
@@ -369,15 +398,15 @@ country_event = {
 
 # Южно-русская конференция
 country_event = {
-	id = rcw_udktc.5
-	title = rcw_udktc.5.t
-	desc = rcw_udktc.5.desc
+	id = rcw_dkutc.5
+	title = rcw_dkutc.5.t
+	desc = rcw_dkutc.5.desc
 	picture = GFX_report_event_rcw_rva
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_udktc.5.a
+		name = rcw_dkutc.5.a
 		add_popularity = { ideology = market_liberalism popularity = 0.05 }
 		add_war_support = 0.05
 		add_political_power = 25
@@ -386,15 +415,15 @@ country_event = {
 
 # Коалиционное правительство
 country_event = {
-	id = rcw_udktc.6
-	title = rcw_udktc.6.t
-	desc = rcw_udktc.6.desc
+	id = rcw_dkutc.6
+	title = rcw_dkutc.6.t
+	desc = rcw_dkutc.6.desc
 	picture = GFX_report_event_rcw_rva
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_udktc.6.a
+		name = rcw_dkutc.6.a
 		add_popularity = { ideology = social_democracy popularity = 0.05 }
 		add_popularity = { ideology = social_liberalism popularity = 0.05 }
 		add_stability = 0.05
@@ -405,25 +434,34 @@ country_event = {
 
 # Круг спасения Дона (выбор вождя)
 country_event = {
-	id = rcw_udktc.7
-	title = rcw_udktc.7.t
-	desc = rcw_udktc.7.desc
+	id = rcw_dkutc.7
+	title = rcw_dkutc.7.t
+	desc = {
+		text = rcw_dkutc.7.desc
+		trigger = { NOT = { has_country_leader = { name = "Alexey Kaledin" } } }
+	}
+	desc = {
+		text = rcw_dkutc.7.desc_1
+		trigger = { has_country_leader = { name = "Alexey Kaledin" } }
+	}
+	
 	picture = GFX_report_event_rcw_rva
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_udktc.7.a
+		trigger = { has_country_leader = { name = "Alexey Kaledin" } }
+		name = rcw_dkutc.7.a
 		set_politics = { ruling_party = authoritarism elections_allowed = no }
 		add_stability = 0.05
 	}
 	option = {
-		name = rcw_udktc.7.b
+		name = rcw_dkutc.7.b
 		set_politics = { ruling_party = fascism elections_allowed = no }
 		add_popularity = { ideology = fascism popularity = 0.05 }
 	}
 	option = {
-		name = rcw_udktc.7.c
+		name = rcw_dkutc.7.c
 		set_politics = { ruling_party = authoritarism elections_allowed = no }
 		if = {
 			limit = { has_country_leader = { name = "Alexey Kaledin" ruling_only = yes } }
@@ -432,17 +470,17 @@ country_event = {
 		add_war_support = 0.05
 	}
 	option = {
-		name = rcw_udktc.7.d
+		name = rcw_dkutc.7.d
 		set_politics = { ruling_party = despotism elections_allowed = no }
 		add_popularity = { ideology = despotism popularity = 0.05 }
 	}
 }
 
-# Каледин застрелился
+# Каледин застрелился (Гибель)
 country_event = {
-	id = rcw_udktc.8
-	title = rcw_udktc.8.t
-	desc = rcw_udktc.8.desc
+	id = rcw_dkutc.8
+	title = rcw_dkutc.8.t
+	desc = rcw_dkutc.8.desc
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
@@ -452,7 +490,6 @@ country_event = {
 		has_country_leader = { name = "Alexey Kaledin" ruling_only = yes }
 		OR = {
 			surrender_progress > 0.6
-			capital_scope = { NOT = { is_fully_controlled_by = ROOT } }
 			has_capitulated = yes
 		}
 		has_completed_focus = DON_help_from_Alexeyevs_organisation
@@ -465,8 +502,9 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_udktc.8.a
+		name = rcw_dkutc.8.a
 		kill_country_leader = yes
+		if = { limit = { any_unit_leader = { has_id = 18702 } } remove_unit_leader = 18702 }
 		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy batal'yon" }
 		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy pekhotnyy polk" }
 		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy kavaleristskiy polk" }
@@ -575,7 +613,6 @@ country_event = {
 								engineer = { x = 0 y = 1 }
 							}
 							priority = 1
-							is_locked = yes
 						}
 						division_template = {
 							name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
@@ -586,7 +623,6 @@ country_event = {
 								recon = { x = 0 y = 0 }
 							}
 							priority = 1
-							is_locked = yes
 						}
 					}
 					996 = {
@@ -615,15 +651,168 @@ country_event = {
 							owner = RVA
 						}
 					}
-					set_division_template_lock = {
-						division_template = "Dobrovol'cheskiy pekhotnyy polk"
-						is_locked = no
+				}
+			}
+		}
+	}
+	option = {
+		name = rcw_dkutc.8.b
+		kill_country_leader = yes
+		if = { limit = { any_unit_leader = { has_id = 18702 } } remove_unit_leader = 18702 }
+		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy batal'yon" }
+		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy pekhotnyy polk" }
+		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy kavaleristskiy polk" }
+		remove_ideas = DON_volunteer_recruitment_network_idea
+		remove_ideas = DON_Volunteer_army_presence_idea
+		remove_ideas = SIB_right_oficers
+		remove_ideas = Mikhail_Alexeev_6
+		remove_ideas = Lavr_Kornilov_army_chief
+		
+		if = {
+			limit = {
+				KUB = { exists = yes has_capitulated = no }
+			}
+			KUB = {
+				DON = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = KUB } }
+				add_ideas = DON_Volunteer_army_presence_idea
+				division_template = {
+					name = "Dobrovol'cheskiy pekhotnyy polk"
+					regiments = {
+						infantry = { x = 0 y = 0 }
 					}
-					set_division_template_lock = {
-						division_template = "Dobrovol'cheskiy kavaleristskiy polk"
-						is_locked = no
+					support = {
+						recon = { x = 0 y = 0 }
+						engineer = { x = 0 y = 1 }
+					}
+					priority = 1
+					is_locked = yes
+				}
+				division_template = {
+					name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+					}
+					priority = 1
+					is_locked = yes
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Georgievskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = KUB
+					}
+					create_unit = {
+						division = "name = \"Kornilovskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = KUB
+					}
+					create_unit = {
+						division = "name = \"Rostovskiy dobrovol'cheskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = KUB
+					}
+					create_unit = {
+						division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = KUB
+					}
+					create_unit = {
+						division = "name = \"Oficerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = KUB
+					}
+					create_unit = {
+						division = "name = \"Yunkerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = KUB
 					}
 				}
+			}
+			else = {
+				REB = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				DON = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 234
+							state = 235
+							state = 1045
+							state = 907
+							state = 233
+							state = 902
+							state = 996
+						}
+					}
+					add_core_of = RVA
+				}
+				RVA = { transfer_state = 996 set_capital = 996 }
+				RVA = { give_military_access = DON }
+				DON = { give_military_access = RVA }
+				hidden_effect = {
+					RVA = {
+						add_ideas = RVA_kubanskiy_pohod_1
+						if = {
+							limit = { RUS = { has_war_with = DON } }
+							declare_war_on = {
+								target = RUS
+								type = annex_everything
+							}
+						}
+						inherit_technology = RUS
+						remove_all_foreing_locked_templates_from_liberated_country = yes
+						division_template = {
+							name = "Dobrovol'cheskiy pekhotnyy polk"
+							regiments = {
+								infantry = { x = 0 y = 0 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }
+							}
+							priority = 1
+						}
+						division_template = {
+							name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
+							regiments = {
+								cavalry = { x = 0 y = 0 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+							}
+							priority = 1
+						}
+					}
+					996 = {
+						create_unit = {
+							division = "name = \"Georgievskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Kornilovskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Rostovskiy dobrovol'cheskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Oficerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Yunkerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = { KUB = { exists = yes } }
+			KUB = { change_tag_from = ROOT }
+			else = {
+				RVA = { change_tag_from = ROOT }
 			}
 		}
 	}
@@ -631,9 +820,9 @@ country_event = {
 
 # Единство армии
 country_event = {
-	id = rcw_udktc.9
-	title = rcw_udktc.9.t
-	desc = rcw_udktc.9.desc
+	id = rcw_dkutc.9
+	title = rcw_dkutc.9.t
+	desc = rcw_dkutc.9.desc
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
@@ -684,7 +873,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_udktc.9.a
+		name = rcw_dkutc.9.a
 		every_unit_leader = { set_nationality = RVA }
 		remove_ideas = DON_volunteer_recruitment_network_idea
 		remove_ideas = DON_Volunteer_army_presence_idea
@@ -730,7 +919,7 @@ country_event = {
 		}
 	}
 	option = {
-		name = rcw_udktc.9.b
+		name = rcw_dkutc.9.b
 		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy batal'yon" }
 		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy pekhotnyy polk" }
 		delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy kavaleristskiy polk" }
@@ -777,7 +966,6 @@ country_event = {
 								engineer = { x = 0 y = 1 }
 							}
 							priority = 1
-							is_locked = yes
 						}
 						division_template = {
 							name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
@@ -788,7 +976,6 @@ country_event = {
 								recon = { x = 0 y = 0 }
 							}
 							priority = 1
-							is_locked = yes
 						}
 					}
 					235 = {
@@ -817,23 +1004,671 @@ country_event = {
 							owner = RVA
 						}
 					}
-					set_division_template_lock = {
-						division_template = "Dobrovol'cheskiy pekhotnyy polk"
-						is_locked = no
+				}
+	}
+}
+
+# Гражданская война на Кубани
+country_event = {
+	id = rcw_dkutc.10
+	title = rcw_dkutc.10.t
+	desc = rcw_dkutc.10.desc
+	picture = GFX_report_event_sov_military_rev_comitet
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.10.a #подавить выступление
+		set_politics = {
+			ruling_party = market_liberalism
+			elections_allowed = no
+		}
+		if = {
+			limit = {
+				RUS = {
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
 					}
-					set_division_template_lock = {
-						division_template = "Dobrovol'cheskiy kavaleristskiy polk"
-						is_locked = no
+					NOT = { has_war_with = KUB }
+				}
+			}
+			RUS = { declare_war_on = { target = KUB type = annex_everything } }
+		}
+		start_civil_war = {
+			ideology = communism
+			size = 0
+			only_own_territory = yes
+			capital = 233
+			states = {
+				233 902 803 907
+			}
+			keep_unit_leaders_trigger = { NOT = { has_id = 19199 has_id = 19200 } }
+		}
+		hidden_effect = {
+			every_country = {
+				limit = { original_tag = KUB has_government = communism }
+				add_popularity = { ideology = radical_socialism popularity = 0.3 }
+				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+				add_ideas = {
+					soviet_republic_gov_form
+					federal_gov_terr
+					local_assembly_decisions_b_law
+					two_party_system_law
+					neutral_foreign_policy_law
+				}
+				division_template = {
+					name = "Krasnaya Gvardiya"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+				division_template = {
+					name = "Kubanskiy revolutsyonniy polk"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+						engineer = { x = 0 y = 1 }
+					}
+					priority = 1
+				}
+				division_template = {
+					name = "Kubanskay konnaya diviziya"		# Cavalry
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
 					}
 				}
+				RUS = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = PREV } }
+			}
+			233 = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+				spawn_red_guard_in_state_CONTROLLER = yes
+				create_unit = {
+					division = "name = \"39-y revolutsyonniy polk\" division_template = \"Kubanskiy revolutsyonniy polk\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = CONTROLLER
+				}
+				create_unit = {
+					division = "name = \"1-ya konnaya diviziya\" division_template = \"Kubanskay konnaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = CONTROLLER
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { is_ai = no }
+		set_politics = {
+			ruling_party = market_liberalism
+			elections_allowed = no
+		}
+		if = {
+			limit = {
+				RUS = {
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+					}
+					NOT = { has_war_with = KUB }
+				}
+			}
+			RUS = { declare_war_on = { target = KUB type = annex_everything } }
+		}
+		start_civil_war = {
+			ideology = communism
+			size = 0
+			only_own_territory = yes
+			capital = 233
+			states = {
+				233 902 803 907
+			}
+			keep_unit_leaders_trigger = { NOT = { has_id = 19199 has_id = 19200 } }
+		}
+		hidden_effect = {
+			every_country = {
+				limit = { original_tag = KUB has_government = communism }
+				add_popularity = { ideology = radical_socialism popularity = 0.3 }
+				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+				add_ideas = {
+					soviet_republic_gov_form
+					federal_gov_terr
+					local_assembly_decisions_b_law
+					two_party_system_law
+					neutral_foreign_policy_law
+				}
+				division_template = {
+					name = "Krasnaya Gvardiya"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+				division_template = {
+					name = "Kubanskiy revolutsyonniy polk"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+						engineer = { x = 0 y = 1 }
+					}
+					priority = 1
+				}
+				division_template = {
+					name = "Kubanskay konnaya diviziya"		# Cavalry
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+					}
+				}
+				RUS = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = PREV } }
+			}
+			233 = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+				spawn_red_guard_in_state_CONTROLLER = yes
+				create_unit = {
+					division = "name = \"39-y revolutsyonniy polk\" division_template = \"Kubanskiy revolutsyonniy polk\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = CONTROLLER
+				}
+				create_unit = {
+					division = "name = \"1-ya konnaya diviziya\" division_template = \"Kubanskay konnaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = CONTROLLER
+				}
+			}
+		}
+		every_country = {
+			limit = { original_tag = KUB has_government = communism }
+			change_tag_from = KUB
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+country_event = {
+	id = rcw_dkutc.11
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		set_country_flag = crisis_in_progress
+		add_ideas = mutiny_3
+		country_event = stability.23
+	}
+}
+
+#Аннексия Кубани
+country_event = {
+	id = rcw_dkutc.12
+	title = rcw_dkutc.12.t
+	desc = rcw_dkutc.12.desc
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.12.a
+		country_event = { id = rcw_dkutc.13 days = 1 }
+		add_popularity = { ideology = social_liberalism popularity = 0.05 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_dkutc.12.b
+		FROM = {
+			set_cosmetic_tag = DON_KUB_Union
+			every_state = {
+				limit = {
+					is_core_of = KUB
+				}
+				add_core_of = DON
+			}
+			country_event = { id = rcw_dkutc.13 hours = 1 }
+			annex_country = { target = KUB transfer_troops = yes }
+			if = { limit = { is_ai = yes } change_tag_from = ROOT }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+country_event = {
+	id = rcw_dkutc.13
+	title = rcw_dkutc.13.t
+	desc = {
+		text = rcw_dkutc.13.desc
+		trigger = { KUB = { exists = no } }
+	}
+	desc = {
+		text = rcw_dkutc.13.desc_1
+		trigger = { KUB = { exists = yes } }
+	}
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.13.a
+	}
+}
+
+#Доминионирование горцев
+country_event = {
+	id = rcw_dkutc.14
+	title = rcw_dkutc.14.t
+	desc = rcw_dkutc.14.desc
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.14.a
+		country_event = { id = rcw_dkutc.15 days = 2 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_dkutc.14.b
+		FROM = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } set_country_flag = can_make_DON_Caucasian_Union country_event = { id = rcw_dkutc.15 days = 2 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+country_event = {
+	id = rcw_dkutc.15
+	title = rcw_dkutc.15.t
+	desc = {
+		text = rcw_dkutc.15.desc
+		trigger = { has_country_flag = can_make_DON_Caucasian_Union }
+	}
+	desc = {
+		text = rcw_dkutc.15.desc_1
+		trigger = { NOT = { has_country_flag = can_make_DON_Caucasian_Union } }
+	}
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.15.a
+	}
+}
+#Комиссия по решениям нац. споров
+country_event = {
+	id = rcw_dkutc.21
+	title = rcw_dkutc.21.t
+	desc = rcw_dkutc.21.desc
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.21.a
+		add_timed_idea = { idea = DON_national_relationship_comission_idea days = 120 }
+		add_state_core = 235
+	}
+}
+# Поражение Дона в рейде
+country_event = {
+	id = rcw_dkutc.22
+	title = rcw_dkutc.22.t
+	desc = {
+		text = rcw_dkutc.22.desc
+		trigger = { original_tag = DON }
+	}
+	desc = {
+		text = rcw_dkutc.22.desc_1
+		trigger = { NOT = { original_tag = DON } }
+	}
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { original_tag = DON }
+		name = rcw_dkutc.22.a
+		add_stability = -0.03
+		add_war_support = -0.03
+	}
+	option = {
+		trigger = { NOT = { original_tag = DON } }
+		name = rcw_dkutc.22.b
+		add_stability = 0.01
+		add_war_support = 0.01
+	}
+}
+# Победа Дона над Азербайджаном
+country_event = {
+	id = rcw_dkutc.23
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		if = {
+			limit = { original_tag = DON }
+			transfer_state = 896
+			AZR = {
+				add_stability = -0.03
+				add_war_support = -0.03
+			}
+		}
+	}
+}
+# Победа Дона над Грузией
+country_event = {
+	id = rcw_dkutc.24
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		if = {
+			limit = { original_tag = DON }
+			transfer_state = 895
+			transfer_state = 900
+			if = {
+				limit = { controls_state = 232 }
+				transfer_state = 930
+			}
+			GEO = {
+				add_stability = -0.03
+				add_war_support = -0.03
+			}
+		}
+	}
+}
+# Восстание в Абхазии
+country_event = {
+	id = rcw_dkutc.25
+	title = rcw_dkutc.25.t
+	desc = rcw_dkutc.25.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = cw_dkutc.25.a
+		ABK = {
+			transfer_state = 803
+			if = {
+				limit = { OR = { has_government = radical_socialism has_government = communism } }
+				set_politics = { ruling_party = social_democracy }
+			}
+			division_template = {
+				name = "Abhazskoye opolcheniye"		# Cavalry
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 1 y = 0 }
+					militia = { x = 1 y = 1 }
+				}
+			}
+			803 = {
+				create_unit = {
+					division = "name = \"Abhazskoye opolcheniye\" division_template = \"Abhazskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ABK
+				}
+				create_unit = {
+					division = "name = \"Abhazskoye opolcheniye\" division_template = \"Abhazskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ABK
+				}
+				create_unit = {
+					division = "name = \"Abhazskoye opolcheniye\" division_template = \"Abhazskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ABK
+				}
+				create_unit = {
+					division = "name = \"Abhazskoye opolcheniye\" division_template = \"Abhazskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ABK
+				}
+			}
+		}
+		GEO = {
+			declare_war_on = { target = ABK type = annex_everything }
+		}
+	}
+}
+# Восстание в Армении
+country_event = {
+	id = rcw_dkutc.26
+	title = rcw_dkutc.26.t
+	desc = rcw_dkutc.26.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = cw_dkutc.26.a
+		if = {
+			limit = { ARM = { exists = yes } }
+			end_puppet = ARM
+			else = {
+				every_state = {
+					limit = { is_core_of = ARM NOT = { is_core_of = ROOT } }
+					ARM = { transfer_state = PREV }
+				}
+			}
+		}
+		ARM = {
+			division_template = {
+				name = "Armyanskoye opolcheniye"		# Cavalry
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 1 y = 0 }
+					militia = { x = 1 y = 1 }
+				}
+			}
+			230 = {
+				create_unit = {
+					division = "name = \"Armyanskoye opolcheniye\" division_template = \"Armyanskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ARM
+				}
+				create_unit = {
+					division = "name = \"Armyanskoye opolcheniye\" division_template = \"Armyanskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ARM
+				}
+				create_unit = {
+					division = "name = \"Armyanskoye opolcheniye\" division_template = \"Armyanskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ARM
+				}
+				create_unit = {
+					division = "name = \"Armyanskoye opolcheniye\" division_template = \"Armyanskoye opolcheniye\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ARM
+				}
+			}
+		}
+		declare_war_on = { target = ARM type = annex_everything }
+	}
+}
+# Тайная дипломатия Армении и Дона
+country_event = {
+	id = rcw_dkutc.27
+	title = rcw_dkutc.27.t
+	desc = rcw_dkutc.27.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = cw_dkutc.27.a
+		DON = { give_guarantee = ROOT }
+		diplomatic_relation = {
+			country = DON
+			relation = non_aggression_pact
+			active = yes
+		}
+		custom_effect_tooltip = rcw_dkutc.27.a.tt
+		set_country_flag = ARM_must_intervent_in_war_with_AZR
+		leave_faction = yes
+		DON = { country_event = { id = rcw_dkutc.28 days = 2 } }
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = cw_dkutc.27.b
+		DON = { give_guarantee = ROOT }
+		give_military_access = DON
+		diplomatic_relation = {
+			country = DON
+			relation = non_aggression_pact
+			active = yes
+		}
+		leave_faction = yes
+		DON = { country_event = { id = rcw_dkutc.28 days = 2 } }
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = cw_dkutc.27.c
+		DON = { country_event = { id = rcw_dkutc.28 days = 2 } }
+	}
+}
+# Ответ
+country_event = {
+	id = rcw_dkutc.28
+	title = rcw_dkutc.28.t
+	desc = {
+		text = rcw_dkutc.28.desc
+		trigger = { ARM = { has_country_flag = ARM_must_intervent_in_war_with_AZR } }
+	}
+	desc = {
+		text = rcw_dkutc.28.desc_1
+		trigger = { ARM = { NOT = { has_country_flag = ARM_must_intervent_in_war_with_AZR } has_non_aggression_pact_with = DON } }
+	}
+	desc = {
+		text = rcw_dkutc.28.desc_2
+		trigger = { ARM = { NOT = { has_country_flag = ARM_must_intervent_in_war_with_AZR has_non_aggression_pact_with = DON } } }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = cw_dkutc.28.a
+	}
+}
+
+# Выборы в ДНР
+country_event = {
+	id = rcw_dkutc.31
+	title = rcw_dkutc.31.t
+	desc = rcw_dkutc.31.desc
+	
+	is_triggered_only = yes
+	
+	immediate = { hidden_effect = { initiate_verification_of_the_popularity_of_coalitions = yes set_first_legal_party_flag = yes set_second_legal_party_flag = yes } }
+	
+	option = { #первый
+		name = rcw_dkutc.31.a
+		if = { limit = { has_country_flag = first_legal_party_is_radsoc }
+			set_politics = { ruling_party = radical_socialism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_commi }
+			set_politics = { ruling_party = communism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_socdem }
+			set_politics = { ruling_party = social_democracy }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_soclib }
+			set_politics = { ruling_party = social_liberalism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_marketlib }
+			set_politics = { ruling_party = market_liberalism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_cons }
+			set_politics = { ruling_party = social_conservatism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_auth }
+			set_politics = { ruling_party = authoritarism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_desp }
+			set_politics = { ruling_party = despotism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_fasc }
+			set_politics = { ruling_party = fascism }
+		}
+		else_if = { limit = { has_country_flag = first_legal_party_is_natsynd }
+			set_politics = { ruling_party = national_syndicalism }
+		}
+		clr_country_flag = trith_legal_party_is_radsoc
+		clr_country_flag = trith_legal_party_is_commi
+		clr_country_flag = trith_legal_party_is_socdem
+		clr_country_flag = trith_legal_party_is_soclib
+		clr_country_flag = trith_legal_party_is_marketlib
+		clr_country_flag = trith_legal_party_is_cons
+		clr_country_flag = trith_legal_party_is_auth
+		clr_country_flag = trith_legal_party_is_desp
+		clr_country_flag = trith_legal_party_is_fasc
+		clr_country_flag = trith_legal_party_is_natsynd
+	}
+	option = {
+		name = rcw_dkutc.31.b
+		if = { limit = { has_country_flag = second_legal_party_is_radsoc }
+			set_politics = { ruling_party = radical_socialism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_commi }
+			set_politics = { ruling_party = communism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_socdem }
+			set_politics = { ruling_party = social_democracy }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_soclib }
+			set_politics = { ruling_party = social_liberalism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_marketlib }
+			set_politics = { ruling_party = market_liberalism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_cons }
+			set_politics = { ruling_party = social_conservatism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_auth }
+			set_politics = { ruling_party = authoritarism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_desp }
+			set_politics = { ruling_party = despotism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_fasc }
+			set_politics = { ruling_party = fascism }
+		}
+		else_if = { limit = { has_country_flag = second_legal_party_is_natsynd }
+			set_politics = { ruling_party = national_syndicalism }
+		}
+		clr_country_flag = trith_legal_party_is_radsoc
+		clr_country_flag = trith_legal_party_is_commi
+		clr_country_flag = trith_legal_party_is_socdem
+		clr_country_flag = trith_legal_party_is_soclib
+		clr_country_flag = trith_legal_party_is_marketlib
+		clr_country_flag = trith_legal_party_is_cons
+		clr_country_flag = trith_legal_party_is_auth
+		clr_country_flag = trith_legal_party_is_desp
+		clr_country_flag = trith_legal_party_is_fasc
+		clr_country_flag = trith_legal_party_is_natsynd
 	}
 }
 
 # Победа советской власти на Украине
 country_event = {
-	id = rcw_udktc.12
-	title = rcw_udktc.12.t
-	desc = rcw_udktc.12.desc
+	id = rcw_dkutc.120
+	title = rcw_dkutc.120.t
+	desc = rcw_dkutc.120.desc
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
@@ -885,7 +1720,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_udktc.12.a
+		name = rcw_dkutc.120.a
 		if = {
 			limit = { 202 = { NOT = { is_core_of = USR } } }
 			every_state = {
@@ -989,9 +1824,9 @@ country_event = {
 
 # Лавр Корнилов берёт командование
 country_event = {
-	id = rcw_udktc.102
-	title = rcw_udktc.102.t
-	desc = rcw_udktc.102.desc
+	id = rcw_dkutc.102
+	title = rcw_dkutc.102.t
+	desc = rcw_dkutc.102.desc
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
@@ -1016,7 +1851,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_udktc.102.a
+		name = rcw_dkutc.102.a
 		retire_country_leader = yes
 		if = {
 			limit = { any_unit_leader = { has_id = 76547 } }
@@ -1030,7 +1865,7 @@ country_event = {
 
 # Взятие Екатеринодара
 country_event = {
-	id = rcw_udktc.103
+	id = rcw_dkutc.103
 	hidden = yes
 	
 	trigger = {
@@ -1054,33 +1889,33 @@ country_event = {
 				set_country_flag = Kornilov_will_not_dead
 			}
 		}
-		country_event = rcw_udktc.104
+		country_event = rcw_dkutc.104
 	}
 }
 
 # Смерть или не смерть Корнилова
 country_event = {
-	id = rcw_udktc.104
+	id = rcw_dkutc.104
 	title = {
-		text = rcw_udktc.104.t
+		text = rcw_dkutc.104.t
 		trigger = {
 			has_country_flag = Kornilov_will_dead
 		}
 	}
 	title = {
-		text = rcw_udktc.104.t_1
+		text = rcw_dkutc.104.t_1
 		trigger = {
 			has_country_flag = Kornilov_will_not_dead
 		}
 	}
 	desc = {
-		text = rcw_udktc.104.desc
+		text = rcw_dkutc.104.desc
 		trigger = {
 			has_country_flag = Kornilov_will_dead
 		}
 	}
 	desc = {
-		text = rcw_udktc.104.desc_1
+		text = rcw_dkutc.104.desc_1
 		trigger = {
 			has_country_flag = Kornilov_will_not_dead
 		}
@@ -1103,7 +1938,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_udktc.104.a
+		name = rcw_dkutc.104.a
 		trigger = {
 			has_country_flag = Kornilov_will_dead
 		}
@@ -1118,7 +1953,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_udktc.104.b
+		name = rcw_dkutc.104.b
 		trigger = {
 			has_country_flag = Kornilov_will_not_dead
 		}
@@ -1131,9 +1966,9 @@ country_event = {
 
 # Установление Советской власти на Дону повторно
 country_event = {
-	id = rcw_udktc.1400
-	title = rcw_udktc.1400.t
-	desc = rcw_udktc.1400.desc
+	id = rcw_dkutc.1400
+	title = rcw_dkutc.1400.t
+	desc = rcw_dkutc.1400.desc
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
@@ -1163,7 +1998,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_udktc.1400.a
+		name = rcw_dkutc.1400.a
 		RUS = { annex_country = { target = DON } }
 		release_puppet = DON
 		DON = { load_oob = DON_red_cossack }
@@ -1178,9 +2013,9 @@ country_event = {
 
 # Генерал Дроздов прорвался на Дон
 country_event = {
-	id = rcw_udktc.80
-	title = rcw_udktc.80.t
-	desc = rcw_udktc.80.desc
+	id = rcw_dkutc.80
+	title = rcw_dkutc.80.t
+	desc = rcw_dkutc.80.desc
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
@@ -1195,7 +2030,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_udktc.80.a
+		name = rcw_dkutc.80.a
 		REB = { every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = RVA } }
 		load_oob = RVA_Drozdov
 	}
@@ -1203,15 +2038,15 @@ country_event = {
 
 # Создание ВСЮР из Дона
 country_event = {
-	id = rcw_udktc.1918
-	title = rcw_udktc.1918.t
-	desc = rcw_udktc.1918.desc
+	id = rcw_dkutc.1918
+	title = rcw_dkutc.1918.t
+	desc = rcw_dkutc.1918.desc
 	picture = GFX_report_event_rcw_rva
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_udktc.1918.a
+		name = rcw_dkutc.1918.a
 		event_target:UNITED_COUNTRY = {
 			set_popularities = {
 					radical_socialism = var:radical_socialism_party
@@ -1240,7 +2075,7 @@ country_event = {
 
 # ...
 country_event = {
-	id = rcw_udktc.140098
+	id = rcw_dkutc.140098
 	
 	trigger ={
 		tag = RVA
