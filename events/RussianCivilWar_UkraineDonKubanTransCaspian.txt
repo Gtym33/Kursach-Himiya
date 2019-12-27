@@ -17,7 +17,15 @@ country_event = {
 	trigger = {
 		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = RUS
-		DON = { exists = no }
+		OR = {
+			DON = { exists = no }
+			AND = {
+				has_start_date > 1917.11.7
+				has_start_date < 1917.11.9
+				DON = { owns_state = 1044 }
+				DON = { num_of_controlled_states < 2 }
+			}
+		}
 		has_country_flag = RUS_Oktober_revolution_fired
 		NOT = { has_country_flag = DON_revolt }
 		NOT = { has_country_flag = RUS_cossacks_were_disbanded }
@@ -64,6 +72,7 @@ country_event = {
 			}
 			add_core_of = DON
 		}
+		260 = { add_claim_by = DON }
 		every_state = {
 			limit = {
 				OR = {
@@ -88,7 +97,6 @@ country_event = {
 		set_country_flag = DON_revolt
 		country_event = { id = rcw_dkutc.2 days = 1 }
 		DON = {
-			inherit_technology = RUS
 			load_oob = DON_Kaledin
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
@@ -100,6 +108,7 @@ country_event = {
 		name = rcw_dkutc.1.b
 		trigger = {
 			is_ai = no
+			DON = { OR = { exists = no is_ai = yes } }
 		}
 		every_state = {
 			limit = {
@@ -119,6 +128,7 @@ country_event = {
 			}
 			add_core_of = DON
 		}
+		260 = { add_claim_by = DON }
 		every_state = {
 			limit = {
 				OR = {
@@ -143,7 +153,6 @@ country_event = {
 		set_country_flag = DON_revolt
 		country_event = { id = rcw_dkutc.2 days = 1 }
 		DON = {
-			inherit_technology = RUS
 			load_oob = DON_Kaledin
 			add_ideas = neutral_foreign_policy_law
 			remove_all_foreing_locked_templates_from_liberated_country = yes
@@ -1303,7 +1312,10 @@ country_event = {
 	option = {
 		name = rcw_dkutc.12.b
 		FROM = {
-			set_cosmetic_tag = DON_KUB_Union
+			if = {
+				limit = { NOT = { has_completed_focus = DON_Don_Peoples_Republic has_completed_focus = DON_Don_Caucasian_Union has_completed_focus = DON_Cazakiya } }
+				set_cosmetic_tag = DON_KUB_Union
+			}
 			every_state = {
 				limit = {
 					is_core_of = KUB
@@ -1382,6 +1394,98 @@ country_event = {
 		name = rcw_dkutc.15.a
 	}
 }
+
+# Всевеликое Войско Донское спавнится если немцы заняли Ростов
+country_event = {
+	id = rcw_dkutc.20
+	title = rcw_dkutc.20.t
+	desc = rcw_dkutc.20.desc
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		DON = { exists = no }
+		owns_state = 1044
+		GER = { owns_state = 218 }
+		OR = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
+		}
+		RUS = {
+			exists = yes
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = cw_dkutc.20.a
+		every_state = {
+			limit = {
+				OR = {
+					state = 995
+					state = 1044
+					state = 996
+					state = 238
+					state = 245
+					state = 954
+				}
+				OR = {
+					is_owned_by = ROOT
+					is_controlled_by = ROOT
+					OWNER = { is_subject_of = ROOT }
+					CONTROLLER = { is_subject_of = ROOT }
+					OWNER = { tag = OVERLORD }
+					CONTROLLER = { tag = OVERLORD }
+				}
+			}
+			DON = { transfer_state = PREV }
+		}
+		DON = {
+			complete_national_focus = DON_Don_Rescue_Circle
+			complete_national_focus = DON_young_army
+			declare_war_on = { target = RUS type = annex_everything }
+			every_country = { limit = { original_tag = DON NOT = { tag = PREV } } PREV = { declare_war_on = { target = PREV type = annex_everything } } }
+		}
+	}
+	option = {
+		name = cw_dkutc.20.b
+		every_state = {
+			limit = {
+				OR = {
+					state = 995
+					state = 1044
+					state = 996
+					state = 238
+					state = 245
+					state = 954
+				}
+				OR = {
+					is_owned_by = ROOT
+					is_controlled_by = ROOT
+					OWNER = { is_subject_of = ROOT }
+					CONTROLLER = { is_subject_of = ROOT }
+					OWNER = { tag = OVERLORD }
+					CONTROLLER = { tag = OVERLORD }
+				}
+			}
+			DON = { transfer_state = PREV }
+		}
+		DON = {
+			complete_national_focus = DON_Don_Rescue_Circle
+			complete_national_focus = DON_young_army
+			declare_war_on = { target = RUS type = annex_everything }
+		}
+		DON = { change_tag_from = ROOT }
+	}
+}
+
 #Комиссия по решениям нац. споров
 country_event = {
 	id = rcw_dkutc.21
@@ -1749,6 +1853,753 @@ country_event = {
 		clr_country_flag = trith_legal_party_is_desp
 		clr_country_flag = trith_legal_party_is_fasc
 		clr_country_flag = trith_legal_party_is_natsynd
+	}
+}
+
+# Выбор казачьего национализма
+country_event = {
+	id = rcw_dkutc.41
+	title = rcw_dkutc.41.t
+	desc = rcw_dkutc.41.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.41.a
+		add_ideas = DON_cossack_nationalism_social_conservatism_idea
+	}
+	option = {
+		name = rcw_dkutc.41.b
+		add_ideas = DON_cossack_nationalism_authoritarism_idea
+	}
+	option = {
+		name = rcw_dkutc.41.c
+		add_ideas = DON_cossack_nationalism_despotism_idea
+	}
+	option = {
+		name = rcw_dkutc.41.d
+		add_ideas = DON_cossack_nationalism_fascism_idea
+	}
+}
+
+# Предложение о союзе
+country_event = {
+	id = rcw_dkutc.42
+	title = rcw_dkutc.42.t
+	desc = rcw_dkutc.42.desc
+	
+	is_triggered_only = yes
+	
+	option = { # присоединение
+		name = rcw_dkutc.42.a
+		if = { limit = { is_subject = yes } OVERLORD = { end_puppet = ROOT } }
+		leave_faction = yes
+		FROM = { add_to_faction = ROOT }
+		add_war_support = 0.03
+		if = {
+			limit = { has_idea = neutral_foreign_policy_law }
+			add_ideas = realpolitic_policy_law
+		}
+		FROM = { country_event = { id = rcw_dkutc.43 days = 2 } }
+		ai_chance = { factor = 1 }
+	}
+	option = { # отказ
+		name = rcw_dkutc.42.b
+		FROM = { country_event = { id = rcw_dkutc.44 days = 2 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = rcw_dkutc.43
+	title = rcw_dkutc.43.t
+	desc = rcw_dkutc.43.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.43.a
+		effect_tooltip = { add_to_faction = FROM }
+	}
+}
+country_event = {
+	id = rcw_dkutc.44
+	title = rcw_dkutc.44.t
+	desc = rcw_dkutc.44.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.44.a
+	}
+}
+
+# Предложение о федерализации
+country_event = {
+	id = rcw_dkutc.45
+	title = rcw_dkutc.45.t
+	desc = rcw_dkutc.45.desc
+	
+	is_triggered_only = yes
+	
+	option = { # присоединение
+		name = rcw_dkutc.45.a
+		DON = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			if = {
+				limit = { is_ai = yes }
+				change_tag_from = ROOT
+			}
+		}
+		every_unit_leader = { set_nationality = FROM }
+		ai_chance = { factor = 1 }
+	}
+	option = { # отказ
+		name = rcw_dkutc.45.b
+		FROM = { country_event = { id = rcw_dkutc.46 days = 2 } }
+		ai_chance = { factor = 0 }
+	}
+}
+country_event = {
+	id = rcw_dkutc.46
+	title = rcw_dkutc.46.t
+	desc = rcw_dkutc.46.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_dkutc.46.a
+	}
+}
+
+# Предложение о союзе
+country_event = {
+	id = rcw_dkutc.47
+	title = rcw_dkutc.47.t
+	desc = rcw_dkutc.47.desc
+	
+	is_triggered_only = yes
+	
+	option = { # присоединение
+		name = rcw_dkutc.47.a
+		if = { limit = { is_subject = yes } OVERLORD = { end_puppet = ROOT } }
+		leave_faction = yes
+		FROM = { add_to_faction = ROOT }
+		add_war_support = 0.03
+		if = {
+			limit = { has_idea = neutral_foreign_policy_law }
+			add_ideas = realpolitic_policy_law
+		}
+		FROM = { country_event = { id = rcw_dkutc.43 days = 2 } }
+		ai_chance = { factor = 1 }
+	}
+	option = { # отказ
+		name = rcw_dkutc.47.b
+		FROM = { country_event = { id = rcw_dkutc.44 days = 2 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+# Письмо кайзеру от казачества
+country_event = {
+	id = rcw_dkutc.51
+	title = rcw_dkutc.51.t
+	desc = rcw_dkutc.51.desc
+	
+	is_triggered_only = yes
+	
+	option = { # Германия готова признать новое государство
+		name = rcw_dkutc.51.a
+		set_country_flag = DON_partner
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = DON_GER_recognize
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_GER_recognize
+		}
+		FROM = { country_event = { id = rcw_dkutc.53 days = 1 } }
+		ai_chance = { factor = 1 }
+	}
+	option = { # Германия готова помочь казачеству
+		name = rcw_dkutc.51.b
+		set_country_flag = DON_partner
+		every_country = {
+			limit = {
+				tag = ROOT
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = DON_GER_ready_to_help
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_GER_ready_to_help
+		}
+		FROM = { country_event = { id = rcw_dkutc.53 days = 1 } }
+		ai_chance = { factor = 1 }
+	}
+	option = { # У нас хватает забот
+		name = rcw_dkutc.51.c
+		FROM = { set_country_flag = DON_cannot_go_with_Berlin }
+		FROM = { country_event = { id = rcw_dkutc.53 days = 1 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+# Проантантовский курс
+country_event = {
+	id = rcw_dkutc.52
+	title = rcw_dkutc.52.t
+	desc = rcw_dkutc.52.desc
+	
+	is_triggered_only = yes
+	
+	option = { # Мы готовы признать новое государство
+		name = rcw_dkutc.52.a
+		set_country_flag = DON_partner
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
+		diplomatic_relation = {
+			country = FROM
+			relation = non_aggression_pact
+			active = yes
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = DON_ENG_recognize
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_ENG_recognize
+		}
+		FROM = { country_event = { id = rcw_dkutc.53 days = 1 } }
+		ai_chance = { factor = 1 }
+	}
+	option = { # Мы готовы помочь казачеству в дальнейшем
+		name = rcw_dkutc.52.b
+		set_country_flag = DON_partner
+		every_country = {
+			limit = {
+				tag = ROOT
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = PREV.unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FROM modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { PREV.unrecognized_states = FROM.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
+		add_opinion_modifier = {
+			target = FROM
+			modifier = DON_ENG_ready_to_help
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_ENG_ready_to_help
+		}
+		FROM = { country_event = { id = rcw_dkutc.53 days = 1 } }
+		ai_chance = { factor = 1 }
+	}
+	option = { # Запросите штаб о местонахождении Ростова
+		name = rcw_dkutc.52.c
+		FROM = { set_country_flag = DON_cannot_go_with_Entente }
+		FROM = { country_event = { id = rcw_dkutc.53 days = 1 } }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = rcw_dkutc.53
+	title = rcw_dkutc.53.t
+	desc = {
+		text = rcw_dkutc.53.desc
+		trigger = { has_opinion_modifier = DON_GER_recognize }
+	}
+	desc = {
+		text = rcw_dkutc.53.desc_1
+		trigger = { has_opinion_modifier = DON_ENG_recognize }
+	}
+	desc = {
+		text = rcw_dkutc.53.desc_2
+		trigger = { has_opinion_modifier = DON_GER_ready_to_help }
+	}
+	desc = {
+		text = rcw_dkutc.53.desc_3
+		trigger = { has_opinion_modifier = DON_ENG_ready_to_help }
+	}
+	desc = {
+		text = rcw_dkutc.53.desc_4
+		trigger = { has_country_flag = DON_cannot_go_with_Berlin }
+	}
+	desc = {
+		text = rcw_dkutc.53.desc_5
+		trigger = { has_country_flag = DON_cannot_go_with_Entente }
+	}
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.53.a
+	}
+}
+
+# Торговые договора с Доном
+country_event = {
+	id = rcw_dkutc.54
+	title = rcw_dkutc.54.t
+	desc = rcw_dkutc.54.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.54.a
+		if = {
+			limit = { NOT = { has_focus_tree = Don_cossack } }
+			add_opinion_modifier = {
+				target = FROM
+				modifier = DON_bread_trade
+			}
+			reverse_add_opinion_modifier = {
+				target = FROM
+				modifier = DON_bread_trade
+			}
+			add_ideas = DON_postavki_in
+			else = {
+				add_ideas = DON_postavki_out
+			}
+		}
+	}
+}
+
+# Время разбрасывать камни
+country_event = {
+	id = rcw_dkutc.55
+	title = rcw_dkutc.55.t
+	desc = rcw_dkutc.55.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.55.a
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = 10000
+			target = FROM
+		}
+		send_equipment = {
+			equipment = support_equipment
+			amount = 1000
+			target = FROM
+		}
+		FROM = { add_ideas = help_from_foreign_interventionists }
+		
+		add_opinion_modifier = {
+			target = FROM
+			modifier = DON_weapon_help
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_weapon_help
+		}
+	}
+}
+
+# Украино-донской вопрос (Германия)
+country_event = {
+	id = rcw_dkutc.56
+	title = rcw_dkutc.56.t
+	desc = rcw_dkutc.56.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.56.a
+		every_state = {
+			limit = {
+				OR = {
+					region = 130
+					state = 228
+				}
+				is_owned_by = GER
+			}
+			UKR = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OR = {
+					region = 135
+					region = 137
+				}
+				NOT = { state = 228 }
+				OR = {
+					is_owned_by = GER
+					is_owned_by = UKR
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+		UKR = {
+			add_autonomy_ratio = {
+				value = -500
+				localization = DON_GER_UKR_Donbass
+			}
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_GER_UKR_Donbass
+		}
+	}
+	option = {
+		name = rcw_dkutc.56.b
+		every_state = {
+			limit = {
+				OR = {
+					region = 135
+					region = 137
+					state = 953
+					state = 227
+					state = 954
+				}
+				OR = {
+					is_owned_by = GER
+					is_owned_by = UKR
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+		UKR = {
+			add_autonomy_ratio = {
+				value = 150
+				localization = DON_GER_DON_Donbass
+			}
+			add_popularity = { ideology = authoritarism popularity = -0.05 }
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_GER_DON_Donbass
+		}
+	}
+	option = {
+		trigger = { 958 = { OWNER = { OR = { tag = GER tag = UKR tag = DON } } } }
+		name = rcw_dkutc.56.c
+		if = {
+			limit = { NOT = { owns_state = 958 } }
+			transfer_state = 958
+		}
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 958
+				num_provinces = 2
+				on_win = rcw_dkutc.60
+				on_lose = rcw_dkutc.61
+				on_cancel = rcw_dkutc.61
+			}
+			defender = {
+				state = 260
+				num_provinces = 2
+				on_win = rcw_dkutc.61
+				on_lose = rcw_dkutc.60
+				on_cancel = rcw_dkutc.61
+			}
+		}
+	}
+}
+
+# Украино-донской вопрос (Антанта)
+country_event = {
+	id = rcw_dkutc.57
+	title = rcw_dkutc.57.t
+	desc = rcw_dkutc.57.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.57.a
+		UKR = { country_event = { id = rcw_dkutc.58 days = 1 } }
+		ai_chance = { factor = 1 }
+	}
+	option = {
+		name = rcw_dkutc.57.b
+		ai_chance = { factor = 0 }
+	}
+}
+
+# Союзная нота по донецкому вопросу (Украине)
+country_event = {
+	id = rcw_dkutc.58
+	title = rcw_dkutc.58.t
+	desc = rcw_dkutc.58.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.58.a
+		add_opinion_modifier = {
+			target = FROM
+			modifier = DON_ENG_DON_Donbass
+		}
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = DON_ENG_DON_Donbass
+		}
+	}
+	option = {
+		name = rcw_dkutc.58.b
+		every_state = {
+			limit = {
+				OR = {
+					region = 135
+					region = 137
+					state = 953
+					state = 227
+					state = 954
+				}
+				is_owned_by = DON
+			}
+			DON = { transfer_state = PREV }
+			remove_core_of = UKR
+			remove_claim_by = UKR
+		}
+	}
+}
+
+# Запрос протектората Германии
+country_event = {
+	id = rcw_dkutc.59
+	title = rcw_dkutc.59.t
+	desc = rcw_dkutc.59.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.59.a
+		FROM = { country_event = { id = rcw_dkutc.60 days = 1 } }
+		ai_chance = { factor = 1 modifier = { factor = 0 FROM = { has_war = no } } }
+	}
+	option = {
+		name = rcw_dkutc.59.b
+		every_state = {
+			limit = {
+				is_controlled_by = FROM
+				OR = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+				}
+				NOT = { is_owned_by = FROM }
+			}
+			FROM = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				NOT = { is_controlled_by = FROM }
+				OR = {
+					is_core_of = CONTROLLER
+					is_claimed_by = CONTROLLER
+				}
+				is_owned_by = FROM
+			}
+			CONTROLLER = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = { has_war_with = FROM OR = { is_faction_leader = yes is_in_faction = no } NOT = { has_war_with = ROOT } }
+			FROM = { white_peace = PREV }
+		}
+		GER = { FROM = { subjecting_script_with_transfer_parties_dominion = yes } }
+		FROM = { country_event = { id = rcw_dkutc.60 days = 1 } }
+		ai_chance = { factor = 3 }
+	}
+}
+
+# Победа в погранконфликте
+country_event = {
+	id = rcw_dkutc.60
+	title = rcw_dkutc.60.t
+	desc = rcw_dkutc.60.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.60.a
+		if = {
+			limit = { tag = GER }
+			every_state = {
+				limit = {
+					OR = {
+						region = 130
+						state = 228
+					}
+					is_owned_by = GER
+				}
+				UKR = { transfer_state = PREV }
+			}
+			every_state = {
+				limit = {
+					OR = {
+						region = 135
+						region = 137
+					}
+					NOT = { state = 228 }
+					OR = {
+						is_owned_by = GER
+						is_owned_by = UKR
+					}
+				}
+				DON = { transfer_state = PREV }
+			}
+			DON = { transfer_state = 260 }
+		}
+	}
+}
+# Поражение в погранконфликте
+country_event = {
+	id = rcw_dkutc.61
+	title = rcw_dkutc.61.t
+	desc = rcw_dkutc.61.desc
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_dkutc.61.a
+		if = {
+			limit = { tag = GER }
+			every_state = {
+				limit = {
+					OR = {
+						region = 135
+						region = 137
+						state = 953
+						state = 227
+						state = 954
+					}
+					OR = {
+						is_owned_by = GER
+						is_owned_by = UKR
+					}
+				}
+				DON = { transfer_state = PREV }
+			}
+		}
 	}
 }
 

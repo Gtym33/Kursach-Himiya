@@ -1,0 +1,1377 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_bolsheviks
+
+###### Антисоветские восстания в России ######
+
+# Декрет «К открытию Учредительного собрания»
+country_event = {
+	id = rcw_bolsheviks.101
+	title = rcw_bolsheviks.101.t
+	desc = rcw_bolsheviks.101.d
+	picture = GFX_report_event_all_power_to_the_soviets
+	
+	is_triggered_only = yes
+	
+	# Немедленный созыв учредительного собрания
+	option = {
+		name = rcw_bolsheviks.101.a 
+		country_event = { id = rcw_all_rus_CA.1 days = 60 }
+	}
+}
+
+# Протест умеренных социалистических партий
+country_event = {
+	id = rcw_bolsheviks.103
+	title = rcw_bolsheviks.103.t
+	desc = rcw_bolsheviks.103.d
+	picture = GFX_report_event_sov_protest_of_moderate_socialists_against_the_bolsheviksv
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.103.a
+		hidden_effect = {
+			country_event = { id = rcw_bolsheviks.104 hours = 12 }
+		}
+	}
+}
+
+# Переговоры о коалиционном правительстве
+country_event = {
+	id = rcw_bolsheviks.104
+	title = rcw_bolsheviks.104.t
+	desc = rcw_bolsheviks.104.d
+	picture = GFX_report_event_sov_protest_bolsheviks_and_ms_coalition_treatry
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	# Провал переговоров
+	option = {
+		name = rcw_bolsheviks.104.a
+		hidden_effect = { country_event = { id = rcw_bolsheviks.105 hours = 72 } }
+	}
+	
+	# Удаётся организовать однородное социалистическое правительство
+	option = {
+		trigger = {
+			check_variable = { percent_right_faction_CC > 0.33 }
+		}
+		name = rcw_bolsheviks.104.b
+		hidden_effect = { country_event = { id = rcw_bolsheviks.106 hours = 72 } }
+	}
+}
+
+# Формирование коалиции с левыми эсерами
+country_event = {
+	id = rcw_bolsheviks.105
+	title = rcw_bolsheviks.105.t
+	desc = rcw_bolsheviks.105.d
+	picture = GFX_report_event_sov_left_socialist-revolutionary_insurrection
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.105.a
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.05
+		}
+		set_variable = { radical_socialism_coalition = 1 }
+		set_variable = { communism_coalition = 1 }
+		set_country_flag = right_parties_is_illegal
+		set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+		add_ideas = two_party_system_law
+	}
+}
+
+# Формирование однородного социалистического правительства
+country_event = {
+	id = rcw_bolsheviks.106
+	title = rcw_bolsheviks.106.t
+	desc = rcw_bolsheviks.106.d
+	picture = GFX_report_event_sov_homogeneous_socialist_government
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.106.a
+		homogeneous_socialist_government_bolsheviks = yes
+		add_ideas = {
+			poliparty_system_law
+		}
+	}
+}
+
+# III Всероссийский съезд Советов
+country_event = {
+	id = rcw_bolsheviks.107
+	title = rcw_bolsheviks.107.t
+	desc = {
+		text = rcw_bolsheviks.107.d
+		trigger = { has_country_flag = RUS_karaul_ustal }
+	}
+	desc = {
+		text = rcw_bolsheviks.107.d_1
+		trigger = { NOT = { has_country_flag = RUS_karaul_ustal } }
+	}
+	picture = GFX_report_event_sov_3rd-5th_congress_of_soviets_of_russia_and_other
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		add_to_variable = { var = global.num_of_allrussian_congress_of_soviets value = 1 }
+	}
+	
+	# В случае разгона
+	option = {
+		name = rcw_bolsheviks.107.a
+		trigger = { has_country_flag = RUS_karaul_ustal }
+		set_country_flag = RUS_third_allrussian_congress_of_soviets
+		add_political_power = 50
+		add_stability = 0.05
+		add_popularity = {
+			ideology = social_democracy
+			popularity = -0.05
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.05
+		}
+	}
+	# В случае легитимизации большевиков на учредительном
+	option = {
+		name = rcw_bolsheviks.107.b
+		trigger = { NOT = { has_country_flag = RUS_karaul_ustal } }
+		set_country_flag = RUS_third_allrussian_congress_of_soviets
+	}
+}
+
+# Декрет «О земле»
+country_event = {
+	id = rcw_bolsheviks.109
+	title = rcw_bolsheviks.109.t
+	desc = rcw_bolsheviks.109.d
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.109.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.02
+		}
+		if = {
+			limit = { has_idea = peasant_and_land_and_bread_question }
+			swap_ideas = {
+				remove_idea = peasant_and_land_and_bread_question
+				add_idea = peasant_and_land_and_bread_question_0_5
+			}
+			else = { add_war_support = 0.05 }
+		}
+	}
+}
+# Декрет «Об отмене смертной казни на фронте»
+country_event = {
+	id = rcw_bolsheviks.110
+	title = rcw_bolsheviks.110.t
+	desc = rcw_bolsheviks.110.d
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.110.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.01
+		}
+		add_war_support = 0.025
+		set_country_flag = death_penalty_moratorium
+	}
+}
+
+# Декрет «О постепенном сокращении численности армии»
+country_event = {
+	id = rcw_bolsheviks.111
+	title = rcw_bolsheviks.111.t
+	desc = rcw_bolsheviks.111.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1899 goda"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Gvardeyskaya Pekhotnaya Diviziya"
+			}
+			set_country_flag = RUS_opening_demobilisation
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.111.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.01
+		}
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1899 goda"
+			}
+		}
+		set_equipment_fraction = 0.9
+		hidden_effect = { country_event = { id = rcw.112 days = 6 random = 8 } }
+		add_ideas = disarmed_nation
+	}
+}
+# Демобилизация призыва 1900-го года
+country_event = {
+	id = rcw_bolsheviks.112
+	title = rcw_bolsheviks.112.t
+	desc = rcw_bolsheviks.112.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_country_flag = RUS_opening_demobilisation
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1900 goda"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.112.a
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1900 goda"
+			}
+		}
+		set_equipment_fraction = 0.8
+		hidden_effect = { country_event = { id = rcw_bolsheviks.113 days = 12 random = 7 } }
+	}
+}
+# Демобилизация призыва 1901-го года
+country_event = {
+	id = rcw_bolsheviks.113
+	title = rcw_bolsheviks.113.t
+	desc = rcw_bolsheviks.113.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_country_flag = RUS_opening_demobilisation
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1901 goda"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.113.a
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1901 goda"
+			}
+		}
+		clr_country_flag = RUS_opening_demobilisation
+		set_equipment_fraction = 0.8
+	}
+}
+
+# Всероссийское совещание по продовольствию, снабжению и демобилизации армии
+country_event = {
+	id = rcw_bolsheviks.114
+	title = rcw_bolsheviks.114.t
+	desc = rcw_bolsheviks.114.d
+	picture = GFX_report_event_sov_comitet
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		OR = {
+			has_idea = RUS_collapse_of_railway_system_1
+			has_idea = RUS_collapse_of_railway_system_2
+			has_idea = RUS_collapse_of_railway_system_3
+			has_idea = RUS_collapse_of_railway_system_4
+			has_idea = RUS_collapse_of_railway_system_5
+		}
+		OR = {
+			has_idea = foodstuffs_supply_crisis_1
+			has_idea = foodstuffs_supply_crisis_2
+			has_idea = foodstuffs_supply_crisis_3
+			has_idea = foodstuffs_supply_crisis_4
+			has_idea = foodstuffs_supply_crisis_5
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	option = {
+		name = rcw_bolsheviks.114.a
+		add_political_power = 10
+		set_country_flag = central_committee_on_army_supply_and_food
+	}
+}
+
+# Общеармейский съезд по демобилизации армии
+country_event = {
+	id = rcw_bolsheviks.115
+	title = rcw_bolsheviks.115.t
+	desc = {
+		text = rcw_bolsheviks.115.d
+		trigger = {
+			has_completed_focus = RUS_red_separate_peace
+		}
+	}
+	desc = {
+		text = rcw_bolsheviks.115.d_1
+		trigger = {
+			NOT = { has_completed_focus = RUS_red_separate_peace }
+		}
+	}
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	#Начать демобилизацию
+	option = {
+		ai_chance = {
+			factor = 1
+		}
+		name = rcw_bolsheviks.115.a
+		add_political_power = 10
+		hidden_effect = {
+			country_event = { id = rcw_bolsheviks.116 days = 3 }
+		}
+		if = {
+			limit = { has_idea = limited_conscription }
+			swap_ideas = {
+				remove_idea = limited_conscription
+				add_idea = volunteer_only
+			}
+		}
+		if = {
+			limit = { has_idea = extensive_conscription }
+			swap_ideas = {
+				remove_idea = extensive_conscription
+				add_idea = limited_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = service_by_requirement }
+			swap_ideas = {
+				remove_idea = service_by_requirement
+				add_idea = extensive_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = all_adults_serve }
+			swap_ideas = {
+				remove_idea = all_adults_serve
+				add_idea = service_by_requirement
+			}
+		}
+		if = {
+			limit = { has_idea = scraping_the_barrel }
+			swap_ideas = {
+				remove_idea = scraping_the_barrel
+				add_idea = all_adults_serve
+			}
+		}
+	}
+	
+	#В полной демобилизации нет нужды
+	option = {
+		name = rcw_bolsheviks.115.b
+		trigger = { is_ai = no }
+		ai_chance = {
+			factor = 0
+		}
+		add_political_power = 10
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						has_idea = foodstuffs_supply_crisis_1
+						has_idea = foodstuffs_supply_crisis_2
+						has_idea = foodstuffs_supply_crisis_3
+						has_idea = foodstuffs_supply_crisis_4
+						has_idea = foodstuffs_supply_crisis_5
+					}
+				}
+				country_event = { id = rcw_bolsheviks.118 days = 7 }
+				else = {
+					country_event = { id = rcw_bolsheviks.116 days = 3 }
+				}
+			}
+		}
+	}
+}
+# Проблема оружия
+country_event = {
+	id = rcw_bolsheviks.116
+	title = rcw_bolsheviks.116.t
+	desc = rcw_bolsheviks.116.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = {
+			factor = 0
+		}
+		name = rcw_bolsheviks.116.a
+		add_political_power = 10
+		add_popularity = {
+			ideology = communism
+			popularity = -0.025
+		}
+		set_equipment_fraction = 0.8
+		country_event = { id = rcw_bolsheviks.117 days = 4 }
+	}
+	option = {
+		name = rcw_bolsheviks.116.b
+		add_political_power = -10
+		add_popularity = {
+			ideology = communism
+			popularity = 0.01
+		}
+		set_country_flag = RUS_demob_steal_arms
+		country_event = { id = rcw_bolsheviks.117 days = 4 }
+	}
+}
+country_event = {
+	id = rcw_bolsheviks.117
+	title = rcw_bolsheviks.117.t
+	desc = {
+		text = rcw_bolsheviks.117.d
+		trigger = {
+			has_completed_focus = RUS_red_separate_peace
+		}
+	}
+	desc = {
+		text = rcw_bolsheviks.117.d_1
+		trigger = {
+			NOT = { has_completed_focus = RUS_red_separate_peace }
+		}
+	}
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1902 goda"
+			}
+		}
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.117.a
+		add_political_power = 10
+		country_event = { id = rcw_bolsheviks.121 days = 4 }
+		country_event = { id = rcw_bolsheviks.122 days = 8 }
+		country_event = { id = rcw_bolsheviks.123 days = 15 }
+		country_event = { id = rcw_bolsheviks.124 days = 29 }
+		country_event = { id = rcw_bolsheviks.125 days = 48 }
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1902 goda"
+			}
+		}
+		set_country_flag = RUS_start_demobilisation
+	}
+}
+country_event = {
+	id = rcw_bolsheviks.118
+	title = rcw_bolsheviks.118.t
+	desc = rcw_bolsheviks.118.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		OR = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			has_country_flag = RUS_not_bolsheviks_demobilisation
+		}
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1902 goda"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.118.a
+		add_political_power = -50
+		add_war_support = -0.05
+		add_popularity = {
+			ideology = communism
+			popularity = -0.07
+		}
+		country_event = { id = rcw.121 days = 4 }
+		country_event = { id = rcw.122 days = 8 }
+		country_event = { id = rcw.123 days = 15 }
+		country_event = { id = rcw.124 days = 29 }
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1902 goda"
+			}
+		}
+		remove_ideas = {
+			RUS_Order_N_1_1
+			RUS_Order_N_1_2
+			RUS_Order_N_1_3
+		}
+		add_ideas = RUS_Order_N_1_4
+		add_ideas = mutiny_1
+		country_event = stability.23
+		set_country_flag = RUS_start_demobilisation
+	}
+}
+
+# Демобилизация призыва 1903-го года
+country_event = {
+	id = rcw_bolsheviks.121
+	title = rcw_bolsheviks.121.t
+	desc = rcw_bolsheviks.121.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		OR = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			has_country_flag = RUS_not_bolsheviks_demobilisation
+		}
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1903 goda"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.121.a
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1903 goda"
+			}
+		}
+		set_equipment_fraction = 0.8
+		if = {
+			limit = { has_country_flag = RUS_demob_steal_arms }
+			set_equipment_fraction = 0.7
+		}
+		if = {
+			limit = { has_idea = limited_conscription }
+			swap_ideas = {
+				remove_idea = limited_conscription
+				add_idea = volunteer_only
+			}
+		}
+		if = {
+			limit = { has_idea = extensive_conscription }
+			swap_ideas = {
+				remove_idea = extensive_conscription
+				add_idea = limited_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = service_by_requirement }
+			swap_ideas = {
+				remove_idea = service_by_requirement
+				add_idea = extensive_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = all_adults_serve }
+			swap_ideas = {
+				remove_idea = all_adults_serve
+				add_idea = service_by_requirement
+			}
+		}
+		if = {
+			limit = { has_idea = scraping_the_barrel }
+			swap_ideas = {
+				remove_idea = scraping_the_barrel
+				add_idea = all_adults_serve
+			}
+		}
+	}
+}
+# Демобилизация призыва 1904-1907 годов
+country_event = {
+	id = rcw_bolsheviks.122
+	title = rcw_bolsheviks.122.t
+	desc = rcw_bolsheviks.122.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		OR = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			has_country_flag = RUS_not_bolsheviks_demobilisation
+		}
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1904-1907 godov"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.122.a
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1904-1907 godov"
+			}
+		}
+		set_equipment_fraction = 0.8
+		if = {
+			limit = { has_country_flag = RUS_demob_steal_arms }
+			set_equipment_fraction = 0.7
+		}
+		if = {
+			limit = { has_idea = limited_conscription }
+			swap_ideas = {
+				remove_idea = limited_conscription
+				add_idea = volunteer_only
+			}
+		}
+		if = {
+			limit = { has_idea = extensive_conscription }
+			swap_ideas = {
+				remove_idea = extensive_conscription
+				add_idea = limited_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = service_by_requirement }
+			swap_ideas = {
+				remove_idea = service_by_requirement
+				add_idea = extensive_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = all_adults_serve }
+			swap_ideas = {
+				remove_idea = all_adults_serve
+				add_idea = service_by_requirement
+			}
+		}
+		if = {
+			limit = { has_idea = scraping_the_barrel }
+			swap_ideas = {
+				remove_idea = scraping_the_barrel
+				add_idea = all_adults_serve
+			}
+		}
+	}
+}
+# Демобилизация призыва 1908-1909 годов
+country_event = {
+	id = rcw_bolsheviks.123
+	title = rcw_bolsheviks.123.t
+	desc = rcw_bolsheviks.123.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		OR = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			has_country_flag = RUS_not_bolsheviks_demobilisation
+		}
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1908-1909 godov"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.123.a
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1908-1909 godov"
+			}
+		}
+		set_equipment_fraction = 0.8
+		if = {
+			limit = { has_country_flag = RUS_demob_steal_arms }
+			set_equipment_fraction = 0.7
+		}
+		RUS_Order_N_1_fall = yes
+	}
+}
+# Демобилизация призыва 1910-1912 годов
+country_event = {
+	id = rcw_bolsheviks.124
+	title = rcw_bolsheviks.124.t
+	desc = rcw_bolsheviks.124.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		OR = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			has_country_flag = RUS_not_bolsheviks_demobilisation
+		}
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1910-1912 godov"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kavaleriyskaya Diviziya"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.124.a
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1910-1912 godov"
+			}
+		}
+		if = {
+			limit = { has_idea = RUS_collapse_of_railway_system_4 }
+			swap_ideas = {
+				remove_idea = RUS_collapse_of_railway_system_4
+				add_idea = RUS_collapse_of_railway_system_3
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_3 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_3
+				add_idea = foodstuffs_supply_crisis_2
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_4
+				add_idea = foodstuffs_supply_crisis_3
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_5
+				add_idea = foodstuffs_supply_crisis_4
+			}
+		}
+		set_equipment_fraction = 0.8
+		if = {
+			limit = { has_country_flag = RUS_demob_steal_arms }
+			set_equipment_fraction = 0.7
+		}
+		if = {
+			limit = { has_idea = limited_conscription }
+			swap_ideas = {
+				remove_idea = limited_conscription
+				add_idea = volunteer_only
+			}
+		}
+		if = {
+			limit = { has_idea = extensive_conscription }
+			swap_ideas = {
+				remove_idea = extensive_conscription
+				add_idea = limited_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = service_by_requirement }
+			swap_ideas = {
+				remove_idea = service_by_requirement
+				add_idea = extensive_conscription
+			}
+		}
+		if = {
+			limit = { has_idea = all_adults_serve }
+			swap_ideas = {
+				remove_idea = all_adults_serve
+				add_idea = service_by_requirement
+			}
+		}
+		if = {
+			limit = { has_idea = scraping_the_barrel }
+			swap_ideas = {
+				remove_idea = scraping_the_barrel
+				add_idea = all_adults_serve
+			}
+		}
+	}
+}
+# Демобилизация призыва 1913-1915 годов
+country_event = {
+	id = rcw_bolsheviks.125
+	title = rcw_bolsheviks.125.t
+	desc = rcw_bolsheviks.125.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		OR = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			has_country_flag = RUS_not_bolsheviks_demobilisation
+		}
+	}
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1913-1915 godov"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.125.a
+		effect_tooltip = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnaya Diviziya priziva 1913-1915 godov"
+			}
+		}
+		if = {
+			limit = { has_idea = RUS_collapse_of_railway_system_4 }
+			swap_ideas = {
+				remove_idea = RUS_collapse_of_railway_system_4
+				add_idea = RUS_collapse_of_railway_system_3
+			}
+		}
+		if = {
+			limit = { has_idea = RUS_collapse_of_railway_system_5 }
+			swap_ideas = {
+				remove_idea = RUS_collapse_of_railway_system_5
+				add_idea = RUS_collapse_of_railway_system_4
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_4
+				add_idea = foodstuffs_supply_crisis_3
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_5
+				add_idea = foodstuffs_supply_crisis_4
+			}
+		}
+		set_equipment_fraction = 0.9
+		if = {
+			limit = { has_country_flag = RUS_demob_steal_arms }
+			set_equipment_fraction = 0.8
+		}
+		RUS_Order_N_1_fall = yes
+		clr_country_flag = RUS_not_bolsheviks_demobilisation
+	}
+}
+
+# Формирование завес
+country_event = {
+	id = rcw_bolsheviks.127
+	title = rcw_bolsheviks.127.t
+	desc = rcw_bolsheviks.127.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_completed_focus = RUS_WPRA
+		OR = {
+			has_country_flag = RUS_fourth_allrussian_congress_of_soviets
+			has_completed_focus = RUS_vsevobuch
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.127.a
+		add_war_support = 0.025
+		division_template = {
+			name = "Krasnoarmetskaya Zavesa"
+			regiments = {
+				infantry = { x = 0 y = 0 }
+			}
+			is_locked = yes
+		}
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		spawn_red_guard_zavesa = yes
+		hidden_effect = {
+			set_division_template_lock = {
+				division_template = "Krasnoarmetskaya Zavesa"
+				is_locked = no
+			}
+		}
+	}
+}
+
+# Смерть лидера (Ленина)
+country_event = {
+	id = rcw_bolsheviks.131
+	title = rcw_bolsheviks.131.t
+	desc = rcw_bolsheviks.131.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.131.a
+			hidden_effect = {
+				if = {
+					limit = {
+						has_country_leader = { name = "Vladimir Lenin" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Vladimir_Lenin_dead }
+					SOV = { set_country_flag = Vladimir_Lenin_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Alexey Rykov" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Alexey_Rykov_dead }
+					SOV = { set_country_flag = Alexey_Rykov_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Nikolay Bukharin" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Nikolay_Bukharin_dead }
+					SOV = { set_country_flag = Nikolay_Bukharin_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Yakov Sverdlov" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Yakov_Sverdlov_dead }
+					SOV = { set_country_flag = Yakov_Sverdlov_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Lev Trotsky" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Lev_Trotsky_dead }
+					SOV = { set_country_flag = Lev_Trotsky_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Lev Kamenev" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Lev_Kamenev_dead }
+					SOV = { set_country_flag = Lev_Kamenev_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Joseph Stalin" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Joseph_Stalin_dead }
+					SOV = { set_country_flag = Joseph_Stalin_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Felix Dzerjinsky" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Felix_Dzerjinsky_dead }
+					SOV = { set_country_flag = Felix_Dzerjinsky_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Maria Spiridonova" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Maria_Spiridonova_dead }
+					SOV = { set_country_flag = Maria_Spiridonova_dead }
+				}
+				else_if = {
+					limit = {
+						has_country_leader = { name = "Yuly Martov" ruling_only = yes }
+					}
+					RUS = { set_country_flag = Yuly_Martov_dead }
+					SOV = { set_country_flag = Yuly_Martov_dead }
+				}
+				news_event = { id = news_n.21 hours = 12 }
+			}
+		kill_country_leader = yes
+		add_political_power = -50
+		add_stability = -0.05
+		add_war_support = -0.05
+	}
+}
+
+# Ранение лидера (Ленина)
+country_event = {
+	id = rcw_bolsheviks.132
+	title = rcw_bolsheviks.132.t
+	desc = rcw_bolsheviks.132.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.132.a
+		add_political_power = -50
+		add_war_support = 0.05
+		hidden_effect = {
+			if = {
+				limit = {
+					has_country_leader = { name = "Vladimir Lenin" ruling_only = yes }
+				}
+				set_country_flag = Vladimir_Lenin_hurt
+			}
+			news_event = { id = news_n.22 hours = 24 }
+		}
+	}
+}
+
+# Покушение на лидера (Ленина)
+country_event = {
+	id = rcw_bolsheviks.133
+	title = rcw_bolsheviks.133.t
+	desc = rcw_bolsheviks.133.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.133.a
+		add_war_support = 0.05
+		hidden_effect = {
+			news_event = { id = news_n.22 hours = 48 }
+		}
+	}
+}
+
+# Убийство Моисея Урицкого
+country_event = {
+	id = rcw_bolsheviks.134
+	title = rcw_bolsheviks.134.t
+	desc = rcw_bolsheviks.134.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.134.a
+		RUS = { set_country_flag = Moisey_Uritskiy_dead }
+		SOV = { set_country_flag = Moisey_Uritskiy_dead }
+	}
+}
+
+# Проблемы с жд
+country_event = {
+	id = rcw_bolsheviks.151
+	title = rcw_bolsheviks.151.t
+	desc = rcw_bolsheviks.151.d
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		tag = RUS
+		has_war = yes
+		NOT = { has_global_flag = RUS_civil_war_over }
+		surrender_progress > 0.1
+		OR = {
+			has_idea = RUS_collapse_of_railway_system_1
+			has_idea = RUS_collapse_of_railway_system_2
+			has_idea = RUS_collapse_of_railway_system_3
+			has_idea = RUS_collapse_of_railway_system_4
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 300
+		modifier = {
+			factor = 0.8
+			has_country_flag = railway_self_government
+		}
+		modifier = {
+			factor = 0.8
+			has_country_flag = railway_militia
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.151.a
+		if = {
+			limit = { has_idea = RUS_collapse_of_railway_system_1 }
+			swap_ideas = {
+				remove_idea = RUS_collapse_of_railway_system_1
+				add_idea = RUS_collapse_of_railway_system_2
+			}
+		}
+		else_if = {
+			limit = { has_idea = RUS_collapse_of_railway_system_2 }
+			swap_ideas = {
+				remove_idea = RUS_collapse_of_railway_system_2
+				add_idea = RUS_collapse_of_railway_system_3
+			}
+		}
+		else_if = {
+			limit = { has_idea = RUS_collapse_of_railway_system_3 }
+			swap_ideas = {
+				remove_idea = RUS_collapse_of_railway_system_3
+				add_idea = RUS_collapse_of_railway_system_4
+			}
+		}
+		else_if = {
+			limit = { has_idea = RUS_collapse_of_railway_system_4 }
+			swap_ideas = {
+				remove_idea = RUS_collapse_of_railway_system_4
+				add_idea = RUS_collapse_of_railway_system_5
+			}
+		}
+	}
+}
+
+# Разгром Чёрной гвардии
+country_event = {
+	id = rcw_bolsheviks.198
+	title = rcw_bolsheviks.198.t
+	desc = rcw_bolsheviks.198.d
+	picture = report_event_sov_felix_VCHK
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = { has_country_flag = defeat_of_black_guard }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.198.a
+		set_country_flag = defeat_of_black_guard
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.15
+		}
+	}
+}
+
+# Уход в отставку министров от Левых Эсеров
+country_event = {
+	id = rcw_bolsheviks.199
+	title = rcw_bolsheviks.199.t
+	desc = rcw_bolsheviks.199.d
+	picture = GFX_report_event_sov_protest_of_moderate_socialists_against_the_bolsheviksv
+	
+	trigger = {
+		always = no
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_country_flag = RUS_brest_peace_fired
+		has_government = communism
+		NOT = { has_country_flag = RUS_left_SR_revolt }
+		NOT = { has_war_with = GER }
+		NOT = { has_completed_focus = RUS_left_eser_focus }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.199.a
+		add_political_power = -25
+		remove_ideas_with_trait = radical_socialist_counselor
+		if = {
+			limit = { has_country_flag = RUS_soviet_power_flag }
+			add_to_variable = { var = RUS_soviet_power_control value = -1 }
+			add_to_variable = { var = RUS_party_power_control value = 1 }
+		}
+		#country_event = { id = rcw_bolsheviks.200 days = 90 }
+	}
+}
+# Восстание Левых Эсеров
+country_event = {
+	id = rcw_bolsheviks.200
+	title = rcw_bolsheviks.200.t
+	desc = rcw_bolsheviks.200.d
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		always = no
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_country_flag = RUS_brest_peace_fired
+		OR = {
+			has_country_flag = brest_hardest
+			has_country_flag = brest_hard
+			has_country_flag = brest_average
+		}
+		has_government = communism
+		NOT = { has_country_flag = RUS_left_SR_revolt }
+		radical_socialism > 0.05
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		check_variable = { radical_socialism_coalition = 1 }
+	}
+	
+	is_triggered_only = yes
+	
+	#
+	option = {
+		name = rcw_bolsheviks.200.a
+		set_country_flag = RUS_left_SR_revolt
+		add_stability = -0.05
+		add_political_power = 50
+		remove_ideas_with_trait = radical_socialist_counselor
+		if = {
+			limit = { has_country_flag = RUS_soviet_power_flag }
+			add_to_variable = { var = RUS_soviet_power_control value = -1 }
+			add_to_variable = { var = RUS_party_power_control value = 1 }
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.15
+		}
+		set_variable = { radical_socialism_coalition = 0 }
+		ai_chance = {
+			factor = 80
+		}
+	}
+	#
+	option = {
+		name = rcw_bolsheviks.200.b
+		set_country_flag = RUS_left_SR_revolt
+		add_stability = -0.05
+		add_political_power = 50
+		remove_ideas_with_trait = radical_socialist_counselor
+		if = {
+			limit = { has_country_flag = RUS_soviet_power_flag }
+			add_to_variable = { var = RUS_soviet_power_control value = -1 }
+			add_to_variable = { var = RUS_party_power_control value = 1 }
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.15
+		}
+		set_variable = { radical_socialism_coalition = 0 }
+		ai_chance = {
+			factor = 20
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}

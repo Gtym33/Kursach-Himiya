@@ -23,9 +23,16 @@ country_event = {
 			ideology = radical_socialism
 			popularity = 0.05
 		}
-		declare_war_on = {
-			target = GER
-			type = annex_everything
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		add_stability = -0.05
+		GER = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
 		}
 	}
 	option = {
@@ -66,6 +73,303 @@ country_event = {
 		set_politics = {
 			ruling_party = communism
 			elections_allowed = no
+		}
+	}
+}
+
+# Восстания по всей стране
+country_event = {
+	id = petrograd_commune.2
+	title = petrograd_commune.2.t
+	desc = petrograd_commune.2.desc
+	picture = GFX_report_event_rus_kornilov_goverment
+	
+	trigger = { KRN = { exists = yes } NOT = { has_government = radical_socialism has_government = communism has_government = social_democracy has_government = social_liberalism } }
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			KRN = {
+				division_template = {
+					name = "Krasnaya Gvardiya"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = petrograd_commune.2.a
+		hidden_effect = {
+			KRN = {
+				set_province_controller = 13444
+				set_province_controller = 3303
+				set_province_controller = 117
+			}
+		}
+		every_state = {
+			limit = {
+				OR = {
+					state = 219
+					state = 252
+					state = 263
+				}
+			}
+			if = {
+				limit = {
+					is_owned_by = RUS
+				}
+				create_unit = {
+					division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = KRN
+				}
+				create_unit = {
+					division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = KRN
+				}
+				create_unit = {
+					division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = KRN
+				}
+			}
+		}
+		RUS = {
+			add_timed_idea = { idea = disorganization_of_army days = 28 }
+			remove_one_priziv_from_army = yes
+		}
+		hidden_effect = { KRN = { country_event = petrograd_commune.3 } }
+		hidden_effect = { country_event = { id = petrograd_commune.4 days = 5 } set_country_flag = pcf_1 }
+	}
+}
+
+# Восстания по всей стране, оповещение для Коммуны
+country_event = {
+	id = petrograd_commune.3
+	title = petrograd_commune.3.t
+	desc = petrograd_commune.3.desc
+	picture = GFX_report_event_rus_kornilov_goverment
+
+	is_triggered_only = yes
+	option = {
+		name = petrograd_commune.3.a
+	}
+}
+
+country_event = {
+	id = petrograd_commune.4
+	
+	hidden = yes
+
+	is_triggered_only = yes
+	option = {
+		if = {
+			limit = { has_country_flag = pcf_1 }
+			hidden_effect = {
+				KRN = {
+					set_province_controller = 3477
+				}
+			}
+			every_state = {
+				limit = {
+					state = 239
+				}
+				if = {
+					limit = {
+						is_owned_by = RUS
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+				}
+			}
+			clr_country_flag = pcf_1
+			set_country_flag = pcf_2
+			hidden_effect = { country_event = { id = petrograd_commune.4 days = 3 } }
+		}
+		else_if = {
+			limit { has_country_flag = pcf_2 }
+			hidden_effect = {
+				KRN = {
+					set_province_controller = 9556
+					set_province_controller = 547
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 221
+						state = 958
+					}
+				}
+				if = {
+					limit = {
+						is_owned_by = RUS
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+				}
+			}
+			clr_country_flag = pcf_2
+			set_country_flag = pcf_3
+			hidden_effect = { country_event = { id = petrograd_commune.4 days = 3 } }
+		}
+		else_if = {
+			limit { has_country_flag = pcf_3 }
+			hidden_effect = {
+				KRN = {
+					set_province_controller = 3527
+				}
+			}
+			every_state = {
+				limit = {
+					state = 260
+				}
+				if = {
+					limit = {
+						is_owned_by = RUS
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+				}
+			}
+			clr_country_flag = pcf_3
+			set_country_flag = pcf_4
+			hidden_effect = { country_event = { id = petrograd_commune.4 days = 3 } }
+		}
+		else_if = {
+			limit { has_country_flag = pcf_4 }
+			hidden_effect = {
+				KRN = {
+					set_province_controller = 13311
+					set_province_controller = 9461
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 227
+						state = 918
+					}
+				}
+				if = {
+					limit = {
+						is_owned_by = RUS
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+				}
+			}
+			clr_country_flag = pcf_4
+			set_country_flag = pcf_5
+			hidden_effect = { country_event = { id = petrograd_commune.4 days = 3 } }
+		}
+		else_if = {
+			limit { has_country_flag = pcf_5 }
+			hidden_effect = {
+				KRN = {
+					set_province_controller = 525
+				}
+			}
+			every_state = {
+				limit = {
+					state = 202
+				}
+				if = {
+					limit = {
+						is_owned_by = RUS
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+				}
+			}
+			clr_country_flag = pcf_5
+			set_country_flag = pcf_6
+			hidden_effect = { country_event = { id = petrograd_commune.4 days = 3 } }
+		}
+		else_if = {
+			limit { has_country_flag = pcf_6 }
+			hidden_effect = {
+				KRN = {
+					set_province_controller = 11541
+				}
+			}
+			every_state = {
+				limit = {
+					state = 814
+				}
+				if = {
+					limit = {
+						is_owned_by = RUS
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+					create_unit = {
+						division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+						owner = KRN
+					}
+				}
+			}
+			clr_country_flag = pcf_6
 		}
 	}
 }
@@ -712,11 +1016,8 @@ country_event = {
 		has_war_with = KRN
 		NOT = {
 			has_government = authoritarism
+			has_government = despotism
 			has_government = fascism
-		}
-		OR = {
-			NOT = { has_government = despotism }
-			NOT = { has_country_leader = { name = "Mikhail Alexeev" ruling_only = yes } }
 		}
 		KRN = {
 			NOT = {
