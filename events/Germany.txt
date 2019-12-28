@@ -272,7 +272,7 @@ country_event = {
 		add_timed_idea = { idea = credits_for_bolsheviks days = 90 }
 	}
 }
-# Эвент Финляндии - Поддержка от Германии
+# Ивент Финляндии - Поддержка от Германии
 country_event = {
 	id = germany.13
 	title = germany.13.t
@@ -292,6 +292,42 @@ country_event = {
 			add_opinion_modifier = {
 				target = FIN
 				modifier = FIN_GER_support
+			}
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = GER
+					is_in_faction_with = GER
+					is_subject_of = GER
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FIN.id
+					}
+				}
+				FIN = {
+					PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { unrecognized_states = FIN.id }
+					add_ai_strategy = {
+						type = befriend
+						id = GER
+						value = 50
+					}
+					GER = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
 			}
 		}
 	}

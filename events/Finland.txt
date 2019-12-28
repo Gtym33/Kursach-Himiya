@@ -118,7 +118,7 @@ country_event = {
 		name = finland.3.b
 	}
 }
-#Эвент России - Финляндия требует независимости
+# Ивент России - Финляндия требует независимости
 country_event = {
 	id = finland.4
 	title = finland.4.t
@@ -373,11 +373,41 @@ country_event = {
 				limit = { has_war_with = RUS is_in_faction = no }
 				white_peace = FIN
 			}
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								former_russian_empire_baltic_states_country = yes
+								former_russian_empire_finland_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						add_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo }
+						add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel }
+						reverse_add_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+						reverse_add_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+						add_to_array = { unrecognized_states = PREV.id }
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = -50
+						}
+						PREV = {
+							add_ai_strategy = {
+								type = befriend
+								id = PREV
+								value = -50
+							}
+						}
+					}
+				}
 		}
 	}
 }
 
-# Эвент РСФСР - признание независимости Финляндия
+# Ивент РСФСР - признание независимости Финляндия
 country_event = {
 	id = finland.10
 	title = finland.10.t
@@ -402,13 +432,47 @@ country_event = {
 	#Признать независимость
 	option = {
 		name = finland.10.a
-		FIN = { remove_opinion_modifier = { target = RUS modifier = unrecognized_state_rel } remove_opinion_modifier = { target = RUS modifier = unrecognized_state_embargo } }
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FIN.id
+					}
+				}
+				FIN = {
+					PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_embargo } }
+					PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_rel } }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
+					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
+					remove_from_array = { unrecognized_states = FIN.id }
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 50
+					}
+					ROOT = {
+						add_ai_strategy = {
+							type = befriend
+							id = PREV
+							value = 50
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	#Не признавать независимость
 	option = {
 		name = finland.10.b
-		set_country_flag = RUS_didnt_recognize_independence_of_FIN
 	}
 }
 
