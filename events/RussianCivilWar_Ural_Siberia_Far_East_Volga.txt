@@ -95,6 +95,7 @@ country_event = {
 					state = 582
 					state = 652
 					state = 651
+					state = 1025
 				}
 			}
 			SIB = { add_state_core = PREV }
@@ -204,6 +205,7 @@ country_event = {
 					state = 582
 					state = 652
 					state = 651
+					state = 1025
 				}
 			}
 			SIB = { add_state_core = PREV }
@@ -2788,6 +2790,54 @@ country_event = {
 	option = {
 		name = rcw_usfev.50.a
 		set_global_flag = RUS_civil_war_reds_n_Siberia_peace
+		every_country = {
+				limit = {
+					has_war_with = RUS
+					OR = {
+						tag = SIB
+						is_in_faction_with = SIB
+					}
+				}
+				white_peace = RUS
+		}
+		if = {
+				limit = { OCH = { exists = yes } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
+				every_state = {
+					limit = { OR = { is_core_of = OCH is_controlled_by = OCH } is_owned_by = RUS }
+					OCH = { transfer_state = PREV }
+					remove_core_of = RUS
+				}
+				every_country = {
+					limit = {
+						has_war_with = RUS
+						OR = {
+							tag = OCH
+							is_in_faction_with = OCH
+						}
+					}
+					white_peace = RUS
+				}
+		}
+		if = {
+				limit = { BKL = { exists = yes } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
+				every_state = {
+					limit = { OR = { OR = { is_core_of = BKL is_controlled_by = BKL } OR = { state = 950 state = 761 state = 714 state = 798 state = 717 } } is_owned_by = RUS }
+					BKL = { transfer_state = PREV }
+					remove_core_of = RUS
+				}
+				every_country = {
+					limit = {
+						has_war_with = RUS
+						OR = {
+							tag = BKL
+							is_in_faction_with = BKL
+						}
+					}
+					white_peace = RUS
+				}
+		}
+		diplomatic_relation = { country = SIB relation = non_aggression_pact }
+		SIB = { diplomatic_relation = { country = RUS relation = non_aggression_pact } }
 		if = {
 			limit = { SIB = { controls_state = 251 } }
 			SIB = {
@@ -2834,14 +2884,14 @@ country_event = {
 							state = 654
 							state = 909
 							state = 581
+							state = 911
 						}
 					}
 					SIB = { transfer_state = PREV add_state_core = PREV }
 				}
 			}
-		}
 		
-		if = {
+		else_if = {
 			limit = { SIB = { controls_state = 651 } }
 			SIB = {
 			add_political_power = -200
@@ -2887,6 +2937,7 @@ country_event = {
 						state = 654
 						state = 909
 						state = 581
+						state = 911
 					}
 				}
 				SIB = { transfer_state = PREV add_state_core = PREV }
@@ -2900,11 +2951,20 @@ country_event = {
 		}
 		}
 		
-		if = {
+		else_if = {
 			limit = { SIB = { controls_state = 572 } }
 			give_military_access = SIB
+			give_guarantee = SIB
 			SIB = {
 				add_political_power = -50
+				if = {
+					limit = { is_faction_leader = yes }
+					dismantle_faction = yes
+				}
+				add_ideas = neutral_foreign_policy_law
+				remove_ideas_with_trait = trade_laws
+				add_ideas = free_trade
+				add_ideas = SIB_hard_peace_idea
 				every_state = {
 					limit = {
 						is_owned_by = RUS
@@ -2915,6 +2975,11 @@ country_event = {
 							state = 644
 							state = 566
 							state = 575
+							state = 564
+							state = 565
+							state = 1041
+							state = 563
+							state = 572
 						}
 					}
 					SIB = { transfer_state = PREV add_state_core = PREV }
@@ -2927,34 +2992,57 @@ country_event = {
 				remove_state_core = 573
 				remove_state_core = 581
 			}
-		}
-		every_state = { limit = { is_core_of = SIB } remove_core_of = RUS }
-		every_state = { limit = { is_core_of = RUS is_owned_by = SIB } RUS = { transfer_state = PREV } }
-		
-			every_country = {
-				limit = {
-					has_war_with = SIB
-					OR = {
-						tag = RUS
-						AND = {
-							is_faction_leader = yes
-							is_in_faction_with = RUS
-						}
+			if = {
+				limit = { PRM = { is_puppet_of = SIB } }
+				RUS = {
+					annex_country = { 
+						target = PRM 
+						transfer_troops = no 
 					}
 				}
-				white_peace = SIB
 			}
 			if = {
-				limit = { KAZ = { exists = yes } }
+				limit = { OCH = { is_puppet_of = SIB } }
+				RUS = {
+					annex_country = { 
+						target = OCH 
+						transfer_troops = no 
+					}
+				}
+			}
+			if = {
+				limit = { BKL = { is_puppet_of = SIB } }
+				RUS = {
+					annex_country = { 
+						target = BKL 
+						transfer_troops = no 
+					}
+				}
+			}
+			if = {
+				limit = { CCA = { is_puppet_of = SIB } }
+				RUS = {
+					annex_country = { 
+						target = CCA 
+						transfer_troops = no 
+					}
+				}
+			}
+		}
+		}
+		every_state = { limit = { is_core_of = SIB is_owned_by = SIB } remove_core_of = RUS }
+		every_state = { limit = { is_owned_by = SIB is_core_of = RUS  } RUS = { transfer_state = PREV.PREV } }
+		every_state = { limit = { is_core_of = RUS } remove_core_of = SIB }
+		every_state = { limit = { is_core_of = RUS } remove_claim_by = SIB }
+		
+			if = {
+				limit = { KAZ = { exists = yes OR = { is_puppet_of = SIB is_in_faction_with = SIB } } }
 				every_country = {
 					limit = {
 						has_war_with = KAZ
 						OR = {
 							tag = RUS
-							AND = {
-								is_faction_leader = yes
-								is_in_faction_with = RUS
-							}
+							is_in_faction_with = RUS
 						}
 					}
 					white_peace = KAZ
@@ -2965,11 +3053,28 @@ country_event = {
 					remove_core_of = RUS
 				}
 			}
+			
+			if = {
+				limit = { PRM = { exists = yes OR = { is_puppet_of = SIB is_in_faction_with = SIB } } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
+				every_state = {
+					limit = { is_core_of = PRM }
+					PRM = { transfer_state = PREV }
+					remove_core_of = RUS
+				}
+			}
 	}
 	option = {
 		name = rcw_usfev.50.b
-		add_political_power = -100
-		add_war_support = -0.15
+		if = {
+			limit = { SIB = { controls_state = 251 } }
+			add_war_support = -0.15
+			add_political_power = -100
+					else_if = {
+						limit = { SIB = { controls_state = 651 } }
+						add_war_support = -0.05
+						add_political_power = -50
+						}
+			}
 	}
 }
 
@@ -4888,6 +4993,8 @@ country_event = {
 					state = 1036
 					state = 1037
 					state = 1038
+					state = 1039
+					state = 1040
 				}
 			}
 			PRM = { add_state_core = PREV }
@@ -4990,6 +5097,8 @@ country_event = {
 					state = 1036
 					state = 1037
 					state = 1038
+					state = 1039
+					state = 1040
 				}
 			}
 			PRM = { add_state_core = PREV }
