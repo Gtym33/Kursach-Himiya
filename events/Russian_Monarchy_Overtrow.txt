@@ -282,29 +282,9 @@ country_event = {
 		remove_one_priziv_from_army = yes
 		remove_one_priziv_from_army = yes
 		if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_5 }
-			remove_ideas = soldiers_fraternity_GER_RUS_5
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_5 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_4 }
-			remove_ideas = soldiers_fraternity_GER_RUS_4
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_4 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_3 }
-			remove_ideas = soldiers_fraternity_GER_RUS_3
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_3 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_2 }
-			remove_ideas = soldiers_fraternity_GER_RUS_2
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_2 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_1 }
-			remove_ideas = soldiers_fraternity_GER_RUS_1
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_1 }
+			limit = { has_idea = soldiers_fraternity_RUS_GER }
+			remove_ideas = soldiers_fraternity_RUS_GER
+			GER = { remove_ideas = soldiers_fraternity_GER_RUS }
 		}
 	}
 	#Мы переходим к плану полной демобилизации
@@ -325,29 +305,9 @@ country_event = {
 		country_event = { id = rcw.125 days = 48 }
 		set_country_flag = RUS_not_bolsheviks_demobilisation
 		if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_5 }
-			remove_ideas = soldiers_fraternity_GER_RUS_5
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_5 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_4 }
-			remove_ideas = soldiers_fraternity_GER_RUS_4
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_4 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_3 }
-			remove_ideas = soldiers_fraternity_GER_RUS_3
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_3 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_2 }
-			remove_ideas = soldiers_fraternity_GER_RUS_2
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_2 }
-		}
-		else_if = {
-			limit = { has_idea = soldiers_fraternity_GER_RUS_1 }
-			remove_ideas = soldiers_fraternity_GER_RUS_1
-			GER = { remove_ideas = soldiers_fraternity_GER_RUS_1 }
+			limit = { has_idea = soldiers_fraternity_RUS_GER }
+			remove_ideas = soldiers_fraternity_RUS_GER
+			GER = { remove_ideas = soldiers_fraternity_GER_RUS }
 		}
 	}
 }
@@ -1339,47 +1299,69 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
+		trigger = { has_idea = RUS_mon_white_guard }
+		name = russian_ovrthrw_of_mon.93.a
+		hidden_effect = {
+			delete_unit_template_and_units = { division_template = "Belaya Gvardiya" }
+			create_country_leader = {
+				name = "Fyodor Keller"
+				desc=RUS_Fyodor_Keller_DESC
+				picture="gfx/leaders/RUS/Fyodor_Keller.dds"
+				expire="1935.1.1"
+				ideology = authoritarism_ideology
+				traits={ great_war_hero }
+			}
+			start_civil_war = {
+				ruling_party = despotism
+				ideology = authoritarism
+				size = 0.2
+			}
+			random_other_country = {
+				limit = {
+					original_tag = RUS
+					has_government = authoritarism
+				}
+				every_unit_leader = { set_nationality = RUS }
+				save_global_event_target_as = RUS_Keller
+				RUS = { every_unit_leader = { limit = { OR = { has_id = 77653 has_id = 77532 has_id = 77649 } } set_nationality = event_target:RUS_Keller } }
+				REB = { every_unit_leader = { limit = { OR = { has_id = 77653 has_id = 77532 has_id = 77649 } } set_nationality = event_target:RUS_Keller } }
+				add_ideas = {
+					military_dictatorship_gov_form
+					emergency_laws_b_law
+					neutral_foreign_policy_law
+				}
+			}
+			every_country = {
+				limit = {
+					OR = {
+						tag = KRN
+						tag = PRM
+						tag = TRK
+						tag = SIB
+						tag = CPG
+						tag = UKR
+						tag = FNR
+					}
+					has_war_with = event_target:RUS_Keller
+				}
+				RUS = { declare_war_on = { target = PREV type = annex_everything } }
+			}
+		}
+		remove_ideas = RUS_Nikolay_II_idea
+		add_popularity = { ideology = despotism popularity = 0.05 }
+		add_popularity = { ideology = authoritarism popularity = -0.05 }
+		add_stability = -0.05
+		remove_one_priziv_from_army = yes
+		hidden_effect = { clear_global_event_target = RUS_Keller }
+	}
+	option = {
+		trigger = { NOT = { has_idea = RUS_mon_white_guard } }
 		name = russian_ovrthrw_of_mon.93.a
 		remove_ideas = RUS_Nikolay_II_idea
 		add_popularity = { ideology = despotism popularity = 0.05 }
 		add_popularity = { ideology = authoritarism popularity = -0.05 }
 		add_stability = -0.05
 		remove_one_priziv_from_army = yes
-		if = {
-			limit = { has_idea = RUS_mon_white_guard }
-			remove_ideas = RUS_mon_white_guard
-			delete_unit_template_and_units = { division_template = "Belaya Gvardiya" }
-			hidden_effect = {
-				create_country_leader = {
-					name = "Fyodor Keller"
-					desc=RUS_Fyodor_Keller_DESC
-					picture="gfx/leaders/RUS/Fyodor_Keller.dds"
-					expire="1935.1.1"
-					ideology = authoritarism_ideology
-					traits={ great_war_hero dictator anti_communist }
-				}
-				set_politics = {
-					ruling_party = authoritarism
-				}
-				start_civil_war = {
-					ruling_party = despotism
-					ideology = ROOT
-					size = 0.1
-					only_own_territory = yes
-					keep_unit_leaders_trigger = {
-						NOT = { has_id = 77653 }
-					}
-				}
-				random_country = {
-					limit = { original_tag = RUS has_government = authoritarism }
-					remove_all_foreing_locked_templates_from_liberated_country = yes
-					RUS = { every_unit_leader = { limit = { OR = { has_id = 77653 has_id = 77532 has_id = 77649 } } set_nationality = PREV } }
-				}
-			}
-			else = {
-				#ГВ не происходит
-			}
-		}
 	}
 	option = {
 		name = russian_ovrthrw_of_mon.93.b

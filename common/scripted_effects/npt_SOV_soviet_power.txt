@@ -1,0 +1,454 @@
+#
+# The scripts for manipulations with Soviet democracy variables
+#
+
+
+# Use it with:
+# total_members_of_central_committee - total amount of party (RSDLP(b), RCP(b), AUCP(b), CPSU) Central Committee members. Should be set when gets RUS_soviet_power_flag flag.
+# decist_faction_CC - democracy centralism (decist) wing, or Workers' Opposition (different things, but simular).
+# left_faction_CC - left wing.
+# center_faction_CC - difference between total amount and other wings. Do not set this if effects.
+# moderate_faction_CC - right wing.
+# right_faction_CC - right wing.
+
+# Use check_overlap_of_CC_n_CEC_deputies_add_left and check_overlap_of_CC_n_CEC_deputies_add_right after set or changing left and right wings, this scripts removes potential errors.
+
+# The set_frame_of_CC_n_CEC will set numbers of frames for scripted GUI, it runs after all scripts automaticly.
+
+# When we add some party members to faction in party composition, if we want do this more effectively, we must subtract some party members from another faction, this is that fraction due to which our fraction increases
+# Use check_overlap_of_party_composition after changing party composition
+
+check_overlap_of_CC_n_CEC_deputies_add = {
+	if = {
+		limit = { check_variable = { decist_faction_CC < 0 } }
+		set_variable = { decist_faction_CC = 0 }
+	}
+	if = {
+		limit = { check_variable = { left_faction_CC < 0 } }
+		set_variable = { left_faction_CC = 0 }
+	}
+	if = {
+		limit = { check_variable = { moderate_faction_CC < 0 } }
+		set_variable = { moderate_faction_CC = 0 }
+	}
+	if = {
+		limit = { check_variable = { right_faction_CC < 0 } }
+		set_variable = { right_faction_CC = 0 }
+	}
+	
+	set_variable = {
+		var = center_faction_CC
+		value = total_members_of_central_committee
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = decist_faction_CC
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = left_faction_CC
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = moderate_faction_CC
+	}
+	subtract_from_variable = {
+		var = center_faction_CC
+		value = right_faction_CC
+	}
+	
+	if = {
+		limit = { check_variable = { center_faction_CC < 0 } }
+		loop_center = yes
+	}
+
+	check_percents_of_factions = yes
+}
+
+loop_center = {
+		set_temp_variable = { temp0 = center_faction_CC }
+		if = {
+			limit = { check_variable = { temp0 < 0 } check_variable = { decist_faction_CC > 0 } }
+			add_to_variable = { decist_faction_CC = -1 }
+			add_to_variable = { temp0 = 1 }
+			add_to_variable = { center_faction_CC = 1 }
+		}
+		if = {
+			limit = { check_variable = { temp0 < 0 } check_variable = { left_faction_CC > 0 } }
+			add_to_variable = { left_faction_CC = -1 }
+			add_to_variable = { temp0 = 1 }
+			add_to_variable = { center_faction_CC = 1 }
+		}
+		if = {
+			limit = { check_variable = { temp0 < 0 } check_variable = { moderate_faction_CC > 0 } }
+			add_to_variable = { moderate_faction_CC = -1 }
+			add_to_variable = { temp0 = 1 }
+			add_to_variable = { center_faction_CC = 1 }
+		}
+		if = {
+			limit = { check_variable = { temp0 < 0 } check_variable = { right_faction_CC > 0 } }
+			add_to_variable = { right_faction_CC = -1 }
+			add_to_variable = { temp0 = 1 }
+			add_to_variable = { center_faction_CC = 1 }
+		}
+		if = {
+			limit = { check_variable = { temp0 < 0 } }
+			loop_center_2 = yes
+		}
+}
+
+loop_center_2 = {
+		set_temp_variable = { temp0 = center_faction_CC }
+		if = {
+			limit = { check_variable = { temp0 < 0 } }
+			loop_center = yes
+		}
+}
+
+check_percents_of_factions = {
+
+	set_variable = {
+		var = percent_decist_faction_CC
+		value = decist_faction_CC
+	}
+	divide_variable = {
+		var = percent_decist_faction_CC
+		value = total_members_of_central_committee
+	}
+	
+	set_variable = {
+		var = percent_left_faction_CC
+		value = left_faction_CC
+	}
+	divide_variable = {
+		var = percent_left_faction_CC
+		value = total_members_of_central_committee
+	}
+	
+	set_variable = {
+		var = percent_moderate_faction_CC
+		value = moderate_faction_CC
+	}
+	divide_variable = {
+		var = percent_moderate_faction_CC
+		value = total_members_of_central_committee
+	}
+	
+	set_variable = {
+		var = percent_right_faction_CC
+		value = right_faction_CC
+	}
+	divide_variable = {
+		var = percent_right_faction_CC
+		value = total_members_of_central_committee
+	}
+	
+	set_variable = {
+		var = percent_center_faction_CC
+		value = 1
+	}
+	subtract_from_variable = {
+		var = percent_center_faction_CC
+		value = percent_decist_faction_CC
+	}
+	subtract_from_variable = {
+		var = percent_center_faction_CC
+		value = percent_left_faction_CC
+	}
+	subtract_from_variable = {
+		var = percent_center_faction_CC
+		value = percent_moderate_faction_CC
+	}
+	subtract_from_variable = {
+		var = percent_center_faction_CC
+		value = percent_right_faction_CC
+	}
+	
+	set_frame_of_CC_n_CEC = yes
+}
+
+set_frame_of_CC_n_CEC = {
+	clear_array = party_CC_kvadrat
+	resize_array = {
+		array = party_CC_kvadrat
+		value = 1
+		size = 72
+	}
+	
+	set_variable = { ROOT.last_idx = 0 }
+
+	set_temp_variable = { decist_faction_CC_frame = decist_faction_CC }
+	round_temp_variable = decist_faction_CC_frame
+	add_to_temp_variable = { decist_faction_CC_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = decist_faction_CC_frame
+		set_variable = { party_CC_kvadrat^v = 2 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { left_faction_CC_frame = left_faction_CC }
+	round_temp_variable = left_faction_CC_frame
+	add_to_temp_variable = { left_faction_CC_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = left_faction_CC_frame
+		set_variable = { party_CC_kvadrat^v = 3 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { center_faction_CC_frame = center_faction_CC }
+	round_temp_variable = center_faction_CC_frame
+	add_to_temp_variable = { center_faction_CC_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = center_faction_CC_frame
+		set_variable = { party_CC_kvadrat^v = 4 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { moderate_faction_CC_frame = moderate_faction_CC }
+	round_temp_variable = moderate_faction_CC_frame
+	add_to_temp_variable = { moderate_faction_CC_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = moderate_faction_CC_frame
+		set_variable = { party_CC_kvadrat^v = 5 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { right_faction_CC_frame = right_faction_CC }
+	round_temp_variable = right_faction_CC_frame
+	add_to_temp_variable = { right_faction_CC_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = right_faction_CC_frame
+		set_variable = { party_CC_kvadrat^v = 6 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	clear_variable = ROOT.last_idx
+}
+
+check_overlap_of_party_composition = {
+	if = { limit = { check_variable = { decist_faction_party_compositon < 0 } } set_variable = { decist_faction_party_compositon = 0 } }
+	if = { limit = { check_variable = { left_faction_party_compositon < 0 } } set_variable = { left_faction_party_compositon = 0 } }
+	if = { limit = { check_variable = { center_faction_party_compositon < 0 } } set_variable = { center_faction_party_compositon = 0 } }
+	if = { limit = { check_variable = { moderate_faction_party_compositon < 0 } } set_variable = { moderate_faction_party_compositon = 0 } }
+	if = { limit = { check_variable = { right_faction_party_compositon < 0 } } set_variable = { right_faction_party_compositon = 0 } }
+	
+	multiply_variable = { decist_faction_party_compositon = 100 }
+	multiply_variable = { left_faction_party_compositon = 100 }
+	multiply_variable = { center_faction_party_compositon = 100 }
+	multiply_variable = { moderate_faction_party_compositon = 100 }
+	multiply_variable = { right_faction_party_compositon = 100 }
+	round_variable = decist_faction_party_compositon
+	round_variable = left_faction_party_compositon
+	round_variable = center_faction_party_compositon
+	round_variable = moderate_faction_party_compositon
+	round_variable = right_faction_party_compositon
+	set_temp_variable = { party_compositon_summe = 0 }
+	add_to_temp_variable = { party_compositon_summe = decist_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = left_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = center_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = moderate_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = right_faction_party_compositon }
+	divide_variable = { decist_faction_party_compositon = party_compositon_summe }
+	divide_variable = { left_faction_party_compositon = party_compositon_summe }
+	divide_variable = { center_faction_party_compositon = party_compositon_summe }
+	divide_variable = { moderate_faction_party_compositon = party_compositon_summe }
+	divide_variable = { right_faction_party_compositon = party_compositon_summe }
+	multiply_variable = { decist_faction_party_compositon = 100 }
+	multiply_variable = { left_faction_party_compositon = 100 }
+	multiply_variable = { center_faction_party_compositon = 100 }
+	multiply_variable = { moderate_faction_party_compositon = 100 }
+	multiply_variable = { right_faction_party_compositon = 100 }
+	round_variable = decist_faction_party_compositon
+	round_variable = left_faction_party_compositon
+	round_variable = center_faction_party_compositon
+	round_variable = moderate_faction_party_compositon
+	round_variable = right_faction_party_compositon
+	
+	set_temp_variable = { party_compositon_summe = 0 }
+	add_to_temp_variable = { party_compositon_summe = decist_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = left_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = center_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = moderate_faction_party_compositon }
+	add_to_temp_variable = { party_compositon_summe = right_faction_party_compositon }
+	set_temp_variable = { party_compositon_fault = 100 }
+	subtract_from_temp_variable =  { party_compositon_fault = party_compositon_summe }
+	
+	if = {
+		limit = { check_variable = { party_compositon_fault > 0 } }
+		set_temp_variable = { temp0 = 0 }
+		if = {
+			limit = { check_variable = { decist_faction_party_compositon > temp0 } }
+			set_temp_variable = { temp0 = decist_faction_party_compositon }
+		}
+		if = {
+			limit = { check_variable = { left_faction_party_compositon > temp0 } }
+			set_temp_variable = { temp0 = left_faction_party_compositon }
+		}
+		if = {
+			limit = { check_variable = { center_faction_party_compositon > temp0 } }
+			set_temp_variable = { temp0 = center_faction_party_compositon }
+		}
+		if = {
+			limit = { check_variable = { moderate_faction_party_compositon > temp0 } }
+			set_temp_variable = { temp0 = moderate_faction_party_compositon }
+		}
+		if = {
+			limit = { check_variable = { right_faction_party_compositon > temp0 } }
+			set_temp_variable = { temp0 = right_faction_party_compositon }
+		}
+
+		if = {
+			limit = { check_variable = { temp0 = center_faction_party_compositon } }
+			add_to_variable = { center_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = decist_faction_party_compositon } }
+			add_to_variable = { decist_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = left_faction_party_compositon } }
+			add_to_variable = { left_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = moderate_faction_party_compositon } }
+			add_to_variable = { moderate_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = right_faction_party_compositon } }
+			add_to_variable = { right_faction_party_compositon = party_compositon_fault }
+		}
+	}
+	if = {
+		limit = { check_variable = { party_compositon_fault < 0 } }
+		set_temp_variable = { temp0 = 100 }
+		if = {
+			limit = { NOT = { check_variable = { decist_faction_party_compositon = 0 } } check_variable = { decist_faction_party_compositon < temp0 } }
+			set_temp_variable = { temp0 = decist_faction_party_compositon }
+		}
+		if = {
+			limit = { NOT = { check_variable = { left_faction_party_compositon = 0 } } check_variable = { left_faction_party_compositon < temp0 } }
+			set_temp_variable = { temp0 = left_faction_party_compositon }
+		}
+		if = {
+			limit = { NOT = { check_variable = { center_faction_party_compositon = 0 } } check_variable = { center_faction_party_compositon < temp0 } }
+			set_temp_variable = { temp0 = center_faction_party_compositon }
+		}
+		if = {
+			limit = { NOT = { check_variable = { moderate_faction_party_compositon = 0 } } check_variable = { moderate_faction_party_compositon < temp0 } }
+			set_temp_variable = { temp0 = moderate_faction_party_compositon }
+		}
+		if = {
+			limit = { NOT = { check_variable = { right_faction_party_compositon = 0 } } check_variable = { right_faction_party_compositon < temp0 } }
+			set_temp_variable = { temp0 = right_faction_party_compositon }
+		}
+
+		if = {
+			limit = { check_variable = { temp0 = center_faction_party_compositon } }
+			add_to_variable = { center_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = decist_faction_party_compositon } }
+			add_to_variable = { decist_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = left_faction_party_compositon } }
+			add_to_variable = { left_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = moderate_faction_party_compositon } }
+			add_to_variable = { moderate_faction_party_compositon = party_compositon_fault }
+		}
+		else_if = {
+			limit = { check_variable = { temp0 = right_faction_party_compositon } }
+			add_to_variable = { right_faction_party_compositon = party_compositon_fault }
+		}
+	}
+	
+	set_variable = { decist_faction_party_compositon_100 = decist_faction_party_compositon }
+	set_variable = { left_faction_party_compositon_100 = left_faction_party_compositon }
+	set_variable = { center_faction_party_compositon_100 = center_faction_party_compositon }
+	set_variable = { moderate_faction_party_compositon_100 = moderate_faction_party_compositon }
+	set_variable = { right_faction_party_compositon_100 = right_faction_party_compositon }
+	
+	multiply_variable = { decist_faction_party_compositon = 0.01 }
+	multiply_variable = { left_faction_party_compositon = 0.01 }
+	multiply_variable = { center_faction_party_compositon = 0.01 }
+	multiply_variable = { moderate_faction_party_compositon = 0.01 }
+	multiply_variable = { right_faction_party_compositon = 0.01 }
+	
+	set_party_composition_chart = yes
+}
+
+
+set_party_composition_chart = {
+	clear_array = party_composition_pie
+	resize_array = {
+		array = party_composition_pie
+		value = 1
+		size = 100
+	}
+	
+	set_variable = { ROOT.last_idx = 0 }
+
+	set_temp_variable = { decist_faction_party_compositon_frame = decist_faction_party_compositon }
+	multiply_temp_variable = { decist_faction_party_compositon_frame = 100 }
+	round_temp_variable = decist_faction_party_compositon_frame
+	add_to_temp_variable = { decist_faction_party_compositon_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = decist_faction_party_compositon_frame
+		set_variable = { party_composition_pie^v = 1 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { left_faction_party_compositon_frame = left_faction_party_compositon }
+	multiply_temp_variable = { left_faction_party_compositon_frame = 100 }
+	round_temp_variable = left_faction_party_compositon_frame
+	add_to_temp_variable = { left_faction_party_compositon_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = left_faction_party_compositon_frame
+		set_variable = { party_composition_pie^v = 2 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { center_faction_party_compositon_frame = center_faction_party_compositon }
+	multiply_temp_variable = { center_faction_party_compositon_frame = 100 }
+	round_temp_variable = center_faction_party_compositon_frame
+	add_to_temp_variable = { center_faction_party_compositon_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = center_faction_party_compositon_frame
+		set_variable = { party_composition_pie^v = 3 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { moderate_faction_party_compositon_frame = moderate_faction_party_compositon }
+	multiply_temp_variable = { moderate_faction_party_compositon_frame = 100 }
+	round_temp_variable = moderate_faction_party_compositon_frame
+	add_to_temp_variable = { moderate_faction_party_compositon_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = moderate_faction_party_compositon_frame
+		set_variable = { party_composition_pie^v = 4 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	set_temp_variable = { right_faction_party_compositon_frame = right_faction_party_compositon }
+	multiply_temp_variable = { right_faction_party_compositon_frame = 100 }
+	round_temp_variable = right_faction_party_compositon_frame
+	add_to_temp_variable = { right_faction_party_compositon_frame = ROOT.last_idx }
+	for_loop_effect = {
+		start = ROOT.last_idx
+		end = right_faction_party_compositon_frame
+		set_variable = { party_composition_pie^v = 5 }
+		add_to_variable = { ROOT.last_idx = 1 }
+	}
+
+	clear_variable = ROOT.last_idx
+}
