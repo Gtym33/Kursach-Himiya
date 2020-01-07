@@ -232,6 +232,10 @@ country_event = {
 				limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
 				ROOT = { white_peace = PREV }
 			}
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
+				ROOT = { white_peace = PREV }
+			}
 		hidden_effect = {
 			transfer_navy = {
 				target = REB
@@ -371,7 +375,7 @@ country_event = {
 				limit = {
 					any_country = {
 						is_socialist_country = yes
-						count_triggers = { amount = 3 controls_state = 48 controls_state = 987 controls_state = 211 controls_state = 946 controls_state = 212 controls_state = 945 controls_state = 944 }
+						count_triggers = { amount = 2 controls_state = 48 controls_state = 987 controls_state = 211 controls_state = 946 controls_state = 212 controls_state = 945 controls_state = 944 }
 					}
 				}
 				set_country_flag = communist_occ
@@ -424,6 +428,10 @@ country_event = {
 			}
 			every_country = {
 				limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
+				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
 				ROOT = { white_peace = PREV }
 			}
 			every_country = {
@@ -751,9 +759,7 @@ country_event = {
 			if = {
 				limit = {
 					any_country = {
-						NOT = {
-							tag = SER
-						}
+						NOT = { tag = CRO }
 						is_socialist_country = yes
 						OR = { controls_state = 109 controls_state = 104 }
 					}
@@ -1068,6 +1074,10 @@ country_event = {
 			ROOT = { white_peace = PREV }
 		}
 		every_country = {
+			limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
+			ROOT = { white_peace = PREV }
+		}
+		every_country = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
 			ROOT = { give_military_access = PREV }
 		}
@@ -1350,11 +1360,30 @@ country_event = {
 		if = {
 			limit = {
 				any_country = {
+					NOT = { tag = GER }
 					is_socialist_country = yes
 					count_triggers = { amount = 9 controls_state = 66 controls_state = 763 controls_state = 68 controls_state = 64 controls_state = 65 controls_state = 60 controls_state = 829 controls_state = 51 controls_state = 42 controls_state = 54 controls_state = 52 controls_state = 830 controls_state = 61 controls_state = 67 controls_state = 59 controls_state = 57 controls_state = 85 }
 				}
 			}
 			set_country_flag = communist_occ
+			else = {
+				if = {
+					limit = {
+						any_country = {
+							NOT = { tag = GER }
+							is_socialist_country = yes
+							OR = { controls_state = 66 controls_state = 763 controls_state = 68 controls_state = 64 controls_state = 65 controls_state = 60 controls_state = 829 controls_state = 51 controls_state = 42 controls_state = 54 controls_state = 52 controls_state = 830 controls_state = 61 controls_state = 67 controls_state = 59 controls_state = 57 controls_state = 85 }
+						}
+					}
+					every_state = {
+						limit = {
+							is_owned_by = GER
+							CONTROLLER = { is_socialist_country = yes NOT = { tag = GER } }
+						}
+						DDR = { transfer_state = PREV }
+					}
+				}
+			}
 		}
 		if = {
 			limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired } }
@@ -1438,6 +1467,9 @@ country_event = {
 				POL = { transfer_state = PREV }
 			}
 		}
+		87 = {
+			owner = { transfer_state = 762 }
+		}
 		if = {
 			limit = {
 				RUS = {
@@ -1446,11 +1478,13 @@ country_event = {
 						has_global_flag = WWI_RUS_HAS_CAPITULATED
 					}
 					has_war_with = GER
+					RUS = {
+						OR = {
+							is_in_faction_with = ENG
+							NOT = { country_exists = DDR }
+						}
+					}
 				}
-				NOT = { POL = { exists = yes } }
-			}
-			87 = {
-				owner = { transfer_state = 762 }
 			}
 			if = {
 				limit = { RUS = { owns_state = 189 } }
@@ -1474,6 +1508,28 @@ country_event = {
 					RUS = { transfer_state = PREV }
 				}
 			}
+		}
+		if = {
+			limit = { country_exists = DDR }
+				every_state = {
+					limit = {
+						is_owned_by = GER
+						OR = {
+							state = 188
+							state = 763
+							state = 5
+							state = 827
+							state = 1000
+							state = 85
+							state = 828
+							state = 86
+							state = 63
+							state = 62
+							state = 68
+						}
+					}
+					DDR = { transfer_state = PREV }
+				}
 		}
 		every_state = {
 			limit = {
@@ -1547,6 +1603,27 @@ country_event = {
 		every_country = {
 			limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
 			ROOT = { white_peace = PREV }
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					has_war_with = RUS
+					RUS = { has_country_flag = RUS_Oktober_revolution_fired OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_country_flag = RUS_brest_peace_fired } }
+				}
+				RUS = { country_event = treaty_of_brest.1917 }
+				else = {
+					if = {
+						limit = {
+							has_war_with = RUS
+							RUS = { OR = { NOT = { has_country_flag = RUS_Oktober_revolution_fired } AND = { is_in_faction = yes is_faction_leader = no } has_country_flag = RUS_brest_peace_fired } }
+						}
+						every_country = {
+							limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
+							ROOT = { white_peace = PREV }
+						}
+					}
+				}
+			}
 		}
 		every_country = {
 			limit = { is_subject_of = GER }
@@ -1644,6 +1721,10 @@ country_event = {
 			limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
 			ROOT = { white_peace = PREV }
 		}
+		every_country = {
+			limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
+			ROOT = { white_peace = PREV }
+		}
 		RUS = {
 			if = {
 				limit = { has_country_flag = RUS_occupated_PER_WWI }
@@ -1735,6 +1816,10 @@ country_event = {
 			}
 			every_country = {
 				limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
+				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
 				ROOT = { white_peace = PREV }
 			}
 			TUR = {
@@ -2115,7 +2200,7 @@ country_event = {
 				limit = {
 					any_country = {
 						is_socialist_country = yes
-						count_triggers = { amount = 3 controls_state = 48 controls_state = 987 controls_state = 211 controls_state = 946 controls_state = 212 controls_state = 945 controls_state = 944 }
+						count_triggers = { amount = 2 controls_state = 48 controls_state = 987 controls_state = 211 controls_state = 946 controls_state = 212 controls_state = 945 controls_state = 944 }
 					}
 				}
 				set_country_flag = communist_occ
@@ -2168,6 +2253,10 @@ country_event = {
 			}
 			every_country = {
 				limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
+				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
 				ROOT = { white_peace = PREV }
 			}
 			every_country = {
