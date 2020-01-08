@@ -5254,6 +5254,7 @@ country_event = {
 	trigger = {
 	tag = PRM
 	RUS = { has_government = communism }
+	RUS = { has_country_flag = RUS_Oktober_revolution_fired }
 	RUS = { controls_state = 571 }
 	RUS = { controls_state = 563 }
 	}
@@ -5453,6 +5454,7 @@ country_event = {
 	trigger = {
 		tag = PRM
 		PRM = { has_government = communism }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
 	}
 	
 	mean_time_to_happen = {
@@ -5670,6 +5672,7 @@ country_event = {
 			PRM = { has_government = radical_socialism }
 			PRM = { has_government = communism }
 		}
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
 	}
 	
 	mean_time_to_happen = {
@@ -7250,6 +7253,78 @@ country_event = {
 	}
 }
 
+###Унгерн дезертирует если высокий уровень капитуляции###
+country_event = {
+	id = rcw_usfev.156
+	title = rcw_usfev.156.t
+	desc = rcw_usfev.156.d
+	picture = GFX_report_event_sib_ungern
+	
+	trigger = {
+		is_white_movement_country = yes
+		any_unit_leader = { has_id = 77402 }
+		surrender_progress > 0.69
+		MON = { exists = yes }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_usfev.156.a
+		add_war_support = -0.1
+		add_manpower = -2000
+		every_unit_leader = { limit = { OR = { has_id = 77402 } } set_nationality = REB }
+		MON = { country_event = { id = rcw_usfev.157 days = 1 } }
+	}
+
+}
+
+###Унгерн в Монголии###
+country_event = {
+	id = rcw_usfev.157
+	title = rcw_usfev.157.t
+	desc = rcw_usfev.157.d
+	picture = GFX_report_event_sib_ungern_WAAAR
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.157.a
+		OVERLORD = { end_puppet = MON }
+		MON = {
+		drop_cosmetic_tag = yes
+		create_country_leader = {
+						name = "Roman Fedorovich von Ungern-Sternberg"
+						picture = "gfx/leaders/RUS/Roman_Fedorovich_von_Ungern-Sternberg.dds"
+						expire = "1965.1.1"
+						ideology = authoritarism_ideology
+						traits = { spirit_of_genghis warmonger }
+		}
+		start_civil_war = {
+				ruling_party = authoritarism
+				ideology = despotism
+				size = 0.4
+				states = { 970 612 }
+			}
+			every_unit_leader = { limit = { OR = { has_id = 77402 } } set_nationality = MON }
+			add_ideas = territorial_expansion_law
+			add_ideas = help_from_foreign_interventionists
+		}
+		random_other_country = {
+			limit = { original_tag = MON has_government = despotism }
+			set_cosmetic_tag = MON_CHI
+		}
+		
+	}
+
+}
+
 # Китайцы начинают конфликт с Россией за КВЖД
 country_event = {
 	id = rcw_usfev.301
@@ -7302,6 +7377,10 @@ country_event = {
 			}
 			AND = {
 				RUS = { has_country_flag = general_kornilov }
+				PRM = { exists = yes }
+			}
+			AND = {
+				has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 				PRM = { exists = yes }
 			}
 		}
