@@ -492,10 +492,21 @@ country_event = {
 		}
 		if = {
 			limit = { has_country_leader = { name = "Mikhail Romanov" ruling_only = yes } }
-			create_field_marshal = { name = "Mikhail Romanov" id = 77410 portrait_path = "gfx/leaders/RUS/Michael_Romanov.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 2 }
+			create_field_marshal = { name = "Mikhail Romanov" id = 77410 portrait_path = "gfx/leaders/RUS/Michael_Romanov_military.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 2 }
 		}
 		add_ideas = military_dictatorship_gov_form
 		hidden_effect = {
+			if = {
+				limit = { has_country_leader = { name = "Mikhail Romanov" ruling_only = yes } }
+				retire_country_leader = yes
+				create_country_leader = {
+					name = "Mikhail Romanov"
+					desc = RUS_Mikhail_Romanov_regent_DESC
+					picture = "gfx/leaders/RUS/Michael_Romanov_military.dds"
+					ideology = authoritarism_ideology
+					traits = { inexperienced_imperialist warmonger }
+				}
+			}
 			if = {
 				limit = { has_country_leader = { name = "Nikolay II Romanov" ruling_only = yes } }
 				retire_country_leader = yes
@@ -504,7 +515,7 @@ country_event = {
 					desc = RUS_Nikolay_II_DESC
 					picture = "gfx/leaders/RUS/Nikolay_II_Romanov_military.dds"
 					ideology = authoritarism_ideology
-					traits = { inexperienced_imperialist weak_character warmonger }
+					traits = { inexperienced_imperialist dictator warmonger }
 				}
 			}
 		}
@@ -530,6 +541,7 @@ country_event = {
 			country_event = { id = russian_ovrthrw_of_mon.15 days = 104 }
 			add_to_variable = { RUS.RUS_otrecheniye = 1 }
 		}
+		add_timed_idea = { idea = RUS_1917_spring_offensive days = 104 }
 		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 1 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
 		ai_chance = {
 			factor = 2
@@ -1140,7 +1152,7 @@ country_event = {
 				desc = RUS_Alexandra_Fyodorovna_Romanova_DESC
 				picture = "gfx/leaders/RUS/Alexandra_Fyodorovna_Romanova.dds"
 				ideology = authoritarism_ideology
-				traits = { inexperienced_imperialist stout_defender }
+				traits = { inexperienced_imperialist stout_defender unpopular_monarch }
 			}
 		}
 	}
@@ -1169,12 +1181,97 @@ country_event = {
 				desc = RUS_Nikolay_Nikolaevich_Romanov_DESC
 				picture = "gfx/leaders/RUS/Grand_duke_Nikolay_Nikolaevich.dds"
 				ideology = authoritarism_ideology
-				traits = { inexperienced_imperialist }
+				traits = { inexperienced_imperialist great_war_hero }
 			}
 		}
 	}
 }
 
+# Казаки уходят на защиту своих станиц от красных
+country_event = {
+	id = russian_ovrthrw_of_mon.35
+	title = russian_ovrthrw_of_mon.35.t
+	desc = russian_ovrthrw_of_mon.35.desc
+	picture = GFX_report_event_long_feb_abdication
+	
+	trigger = {
+		tag = RUS
+		has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+		NOT = { has_global_flag = RUS_civil_war_over }
+		any_state = {
+   		 	is_owned_by = RUS
+			NOT = { is_controlled_by = RUS }
+			CONTROLLER = {
+				OR = {
+					has_government = communism
+					has_government = radical_socialism
+				}
+				NOT = {
+					is_in_faction_with = RUS
+					is_puppet_of = RUS
+				}
+			}
+			OR = {
+				any_neighbor_state	 = {
+					OR = {
+						is_core_of = DON
+						is_core_of = OCH
+						is_core_of = BKL
+						is_core_of = KUB
+					}
+				}
+				OR = {
+					is_core_of = DON
+					is_core_of = OCH
+					is_core_of = BKL
+					is_core_of = KUB
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.35.a
+		delete_unit_template_and_units = {
+			division_template = "Kazach'ya brigada"
+		}
+		every_unit_leader = { limit = { OR = { has_id = 88157 } } set_nationality = BKL }
+		every_unit_leader = { limit = { OR = { has_id = 18702 has_id = 18701 } } set_nationality = DON }
+		release = DON
+		DON = {
+			load_focus_tree = Don_white_cossaks_commune_civil_war_focus
+			load_oob = DON_kaledin
+			load_oob = DON_Cossack_mob
+		}
+		DON = { subjecting_script_with_transfer_parties_dominion = yes }
+		DON = { inherit_technology = RUS }
+		release = KUB
+		KUB = {
+			load_oob = KUB_1917
+			set_politics = { ruling_party = authoritarism }
+		}
+		KUB = { subjecting_script_with_transfer_parties_dominion = yes }
+		KUB = { inherit_technology = RUS }
+		release = OCH
+		OCH = {
+			load_oob = OCH_cossaks
+		}
+		OCH = { subjecting_script_with_transfer_parties_dominion = yes }
+		OCH = { inherit_technology = RUS }
+		release = BKL
+		BKL = {
+			load_oob = BKL_cossaks
+		}
+		BKL = { subjecting_script_with_transfer_parties_dominion = yes }
+		BKL = { inherit_technology = RUS }
+	}
+}
 # Выстрел патриота: выбор исхода
 country_event = {
 	id = russian_ovrthrw_of_mon.90
@@ -1265,7 +1362,7 @@ country_event = {
 					desc = RUS_Alexandra_Fyodorovna_Romanova_DESC
 					picture = "gfx/leaders/RUS/Alexandra_Fyodorovna_Romanova.dds"
 					ideology = authoritarism_ideology
-					traits = { inexperienced_imperialist stout_defender }
+					traits = { inexperienced_imperialist stout_defender unpopular_monarch }
 				}
 				else = { remove_ideas = RUS_Nikolay_II_idea }
 			}
@@ -1557,7 +1654,7 @@ country_event = {
 		hidden_effect = {
 			KRN = {
 				set_cosmetic_tag = KRN_Petrograd_commune
-				add_ideas = RUS_red_guards_provisional_government
+				add_ideas = RUS_red_guards
 				create_corps_commander = {
 					name = "Pavel Dybenko"
 					id = 19173
@@ -1660,6 +1757,19 @@ country_event = {
 				}
 			}
 			RUS = { release = TAN }
+			OCH = { add_state_core = 652 }
+			every_state = {
+				limit = {
+					OR = {
+						state = 234
+						state = 907
+						state = 1045
+						state = 233
+						state = 902
+					}
+				}
+				add_core_of = KUB
+			}
 		}
 	}
 	
@@ -2113,7 +2223,7 @@ country_event = {
 		hidden_effect = {
 			KRN = {
 				set_cosmetic_tag = KRN_Petrograd_commune
-				add_ideas = RUS_red_guards_provisional_government
+				add_ideas = RUS_red_guards
 				create_corps_commander = {
 					name = "Pavel Dybenko"
 					id = 19173
@@ -2214,6 +2324,20 @@ country_event = {
 					ideology = national_bolshevism_ideology
 					traits = { }
 				}
+			}
+			RUS = { release = TAN }
+			OCH = { add_state_core = 652 }
+			every_state = {
+				limit = {
+					OR = {
+						state = 234
+						state = 907
+						state = 1045
+						state = 233
+						state = 902
+					}
+				}
+				add_core_of = KUB
 			}
 		}
 	}
