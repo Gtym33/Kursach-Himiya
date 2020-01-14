@@ -6,14 +6,38 @@ add_namespace = compiegne_armistice
 
 # Очередной костыль заключения мира
 country_event = {
+	id = compiegne_armistice.-1
+	hidden = yes
+	is_triggered_only = yes
+	option = {
+		hidden_effect = {
+			if = {
+				limit = { tag = GER }
+				transfer_navy = {
+					target = REB
+				}
+			}
+			REB = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = no
+				}
+			}
+			annex_country = {
+				target = REB
+				transfer_troops = yes
+			}
+		}
+	}
+}
+# Очередной костыль заключения мира
+country_event = {
 	id = compiegne_armistice.0
 	hidden = yes
 	is_triggered_only = yes
 	option = {
-		every_country {
-			limit = { has_war_with = ROOT OR = { is_faction_leader = yes is_in_faction = no } NOT = { original_tag = ROOT } }
-			white_peace = ROOT
-		}
+		OVERLORD = { end_puppet = PREV }
+		leave_faction = yes
 	}
 }
 
@@ -132,9 +156,6 @@ country_event = {
 	}
 	option = {
 		name = compiegne_armistice.1.a
-		hidden_effect = {
-			every_country = { limit = { is_subject_of = ROOT } country_event = { id = compiegne_armistice.0 hours = 1 } }
-		}
 		TUR = {
 			if = {
 				limit = {
@@ -233,6 +254,10 @@ country_event = {
 					#NOT = { tag = KRD }
 				}
 				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { is_subject_of = ROOT }
+				hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
 			}
 			every_country = {
 				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
@@ -349,9 +374,6 @@ country_event = {
 	
 	option = {
 		name = compiegne_armistice.2.a
-		hidden_effect = {
-			every_country = { limit = { is_subject_of = ROOT } country_event = { id = compiegne_armistice.0 hours = 1 } }
-		}
 		set_global_flag = WWI_BUL_HAS_CAPITULATED
 		BUL = {
 			if = {
@@ -413,6 +435,10 @@ country_event = {
 					NOT = { original_tag = ROOT }
 				}
 				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { is_subject_of = ROOT }
+				hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
 			}
 			every_country = {
 				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
@@ -538,9 +564,6 @@ country_event = {
 	
 	option = {
 		name = compiegne_armistice.3.a
-		hidden_effect = {
-			every_country = { limit = { is_subject_of = ROOT } country_event = { id = compiegne_armistice.0 hours = 1 } }
-		}
 		set_global_flag = WWI_AUH_HAS_CAPITULATED
 		leave_faction = yes
 		add_ideas = neutral_foreign_policy_law
@@ -1050,11 +1073,6 @@ country_event = {
 			ROM = { transfer_state = 80 }
 			else = { GAL = { transfer_state = 80 } GAL = { inherit_technology = RUS } }
 		}
-	
-		every_country = {
-			limit = { is_subject_of = ROOT }
-			ROOT = { end_puppet = PREV }
-		}
 			add_ideas = neutral_foreign_policy_law
 			add_ideas = disarmed_nation
 			every_country = {
@@ -1071,20 +1089,15 @@ country_event = {
 				ROOT = { white_peace = PREV }
 			}
 		every_country = {
+			limit = { is_subject_of = ROOT }
+			hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
+		}
+		every_country = {
 			limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
 			ROOT = { give_military_access = PREV }
 		}
 		hidden_effect = {
-			REB = {
-				annex_country = {
-					target = ROOT 
-					transfer_troops = no
-				}
-			}
-			annex_country = {
-				target = REB
-				transfer_troops = no
-			}
+			country_event = { id = compiegne_armistice.-1 hours = 1 }
 		}
 		hidden_effect = { news_event = { id = news_n.103 hours = 3 } }
 		add_ideas = disarmed_nation
@@ -1144,15 +1157,12 @@ country_event = {
 	option = {
 		name = compiegne_armistice.4.a
 		set_global_flag = versailles_peace_treaty_in_progress
-		hidden_effect = {
-			every_country = { limit = { is_subject_of = ROOT } country_event = { id = compiegne_armistice.0 hours = 1 } }
-		}
 		if = {
 			limit = { UKR = { is_subject_of = ROOT OR = { has_war_with = USR has_war_with = ODS } } }
 			end_puppet = UKR
 			UKR = {
 				every_country = {
-					limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
+					limit = { OR = { tag = ENG tag = USA is_in_faction_with = ENG is_in_faction_with = USA AND = { OR = { is_in_faction_with = FRA tag = FRA } NOT = { is_in_faction_with = GER } } } OR = { is_faction_leader = yes is_in_faction = no } }
 					white_peace = PREV
 				}
 				every_country = {
@@ -1347,6 +1357,10 @@ country_event = {
 				limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
 				white_peace = PREV
 			}
+		}
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
 		}
 		dismantle_faction = yes
 		if = {
@@ -1628,23 +1642,10 @@ country_event = {
 			}
 		every_country = {
 			limit = { is_subject_of = GER }
-			leave_faction = yes
-			OVERLORD = { end_puppet = PREV }
+			hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
 		}
 		hidden_effect = {
-			transfer_navy = {
-				target = REB
-			}
-			REB = {
-				annex_country = {
-					target = ROOT
-					transfer_troops = no
-				}
-			}
-			annex_country = {
-				target = REB
-				transfer_troops = yes
-			}
+			country_event = { id = compiegne_armistice.-1 hours = 1 }
 		}
 		if = {
 			limit = { NOT = { has_idea = undisturbed_isolation has_idea = isolation } }
@@ -2196,9 +2197,6 @@ country_event = {
 	
 	option = {
 		name = compiegne_armistice.2.a
-		hidden_effect = {
-			every_country = { limit = { is_subject_of = ROOT } country_event = { id = compiegne_armistice.0 hours = 1 } }
-		}
 		set_global_flag = WWI_BUL_HAS_CAPITULATED
 		BUL = {
 			if = {
@@ -2260,6 +2258,10 @@ country_event = {
 					NOT = { original_tag = ROOT }
 				}
 				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { is_subject_of = ROOT }
+				hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
 			}
 			hidden_effect = {
 				if = {
