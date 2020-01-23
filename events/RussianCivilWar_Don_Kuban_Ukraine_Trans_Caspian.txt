@@ -319,6 +319,7 @@ country_event = {
 			keep_unit_leaders_trigger = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } }
 		}
 		hidden_effect = {
+			save_global_event_target_as = DON_2_CW
 			random_other_country = {
 				limit = { original_tag = DON has_government = communism }
 				create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
@@ -390,6 +391,7 @@ country_event = {
 			keep_unit_leaders_trigger = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } }
 		}
 		hidden_effect = {
+			save_global_event_target_as = DON_2_CW
 			random_other_country = {
 				limit = { original_tag = DON has_government = communism }
 				create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
@@ -1612,9 +1614,12 @@ country_event = {
 	trigger = {
 		NOT = { has_global_flag = RUS_civil_war_over }
 		RUS = { has_country_flag = RUS_brest_peace_fired }
-		DON = { exists = no }
+		NOT = { any_other_country = { tag = DON NOT = { has_government = radical_socialism has_government = communism has_government = national_syndicalism } } }
 		owns_state = 1044
-		GER = { owns_state = 218 }
+		OR = {
+			GER = { owns_state = 218 }
+			has_country_flag = vspoloh_fire
+		}
 		OR = {
 			has_government = radical_socialism
 			has_government = communism
@@ -1633,7 +1638,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = cw_dkutc.20.a
+		name = rcw_dkutc.20.a
 		every_state = {
 			limit = {
 				OR = {
@@ -1641,7 +1646,6 @@ country_event = {
 					state = 1044
 					state = 996
 					state = 238
-					state = 245
 					state = 954
 				}
 				OR = {
@@ -1653,17 +1657,19 @@ country_event = {
 					CONTROLLER = { tag = OVERLORD }
 				}
 			}
-			DON = { transfer_state = PREV }
+			event_target:DON_2_CW = { transfer_state = PREV }
 		}
-		DON = {
+		event_target:DON_2_CW = {
 			complete_national_focus = DON_Don_Rescue_Circle
 			complete_national_focus = DON_young_army
+			declare_war_on = { target = ROOT type = annex_everything }
 			declare_war_on = { target = RUS type = annex_everything }
 			every_country = { limit = { original_tag = DON NOT = { tag = PREV } } PREV = { declare_war_on = { target = PREV type = annex_everything } } }
 		}
+		clr_country_flag = vspoloh_fire
 	}
 	option = {
-		name = cw_dkutc.20.b
+		name = rcw_dkutc.20.b
 		every_state = {
 			limit = {
 				OR = {
@@ -1671,7 +1677,6 @@ country_event = {
 					state = 1044
 					state = 996
 					state = 238
-					state = 245
 					state = 954
 				}
 				OR = {
@@ -1683,14 +1688,17 @@ country_event = {
 					CONTROLLER = { tag = OVERLORD }
 				}
 			}
-			DON = { transfer_state = PREV }
+			event_target:DON_2_CW = { transfer_state = PREV }
 		}
-		DON = {
+		event_target:DON_2_CW = {
 			complete_national_focus = DON_Don_Rescue_Circle
 			complete_national_focus = DON_young_army
+			declare_war_on = { target = ROOT type = annex_everything }
 			declare_war_on = { target = RUS type = annex_everything }
+			every_country = { limit = { original_tag = DON NOT = { tag = PREV } } PREV = { declare_war_on = { target = PREV type = annex_everything } } }
 		}
-		DON = { change_tag_from = ROOT }
+		clr_country_flag = vspoloh_fire
+		event_target:DON_2_CW = { change_tag_from = ROOT }
 	}
 }
 
@@ -1949,70 +1957,25 @@ country_event = {
 # Всполох когда он происходит сам через 56 дней после первого фокуса Донской Советской Республики
 country_event = {
 	id = rcw_dkutc.30
-	title = rcw_dkutc.20.t
-	desc = rcw_dkutc.20.desc
 	
 	is_triggered_only = yes
 	
-	option = {
-		name = cw_dkutc.20.a
-		every_state = {
-			limit = {
-				OR = {
-					state = 995
-					state = 1044
-					state = 996
-					state = 238
-					state = 954
-				}
-				OR = {
-					is_owned_by = ROOT
-					is_controlled_by = ROOT
-					OWNER = { is_subject_of = ROOT }
-					CONTROLLER = { is_subject_of = ROOT }
-					OWNER = { tag = OVERLORD }
-					CONTROLLER = { tag = OVERLORD }
-				}
-			}
-			DON = { transfer_state = PREV }
+	trigger = {
+		original_tag = DON
+		owns_state = 1044
+		OR = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
 		}
-		DON = {
-			complete_national_focus = DON_Don_Rescue_Circle
-			complete_national_focus = DON_young_army
-			declare_war_on = { target = RUS type = annex_everything }
-			declare_war_on = { target = ROOT type = annex_everything }
-			every_country = { limit = { original_tag = DON NOT = { tag = PREV } } PREV = { declare_war_on = { target = PREV type = annex_everything } } }
-		}
+		NOT = { any_other_country = { tag = DON NOT = { has_government = radical_socialism has_government = communism has_government = national_syndicalism } } }
 	}
+	
+	hidden = yes
+	
 	option = {
-		name = cw_dkutc.20.b
-		every_state = {
-			limit = {
-				OR = {
-					state = 995
-					state = 1044
-					state = 996
-					state = 238
-					state = 954
-				}
-				OR = {
-					is_owned_by = ROOT
-					is_controlled_by = ROOT
-					OWNER = { is_subject_of = ROOT }
-					CONTROLLER = { is_subject_of = ROOT }
-					OWNER = { tag = OVERLORD }
-					CONTROLLER = { tag = OVERLORD }
-				}
-			}
-			DON = { transfer_state = PREV }
-		}
-		DON = {
-			complete_national_focus = DON_Don_Rescue_Circle
-			complete_national_focus = DON_young_army
-			declare_war_on = { target = ROOT type = annex_everything }
-			declare_war_on = { target = RUS type = annex_everything }
-		}
-		DON = { change_tag_from = ROOT }
+		set_country_flag = vspoloh_fire
+		country_event = rcw_dkutc.20
 	}
 }
 

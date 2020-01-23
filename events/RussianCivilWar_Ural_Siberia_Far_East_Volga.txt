@@ -2228,7 +2228,7 @@ country_event = {
 			start_civil_war = {
 				ruling_party = authoritarism
 				ideology = social_liberalism
-				size = 0.3
+				size = 0.7
 			}
 			random_other_country = {
 				limit = {
@@ -2543,20 +2543,12 @@ country_event = {
 		name = rcw_usfev.49.a
 		annex_country = { target = BKL transfer_troops = yes }
 		if = {
-		limit = {SIB = {exists = yes} RSS = {exists = no}}
-		BKL = {
-			every_unit_leader = {
-				set_nationality = SIB
-			}
+			limit = { RSS = {exists = yes}}
+			BKL = { every_unit_leader = { set_nationality = SIB } }
 		}
-		}
-		if = {
-		limit = {RSS = {exists = yes}}
-		BKL = {
-			every_unit_leader = {
-				set_nationality = RSS
-			}
-		}
+		else_if = {
+			limit = { SIB = { exists = yes } RSS = { exists = no } }
+			BKL = { every_unit_leader = { set_nationality = RSS } }
 		}
 	}
 }
@@ -2625,12 +2617,12 @@ country_event = {
 	option = {
 		name = rcw_usfev.49.a
 		if = {
-		limit = {RSS = { exists = yes is_puppet = no} }
-		RSS = { BKL = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
+			limit = { RSS = { exists = yes is_puppet = no } }
+			RSS = { BKL = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
 		}
-		if = {
-		limit = {SIB = { exists = yes is_puppet = no} }
-		SIB = { BKL = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
+		else_if = {
+			limit = { SIB = { exists = yes is_puppet = no } }
+			SIB = { BKL = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
 		}
 	}
 }
@@ -4069,6 +4061,10 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	trigger = {
+		FROM = { NOT = { has_war_with = BKL } }
+	}
+	
 	fire_only_once = yes
 	
 	option = {
@@ -4077,7 +4073,7 @@ country_event = {
 			factor = 50
 		}
 		SIB = {
-		country_event = { id = rcw_usfev.80 days = 1 }
+			country_event = { id = rcw_usfev.80 days = 1 }
 		}
 			hidden_effect = {
 				every_country = {
@@ -4108,7 +4104,7 @@ country_event = {
 			factor = 50
 		}
 		SIB = {
-		add_opinion_modifier = { target = JAP modifier = JAP_no_accept_SIB }
+			add_opinion_modifier = { target = JAP modifier = JAP_no_accept_SIB }
 		}
 	}
 }
@@ -4120,6 +4116,10 @@ country_event = {
 	picture = GFX_report_event_sib_trilateral_agreement
 	
 	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_war_with = BKL }
+	}
 	
 	fire_only_once = yes
 	
@@ -4134,7 +4134,7 @@ country_event = {
 		add_opinion_modifier = { target = BKL modifier = BKL_no_accept_SIB }
 		}
 		BKL = {
-		country_event = { id = rcw_usfev.47 days = 1 }
+			country_event = { id = rcw_usfev.47 days = 1 }
 		}
 	}
 	option = {
@@ -4145,7 +4145,7 @@ country_event = {
 		add_opinion_modifier = { target = BKL modifier = BKL_no_accept_SIB }
 		}
 		BKL = {
-		country_event = { id = rcw_usfev.81 days = 1 }
+			country_event = { id = rcw_usfev.81 days = 1 }
 		}
 	}
 	option = {
@@ -4156,7 +4156,7 @@ country_event = {
 		add_opinion_modifier = { target = SIB modifier = JAP_accept_SIB }
 		}
 		BKL = {
-		add_opinion_modifier = { target = SIB modifier = BKL_accept_SIB }
+			add_opinion_modifier = { target = SIB modifier = BKL_accept_SIB }
 		}
 		create_faction = siberian_alliance
 		BKL = { add_to_faction = ROOT }
@@ -6786,184 +6786,186 @@ country_event = {
 		random_list = {
 			70 = {}
 			30 = {
-			if = {
-			limit = {PRM = {exists = yes}}
-			PRM = {
-			if = {limit = {NOT = {has_government = national_syndicalism}}
-			start_civil_war = {
-					ideology = national_syndicalism
-					size = 0.4
-					keep_unit_leaders_trigger = {NOT = { has_id = 88161 }}
-				}
-				}
 				if = {
-				limit = {RSS = {has_war_with = RUS}}
-				random_other_country = {
-				limit = {
-					original_tag = PRM
-					has_government = national_syndicalism
-				}
-				set_stability = 0.9
-				set_war_support = 0.8
-				declare_war_on = {
-				target = RUS
-				type = annex_everything
-			}
-			}
-			}
-			}
-			else = {
-				every_state = {
-					limit = {
-						OR = {
-							state = 561
-							state = 657
-							state = 560
-							state = 409
-							state = 408
-							state = 655
-							state = 1034
-							state = 1035
-							state = 1036
-							state = 1037
-							state = 1038
+					limit = { PRM = { exists = yes } }
+					PRM = {
+						if = {
+							limit = { NOT = { has_government = national_syndicalism } }
+							start_civil_war = {
+								ideology = national_syndicalism
+								size = 0.4
+								keep_unit_leaders_trigger = { NOT = { has_id = 88161 } }
+							}
+						}
+						if = {
+							limit = { RSS = { has_war_with = RUS } }
+							random_other_country = {
+								limit = {
+									original_tag = PRM
+									has_government = national_syndicalism
+								}
+								set_stability = 0.9
+								set_war_support = 0.8
+								declare_war_on = {
+									target = RUS
+									type = annex_everything
+								}
+							}
 						}
 					}
-					add_core_of = PRM
-				}
-				every_state = {
-					limit = {
-						OR = {
-							state = 717
-							state = 560
-							state = 409
-							state = 408
-							state = 655
-							state = 1034
-							state = 1035
-							state = 1036
-							state = 1037
-							state = 1038
+					else = {
+						every_state = {
+							limit = {
+								OR = {
+									state = 561
+									state = 657
+									state = 560
+									state = 409
+									state = 408
+									state = 655
+									state = 1034
+									state = 1035
+									state = 1036
+									state = 1037
+									state = 1038
+								}
+							}
+							add_core_of = PRM
+						}
+						every_state = {
+							limit = {
+								OR = {
+									state = 717
+									state = 560
+									state = 409
+									state = 408
+									state = 655
+									state = 1034
+									state = 1035
+									state = 1036
+									state = 1037
+									state = 1038
+								}
+							}
+							PRM = { transfer_state = PREV }
+						}
+						PRM = {
+							add_ideas = neutral_foreign_policy_law
+							remove_all_foreing_locked_templates_from_liberated_country = yes
+							load_oob = PRM_contra
+							set_politics = {
+								ruling_party = national_syndicalism
+							}
+							set_popularities = {
+								national_syndicalism = 37
+								despotism = 10
+								fascism = 18
+								radical_socialism = 0
+								authoritarism = 10
+								social_democracy = 0
+								social_liberalism = 0
+								market_liberalism = 0
+								social_conservatism = 15
+								communism = 10
+							}
+						}
+						RSS = {
+							declare_war_on = {
+								target = PRM
+								type = annex_everything
+							}
 						}
 					}
-					PRM = { transfer_state = PREV }
 				}
-				PRM = {
-					add_ideas = neutral_foreign_policy_law
-					remove_all_foreing_locked_templates_from_liberated_country = yes
-					load_oob = PRM_contra
-					set_politics = {
-						ruling_party = national_syndicalism
+			}
+		}
+		random_list = {
+			70 = {}
+			30 = {
+				if = {
+					limit = { BKL = { exists = yes} }
+					BKL = {
+						declare_war_on = {
+							target = RSS
+							type = annex_everything
+						}
 					}
-					set_popularities = {
-						national_syndicalism = 37
-						despotism = 10
-						fascism = 18
-						radical_socialism = 0
-						authoritarism = 10
-						social_democracy = 0
-						social_liberalism = 0
-						market_liberalism = 0
-						social_conservatism = 15
-						communism = 10
+					else = {
+						BKL = {
+							transfer_state = 761
+							transfer_state = 563
+							add_ideas = neutral_foreign_policy_law
+							remove_all_foreing_locked_templates_from_liberated_country = yes
+							set_politics = {
+								ruling_party = authoritarism last_election = "1912.9.1"
+								election_frequency = 60 elections_allowed = yes
+							}
+							set_popularities = {
+									radical_socialism = 0
+									communism = 15
+									social_democracy = 0
+									social_liberalism = 0
+									market_liberalism = 0
+									social_conservatism = 10
+									authoritarism = 75
+									despotism = 0
+									national_syndicalism = 0
+									fascism = 0
+								}
+							declare_war_on = {
+								target = RUS
+								type = annex_everything
+							}
+						}
+						RSS = {
+							declare_war_on = {
+								target = BKL
+								type = annex_everything
+							}
+						}
 					}
 				}
+			}
+		}
+		random_list = {
+			70 = {}
+			30 = {
 				RSS = {
-					declare_war_on = {
-						target = PRM
-						type = annex_everything
+					start_civil_war = {
+						ideology = national_syndicalism
+						size = 0.3
+						only_own_territory = no
+						capital = 586
+						states = { 
+							586 885 589 
+						}
+						keep_unit_leaders_trigger = { NOT = { has_id = 92348 } }
+					}
+					random_other_country = {
+						limit = {
+							original_tag = RSS
+							has_government = national_syndicalism
+						}
+						set_cosmetic_tag = RSS_REBEL
+						create_country_leader = { name = "Boris Annenkov" desc = "" picture = "gfx/leaders/SIB/Boris_Annenkov.dds" expire = "1995.3.12" ideology = national_syndicalism_ideology traits = { warmonger } }
+					}
+					if = {
+						limit = { RSS = { has_war_with = RUS } }
+						random_other_country = {
+							limit = {
+								original_tag = RSS
+								has_government = national_syndicalism
+							}
+							set_stability = 0.9
+							set_war_support = 0.8
+							declare_war_on = {
+								target = RUS
+								type = annex_everything
+							}
+						}
 					}
 				}
 			}
-			}
-			}
-			}
-		random_list = {
-		70 = {}
-		30 = {
-		if = {limit = {BKL = {exists = yes}}
-		BKL = {
-		declare_war_on = {
-				target = RSS
-				type = annex_everything
-			}
-			}
-		else = {
-		BKL = {
-				transfer_state = 761
-				transfer_state = 563
-				add_ideas = neutral_foreign_policy_law
-				remove_all_foreing_locked_templates_from_liberated_country = yes
-				set_politics = {
-				ruling_party = authoritarism last_election = "1912.9.1"
-				election_frequency = 60 elections_allowed = yes
-			}
-			set_popularities = {
-					radical_socialism = 0
-					communism = 15
-					social_democracy = 0
-					social_liberalism = 0
-					market_liberalism = 0
-					social_conservatism = 10
-					authoritarism = 75
-					despotism = 0
-					national_syndicalism = 0
-					fascism = 0
-				}
-			declare_war_on = {
-				target = RUS
-				type = annex_everything
-			}
-		}
-		RSS = {
-		declare_war_on = {
-				target = BKL
-				type = annex_everything
-			}
-		}
-		}
-		}
-		}
-		}
-		random_list = {
-		70 = {}
-		30 = {
-		RSS = {
-		start_civil_war = {
-					ideology = national_syndicalism
-					size = 0.3
-					only_own_territory = no
-					capital = 586
-					states = { 
-       			 	586 885 589 
-    			}
-				keep_unit_leaders_trigger = {NOT = { has_id = 92348 }}
-				}
-				random_other_country = {
-				limit = {
-					original_tag = RSS
-					has_government = national_syndicalism
-				}
-				set_cosmetic_tag = RSS_REBEL
-				create_country_leader = { name = "Boris Annenkov" desc = "" picture = "gfx/leaders/SIB/Boris_Annenkov.dds" expire = "1995.3.12" ideology = national_syndicalism_ideology traits = { warmonger } }
-				}
-				if = {
-				limit = {RSS = {has_war_with = RUS}}
-				random_other_country = {
-				limit = {
-					original_tag = RSS
-					has_government = national_syndicalism
-				}
-				set_stability = 0.9
-				set_war_support = 0.8
-				declare_war_on = {
-				target = RUS
-				type = annex_everything
-			}
-			}
-				}
-		}
-		}
 		}
 	}
 }
