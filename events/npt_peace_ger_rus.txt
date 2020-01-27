@@ -114,9 +114,21 @@ country_event = {
 			}
 		}
 		
-		ROM = {
-			if = { limit = { RUS = { owns_state = 78 } } transfer_state = 78 }
-			if = { limit = { RUS = { owns_state = 766 } } transfer_state = 766 }
+		if = {
+			limit = { ROM = { exists = yes has_capitulated = no } }
+			ROM = {
+				if = { limit = { RUS = { owns_state = 78 } } transfer_state = 78 }
+				if = { limit = { RUS = { owns_state = 766 } } transfer_state = 766 }
+			}
+			else_if = {
+				limit = { ROM = { exists = no } }
+				every_state = { limit = { is_owned_by = RUS OR = { is_core_of = ROM is_core_of = MOL } } MOL = { transfer_state = PREV } }
+			}
+			else_if = {
+				limit = { ROM = { exists = yes has_capitulated = yes } }
+				if = { limit = { RUS = { owns_state = 78 } } every_state = { limit = { state = 78 } ROM = { set_state_owner = PREV } } }
+				if = { limit = { RUS = { owns_state = 766 } } every_state = { limit = { state = 766 } ROM = { set_state_owner = PREV } } }
+			}
 		}
 		set_global_flag = WWI_RUS_HAS_CAPITULATED
 		if = {
