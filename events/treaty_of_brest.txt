@@ -1175,19 +1175,38 @@ country_event = {
 			NOT = { controls_state = 219 }
 			NOT = { RUS = { surrender_progress < 0.12 } }
 			RUS = { surrender_progress < 0.25 }
-			OR = {
-				controls_state = 12
-				NOT = { controls_state = 206 }
-			}
-			NOT = { has_global_flag = GER_average_peace_brest_alt_demand_tech_flag }
 		}
-		RUS = {
-			set_country_flag = brest_average
-			if = {
-				limit = { has_focus_tree = Russia_Bolsheviks_focus }
-				hidden_effect = { country_event = treaty_of_brest.61 }
-				else = {
-					hidden_effect = { country_event = treaty_of_brest.62 }
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						NOT = { controls_state = 12 }
+						controls_state = 206
+					}
+					has_global_flag = GER_average_peace_brest_alt_demand_tech_flag
+				}
+			}
+			RUS = {
+				set_country_flag = brest_average
+				set_country_flag = brest_average_alt
+				if = {
+					limit = { has_focus_tree = Russia_Bolsheviks_focus }
+					hidden_effect = { country_event = treaty_of_brest.61 }
+					else = {
+						hidden_effect = { country_event = treaty_of_brest.62 }
+					}
+				}
+			}
+			else = {
+				RUS = {
+					set_country_flag = brest_average
+					if = {
+						limit = { has_focus_tree = Russia_Bolsheviks_focus }
+						hidden_effect = { country_event = treaty_of_brest.61 }
+						else = {
+							hidden_effect = { country_event = treaty_of_brest.62 }
+						}
+					}
 				}
 			}
 		}
@@ -1200,39 +1219,6 @@ country_event = {
 	}
 	option = {
 		name = treaty_of_brest.16.c
-		trigger = {
-			NOT = { controls_state = 195 }
-			NOT = { controls_state = 219 }
-			NOT = { RUS = { surrender_progress < 0.12 } }
-			RUS = { surrender_progress < 0.25 }
-			OR = {
-				AND = {
-					NOT = { controls_state = 12 }
-					controls_state = 206
-				}
-				has_global_flag = GER_average_peace_brest_alt_demand_tech_flag
-			}
-		}
-		RUS = {
-			set_country_flag = brest_average
-			set_country_flag = brest_average_alt
-			if = {
-				limit = { has_focus_tree = Russia_Bolsheviks_focus }
-				hidden_effect = { country_event = treaty_of_brest.61 }
-				else = {
-					hidden_effect = { country_event = treaty_of_brest.62 }
-				}
-			}
-		}
-		clr_global_flag = brest_litovsk_negotiations
-		clr_global_flag = brest_litovsk_negotiations_GER_UKR_peace
-		clr_global_flag = brest_litovsk_GER_UKR_negotiations
-		clr_global_flag = GER_average_peace_brest_tech_flag
-		clr_global_flag = GER_average_peace_brest_alt_demand_tech_flag
-		clr_global_flag = russia_rejects_german_ultimatum
-	}
-	option = {
-		name = treaty_of_brest.16.e
 		trigger = {
 			NOT = { controls_state = 195 }
 			NOT = { controls_state = 219 }
@@ -1256,7 +1242,7 @@ country_event = {
 		clr_global_flag = russia_rejects_german_ultimatum
 	}
 	option = {
-		name = treaty_of_brest.16.f
+		name = treaty_of_brest.16.e
 		trigger = {
 			OR = {
 				controls_state = 195
@@ -1431,10 +1417,8 @@ country_event = {
 					}
 				}
 			}
-			else = {
-				GER = { set_country_flag = influence_to_UKR }
-			}
 		}
+		GER = { UKR = { subjecting_script_with_transfer_parties_dominion = yes } }
 		UKR = {
 			dismantle_faction = yes
 			leave_faction = yes
@@ -1683,6 +1667,7 @@ country_event = {
 						state = 194
 						state = 994
 						state = 94
+						state = 955
 						state = 960
 					}
 					NOT = { is_core_of = POL }
@@ -1712,6 +1697,7 @@ country_event = {
 						state = 194
 						state = 994
 						state = 94
+						state = 955
 						state = 960
 					}
 					NOT = { is_core_of = POL }
@@ -1732,6 +1718,7 @@ country_event = {
 						state = 194
 						state = 994
 						state = 94
+						state = 955
 						state = 960
 					}
 					NOT = { is_core_of = POL }
@@ -2032,7 +2019,7 @@ country_event = {
 				limit = { is_faction_leader = no is_in_faction_with = ENG }
 				leave_faction = yes
 					every_country = {
-						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA tag = ENG tag = FRA tag = USA } OR = { is_faction_leader = yes is_in_faction = no } }
+						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA is_in_faction_with = GER is_in_faction_with = AUH tag = ENG tag = FRA tag = USA tag = GER tag = AUH} OR = { is_faction_leader = yes is_in_faction = no } }
 						every_country = {
 							limit = {
 								has_war_with = PREV
@@ -2084,94 +2071,7 @@ country_event = {
 			}
 		}
 		hidden_effect = { FRA = { country_event = { id = treaty_of_brest.101 days = 3 } } ENG = { country_event = { id = treaty_of_brest.101 days = 3 } } }
-		if = {
-			limit = { UKR = { exists = yes } }
-			every_state = {
-				limit = {
-					is_owned_by = RUS
-					OR = {
-						is_core_of = UKR
-						state = 204
-						state = 957
-						state = 194
-						state = 994
-						state = 94
-						state = 961
-						state = 923
-						state = 960
-					}
-					NOT = { is_core_of = POL }
-					NOT = { is_core_of = CRI }
-					NOT = { state = 919
-							state = 227
-							state = 852
-							state = 918
-							state = 958
-							state = 814
-							state = 221
-							state = 200
-					}
-				}
-				UKR = { transfer_state = PREV }
-			}
-		}
-		else_if = {
-			limit = { 202 = { controller = { tag = AUH } } }
-			every_state = {
-				limit = {
-					is_owned_by = RUS
-					OR = {
-						is_core_of = UKR
-						state = 204
-						state = 957
-						state = 194
-						state = 994
-						state = 94
-						state = 960
-						state = 961
-						state = 923
-					}
-					NOT = { is_core_of = POL }
-					NOT = { is_core_of = CRI }
-				}
-				UKR = { transfer_state = PREV }
-			}
-			AUH = { UKR = { subjecting_script_with_transfer_parties_dominion = yes add_ideas = help_from_foreign_interventionists } }
-		}
-		else = {
-			every_state = {
-				limit = {
-					is_owned_by = RUS
-					OR = {
-						is_core_of = UKR
-						state = 204
-						state = 957
-						state = 194
-						state = 994
-						state = 94
-						state = 960
-						state = 961
-						state = 923
-					}
-					NOT = { is_core_of = POL }
-					NOT = { is_core_of = CRI }
-					NOT = { state = 919 
-							state = 227
-							state = 852
-							state = 918
-							state = 958
-							state = 814
-							state = 221
-							state = 200
-					}
-				}
-				UKR = { transfer_state = PREV }
-			}
-		}
-		every_state = {
-			limit = { is_owned_by = UKR CONTROLLER = { NOT = { tag = UKR has_war_with = UKR } } }
-			UKR = { set_state_controller = PREV }
-		}
+		hidden_effect = { country_event = { id = treaty_of_brest.47 hours = 1 } }
 		if = {
 			limit = {
 				UKR = { exists = yes NOT = { is_subject_of = RUS } }
@@ -2434,7 +2334,7 @@ country_event = {
 				limit = { is_faction_leader = no is_in_faction_with = ENG }
 				leave_faction = yes
 					every_country = {
-						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA tag = ENG tag = FRA tag = USA } OR = { is_faction_leader = yes is_in_faction = no } }
+						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA is_in_faction_with = GER is_in_faction_with = AUH tag = ENG tag = FRA tag = USA tag = GER tag = AUH} OR = { is_faction_leader = yes is_in_faction = no } }
 						every_country = {
 							limit = {
 								has_war_with = PREV
@@ -2557,7 +2457,6 @@ country_event = {
 						OR = {
 							state = 204
 							state = 927
-							state = 955
 							state = 194
 							state = 957
 							state = 994
@@ -2697,7 +2596,7 @@ country_event = {
 				limit = { is_faction_leader = no is_in_faction_with = ENG }
 				leave_faction = yes
 					every_country = {
-						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA tag = ENG tag = FRA tag = USA } OR = { is_faction_leader = yes is_in_faction = no } }
+						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA is_in_faction_with = GER is_in_faction_with = AUH tag = ENG tag = FRA tag = USA tag = GER tag = AUH} OR = { is_faction_leader = yes is_in_faction = no } }
 						every_country = {
 							limit = {
 								has_war_with = PREV
@@ -2938,7 +2837,7 @@ country_event = {
 				limit = { is_faction_leader = no is_in_faction_with = ENG }
 				leave_faction = yes
 					every_country = {
-						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA tag = ENG tag = FRA tag = USA } OR = { is_faction_leader = yes is_in_faction = no } }
+						limit = { OR = { is_in_faction_with = ENG is_in_faction_with = FRA is_in_faction_with = USA is_in_faction_with = GER is_in_faction_with = AUH tag = ENG tag = FRA tag = USA tag = GER tag = AUH} OR = { is_faction_leader = yes is_in_faction = no } }
 						every_country = {
 							limit = {
 								has_war_with = PREV
@@ -3067,6 +2966,217 @@ country_event = {
 			}
 		}
 		add_war_support = 0.15
+	}
+}
+
+country_event = {
+	id = treaty_of_brest.47
+	title = treaty_of_brest.46.t
+	desc = treaty_of_brest.46.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = treaty_of_brest.46.a
+		if = {
+			limit = { UKR = { exists = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					OR = {
+						is_core_of = UKR
+						state = 204
+						state = 957
+						state = 194
+						state = 994
+						state = 94
+						state = 955
+						state = 961
+						state = 923
+						state = 960
+					}
+					NOT = { is_core_of = POL }
+					NOT = { is_core_of = CRI }
+					NOT = { state = 919
+							state = 227
+							state = 852
+							state = 918
+							state = 958
+							state = 814
+							state = 221
+							state = 200
+					}
+				}
+				UKR = { transfer_state = PREV }
+			}
+		}
+		else_if = {
+			limit = { 202 = { controller = { tag = AUH } } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					OR = {
+						is_core_of = UKR
+						state = 204
+						state = 957
+						state = 194
+						state = 994
+						state = 94
+						state = 955
+						state = 960
+						state = 961
+						state = 923
+					}
+					NOT = { is_core_of = POL }
+					NOT = { is_core_of = CRI }
+				}
+				UKR = { transfer_state = PREV }
+			}
+			AUH = { UKR = { subjecting_script_with_transfer_parties_dominion = yes add_ideas = help_from_foreign_interventionists } }
+		}
+		else = {
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					OR = {
+						is_core_of = UKR
+						state = 204
+						state = 957
+						state = 194
+						state = 994
+						state = 94
+						state = 955
+						state = 960
+						state = 961
+						state = 923
+					}
+					NOT = { is_core_of = POL }
+					NOT = { is_core_of = CRI }
+					NOT = { state = 919 
+							state = 227
+							state = 852
+							state = 918
+							state = 958
+							state = 814
+							state = 221
+							state = 200
+					}
+				}
+				UKR = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = { is_owned_by = UKR CONTROLLER = { NOT = { tag = UKR has_war_with = UKR } } }
+			UKR = { set_state_controller = PREV }
+		}
+	}
+}
+country_event = {
+	id = treaty_of_brest.48
+	title = treaty_of_brest.46.t
+	desc = treaty_of_brest.46.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = treaty_of_brest.46.a
+		if = {
+			limit = { UKR = { exists = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					OR = {
+						is_core_of = UKR
+						state = 204
+						state = 957
+						state = 194
+						state = 994
+						state = 94
+						state = 955
+						state = 961
+						state = 923
+						state = 960
+					}
+					NOT = { is_core_of = POL }
+					NOT = { is_core_of = CRI }
+					NOT = { state = 919
+							state = 227
+							state = 852
+							state = 918
+							state = 958
+							state = 814
+							state = 221
+							state = 200
+					}
+				}
+				UKR = { transfer_state = PREV }
+			}
+		}
+		else_if = {
+			limit = { 202 = { controller = { tag = AUH } } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					OR = {
+						is_core_of = UKR
+						state = 204
+						state = 957
+						state = 194
+						state = 994
+						state = 94
+						state = 955
+						state = 960
+						state = 961
+						state = 923
+					}
+					NOT = { is_core_of = POL }
+					NOT = { is_core_of = CRI }
+				}
+				UKR = { transfer_state = PREV }
+			}
+			AUH = { UKR = { subjecting_script_with_transfer_parties_dominion = yes add_ideas = help_from_foreign_interventionists } }
+		}
+		else = {
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					OR = {
+						is_core_of = UKR
+						state = 204
+						state = 957
+						state = 194
+						state = 994
+						state = 94
+						state = 955
+						state = 960
+						state = 961
+						state = 923
+					}
+					NOT = { is_core_of = POL }
+					NOT = { is_core_of = CRI }
+					NOT = { state = 919 
+							state = 227
+							state = 852
+							state = 918
+							state = 958
+							state = 814
+							state = 221
+							state = 200
+					}
+				}
+				UKR = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = { is_owned_by = UKR CONTROLLER = { NOT = { tag = UKR has_war_with = UKR } } }
+			UKR = { set_state_controller = PREV }
+		}
 	}
 }
 
@@ -3411,7 +3521,7 @@ country_event = {
 			if = {
 				limit = { RUS = { owns_state = 924 NOT = { controls_state = 924 } } }
 				every_state = {
-					limit = { is_core_of = BLR OR = { state = 924 state = 922 state = 94 } is_owned_by = RUS }
+					limit = { is_core_of = BLR OR = { state = 924 state = 922 state = 955 state = 94 } is_owned_by = RUS }
 					BLR = { transfer_state = PREV }
 				}
 				every_state = {

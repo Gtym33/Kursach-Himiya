@@ -5,96 +5,637 @@
 add_namespace = rcw_all_rus_NA
 
 ###########################
-# Учредительное собрание
+# Национальное собрание
 ###########################
 
-#Национальное собрание
+# Инициализация
+country_event = {
+	id = rcw_all_rus_NA.0
+	title = rcw_all_rus_NA.0.t
+	desc = rcw_all_rus_NA.0.desc
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = rcw_all_rus_NA.0.a
+		set_global_flag = RCW_Allrussian_national_assembly
+		set_country_flag = RCW_Allrussian_national_assembly_leader
+		country_event = { id = rcw_all_rus_NA.1 days = 7 }
+	}
+}
+
+# Подготовка к собранию
 country_event = {
 	id = rcw_all_rus_NA.1
 	title = rcw_all_rus_NA.1.t
-	desc = rcw_all_rus_NA.1.d
+	desc = rcw_all_rus_NA.1.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_all_rus_NA.1.a
-		if = {
-			limit = { controls_state = 219 }
-			set_capital = 219
-		}
-		add_war_support = 0.1
+		name = rcw_all_rus_NA.1.a # Только себя
+		set_country_flag = RCW_Allrussian_national_assembly_member
+		add_political_power = -100
+		set_variable = { global.all_rus_NA_members = 1 }
+		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_votes = 0 }
+		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+	}
+	option = {
+		name = rcw_all_rus_NA.1.b # Только марионеток
+		set_country_flag = RCW_Allrussian_national_assembly_member
+		add_political_power = -50
+		set_variable = { global.all_rus_NA_members = 1 }
+		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_votes = 0 }
 		every_country = {
-			limit = { is_subject_of = ROOT }
-			every_unit_leader = { set_nationality = ROOT }
-			ROOT = { annex_country = { target = PREV transfer_troops = yes } }
+			limit = {
+				NOT = { tag = ROOT }
+				OR = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+				}
+			}
+			country_event = rcw_all_rus_NA.2
 		}
-		every_country = {
-			limit = { NOT = { tag = ROOT has_war_with = ROOT } is_white_movement_country = yes is_subject = no NOT = { has_government = radical_socialism has_government = communism } }
-			country_event = { id = rcw_all_rus_NA.2 }
+		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		ai_chance = {
+			factor = 0
 		}
+	}
+	option = {
+		trigger = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+				has_government = social_liberalism
+			}
+		}
+		name = rcw_all_rus_NA.1.c # Кроме социалистов
+		set_country_flag = RCW_Allrussian_national_assembly_member
+		add_political_power = -25
+		set_variable = { global.all_rus_NA_members = 1 }
+		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_votes = 0 }
 		every_country = {
-			limit = { NOT = { tag = ROOT has_war_with = ROOT } is_any_former_russian_empire_country = yes NOT = { is_white_movement_country = yes } is_subject = no NOT = { has_government = radical_socialism has_government = communism } }
-			country_event = { id = rcw_all_rus_NA.3 }
+			limit = {
+				NOT = { tag = ROOT }
+				OR = {
+					is_main_former_russian_empire_country = yes
+					former_russian_empire_cossack_country = yes
+					tag = CPG
+					tag = PRM
+					AND = {
+						is_subject = yes
+						OVERLORD = { OR = { tag = ROOT is_main_former_russian_empire_country = yes former_russian_empire_cossack_country = yes tag = CPG tag = PRM } }
+					}
+				}
+				NOT = { has_war_with = ROOT }
+				NOT = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					has_government = social_liberalism
+					is_subject_of = ROOT
+				}
+				has_war = no
+			}
+			country_event = rcw_all_rus_NA.2
+		}
+		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		trigger = {
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+				has_government = social_liberalism
+			}
+		}
+		name = rcw_all_rus_NA.1.d # Кроме открытых реакционеров
+		every_country = {
+			limit = {
+				NOT = { tag = ROOT }
+				OR = {
+					is_main_former_russian_empire_country = yes
+					former_russian_empire_cossack_country = yes
+					tag = CPG
+					tag = PRM
+					AND = {
+						is_subject = yes
+						OVERLORD = { OR = { tag = ROOT is_main_former_russian_empire_country = yes former_russian_empire_cossack_country = yes tag = CPG tag = PRM } }
+					}
+				}
+				NOT = { has_war_with = ROOT }
+				NOT = {
+					has_government = authoritarism
+					has_government = despotism
+					has_government = fascism
+					is_subject_of = ROOT
+				}
+				has_war = no
+			}
+			country_event = rcw_all_rus_NA.2
+		}
+		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = rcw_all_rus_NA.1.e # Всех
+		set_country_flag = RCW_Allrussian_national_assembly_member
+		add_political_power = -25
+		set_variable = { global.all_rus_NA_members = 1 }
+		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_votes = 0 }
+		every_country = {
+			limit = {
+				NOT = { tag = ROOT }
+				OR = {
+					is_main_former_russian_empire_country = yes
+					former_russian_empire_cossack_country = yes
+					tag = CPG
+					tag = PRM
+					AND = {
+						is_subject = yes
+						OVERLORD = { OR = { tag = ROOT is_main_former_russian_empire_country = yes former_russian_empire_cossack_country = yes tag = CPG tag = PRM } }
+					}
+				}
+				NOT = { has_war_with = ROOT }
+				has_war = no
+			}
+			country_event = rcw_all_rus_NA.2
+		}
+		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		ai_chance = {
+			factor = 1
 		}
 	}
 }
 
-#Воля национального собрания
+# Приглашение
 country_event = {
 	id = rcw_all_rus_NA.2
 	title = rcw_all_rus_NA.2.t
-	desc = rcw_all_rus_NA.2.d
+	desc = rcw_all_rus_NA.2.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	is_triggered_only = yes
 	
 	option = {
 		name = rcw_all_rus_NA.2.a
-		FROM = { declare_war_on = { target = ROOT type = annex_everything } }
+		FROM = { country_event = rcw_all_rus_NA.3 }
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 0
+				FROM = {
+					NOT = {
+						has_government = authoritarism
+						has_government = despotism
+						has_government = fascism
+					}
+				}
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					has_government = social_liberalism
+				}
+			}
+			modifier = {
+				factor = 0
+				FROM = {
+					NOT = {
+						has_government = radical_socialism
+						has_government = communism
+						has_government = social_democracy
+						has_government = social_liberalism
+					}
+				}
+				OR = {
+					has_government = authoritarism
+					has_government = despotism
+					has_government = fascism
+				}
+			}
+			modifier = {
+				factor = 0
+				is_subject_of = FROM
+			}
 		}
 	}
 	option = {
 		name = rcw_all_rus_NA.2.b
-		every_unit_leader = { set_nationality = FROM }
-		FROM = { annex_country = { target = ROOT transfer_troops = yes } }
+		set_country_flag = RCW_Allrussian_national_assembly_member
+		add_to_variable = { global.all_rus_NA_members = 1 }
 		ai_chance = {
-			factor = 2
+			factor = 1
 			modifier = {
 				factor = 0
-				tag = RVA
+				FROM = {
+					NOT = {
+						has_government = radical_socialism
+						has_government = communism
+						has_government = social_democracy
+						has_government = social_liberalism
+						has_government = national_syndicalism
+					}
+				}
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+				}
+			}
+			modifier = {
+				factor = 0.75
+				FROM = {
+					NOT = {
+						has_government = radical_socialism
+						has_government = communism
+						has_government = social_democracy
+						has_government = social_liberalism
+						has_government = national_syndicalism
+					}
+				}
+				OR = {
+					has_government = social_democracy
+					has_government = social_liberalism
+					has_government = national_syndicalism
+				}
 			}
 		}
 	}
 }
-
-#Обращение ко всем национальным правительствам
+# Отрицательный ответ
 country_event = {
 	id = rcw_all_rus_NA.3
 	title = rcw_all_rus_NA.3.t
-	desc = rcw_all_rus_NA.3.d
+	desc = rcw_all_rus_NA.3.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	is_triggered_only = yes
 	
 	option = {
 		name = rcw_all_rus_NA.3.a
-		FROM = { create_wargoal = { type = puppet_wargoal_focus target = ROOT } }
+	}
+}
+
+# Инициализация голосования по главному вопросу
+country_event = {
+	id = rcw_all_rus_NA.4
+	title = rcw_all_rus_NA.4.t
+	desc = rcw_all_rus_NA.4.desc
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = rcw_all_rus_NA.4.a
+		every_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			country_event = rcw_all_rus_NA.5
+		}
+	}
+}
+
+# Голосование по главному вопросу
+country_event = {
+	id = rcw_all_rus_NA.5
+	title = rcw_all_rus_NA.5.t
+	desc = rcw_all_rus_NA.5.desc
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.5.a # Республика
+		set_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		hidden_effect = {
+			add_to_variable = { global.all_rus_NA_votes = 1 }
+			add_to_variable = { global.all_rus_NA_gov_form_rep = 1 }
+			if = {
+				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
+				if = {
+					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.7 days = 1 } }
+					else = {
+						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.6 days = 1 } }
+					}
+				}
+				clear_variable = global.all_rus_NA_votes
+				clear_variable = global.all_rus_NA_members
+				clear_variable = global.all_rus_NA_gov_form_mon
+				clear_variable = global.all_rus_NA_gov_form_rep
+			}
+		}
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				has_government = authoritarism
+			}
+		}
+	}
+	option = {
+		name = rcw_all_rus_NA.5.b # Монархия
+		trigger = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+				has_government = social_liberalism
+				has_government = national_syndicalism
+			}
+		}
+		set_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		hidden_effect = {
+			add_to_variable = { global.all_rus_NA_votes = 1 }
+			add_to_variable = { global.all_rus_NA_gov_form_mon = 1 }
+			if = {
+				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
+				if = {
+					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.7 days = 1 } }
+					else = {
+						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.6 days = 1 } }
+					}
+				}
+				clear_variable = global.all_rus_NA_votes
+				clear_variable = global.all_rus_NA_members
+				clear_variable = global.all_rus_NA_gov_form_mon
+				clear_variable = global.all_rus_NA_gov_form_rep
+			}
+		}
+		ai_chance = {
+			factor = 3
+		}
+	}
+}
+
+# Республика победила, уведомление организатора
+country_event = {
+	id = rcw_all_rus_NA.6
+	title = rcw_all_rus_NA.6.t
+	desc = {
+		text = rcw_all_rus_NA.6.desc
+		trigger = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep }
+	}
+	desc = {
+		text = rcw_all_rus_NA.6.desc_1
+		trigger = { NOT = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep } }
+	}
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = { # Такова воля народа!
+		name = rcw_all_rus_NA.6.a
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		every_other_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			country_event = { id = rcw_all_rus_NA.11 days = 7 random = 48 }
+		}
+	}
+	option = { # Подложить результаты голосования
+		trigger = {
+			NOT = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep }
+		}
+		name = rcw_all_rus_NA.6.b
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		every_other_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			country_event = { id = rcw_all_rus_NA.12 days = 7 random = 48 }
+		}
+	}
+}
+# Монархия победила, уведомление организатора
+country_event = {
+	id = rcw_all_rus_NA.7
+	title = rcw_all_rus_NA.7.t
+	desc = {
+		text = rcw_all_rus_NA.7.desc
+		trigger = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon }
+	}
+	desc = {
+		text = rcw_all_rus_NA.7.desc_1
+		trigger = { NOT = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon } }
+	}
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = { # Такова воля... народа.
+		name = rcw_all_rus_NA.7.a
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		every_other_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			country_event = { id = rcw_all_rus_NA.12 days = 7 random = 48 }
+		}
+	}
+	option = { # Подложить результаты голосования
+		trigger = {
+			NOT = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon }
+		}
+		name = rcw_all_rus_NA.7.b
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		every_other_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			country_event = { id = rcw_all_rus_NA.11 days = 7 random = 48 }
+		}
+	}
+}
+
+# Выбрали республику
+country_event = {
+	id = rcw_all_rus_NA.11
+	title = rcw_all_rus_NA.11.t
+	desc = rcw_all_rus_NA.11.d
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.11.a
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				FROM = { has_country_flag = RCW_Allrussian_national_assembly_mon_wins }
+			}
+			modifier = {
+				factor = 0
+				any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_revolt }
+			}
+		}
+	}
+	option = {
+		trigger = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon NOT = { has_country_flag = RCW_Allrussian_national_assembly_leader } }
+		name = rcw_all_rus_NA.11.b # Результаты голосования подложны! Мы вновь возьмёмся за оружие!
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		set_country_flag = RCW_Allrussian_national_assembly_revolt
+		OVERLORD = { end_puppet = ROOT }
+		leave_faction = yes
+		if = {
+			limit = { NOT = { any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_revolt } } }
+			random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } country_event = { id = rcw_all_rus_NA.21 days = 7 } }
+			create_faction = white_union
+			else = {
+				if = {
+					limit = {
+						any_other_country = {
+							has_country_flag = RCW_Allrussian_national_assembly_revolt
+							is_faction_leader = yes
+							strength_ratio = {
+								tag = ROOT
+								ratio = 1
+							}
+						}
+					}
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_revolt is_faction_leader = yes } add_to_faction = ROOT }
+					else = {
+						create_faction = white_union
+						every_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_revolt is_in_faction = yes } leave_faction = yes ROOT = { add_to_faction = PREV } }
+					}
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 999
+				any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_revolt }
+			}
+		}
+	}
+}
+# Выбрали монархию
+country_event = {
+	id = rcw_all_rus_NA.12
+	title = rcw_all_rus_NA.12.t
+	desc = rcw_all_rus_NA.12.d
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.12.a
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		trigger = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep NOT = { has_country_flag = RCW_Allrussian_national_assembly_leader } }
+		name = rcw_all_rus_NA.12.b # Результаты голосования подложны! Мы вновь возьмёмся за оружие!
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		clr_country_flag = RCW_Allrussian_national_assembly_member
+		set_country_flag = RCW_Allrussian_national_assembly_revolt
+		if = {
+			limit = { NOT = { any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_revolt } } }
+			random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } country_event = { id = rcw_all_rus_NA.22 days = 7 } }
+			create_faction = republican_front
+			else = {
+				if = {
+					limit = {
+						any_other_country = {
+							has_country_flag = RCW_Allrussian_national_assembly_revolt
+							is_faction_leader = yes
+							strength_ratio = {
+								tag = ROOT
+								ratio = 1
+							}
+						}
+					}
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_revolt is_faction_leader = yes } add_to_faction = ROOT }
+					else = {
+						create_faction = republican_front
+						every_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_revolt is_in_faction = yes } leave_faction = yes ROOT = { add_to_faction = PREV } }
+					}
+				}
+			}
+		}
 		ai_chance = {
 			factor = 1
 		}
 	}
+}
+# Гражданка против монархистов
+country_event = {
+	id = rcw_all_rus_NA.21
+	title = rcw_all_rus_NA.21.t
+	desc = rcw_all_rus_NA.21.d
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
 	option = {
-		name = rcw_all_rus_NA.3.b
-		FROM = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } }
-		ai_chance = {
-			factor = 2
-			modifier = {
-				factor = 0.25
-				tag = UKR
-			}
+		name = rcw_all_rus_NA.21.a
+		create_faction = republican_front
+		every_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			clr_country_flag = RCW_Allrussian_national_assembly_member
+			ROOT = { add_to_faction = PREV }
 		}
+		every_country = {
+			limit = {
+				is_faction_leader = yes
+				has_country_flag = RCW_Allrussian_national_assembly_revolt
+			}
+			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
+		}
+		hidden_effect = { news_event = { id = news_n.27 hours = 48 } }
+	}
+}
+# Гражданка против республиканцев
+country_event = {
+	id = rcw_all_rus_NA.22
+	title = rcw_all_rus_NA.22.t
+	desc = rcw_all_rus_NA.22.d
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.22.a
+		create_faction = white_union
+		every_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			clr_country_flag = RCW_Allrussian_national_assembly_member
+			ROOT = { add_to_faction = PREV }
+		}
+		every_country = {
+			limit = {
+				is_faction_leader = yes
+				has_country_flag = RCW_Allrussian_national_assembly_revolt
+			}
+			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
+		}
+		hidden_effect = { news_event = { id = news_n.27 hours = 48 } }
 	}
 }
