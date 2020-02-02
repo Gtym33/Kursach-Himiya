@@ -1289,12 +1289,13 @@ country_event = {
 	trigger = {
 		tag = RUS
 		has_country_flag = RUS_monarchy_not_fall
+		has_global_flag = WWI_is_now
+		NOT = { has_war_with = GER }
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
 		OR = {
 			has_government = authoritarism
 			has_government = despotism
 		}
-		NOT = { has_war_with = GER }
-		has_global_flag = WWI_is_now
 	}
 	
 	mean_time_to_happen = {
@@ -2555,19 +2556,15 @@ country_event = {
 	trigger = {
 		tag = RUS
 		has_variable = RUS_otrecheniye
-		date > 1917.1.15
 		NOT = { has_completed_focus = RUS_new_1917_campaign_plan }
 	}
 	
 	hidden = yes
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
+	is_triggered_only = yes
 	
 	option = {
 		add_to_variable = { RUS.RUS_otrecheniye = 2 }
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 1 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
 	}
 }
 
@@ -2581,5 +2578,37 @@ country_event = {
 	
 	option = {
 		remove_tsar_regime_unit_leaders = yes
+	}
+}
+
+# Технический ивент, что если не брать первый фокус, переменная отречения растёт, чтобы не читерили
+country_event = {
+	id = russian_ovrthrw_of_mon.105
+	
+	trigger = {
+		tag = RUS
+		has_variable = RUS_otrecheniye
+		NOT = { has_completed_focus = RUS_trust_government }
+		NOT = { has_completed_focus = RUS_mobilization_of_monarchical_forces }
+		NOT = {
+			focus_progress = {
+				focus = RUS_trust_government
+				progress > 0
+			}
+		}
+		NOT = {
+			focus_progress = {
+				focus = RUS_mobilization_of_monarchical_forces
+				progress > 0
+			}
+		}
+	}
+	
+	hidden = yes
+	is_triggered_only = yes
+	
+	option = {
+		add_to_variable = { RUS.RUS_otrecheniye = 3 }
+		hidden_effect = { if = { limit = { check_variable = { RUS_otrecheniye > 1 } } country_event = { id = russian_ovrthrw_of_mon.95 days = 3 } } }
 	}
 }
