@@ -226,6 +226,7 @@ focus_tree = {
 		available = {
 			has_country_flag = RUS_monarchy_not_fall
 			has_completed_focus = RUS_trust_government
+			NOT = { has_country_flag = sobor_in_progress }
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -263,6 +264,8 @@ focus_tree = {
 		cost = 1
 		available = {
 			has_country_flag = RUS_monarchy_not_fall
+			NOT = { has_completed_focus = RUS_mon_on_w_Great_Zemsky_Sobor }
+			NOT = { has_completed_focus = RUS_mon_on_w_military_dictatorship }
 			always = no
 		}
 		cancel_if_invalid = yes
@@ -310,6 +313,7 @@ focus_tree = {
 			has_country_flag = RUS_monarchy_not_fall
 			has_global_flag = WWI_is_now
 			has_war_with = GER
+			NOT = { has_country_flag = sobor_in_progress }
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -421,10 +425,37 @@ focus_tree = {
 		}
 	}
 	focus = {
+		id = RUS_mon_on_w_moderate_land_reform
+		icon = GFX_goal_peasants
+		cost = 5
+		available = {
+			NOT = { has_country_flag = sobor_in_progress }
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_mon_on_w_Great_Zemsky_Sobor
+			focus = RUS_mon_on_w_military_dictatorship
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		relative_position_id = RUS_mon_on_w_Great_Zemsky_Sobor
+		x = 0
+		y = 1
+		completion_reward = {
+			peasant_and_land_and_bread_question_fall = yes
+			add_timed_idea = { idea = peasant_and_land_and_bread_question_reformation_period days = 90 }
+			add_war_support = 0.05
+			add_stability = 0.05
+		}
+	}
+	focus = {
 		id = RUS_mon_on_w_waiver_of_military_debts
 		icon = GFX_goal_RUS_mon_on_w_waiver_of_military_debts
 		cost = 2
 		available = {
+			NOT = { has_country_flag = sobor_in_progress }
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -439,7 +470,7 @@ focus_tree = {
 			factor = 10
 		}
 		relative_position_id = RUS_mon_on_w_Great_Zemsky_Sobor
-		x = -3
+		x = -4
 		y = 1
 		completion_reward = {
 			add_political_power = 100
@@ -468,6 +499,7 @@ focus_tree = {
 		icon = GFX_goal_RUS_mon_on_w_military_debt_buildup
 		cost = 2
 		available = {
+			NOT = { has_country_flag = sobor_in_progress }
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -482,7 +514,7 @@ focus_tree = {
 			factor = 10
 		}
 		relative_position_id = RUS_mon_on_w_Great_Zemsky_Sobor
-		x = -1
+		x = -2
 		y = 1
 		completion_reward = {
 			add_political_power = -150
@@ -509,7 +541,7 @@ focus_tree = {
 			factor = 10
 		}
 		relative_position_id = RUS_mon_on_w_military_debt_buildup
-		x = 1
+		x = 0
 		y = 1
 		completion_reward = {
 			add_stability = 0.05
@@ -574,6 +606,7 @@ focus_tree = {
 		x = -1
 		y = 1
 		completion_reward = {
+			add_political_power = 100
 			if = {
 				limit = { NOT = { has_government = despotism } }
 				country_event = russian_ovrthrw_of_mon.11
@@ -598,6 +631,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		completion_reward = {
+			add_political_power = 100
 			add_ideas = emergency_laws_b_law
 		}
 	}
@@ -630,6 +664,7 @@ focus_tree = {
 		icon = GFX_goal_RUS_mon_on_w_militar_field_courts
 		cost = 3
 		available = {
+			has_war = yes
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -643,6 +678,7 @@ focus_tree = {
 		x = -2
 		y = 1
 		completion_reward = {
+			add_political_power = 100
 			add_timed_idea = { idea = RSS_militar_field_courts_idea days = 720 }
 		}
 	}
@@ -664,6 +700,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		completion_reward = {
+			add_political_power = 100
 			if = {
 				limit = {
 					OR = {
@@ -686,6 +723,8 @@ focus_tree = {
 		icon = GFX_goal_RUS_monarchy_war_to_the_victorious_end
 		cost = 5
 		available = {
+			has_war = yes
+			NOT = { has_country_flag = sobor_in_progress }
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -784,6 +823,7 @@ focus_tree = {
 		icon = GFX_goal_RUS_mon_on_w_iron_youth
 		cost = 5
 		available = {
+			has_war = yes
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -799,6 +839,35 @@ focus_tree = {
 		completion_reward = {
 			add_war_support = 0.05
 			add_timed_idea = { idea = RUS_iron_youth_idea days = 365 }
+			division_template = {
+					name = "Yunkerskiy balalyon"	# Militia
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								militia = { x = 0 y = 1 }
+								militia = { x = 1 y = 0 }
+								cavalry = { x = 1 y = 1 }
+							}
+							priority = 0
+				}
+
+	capital_scope = {
+		create_unit = {
+					division = "name = \"1-st Yunkerskiy balalyon\" division_template = \"Yunkerskiy balalyon\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		create_unit = {
+					division = "name = \"2-st Yunkerskiy balalyon\" division_template = \"Yunkerskiy balalyon\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		create_unit = {
+					division = "name = \"3-st Yunkerskiy balalyon\" division_template = \"Yunkerskiy balalyon\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		create_unit = {
+					division = "name = \"4-st Yunkerskiy balalyon\" division_template = \"Yunkerskiy balalyon\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		}
 		}
 	}
 	focus = {
@@ -806,6 +875,7 @@ focus_tree = {
 		icon = GFX_goal_conscription
 		cost = 5
 		available = {
+			has_war = yes
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -862,6 +932,7 @@ focus_tree = {
 		icon = GFX_goal_RUS_mon_on_w_mobile_cavalary_units
 		cost = 5
 		available = {
+			has_war = yes
 		}
 		cancel_if_invalid = yes
 		prerequisite = {
@@ -876,6 +947,37 @@ focus_tree = {
 		y = 1
 		completion_reward = {
 			add_ideas = RUS_mon_on_w_mobile_cavalary_units_idea
+			division_template = {
+				name = "Konarmeyskaya Diviziya"
+				regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+					}
+				support = {
+						recon = { x = 0 y = 0 }
+				}
+			}
+
+	capital_scope = {
+		create_unit = {
+					division = "name = \"1-ya Konarmeyskaya Diviziya\" division_template = \"Konarmeyskaya Diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		create_unit = {
+					division = "name = \"2-ya Konarmeyskaya Diviziya\" division_template = \"Konarmeyskaya Diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		create_unit = {
+					division = "name = \"3-ya Konarmeyskaya Diviziya\" division_template = \"Konarmeyskaya Diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		create_unit = {
+					division = "name = \"4-ya Konarmeyskaya Diviziya\" division_template = \"Konarmeyskaya Diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		}
 		}
 	}
 

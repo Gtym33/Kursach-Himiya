@@ -144,7 +144,13 @@ country_event = {
 			}
 		}
 		RUS = {
-			add_timed_idea = { idea = disorganization_of_army days = 28 }
+		if = {
+			limit = { has_completed_focus = RUS_purification_of_imperial_army }
+				add_timed_idea = { idea = disorganization_of_army days = 14 }
+				else = {
+					add_timed_idea = { idea = disorganization_of_army days = 28 }
+				}
+			}
 			remove_one_priziv_from_army = yes
 			set_province_controller = 6380
 		}
@@ -391,7 +397,7 @@ country_event = {
 	option = {
 		name = petrograd_commune.5.a
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = 0.05
 		}
 		add_popularity = {
@@ -409,7 +415,7 @@ country_event = {
 			popularity = 0.05
 		}
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = -0.05
 		}
 		add_war_support = 0.05
@@ -432,12 +438,12 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
-		radical_socialism > var:party_popularity@despotism
+		radical_socialism > var:party_popularity@national_syndicalism
 	}
 	
 	option = {
 		name = petrograd_commune.6.a
-		remove_despotism_leader = yes
+		remove_national_syndicalism_leader = yes
 		create_country_leader = {
 			name = "Pavel Dybenko"
 			desc = SOV_Pavel_Dybenko_DESC
@@ -488,7 +494,7 @@ country_event = {
 			popularity = 0.05
 		}
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = 0.05
 		}
 	}
@@ -545,7 +551,7 @@ country_event = {
 			popularity = -0.1
 		}
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = 0.1
 		}
 		remove_ideas = RUS_red_guards
@@ -560,8 +566,8 @@ country_event = {
 	
 	trigger = {
 		tag = KRN
-		NOT = { has_government = despotism }
-		despotism > 0.2
+		NOT = { has_government = national_syndicalism }
+		national_syndicalism > 0.2
 	}
 	
 	mean_time_to_happen = {
@@ -574,11 +580,11 @@ country_event = {
 		name = petrograd_commune.9.a
 		ai_chance = { factor = 1 }
 		set_politics = {
-			ruling_party = despotism
+			ruling_party = national_syndicalism
 			elections_allowed = no
 		}
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = 0.05
 		}
 	}
@@ -586,7 +592,7 @@ country_event = {
 		trigger = { NOT = { has_idea = RUS_red_guards } }
 		name = petrograd_commune.9.b
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = -0.15
 		}
 		add_ideas = RUS_red_guards
@@ -595,7 +601,7 @@ country_event = {
 	option = {
 		name = petrograd_commune.9.c
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = -0.15
 		}
 		add_timed_idea = { idea = mutiny_2 days = 7 }
@@ -618,7 +624,7 @@ country_event = {
 		add_war_support = 0.03
 		add_ideas = RGR_punitive_forces_idea
 		add_popularity = {
-			ideology = despotism
+			ideology = national_syndicalism
 			popularity = 0.03
 		}
 		ai_chance = { factor = 1 }
@@ -965,6 +971,95 @@ country_event = {
 	}
 }
 
+# Блокада Петрограда
+country_event = {
+	id = petrograd_commune.25
+	title = petrograd_commune.25.t
+	desc = petrograd_commune.25.desc
+	picture = GFX_report_event_sov_food_crisis
+	
+	trigger = {
+		tag = KRN
+		has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+		OR = {
+			has_idea = foodstuffs_supply_crisis_1
+			has_idea = foodstuffs_supply_crisis_2
+			has_idea = foodstuffs_supply_crisis_3
+			has_idea = foodstuffs_supply_crisis_4
+			has_idea = foodstuffs_supply_crisis_5
+		}
+		NOT = { has_global_flag = RUS_civil_war_over }
+		OR = {
+			num_of_controlled_states < 30
+			NOT = { any_owned_state = { has_state_category = town } }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 180
+	}
+	
+	
+	option = {
+		name = petrograd_commune.25.a
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.15
+			}
+		}
+		remove_ideas = {
+			foodstuffs_supply_crisis_1
+			foodstuffs_supply_crisis_2
+			foodstuffs_supply_crisis_3
+			foodstuffs_supply_crisis_4
+			foodstuffs_supply_crisis_5
+		}
+		add_ideas = foodstuffs_supply_crisis_5
+		add_political_power = -200
+		add_stability = -0.5
+		add_war_support = -0.6
+	}
+}
+
 
 country_event = {
 	id = petrograd_commune.31
@@ -1041,7 +1136,7 @@ country_event = {
 			NOT = {
 				has_government = radical_socialism
 				has_government = communism
-				has_government = despotism
+				has_government = national_syndicalism
 			}
 		}
 	}
@@ -1723,18 +1818,18 @@ country_event = {
 				}
 			}
 			else_if = {
-				limit = { KRN = { has_government = despotism } }
+				limit = { KRN = { has_government = national_syndicalism } }
 				bolsheviks_victory = yes
 				create_country_leader = {
 					name = "Pavel Dybenko"
 					desc = SOV_Pavel_Dybenko_DESC
 					picture = "gfx/leaders/SOV/Pavel_Dybenko_leader.dds"
 					expire = "1935.1.1"
-					ideology = leninism
+					ideology = national_bolshevism_ideology
 					traits = { }
 				}
 				set_politics = {
-					ruling_party = communism
+					ruling_party = national_syndicalism
 					elections_allowed = no
 				}
 			}
@@ -1991,3 +2086,4 @@ country_event = {
 		}
 	}
 }
+
