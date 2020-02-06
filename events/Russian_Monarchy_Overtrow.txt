@@ -438,6 +438,7 @@ country_event = {
 	
 	option = {
 		name = russian_ovrthrw_of_mon.11.a
+		set_party_name = { ideology = despotism long_name = SIB_despotism_party_long name = SIB_despotism_party }
 		create_country_leader = {
 			name = "Nikolay Iudovich Ivanov"
 			desc = RUS_Nikolay_Iudovich_Ivanov_DESC
@@ -462,6 +463,7 @@ country_event = {
 	}
 	option = {
 		name = russian_ovrthrw_of_mon.11.b
+		set_party_name = { ideology = despotism long_name = SIB_despotism_party_long name = SIB_despotism_party }
 		create_country_leader = {
 			name = "Mikhail Alexeev"
 			desc = RUS_Mikhail_Alexeev_DESC
@@ -817,7 +819,7 @@ country_event = {
 	}
 }
 
-
+# Всероссийский земский собор
 country_event = {
 	id = russian_ovrthrw_of_mon.31
 	title = russian_ovrthrw_of_mon.31.t
@@ -834,6 +836,7 @@ country_event = {
 	}
 }
 
+# Выбор формы правления на соборе
 country_event = {
 	id = russian_ovrthrw_of_mon.32
 	title = russian_ovrthrw_of_mon.32.t
@@ -844,11 +847,19 @@ country_event = {
 		has_country_flag = sobor_in_progress
 	}
 	
+	immediate = {
+		remove_ideas = {
+			RUS_Dmitriy_II_idea
+			RUS_Nikolay_II_idea
+			RUS_Michael_II_idea
+			}
+	}
+	
 	is_triggered_only = yes
 	
 	option = { #Просвященный абсолютизм
 		trigger = { always = no }
-		name = russian_ovrthrw_of_mon.32.a
+		name = russian_ovrthrw_of_mon.32.f
 		country_event = { id = russian_ovrthrw_of_mon.34 days = 2 }
 		add_political_power = 120
 		add_ideas = absolute_monarchy_gov_form
@@ -858,39 +869,133 @@ country_event = {
 			popularity = -0.2
 		}
 		add_stability = -0.1
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = RUS_MONARCHY_ABSOLUTISM
 	}
-	option = { #Ограниченная монархия
-		name = russian_ovrthrw_of_mon.32.b
+	option = { #Сохранение статуса-кво
+		name = russian_ovrthrw_of_mon.32.a
 		country_event = { id = russian_ovrthrw_of_mon.34 days = 2 }
+		if = {
+			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
+			add_ideas = Nikolay_Nikolayevich_Romanov_army_chief
+			}
 		add_stability = 0.05
 		add_political_power = 120
 		add_ideas = limited_monarchy_gov_form
 		add_ideas = uncodified_constitution_b_law
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = RUS_MONARCHY
+	}
+	option = { #Ограниченная монархия
+		name = russian_ovrthrw_of_mon.32.b
+		country_event = { id = russian_ovrthrw_of_mon.33 days = 2 }
+		if = {
+			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
+			add_ideas = Nikolay_Nikolayevich_Romanov_army_chief
+			}
+		if = {
+			limit = { NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead has_idea = RUS_Nikolay_II_idea } }
+			add_ideas = RUS_Nikolay_II_idea
+			else = { add_ideas = RUS_Michael_II_idea }
+		}
+		hidden_effect = {
+			remove_authoritarism_leader = yes
+			create_country_leader = {
+				name = "Nikolay Markov"
+				desc = RUS_Alexandr_Dubrovin_DESC
+				picture = "gfx/leaders/RUS/Nikolay_Markov.dds"
+				ideology = authoritarism_ideology
+				traits = { }
+			}
+		}
+		add_stability = 0.05
+		add_political_power = 120
+		add_ideas = limited_monarchy_gov_form
+		add_ideas = constitution_b_law
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = RUS_MONARCHY
 	}
 	option = { #Парламентская Республика
 		name = russian_ovrthrw_of_mon.32.c
 		country_event = { id = russian_ovrthrw_of_mon.33 days = 2 }
+		if = {
+			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
+			add_ideas = Mikhail_Alexeev_army_chief
+			}
+		hidden_effect = {
+			remove_authoritarism_leader = yes
+			create_country_leader = {
+				name = "Nikolay Markov"
+				desc = RUS_Alexandr_Dubrovin_DESC
+				picture = "gfx/leaders/RUS/Nikolay_Markov.dds"
+				ideology = authoritarism_ideology
+				traits = { }
+			}
+		}
 		add_stability = 0.05
 		add_political_power = 120
 		add_popularity = { ideology = authoritarism popularity = -0.15 }
 		add_ideas = parliamentary_republic_gov_form
-		add_ideas = uncodified_constitution_b_law
+		add_ideas = constitution_b_law
+		drop_cosmetic_tag = yes
 	}
 	option = { #Президентская Республика
 		name = russian_ovrthrw_of_mon.32.d
 		country_event = { id = russian_ovrthrw_of_mon.33 days = 2 }
+		if = {
+			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
+			add_ideas = Mikhail_Alexeev_army_chief
+			}
+		hidden_effect = {
+			remove_authoritarism_leader = yes
+			create_country_leader = {
+				name = "Nikolay Markov"
+				desc = RUS_Alexandr_Dubrovin_DESC
+				picture = "gfx/leaders/RUS/Nikolay_Markov.dds"
+				ideology = authoritarism_ideology
+				traits = { }
+			}
+		}
 		add_stability = 0.05
 		add_political_power = 120
 		add_popularity = { ideology = authoritarism popularity = -0.15 }
 		add_ideas = presidential_republic_gov_form
-		add_ideas = uncodified_constitution_b_law
+		add_ideas = constitution_b_law
+		drop_cosmetic_tag = yes
+	}
+	option = { #Верховный правитель
+		name = russian_ovrthrw_of_mon.32.e
+		country_event = { id = russian_ovrthrw_of_mon.33 days = 2 }
+		if = {
+			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
+			add_ideas = Mikhail_Alexeev_army_chief
+			}
+		hidden_effect = {
+			remove_authoritarism_leader = yes
+			create_country_leader = {
+				name = "Nikolay Markov"
+				desc = RUS_Alexandr_Dubrovin_DESC
+				picture = "gfx/leaders/RUS/Nikolay_Markov.dds"
+				ideology = authoritarism_ideology
+				traits = { }
+			}
+		}
+		add_stability = 0.05
+		add_political_power = 120
+		add_popularity = { ideology = authoritarism popularity = -0.15 }
+		add_ideas = presidential_republic_gov_form
+		add_ideas = decrees_of_ruler_b_law
+		drop_cosmetic_tag = yes
 	}
 }
 
+# Выбор президента/премьер-министра на соборе
 country_event = {
 	id = russian_ovrthrw_of_mon.33
-	title = russian_ovrthrw_of_mon.33.t
-	desc = russian_ovrthrw_of_mon.33.desc
+	title = { text = russian_ovrthrw_of_mon.33.t trigger = { NOT = { has_idea = limited_monarchy_gov_form } } }
+	title = { text = russian_ovrthrw_of_mon.33.t_pm	trigger = { has_idea = limited_monarchy_gov_form } }
+	desc = { text = russian_ovrthrw_of_mon.33.desc	trigger = { NOT = { has_idea = limited_monarchy_gov_form } } }
+	desc = { text = russian_ovrthrw_of_mon.33.desc_pm	trigger = { has_idea = limited_monarchy_gov_form } }
 	picture = GFX_report_event_long_feb_abdication
 	
 	trigger = {
@@ -900,7 +1005,8 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = {
-		clr_country_flag = sobor_in_progress
+		clr_country_flag = RUS_Order_N_1
+		set_country_flag = sobor_non_abs_mon
 	}
 	
 	immediate = { hidden_effect = { initiate_verification_of_the_popularity_of_coalitions = yes set_second_legal_party_flag = yes } }
@@ -908,6 +1014,8 @@ country_event = {
 	option = { #первый
 		name = russian_ovrthrw_of_mon.33.a
 		if = { limit = { has_country_flag = first_legal_party_is_socdem }
+		if = {
+			limit = { NOT = { has_idea = limited_monarchy_gov_form } }
 			set_politics = { ruling_party = social_democracy }
 			hidden_effect = { country_event = { id = russian_ovrthrw_of_mon.104 hours = 1 } }
 			monarchy_fall = yes
@@ -939,8 +1047,16 @@ country_event = {
 			set_country_flag = RUS_provisional_government_created
 			load_focus_tree = Russia_Provisional_government_focus
 			set_country_flag = RUS_has_czechoslovak_legion
+			else_if = {
+				limit = { has_idea = limited_monarchy_gov_form }
+				set_politics = { ruling_party = social_democracy }
+				monarchy_fall = yes
+			}
+			}
 		}
 		else_if = { limit = { has_country_flag = first_legal_party_is_soclib }
+		if = {
+			limit = { NOT = { has_idea = limited_monarchy_gov_form } }
 			set_politics = { ruling_party = social_liberalism }
 			hidden_effect = { country_event = { id = russian_ovrthrw_of_mon.104 hours = 1 } }
 			monarchy_fall = yes
@@ -972,6 +1088,12 @@ country_event = {
 			set_country_flag = RUS_provisional_government_created
 			load_focus_tree = Russia_Provisional_government_focus
 			set_country_flag = RUS_has_czechoslovak_legion
+			else_if = {
+				limit = { has_idea = limited_monarchy_gov_form }
+				set_politics = { ruling_party = social_liberalism }
+				monarchy_fall = yes
+			}
+			}
 		}
 		else_if = { limit = { has_country_flag = first_legal_party_is_marketlib }
 			set_politics = { ruling_party = market_liberalism }
@@ -1007,10 +1129,14 @@ country_event = {
 		clr_country_flag = second_legal_party_is_desp
 		clr_country_flag = second_legal_party_is_fasc
 		clr_country_flag = second_legal_party_is_natsynd
+		country_event = { id = russian_ovrthrw_of_mon.36 days = 2 }
+		clr_country_flag = sobor_non_abs_mon
 	}
 	option = {
 		name = russian_ovrthrw_of_mon.33.b
 		if = { limit = { has_country_flag = second_legal_party_is_socdem }
+		if = {
+			limit = { NOT = { has_idea = limited_monarchy_gov_form } }
 			set_politics = { ruling_party = social_democracy }
 			hidden_effect = { country_event = { id = russian_ovrthrw_of_mon.104 hours = 1 } }
 			monarchy_fall = yes
@@ -1042,8 +1168,16 @@ country_event = {
 			set_country_flag = RUS_provisional_government_created
 			load_focus_tree = Russia_Provisional_government_focus
 			set_country_flag = RUS_has_czechoslovak_legion
+			else_if = {
+				limit = { has_idea = limited_monarchy_gov_form }
+				set_politics = { ruling_party = social_democracy }
+				monarchy_fall = yes
+			}
+			}
 		}
 		else_if = { limit = { has_country_flag = second_legal_party_is_soclib }
+		if = {
+			limit = { NOT = { has_idea = limited_monarchy_gov_form } }
 			set_politics = { ruling_party = social_liberalism }
 			hidden_effect = { country_event = { id = russian_ovrthrw_of_mon.104 hours = 1 } }
 			monarchy_fall = yes
@@ -1075,6 +1209,12 @@ country_event = {
 			set_country_flag = RUS_provisional_government_created
 			load_focus_tree = Russia_Provisional_government_focus
 			set_country_flag = RUS_has_czechoslovak_legion
+			else_if = {
+				limit = { has_idea = limited_monarchy_gov_form }
+				set_politics = { ruling_party = social_liberalism }
+				monarchy_fall = yes
+			}
+			}
 		}
 		else_if = { limit = { has_country_flag = second_legal_party_is_marketlib }
 			set_politics = { ruling_party = market_liberalism }
@@ -1110,9 +1250,12 @@ country_event = {
 		clr_country_flag = second_legal_party_is_desp
 		clr_country_flag = second_legal_party_is_fasc
 		clr_country_flag = second_legal_party_is_natsynd
+		country_event = { id = russian_ovrthrw_of_mon.36 days = 2 }
+		clr_country_flag = sobor_non_abs_mon
 	}
 }
 
+# Выбор монарха, если он у власти, на соборе
 country_event = {
 	id = russian_ovrthrw_of_mon.34
 	title = russian_ovrthrw_of_mon.34.t
@@ -1127,6 +1270,7 @@ country_event = {
 	
 	immediate = {
 		clr_country_flag = sobor_in_progress
+		clr_country_flag = RUS_Order_N_1
 	}
 	
 	option = { #Ники
@@ -1277,6 +1421,91 @@ country_event = {
 		}
 		BKL = { subjecting_script_with_transfer_parties_dominion = yes }
 		BKL = { inherit_technology = RUS }
+	}
+}
+# На соборе говорили о земле. В пустую.
+country_event = {
+	id = russian_ovrthrw_of_mon.36
+	title = russian_ovrthrw_of_mon.36.t
+	desc = russian_ovrthrw_of_mon.36.desc
+	picture = GFX_report_event_long_feb_abdication
+	
+	trigger = {
+		has_country_flag = sobor_in_progress
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.36.a
+		country_event = { id = russian_ovrthrw_of_mon.37 days = 2 }
+	}
+}
+# Выбор государственного устройства, на соборе
+country_event = {
+	id = russian_ovrthrw_of_mon.37
+	title = russian_ovrthrw_of_mon.37.t
+	desc = { text = russian_ovrthrw_of_mon.37.desc	trigger = { has_war_with = GER } }
+	desc = { text = russian_ovrthrw_of_mon.37.desc_not_war	trigger = { NOT = { has_war_with = GER } } }
+	picture = GFX_report_event_long_feb_abdication
+	
+	trigger = {
+		has_country_flag = sobor_in_progress
+	}
+	
+	immediate = {
+		if = {
+			limit = { OR = { NOT = { has_war_with = GER } GER = { has_country_flag = GER_monarchy_fall } } }
+			clr_country_flag = sobor_in_progress
+			}
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.37.a #Сохранить унитарное
+		add_ideas = unitary_gov_terr
+		if = {
+			limit = { has_war_with = GER GER = { NOT = { has_country_flag = GER_monarchy_fall } } }
+			country_event = { id = russian_ovrthrw_of_mon.38 days = 2 }
+		}
+	}
+	
+	option = {
+		name = russian_ovrthrw_of_mon.37.b #Стать федеративного устройства
+		add_ideas = federal_gov_terr
+		if = {
+			limit = { has_war_with = GER GER = { NOT = { has_country_flag = GER_monarchy_fall } } }
+			country_event = { id = russian_ovrthrw_of_mon.38 days = 2 }
+		}
+	}
+}
+# Мир с Германией или война до победного конца, на соборе
+country_event = {
+	id = russian_ovrthrw_of_mon.38
+	title = russian_ovrthrw_of_mon.38.t
+	desc = russian_ovrthrw_of_mon.38.desc
+	picture = GFX_report_event_long_feb_abdication
+	
+	trigger = {
+		has_country_flag = sobor_in_progress
+	}
+	
+	immediate = {
+		clr_country_flag = sobor_in_progress
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russian_ovrthrw_of_mon.38.a #Мир с Германией
+		country_event = treaty_of_brest.1
+		add_ideas = neutral_foreign_policy_law
+	}
+	
+	option = {
+		name = russian_ovrthrw_of_mon.38.b #Продолжение войны
+		add_war_support = 0.05
 	}
 }
 # Выстрел патриота: выбор исхода
@@ -1663,7 +1892,70 @@ country_event = {
 			KRN = {
 				inherit_technology = RUS
 				set_cosmetic_tag = KRN_Petrograd_commune
+				set_party_name = { ideology = despotism long_name = KRN_despotism_party_commune_long name = KRN_despotism_party_commune }
+				set_party_name = { ideology = national_syndicalism long_name = KRN_national_syndicalism_party_commune_long name = KRN_national_syndicalism_party_commune }
 				add_ideas = RUS_red_guards
+				add_ideas = RUS_low_literacy_0_5
+				if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_1 } }
+					add_ideas = RUS_collapse_of_railway_system_1
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_2 } }
+					add_ideas = RUS_collapse_of_railway_system_2
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_3 } }
+					add_ideas = RUS_collapse_of_railway_system_3
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_4 } }
+					add_ideas = RUS_collapse_of_railway_system_4
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_5 } }
+					add_ideas = RUS_collapse_of_railway_system_5
+					}
+				}
+				if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_1 } }
+					add_ideas = RUS_hyper_inflation_1
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_2 } }
+					add_ideas = RUS_hyper_inflation_2
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_3 } }
+					add_ideas = RUS_hyper_inflation_3
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_4 } }
+					add_ideas = RUS_hyper_inflation_4
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_5 } }
+					add_ideas = RUS_hyper_inflation_5
+					}
+				}
+				if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_1 } }
+					add_ideas = foodstuffs_supply_crisis_2
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_2 } }
+					add_ideas = foodstuffs_supply_crisis_2
+					}
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_3 } }
+					add_ideas = foodstuffs_supply_crisis_3
+					}
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_4 } }
+					add_ideas = foodstuffs_supply_crisis_5
+					}
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_5 } }
+					add_ideas = foodstuffs_supply_crisis_5
+					}
+				}
 				create_corps_commander = {
 					name = "Pavel Dybenko"
 					id = 19173
@@ -1749,17 +2041,17 @@ country_event = {
 					traits = { }
 				}
 				create_country_leader = {
-					name = "Pavel Dybenko"
-					desc = SOV_Pavel_Dybenko_DESC
-					picture = "gfx/leaders/SOV/Pavel_Dybenko_leader.dds"
+					name = "Timofey Kirpichnikov"
+					desc = SOV_Timofey_Kirpichnikov_DESC
+					picture = "gfx/leaders/RUS/Timofey_Kirpichnikov.dds"
 					expire = "1935.1.1"
 					ideology = despotism_ideology
 					traits = { }
 				}
 				create_country_leader = {
-					name = "Central'niy comitet KRP"
-					desc = RUS_Centralniy_comitet_KRP_DESC
-					picture = "gfx/leaders/RUS/Centralniy_comitet_KRP.dds"
+					name = "Pavel Dybenko"
+					desc = SOV_Pavel_Dybenko_DESC
+					picture = "gfx/leaders/SOV/Pavel_Dybenko.dds"
 					expire = "1935.1.1"
 					ideology = national_bolshevism_ideology
 					traits = { }
@@ -1805,8 +2097,9 @@ country_event = {
 					social_liberalism = 30
 					market_liberalism = 5
 					authoritarism = 5
-					despotism = 5
+					despotism = 0
 					fascism = 10
+					national_syndicalism = 5
 				}
 				set_politics = { ruling_party = social_democracy }
 				every_country = {
@@ -1896,8 +2189,9 @@ country_event = {
 					social_liberalism = 30
 					market_liberalism = 5
 					authoritarism = 5
-					despotism = 5
+					despotism = 0
 					fascism = 10
+					national_syndicalism = 5
 				}
 				set_politics = { ruling_party = social_democracy }
 			}
@@ -2167,6 +2461,7 @@ country_event = {
 		set_country_flag = RUS_provisional_government_created
 		load_focus_tree = Russia_Provisional_government_focus
 		set_country_flag = RUS_has_czechoslovak_legion
+		remove_ideas_with_trait = head_of_government_trait
 		if = {
 			limit = { NOT = { has_country_flag = RUS_Tsar_arrested } }
 			create_country_leader = {
@@ -2187,7 +2482,6 @@ country_event = {
 			elections_allowed = no
 		}
 		add_ideas = RUS_dvoevlastie_1
-		remove_ideas_with_trait = head_of_government_trait
 		remove_ideas_with_trait = foreign_ministe_trait
 		remove_ideas_with_trait = economy_minister_trait
 		remove_ideas_with_trait = security_minister_trait
@@ -2235,7 +2529,70 @@ country_event = {
 			KRN = {
 				inherit_technology = RUS
 				set_cosmetic_tag = KRN_Petrograd_commune
+				set_party_name = { ideology = despotism long_name = KRN_despotism_party_commune_long name = KRN_despotism_party_commune }
+				set_party_name = { ideology = national_syndicalism long_name = KRN_national_syndicalism_party_commune_long name = KRN_national_syndicalism_party_commune }
 				add_ideas = RUS_red_guards
+				add_ideas = RUS_low_literacy_0_5
+				if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_1 } }
+					add_ideas = RUS_collapse_of_railway_system_1
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_2 } }
+					add_ideas = RUS_collapse_of_railway_system_2
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_3 } }
+					add_ideas = RUS_collapse_of_railway_system_3
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_4 } }
+					add_ideas = RUS_collapse_of_railway_system_4
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_5 } }
+					add_ideas = RUS_collapse_of_railway_system_5
+					}
+				}
+				if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_1 } }
+					add_ideas = RUS_hyper_inflation_1
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_2 } }
+					add_ideas = RUS_hyper_inflation_2
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_3 } }
+					add_ideas = RUS_hyper_inflation_3
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_4 } }
+					add_ideas = RUS_hyper_inflation_4
+					}
+					else_if = {
+					limit = { RUS = { has_idea = RUS_hyper_inflation_5 } }
+					add_ideas = RUS_hyper_inflation_5
+					}
+				}
+				if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_1 } }
+					add_ideas = foodstuffs_supply_crisis_2
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_2 } }
+					add_ideas = foodstuffs_supply_crisis_2
+					}
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_3 } }
+					add_ideas = foodstuffs_supply_crisis_3
+					}
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_4 } }
+					add_ideas = foodstuffs_supply_crisis_5
+					}
+					else_if = {
+					limit = { RUS = { has_idea = foodstuffs_supply_crisis_5 } }
+					add_ideas = foodstuffs_supply_crisis_5
+					}
+				}
 				create_corps_commander = {
 					name = "Pavel Dybenko"
 					id = 19173
@@ -2321,17 +2678,17 @@ country_event = {
 					traits = { }
 				}
 				create_country_leader = {
-					name = "Pavel Dybenko"
-					desc = SOV_Pavel_Dybenko_DESC
-					picture = "gfx/leaders/SOV/Pavel_Dybenko_leader.dds"
+					name = "Timofey Kirpichnikov"
+					desc = SOV_Timofey_Kirpichnikov_DESC
+					picture = "gfx/leaders/RUS/Timofey_Kirpichnikov.dds"
 					expire = "1935.1.1"
 					ideology = despotism_ideology
 					traits = { }
 				}
 				create_country_leader = {
-					name = "Central'niy comitet KRP"
-					desc = RUS_Centralniy_comitet_KRP_DESC
-					picture = "gfx/leaders/RUS/Centralniy_comitet_KRP.dds"
+					name = "Pavel Dybenko"
+					desc = SOV_Pavel_Dybenko_DESC
+					picture = "gfx/leaders/SOV/Pavel_Dybenko.dds"
 					expire = "1935.1.1"
 					ideology = national_bolshevism_ideology
 					traits = { }
@@ -2384,8 +2741,9 @@ country_event = {
 					social_liberalism = 30
 					market_liberalism = 5
 					authoritarism = 5
-					despotism = 5
+					despotism = 0
 					fascism = 10
+					national_syndicalism = 5
 				}
 				set_politics = { ruling_party = social_democracy }
 			}
@@ -2470,8 +2828,9 @@ country_event = {
 					social_liberalism = 30
 					market_liberalism = 5
 					authoritarism = 5
-					despotism = 5
+					despotism = 0
 					fascism = 10
+					national_syndicalism = 5
 				}
 				set_politics = { ruling_party = social_democracy }
 			}
