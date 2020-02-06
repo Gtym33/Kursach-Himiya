@@ -69,6 +69,7 @@ NDefines.NAI.MAX_SUPPLY_DIVISOR = 2.5
 
 
 NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.03
+NDefines.NMilitary.LAND_COMBAT_ORG_DAMAGE_MODIFIER = 0.058
 NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.003
 
 NDefines.NMilitary.RIVER_CROSSING_PENALTY_LARGE = -0.8           -- large river crossing
