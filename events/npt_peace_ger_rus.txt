@@ -49,9 +49,12 @@ country_event = {
 		has_war_with = RUS
 		has_global_flag = WWI_is_now
 		NOT = { has_global_flag = WWI_RUS_HAS_CAPITULATED }
+		NOT = { has_idea = brest_negotiation_truce_Central_powers }
 		RUS = {
 			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
+			NOT = { has_country_flag = RUS_brest_peace_fired }
 			OR = {
+				has_capitulated = yes
 				surrender_progress > 0.5
 				AND = {
 					surrender_progress > 0.35
@@ -76,7 +79,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 1
+		days = 0
 	}
 	
 	option = {
@@ -133,11 +136,7 @@ country_event = {
 		set_global_flag = WWI_RUS_HAS_CAPITULATED
 		if = {
 			limit = { NOT = { has_global_flag = RUS_Kornilov_civil_war } }
-			if = {
-				limit = { AUH = { has_war_with = RUS is_in_faction_with = GER } GER = { NOT = { controls_state = 202 } } }
-				AUH = { country_event = ger_rus_peace.22 }
-				else = { GER = { country_event = ger_rus_peace.22 } }
-			}
+			country_event = ger_rus_peace.22
 		}
 		if = {
 			limit = { TUR = { has_war_with = RUS is_in_faction_with = GER } GEO = { exists = no } }
@@ -155,7 +154,7 @@ country_event = {
 			add_ideas = neutral_foreign_policy_law
 			end_puppet = UKR
 			if = {
-				limit = { NOT = { has_global_flag = RUS_Kornilov_civil_war } }
+				limit = { OR = { NOT = { has_global_flag = RUS_Kornilov_civil_war } NOT = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war } } }
 				delete_unit_template_and_units = {
 					division_template = "Kazach'ya brigada"
 				}
@@ -231,7 +230,7 @@ country_event = {
 			white_peace = RUS
 		}
 		if = {
-			limit = { has_global_flag = RUS_Kornilov_civil_war }
+			limit = { OR = { has_global_flag = RUS_Kornilov_civil_war has_global_flag = RUS_monarchy_Petrograd_commune_civil_war } }
 			every_country = {
 				limit = { has_war_with = RUS has_war_with = GER is_any_former_russian_empire_country = yes }
 				white_peace = GER
@@ -253,32 +252,33 @@ country_event = {
 	is_triggered_only = yes
 	
 	#Оставить независимую Украину на правом берегу и на левом чуть-чуть
-	option = {
-		name = ger_rus_peace.22.b
-		
-		every_state = {
-			limit = {
-				NOT = { is_core_of = POL }
-				OR = {
-					is_core_of = UKR
-					AND = { is_core_of = BLR is_claimed_by = UKR }
-				}
-				is_owned_by = RUS
-				NOT = { state = 904 state = 957 state = 218 state = 1044 state = 228 state = 953 state = 918 state = 954 state = 958 state = 814 state = 227 state = 221 state = 225 state = 960 state = 812 state = 961 state = 923 state = 224 state = 241 }
-			}
-			UKR = { transfer_state = PREV }
-			UKR = { inherit_technology = RUS }
-		}
-		GER = { country_event = ger_rus_peace.26 }
-		
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				RUS = { NOT = { has_country_flag = RUS_monarchy_not_fall } }
-			}
-		}
-	}
+#	option = {
+#		name = ger_rus_peace.22.b
+#		
+#		every_state = {
+#			limit = {
+#				NOT = { is_core_of = POL }
+#				OR = {
+#					is_core_of = UKR
+#					AND = { is_core_of = BLR is_claimed_by = UKR }
+#				}
+#				is_owned_by = RUS
+#				NOT = { state = 904 state = 957 state = 218 state = 1044 state = 228 state = 953 state = 918 state = 954 state = 958 state = 814 state = 227 state = 221 state = 225 state = 960 state = 812 state = 961 state = 923 state = 224 state = 241 }
+#			}
+#			UKR = { transfer_state = PREV }
+#			UKR = { inherit_technology = RUS }
+#		}
+#		GER = { country_event = ger_rus_peace.26 }
+#		
+#		ai_chance = {
+#			factor = 1
+#			modifier = {
+#				factor = 0
+#				RUS = { NOT = { has_country_flag = RUS_monarchy_not_fall } }
+#			}
+#		}
+#	}
+
 	#Оставить независимую Украину в максимальных границах
 	option = {
 		name = ger_rus_peace.22.b
@@ -289,22 +289,22 @@ country_event = {
 				OR = {
 					is_core_of = UKR
 					AND = { is_core_of = BLR is_claimed_by = UKR }
+					AND = { is_core_of = RUS is_claimed_by = UKR }
 				}
 				is_owned_by = RUS
-				NOT = { state = 904 state = 957 state = 218 state = 1044 state = 228 state = 953 state = 918 state = 954 state = 958 state = 814 state = 227 state = 221 state = 225 state = 960 state = 812 state = 961 state = 923 state = 224 state = 241 }
+				NOT = { state = 904 state = 218 state = 1044 state = 228 state = 953 state = 954 state = 960 state = 224 state = 241 }
 			}
 			UKR = { transfer_state = PREV }
-			UKR = { inherit_technology = RUS }
 		}
+		every_state = {
+			limit = {
+				OR = { state = 953 state = 954 state = 240 state = 960 }
+			}
+			UKR = { transfer_state = PREV }
+		}
+		UKR = { inherit_technology = RUS }
 		GER = { country_event = ger_rus_peace.26 }
 		
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				RUS = { has_country_flag = RUS_monarchy_not_fall }
-			}
-		}
 	}
 }
 #Карс и Закавказье
