@@ -34,34 +34,137 @@ focus_tree = {
 		completion_reward = {
 			add_stability = 0.05
 			add_political_power = 50
-			custom_effect_tooltip = RUS_soviet_power_tt
-			hidden_effect = {
-				set_country_flag = RUS_soviet_power_flag
-				
-				set_variable = { var = total_members_of_central_committee value = 21 }
-				
-				set_variable = { var = decist_faction_CC value = 0 }
-				set_variable = { var = left_faction_CC value = 11 }
-				set_variable = { var = moderate_faction_CC value = 5 }
-				set_variable = { var = right_faction_CC value = 0 }
-				
-				if = {
-					limit = { surrender_progress > 0.3 }
-					add_to_variable = { var = left_faction_CC value = -2 }
-				}
-				check_overlap_of_CC_n_CEC_deputies_add = yes
-				
-				set_frame_of_CC_n_CEC = yes
-				
-				set_variable = { decist_faction_party_compositon = 0 }
-				set_variable = { left_faction_party_compositon = 40 }
-				set_variable = { center_faction_party_compositon = 35 }
-				set_variable = { moderate_faction_party_compositon = 25 }
-				set_variable = { right_faction_party_compositon = 0 }
-				
-				check_overlap_of_party_composition = yes
-			}
 			country_event = { id = rcw_bolsheviks.115 days = 29 }
+		}
+
+	}
+
+	focus = {
+		id = RUS_homogeneous_socialist_government_focus
+		icon = GFX_goal_all_power_to_Soviets
+		cost = 3
+		available = {
+			has_country_flag = homogeneous_socialist_government
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 0
+		completion_reward = {
+		}
+
+	}
+
+	focus = {
+		id = RUS_red_separate_peace
+		icon = GFX_goal_RUS_red_separate_peace
+		cost = 2
+		available = {
+			has_war_with = GER
+			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_third_session_war }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 999
+				is_historical_focus_on = yes
+			}
+		}
+		prerequisite = {
+			focus = RUS_sovnarkom
+		}
+		mutually_exclusive = {
+			focus = RUS_revolutionary_war
+		}
+		x = -1
+		y = 1
+		relative_position_id = RUS_sovnarkom
+		completion_reward = {
+			country_event = treaty_of_brest.1
+		}
+
+	}
+
+	focus = {
+		id = RUS_break_brest_peace
+		icon = GFX_goal_RUS_struggle_against_counterrevolution
+		cost = 1
+		available = {
+			has_country_flag = RUS_brest_peace_fired
+			controls_state = 195
+			OR = {
+				has_global_flag = WWI_GER_HAS_CAPITULATED
+				strength_ratio = {
+					tag = GER
+					ratio = 1
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 100
+			modifier = {
+				factor = 0
+				GER = { NOT = { has_country_flag = GER_monarchy_fall } }
+				NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+			}
+			modifier = {
+				factor = 0
+				NOT = { controls_state = 219 }
+			}
+			modifier = {
+				factor = 0
+				surrender_progress > 0.5
+			}
+		}
+		will_lead_to_war_with = NWA
+		will_lead_to_war_with = WVA
+		will_lead_to_war_with = UBD
+		will_lead_to_war_with = KUR
+		will_lead_to_war_with = LAT
+		will_lead_to_war_with = EST
+		will_lead_to_war_with = BLR
+		prerequisite = {
+			focus = RUS_red_separate_peace
+			focus = RUS_revolutionary_war
+		}
+		bypass = {
+			has_country_flag = RUS_avoid_civil_war
+		}
+		x = -2
+		y = 2
+		relative_position_id = RUS_sovnarkom
+		completion_reward = {
+			every_state = {
+				limit = {
+					region = 132
+					is_owned_by = GER
+				}
+				RUS = { transfer_state = PREV }
+			}
+			every_country = {
+				limit = {
+					NOT = { has_government = radical_socialism }
+					NOT = { has_government = communism }
+					NOT = { is_in_faction_with = ROOT }
+					is_subject = no
+					OR = {
+						tag = NWA
+						tag = WVA
+						tag = UBD
+						tag = KUR
+						tag = LAT
+						tag = EST
+						tag = BLR
+					}
+				}
+				RUS = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
 		}
 
 	}
@@ -72,7 +175,6 @@ focus_tree = {
 		cost = 2
 		available = {
 			always = no
-			has_country_flag = RUS_Oktober_revolution_fired
 			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_third_session_peace }
 		}
 		bypass = { NOT = { has_war_with = GER } }
@@ -100,7 +202,7 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = RUS_red_separate_peace
 		}
-		x = -1
+		x = 1
 		y = 1
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
@@ -112,37 +214,6 @@ focus_tree = {
 				ideology = communism
 				popularity = -0.1
 			}
-		}
-
-	}
-
-	focus = {
-		id = RUS_red_separate_peace
-		icon = GFX_goal_RUS_red_separate_peace
-		cost = 2
-		available = {
-			has_war_with = GER
-			has_country_flag = RUS_Oktober_revolution_fired
-			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_third_session_war }
-		}
-		ai_will_do = {
-			factor = 1
-			modifier = {
-				factor = 999
-				is_historical_focus_on = yes
-			}
-		}
-		prerequisite = {
-			focus = RUS_sovnarkom
-		}
-		mutually_exclusive = {
-			focus = RUS_revolutionary_war
-		}
-		x = 1
-		y = 1
-		relative_position_id = RUS_sovnarkom
-		completion_reward = {
-			country_event = treaty_of_brest.1
 		}
 
 	}
@@ -206,89 +277,6 @@ focus_tree = {
 			234 = { spawn_red_guard_in_state = yes spawn_red_guard_in_state = yes }
 			218 = { spawn_red_guard_in_state = yes spawn_red_guard_in_state = yes }
 			260 = { spawn_red_guard_in_state = yes spawn_red_guard_in_state = yes }
-		}
-
-	}
-
-	focus = {
-		id = RUS_break_brest_peace
-		icon = GFX_goal_RUS_struggle_against_counterrevolution
-		cost = 1
-		available = {
-			has_country_flag = RUS_brest_peace_fired
-			controls_state = 195
-			OR = {
-				has_global_flag = WWI_GER_HAS_CAPITULATED
-				strength_ratio = {
-					tag = GER
-					ratio = 1
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 100
-			modifier = {
-				factor = 0
-				GER = { NOT = { has_country_flag = GER_monarchy_fall } }
-				NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
-			}
-			modifier = {
-				factor = 0
-				NOT = { controls_state = 219 }
-			}
-			modifier = {
-				factor = 0
-				surrender_progress > 0.5
-			}
-		}
-		will_lead_to_war_with = NWA
-		will_lead_to_war_with = WVA
-		will_lead_to_war_with = UBD
-		will_lead_to_war_with = KUR
-		will_lead_to_war_with = LAT
-		will_lead_to_war_with = EST
-		will_lead_to_war_with = BLR
-		prerequisite = {
-			focus = RUS_red_separate_peace
-			focus = RUS_revolutionary_war
-		}
-		bypass = {
-			has_country_flag = RUS_avoid_civil_war
-		}
-		x = 2
-		y = 2
-		relative_position_id = RUS_sovnarkom
-		completion_reward = {
-			every_state = {
-				limit = {
-					region = 132
-					is_owned_by = GER
-				}
-				RUS = { transfer_state = PREV }
-			}
-			every_country = {
-				limit = {
-					NOT = { has_government = radical_socialism }
-					NOT = { has_government = communism }
-					NOT = { is_in_faction_with = ROOT }
-					is_subject = no
-					OR = {
-						tag = NWA
-						tag = WVA
-						tag = UBD
-						tag = KUR
-						tag = LAT
-						tag = EST
-						tag = BLR
-					}
-				}
-				RUS = {
-					declare_war_on = {
-						target = PREV
-						type = annex_everything
-					}
-				}
-			}
 		}
 
 	}

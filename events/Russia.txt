@@ -4,6 +4,34 @@
 
 add_namespace = russia
 
+# Петроградский военно-революционный комитет
+country_event = {
+	id = russia.0
+	title = russia.0.t
+	desc = russia.0.desc
+	picture = GFX_report_event_sov_revvoensoviet
+	
+	trigger = {
+		tag = RUS
+		communism > 0.3
+		has_country_flag = RUS_provisional_government_created
+		#195 = { is_capital = yes is_controlled_by = ROOT } #раскомментировать когда будут готовы альтернативы захвата власти большевиками в других городах
+		has_country_flag = RUS_first_allrussian_congress_of_soviets
+		has_country_flag = RUS_July_crisis_fired
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = russia.0.a
+		country_event = { id = russia.39 days = 10 }
+	}
+}
+
 # Большевизация советов
 country_event = {
 	id = russia.1
@@ -675,7 +703,6 @@ country_event = {
 		tag = RUS
 		has_country_flag = RUS_provisional_government_created
 		has_country_flag = RUS_April_crisis_fired
-		NOT = { has_country_flag = RUS_April_crisis_provisional_government_win }
 		OR = {
 			has_country_flag = UKR_central_rada_demands_accepted
 			has_country_flag = UKR_central_rada_II_universal
@@ -683,6 +710,7 @@ country_event = {
 				UKR = { exists = yes is_subject = no }
 				NOT = { has_war_with = UKR }
 			}
+			has_country_flag = RUS_1_July_meeting
 		}
 		has_government = market_liberalism
 		NOT = { has_country_flag = general_kornilov }
@@ -690,11 +718,16 @@ country_event = {
 	}
 	fire_only_once = yes
 	mean_time_to_happen = {
-		days = 1
+		days = 10
 	}
 	option = {
 		name = russia.21.a
 		set_country_flag = RUS_provisional_government_raskol
+		remove_ideas_with_trait = market_liberal_counselor
+		remove_ideas_with_trait = social_conservative_counselor
+		remove_ideas_with_trait = authoritarian_counselor
+		remove_ideas_with_trait = despotist_counselor
+		remove_ideas_with_trait = fascist_counselor
 	}
 }
 
@@ -743,18 +776,14 @@ country_event = {
 	option = {
 		name = russia.22.a
 		hidden_effect = { country_event = { id = russia.23 days = 1 } }
+		add_stability = -0.03
 	}
 	option = {
 		trigger = { has_country_flag = RUS_first_allrussian_congress_of_soviets_supports_bolsheviks }
 		name = russia.22.b
-		if = {
-			limit = { has_country_flag = RUS_Bolsheviks_majority }
-			hidden_effect = { country_event = { id = russia.26 days = 1 } } #нужен выход на мини-игру
-			else = {
-				hidden_effect = { country_event = { id = russia.23 days = 1 } }
-				set_country_flag = RUS_16_July_military_supression
-			}
-		}
+		hidden_effect = { country_event = { id = russia.23 days = 1 } }
+		add_stability = -0.03
+		set_country_flag = RUS_16_July_military_supression
 	}
 }
 
@@ -821,18 +850,9 @@ country_event = {
 						factor = 0.5
 						has_country_flag = RUS_Bolsheviks_majority
 					}
-					if = {
-						limit = { OR = { NOT = { has_country_flag = RUS_provisional_government_raskol } has_country_flag = RUS_Bolsheviks_majority } }
-						country_event = {
-							id = russia.25 #победа
-							days = 4
-						}
-						else = {
-							country_event = {
-								id = russia.24 #коалиция
-								days = 4
-							}
-						}
+					country_event = {
+						id = russia.24
+						days = 4
 					}
 				}
 				50 = {
@@ -853,7 +873,7 @@ country_event = {
 						NOT = { has_country_flag = RUS_Bolsheviks_majority }
 					}
 					country_event = {
-						id = russia.26 #большевики
+						id = russia.34 #большевики
 						days = 4
 					}
 				}
@@ -918,18 +938,9 @@ country_event = {
 						factor = 0.75
 						has_country_flag = RUS_24_June_meeting_force_supressed
 					}
-					if = {
-						limit = { OR = { NOT = { has_country_flag = RUS_provisional_government_raskol } has_country_flag = RUS_Bolsheviks_majority } }
-						country_event = {
-							id = russia.25 #победа
-							days = 4
-						}
-						else = {
-							country_event = {
-								id = russia.24 #коалиция
-								days = 4
-							}
-						}
+					country_event = {
+						id = russia.24
+						days = 4
 					}
 				}
 				50 = {
@@ -950,7 +961,7 @@ country_event = {
 						NOT = { has_country_flag = RUS_Bolsheviks_majority }
 					}
 					country_event = {
-						id = russia.26 #большевики
+						id = russia.34 #большевики
 						days = 4
 					}
 				}
@@ -966,16 +977,8 @@ country_event = {
 		hidden_effect = { lack_of_officers_rise = yes }
 	}
 	option = {
-		ai_chance = {
-			factor = 0
-		}
-		name = russia.23.c #сдаться
-		set_country_flag = RUS_July_crisis_fired
-		country_event = russia.26
-	}
-	option = {
 		trigger = { has_country_flag = RUS_16_July_military_supression }
-		name = russia.23.d #ввести военное положение
+		name = russia.23.c #ввести военное положение
 		ai_chance = {
 			factor = 100
 		}
@@ -1014,7 +1017,7 @@ country_event = {
 						has_country_flag = RUS_24_June_meeting_force_supressed
 					}
 					country_event = {
-						id = russia.24 #коалиция
+						id = russia.24
 						days = 4
 					}
 				}
@@ -1025,7 +1028,7 @@ country_event = {
 						NOT = { has_country_flag = RUS_24_June_meeting_force_supressed }
 					}
 					country_event = {
-						id = russia.26 #большевики
+						id = russia.34 #большевики
 						days = 4
 					}
 				}
@@ -1042,7 +1045,7 @@ country_event = {
 	}
 }
 
-# Июльский кризис: Поражение большевиков и второе коалиционное правительство
+# Поражение большевиков
 country_event = {
 	id = russia.24
 	title = russia.24.t
@@ -1058,6 +1061,11 @@ country_event = {
 		text = russia.24.desc_2
 		trigger = { has_country_flag = RUS_16_July_military_supression }
 	}
+	desc = {
+		text = russia.24.desc_3
+		trigger = { has_country_flag = RUS_first_allrussian_congress_of_soviets_supports_bolsheviks has_country_flag = RUS_Bolsheviks_majority NOT = { has_country_flag = RUS_16_July_military_supression  } }
+	}
+	
 	picture = GFX_report_event_rus_chinovniki
 	
 	is_triggered_only = yes
@@ -1069,6 +1077,60 @@ country_event = {
 			add_political_power = 100
 			clr_country_flag = RUS_16_July_military_supression
 		}
+		add_stability = 0.01
+		country_event = {
+			id = russia.25
+			days = 1
+		}
+		hidden_effect = { news_event = { id = news_n.11 hours = 72 } }
+	}
+}
+
+# 8 июля Начало переговоров
+country_event = {
+	id = russia.25
+	title = russia.25.t
+	desc = russia.25.desc
+	
+	picture = GFX_report_event_rus_chinovniki
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+		}
+		clr_country_flag = RUS_provisional_government_raskol
+	}
+	
+	option = {
+		name = russia.25.a
+		country_event = {
+			id = russia.26
+			days = 6
+		}
+		ai_chance = {
+			factor = 3
+		}
+	}
+	option = {
+		trigger = {
+			OR = {
+				has_country_flag = RUS_April_crisis_provisional_government_win
+				NOT = {
+					has_country_flag = UKR_central_rada_demands_accepted
+					has_country_flag = UKR_central_rada_II_universal
+					UKR = { exists = yes is_subject = no NOT = { has_war_with = ROOT } }
+				}
+			}
+		}
+		name = russia.25.b
+		add_political_power = -25
+		
 		clr_country_flag = RUS_24_June_meeting_force_supressed
 		clr_country_flag = RUS_1_July_meeting_force_supressed
 		clr_country_flag = RUS_1_July_meeting_gov_inactivity
@@ -1076,12 +1138,197 @@ country_event = {
 		set_country_flag = RUS_July_crisis_fired
 		set_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk
 		remove_ideas = RUS_red_guards_provisional_government
-		remove_ideas_with_trait = head_of_government_trait
-		remove_ideas_with_trait = economy_minister_trait
-		remove_ideas_with_trait = security_minister_trait
-		remove_ideas_with_trait = head_of_intel_trait
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
+		}
+		add_ideas = {
+			Georgiy_Lvov_1
+			Mikhail_Tereshchenko_2
+			Alexander_Konovalov_3
+			Nikolay_Avksentiev_4
+			Pavel_Pereverzev_5
+			Alexander_Guchkov_6
+		}
+		if = {
+			limit = { NOT = { has_idea = Lavr_Kornilov_army_chief } }
+			country_event = russia.35
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Переговоры о формировании нового правительства, споры о декларации и о нахождении в правительстве Чернова
+country_event = {
+	id = russia.26
+	title = russia.26.t
+	desc = russia.26.desc
+	
+	picture = GFX_report_event_rus_chinovniki
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russia.26.a #Принять ультиматум Церетели
+		country_event = {
+			id = russia.27
+			days = 8
+		}
+		add_political_power = -25
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = russia.26.b #Пусть Церетели выметяется
+		country_event = {
+			id = russia.28
+			days = 10
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Отставка Керенского и собрание в Зимнем
+country_event = {
+	id = russia.27
+	title = russia.27.t
+	desc = russia.27.desc
+	
+	picture = GFX_report_event_rus_chinovniki
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russia.27.a
+		set_politics = { ruling_party = social_liberalism elections_allowed = no }
+		create_country_leader = { name = "Nikolay Nekrasov" desc = RUS_Nikolay_Nekrasov_desc picture = "gfx/leaders/RUS/Nikolay_Nekrasov.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+		country_event = {
+			id = russia.31 #коалиция
+			hours = 17
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = russia.27.b
+		set_politics = { ruling_party = social_liberalism elections_allowed = no }
+		create_country_leader = { name = "Nikolay Nekrasov" desc = RUS_Nikolay_Nekrasov_desc picture = "gfx/leaders/RUS/Nikolay_Nekrasov.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+		country_event = {
+			id = russia.33 #полный крах и формирование кабинета без Керенского вообще
+			days = 3
+		}
+		add_political_power = -50
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Отставка Церетели и Чернова
+country_event = {
+	id = russia.28
+	title = russia.28.t
+	desc = russia.28.desc
+	
+	picture = GFX_report_event_rus_chinovniki
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russia.28.a
+		retire_country_leader = yes
+		create_country_leader = {
+			name = "Alexandr Kerensky"
+			desc=RUS_Alexandr_Kerensky_DESC
+			picture="gfx/leaders/RUS/Alexandr_Kerensky.dds"
+			expire="1935.1.1"
+			ideology = social_liberalism_ideology
+			traits={ political_dancer }
+		}
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		country_event = {
+			id = russia.32 #коалиция кадетов
+			days = 1
+		}
+		add_political_power = -25
+		add_stability = -0.01
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = russia.28.b
+		country_event = {
+			id = russia.29
+			days = 2
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Отставка Керенского и собрание в Зимнем (альтернативное)
+country_event = {
+	id = russia.29
+	title = russia.29.t
+	desc = russia.29.desc
+	
+	picture = GFX_report_event_rus_chinovniki
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russia.29.a
+		set_politics = { ruling_party = social_liberalism elections_allowed = no }
+		create_country_leader = { name = "Nikolay Nekrasov" desc = RUS_Nikolay_Nekrasov_desc picture = "gfx/leaders/RUS/Nikolay_Nekrasov.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+		country_event = {
+			id = russia.31 #коалиция
+			days = 2
+		}
+		add_political_power = -50
+		add_stability = -0.02
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# 24 июля (6 августа), Июльский кризис: Второе коалиционное правительство социалистов
+country_event = {
+	id = russia.31
+	title = russia.31.t
+	desc = russia.31.desc
+	picture = GFX_report_event_rus_chinovniki
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russia.31.a
+		clr_country_flag = RUS_24_June_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_gov_inactivity
+		set_country_flag = RUS_second_coalition_gov
+		set_country_flag = RUS_July_crisis_fired
+		set_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk
+		remove_ideas = RUS_red_guards_provisional_government
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+		}
 		add_ideas = {
 			Alexander_Kerensky_1
+			Mikhail_Tereshchenko_2
 			Sergey_Prokopovich_3
 			Nikolay_Avksentiev_4
 			Alexander_Zarudny_5
@@ -1125,42 +1372,43 @@ country_event = {
 			ideology = social_liberalism
 			popularity = 0.1
 		}
-		news_event = { id = news_n.11 hours = 72 }
 		if = {
 			limit = { NOT = { has_idea = Lavr_Kornilov_army_chief } }
-			country_event = russia.28
+			country_event = russia.35
 		}
 	}
 }
 
-# Июльский кризис: Поражение большевиков, но без коалиционного правительства
+# Июльский кризис: Коалиционное правительство кадетов
 country_event = {
-	id = russia.25
-	title = russia.25.t
-	desc = russia.25.desc
-	desc = {
-		text = russia.24.desc
-		trigger = { NOT = { has_country_flag = RUS_first_allrussian_congress_of_soviets_supports_bolsheviks } }
-	}
-	desc = {
-		text = russia.24.desc_1
-		trigger = { has_country_flag = RUS_first_allrussian_congress_of_soviets_supports_bolsheviks NOT = { has_country_flag = RUS_Bolsheviks_majority } }
-	}
-	desc = {
-		text = russia.24.desc_2
-		trigger = { has_country_flag = RUS_first_allrussian_congress_of_soviets_supports_bolsheviks has_country_flag = RUS_Bolsheviks_majority }
-	}
+	id = russia.32
+	title = russia.32.t
+	desc = russia.32.desc
 	picture = GFX_report_event_first_coalition_gov
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.25.a
+		name = russia.32.a
 		clr_country_flag = RUS_24_June_meeting_force_supressed
 		clr_country_flag = RUS_1_July_meeting_force_supressed
 		clr_country_flag = RUS_1_July_meeting_gov_inactivity
 		set_country_flag = RUS_July_crisis_fired
 		remove_ideas = RUS_red_guards_provisional_government
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+		}
+		add_ideas = {
+			Alexander_Kerensky_1
+			Mikhail_Tereshchenko_2
+			Alexander_Konovalov_3
+			Nikolay_Avksentiev_4
+			Alexander_Zarudny_5
+		}
 		remove_ideas = {
 			RUS_dvoevlastie_2
 			RUS_dvoevlastie_3
@@ -1169,11 +1417,66 @@ country_event = {
 		add_ideas = RUS_dvoevlastie_1
 		add_popularity = {
 			ideology = social_liberalism
-			popularity = -0.1
+			popularity = -0.05
 		}
 		add_popularity = {
 			ideology = market_liberalism
-			popularity = 0.15
+			popularity = 0.1
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = -0.05
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.08
+		}
+		if = {
+			limit = { NOT = { has_idea = Lavr_Kornilov_army_chief } }
+			country_event = russia.35
+		}
+	}
+}
+
+# Июльский кризис: Полный крах правительства и формирование нового кабинета без Керенского
+country_event = {
+	id = russia.33
+	title = russia.33.t
+	desc = russia.33.desc
+	picture = GFX_report_event_first_coalition_gov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = russia.33.a
+		clr_country_flag = RUS_24_June_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_force_supressed
+		clr_country_flag = RUS_1_July_meeting_gov_inactivity
+		set_country_flag = RUS_July_crisis_fired
+		remove_ideas = RUS_red_guards_provisional_government
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+		}
+		add_ideas = {
+			Alexander_Kerensky_1
+			Mikhail_Tereshchenko_2
+			Alexander_Konovalov_3
+			Nikolay_Avksentiev_4
+			Alexander_Zarudny_5
+		}
+		remove_ideas = {
+			RUS_dvoevlastie_1
+			RUS_dvoevlastie_2
+			RUS_dvoevlastie_3
+			RUS_dvoevlastie_4
+		}
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.05
 		}
 		add_popularity = {
 			ideology = social_democracy
@@ -1186,28 +1489,39 @@ country_event = {
 		news_event = { id = news_n.11 hours = 72 }
 		if = {
 			limit = { NOT = { has_idea = Lavr_Kornilov_army_chief } }
-			country_event = russia.28
+			country_event = russia.35
+		}
+	}
+	option = {
+		trigger = { always = no }
+		name = russia.33.b
+		
+		news_event = { id = news_n.11 hours = 72 }
+		if = {
+			limit = { NOT = { has_idea = Lavr_Kornilov_army_chief } }
+			country_event = russia.35
 		}
 	}
 }
 
+
 # Июльский кризис: Захват власти большевиками
 country_event = {
-	id = russia.26
-	title = russia.26.t
-	desc = russia.26.desc
+	id = russia.34
+	title = russia.34.t
+	desc = russia.34.desc
 	picture = GFX_report_event_Lenin_wins
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.26.a
+		name = russia.34.a
 		clr_country_flag = RUS_24_June_meeting_force_supressed
 		clr_country_flag = RUS_1_July_meeting_force_supressed
 		clr_country_flag = RUS_1_July_meeting_gov_inactivity
 		set_country_flag = RUS_July_crisis_fired
+		set_country_flag = RUS_July_crisis_gov_of_bolsheviks_n_others
 		bolsheviks_victory = yes
-		hidden_effect = { country_event = { id = russia.47 days = 4 } }
 		remove_white_unit_leaders = yes
 		custom_effect_tooltip = lack_of_officers_rise_1_tt
 		hidden_effect = { lack_of_officers_rise = yes }
@@ -1219,38 +1533,38 @@ country_event = {
 
 # Назначение Корнилова главкомом
 country_event = {
-	id = russia.28
-	title = russia.28.t
-	desc = russia.28.desc
+	id = russia.35
+	title = russia.35.t
+	desc = russia.35.desc
 	picture = GFX_report_event_rus_kornilov_something_coming
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.28.a
+		name = russia.35.a
 		add_ideas = Lavr_Kornilov_army_chief
 		RUS_Order_N_1_fall_not_0 = yes
 	}
 	option = {
-		name = russia.28.b
+		name = russia.35.b
 		add_ideas = Lavr_Kornilov_army_chief
 		RUS_Order_N_1_fall_not_0 = yes
 	}
 	option = {
-		name = russia.28.c
+		name = russia.35.c
 		add_ideas = Lavr_Kornilov_army_chief
 		RUS_Order_N_1_fall_not_0 = yes
 	}
 	option = {
-		name = russia.28.e
+		name = russia.35.e
 	}
 }
 
 # Государственное совещание в Москве
 country_event = {
-	id = russia.29
-	title = russia.29.t
-	desc = russia.29.desc
+	id = russia.36
+	title = russia.36.t
+	desc = russia.36.desc
 	picture = GFX_report_event_government_meeting
 	
 	trigger = {
@@ -1300,7 +1614,7 @@ country_event = {
 		modifier = { factor = 0.01 has_global_flag = WWI_RUS_HAS_CAPITULATED }
 	}
 	option = {
-		name = russia.29.a
+		name = russia.36.a
 		add_popularity = {
 			ideology = despotism
 			popularity = 0.15
@@ -1330,9 +1644,9 @@ country_event = {
 
 # Корниловский мятеж
 country_event = {
-	id = russia.32
-	title = russia.32.t
-	desc = russia.32.desc
+	id = russia.37
+	title = russia.37.t
+	desc = russia.37.desc
 	picture = GFX_report_event_rus_kornilov
 	
 	trigger = {
@@ -1368,7 +1682,7 @@ country_event = {
 				is_historical_focus_on = yes
 			}
 		}
-		name = russia.32.a
+		name = russia.37.a
 		set_politics = {
 			ruling_party = despotism
 			elections_allowed = no
@@ -1387,7 +1701,7 @@ country_event = {
 		ai_chance = {
 			factor = 3
 		}
-		name = russia.32.b
+		name = russia.37.b
 		add_popularity = {
 			ideology = despotism
 			popularity = -0.075
@@ -1435,9 +1749,9 @@ country_event = {
 
 # Демократическое совещание
 country_event = {
-	id = russia.34
-	title = russia.34.t
-	desc = russia.34.desc
+	id = russia.38
+	title = russia.38.t
+	desc = russia.38.desc
 	picture = GFX_report_event_sov_revvoensoviet
 	
 	trigger = {
@@ -1461,44 +1775,16 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = russia.34.a
+		name = russia.38.a
 		
-	}
-}
-
-# Петроградский военно-революционный комитет
-country_event = {
-	id = russia.35
-	title = russia.35.t
-	desc = russia.35.desc
-	picture = GFX_report_event_sov_revvoensoviet
-	
-	trigger = {
-		tag = RUS
-		communism > 0.3
-		has_country_flag = RUS_provisional_government_created
-		#195 = { is_capital = yes is_controlled_by = ROOT } #раскомментировать когда будут готовы альтернативы захвата власти большевиками в других городах
-		has_country_flag = RUS_first_allrussian_congress_of_soviets
-		has_country_flag = RUS_July_crisis_fired
-	}
-	
-	mean_time_to_happen = {
-		days = 30
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		name = russia.35.a
-		country_event = { id = russia.36 days = 10 }
 	}
 }
 
 # Начало восстания
 country_event = {
-	id = russia.36
-	title = russia.36.t
-	desc = russia.36.desc
+	id = russia.39
+	title = russia.39.t
+	desc = russia.39.desc
 	picture = GFX_report_event_sov_cities_fights
 	
 	trigger = {
@@ -1512,13 +1798,13 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			set_variable = { var = RUS_Bolsheviks_Petrograd_control value = 0 }
-			country_event = { id = russia.47 days = 4 }
+			country_event = { id = russia.50 days = 4 }
 			set_country_flag = RUS_Oktober_armed_revolt_in_progress
 		}
 	}
 	
 	option = {
-		name = russia.36.a #арестовать большевиков
+		name = russia.39.a #арестовать большевиков
 		hidden_effect = {
 			if = {
 				limit = { has_completed_focus = RUS_declare_republic }
@@ -1552,7 +1838,7 @@ country_event = {
 							factor = 2
 							social_democracy > 0.1
 						}
-						country_event = russia.37 #нет разрешения
+						country_event = russia.40 #нет разрешения
 					}
 					50 = {
 						modifier = {
@@ -1576,37 +1862,37 @@ country_event = {
 								add_to_variable = { var = RUS_Bolsheviks_Petrograd_control value = 1 }
 							}
 							50 = {
-								country_event = russia.38 #часть большевиков арестована
+								country_event = russia.41 #часть большевиков арестована
 							}
 						}
 					}
 				}
 			}
-			country_event = { id = russia.39 hours = 8 }
+			country_event = { id = russia.42 hours = 8 }
 		}
 	}
 	
 	option = {
-		name = russia.36.b
+		name = russia.39.b
 		hidden_effect = {
 			add_to_variable = { var = RUS_Bolsheviks_Petrograd_control value = 1 }
-			country_event = { id = russia.39 hours = 8 }
+			country_event = { id = russia.42 hours = 8 }
 		}
 	}
 }
 
 # Отказано в получении разрешения
 country_event = {
-	id = russia.37
-	title = russia.37.t
+	id = russia.40
+	title = russia.40.t
 	desc = {
-		text = russia.37.desc
+		text = russia.40.desc
 		trigger = {
 			has_completed_focus = RUS_declare_republic
 		}
 	}
 	desc = {
-		text = russia.37.desc_1
+		text = russia.40.desc_1
 		trigger = {
 			NOT = { has_completed_focus = RUS_declare_republic }
 		}
@@ -1623,9 +1909,9 @@ country_event = {
 
 # Часть большевиков арестована
 country_event = {
-	id = russia.38
-	title = russia.38.t
-	desc = russia.38.desc
+	id = russia.41
+	title = russia.41.t
+	desc = russia.41.desc
 	picture = GFX_report_event_rus_kornilov_socialist
 	
 	is_triggered_only = yes
@@ -1638,16 +1924,16 @@ country_event = {
 
 # Развести мосты
 country_event = {
-	id = russia.39
-	title = russia.39.t
-	desc = russia.39.desc
+	id = russia.42
+	title = russia.42.t
+	desc = russia.42.desc
 	picture = GFX_report_event_sov_bridges
 	
 	is_triggered_only = yes
 	
 	#Направить юнкеров
 	option = {
-		name = russia.39.a
+		name = russia.42.a
 		trigger = {
 			is_ai = no
 		}
@@ -1658,10 +1944,10 @@ country_event = {
 						factor = 1.5
 						check_variable = { RUS_Bolsheviks_Petrograd_control < 1 }
 					}
-					country_event = russia.40
+					country_event = russia.43
 				}
 				70 = {
-					country_event = russia.41
+					country_event = russia.44
 				}
 			}
 		}
@@ -1669,10 +1955,10 @@ country_event = {
 	
 	#Гиблое дело, не выйдет ничего
 	option = {
-		name = russia.39.b
+		name = russia.42.b
 		add_to_variable = { var = RUS_Bolsheviks_Petrograd_control value = 1 }
 		hidden_effect = {
-			country_event = { id = russia.42 hours = 4 }
+			country_event = { id = russia.45 hours = 4 }
 		}
 		ai_chance = {
 			factor = 999
@@ -1682,49 +1968,49 @@ country_event = {
 
 # Мосты разведены
 country_event = {
-	id = russia.40
-	title = russia.40.t
-	desc = russia.40.desc
+	id = russia.43
+	title = russia.43.t
+	desc = russia.43.desc
 	picture = GFX_report_event_sov_bridges
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.40.a
+		name = russia.43.a
 		hidden_effect = {
-			country_event = { id = russia.42 hours = 4 }
+			country_event = { id = russia.45 hours = 4 }
 		}
 	}
 }
 # Юнкера разоружены
 country_event = {
-	id = russia.41
-	title = russia.41.t
-	desc = russia.41.desc
+	id = russia.44
+	title = russia.44.t
+	desc = russia.44.desc
 	picture = GFX_report_event_sov_bridges
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.41.a
+		name = russia.44.a
 		add_to_variable = { var = RUS_Bolsheviks_Petrograd_control value = 1 }
 		hidden_effect = {
-			country_event = { id = russia.42 hours = 4 }
+			country_event = { id = russia.45 hours = 4 }
 		}
 	}
 }
 
 # Красногвардейская атака на правительственные здания
 country_event = {
-	id = russia.42
-	title = russia.42.t
-	desc = russia.42.desc
+	id = russia.45
+	title = russia.45.t
+	desc = russia.45.desc
 	picture = GFX_report_event_sov_ges
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.42.a
+		name = russia.45.a
 		hidden_effect = {
 			if = {
 				limit = {
@@ -1734,7 +2020,7 @@ country_event = {
 						compare = greater_than
 					}
 				}
-				country_event = { id = russia.44 hours = 4 }
+				country_event = { id = russia.47 hours = 4 }
 			}
 			else_if = {
 				limit = {
@@ -1746,10 +2032,10 @@ country_event = {
 				}
 				random_list = {
 					90 = {
-						country_event = { id = russia.44 hours = 4 }
+						country_event = { id = russia.47 hours = 4 }
 					}
 					10 = {
-						country_event = { id = russia.43 hours = 4 }
+						country_event = { id = russia.46 hours = 4 }
 					}
 				}
 			}
@@ -1763,45 +2049,45 @@ country_event = {
 				}
 				random_list = {
 					20 = {
-						country_event = { id = russia.44 hours = 4 }
+						country_event = { id = russia.47 hours = 4 }
 					}
 					80 = {
-						country_event = { id = russia.43 hours = 4 }
+						country_event = { id = russia.46 hours = 4 }
 					}
 				}
 			}
 			else = {
 				random_list = {
 					60 = {
-						country_event = { id = russia.44 hours = 4 }
+						country_event = { id = russia.47 hours = 4 }
 					}
 					40 = {
-						country_event = { id = russia.43 hours = 4 }
+						country_event = { id = russia.46 hours = 4 }
 					}
 				}
 			}
 		}
 	}
 	option = {
-		name = russia.42.b #сосредоточится на защите Зимнего
+		name = russia.45.b #сосредоточится на защите Зимнего
 		add_to_variable = { var = RUS_Bolsheviks_Petrograd_control value = 3 }
 		hidden_effect = {
-			country_event = { id = russia.44 hours = 4 }
+			country_event = { id = russia.47 hours = 4 }
 		}
 	}
 }
 
 # Защищены почтамт и электростанция
 country_event = {
-	id = russia.43
-	title = russia.43.t
-	desc = russia.43.desc
+	id = russia.46
+	title = russia.46.t
+	desc = russia.46.desc
 	picture = GFX_report_event_rus_bronevik
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.43.a
+		name = russia.46.a
 		hidden_effect = {
 			if = {
 				limit = {
@@ -1811,7 +2097,7 @@ country_event = {
 						compare = greater_than
 					}
 				}
-				country_event = russia.46
+				country_event = russia.49
 			}
 			if = {
 				limit = {
@@ -1821,7 +2107,7 @@ country_event = {
 						compare = less_than_or_equals
 					}
 				}
-				country_event = russia.45
+				country_event = russia.48
 			}
 		}
 		clear_variable = RUS_Bolsheviks_Petrograd_control
@@ -1830,15 +2116,15 @@ country_event = {
 
 # Захвачен почтамт и электростанция
 country_event = {
-	id = russia.44
-	title = russia.44.t
-	desc = russia.44.desc
+	id = russia.47
+	title = russia.47.t
+	desc = russia.47.desc
 	picture = GFX_report_event_rus_bronevik
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.44.a
+		name = russia.47.a
 		hidden_effect = {
 			add_to_variable = { var = RUS_Bolsheviks_Petrograd_control value = 1.5 }
 			if = {
@@ -1849,7 +2135,7 @@ country_event = {
 						compare = greater_than
 					}
 				}
-				country_event = russia.46
+				country_event = russia.49
 			}
 			if = {
 				limit = {
@@ -1859,7 +2145,7 @@ country_event = {
 						compare = less_than_or_equals
 					}
 				}
-				country_event = russia.45
+				country_event = russia.48
 			}
 		}
 		clear_variable = RUS_Bolsheviks_Petrograd_control
@@ -1868,15 +2154,15 @@ country_event = {
 
 # Большевики повержены
 country_event = {
-	id = russia.45
-	title = russia.45.t
-	desc = russia.45.desc
+	id = russia.48
+	title = russia.48.t
+	desc = russia.48.desc
 	picture = GFX_report_event_rus_the_constituent_assembly
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.45.a
+		name = russia.48.a
 		add_popularity = {
 			ideology = communism
 			popularity = -0.05
@@ -1938,19 +2224,19 @@ country_event = {
 
 # Зимний окружён: победа большевиков
 country_event = {
-	id = russia.46
-	title = russia.46.t
-	desc = russia.46.desc
+	id = russia.49
+	title = russia.49.t
+	desc = russia.49.desc
 	picture = GFX_report_event_sov_palace_sturm
 	
 	is_triggered_only = yes
 	
 	option = {
-		name = russia.46.a
+		name = russia.49.a
+		hidden_effect = { country_event = { id = russia.50 hours = 1 } }
 		if = {
 			limit = { has_country_flag = general_kornilov }
 			hidden_effect = {
-				country_event = { id = russia.47 hours = 1 }
 				set_country_flag = RCW_strongest_paternals
 			}
 		}
@@ -1973,16 +2259,16 @@ country_event = {
 
 # II Всероссийский съезд Советов
 country_event = {
-	id = russia.47
-	title = russia.47.t
+	id = russia.50
+	title = russia.50.t
 	picture = GFX_report_event_sov_2nd_congress_of_soviets_of_russia
 	
 	desc = {
-		text = russia.47.d
+		text = russia.50.d
 		trigger = { has_country_flag = RUS_Oktober_revolution_fired }
 	}
 	desc = {
-		text = russia.47.d_1
+		text = russia.50.d_1
 		trigger = { NOT = { has_country_flag = RUS_Oktober_revolution_fired } }
 	}
 	
@@ -1998,18 +2284,18 @@ country_event = {
 	
 	# Победа большевиков
 	option = {
-		name = russia.47.a
+		name = russia.50.a
 		trigger = { has_country_flag = RUS_Oktober_revolution_fired }
 		set_country_flag = RUS_second_allrussian_congress_of_soviets
 		clr_country_flag = political_social_democrats_in_socialist_coalition
 		hidden_effect = {
-			country_event = { id = rcw_bolsheviks.103 days = 3 }
+			country_event = { id = rcw_bolsheviks.102 days = 3 }
 		}
 	}
 	
 	# Провал восстания большевиков
 	option = {
-		name = russia.47.b
+		name = russia.50.b
 		trigger = { NOT = { has_country_flag = RUS_Oktober_revolution_fired } }
 		set_country_flag = RUS_second_allrussian_congress_of_soviets
 		set_country_flag = RUS_Bolsheviks_majority
@@ -2264,7 +2550,7 @@ country_event = {
 		bolsheviks_victory = yes
 		if = {
 			limit = { NOT = { has_country_flag = RUS_second_allrussian_congress_of_soviets } }
-			hidden_effect = { country_event = { id = russia.47 days = 13 } }
+			hidden_effect = { country_event = { id = russia.50 days = 13 } }
 		}
 		remove_white_unit_leaders = yes
 		add_red_unit_leaders = yes

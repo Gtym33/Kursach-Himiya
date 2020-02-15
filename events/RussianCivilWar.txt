@@ -943,35 +943,6 @@ country_event = {
 	}
 }
 
-# If main former Russian empire faction takes Moscow
-country_event = {
-	id = rcw.1918
-	title = rcw.1918.t
-	desc = rcw.1918.d
-	
-	picture = GFX_report_event_military_planning
-
-	trigger = {
-		NOT = { has_global_flag = RUS_civil_war_over }
-		NOT = { has_global_flag = RCW_Allrussian_national_assembly }
-		has_global_flag = RUS_civil_war_intervention_start
-		RUS = { NOT = { has_country_flag = RUS_dont_fire_CW_end } }
-		NOT = { has_government = radical_socialism has_government = communism }
-		219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
-		is_main_former_russian_empire_country = yes
-		has_war = no
-	}
-	
-	fire_only_once = yes
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = rcw.1918.a
-		country_event = rcw_all_rus_NA.0
-	}
-}
 # If non-main former Russian empire faction takes Moscow
 country_event = {
 	id = rcw.1919
@@ -987,8 +958,13 @@ country_event = {
 		RUS = { NOT = { has_country_flag = RUS_dont_fire_CW_end } }
 		NOT = { has_government = radical_socialism has_government = communism }
 		219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
-		is_any_former_russian_empire_country = yes
-		NOT = { is_main_former_russian_empire_country = yes }
+		OR = {
+			is_former_russian_empire_russian_settled_non_cossack_country = yes
+			has_idea = DON_volunteer_recruitment_network_idea
+			has_idea = DON_Volunteer_army_presence_idea
+			#has_idea = DON_Peoples_army_presence_idea
+		}
+		NOT = { is_main_former_russian_empire_country_exept_Siberia = yes }
 		has_war = no
 	}
 	
@@ -1000,19 +976,29 @@ country_event = {
 	option = {
 		name = rcw.1919.a
 		random_country = {
-			limit = { is_main_former_russian_empire_country = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } }
-			country_event = rcw_all_rus_NA.0
+			limit = { is_main_former_russian_empire_country_exept_Siberia = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } }
+			transfer_state = 219
 		}
 	}
 	option = {
 		name = rcw.1919.b
 		hidden_effect = {
 			if = {
-				limit = { RVA = { exists = no } OR = { DON = { OR = { has_idea = DON_volunteer_recruitment_network_idea has_idea = DON_Volunteer_army_presence_idea has_completed_focus = DON_proclamation_of_Volunteer_Army } } KUB = { has_idea = DON_Volunteer_army_presence_idea } } }
+				limit = { RVA = { exists = no } OR = { DON = { OR = { has_idea = DON_volunteer_recruitment_network_idea has_idea = DON_Volunteer_army_presence_idea } } KUB = { has_idea = DON_Volunteer_army_presence_idea } } }
 				country_event = { id = rcw.1920 days = 14 }
 			}
 			else_if = {
 				limit = { CCA = { exists = no } }
+				every_country = {
+					limit = { is_main_former_russian_empire_country = yes }
+					declare_war_on = { target = ROOT type = annex_everything }
+				}
+			}
+			else = {
+				every_country = {
+					limit = { is_main_former_russian_empire_country = yes }
+					declare_war_on = { target = ROOT type = annex_everything }
+				}
 			}
 		}
 	}
@@ -1858,82 +1844,9 @@ country_event = {
 			}
 		}
 		
-		if = {
-			limit = { NWA = { exists = yes has_capitulated = no } }
-			NWA = {
-				if = { limit = { ROOT = { owns_state = 1016 } } transfer_state = 1016 }
-				if = { limit = { ROOT = { owns_state = 210 } } transfer_state = 210 }
-				if = { limit = { ROOT = { owns_state = 209 } } transfer_state = 209 }
-				if = { limit = { ROOT = { owns_state = 1017 } } transfer_state = 1017 }
-				if = { limit = { ROOT = { owns_state = 1015 } } transfer_state = 1015 }
-				if = { limit = { ROOT = { owns_state = 1020 } } transfer_state = 1020 }
-				if = { limit = { ROOT = { owns_state = 208 } } transfer_state = 208 }
-				if = { limit = { ROOT = { owns_state = 1023 } } transfer_state = 1023 }
-				if = { limit = { ROOT = { owns_state = 1021 } } transfer_state = 1021 }
-				if = {
-					limit = { OR = { controls_state = 195 owns_state = 195 } }
-					set_capital = 195
-					if = { limit = { ROOT = { owns_state = 1019 } } transfer_state = 1019 }
-					if = { limit = { ROOT = { owns_state = 195 } } transfer_state = 195 }
-					if = { limit = { ROOT = { owns_state = 1018 } } transfer_state = 1018 }
-					if = { limit = { ROOT = { owns_state = 1022 } } transfer_state = 1022 }
-					if = { limit = { ROOT = { owns_state = 244 } } transfer_state = 244 }
-					if = { limit = { ROOT = { owns_state = 263 } } transfer_state = 263 }
-					if = { limit = { ROOT = { owns_state = 264 } } transfer_state = 264 }
-					if = { limit = { ROOT = { owns_state = 216 } } transfer_state = 216 }
-					if = { limit = { ROOT = { owns_state = 1075 } } transfer_state = 1075 }
-					if = { limit = { ROOT = { owns_state = 1076 } } transfer_state = 1076 }
-					if = { limit = { ROOT = { owns_state = 797 } } transfer_state = 797 }
-				}
-				if = {
-					limit = { NOT = { has_completed_focus = NWA_savinkov_program } }
-					set_politics = {
-						ruling_party = authoritarism
-					}
-					set_popularities = {
-						radical_socialism = 0
-						communism = 0
-						social_democracy = 0
-						social_liberalism = 0
-						market_liberalism = 0
-						social_conservatism = 0
-						authoritarism = 50
-						despotism = 50
-						fascism = 0
-						national_syndicalism = 0
-					}
-					drop_cosmetic_tag = yes
-					else = {
-					set_politics = {
-						ruling_party = national_syndicalism
-					}
-					set_popularities = {
-						radical_socialism = 0
-						communism = 0
-						social_democracy = 0
-						social_liberalism = 0
-						market_liberalism = 0
-						social_conservatism = 0
-						authoritarism = 25
-						despotism = 25
-						fascism = 0
-						national_syndicalism = 50
-					}
-					drop_cosmetic_tag = yes
-					set_cosmetic_tag = NWA_PSK
-					}
-				}
-			}
-			else = {
-				NWA = {
-				every_state = {
-						limit = {
-							is_core_of = NWA
-						}
-					remove_core_of = NWA
-					}
-					}
-			}
+		every_state = {
+			limit = { is_core_of = NWA }
+			remove_core_of = NWA
 		}
 		
 		if = { limit = { ROOT = { owns_state = 881 } } KHI = { transfer_state = 881 } }

@@ -2017,7 +2017,7 @@ country_event = {
 	}
 }
 
-#########Государственное совещание######
+# Государственное совещание (КОМУЧ)
 country_event = {
 	id = rcw_usfev.30
 	title = rcw_usfev.30.t
@@ -2038,15 +2038,16 @@ country_event = {
 	#}
 	option = {
 		name = rcw_usfev.30.b
-				SIB = {
-				country_event = { id = rcw_usfev.31 days = 1 }
-				#set_country_flag = RSS_annex_CCA
-				set_country_flag = meeting_fail
-				}
-				set_country_flag = meeting_fail
+		SIB = {
+			country_event = { id = rcw_usfev.31 days = 1 }
+			#set_country_flag = RSS_annex_CCA
+			set_country_flag = meeting_fail
+		}
+		set_country_flag = meeting_fail
 	}
 }
 
+# Государственное совещание (Сибирь)
 country_event = {
 	id = rcw_usfev.31
 	title = rcw_usfev.31.t
@@ -2056,21 +2057,30 @@ country_event = {
 	is_triggered_only = yes
 	fire_only_once = yes
 	
+	# Не идти на переговоры
 	option = {
 		name = rcw_usfev.31.a
-				CCA = {
-				country_event = { id = rcw_usfev.32 days = 1 }
-				}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		CCA = {
+			country_event = { id = rcw_usfev.32 days = 1 }
+		}
 	}
 	
+	# Идти
 	option = {
 		name = rcw_usfev.31.b
 		ai_chance = {
-			factor = 999
+			factor = 4
 		}
-				CCA = {
-				country_event = { id = rcw_usfev.33 days = 1 }
-				}
+		CCA = {
+			country_event = { id = rcw_usfev.33 days = 1 }
+		}
 	}
 }
 
@@ -2087,9 +2097,9 @@ country_event = {
 		name = rcw_usfev.32.a
 		add_ideas = FRA_disjointed_government
 		SIB = {
-		add_popularity = { ideology = authoritarism popularity = 0.15 }
-		add_popularity = { ideology = despotism popularity = 0.15 }
-		add_popularity = { ideology = fascism popularity = 0.1 }
+			add_popularity = { ideology = authoritarism popularity = 0.15 }
+			add_popularity = { ideology = despotism popularity = 0.15 }
+			add_popularity = { ideology = fascism popularity = 0.1 }
 		}
 	}
 }
@@ -2143,139 +2153,7 @@ country_event = {
 	}
 }
 
-#########Спасти тряпку######
-country_event = {
-	id = rcw_usfev.35
-	title = rcw_usfev.35.t
-	desc = rcw_usfev.35.d
-	picture = GFX_report_event_rcw_Nikolai2_CCA
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	trigger = {
-		tag = CCA
-		controls_state = 653
-		RUS = { has_country_flag = Nikolay_Alexandrovich_Romanov_Ekat NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
-		NOT = { has_global_flag = Nikolay_Alexandrovich_Romanov_rescue }
-	}
-	
-	option = {
-	name = rcw_usfev.35.a
-	ai_chance = {
-			factor = 999
-		}
-	if = { limit = { any_unit_leader = { has_id = 88150 } } remove_unit_leader = 88150 }
-	country_event = { id = rcw_usfev.36 days = 1 }
-	}
-	option = {
-	name = rcw_usfev.35.b
-	add_stability = -0.1
-	set_global_flag = Nikolay_Alexandrovich_Romanov_rescue
-	random_list = {
-				30 = {
-					add_popularity = { ideology = authoritarism popularity = 0.20 }
-					create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
-				}
-				70 = {
-				hidden_effect = {
-					country_event = { id = rcw_usfev.37 days = 1 }
-					}
-					add_popularity = { ideology = authoritarism popularity = 0.20 }
-					create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
-				}
-			}
-	}
-}
-
-#########Расстрел тряпки КОМУЧ######
-country_event = {
-	id = rcw_usfev.36
-	title = rcw_usfev.36.t
-	desc = rcw_usfev.36.d
-	picture = GFX_report_event_rcw_Nikolai2_CCA_dead
-	
-	fire_only_once = yes
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_usfev.36.a
-		RUS = {
-			set_country_flag = Nikolay_Alexandrovich_Romanov_dead
-		}
-	}
-}
-
-#########Зло всегда возвращается######
-country_event = {
-	id = rcw_usfev.37
-	title = rcw_usfev.37.t
-	desc = rcw_usfev.37.d
-	picture = GFX_report_event_rcw_Nikolai2_CCA_devil_return
-	
-	fire_only_once = yes
-	is_triggered_only = yes
-	
-	option = {
-	name = rcw_usfev.37.a
-	add_popularity = { ideology = despotism popularity = 0.23 }
-	hidden_effect = { news_event = { id = news_n.31 hours = 48 } }
-	set_politics = { ruling_party = authoritarism }
-	load_focus_tree = His_Imperial_Majesty_Military_Committee_focus
-	every_unit_leader = { limit = { OR = { has_id = 88150 } } promote_leader = yes }
-		hidden_effect = {
-			set_stability = 0.2
-			set_war_support = 0.11
-			start_civil_war = {
-				ruling_party = authoritarism
-				ideology = social_liberalism
-				size = 0.3
-				keep_unit_leaders = { 88150 }
-			}
-			random_other_country = {
-				limit = {
-					original_tag = CCA
-					has_government = social_liberalism
-				}
-				set_stability = 0.9
-				set_war_support = 0.8
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
-				}
-			}
-		}
-	}
-	
-	option = {
-		name = rcw_usfev.37.b
-		add_popularity = { ideology = despotism popularity = 0.15 }
-		start_civil_war = {
-			ruling_party = social_liberalism
-			ideology = authoritarism
-			size = 0.3
-		}
-		hidden_effect = {
-			random_other_country = {
-				limit = {
-					original_tag = CCA
-					has_government = authoritarism
-				}
-				set_stability = 0.9
-				set_war_support = 0.8
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
-				}
-				every_unit_leader = { limit = { NOT = { has_id = 88150 } } set_nationality = CCA }
-			}
-		}
-	}
-}
-#########Выбор Сибиркого правительства######
+# Выбор Сибиркого правительства
 country_event = {
 	id = rcw_usfev.42
 	title = rcw_usfev.42.t
@@ -2356,29 +2234,30 @@ country_event = {
 	option = {
 		name = rcw_usfev.43.a
 		#set_variable = {
-		#var = SIB_pressure_CCA
-		#value = 1
-	#}
-	CCA = {country_event = { id = rcw_usfev.44 days = 1 }}
+			#var = SIB_pressure_CCA
+			#value = 1
+		#}
+		CCA = {country_event = { id = rcw_usfev.44 days = 1 } }
 	}
 	#option = {
 		#name = rcw_usfev.43.b
 		#set_variable = {
-		#var = SIB_pressure_CCA
-		#value = 2
+			#var = SIB_pressure_CCA
+			#value = 2
+		#}
+		#CCA = {country_event = { id = rcw_usfev.44 days = 1 } }
 	#}
-	#CCA = {country_event = { id = rcw_usfev.44 days = 1 }}
-#}
 	#option = {
 		#name = rcw_usfev.43.c
 		#set_variable = {
-		#var = SIB_pressure_CCA
-		#value = 3
+			#var = SIB_pressure_CCA
+			#value = 3
+		#}
+		#CCA = {country_event = { id = rcw_usfev.44 days = 1 } }
 	#}
-	#CCA = {country_event = { id = rcw_usfev.44 days = 1 }}
-#}
 }
 
+# Сибирский ультиматум о передаче Челябинска (КОМУЧ)
 country_event = {
 	id = rcw_usfev.44
 	title = rcw_usfev.44.t
@@ -2438,13 +2317,20 @@ country_event = {
 		#		country_event = { id = rcw_usfev.46 days = 1 }
 		#	}
 		#}
+		ai_chance = {
+			factor = 1
+		}
 	}
 	option = {
 		name = rcw_usfev.44.b
 		SIB = { country_event = { id = rcw_usfev.45 days = 1 } }
+		ai_chance = {
+			factor = 2
+		}
 	}
 }
 
+# Ультиматум Сибири отвергнут (Сибирь)
 country_event = {
 	id = rcw_usfev.45
 	title = rcw_usfev.45.t
@@ -2458,16 +2344,23 @@ country_event = {
 		name = rcw_usfev.45.a
 		add_war_support = 0.1
 		set_country_flag = meeting_fail
-		SIB = {transfer_state = 572}
-		CCA = {country_event = rcw_usfev.53}
+		SIB = { transfer_state = 572 }
+		CCA = { country_event = rcw_usfev.53 }
+		ai_chance = {
+			factor = 2
+		}
 	}
 	option = {
 		name = rcw_usfev.45.b
 		set_country_flag = meeting_fail
-		add_war_support = 0.05
-}
+		add_war_support = -0.05
+		ai_chance = {
+			factor = 1
+		}
+	}
 }
 
+# Сибирский ультиматум принят (Сибирь)
 country_event = {
 	id = rcw_usfev.46
 	title = rcw_usfev.46.t
@@ -2484,6 +2377,7 @@ country_event = {
 	}
 }
 
+# Сибирь вводит войска в Челябинск (КОМУЧ)
 country_event = {
 	id = rcw_usfev.53
 	title = rcw_usfev.53.t
@@ -2501,6 +2395,9 @@ country_event = {
 			target = SIB
 			type = annex_everything
 		}
+		ai_chance = {
+			factor = 2
+		}
 	}
 	option = {
 		name = rcw_usfev.53.b
@@ -2509,7 +2406,9 @@ country_event = {
 		add_popularity = { ideology = fascism popularity = 0.06 }
 		add_war_support = -0.1
 		add_stability = -0.1
-		
+		ai_chance = {
+			factor = 1
+		}
 	}
 }
 
@@ -3333,344 +3232,6 @@ country_event = {
 		drop_cosmetic_tag = yes
 	}
 	
-}
-
-###Расстрел Тряпки нормальный###
-country_event = {
-	id = rcw_usfev.62
-	title = rcw_usfev.62.t
-	desc = rcw_usfev.62.d
-	picture = GFX_report_event_KILL_ALL_ROMANOV
-	
-	trigger = {
-		tag = RUS
-		controls_state = 653
-		has_country_flag = RUS_Oktober_revolution_fired
-		has_country_flag = RUS_czechoslovak_legion_uprising
-		has_country_flag =  Nikolay_Alexandrovich_Romanov_Ekat
-		NOT = {
-			has_country_flag = Nikolay_Alexandrovich_Romanov_dead
-			OR = {
-				has_full_control_of_state = 653
-				has_full_control_of_state = 573
-				has_full_control_of_state = 572
-			}
-			has_global_flag = Nikolay_Alexandrovich_Romanov_rescue
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 20
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		name = rcw_usfev.62.a
-		#news_event
-		ai_chance = {
-			factor = 9999
-		}
-		set_country_flag = Nikolay_Alexandrovich_Romanov_dead
-		set_country_flag = Alexandra_Fyodorovna_Romanova_dead
-		add_popularity = {ideology = communism popularity = 0.01}
-	}
-	
-	option = {
-		name = rcw_usfev.62.b
-		add_popularity = {ideology = communism popularity = -0.01}
-	}
-	
-}
-
-###ЦАРЬ берёт прямое управление###
-country_event = {
-	id = rcw_usfev.63
-	title = rcw_usfev.63.t
-	desc = rcw_usfev.63.d
-	picture = GFX_report_event_comre_reorgonize_of_headquarters
-	
-	is_triggered_only = yes
-	fire_only_once = yes
-	
-	option = { #Николай, Николай, Коооляяяя.....
-		name = rcw_usfev.63.a
-		create_field_marshal = { name = "Nikolay II Romanov" id = 77401 portrait_path = "gfx/leaders/RUS/Nikolay_II_Romanov_military.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
-	}
-	
-	option = {
-		name = rcw_usfev.63.b
-		retire_country_leader = yes
-		create_country_leader = {
-	name = "Vladimir Cappel"
-	desc = "RUS_Vladimir_Cappel_DESC"
-	picture = "gfx/leaders/RUS/Vladimir_Cappel.dds"
-	expire = "1965.1.1"
-	ideology = authoritarism_ideology
-	traits = { warmonger }
-}
-		add_ideas = RUS_Nikolay_II_idea
-	}
-	
-	option = {
-		name = rcw_usfev.63.c
-		retire_country_leader = yes
-		create_country_leader = {
-	name = "Pavel Pertov"
-	desc = "RUS_Pavel_Pertov_DESC"
-	picture = "gfx/leaders/RUS/Pavel_Petrov.dds"
-	expire = "1965.1.1"
-	ideology = authoritarism_ideology
-	traits = { warmonger }
-}
-		add_ideas = RUS_Nikolay_II_idea
-	}
-	
-	option = {
-		name = rcw_usfev.63.dd
-		retire_country_leader = yes
-		create_country_leader = {
-	name = "Vasiliy Boldyrev"
-	desc = "RUS_Vasiliy_Boldyrev_DESC"
-	picture = "gfx/leaders/RUS/Vasiliy_Boldyrev.dds"
-	expire = "1965.1.1"
-	ideology = authoritarism_ideology
-	traits = { warmonger }
-}
-		add_ideas = RUS_Nikolay_II_idea
-	}
-}
-
-###Кто же признает монарха вновь? ХМММММ###
-country_event = {
-id = rcw_usfev.64
-	title = rcw_usfev.64.t
-	desc = rcw_usfev.64.d
-	picture = GFX_report_report_event_emperors_of_europe
-	
-	is_triggered_only = yes
-	fire_only_once = yes
-	
-	option = { #Антата, етит твою мать
-		name = rcw_usfev.64.a
-		trigger = {ENG = {is_puppet = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
-		ENG = {country_event = rcw_usfev.65}
-		add_political_power = -50
-		add_opinion_modifier = { target = ENG modifier = sazonov_cca_1 }
-	}
-	
-	option = { #Гермашка. Не ну а вдруг?
-		name = rcw_usfev.64.b
-		trigger = {GER = {NOT = { has_country_flag = GER_monarchy_fall }}}
-		GER = {country_event = rcw_usfev.65}
-		add_opinion_modifier = { target = GER modifier = sazonov_cca_1 }
-		add_political_power = -50
-	}
-}
-
-###Признайте нас... *няшная мордочка*###
-country_event = {
-id = rcw_usfev.65
-	title = rcw_usfev.65.t
-	desc = rcw_usfev.65.d
-	picture = GFX_report_report_event_emperors_of_europe
-	
-	is_triggered_only = yes
-	fire_only_once = yes
-	
-	option = { #А чоб собсна нет?
-		name = rcw_usfev.65.a
-		ROOT = {
-				add_opinion_modifier = { target = CCA modifier = sazonov_cca_2 }
-		}
-		add_political_power = 25
-		CCA = {country_event = rcw_usfev.66}
-		every_country = {
-			limit = {
-				OR = {
-					tag = ROOT
-					is_in_faction_with = ROOT
-					is_subject_of = ROOT
-				}
-			}
-			if = {
-				limit = {
-					is_in_array = {
-						array = unrecognized_states
-						value = FROM.id
-					}
-				}
-				FROM = {
-					THIS_country_will_be_recognized_by_PREV = yes
-				}
-			}
-		}
-	}
-	
-	option = { #Ну а я не хочу
-		name = rcw_usfev.65.b
-		ROOT = {
-				add_opinion_modifier = { target = CCA modifier = sazonov_cca_3 }
-		}
-		CCA = { country_event = rcw_usfev.67 }
-	}
-}
-
-###Признание Николашы###
-country_event = {
-	id = rcw_usfev.66
-	title = rcw_usfev.66.t
-	desc = rcw_usfev.66.d
-	picture = GFX_report_report_event_emperors_of_europe
-	
-	is_triggered_only = yes
-	fire_only_once = yes
-	
-	option = {
-		name = rcw_usfev.66.a
-		add_stability = 0.05
-		add_war_support = 0.05
-	}
-
-}
-
-###НЕ Признание Николашы###
-country_event = {
-	id = rcw_usfev.67
-	title = rcw_usfev.67.t
-	desc = rcw_usfev.67.d
-	picture = GFX_report_report_event_emperors_of_europe
-	
-	is_triggered_only = yes
-	fire_only_once = yes
-	
-	option = {
-		name = rcw_usfev.67.a
-		add_stability = -0.1
-	}
-
-}
-
-###Царь Сибирский###
-country_event = {
-id = rcw_usfev.68
-	title = rcw_usfev.68.t
-	desc = rcw_usfev.68.d
-	picture = GFX_report_event_comre_tsardom_in_siberia
-	
-	is_triggered_only = yes
-	fire_only_once = yes
-	
-	option = {
-		name = rcw_usfev.68.a
-		FROM = { annex_country = { target = SIB transfer_troops = yes } }
-		SIB = {
-			every_unit_leader = {
-				set_nationality = FROM
-			}
-		}
-		FROM = { country_event = { id = rcw_usfev.69 days = 1 } }
-		ai_chance = { factor = 8 }
-	}
-	
-	option = {
-		name = rcw_usfev.68.b
-		FROM = { country_event = { id = rcw_usfev.69 days = 1 } }
-		ai_chance = { factor = 2 modifier = { factor = 0 has_government = authoritarism } }
-	}
-}
-
-# Уведомление о решении Сибири
-country_event = {
-	id = rcw_usfev.69
-	title = rcw_usfev.69.t
-	desc = {
-		text = rcw_usfev.69.d
-		trigger = { SIB = { exists = yes } }
-	}
-	desc = {
-		text = rcw_usfev.69.d_1
-		trigger = { SIB = { exists = no } }
-	}
-	picture = GFX_report_event_comre_tsardom_in_siberia
-	
-	is_triggered_only = yes
-	
-	option = {
-		trigger = { SIB = { exists = yes } }
-		name = rcw_usfev.69.a
-		create_wargoal = {
-			type = annex_everything
-			target = ROOT
-		}
-	}
-	option = {
-		trigger = { SIB = { exists = no } }
-		name = rcw_usfev.69.b
-	}
-}
-
-
-###Монархистское восстание###
-country_event = {
-id = rcw_usfev.70
-	title = rcw_usfev.70.t
-	desc = rcw_usfev.70.d
-	picture = GFX_report_event_comre_blackhundred_uprising
-	
-	is_triggered_only = yes
-	fire_only_once = yes
-	
-	option = {
-		name = rcw_usfev.70.a
-		load_oob = CCA_rise_Mosckow
-		add_political_power = -100
-	}
-
-	option = {
-		name = rcw_usfev.70.b
-		load_oob = CCA_rise_Petrograd
-		add_political_power = -150
-	}
-	
-	option = {
-		name = rcw_usfev.70.c
-		load_oob = CCA_rise_Novgorod
-		add_political_power = -50
-	}
-}
-
-country_event = {
-	id = rcw_usfev.71
-	title = rcw_usfev.71.t
-	desc = rcw_usfev.71.d
-	picture = GFX_report_event_together_for_victory
-
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_usfev.71.a
-		CCA = {
-			add_to_faction = ROOT
-			set_autonomy = {
-				target = ROOT
-				autonomy_state = autonomy_dominion
-			}
-		}
-		ai_chance = { factor = 7 }
-	}
-	option = {
-		name = rcw_usfev.71.b
-		add_war_support = -0.3
-		add_political_power = -100
-		CCA = {
-			create_wargoal = {
-				type = puppet_wargoal_focus
-				target = ROOT
-			}
-		}
-		ai_chance = { factor = 3 }
-	}
 }
 
 ###Переворот Колчака в Сибири###
@@ -7359,36 +6920,6 @@ country_event = {
 	}
 
 }
-#########Спасти тряпку, но за Сибирь######
-country_event = {
-	id = rcw_usfev.155
-	title = rcw_usfev.155.t
-	desc = rcw_usfev.155.d
-	picture = GFX_report_event_rcw_Nikolai2_CCA
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	trigger = {
-		OR = {
-		tag = SIB
-		tag = RSS
-		}
-		controls_state = 653
-		RUS = { has_country_flag =  Nikolay_Alexandrovich_Romanov_Ekat NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
-		NOT = { has_global_flag = Nikolay_Alexandrovich_Romanov_rescue }
-	}
-	
-	option = {
-		name = rcw_usfev.155.a
-		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
-		clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
-		set_global_flag = Nikolay_Alexandrovich_Romanov_rescue
-	}
-}
 
 ###Унгерн дезертирует если высокий уровень капитуляции###
 country_event = {
@@ -7503,6 +7034,509 @@ country_event = {
 		
 	}
 
+}
+
+
+# Расстрел Тряпки нормальный
+country_event = {
+	id = rcw_usfev.200
+	title = rcw_usfev.200.t
+	desc = rcw_usfev.200.d
+	picture = GFX_report_event_KILL_ALL_ROMANOV
+	
+	trigger = {
+		tag = RUS
+		controls_state = 653
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_country_flag = RUS_czechoslovak_legion_uprising
+		has_country_flag =  Nikolay_Alexandrovich_Romanov_Ekat
+		NOT = {
+			has_country_flag = Nikolay_Alexandrovich_Romanov_dead
+			OR = {
+				has_full_control_of_state = 653
+				has_full_control_of_state = 573
+				has_full_control_of_state = 572
+			}
+			CCA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+			SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.200.a
+		#news_event
+		ai_chance = {
+			factor = 9999
+		}
+		set_country_flag = Nikolay_Alexandrovich_Romanov_dead
+		clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
+		set_country_flag = Alexandra_Fyodorovna_Romanova_dead
+		add_popularity = {ideology = communism popularity = 0.01}
+	}
+	
+	option = {
+		name = rcw_usfev.200.b
+		add_popularity = {ideology = communism popularity = -0.01}
+	}
+	
+}
+
+# Захват тряпки КОМУЧём
+country_event = {
+	id = rcw_usfev.201
+	title = rcw_usfev.201.t
+	desc = rcw_usfev.201.d
+	picture = GFX_report_event_rcw_Nikolai2_CCA
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	trigger = {
+		tag = CCA
+		controls_state = 653
+		RUS = { has_country_flag = Nikolay_Alexandrovich_Romanov_Ekat NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
+		NOT = { CCA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
+		NOT = { SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
+	}
+	
+	option = {
+		name = rcw_usfev.201.a
+		ai_chance = {
+			factor = 999
+		}
+		if = { limit = { any_unit_leader = { has_id = 88150 } } remove_unit_leader = 88150 }
+		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
+		country_event = { id = rcw_usfev.202 days = 1 }
+	}
+	option = {
+		name = rcw_usfev.201.b
+		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
+		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
+		add_popularity = { ideology = authoritarism popularity = 0.15 }
+		add_popularity = { ideology = social_conservatism popularity = 0.05 }
+		hidden_effect = {
+			random_list = {
+				30 = {
+					
+				}
+				70 = {
+					country_event = { id = rcw_usfev.203 days = 1 }
+					add_stability = -0.5
+					add_war_support = -0.5
+				}
+			}
+		}
+	}
+}
+
+# Расстрел тряпки КОМУЧём
+country_event = {
+	id = rcw_usfev.202
+	title = rcw_usfev.202.t
+	desc = rcw_usfev.202.d
+	picture = GFX_report_event_rcw_Nikolai2_CCA_dead
+	
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.202.a
+		RUS = { set_country_flag = Nikolay_Alexandrovich_Romanov_dead }
+		add_stability = 0.1
+	}
+}
+
+# Зло всегда возвращается, или монархический переворот в Ставке
+country_event = {
+	id = rcw_usfev.203
+	title = rcw_usfev.203.t
+	desc = rcw_usfev.203.d
+	picture = GFX_report_event_rcw_Nikolai2_CCA_devil_return
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.203.a
+		hidden_effect = { news_event = { id = news_n.31 hours = 48 } }
+		load_focus_tree = His_Imperial_Majesty_Military_Committee_focus
+		add_ideas = military_dictatorship_gov_form
+		every_unit_leader = { limit = { has_id = 88150 } promote_leader = yes }
+		set_politics = { ruling_party = authoritarism }
+		hidden_effect = {
+			set_temp_variable = { CW_size = 1 }
+			subtract_from_temp_variable = { CW_size = party_popularity@authoritarism }
+			subtract_from_temp_variable = { CW_size = party_popularity@market_liberalism }
+			subtract_from_temp_variable = { CW_size = party_popularity@social_conservatism }
+			subtract_from_temp_variable = { CW_size = party_popularity@despotism }
+			subtract_from_temp_variable = { CW_size = party_popularity@fascism }
+			start_civil_war = {
+				ideology = social_liberalism
+				size = CW_size
+				keep_unit_leaders = { 88150 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					has_government = social_liberalism
+				}
+				if = {
+					limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism } } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.203.b
+		set_temp_variable = { CW_size = party_popularity@authoritarism }
+		add_to_temp_variable = { CW_size = party_popularity@social_conservatism }
+		add_to_temp_variable = { CW_size = party_popularity@fascism }
+		add_to_temp_variable = { CW_size = party_popularity@despotism }
+		add_to_temp_variable = { CW_size = party_popularity@market_liberalism }
+		start_civil_war = {
+			ideology = authoritarism
+			size = CW_size
+		}
+		add_popularity = { ideology = social_conservatism popularity = -1 }
+		add_popularity = { ideology = authoritarism popularity = -1 }
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+					has_government = authoritarism
+				}
+				every_unit_leader = { limit = { NOT = { has_id = 88150 } } set_nationality = ROOT }
+				add_ideas = military_dictatorship_gov_form
+				
+				if = {
+					limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy has_government = social_liberalism } } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				if = {
+					limit = { SIB = { exists = yes  OR = { has_government = radical_socialism has_government = communism has_government = social_democracy has_government = social_liberalism } } }
+					declare_war_on = {
+						target = SIB
+						type = annex_everything
+					}
+				}
+			}
+		}
+	}
+}
+
+
+# Царь берёт прямое управление... или не берёт.
+country_event = {
+	id = rcw_usfev.204
+	title = rcw_usfev.204.t
+	desc = rcw_usfev.204.d
+	picture = GFX_report_event_comre_reorgonize_of_headquarters
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = { #Николай, Николай, Коооляяяя.....
+		name = rcw_usfev.204.a
+		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character } }
+		create_field_marshal = { name = "Nikolay II Romanov" id = 77401 portrait_path = "gfx/leaders/RUS/Nikolay_II_Romanov_military.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		remove_ideas = RUS_Nikolay_II_idea
+		add_war_support = -0.05
+		add_ideas = absolute_monarchy_gov_form
+	}
+	
+	option = {
+		name = rcw_usfev.204.b
+		if = {
+			limit = { NOT = { has_country_leader = { name = "Vladimir Cappel" ruling_only = yes } } }
+			create_country_leader = {
+				name = "Vladimir Cappel"
+				desc = "RUS_Vladimir_Cappel_DESC"
+				picture = "gfx/leaders/RUS/Vladimir_Cappel.dds"
+				expire = "1965.1.1"
+				ideology = authoritarism_ideology
+				traits = { warmonger }
+			}
+		}
+		add_ideas = limited_monarchy_gov_form
+		add_ideas = RUS_Nikolay_II_idea
+	}
+	
+	option = {
+		name = rcw_usfev.204.c
+		create_country_leader = {
+			name = "Pavel Pertov"
+			desc = "RUS_Pavel_Pertov_DESC"
+			picture = "gfx/leaders/RUS/Pavel_Petrov.dds"
+			expire = "1965.1.1"
+			ideology = authoritarism_ideology
+			traits = { warmonger }
+		}
+		add_ideas = limited_monarchy_gov_form
+		add_ideas = RUS_Nikolay_II_idea
+	}
+	
+	option = {
+		name = rcw_usfev.204.e
+		create_country_leader = {
+			name = "Vasiliy Boldyrev"
+			desc = "RUS_Vasiliy_Boldyrev_DESC"
+			picture = "gfx/leaders/RUS/Vasiliy_Boldyrev.dds"
+			expire = "1965.1.1"
+			ideology = authoritarism_ideology
+			traits = { warmonger }
+		}
+		add_ideas = limited_monarchy_gov_form
+		add_ideas = RUS_Nikolay_II_idea
+	}
+}
+
+# Кто же признает монарха вновь? ХМММММ
+country_event = {
+id = rcw_usfev.205
+	title = rcw_usfev.205.t
+	desc = rcw_usfev.205.d
+	picture = GFX_report_report_event_emperors_of_europe
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = { #Антата, етит твою мать
+		name = rcw_usfev.205.a
+		trigger = {ENG = {is_puppet = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
+		ENG = {country_event = rcw_usfev.206}
+		add_political_power = -50
+		add_opinion_modifier = { target = ENG modifier = sazonov_cca_1 }
+	}
+	
+	option = { #Гермашка. Не, ну а вдруг?
+		name = rcw_usfev.205.b
+		trigger = {GER = {NOT = { has_country_flag = GER_monarchy_fall }}}
+		GER = {country_event = rcw_usfev.206}
+		add_opinion_modifier = { target = GER modifier = sazonov_cca_1 }
+		add_political_power = -50
+	}
+}
+
+# Признайте нас... *няшная мордочка*
+country_event = {
+id = rcw_usfev.206
+	title = rcw_usfev.206.t
+	desc = rcw_usfev.206.d
+	picture = GFX_report_report_event_emperors_of_europe
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = { #А чоб собсна нет?
+		name = rcw_usfev.206.a
+		ROOT = {
+				add_opinion_modifier = { target = CCA modifier = sazonov_cca_2 }
+		}
+		add_political_power = 25
+		CCA = {country_event = rcw_usfev.207}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+	}
+	
+	option = { #Ну а я не хочу
+		name = rcw_usfev.206.b
+		ROOT = {
+				add_opinion_modifier = { target = CCA modifier = sazonov_cca_3 }
+		}
+		CCA = { country_event = rcw_usfev.208 }
+	}
+}
+
+###Признание Николашы###
+country_event = {
+	id = rcw_usfev.207
+	title = rcw_usfev.207.t
+	desc = rcw_usfev.207.d
+	picture = GFX_report_report_event_emperors_of_europe
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.207.a
+		add_stability = 0.05
+		add_war_support = 0.05
+	}
+
+}
+
+###НЕ Признание Николашы###
+country_event = {
+	id = rcw_usfev.208
+	title = rcw_usfev.208.t
+	desc = rcw_usfev.208.d
+	picture = GFX_report_report_event_emperors_of_europe
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.208.a
+		add_stability = -0.1
+	}
+
+}
+
+###Царь Сибирский###
+country_event = {
+id = rcw_usfev.209
+	title = rcw_usfev.209.t
+	desc = rcw_usfev.209.d
+	picture = GFX_report_event_comre_tsardom_in_siberia
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.209.a
+		FROM = { annex_country = { target = SIB transfer_troops = yes } }
+		SIB = {
+			every_unit_leader = {
+				set_nationality = FROM
+			}
+		}
+		FROM = { country_event = { id = rcw_usfev.210 days = 1 } }
+		ai_chance = { factor = 8 }
+	}
+	
+	option = {
+		name = rcw_usfev.209.b
+		FROM = { country_event = { id = rcw_usfev.210 days = 1 } }
+		ai_chance = { factor = 2 modifier = { factor = 0 has_government = authoritarism } }
+	}
+}
+
+# Уведомление о решении Сибири
+country_event = {
+	id = rcw_usfev.210
+	title = rcw_usfev.210.t
+	desc = {
+		text = rcw_usfev.210.d
+		trigger = { SIB = { exists = yes } }
+	}
+	desc = {
+		text = rcw_usfev.210.d_1
+		trigger = { SIB = { exists = no } }
+	}
+	picture = GFX_report_event_comre_tsardom_in_siberia
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { SIB = { exists = yes } }
+		name = rcw_usfev.210.a
+		create_wargoal = {
+			type = annex_everything
+			target = ROOT
+		}
+	}
+	option = {
+		trigger = { SIB = { exists = no } }
+		name = rcw_usfev.210.b
+	}
+}
+
+country_event = {
+	id = rcw_usfev.212
+	title = rcw_usfev.212.t
+	desc = rcw_usfev.212.d
+	picture = GFX_report_event_together_for_victory
+
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.212.a
+		FROM = {
+			add_to_faction = ROOT
+			ROOT = { subjecting_script_with_transfer_parties_dominion = yes }
+		}
+		every_state = {
+			limit = { is_core_of = ROOT is_core_of = FROM }
+			remove_core_of = FROM
+		}
+		ai_chance = { factor = 7 }
+	}
+	option = {
+		name = rcw_usfev.212.b
+		FROM = {
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = ROOT
+			}
+		}
+		ai_chance = { factor = 3 }
+	}
+}
+
+# Захват тряпки Сибирью
+country_event = {
+	id = rcw_usfev.251
+	title = rcw_usfev.251.t
+	desc = rcw_usfev.251.d
+	picture = GFX_report_event_rcw_Nikolai2_CCA
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	trigger = {
+		OR = {
+		tag = SIB
+		tag = RSS
+		}
+		controls_state = 653
+		RUS = { has_country_flag =  Nikolay_Alexandrovich_Romanov_Ekat NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
+		NOT = { CCA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
+		NOT = { SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
+	}
+	
+	option = {
+		name = rcw_usfev.251.a
+		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
+		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
+		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
+	}
 }
 
 # Китайцы начинают конфликт с Россией за КВЖД
