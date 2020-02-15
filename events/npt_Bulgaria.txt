@@ -16,9 +16,21 @@ country_event = {
 		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
 		is_subject = no
 		controls_state = 48
-		NOT = { controls_state = 106 controls_state = 993 }
-		106  = { CONTROLLER = { has_war_with = BUL } }
-		993  = { CONTROLLER = { has_war_with = BUL } }
+		OR = {
+			AND = {
+				NOT = { controls_state = 106 controls_state = 993 }
+				106  = { CONTROLLER = { has_war_with = BUL } }
+				993  = { CONTROLLER = { has_war_with = BUL } }
+			}
+			AND = {
+				NOT = { controls_state = 212 }
+				212  = { CONTROLLER = { has_war_with = BUL } }
+			}
+			AND = {
+				NOT = { controls_state = 945 }
+				945  = { CONTROLLER = { has_war_with = BUL } }
+			}
+		}
 	}
 
 	mean_time_to_happen = {
@@ -29,25 +41,20 @@ country_event = {
 	immediate = {
 		add_stability = -0.15
 		add_war_support = -0.10
+		if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
 		if = {
 			limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
-				add_timed_idea = {
-					idea = mutiny_1
-					days = 30
-				}
+			add_ideas =  mutiny_1
+			country_event = stability.23
 			else_if = {
 				limit = { has_idea = mutiny_1 }
-					add_timed_idea = {
-							idea = mutiny_2
-							days = 30
-					}
+				remove_ideas = mutiny_1
+				add_ideas =  mutiny_2
 			}
 			else_if = {
 				limit = { has_idea = mutiny_2 }
-					add_timed_idea = {
-							idea = mutiny_3
-							days = 30
-					}
+				remove_ideas = mutiny_2
+				add_ideas =  mutiny_3
 			}
 			else_if = {
 				limit = { has_idea = mutiny_3 }
@@ -86,6 +93,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
+		tag = BUL
 		has_global_flag = WWI_is_now
 		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
 	}
@@ -105,6 +113,7 @@ country_event = {
 	option = {
 		name = bulgaria.2.c
 		country_event = { id = compiegne_armistice.999 days = 1 }
+		set_country_flag = BUL_avoid_bunt_capitulations
 		set_politics = {
 			ruling_party = national_syndicalism
 			elections_allowed = no
@@ -132,6 +141,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
+		tag = BUL
 		has_global_flag = WWI_is_now
 		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
 	}
@@ -174,10 +184,13 @@ country_event = {
 	picture = GFX_report_event_bul_fall_of_sophia
 	
 	fire_only_once = yes
-	is_triggered_only = yes
 	
 	trigger = {
+		tag = BUL
+		has_start_date < 1918.11.11
 		has_global_flag = WWI_BUL_HAS_CAPITULATED
+		NOT = { has_government = national_syndicalism }
+		NOT = { has_country_flag = BUL_avoid_bunt_capitulations }
 	}
 	
 	immediate = {
