@@ -1,174 +1,518 @@
 on_actions = {
 
-	on_annex = {
+	#FROM is war target
+	on_declare_war = {
 		effect = {
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = PRM }
+			if = {
+				limit = {
+					NOT = { has_global_flag = RUS_civil_war_over }
+					OR = {
+						FROM = { tag = RVA }
+						FROM = { tag = DON }
+					}
+				}
+				every_country = {
+					diplomatic_relation = {
+						country = DON
+						relation = guarantee
+						active = no
+					}
+					diplomatic_relation = {
+						country = RVA
+						relation = guarantee
+						active = no
+					}
+				}
+			}
+
+			if = {
+				limit = {
+					tag = RUS
+					FROM = { tag = LAT has_country_flag = LAT_beszashitna }
+				}
+				if = {
+					limit = {
+						OR = {
+							has_global_flag = RUS_civil_war_over
+							FROM = { has_army_manpower = { size > 9999 } }
+						}
+					}
+					FROM = { clr_country_flag = LAT_beszashitna }
+					else = {
+						FROM = { country_event = rcw_bfk.11 }
+					}
+				}
+			}
+			if = {
+				limit = {
+					tag = LAT
+					has_country_flag = LAT_beszashitna
+					FROM = { tag = RUS }
+				}
+				if = {
+					limit = {
+						OR = {
+							has_global_flag = RUS_civil_war_over
+							has_army_manpower = { size > 9999 }
+						}
+					}
+					clr_country_flag = LAT_beszashitna
+					else = {
+						country_event = rcw_bfk.11
+					}
+				}
+			}
+			if = {
+				limit = { ROOT = { original_tag = DON } FROM = { original_tag = AZR } ARM = { has_country_flag = ARM_must_intervent_in_war_with_AZR } }
+				ARM = { declare_war_on = { target = FROM type = annex_everything } clr_country_flag = ARM_must_intervent_in_war_with_AZR }
+			}
+			if = {
+				limit = { has_variable = RVA_unification_var FROM = { tag = RUS } }
+				add_to_variable = { RVA_unification_var = 1 }
+			}
+			if = {
+				limit = { tag = RUS FROM = { has_variable = RVA_unification_var } }
+				FROM = { add_to_variable = { RVA_unification_var = 1 } }
+			}
 		}
-		PRM = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = RVA }
-		}
-		RVA = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = DON }
-		}
-		DON = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = BKL }
-		}
-		BKL = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = SIB }
-		}
-		SIB = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = NRR }
-		}
-		NRR = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = NWA }
-		}
-		NWA = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = WVA }
-		}
-		WVA = { every_unit_leader = { set_nationality = ROOT } } 
-		}
-		if = {
-		limit = {
-		ROOT = { is_white_movement_country = yes } 
-		FROM = { tag = CPG }
-		}
-		CPG = { every_unit_leader = { set_nationality = ROOT } } 
-		}
+	}
+
+	on_startup = {
+		effect = { #Тут прописано отдельно, а не через every_country, т.к. не задевались несуществующие страны
+			DON = {
+				set_variable = { RVA_unification_var = 0 }
+				if = {
+					limit = { is_subject = yes OVERLORD = { NOT = { tag = RVA } } }
+					add_to_variable = { RVA_unification_var = -2 }
+				}
+				if = {
+					limit = { OR = { NOT = { has_war_with = RUS } exists = no } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { is_in_faction = yes NOT = { is_in_faction_with = RVA } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { has_non_aggression_pact_with = RVA }
+					add_to_variable = { RVA_unification_var = 1 }
+				}
+			}
+			KUB = {
+				set_variable = { RVA_unification_var = 0 }
+				if = {
+					limit = { is_subject = yes OVERLORD = { NOT = { tag = RVA } } }
+					add_to_variable = { RVA_unification_var = -2 }
+				}
+				if = {
+					limit = { OR = { NOT = { has_war_with = RUS } exists = no } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { is_in_faction = yes NOT = { is_in_faction_with = RVA } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { has_non_aggression_pact_with = RVA }
+					add_to_variable = { RVA_unification_var = 1 }
+				}
+			}
+			UKR = {
+				set_variable = { RVA_unification_var = 0 }
+				if = {
+					limit = { is_subject = yes OVERLORD = { NOT = { tag = RVA } } }
+					add_to_variable = { RVA_unification_var = -2 }
+				}
+				if = {
+					limit = { OR = { NOT = { has_war_with = RUS } exists = no } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { is_in_faction = yes NOT = { is_in_faction_with = RVA } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { has_non_aggression_pact_with = RVA }
+					add_to_variable = { RVA_unification_var = 1 }
+				}
+			}
+			CRI = {
+				set_variable = { RVA_unification_var = 0 }
+				if = {
+					limit = { is_subject = yes OVERLORD = { NOT = { tag = RVA } } }
+					add_to_variable = { RVA_unification_var = -2 }
+				}
+				if = {
+					limit = { OR = { NOT = { has_war_with = RUS } exists = no } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { is_in_faction = yes NOT = { is_in_faction_with = RVA } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { has_non_aggression_pact_with = RVA }
+					add_to_variable = { RVA_unification_var = 1 }
+				}
+			}
+			CPG = {
+				set_variable = { RVA_unification_var = 0 }
+				if = {
+					limit = { is_subject = yes OVERLORD = { NOT = { tag = RVA } } }
+					add_to_variable = { RVA_unification_var = -2 }
+				}
+				if = {
+					limit = { OR = { NOT = { has_war_with = RUS } exists = no } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { is_in_faction = yes NOT = { is_in_faction_with = RVA } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { has_non_aggression_pact_with = RVA }
+					add_to_variable = { RVA_unification_var = 1 }
+				}
+			}
+			MRC = {
+				set_variable = { RVA_unification_var = 0 }
+				if = {
+					limit = { is_subject = yes OVERLORD = { NOT = { tag = RVA } } }
+					add_to_variable = { RVA_unification_var = -2 }
+				}
+				if = {
+					limit = { OR = { NOT = { has_war_with = RUS } exists = no } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { is_in_faction = yes NOT = { is_in_faction_with = RVA } }
+					add_to_variable = { RVA_unification_var = -1 }
+				}
+				if = {
+					limit = { has_non_aggression_pact_with = RVA }
+					add_to_variable = { RVA_unification_var = 1 }
+				}
+			}
 		}
 	}
 	
-	on_capitulation = {
-	effect = {
-	if = {
-	limit = { tag = RSS NOT = { has_global_flag = RUS_civil_war_over } }
-	if = { limit = { BKL = {exists = no} }
-	every_unit_leader = { limit = { has_id = 77299 } set_nationality = BKL }
-	BKL = {
-		transfer_state = 761
-		inherit_technology = RSS
-	}
-	}
-	BKL = {
-		if = {
-			limit = { has_idea = neutral_foreign_policy_law }
-			add_ideas = realpolitic_policy_law
+	on_leave_faction = {
+		effect = {
+			if = {
+				limit = { has_variable = RVA_unification_var FROM = { NOT = { tag = RVA } } }
+				add_to_variable = { RVA_unification_var = 1 }
+			}
 		}
-		set_politics = { ruling_party = authoritarism }
 	}
-	every_country = {
-		limit = {is_subject_of = RSS}
-		end_puppet = RSS
-	}
-	every_country = { 
-	limit = { 
-	has_offensive_war_with = RSS 
-	} 
-	declare_war_on = { 
-	target = BKL 
-	type = annex_everything 
-	} 
-	} 
-	every_country = { 
-	limit = { 
-	has_defensive_war_with = RSS 
-	NOT = { has_war_with = BKL } 
-	} 
-	BKL = { 
-	declare_war_on = { 
-	target = PREV 
-	type = annex_everything 
-	} 
-	} 
-	} 
-	every_country = { 
-	limit = { 
-	is_guaranteed_by = RSS 
-	NOT = { has_war_with = BKL } 
-	} 
-	BKL = { give_guarantee = PREV } 
-	} 
-	every_country = { 
-	limit = { 
-	has_military_access_to = RSS 
-	NOT = { has_war_with = BKL } 
-	} 
-	BKL = { give_military_access = PREV } 
-	} 
-	every_country = { 
-	limit = { 
-	gives_military_access_to = RSS 
-	NOT = { has_war_with = BKL } 
-	} 
-	give_military_access = BKL 
-	} 
-	every_country = { 
-	limit = { 
-	has_non_aggression_pact_with = RSS 
-	NOT = { has_war_with = BKL } 
-	} 
-	diplomatic_relation = { 
-	country = RSS 
-	relation = non_aggression_pact 
-	active = no 
-	} 
-	diplomatic_relation = { 
-	country = BKL 
-	relation = non_aggression_pact 
-	active = yes 
-	} 
-	}
-	BKL = { set_cosmetic_tag  = BKL_REO }
-	every_state = {
-			limit = {
-				is_core_of = RSS
+	
+	on_join_faction = {
+		effect = {
+			if = {
+				limit = { has_variable = RVA_unification_var FROM = { NOT = { tag = RVA } } }
+				add_to_variable = { RVA_unification_var = -1 }
 			}
-			remove_core_of = RSS
+		}
 	}
-	every_state = {
-			limit = {
-				is_owned_by = RSS
+	
+	#used when puppeting in a peace conference
+	#ROOT = nation being puppeted, FROM = overlord
+	
+	on_puppet = {
+		effect = {
+			if = {
+				limit = { has_variable = RVA_unification_var FROM = { NOT = { tag = RVA } } }
+				add_to_variable = { RVA_unification_var = -2 }
 			}
-			BKL = { set_state_owner = PREV }
+		}
 	}
-	every_state = {
-			limit = {
-				is_controlled_by = RSS
+	
+	#used when puppeting through the occupied territories menu during peace time (or when releasing from non-core but owned territory, f.e. Britain releasing Egypt)
+	#ROOT = nation being released, FROM = overlord
+	
+	on_release_as_puppet = {
+		effect = {
+			if = {
+				limit = { has_variable = RVA_unification_var FROM = { NOT = { tag = RVA } } }
+				add_to_variable = { RVA_unification_var = -2 }
 			}
-			BKL = { set_state_controller = PREV }
+		}
 	}
-	BKL = { annex_country = { target = RSS transfer_troops = yes } }
+	
+	#Trigger the following commands when a country grants freedom to a puppet.
+	#ROOT is the subject, FROM is the previous overlord
+	
+	on_subject_free = {
+		effect = {
+			if = {
+				limit = { has_variable = RVA_unification_var FROM = { NOT = { tag = RVA } } }
+				add_to_variable = { RVA_unification_var = 2 }
+			}
+		}
 	}
+
+	#ROOT is the winner, FROM is the loser.
+	on_peaceconference_ended = {
+		effect = {
+			if = {
+				limit = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war FROM = { tag = KRN } }
+				RUS = { country_event = petrograd_commune.101 }
+			}
+			#if = {
+				#limit = { FROM = { tag = RGR } }
+				#every_state = { clr_state_flag = RCW_green_state_revolt }
+			#}
+			if = {
+				limit = { NOT = { has_global_flag = RUS_civil_war_over } FROM = { tag = RUS exists = yes has_country_flag = RUS_Oktober_revolution_fired } ROOT = { is_any_former_russian_empire_country = yes NOT = { has_government = radical_socialism has_government = communism } } }
+				if = {
+					limit = { FROM = { is_subject = yes } }
+					OVERLORD = { annex_country = { target = FROM transfer_troops = no } }
+				}
+				else_if = {
+					limit = {
+						any_country = { tag = ROOT is_owner_neighbor_of = FROM }
+					}
+					random_country = {
+						limit = { tag = ROOT is_owner_neighbor_of = FROM }
+						annex_country = { target = FROM transfer_troops = no }
+					}
+				}
+				else_if = {
+					limit = {
+						any_country = { tag = ROOT is_neighbor_of = FROM }
+					}
+					random_country = {
+						limit = { tag = ROOT is_neighbor_of = FROM }
+						annex_country = { target = FROM transfer_troops = no }
+					}
+				}
+				else_if = {
+					random_country = {
+						limit = { tag = ROOT }
+						annex_country = { target = FROM transfer_troops = no }
+					}
+				}
+				#RUS = {
+					#bolsheviks_fall = yes
+				#}
+			}
+		}
 	}
+
+
+	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = {
+					FROM.FROM = { is_capital = yes }
+					FROM = { tag = RUS has_country_flag = new_temp_capital }
+					has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+					ROOT = { tag = KRN }
+				}
+				RUS = { clr_country_flag = new_temp_capital country_event = russian_ovrthrw_of_mon.98 }
+			}
+			if = {
+				limit = {
+					FROM.FROM = { state = 195 }
+					ROOT = { OR = { AND = { NOT = { tag = RUS } original_tag = RUS } tag = CCA tag = SIB tag = PRM tag = TRK tag = CPG tag = KAZ } }
+					NOT = { has_global_flag = RUS_civil_war_over }
+					NOT = { has_global_flag = RUS_Lavr_Kornilov_could_dead_in_CW }
+					has_global_flag = RUS_Kornilov_civil_war
+					FROM = { tag = RUS NOT = { has_country_flag = Lavr_Kornilov_dead } }
+				}
+				FROM = { country_event = rcw_kcr.111 }
+				set_global_flag = RUS_Lavr_Kornilov_could_dead_in_CW
+			}
+			if = {
+				limit = {
+					ROOT = { tag = RVA has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } NOT = { has_country_flag = Kornilov_will_dead has_country_flag = Kornilov_will_not_dead has_country_flag = Lavr_Kornilov_dead } }
+					NOT = { has_global_flag = RUS_civil_war_over }
+					NOT = { has_global_flag = RUS_Lavr_Kornilov_could_dead_in_CW }
+					FROM = { tag = RUS }
+					FROM.FROM = { is_owned_by = RUS }
+					NOT = { has_country_flag = Lavr_Kornilov_dead }
+				}
+				random_list = {
+					10 = {
+						modifier = {
+							factor = 5
+							FROM.FROM = {
+								OR = {
+									state = 234
+									state = 236
+									state = 813
+									state = 260
+									state = 220
+									state = 219
+									state = 252
+									state = 195
+								}
+							}
+						}
+						country_event = rcw_dkutc.7
+						set_global_flag = RUS_Lavr_Kornilov_could_dead_in_CW
+					}
+					90 = {}
+				}
+			}
+			if = {
+				limit = {
+					tag = DON
+					has_idea = DON_Volunteer_army_presence_idea
+					NOT = { has_country_flag = DON_RVA_unity_propoganda }
+					FROM = {
+						OR = {
+							has_country_flag = RUS_Oktober_revolution_fired
+							OVERLORD = { has_country_flag = RUS_Oktober_revolution_fired }
+						}
+					}
+					FROM.FROM = {
+						is_owned_by = FROM
+						OR = {
+							state = 221
+							state = 220
+							state = 258
+							state = 222
+							state = 257
+							state = 239
+							state = 250
+							state = 224
+							state = 243
+						}
+					}
+				}
+				FROM.FROM = {
+					set_state_flag = DON_state_RVA_location
+					state_event = { id = rcw_dkutc.111 trigger_for = controller }
+				}
+			}
+			if = {
+				limit = {
+					NOT = { has_global_flag = RUS_civil_war_over }
+					ROOT = { tag = BKL }
+					FROM = { tag = RUS }
+					FROM.FROM = { state = 563 }
+				}
+				BKL = { set_state_owner = FROM.FROM }
+			}
+			if = {
+				limit = {
+					NOT = { has_global_flag = RUS_civil_war_over }
+					ROOT = { tag = SIB }
+					FROM = { tag = RUS }
+					FROM.FROM = {
+						OR = {
+							state = 563
+							state = 564
+							state = 565
+							state = 644
+							state = 574
+						}
+					}
+				}
+				SIB = { set_state_owner = FROM.FROM }
+			}
+			if = {
+				limit = {
+					NOT = { has_global_flag = RUS_civil_war_over }
+					ROOT = { tag = RVA }
+					FROM = { tag = RUS }
+					FROM.FROM = {
+						OR = {
+							state = 907
+							state = 137
+							state = 233
+							state = 234
+							state = 235
+							state = 902
+							state = 803
+						}
+					}
+				}
+				RVA = { set_state_owner = FROM.FROM }
+				if = {
+					limit = { FROM.FROM = { state = 234 } }
+					RVA = { set_capital = FROM.FROM }
+				}
+			}
+		}
+	}
+
+	#ROOT is winner #FROM gets annexed - For civil wars on_civil_war_end is also fired
+	on_annex = {
+		effect = {
+			if = {
+				limit = {
+					ROOT = { is_white_movement_country = yes }
+					FROM = { OR = { tag = PRM tag = RVA tag = DON tag = BKL tag = NRR tag = NWA tag = WVA tag = CPG tag = KUB } }
+				}
+				FROM = { every_unit_leader = { set_nationality = ROOT } }
+			}
+		}
+	}
+	
+	# ROOT is capitulated country, FROM is winner
+	on_capitulation = {
+		effect = {
+			if = {
+				limit = { has_variable = RVA_unification_var FROM = { NOT = { tag = RVA } } }
+				add_to_variable = { RVA_unification_var = 1 }
+			}
+			if = {
+				limit = { tag = RSS NOT = { has_global_flag = RUS_civil_war_over } }
+				if = {
+					limit = { BKL = { exists = no } }
+					every_unit_leader = { limit = { has_id = 77299 } set_nationality = BKL }
+					BKL = {
+						transfer_state = 761
+						inherit_technology = RSS
+					}
+				}
+				BKL = {
+					if = {
+						limit = { has_idea = neutral_foreign_policy_law }
+						add_ideas = realpolitic_policy_law
+					}
+					set_politics = { ruling_party = authoritarism }
+				}
+				every_country = {
+					limit = { is_subject_of = RSS }
+					end_puppet = RSS
+				}
+				every_country = {
+					limit = { has_offensive_war_with = RSS }
+					declare_war_on = {
+						target = BKL
+						type = annex_everything
+					}
+				}
+				every_country = {
+					limit = {
+						has_defensive_war_with = RSS
+						NOT = { has_war_with = BKL }
+					}
+					BKL = {
+						declare_war_on = {
+							target = PREV
+							type = annex_everything
+						}
+					}
+				}
+				BKL = { set_cosmetic_tag  = BKL_REO }
+				every_state = {
+					limit = { is_core_of = RSS }
+					remove_core_of = RSS
+				}
+				every_state = {
+					limit = { is_owned_by = RSS }
+					BKL = { set_state_owner = PREV }
+				}
+				every_state = {
+					limit = { is_controlled_by = RSS }
+					BKL = { set_state_controller = PREV }
+				}
+				BKL = { annex_country = { target = RSS transfer_troops = yes } }
+			}
+		}
 	}
 }

@@ -23,18 +23,19 @@ rcw_RVA_savinkov_missions_decisions = {
 				has_completed_focus = NWA_independent_government
 				is_subject = no
 				NOT = { OR = { has_government = communism has_government = radical_socialism } }
-				NOT = { has_country_flag = NWA_savinkov_mission_fired }
 			}
 		}
 	
 		cost = 10
 		days_remove = 7
+		fire_only_once = yes
 		
 		ai_will_do = {
 			factor = 1
 		}
 		
 		complete_effect = {
+			set_country_flag = NWA_savinkov_mission_progress
 			add_popularity = { ideology = national_syndicalism popularity = 0.04 }
 			NWA = { add_popularity = { ideology = national_syndicalism popularity = 0.04 } }
 			add_opinion_modifier = { target = NWA modifier = RVA_savinkov_mision }
@@ -42,7 +43,7 @@ rcw_RVA_savinkov_missions_decisions = {
 		}
 		
 		remove_effect = {
-			NWA = { country_event = { id = rcw_dkutc.137 days = 1 } set_country_flag = NWA_savinkov_mission_fired }
+			NWA = { country_event = { id = rcw_dkutc.137 days = 1 } } clr_country_flag = NWA_savinkov_mission_progress
 		}
 	}
 	
@@ -68,19 +69,20 @@ rcw_RVA_savinkov_missions_decisions = {
 				exists = yes
 				has_government = national_syndicalism
 				is_subject = no
-				NOT = { has_country_flag = NWA_savinkov_mission_fired }
 				NOT = { OR = { has_government = communism has_government = radical_socialism } }
 			}
 		}
 	
 		cost = 15
 		days_remove = 7
+		fire_only_once = yes
 		
 		ai_will_do = {
 			factor = 1
 		}
 		
 		complete_effect = {
+			set_country_flag = NWA_savinkov_mission_progress
 			add_popularity = { ideology = national_syndicalism popularity = 0.04 }
 			CCA = { add_popularity = { ideology = national_syndicalism popularity = 0.04 } }
 			add_opinion_modifier = { target = CCA modifier = RVA_savinkov_mision }
@@ -88,7 +90,7 @@ rcw_RVA_savinkov_missions_decisions = {
 		}
 		
 		remove_effect = {
-			CCA = { country_event = { id = rcw_dkutc.137 days = 1 } set_country_flag = NWA_savinkov_mission_fired }
+			CCA = { country_event = { id = rcw_dkutc.137 days = 1 } } clr_country_flag = NWA_savinkov_mission_progress
 		}
 	}
 	
@@ -117,26 +119,211 @@ rcw_RVA_savinkov_missions_decisions = {
 				is_subject = no
 				has_country_leader = { name = "Józef Pilsudski" ruling_only = yes }
 				NOT = { has_war_with = RUS }
-				NOT = { has_country_flag = NWA_savinkov_mission_fired }
 				NOT = { OR = { has_government = communism has_government = radical_socialism } }
 			}
 		}
 	
 		cost = 25
 		days_remove = 14
+		fire_only_once = yes
 		
 		ai_will_do = {
 			factor = 1
 		}
 		
 		complete_effect = {
+			set_country_flag = NWA_savinkov_mission_progress
 			add_popularity = { ideology = national_syndicalism popularity = 0.05 }
 			POL = { add_popularity = { ideology = national_syndicalism popularity = 0.05 } }
 		}
 		
 		remove_effect = {
-			POL = { country_event = { id = rcw_dkutc.138 days = 1 } set_country_flag = NWA_savinkov_mission_fired }
+			POL = { country_event = { id = rcw_dkutc.138 days = 1 } } clr_country_flag = NWA_savinkov_mission_progress
 		}
 	}
 	
+}
+
+rcw_RVA_unification_of_south_whites_decisions = {
+	
+	RVA_show_army_superiority = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_trigger = {
+			FROM = { exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } }
+		}
+		visible = {
+			FROM = { NOT = { is_in_faction_with = ROOT } }
+		}
+		available = {
+			strength_ratio = {
+				tag = FROM
+				ratio > 1
+			}
+		}
+		cost = 15
+		days_remove = 10
+		fire_only_once = yes
+		remove_effect = {
+			FROM = {
+				if = {
+					limit = { NOT = { has_variable = RVA_unification_var } }
+					set_variable = { RVA_unification_var = 0 }
+				}
+			}
+			FROM = {
+				add_to_variable = { RVA_unification_var = 1 }
+			}
+		}
+	}
+	RVA_establish_diplomatic_relations = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_trigger = {
+			FROM = { exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } }
+		}
+		cost = 15
+		days_remove = 35
+		fire_only_once = yes
+		remove_effect = {
+			FROM = {
+				if = {
+					limit = { NOT = { has_variable = RVA_unification_var } }
+					set_variable = { RVA_unification_var = 0 }
+				}
+			}
+			FROM = {
+				add_to_variable = { RVA_unification_var = 1 }
+				set_country_flag = RVA_diplomatic_relations
+			}
+		}
+	}
+	RVA_seeking_for_support_of_militaries = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_trigger = {
+			FROM = { exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } }
+		}
+		visible = { FROM = { has_country_flag = RVA_diplomatic_relations } }
+		cost = 10
+		days_remove = 21
+		fire_only_once = yes
+		remove_effect = {
+			FROM = {
+				if = {
+					limit = { NOT = { has_variable = RVA_unification_var } }
+					set_variable = { RVA_unification_var = 0 }
+				}
+			}
+			FROM = {
+				add_to_variable = { RVA_unification_var = 1 }
+			}
+		}
+	}
+	RVA_support_hawks = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_trigger = {
+			FROM = { exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } }
+		}
+		visible = { FROM = { has_country_flag = RVA_diplomatic_relations } }
+		cost = 10
+		days_remove = 21
+		fire_only_once = yes
+		remove_effect = {
+			FROM = {
+				if = {
+					limit = { NOT = { has_variable = RVA_unification_var } }
+					set_variable = { RVA_unification_var = 0 }
+				}
+			}
+			FROM = {
+				add_to_variable = { RVA_unification_var = 1 }
+				add_war_support = 0.05
+			}
+		}
+	}
+	RVA_establish_recruiting_network = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_trigger = {
+			FROM = { exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } }
+		}
+		available = {
+			FROM = { custom_trigger_tooltip = { tooltip = RVA_unification_var_2_or_more check_variable = { var = RVA_unification_var value = 2 compare = greater_than_or_equals } } }
+		}
+		visible = { FROM = { has_country_flag = RVA_diplomatic_relations } }
+		cost = 10
+		days_remove = 21
+		fire_only_once = yes
+		remove_effect = {
+			add_manpower = 2000
+			FROM = {
+				add_to_variable = { RVA_unification_var = 1 }
+			}
+		}
+	}
+	RVA_call_to_union = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_trigger = {
+			FROM = { exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } } OR = { is_faction_leader = no NOT = { is_in_faction_with = FROM } }
+		}
+		available = {
+			FROM = { has_country_flag = RVA_diplomatic_relations custom_trigger_tooltip = { tooltip = RVA_unification_var_5_or_more check_variable = { var = RVA_unification_var value = 5 compare = greater_than_or_equals } } }
+		}
+		visible = { FROM = { has_country_flag = RVA_diplomatic_relations } }
+		cost = 15
+		days_remove = 7
+		fire_only_once = yes
+		remove_effect = {
+			FROM = {
+				country_event = rcw_dkutc.151
+			}
+		}
+	}
+	RVA_prepare_coup = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_root_trigger = { is_faction_leader = yes }
+		target_trigger = {
+			FROM = { NOT = { is_in_faction_with = ROOT } has_country_flag = RVA_union_refuse exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } }
+		}
+		available = {
+			FROM = { custom_trigger_tooltip = { tooltip = RVA_unification_var_5_or_more check_variable = { var = RVA_unification_var value = 5 compare = greater_than_or_equals } } }
+		}
+		cost = 10
+		days_remove = 14
+		fire_only_once = yes
+		remove_effect = {
+			FROM = {
+				country_event = rcw_dkutc.154
+			}
+		}
+	}
+	RVA_integrate_administration = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_root_trigger = { is_faction_leader = yes }
+		target_trigger = {
+			FROM = { is_in_faction_with = ROOT exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } check_variable = { var = RVA_unification_var value = 7 compare = less_than } }
+		}
+		cost = 10
+		days_remove = 14
+		
+		remove_effect = {
+			FROM = {
+				add_to_variable = { RVA_unification_var = 1 }
+			}
+		}
+	}
+	RVA_annex_ally = {
+		targets= { DON KUB UKR CRI CPG MRC }
+		target_root_trigger = { is_faction_leader = yes }
+		target_trigger = {
+			FROM = { is_in_faction_with = ROOT exists = yes NOT = { has_war_with = ROOT has_government = radical_socialism has_government = communism } }
+		}
+		available = {
+			FROM = { custom_trigger_tooltip = { tooltip = RVA_unification_var_7_or_more check_variable = { var = RVA_unification_var value = 7 compare = greater_than_or_equals } } }
+		}
+		cost = 20
+		days_remove = 14
+		fire_only_once = yes
+		remove_effect = {
+			FROM = { every_unit_leader = { set_nationality = ROOT } }
+			annex_country = { target = FROM transfer_troops = yes }
+		}
+	}
 }
