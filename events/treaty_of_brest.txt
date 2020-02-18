@@ -1070,7 +1070,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 60
+		days = 70
 		modifier = {
 			factor = 0.01
 			RUS = {
@@ -2031,6 +2031,9 @@ country_event = {
 						controls_state = 1015
 						controls_state = 1004
 						controls_state = 210
+						controls_state = 191
+						controls_state = 1016
+						controls_state = 242
 					}
 				}
 			}
@@ -2328,13 +2331,30 @@ country_event = {
 	option = {
 		name = treaty_of_brest.43.a
 		hidden_effect = { RUS = { annex_country = { target = SLT transfer_troops = no } } }
-		every_state = {
-			limit = { is_owned_by = UKR is_controlled_by = USR }
-			USR = { transfer_state = PREV }
-		}
-		every_state = {
-			limit = { is_owned_by = UKR is_controlled_by = ODS }
-			ODS = { transfer_state = PREV }
+		if = {
+			limit = { UKR = { exists = no } USR = { exists = yes } NOT = { any_state = { is_core_of = USR CONTROLLER = { has_war_with = USR } } } }
+			every_country = {
+				limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+				white_peace = USR
+				white_peace = ODS
+			}
+			else = {
+				RUS = { end_puppet = ODS }
+				RUS = { end_puppet = USR }
+				UKR = { white_peace = RUS }
+				USR = {
+					diplomatic_relation = { country = GER relation = non_aggression_pact active = no }
+					diplomatic_relation = { country = AUH relation = non_aggression_pact active = no }
+					diplomatic_relation = { country = BUL relation = non_aggression_pact active = no }
+					diplomatic_relation = { country = TUR relation = non_aggression_pact active = no }
+				}
+				ODS = {
+					diplomatic_relation = { country = GER relation = non_aggression_pact active = no }
+					diplomatic_relation = { country = AUH relation = non_aggression_pact active = no }
+					diplomatic_relation = { country = BUL relation = non_aggression_pact active = no }
+					diplomatic_relation = { country = TUR relation = non_aggression_pact active = no }
+				}
+			}
 		}
 		if = {
 			limit = {
@@ -2345,6 +2365,9 @@ country_event = {
 						controls_state = 1015
 						controls_state = 1004
 						controls_state = 210
+						controls_state = 191
+						controls_state = 1016
+						controls_state = 242
 					}
 				}
 			}
@@ -2826,6 +2849,7 @@ country_event = {
 			if = { limit = { has_idea = ROM_bonus_against_Central_powers } remove_ideas = ROM_bonus_against_Central_powers }
 			if = { limit = { has_idea = UKR_bonus_against_Central_powers } remove_ideas = UKR_bonus_against_Central_powers }
 		}
+		UKR = { if = { limit = { is_subject = yes } OVERLORD = { end_puppet = PREV } } }
 	}
 }
 

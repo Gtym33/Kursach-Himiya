@@ -526,7 +526,6 @@ country_event = {
 		set_country_flag = RCW_Allrussian_national_assembly_revolt
 		OVERLORD = { end_puppet = ROOT }
 		leave_faction = yes
-		create_faction = republican_front
 		if = {
 			limit = { NOT = { any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_revolt } } }
 			random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } country_event = { id = rcw_all_rus_NA.22 days = 7 } }
@@ -551,7 +550,7 @@ country_event = {
 		clr_country_flag = RCW_Allrussian_national_assembly_member
 		set_country_flag = RCW_Allrussian_national_assembly_loyal
 		every_country = {
-			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member NOT = { tag = ROOT } }
 			clr_country_flag = RCW_Allrussian_national_assembly_member
 			set_country_flag = RCW_Allrussian_national_assembly_loyal
 			ROOT = { add_to_faction = PREV }
@@ -560,16 +559,21 @@ country_event = {
 			create_faction = white_union
 			clr_country_flag = RCW_Allrussian_national_assembly_revolt
 			set_country_flag = RCW_Allrussian_national_assembly_disloyal
-			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
 		}
 		every_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_revolt NOT = { tag = FROM } }
 			clr_country_flag = RCW_Allrussian_national_assembly_revolt
 			set_country_flag = RCW_Allrussian_national_assembly_disloyal
 			FROM = { add_to_faction = PREV }
-			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
 		}
-		hidden_effect = { clear_global_event_target = rcw_na_revolt_leader }
+		every_country = {
+			limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+			declare_war_on = { target = FROM type = annex_everything }
+			every_country = {
+				limit = { is_in_faction_with = FROM NOT = { has_war_with = PREV } }
+				PREV = { declare_war_on = { target = PREV type = annex_everything } }
+			}
+		}
 		hidden_effect = { news_event = { id = news_n.27 hours = 48 } }
 	}
 }
@@ -588,7 +592,7 @@ country_event = {
 		clr_country_flag = RCW_Allrussian_national_assembly_member
 		set_country_flag = RCW_Allrussian_national_assembly_loyal
 		every_country = {
-			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member NOT = { tag = ROOT } }
 			clr_country_flag = RCW_Allrussian_national_assembly_member
 			set_country_flag = RCW_Allrussian_national_assembly_loyal
 			ROOT = { add_to_faction = PREV }
@@ -597,16 +601,21 @@ country_event = {
 			create_faction = republican_front
 			clr_country_flag = RCW_Allrussian_national_assembly_revolt
 			set_country_flag = RCW_Allrussian_national_assembly_disloyal
-			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
 		}
 		every_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_revolt NOT = { tag = FROM } }
 			clr_country_flag = RCW_Allrussian_national_assembly_revolt
 			set_country_flag = RCW_Allrussian_national_assembly_disloyal
 			FROM = { add_to_faction = PREV }
-			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
 		}
-		hidden_effect = { clear_global_event_target = rcw_na_revolt_leader }
+		every_country = {
+			limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+			declare_war_on = { target = FROM type = annex_everything }
+			every_country = {
+				limit = { is_in_faction_with = FROM NOT = { has_war_with = PREV } }
+				PREV = { declare_war_on = { target = PREV type = annex_everything } }
+			}
+		}
 		hidden_effect = { news_event = { id = news_n.27 hours = 48 } }
 	}
 }
@@ -621,15 +630,14 @@ country_event = {
 	trigger = {
 		has_global_flag = RCW_Allrussian_national_assembly
 		has_war = no
+		is_faction_leader = yes
 		OR = {
 			AND = {
 				has_country_flag = RCW_Allrussian_national_assembly_loyal
-				is_faction_leader = yes
 				NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
 			}
 			AND = {
 				has_country_flag = RCW_Allrussian_national_assembly_disloyal
-				is_faction_leader = yes
 				NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
 			}
 		}
@@ -647,7 +655,7 @@ country_event = {
 		name = rcw_all_rus_NA.24.a
 		clr_global_flag = RCW_Allrussian_national_assembly
 		every_other_country = {
-			limit = { is_former_russian_empire_russian_settled_non_cossack_country = yes NOT = { has_war_with = ROOT } is_in_faction_with = ROOT }
+			limit = { is_former_russian_empire_russian_settled_non_cossack_country = yes is_in_faction_with = ROOT }
 			ROOT = { annex_country = { target = PREV transfer_troops = no } }
 		}
 		every_country = {
@@ -663,5 +671,6 @@ country_event = {
 			clr_country_flag = RCW_Allrussian_national_assembly_disloyal
 		}
 		dismantle_faction = yes
+		set_cosmetic_tag = CCA_russian_federation
 	}
 }
