@@ -3380,63 +3380,11 @@ country_event = {
 	}
 }
 
-# Взятие Екатеринодара
-country_event = {
-	id = rcw_dkutc.103
-	hidden = yes
-	
-	trigger = {
-		NOT = { has_global_flag = RUS_civil_war_over }
-		tag = RVA
-		has_country_leader = { name = "Lavr Kornilov" ruling_only = yes }
-		NOT = {
-			has_country_flag = Kornilov_will_dead
-			has_country_flag = Kornilov_will_not_dead
-		}
-	}
-	
-	is_triggered_only = yes
-	
-	option = {
-		random_list = {
-			80 = {
-				set_country_flag = Kornilov_will_dead
-			}
-			20 = {
-				set_country_flag = Kornilov_will_not_dead
-			}
-		}
-		country_event = rcw_dkutc.104
-	}
-}
-
-# Смерть или не смерть Корнилова
+# Смерть Корнилова
 country_event = {
 	id = rcw_dkutc.104
-	title = {
-		text = rcw_dkutc.104.t
-		trigger = {
-			has_country_flag = Kornilov_will_dead
-		}
-	}
-	title = {
-		text = rcw_dkutc.104.t_1
-		trigger = {
-			has_country_flag = Kornilov_will_not_dead
-		}
-	}
-	desc = {
-		text = rcw_dkutc.104.desc
-		trigger = {
-			has_country_flag = Kornilov_will_dead
-		}
-	}
-	desc = {
-		text = rcw_dkutc.104.desc_1
-		trigger = {
-			has_country_flag = Kornilov_will_not_dead
-		}
-	}
+	title = rcw_dkutc.104.t
+	desc = rcw_dkutc.104.desc
 	picture = GFX_report_event_rcw_rva
 	
 	is_triggered_only = yes
@@ -3456,9 +3404,6 @@ country_event = {
 	
 	option = {
 		name = rcw_dkutc.104.a
-		trigger = {
-			has_country_flag = Kornilov_will_dead
-		}
 		#news_event
 		effect_tooltip = {
 			remove_unit_leader = 76547
@@ -3466,17 +3411,6 @@ country_event = {
 		if = {
 			limit = { any_unit_leader = { has_id = 76428 } }
 			create_country_leader = { name = "Anton Denikin" desc = RUS_Anton_Denikin_DESC picture = "gfx/leaders/RUS/Anton_Denikin.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger great_war_hero } }
-		}
-	}
-	
-	option = {
-		name = rcw_dkutc.104.b
-		trigger = {
-			has_country_flag = Kornilov_will_not_dead
-		}
-		effect_tooltip = {
-			add_country_leader_trait = assassination_survivor
-			every_unit_leader = { limit = { OR = { has_id = 76547 } } add_timed_unit_leader_trait = { trait = wounded days = 90 } }
 		}
 	}
 }
@@ -3503,8 +3437,6 @@ country_event = {
 	mean_time_to_happen = {
 		days = 5
 	}
-	
-	is_triggered_only = yes
 	
 	option = {
 		name = rcw_dkutc.110.a
@@ -3549,7 +3481,11 @@ country_event = {
 	option = {
 		name = rcw_dkutc.110.a
 		REB = { every_unit_leader = { limit = { has_id = 77649 } set_nationality = ROOT } }
-		create_corps_commander = { name = "Anton Turkul" id = 78649 portrait_path = "gfx/leaders/RUS/Anton_Turkul.dds" traits = { trickster } skill = 1 attack_skill = 4 defense_skill = 3 planning_skill = 3 logistics_skill = 4 }
+		create_corps_commander = { name = "Anton Turkul" id = 78649 portrait_path = "gfx/leaders/RUS/Anton_Turkul.dds" traits = { trait_reckless infantry_leader } skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		if = {
+			limit = { NOT = { tag = NWA } }
+			RVA = { create_country_leader = { name = "Mikhael Drozdovsky" desc = RUS_Mikhael_Drozdovsky_DESC picture = "gfx/leaders/RUS/Mikhael_Drozdovsky.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } } }
+		}
 		
 		add_war_support = 0.05
 		add_popularity = { ideology = authoritarism popularity = 0.03 }
@@ -4437,7 +4373,6 @@ country_event = {
 									engineer = { x = 0 y = 1 }
 								}
 								priority = 2
-							}
 					}
 					capital_scope = {
 						create_unit = {
@@ -4569,28 +4504,6 @@ country_event = {
 				RVA = { change_tag_from = ROOT }
 			}
 		}
-	}
-}
-
-# Снятие бонуса
-country_event = {
-	id = rcw_dkutc.126
-	hidden = yes
-	
-	trigger = {
-		tag = RVA
-		has_idea = RVA_white_light
-		has_army_manpower = { size > 14999 }
-	}
-	
-	mean_time_to_happen = {
-		days = 7
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		remove_ideas = RVA_white_light
 	}
 }
 
@@ -4924,7 +4837,6 @@ country_event = {
 			has_idea = officers_purged_6
 			NOT = { has_government = authoritarism }
 		}
-	
 	}
 	
 	fire_only_once = yes
@@ -4942,10 +4854,10 @@ country_event = {
 		add_popularity = { ideology = authoritarism popularity = 0.10 }
 		every_unit_leader = { limit = { OR = { has_id = 76428 } } set_nationality = REB }
 		if = {
-			limit = { has_country_leader = { name = "Anton Denikin" }  }
+			limit = { has_country_leader = { name = "Anton Denikin" } }
 			remove_despotism_leader = yes
 		}
-		hidden_effect = { remove_ideas = RVA_steel_discipline }
+		hidden_effect = { remove_ideas = RVA_steel_discipline_idea }
 		set_country_flag = RVA_authoritarism_coup_fired
 		add_stability = -0.05
 		add_war_support = -0.05
@@ -5099,9 +5011,8 @@ country_event = {
 		add_war_support = 0.10
 		add_political_power = 50
 		set_country_flag = RVA_free_agitation
-		hidden_effect = { remove_ideas = RVA_steel_discipline }
+		hidden_effect = { remove_ideas = RVA_steel_discipline_idea }
 	}
-	
 }
 
 # Заседание военного совета
@@ -5473,51 +5384,47 @@ country_event = {
 	}
 }
 
-# ...
+# Снятие бонуса (Светоч)
 country_event = {
-	id = rcw_dkutc.140098
+	id = rcw_dkutc.14097
+	hidden = yes
+	
+	trigger = {
+		tag = RVA
+		has_idea = RVA_white_light_idea
+		has_army_manpower = { size > 14999 }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	immediate = {
+		remove_ideas = RVA_white_light_idea
+	}
+}
+
+# ... (Кубанский поход)
+country_event = {
+	id = rcw_dkutc.14098
 	
 	trigger ={
 		tag = RVA
-		OR = {
-			has_idea = RVA_kubanskiy_pohod_1
-			has_idea = RVA_kubanskiy_pohod_2
-			has_idea = RVA_kubanskiy_pohod_3
-			has_idea = RVA_kubanskiy_pohod_4
-			has_idea = RVA_kubanskiy_pohod_5
-		}
+		has_idea = RVA_kubanskiy_pohod
+		has_army_manpower = { size > 14999 }
 	}
 	
 	hidden = yes
 	
 	mean_time_to_happen = {
-		days = 35
+		days = 1
 	}
 	
+	fire_only_once = yes
+	
 	immediate = {
-		if = {
-			limit = { has_idea = RVA_kubanskiy_pohod_5 }
-			remove_ideas = RVA_kubanskiy_pohod_5
-		}
-		if = {
-			limit = { has_idea = RVA_kubanskiy_pohod_4 }
-			remove_ideas = RVA_kubanskiy_pohod_4
-			add_ideas = RVA_kubanskiy_pohod_5
-		}
-		if = {
-			limit = { has_idea = RVA_kubanskiy_pohod_3 }
-			remove_ideas = RVA_kubanskiy_pohod_3
-			add_ideas = RVA_kubanskiy_pohod_4
-		}
-		if = {
-			limit = { has_idea = RVA_kubanskiy_pohod_2 }
-			remove_ideas = RVA_kubanskiy_pohod_2
-			add_ideas = RVA_kubanskiy_pohod_3
-		}
-		if = {
-			limit = { has_idea = RVA_kubanskiy_pohod_1 }
-			remove_ideas = RVA_kubanskiy_pohod_1
-			add_ideas = RVA_kubanskiy_pohod_2
-		}
+		remove_ideas = RVA_kubanskiy_pohod
 	}
 }
