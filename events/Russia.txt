@@ -15,6 +15,7 @@ country_event = {
 		tag = RUS
 		communism > 0.3
 		has_country_flag = RUS_provisional_government_created
+		NOT = { has_country_flag = general_kornilov }
 		#195 = { is_capital = yes is_controlled_by = ROOT } #раскомментировать когда будут готовы альтернативы захвата власти большевиками в других городах
 		has_country_flag = RUS_first_allrussian_congress_of_soviets
 		has_country_flag = RUS_July_crisis_fired
@@ -488,6 +489,7 @@ country_event = {
 		tag = RUS
 		has_country_flag = RUS_provisional_government_created
 		has_country_flag = RUS_first_allrussian_congress_of_soviets
+		NOT = { has_country_flag = RUS_dacha_Durnovo_event_fired }
 		NOT = { has_country_flag = RUS_second_coalition_gov }
 	}
 	fire_only_once = yes
@@ -703,6 +705,8 @@ country_event = {
 		tag = RUS
 		has_country_flag = RUS_provisional_government_created
 		has_country_flag = RUS_April_crisis_fired
+		NOT = { has_country_flag = RUS_April_crisis_provisional_government_win }
+		has_country_flag = RUS_first_allrussian_congress_of_soviets
 		OR = {
 			has_country_flag = UKR_central_rada_demands_accepted
 			has_country_flag = UKR_central_rada_II_universal
@@ -719,6 +723,10 @@ country_event = {
 	fire_only_once = yes
 	mean_time_to_happen = {
 		days = 10
+		modifier = {
+			factor = 2
+			NOT = { has_country_flag = RUS_1_July_meeting }
+		}
 	}
 	option = {
 		name = russia.21.a
@@ -1695,6 +1703,10 @@ country_event = {
 		set_country_flag = general_kornilov
 		add_political_power = -50
 		hidden_effect = { FIN = { country_event = { id = finland.3 days = 10 } } }
+		hidden_effect = {
+			every_country = { every_unit_leader = { limit = { has_id = 76547 } set_nationality = ROOT } }
+			every_country = { every_unit_leader = { limit = { has_id = 76428 } set_nationality = ROOT } }
+		}
 	}
 	#Вооружить красную гвардию
 	option = {
@@ -1788,7 +1800,6 @@ country_event = {
 	picture = GFX_report_event_sov_cities_fights
 	
 	trigger = {
-		NOT = { has_country_flag = general_kornilov }
 		NOT = { has_country_flag = RUS_Oktober_armed_revolt_in_progress }
 		#195 = { is_capital = yes is_controlled_by = ROOT } #раскомментировать когда будут готовы альтернативы захвата власти большевиками в других городах
 	}
@@ -2234,10 +2245,17 @@ country_event = {
 	option = {
 		name = russia.49.a
 		hidden_effect = { country_event = { id = russia.50 hours = 1 } }
-		if = {
-			limit = { has_country_flag = general_kornilov }
-			hidden_effect = {
-				set_country_flag = RCW_strongest_paternals
+		
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = general_kornilov }
+				hidden_effect = {
+					set_country_flag = RCW_strongest_paternals
+				}
+			}
+			if = {
+				limit = { has_country_flag = RUS_July_crisis_fired NOT = { has_country_flag = general_kornilov } }
+				country_event = { id = rcw_bolsheviks.1 hours = 1 }
 			}
 		}
 		bolsheviks_victory = yes
@@ -2247,13 +2265,6 @@ country_event = {
 		add_red_unit_leaders = yes
 		news_event = { id = news_n.13 hours = 36 }
 		clr_country_flag = RUS_Oktober_armed_revolt_in_progress
-		
-		hidden_effect = {
-			if = {
-				limit = { has_country_flag = RUS_July_crisis_fired }
-				country_event = rcw_bolsheviks.1
-			}
-		}
 	}
 }
 
