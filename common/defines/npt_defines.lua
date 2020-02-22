@@ -73,9 +73,8 @@ NDefines.NMilitary.LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.03
 NDefines.NMilitary.LAND_COMBAT_ORG_DAMAGE_MODIFIER = 0.058
 NDefines.NMilitary.ATTRITION_EQUIPMENT_LOSS_CHANCE = 0.003
 
-NDefines.NMilitary.RIVER_CROSSING_PENALTY_LARGE = -0.7           -- large river crossing
-NDefines.NMilitary.RIVER_CROSSING_SPEED_PENALTY = -0.30           -- small river crossing
-NDefines.NMilitary.RIVER_CROSSING_SPEED_PENALTY_LARGE = -0.7     -- large river crossing
+NDefines.NMilitary.ENCIRCLED_PENALTY = -0.44
+NDefines.NMilitary.COMBAT_SUPPLY_LACK_IMPACT = -0.44
 
 
 NDefines.NDiplomacy.TENSION_TIME_SCALE_START_DATE = "1917.1.1.1"
