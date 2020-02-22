@@ -401,6 +401,7 @@ country_event = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			country_event = { id = rcw_all_rus_NA.11 days = 7 random = 48 }
 		}
+		set_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
 	}
 	option = { # Подложить результаты голосования
 		trigger = {
@@ -413,6 +414,7 @@ country_event = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			country_event = { id = rcw_all_rus_NA.12 days = 7 random = 48 }
 		}
+		set_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
 	}
 }
 # Монархия победила, уведомление организатора
@@ -439,6 +441,7 @@ country_event = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			country_event = { id = rcw_all_rus_NA.12 days = 1 random = 48 }
 		}
+		set_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
 	}
 	option = { # Подложить результаты голосования
 		trigger = {
@@ -451,6 +454,7 @@ country_event = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			country_event = { id = rcw_all_rus_NA.11 days = 1 random = 48 }
 		}
+		set_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
 	}
 }
 
@@ -467,6 +471,7 @@ country_event = {
 		name = rcw_all_rus_NA.6.a
 		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
 		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		set_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
 		ai_chance = {
 			factor = 2
 			modifier = {
@@ -671,6 +676,69 @@ country_event = {
 			clr_country_flag = RCW_Allrussian_national_assembly_disloyal
 		}
 		dismantle_faction = yes
-		set_cosmetic_tag = CCA_russian_federation
+		if = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins }
+			set_cosmetic_tag = RUS_MONARCHY
+			add_ideas = limited_monarchy_gov_form
+			else = {
+				set_cosmetic_tag = CCA_russian_federation
+				add_ideas = presidential_republic_gov_form
+			}
+		}
+		clr_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
+		clr_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
+	}
+}
+
+# Конец всего, но без ГВ
+country_event = {
+	id = rcw_all_rus_NA.24
+	title = rcw_all_rus_NA.24.t
+	desc = rcw_all_rus_NA.24.d
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	trigger = {
+		has_global_flag = RCW_Allrussian_national_assembly
+		has_country_flag = RCW_Allrussian_national_assembly_leader
+		NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_revolt } }
+		OR = {
+			has_country_flag = RCW_Allrussian_national_assembly_mon_wins
+			has_country_flag = RCW_Allrussian_national_assembly_rep_wins
+		}
+		has_war = no
+		NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
+		NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	hidden = yes
+	
+	option = {
+		name = rcw_all_rus_NA.24.a
+		clr_country_flag = RCW_Allrussian_national_assembly_member
+		clr_country_flag = RCW_Allrussian_national_assembly_rep_wins
+		clr_country_flag = RCW_Allrussian_national_assembly_mon_wins
+		clr_global_flag = RCW_Allrussian_national_assembly
+		every_other_country = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
+			clr_country_flag = RCW_Allrussian_national_assembly_member
+			ROOT = { annex_country = { target = PREV transfer_troops = no } }
+		}
+		if = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins }
+			set_cosmetic_tag = RUS_MONARCHY
+			add_ideas = limited_monarchy_gov_form
+			else = {
+				set_cosmetic_tag = CCA_russian_federation
+				add_ideas = presidential_republic_gov_form
+			}
+		}
+		clr_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
+		clr_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
 	}
 }
