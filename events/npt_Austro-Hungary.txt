@@ -870,6 +870,123 @@ country_event = {
 	}
 }
 
+###### Январская всеобщая политическая забастовка ######
+country_event = {
+	id = austro-hungarian.13
+	title = hungarian.13.t 
+	desc = hungarian.13.desc
+	
+	trigger = {
+		tag = AUH
+		has_global_flag = WWI_is_now
+		OR = { has_war_with = ITA has_war_with = FRA has_war_with = RUS }
+		date > 1918.1.1
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	option = {
+		name = austro-hungarian.13.a
+		if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
+		add_ideas = strikes_3
+		country_event = stability.22
+	}
+}
+
+###### Солдатские бунты зимы весны 18 ######
+country_event = {
+	id = austro-hungarian.14
+	title = hungarian.14.t
+	desc = hungarian.14.desc
+	
+	trigger = {
+		tag = AUH
+		has_global_flag = WWI_is_now
+		OR = { has_war_with = ITA has_war_with = FRA has_war_with = RUS }
+		date > 1918.2.1
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	option = {
+		name = austro-hungarian.14.a
+		if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
+		if = {
+			limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
+			add_ideas =  mutiny_1
+			country_event = stability.23
+			else_if = {
+				limit = { has_idea = mutiny_1 }
+				remove_ideas = mutiny_1
+				add_ideas =  mutiny_2
+			}
+			else_if = {
+				limit = { has_idea = mutiny_2 }
+				remove_ideas = mutiny_2
+				add_ideas =  mutiny_3
+			}
+			else_if = {
+				limit = { has_idea = mutiny_3 }
+					add_stability = -0.05
+					add_war_support = -0.05
+			}
+		}
+	}
+}
+
+###### Голодный бунт и забастовка из-за голода ######
+country_event = {
+	id = austro-hungarian.15
+	title = hungarian.15.t
+	desc = hungarian.15.desc
+	
+	trigger = {
+		tag = AUH
+		has_global_flag = WWI_is_now
+		OR = { has_war_with = ITA has_war_with = FRA has_war_with = RUS }
+		date > 1918.6.1
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 15
+	}
+	
+	option = {
+		name = austro-hungarian.15.a
+		if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
+		if = {
+			limit = { NOT = { has_idea = strikes_1 has_idea = strikes_2 has_idea = strikes_3 } }
+			add_ideas =  strikes_1
+			country_event = stability.22
+			else_if = {
+				limit = { has_idea = strikes_1 }
+				remove_ideas = strikes_1
+				add_ideas =  strikes_2
+			}
+			else_if = {
+				limit = { has_idea = strikes_2 }
+				remove_ideas = strikes_2
+				add_ideas =  strikes_3
+			}
+			else_if = {
+				limit = { has_idea = strikes_3 }
+					add_stability = -0.05
+					add_war_support = -0.05
+			}
+		}
+	}
+}
+
 
 ###### Точка невозврата конца Империи ######
 country_event = {
@@ -919,10 +1036,27 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			add_timed_idea = {
-				idea = mutiny_1
-				days = 120
+			if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
+			if = {
+			limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
+				add_ideas =  mutiny_1
+				country_event = stability.23
+			else_if = {
+				limit = { has_idea = mutiny_1 }
+					remove_ideas = mutiny_1
+					add_ideas =  mutiny_2
 			}
+			else_if = {
+				limit = { has_idea = mutiny_2 }
+					remove_ideas = mutiny_2
+					add_ideas =  mutiny_3
+			}
+			else_if = {
+				limit = { has_idea = mutiny_3 }
+					add_stability = -0.10
+					add_war_support = -0.20
+			}
+		}
 		}
 	}
 	
@@ -934,7 +1068,7 @@ country_event = {
 	
 	option = {
 		name = austro-hungarian.98.a
-		set_country_flag = AUH_lost_hope
+		set_global_flag = AUH_lost_hope
 		news_event = { id = news_n.105 hours = 1 }
 		ROM = {
 				every_owned_state = {
@@ -957,7 +1091,7 @@ country_event = {
 	trigger = {
 		tag = AUH
 		OR = {
-			has_country_flag = AUH_lost_hope
+			has_global_flag = AUH_lost_hope
 			has_global_flag = WWI_AUH_HAS_CAPITULATED
 		}
 	}
@@ -977,7 +1111,7 @@ country_event = {
 	option = {
 		name = austro-hungarian.100.a
 		add_timed_idea = {
-			idea = disorganization_of_army_GER
+			idea = disorganization_of_army
 			days = 365
 		}
 		BNT = { inherit_technology = ROOT }
@@ -987,6 +1121,7 @@ country_event = {
 	
 	option = {
 		name = austro-hungarian.100.b
+		trigger = { is_ai = no }
 		add_timed_idea = {
 			idea = disorganization_of_army
 			days = 365
@@ -1009,20 +1144,6 @@ country_event = {
 	
 	option = {
 		name = austro-hungarian.100.a
-		if = {
-			limit = { AUH = { owns_state = 820 NOT = { controls_state = 820 } } }
-			every_country = {
-				limit = { owns_state = 79 }
-				transfer_state = 820
-			}
-		}
-		if = {
-			limit = { AUH = { owns_state = 804 NOT = { controls_state = 804 } } }
-			every_country = {
-				limit = { owns_state = 79 }
-				transfer_state = 804
-			}
-		}
 		if = { limit = { AUH = { owns_state = 43 } } HUN = { transfer_state = 43 } }
 		if = { limit = { AUH = { owns_state = 70 } } HUN = { transfer_state = 70 } }
 		if = { limit = { AUH = { owns_state = 71 } } HUN = { transfer_state = 71 } }
@@ -1031,12 +1152,11 @@ country_event = {
 		if = { limit = { AUH = { owns_state = 155 } } HUN = { transfer_state = 155 } }
 		if = { limit = { AUH = { owns_state = 664 } } HUN = { transfer_state = 664 } }
 		if = { limit = { AUH = { owns_state = 835 } } HUN = { transfer_state = 835 } }
+		if = { limit = { AUH = { owns_state = 842 } } HUN = { transfer_state = 842 } }
 		
 		if = { limit = { AUH = { owns_state = 76 } } HUN = { transfer_state = 76 } }
-		if = { limit = { AUH = { owns_state = 80 } } HUN = { transfer_state = 80 } }
 		if = { limit = { AUH = { owns_state = 83 } } HUN = { transfer_state = 83 } }
 		if = { limit = { AUH = { owns_state = 84 } } HUN = { transfer_state = 84 } }
-		if = { limit = { AUH = { owns_state = 804 } } HUN = { transfer_state = 804 } }
 		
 		if = { limit = { AUH = { owns_state = 45 } } HUN = { transfer_state = 45 } }
 		if = { limit = { AUH = { owns_state = 82 } } HUN = { transfer_state = 82 } }
@@ -1052,43 +1172,29 @@ country_event = {
 		if = { limit = { AUH = { owns_state = 862 } } HUN = { transfer_state = 862 } }
 		
 		if = {
-			limit = { OR = { has_war_with = SER SER = { exists = no } } }
-			if = { limit = { AUH = { owns_state = 104 } } HUN = { transfer_state = 104 } }
-			if = { limit = { AUH = { owns_state = 103 } } HUN = { transfer_state = 103 } }
-			if = { limit = { AUH = { owns_state = 968 } } HUN = { transfer_state = 968 } }
-			if = { limit = { AUH = { owns_state = 986 } } HUN = { transfer_state = 986 } }
-			if = { limit = { AUH = { owns_state = 105 } } HUN = { transfer_state = 105 } }
-			if = { limit = { AUH = { owns_state = 825 } } HUN = { transfer_state = 825 } }
+			limit = { SER = { exists = no } NOT = { has_global_flag = WWI_is_now } }
+				if = { limit = { AUH = { owns_state = 104 } } HUN = { transfer_state = 104 } }
+				if = { limit = { AUH = { owns_state = 103 } } HUN = { transfer_state = 103 } }
+				if = { limit = { AUH = { owns_state = 968 } } HUN = { transfer_state = 968 } }
+				if = { limit = { AUH = { owns_state = 986 } } HUN = { transfer_state = 986 } }
+				if = { limit = { AUH = { owns_state = 105 } } HUN = { transfer_state = 105 } }
+				if = { limit = { AUH = { owns_state = 825 } } HUN = { transfer_state = 825 } }
 			else_if = {
-			limit = { SER = {exists = yes} }
-			if = { limit = { AUH = { owns_state = 104 } } SER = { transfer_state = 104 } }
-			if = { limit = { AUH = { owns_state = 103 } } SER = { transfer_state = 103 } }
-			if = { limit = { AUH = { owns_state = 968 } } SER = { transfer_state = 968 } }
-			if = { limit = { AUH = { owns_state = 986 } } SER = { transfer_state = 986 } }
-			if = { limit = { AUH = { owns_state = 105 } } SER = { transfer_state = 105 } }
-			if = { limit = { AUH = { owns_state = 825 } } SER = { transfer_state = 825 } }
+			limit = { SER = { exists = yes } NOT = { has_global_flag = WWI_is_now } }
+				if = { limit = { AUH = { owns_state = 104 } } SER = { transfer_state = 104 } }
+				if = { limit = { AUH = { owns_state = 103 } } SER = { transfer_state = 103 } }
+				if = { limit = { AUH = { owns_state = 968 } } SER = { transfer_state = 968 } }
+				if = { limit = { AUH = { owns_state = 986 } } SER = { transfer_state = 986 } }
+				if = { limit = { AUH = { owns_state = 105 } } SER = { transfer_state = 105 } }
+				if = { limit = { AUH = { owns_state = 825 } } SER = { transfer_state = 825 } }
 			}
 		}
-		
 		HUN = { inherit_technology = ROOT }
 		hidden_effect = { country_event = { id = austro-hungarian.101 days = 10 } country_event = { id = austro-hungarian.103 days = 11 } }
 	}
 	option = {
 		name = austro-hungarian.100.b
-		if = {
-			limit = { AUH = { owns_state = 820 NOT = { controls_state = 820 } } }
-			every_country = {
-				limit = { owns_state = 79 }
-				transfer_state = 820
-			}
-		}
-		if = {
-			limit = { AUH = { owns_state = 804 NOT = { controls_state = 804 } } }
-			every_country = {
-				limit = { owns_state = 79 }
-				transfer_state = 804
-			}
-		}
+		trigger = { is_ai = no }
 		if = { limit = { AUH = { owns_state = 43 } } HUN = { transfer_state = 43 } }
 		if = { limit = { AUH = { owns_state = 70 } } HUN = { transfer_state = 70 } }
 		if = { limit = { AUH = { owns_state = 71 } } HUN = { transfer_state = 71 } }
@@ -1097,12 +1203,11 @@ country_event = {
 		if = { limit = { AUH = { owns_state = 155 } } HUN = { transfer_state = 155 } }
 		if = { limit = { AUH = { owns_state = 664 } } HUN = { transfer_state = 664 } }
 		if = { limit = { AUH = { owns_state = 835 } } HUN = { transfer_state = 835 } }
+		if = { limit = { AUH = { owns_state = 842 } } HUN = { transfer_state = 842 } }
 		
 		if = { limit = { AUH = { owns_state = 76 } } HUN = { transfer_state = 76 } }
-		if = { limit = { AUH = { owns_state = 80 } } HUN = { transfer_state = 80 } }
 		if = { limit = { AUH = { owns_state = 83 } } HUN = { transfer_state = 83 } }
 		if = { limit = { AUH = { owns_state = 84 } } HUN = { transfer_state = 84 } }
-		if = { limit = { AUH = { owns_state = 804 } } HUN = { transfer_state = 804 } }
 		
 		if = { limit = { AUH = { owns_state = 45 } } HUN = { transfer_state = 45 } }
 		if = { limit = { AUH = { owns_state = 82 } } HUN = { transfer_state = 82 } }
@@ -1118,21 +1223,21 @@ country_event = {
 		if = { limit = { AUH = { owns_state = 862 } } HUN = { transfer_state = 862 } }
 		
 		if = {
-			limit = { OR = { has_war_with = SER SER = { exists = no } } }
-			if = { limit = { AUH = { owns_state = 104 } } HUN = { transfer_state = 104 } }
-			if = { limit = { AUH = { owns_state = 103 } } HUN = { transfer_state = 103 } }
-			if = { limit = { AUH = { owns_state = 968 } } HUN = { transfer_state = 968 } }
-			if = { limit = { AUH = { owns_state = 986 } } HUN = { transfer_state = 986 } }
-			if = { limit = { AUH = { owns_state = 105 } } HUN = { transfer_state = 105 } }
-			if = { limit = { AUH = { owns_state = 825 } } HUN = { transfer_state = 825 } }
+			limit = { SER = { exists = no } NOT = { has_global_flag = WWI_is_now } }
+				if = { limit = { AUH = { owns_state = 104 } } HUN = { transfer_state = 104 } }
+				if = { limit = { AUH = { owns_state = 103 } } HUN = { transfer_state = 103 } }
+				if = { limit = { AUH = { owns_state = 968 } } HUN = { transfer_state = 968 } }
+				if = { limit = { AUH = { owns_state = 986 } } HUN = { transfer_state = 986 } }
+				if = { limit = { AUH = { owns_state = 105 } } HUN = { transfer_state = 105 } }
+				if = { limit = { AUH = { owns_state = 825 } } HUN = { transfer_state = 825 } }
 			else_if = {
-			limit = { SER = {exists = yes} }
-			if = { limit = { AUH = { owns_state = 104 } } SER = { transfer_state = 104 } }
-			if = { limit = { AUH = { owns_state = 103 } } SER = { transfer_state = 103 } }
-			if = { limit = { AUH = { owns_state = 968 } } SER = { transfer_state = 968 } }
-			if = { limit = { AUH = { owns_state = 986 } } SER = { transfer_state = 986 } }
-			if = { limit = { AUH = { owns_state = 105 } } SER = { transfer_state = 105 } }
-			if = { limit = { AUH = { owns_state = 825 } } SER = { transfer_state = 825 } }
+			limit = { SER = { exists = yes } NOT = { has_global_flag = WWI_is_now } }
+				if = { limit = { AUH = { owns_state = 104 } } SER = { transfer_state = 104 } }
+				if = { limit = { AUH = { owns_state = 103 } } SER = { transfer_state = 103 } }
+				if = { limit = { AUH = { owns_state = 968 } } SER = { transfer_state = 968 } }
+				if = { limit = { AUH = { owns_state = 986 } } SER = { transfer_state = 986 } }
+				if = { limit = { AUH = { owns_state = 105 } } SER = { transfer_state = 105 } }
+				if = { limit = { AUH = { owns_state = 825 } } SER = { transfer_state = 825 } }
 			}
 		}
 		HUN = { inherit_technology = ROOT }
@@ -1160,6 +1265,7 @@ country_event = {
 	}
 	option = {
 		name = austro-hungarian.101.b
+		trigger = { is_ai = no }
 		if = { limit = { AUH = { owns_state = 9 } } CZE = { transfer_state = 9 } }
 		if = { limit = { AUH = { owns_state = 75 } } CZE = { transfer_state = 75 } }
 		if = { limit = { AUH = { owns_state = 72 } } CZE = { transfer_state = 72 } }
@@ -1200,6 +1306,7 @@ country_event = {
 		if = { limit = { AUH = { owns_state = 925 } } GAL = { transfer_state = 925 } }
 		if = { limit = { AUH = { owns_state = 89 } } GAL = { transfer_state = 89 } }
 		if = { limit = { AUH = { owns_state = 91 } } GAL = { transfer_state = 91 } }
+		if = { limit = { AUH = { owns_state = 80 } } GAL = { transfer_state = 80 } }
 		if = {
 			limit = { POL = { exists = yes } AUH = { owns_state = 88 } }
 			POL = { transfer_state = 88 }
@@ -1229,8 +1336,8 @@ country_event = {
 	picture = GFX_report_event_auh_independence_of_the_czech_republic
 	
 	trigger = {
-	tag = GER
-	NOT = { has_country_flag = GER_monarchy_fall }
+		tag = GER
+		NOT = { has_country_flag = GER_monarchy_fall }
 	}
 	
 	is_triggered_only = yes
@@ -1253,7 +1360,7 @@ country_event = {
 				is_controlled_by = AUH
 				NOT = { is_owned_by = AUH }
 			}
-			GER = {set_state_controller = PREV}
+			GER = {	set_state_controller = PREV	}
 		}
 	}
 }
@@ -1278,10 +1385,10 @@ country_event = {
 		}
 		if = {
 		limit = { has_global_flag = WWI_is_now OR = { GER = { controls_state = 16 } ITA = { OR = { has_capitulated = yes has_global_flag = WWI_ITA_HAS_CAPITULATED } } } }
-		every_country = {
-			limit = { has_war_with = AUH }
-			white_peace = AUH
-		}
+			every_country = {
+				limit = { has_war_with = AUH }
+				white_peace = AUH
+			}
 		#else_if = {
 		#limit = { has_war = yes NOT = { has_global_flag = WWI_is_now } }
 		#every_country = {
@@ -1290,9 +1397,9 @@ country_event = {
 		#}
 		#}
 		else_if = {
-		limit = { has_global_flag = WWI_is_now NOT = { OR = { GER = { controls_state = 16 } ITA = { OR = { has_capitulated = yes has_global_flag = WWI_ITA_HAS_CAPITULATED } } } } }
-		country_event = compiegne_armistice.998
-		}
+			limit = { has_global_flag = WWI_is_now NOT = { OR = { GER = { controls_state = 16 } ITA = { OR = { has_capitulated = yes has_global_flag = WWI_ITA_HAS_CAPITULATED } } } } }
+			country_event = compiegne_armistice.998
+			}
 		}
 	}
 }
@@ -1311,7 +1418,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 5
+		days = 0
 	}
 	
 	fire_only_once = yes
@@ -1319,14 +1426,14 @@ country_event = {
 	option = {
 		name = austro-hungarian.1000.a
 		every_state = {
-		limit = { is_core_of = AUH }
-		remove_core_of = AUH
+			limit = { is_core_of = AUH }
+			remove_core_of = AUH
 		}
 		AUS = { inherit_technology = ROOT }
 		AUS = {
 			annex_country = { target = AUH transfer_troops = yes }
 			change_tag_from = AUH
-			set_politics = {ruling_party = social_democracy}
+			set_politics = { ruling_party = social_democracy }
 		}
 	}
 }
