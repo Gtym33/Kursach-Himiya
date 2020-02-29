@@ -12,8 +12,12 @@ country_event = {
 	trigger = {
 		tag = GRE
 		has_war = no
-		GRR = {exists = yes}
+		GRR = { exists = yes }
 		date > 1917.05.01
+	}
+	
+	immediate = {
+		set_global_flag = French_ultimatum_to_GRE_fired
 	}
 
 	mean_time_to_happen = {
@@ -26,33 +30,56 @@ country_event = {
 			factor = 100
 			modifier = {
 				factor = 0
-				GRR = { NOT = { controls_state = 731 } }
+				OR = {
+					GRR = { NOT = { controls_state = 731 } }
+					has_country_flag = AUH_help_to_king_GRE
+				}
 			}
 		}
 		GRR = {
 			annex_country = { target = GRE transfer_troops = yes }
 			set_capital = 47
-			set_cosmetic_tag = GRE_MONARCHY
 		}
 	}
 	option = { # Да пошли вы!
 		name = npt_greece.1.b
 		ai_chance = {
-			factor = 100
+			factor = 0
 			modifier = {
-				factor = 0
-				GRR = { controls_state = 731 }
+				factor = 100
+				OR = {
+					GRR = { NOT = { controls_state = 731 } }
+					has_country_flag = AUH_help_to_king_GRE
+				}
 			}
 		}
 		add_war_support = -0.05
+		GRR = { drop_cosmetic_tag = yes }
 		declare_war_on = {
 			target = GRR
 			type = annex_everything
 		}
-		GER = {
-			add_to_faction = GRE
+		if = {
+			limit = { GER = { is_faction_leader = yes } }
+			GER = {
+				add_to_faction = GRE
+			}
+		}
+		if = {
+			limit = { has_country_flag = AUH_help_to_king_GRE }
+			if = {
+				limit = {
+					has_dlc = "Together for Victory"
+				}
+				AUH = {
+					GRE = { subjecting_script_with_transfer_parties_semi_independent = yes }
+				}
+				else = {
+					AUH = { puppet = GRE }
+				}
 		}
 	}
+}
 }
 
 country_event = {
