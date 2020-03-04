@@ -17,8 +17,8 @@ ideas = {
 			
 			modifier = {
 				consumer_goods_factor = 0.20
-				industrial_capacity_factory = -0.25
-				industrial_capacity_dockyard = -0.25
+				industrial_capacity_factory = -0.15
+				industrial_capacity_dockyard = -0.15
 				stability_factor = -0.10
 			}
 		}
@@ -39,8 +39,8 @@ ideas = {
 			
 			modifier = {
 				consumer_goods_factor = 0.15
-				industrial_capacity_factory = -0.15
-				industrial_capacity_dockyard = -0.15
+				industrial_capacity_factory = -0.10
+				industrial_capacity_dockyard = -0.10
 			}
 		}
 		
@@ -60,8 +60,8 @@ ideas = {
 			
 			modifier = {
 				consumer_goods_factor = 0.05
-				industrial_capacity_factory = -0.10
-				industrial_capacity_dockyard = -0.10
+				industrial_capacity_factory = -0.05
+				industrial_capacity_dockyard = -0.05
 			}
 		}
 
@@ -249,7 +249,7 @@ ideas = {
 			modifier = {
 				drift_defence_factor = 0.25
 				foreign_subversive_activites = -0.25
-				stability_factor = -0.03
+				stability_factor = -0.05
 			}
 		}
 
@@ -331,7 +331,7 @@ ideas = {
 			}
 
 			allowed_civil_war = {
-				is_democratic_country = no
+				NOT = { is_democratic_country = yes }
 			}
 
 			removal_cost = -1
@@ -340,7 +340,7 @@ ideas = {
 
 			modifier = {
 				autonomy_gain = 1
-				social_conservatism_drift = -0.1
+				market_liberalism_drift = -0.1
 			}
 		}
 
@@ -351,7 +351,7 @@ ideas = {
 			}
 
 			allowed_civil_war = {
-				has_government = communism
+				is_socialist_country = yes
 			}
 
 			removal_cost = -1
@@ -360,7 +360,7 @@ ideas = {
 
 			modifier = {
 				autonomy_gain = 1
-				social_conservatism_drift = -0.1
+				market_liberalism_drift = -0.1
 				communism_drift = 0.2
 			}
 		}
@@ -372,7 +372,7 @@ ideas = {
 			}
 
 			allowed_civil_war = {
-				has_government = fascism
+				is_fascist_country = yes
 			}
 
 			removal_cost = -1
@@ -381,7 +381,7 @@ ideas = {
 
 			modifier = {
 				autonomy_gain = 1
-				social_conservatism_drift = -0.1
+				market_liberalism_drift = -0.1
 				fascism_drift = 0.2
 			}
 		}
@@ -402,7 +402,7 @@ ideas = {
 
 			modifier = {
 				autonomy_gain = 1
-				social_conservatism_drift = -0.1
+				market_liberalism_drift = -0.1
 				fascism_drift = 0.2
 			}
 		}
@@ -514,6 +514,10 @@ ideas = {
 			cost = 100
 
 			traits = { smooth_talking_charmer }
+
+			available = {
+				#has_completed_focus = AST_never_another_gallipoli
+			}
 		}
 
 		AST_herbert_v_evatt = {
@@ -528,6 +532,12 @@ ideas = {
 
 			traits = { silent_workhorse }
 
+			available = {
+				if = {
+					limit = { has_dlc = "Together for Victory" }
+					#has_completed_focus = AST_support_the_policy_of_appeasement
+				}
+			}
 		}
 
 		AST_jack_beasley = {
@@ -561,18 +571,24 @@ ideas = {
 				original_tag = AST
 				
 			}
+			available = {
+				if = {
+					limit = { has_dlc = "Together for Victory" }
+					#has_completed_focus = AST_support_the_centre_party
+				}
+				if = {
+					limit = { has_dlc = "Man the Guns" }	
+					NOT = { has_autonomy_state = autonomy_supervised_state }
+				}
+			}
 
 			picture = generic_political_advisor_europe_4
 			
 			traits = { fascist_counselor }
 		
-			on_add = {
-				country_event = political.7
-			}
-		
 			do_effect = {
 				NOT = {
-					has_government = fascism
+					is_fascist_country = yes
 				}
 			}
 		
@@ -587,18 +603,24 @@ ideas = {
 				original_tag = AST
 				
 			}
+			available = {
+				if = {
+					limit = { has_dlc = "Together for Victory" }
+					#has_completed_focus = AST_empower_the_workers
+				}
+				if = {
+					limit = { has_dlc = "Man the Guns" }	
+					NOT = { has_autonomy_state = autonomy_supervised_state }
+				}
+			}
 
 			picture = generic_communist_counselor_western_european_2d
 			
 			traits = { communist_counselor }
 		
-			on_add = {
-				country_event = political.1
-			}
-		
 			do_effect = {
 				NOT = {
-					has_government = communism
+					is_socialist_country = yes
 				}
 			}
 		
@@ -613,14 +635,23 @@ ideas = {
 			allowed = {
 				original_tag = AST
 			}
-			
-			picture = generic_social_conservative_counselor_western_european_2d
-			
-			traits = { social_conservative_counselor }
-		
-			on_add = {
-				country_event = political.13
+			available = {
+				if = {
+					limit = { has_dlc = "Together for Victory" }
+					OR = {
+						#has_completed_focus = AST_protect_the_homeland
+						#has_completed_focus = AST_support_the_policy_of_appeasement
+					}
+				}
+				if = {
+					limit = { has_dlc = "Man the Guns" }	
+					NOT = { has_autonomy_state = autonomy_supervised_state }
+				}
 			}
+			
+			picture = generic_market_liberal_counselor_western_european_2d
+			
+			traits = { market_liberal_counselor }
 		
 			do_effect = {
 				NOT = {
@@ -638,6 +669,7 @@ ideas = {
 theorist = {
 
 	AST_norman_makin = {
+		ledger = navy
 				
 		picture = generic_political_advisor_europe_3
 
@@ -646,13 +678,14 @@ theorist = {
 		}
 		
 		research_bonus = {
-			naval_doctrine = 0.07
+			naval_doctrine = 0.10
 		}
 		
 		traits = { naval_theorist }
 	}
 
 	AST_james_fairbairn = {
+		ledger = air
 				
 		picture = generic_political_advisor_europe_2
 			
@@ -661,7 +694,7 @@ theorist = {
 		}
 		
 		research_bonus = {
-			air_doctrine = 0.07
+			air_doctrine = 0.10
 		}
 		
 		traits = { air_warfare_theorist }
@@ -673,6 +706,7 @@ theorist = {
 high_command = {
 
 	AST_arthur_allen = {
+		ledger = army
 
 		picture = generic_army_europe_2
 		
@@ -688,6 +722,7 @@ high_command = {
 	}
 
 	AST_clive_caldwell = {
+		ledger = air
 
 		picture = generic_air_europe_1
 		
@@ -703,6 +738,7 @@ high_command = {
 	}
 
 	AST_john_collins = {
+		ledger = navy
 
 		picture = generic_navy_europe_1
 		
@@ -718,6 +754,7 @@ high_command = {
 	}
 
 	AST_edmund_herring = {
+		ledger = army
 
 		picture = generic_army_europe_1
 		
@@ -732,6 +769,7 @@ high_command = {
 		}
 	}
 	AST_arthur_drakeford = {
+		ledger = air
 
 		picture = generic_army_europe_4
 			
@@ -740,10 +778,11 @@ high_command = {
 			has_dlc = "Together for Victory"
 		}
 			
-		traits = { air_air_combat_training_2 }
+		traits = {air_air_combat_training_2 }
 		}
 
 	AST_cederic_hicks = {
+		ledger = army
 
 		picture = generic_army_europe_4
 		
@@ -752,6 +791,9 @@ high_command = {
 			has_dlc = "Together for Victory"
 		}
 		cost = 100
+		available = {
+				#has_completed_focus = AST_australian_army_catering_corps
+			}
 
 		traits = { army_logistics_2 }
 		
@@ -913,7 +955,7 @@ high_command = {
 			}
 			
 			research_bonus = {
-				electronics = 0.075
+				electronics = 0.10
 			}
 
 			cost = 75
@@ -937,7 +979,7 @@ high_command = {
 
 			
 			research_bonus = {
-				armor = 0.10
+				armor = 0.15
 			}
 			
 			traits = { fast_tank_manufacturer }
@@ -962,7 +1004,7 @@ high_command = {
 			}
 						
 			research_bonus = {
-				naval_equipment = 0.10
+				naval_equipment = 0.15
 			}
 			
 			traits = { convoy_escort_naval_manufacturer }
@@ -981,7 +1023,7 @@ high_command = {
 
 			
 			research_bonus = {
-				naval_equipment = 0.10
+				naval_equipment = 0.15
 			}
 			
 			traits = { pacific_fleet_naval_manufacturer }
@@ -1026,7 +1068,7 @@ high_command = {
 
 			
 			research_bonus = {
-				infantry_weapons = 0.10
+				infantry_weapons = 0.15
 			}
 			
 			traits = { infantry_equipment_manufacturer }
@@ -1051,11 +1093,12 @@ high_command = {
 			}
 
 			available = {
+				#has_completed_focus = AST_commonwealth_aircraft_corporation
 				is_subject_of = ENG
 			}
 			
 			research_bonus = {
-				air_equipment = 0.10
+				air_equipment = 0.15
 			}			
 			
 			equipment_bonus = {

@@ -184,6 +184,23 @@ remove_white_unit_leaders = {
 	every_unit_leader = { limit = { OR = { has_id = 88161 has_id = 88162 has_id = 77405 } } set_nationality = PRM }
 }
 bolsheviks_victory = {
+			if = {
+				limit = { has_country_flag = RUS_occupated_PER_WWI }
+				if = {
+					limit = { NOT ={ has_war_with = TUR } }
+					every_state = {
+						limit = { is_owned_by = RUS is_core_of = PER NOT = { is_core_of = RUS } }
+						PER = { transfer_state = PREV }
+					}
+					else = {
+						every_state = {
+							limit = { is_owned_by = RUS is_core_of = PER NOT = { is_core_of = RUS } }
+							ENG = { set_state_owner = PREV }
+						}
+					}
+				}
+				clr_country_flag = RUS_occupated_PER_WWI
+			}
 	add_threat = -20
 	add_ideas = {
 		soviet_republic_gov_form
@@ -340,7 +357,6 @@ bolsheviks_victory = {
 			modifier = RUS_entente_debt_cancellation
 		}
 	}
-	add_ideas = RUS_weak_state_suppression_apparatus
 	country_event = { id = rcw_dkutc.1 days = 1 }
 	country_event = { id = rcw.22 days = 2 }
 	diplomatic_relation = {
@@ -393,12 +409,14 @@ bolsheviks_victory = {
 		add_ideas = {
 			poliparty_system_law
 		}
-		else = { activate_soviet_power_center = yes }
+		add_ideas = RUS_weak_state_suppression_apparatus_1
+		else = { activate_soviet_power_center = yes add_ideas = RUS_weak_state_suppression_apparatus country_event = { id = rcw_bolsheviks.21 days = 6 } }
 	}
 }
 activate_soviet_power_center = {
 	hidden_effect = {
 		set_country_flag = RUS_soviet_power_flag
+		set_variable = { var = Trotskiy_power value = 0 }
 		
 		set_variable = { var = total_members_of_central_committee value = 21 }
 		
@@ -427,6 +445,7 @@ activate_soviet_power_center = {
 activate_soviet_power_right = {
 	hidden_effect = {
 		set_country_flag = RUS_soviet_power_flag
+		set_variable = { var = Trotskiy_power value = 0 }
 		
 		set_variable = { var = total_members_of_central_committee value = 21 }
 		
@@ -1045,7 +1064,7 @@ spawn_krasnoarmeyskaya_brigada = {
 					is_core_of = RUS
 					is_controlled_by = RUS
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER OVERLORD = { tag = GER } is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER is_subject_of = GER is_white_movement_country = yes } } }
 				}
 			}
 			random_state = {
@@ -1056,7 +1075,7 @@ spawn_krasnoarmeyskaya_brigada = {
 					is_core_of = ROOT
 					is_controlled_by = ROOT
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER OVERLORD = { tag = GER } is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER is_subject_of = GER is_white_movement_country = yes } } }
 				}
 				create_unit = {
 					division = "name = \"Krasnoarmeyskaya Brigada\" division_template = \"Krasnoarmeyskaya Brigada\" start_experience_factor = 0.15 start_equipment_factor = 1"
@@ -1084,7 +1103,7 @@ spawn_red_guard_zavesa = {
 					is_core_of = ROOT
 					is_controlled_by = ROOT
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { is_white_movement_country = yes } } }
 				}
 			}
 			random_state = {
@@ -1095,7 +1114,7 @@ spawn_red_guard_zavesa = {
 					is_core_of = ROOT
 					is_controlled_by = ROOT
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { is_white_movement_country = yes } } }
 				}
 				create_unit = {
 					division = "name = \"Krasnoarmeyskaya Diviziya\" division_template = \"Krasnoarmeyskaya Zavesa\" start_experience_factor = 0.1 start_equipment_factor = 1"
@@ -1216,7 +1235,7 @@ spawn_white_guard_on_front = {
 					is_core_of = ROOT
 					is_controlled_by = ROOT
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { is_white_movement_country = yes } } }
 				}
 			}
 			random_state = {
@@ -1227,7 +1246,7 @@ spawn_white_guard_on_front = {
 					is_core_of = ROOT
 					is_controlled_by = ROOT
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { is_white_movement_country = yes } } }
 				}
 				create_unit = {
 					division = "name = \"Belaya Gvardiya\" division_template = \"Belaya Gvardiya\" start_experience_factor = 0.8 start_equipment_factor = 1"
@@ -1255,7 +1274,7 @@ spawn_udarniki_on_front = {
 					is_core_of = ROOT
 					is_controlled_by = ROOT
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { is_white_movement_country = yes } } }
 				}
 			}
 			random_state = {
@@ -1266,7 +1285,7 @@ spawn_udarniki_on_front = {
 					is_core_of = ROOT
 					is_controlled_by = ROOT
 					is_in_home_area = yes
-					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER OVERLORD = { tag = GER } } NOT = { is_white_movement_country = yes } } }
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { is_white_movement_country = yes } } }
 				}
 				create_unit = {
 					division = "name = \"Udarnaya Diviziya\" division_template = \"Udarnaya Diviziya\" start_experience_factor = 0.8 start_equipment_factor = 1"
@@ -1325,9 +1344,6 @@ kill_Lavr_Kornilov = {
 	}
 	RVA = {
 		set_country_flag = Lavr_Kornilov_dead
-	}
-	every_country = {
-		if = { limit = { any_unit_leader = { has_id = 76547 } } remove_unit_leader = 76547 }
 	}
 	every_country = {
 		limit = {
@@ -1427,9 +1443,6 @@ kill_Mikhail_Alexeev = {
 	}
 	RVA = {
 		set_country_flag = Mikhail_Alexeev_dead
-	}
-	every_country = {
-		if = { limit = { any_unit_leader = { has_id = 76321 } } remove_unit_leader = 76321 }
 	}
 	every_country = {
 		limit = {

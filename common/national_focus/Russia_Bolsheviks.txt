@@ -269,9 +269,11 @@ focus_tree = {
 					}
 					NOT = { has_government = communism has_government = radical_socialism }
 					exists = yes
+					NOT = { has_war_with = ROOT }
+					NOT = { is_subject_of = ROOT }
 				}
 				declare_war_on = {
-					target = RUS
+					target = ROOT
 					type = annex_everything
 				}
 			}
@@ -724,6 +726,7 @@ focus_tree = {
 		icon = GFX_goal_RUS_recruit_old_bureaucrats_to_state_apparatus
 		cost = 5
 		available = {
+			has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
 		}
 		ai_will_do = {
 			factor = 1
@@ -768,24 +771,7 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_vchk
 		completion_reward = {
-				if = {
-				limit = { has_idea = RUS_low_literacy }
-				swap_ideas = {
-					remove_idea = RUS_low_literacy
-					add_idea = RUS_low_literacy_0_5
-				}
-				}
-				else_if = {
-				limit = { has_idea = RUS_low_literacy_0_5 }
-				swap_ideas = {
-					remove_idea = RUS_low_literacy_0_5
-					add_idea = RUS_low_literacy_0_25
-				}
-				}
-				else_if = {
-				limit = { has_idea = RUS_low_literacy_0_25 }
-				remove_ideas = RUS_low_literacy_0_25
-				}
+			RUS_low_literacy_fall = yes
 		}
 
 	}
@@ -841,6 +827,8 @@ focus_tree = {
 		icon = GFX_goal_RUS_war_communism
 		cost = 5
 		available = {
+			NOT = { has_completed_focus = RUS_new_economic_policy }
+			NOT = { has_completed_focus = RUS_new_economic_policy_left_eser }
 		}
 		ai_will_do = {
 			factor = 1
@@ -852,10 +840,6 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_soviet_power
 			focus = RUS_left_eser_focus
-		}
-		mutually_exclusive = {
-			focus = RUS_new_economic_policy
-			focus = RUS_new_economic_policy_left_eser
 		}
 		x = -1
 		y = 4
@@ -923,10 +907,10 @@ focus_tree = {
 		relative_position_id = RUS_war_communism
 		completion_reward = {
 			add_ideas = RUS_prodrazverstka_idea
-					add_to_variable = {
-						var = global.RCW_green_var_Russian_SFSR
-						value = 1
-					}
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = 2
+			}
 		}
 
 	}
@@ -947,10 +931,10 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_prodrazverstka
 		completion_reward = {
-					add_to_variable = {
-						var = global.RCW_green_var_Russian_SFSR
-						value = 1
-					}
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = 1
+			}
 		}
 
 	}
@@ -1015,6 +999,7 @@ focus_tree = {
 		cost = 10
 		available = {
 			NOT = { has_country_flag = war_communism_abolished }
+			has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
 			#has_completed_focus = RUS_new_economic_policy
 		}
 		ai_will_do = {
@@ -1030,11 +1015,13 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_trudovaya_povinnost
 		completion_reward = {
-			add_timed_idea = { idea = RUS_labor_armies days = 365 }
+			add_ideas = RUS_labor_armies
 					add_to_variable = {
 						var = global.RCW_green_var_Russian_SFSR
 						value = 1
 					}
+			add_political_power = 50
+			add_to_variable = { var = Trotskiy_power value = 1 }
 		}
 
 	}
@@ -1076,34 +1063,6 @@ focus_tree = {
 			}
 			else = {
 				add_ideas = state_capitalism_law
-			}
-			if = {
-				limit = { has_idea = RUS_hyper_inflation_4 }
-				swap_ideas = {
-					remove_idea = RUS_hyper_inflation_4
-					add_idea = RUS_hyper_inflation_5
-				}
-			}
-			if = {
-				limit = { has_idea = RUS_hyper_inflation_3 }
-				swap_ideas = {
-					remove_idea = RUS_hyper_inflation_3
-					add_idea = RUS_hyper_inflation_4
-				}
-			}
-			if = {
-				limit = { has_idea = RUS_hyper_inflation_2 }
-				swap_ideas = {
-					remove_idea = RUS_hyper_inflation_2
-					add_idea = RUS_hyper_inflation_3
-				}
-			}
-			if = {
-				limit = { has_idea = RUS_hyper_inflation_1 }
-				swap_ideas = {
-					remove_idea = RUS_hyper_inflation_1
-					add_idea = RUS_hyper_inflation_2
-				}
 			}
 		}
 
@@ -1169,6 +1128,10 @@ focus_tree = {
 		relative_position_id = RUS_free_food_product_distribution
 		completion_reward = {
 			add_political_power = 100
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = 1
+			}
 		}
 
 	}
@@ -2449,7 +2412,7 @@ focus_tree = {
 		icon = GFX_goal_RUS_agrocultural_investment_banks
 		cost = 3
 		available = {
-			
+			NOT = { has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan }
 		}
 		ai_will_do = {
 			factor = 0
@@ -2484,12 +2447,14 @@ focus_tree = {
 		icon = GFX_goal_RUS_agrocultural_investment_banks
 		cost = 3
 		available = {
+			has_country_flag = RUS_RKP_b_VIII_decist_war_plan
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		prerequisite = {
 			focus = RUS_power_of_elected_committees
+			focus = RUS_cancellation_of_election_of_officers
 		}
 		x = -2
 		y = 4
@@ -2546,6 +2511,7 @@ focus_tree = {
 					is_locked = no
 				}
 			}
+			add_to_variable = { var = Trotskiy_power value = 1 }
 		}
 
 	}
@@ -2554,12 +2520,13 @@ focus_tree = {
 		icon = GFX_goal_RUS_agrocultural_investment_banks
 		cost = 3
 		available = {
-			
+			has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		prerequisite = {
+			focus = RUS_power_of_elected_committees
 			focus = RUS_cancellation_of_election_of_officers
 		}
 		x = 2
