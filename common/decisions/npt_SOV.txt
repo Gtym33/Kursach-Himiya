@@ -1,11 +1,13 @@
 
 SOV_VChK_desisions = {
+
 	organization_of_railway_militia = {
 
 		icon = generic_army_support
 
 		available = {
 			OR = {
+				has_idea = RUS_collapse_of_railway_system_1
 				has_idea = RUS_collapse_of_railway_system_2
 				has_idea = RUS_collapse_of_railway_system_3
 				has_idea = RUS_collapse_of_railway_system_4
@@ -16,7 +18,7 @@ SOV_VChK_desisions = {
 			NOT = { has_country_flag = railway_militia }
 			has_country_flag = railway_self_government
 		}
-		cost = 10
+		cost = 30
 		days_remove = 20
 		fire_only_once = yes
 		ai_will_do = {
@@ -24,34 +26,8 @@ SOV_VChK_desisions = {
 		}
 		remove_effect = {
 			set_country_flag = railway_militia
-			if = {
-				limit = { has_idea = RUS_collapse_of_railway_system_2 }
-				swap_ideas = {
-					remove_idea = RUS_collapse_of_railway_system_2
-					add_idea = RUS_collapse_of_railway_system_1
-				}
-			}
-			else_if = {
-				limit = { has_idea = RUS_collapse_of_railway_system_3 }
-				swap_ideas = {
-					remove_idea = RUS_collapse_of_railway_system_3
-					add_idea = RUS_collapse_of_railway_system_2
-				}
-			}
-			else_if = {
-				limit = { has_idea = RUS_collapse_of_railway_system_4 }
-				swap_ideas = {
-					remove_idea = RUS_collapse_of_railway_system_4
-					add_idea = RUS_collapse_of_railway_system_3
-				}
-			}
-			else_if = {
-				limit = { has_idea = RUS_collapse_of_railway_system_5 }
-				swap_ideas = {
-					remove_idea = RUS_collapse_of_railway_system_5
-					add_idea = RUS_collapse_of_railway_system_4
-				}
-			}
+			custom_effect_tooltip = railway_militia_tt
+			add_manpower = -10000
 		}
 	}
 	abolish_railway_militia = {
@@ -59,41 +35,28 @@ SOV_VChK_desisions = {
 		icon = generic_army_support
 
 		available = {
-			
+			NOT = { has_country_flag = railway_self_government }
 		}
 		visible = {
 			has_country_flag = railway_militia
-			has_country_flag = railway_self_government
 		}
 		cost = 25
 		days_remove = 50
 		fire_only_once = yes
 		ai_will_do = {
 			factor = 100
+			modifier = {
+				NOT = { has_global_flag = RUS_civil_war_over }
+			}
 		}
 		remove_effect = {
 			clr_country_flag = railway_militia
+			add_political_power = 50
+			add_manpower = 10000
+			add_stability = 0.01
 		}
 	}
-	abolish_railway_self_government = {
 
-		icon = generic_army_support
-
-		available = {
-			NOT = { has_country_flag = railway_militia }
-		}
-		visible = {
-			has_country_flag = railway_self_government
-		}
-		cost = 50
-		fire_only_once = yes
-		ai_will_do = {
-			factor = 100
-		}
-		complete_effect = {
-			clr_country_flag = railway_self_government
-		}
-	}
 	abolish_death_penalty_moratorium = {
 
 		icon = generic_army_support
@@ -123,6 +86,11 @@ SOV_VChK_desisions = {
 				ideology = communism
 				popularity = -0.02
 			}
+			add_to_variable = { decist_faction_party_compositon = 0.05 }
+			add_to_variable = { moderate_faction_party_compositon = 0.05 }
+			custom_effect_tooltip = decist_fact_party_comp_plus_5
+			custom_effect_tooltip = moderate_fact_party_comp_plus_5
+			check_overlap_of_party_composition = yes
 		}
 	}
 	VChK_appoint_Felix_Dzerjinsky_as_field_marshal = {
@@ -130,22 +98,14 @@ SOV_VChK_desisions = {
 		icon = generic_army_support
 
 		available = {
-			OR = {
-				has_idea = Felix_Dzerjinsky_3
-				has_idea = Felix_Dzerjinsky_4
-				has_idea = Felix_Dzerjinsky_5
-			}
 			has_war = yes
 		}
 		visible = {
-			OR = {
-				has_idea = Felix_Dzerjinsky_3
-				has_idea = Felix_Dzerjinsky_4
-				has_idea = Felix_Dzerjinsky_5
-			}
+			NOT = { has_country_flag = Felix_Dzerjinsky_dead }
+			has_idea = Felix_Dzerjinsky_5
 			has_war = yes
 		}
-		cost = 25
+		cost = 50
 		fire_only_once = yes
 		complete_effect = {
 			create_field_marshal = {
@@ -158,6 +118,37 @@ SOV_VChK_desisions = {
 				planning_skill = 1
 				logistics_skill = 1
 			}
+			add_to_variable = { decist_faction_party_compositon = 0.05 }
+			custom_effect_tooltip = decist_fact_party_comp_plus_5
+			check_overlap_of_party_composition = yes
+		}
+	}
+	
+	replace_FED_by_Radec = {
+
+		icon = generic_army_support
+
+		visible = {
+			has_idea = Felix_Dzerjinsky_5
+			has_country_flag = Felix_Dzerjinsky_in_office_forever
+		}
+		cost = 100
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 100
+		}
+		complete_effect = {
+			if = {
+				limit = { NOT = { has_country_flag = Karl_Radek_dead } }
+				swap_ideas = {
+					remove_idea = Felix_Dzerjinsky_5
+					add_idea = Karl_Radek_5
+				}
+				else = {
+					remove_ideas = Felix_Dzerjinsky_5
+				}
+			}
+			clr_country_flag = Felix_Dzerjinsky_in_office_forever
 		}
 	}
 	destroy_black_guard = {
@@ -167,7 +158,6 @@ SOV_VChK_desisions = {
 		available = {
 			radical_socialism > 0.2
 			NOT = { has_country_flag = defeat_of_black_guard }
-			has_completed_focus = RUS_soviet_power
 		}
 		visible = {
 			NOT = { has_country_flag = defeat_of_black_guard }
@@ -184,8 +174,6 @@ SOV_VChK_desisions = {
 	}
 	blow_up_the_Cathedral_of_Christ_the_Savior = {
 		available = {
-			has_completed_focus = RUS_secularization
-			has_country_flag = RUS_secularization
 			owns_state = 219
 			has_full_control_of_state = 219
 		}
@@ -225,13 +213,83 @@ SOV_VChK_desisions = {
 			}
 			modifier = {
 				factor = 0
-				NOT = { has_country_flag = AI_will_build_Palace_of_the_Soviets}
+				NOT = { has_country_flag = AI_will_build_Palace_of_the_Soviets }
 			}
 		}
 	}
 }
 
 SOV_soviet_power_desisions = {
+
+	kick_Bukharin_from_Pravda = {
+
+		icon = generic_army_support
+
+		available = {
+			has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = percent_left_faction_CC_more_50
+					check_variable = { percent_left_faction_CC > 0.5 }
+				}
+				left_fact_party_is_ruling = yes
+			}
+		}
+		visible = {
+			has_country_flag = railway_self_government
+		}
+		cost = 75
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 100
+		}
+		complete_effect = {
+		}
+	}
+
+	abolish_railway_self_government = {
+
+		icon = generic_army_support
+
+		available = {
+			has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = percent_left_faction_CC_more_50
+					check_variable = { percent_left_faction_CC > 0.5 }
+				}
+				left_fact_party_is_ruling = yes
+			}
+		}
+		visible = {
+			has_country_flag = railway_self_government
+		}
+		cost = 75
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 100
+		}
+		complete_effect = {
+			clr_country_flag = railway_self_government
+			add_to_variable = { decist_faction_party_compositon = 0.05 }
+			add_to_variable = { left_faction_party_compositon = 0.05 }
+			custom_effect_tooltip = decist_fact_party_comp_plus_5
+			custom_effect_tooltip = left_fact_party_comp_plus_5
+			check_overlap_of_party_composition = yes
+			add_to_variable = { var = Trotskiy_power value = 1 }
+			custom_effect_tooltip = add_5_lefts_to_CC
+			hidden_effect = {
+				add_to_variable = { var = left_faction_CC value = 5 }
+				subtract_from_variable = { var = center_faction_CC value = 5 }
+				check_overlap_of_CC_n_CEC_deputies_add = yes
+				set_frame_of_CC_n_CEC = yes
+			}
+			if = {
+				limit = { has_country_leader = { name = "Vladimir Lenin" ruling_only = yes } }
+				country_event = { id = rcw_bolsheviks.303 }
+			}
+		}
+	}
 
 	all_party_discussion_with_decists = {
 		activation = {
@@ -254,7 +312,22 @@ SOV_soviet_power_desisions = {
 			}
 		}
 		complete_effect = {
-			country_event = { id = rcw_bolsheviks.215 }
+			if = {
+				limit = { NOT = { has_country_flag = all_party_discussion_decists_arrested } }
+				country_event = { id = rcw_bolsheviks.215 }
+				else = {
+					clr_country_flag = all_party_discussion_decists_arrested
+					add_to_variable = { decist_faction_party_compositon = -0.1 }
+					custom_effect_tooltip = decist_fact_party_comp_minus_10
+					check_overlap_of_party_composition = yes
+					custom_effect_tooltip = remove_all_decists_from_CC
+					hidden_effect = {
+						add_to_variable = { var = decist_faction_CC value = -100 }
+						check_overlap_of_CC_n_CEC_deputies_add = yes
+						set_frame_of_CC_n_CEC = yes
+					}
+				}
+			}
 		}
 	}
 
@@ -409,6 +482,10 @@ SOV_soviet_power_desisions = {
 			NOT = { has_country_flag = RUS_RKP_b_VIII_decist_war_plan }
 			NOT = { has_government = radical_socialism }
 			custom_trigger_tooltip = {
+				tooltip = non_decist_fact_party_is_ruling_tt
+				NOT = { decist_fact_party_is_ruling = yes }
+			}
+			custom_trigger_tooltip = {
 				tooltip = decist_faction_CC_more_0
 				check_variable = { decist_faction_CC > 0 }
 			}
@@ -512,9 +589,11 @@ SOV_soviet_power_desisions = {
 		icon = generic_prepare_civil_war
 
 		available = {
-			has_country_flag = RUS_soviet_power_flag
-			has_completed_focus = RUS_war_communism
 			NOT = { has_completed_focus = RUS_strengthening_war_communism_policy }
+			custom_trigger_tooltip = {
+				tooltip = non_left_fact_party_is_ruling_tt
+				NOT = { left_fact_party_is_ruling = yes }
+			}
 			custom_trigger_tooltip = {
 				tooltip = percent_left_faction_CC_less_40
 				check_variable = { percent_left_faction_CC < 0.4 }
@@ -559,8 +638,8 @@ SOV_soviet_power_desisions = {
 			NOT = {
 				has_idea = RUS_weak_state_suppression_apparatus
 				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
 			}
-			has_country_flag = RUS_soviet_power_flag
 			custom_trigger_tooltip = {
 				tooltip = percent_right_faction_CC_less_30
 				check_variable = { percent_right_faction_CC < 0.3 }
@@ -609,8 +688,8 @@ SOV_soviet_power_desisions = {
 			NOT = {
 				has_idea = RUS_weak_state_suppression_apparatus
 				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
 			}
-			has_country_flag = RUS_soviet_power_flag
 			is_neighbor_of = MRC
 			custom_trigger_tooltip = {
 				tooltip = percent_right_faction_CC_less_30
@@ -675,8 +754,8 @@ SOV_soviet_power_desisions = {
 			NOT = {
 				has_idea = RUS_weak_state_suppression_apparatus
 				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
 			}
-			has_country_flag = RUS_soviet_power_flag
 			is_neighbor_of = AZR
 			custom_trigger_tooltip = {
 				tooltip = percent_right_faction_CC_less_30
@@ -732,8 +811,8 @@ SOV_soviet_power_desisions = {
 			NOT = {
 				has_idea = RUS_weak_state_suppression_apparatus
 				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
 			}
-			has_country_flag = RUS_soviet_power_flag
 			is_neighbor_of = ARM
 			custom_trigger_tooltip = {
 				tooltip = percent_right_faction_CC_less_30
@@ -792,13 +871,12 @@ SOV_soviet_power_desisions = {
 			NOT = {
 				has_idea = RUS_weak_state_suppression_apparatus
 				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
 			}
-			has_country_flag = RUS_soviet_power_flag
 			OR = {
 				is_neighbor_of = KHI
 				is_neighbor_of = BUK
 			}
-			NOT = { has_war_with = GER }
 			OCH = { OR = { exists = no has_capitulated = yes } }
 			SIB = { OR = { exists = no has_capitulated = yes } }
 			CCA = { OR = { exists = no has_capitulated = yes } }
@@ -817,6 +895,7 @@ SOV_soviet_power_desisions = {
 		}
 		visible = {
 			has_country_flag = RUS_soviet_power_flag
+			NOT = { has_war_with = GER }
 			any_country = {
 				OR = {
 					tag = KHI
@@ -911,8 +990,8 @@ SOV_soviet_power_desisions = {
 			NOT = {
 				has_idea = RUS_weak_state_suppression_apparatus
 				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
 			}
-			has_country_flag = RUS_soviet_power_flag
 			is_neighbor_of = MON
 			custom_trigger_tooltip = {
 				tooltip = percent_right_faction_CC_less_30
@@ -967,16 +1046,13 @@ SOV_soviet_power_desisions = {
 		icon = generic_prepare_civil_war
 
 		available = {
-			has_country_flag = RUS_soviet_power_flag
-			custom_trigger_tooltip = {
-				tooltip = RUS_party_power_control_more_then_4
-			}
 		}
 		visible = {
 			has_country_flag = RUS_soviet_power_flag
 			FRT = {
 				exists = yes
 				is_in_faction_with = ROOT
+				is_faction_leader = no
 				NOT = { has_government = communism }
 			}
 		}
@@ -990,9 +1066,10 @@ SOV_soviet_power_desisions = {
 		}
 		days_remove = 50
 		fire_only_once = yes
-		war_with_on_remove = GEO
+		war_with_on_remove = FRT
 
 		remove_effect = {
+			FRT = { leave_faction = yes }
 			declare_war_on = { target = FRT type = annex_everything }
 		}
 		complete_effect = {
@@ -1007,28 +1084,16 @@ SOV_soviet_power_desisions = {
 			NOT = {
 				has_idea = RUS_weak_state_suppression_apparatus
 				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
 			}
-			OR = {
-				original_tag = RUS
-				original_tag = SOV
-			}
-			has_government = communism
 			has_war = yes
-			JAP = {
-				NOT = {
-					has_government = communism
-					has_government = radical_socialism
-				}
-			}
+			NOT = { has_war_with = JAP }
 			OR = {
-			BKL = {
-				exists = yes
+				country_exists = BKL
+				country_exists = PRM
 			}
-			PRM = {
-				exists = yes
-			}
-			}
-			564 = { is_controlled_by = ROOT }
+			PRM = { NOT= { has_government = communism } }
+			has_full_control_of_state = 564
 		}
 		
 		visible = {
@@ -1040,7 +1105,6 @@ SOV_soviet_power_desisions = {
 				has_government = communism
 				has_government = radical_socialism
 			}
-			has_war = yes
 			JAP = {
 				NOT = {
 					has_government = communism
@@ -1048,13 +1112,9 @@ SOV_soviet_power_desisions = {
 				}
 			}
 			OR = {
-			BKL = {
-				exists = yes
+				country_exists = BKL
+				country_exists = PRM
 			}
-			PRM = {
-				exists = yes
-			}
-		  }			
 		}
 		
 		cost = 25
@@ -1070,13 +1130,13 @@ SOV_soviet_power_desisions = {
 		complete_effect = {
 			FER = {
 				transfer_state = 564
-				create_country_leader = {
-					name = "Alexandr Krasnoshchyokov"
-					desc = ""
-					picture = "gfx/leaders/Europe/Portrait_Europe_Generic_3.dds"
-					expire = "1965.1.1"
-					ideology = leninism
-					traits = { }
+				create_country_leader = { name = "Alexandr Krasnoshchyokov" desc = "" picture = "gfx/leaders/SOV/Alexandr_Krasnoshchyokov.dds" expire = "1935.1.1" ideology = leninism  traits = {  } }
+			}
+			ROOT = {
+				if = {
+					limit = { has_dlc = "Together for Victory" }
+					set_autonomy = { target = FER autonomy_state = autonomy_integrated_puppet }
+					else = { puppet = FER }
 				}
 			}
 			every_state = {
@@ -1102,10 +1162,6 @@ SOV_soviet_power_desisions = {
 					is_core_of = FER
 				}
 				FER = { transfer_state = PREV }
-			}
-			ROOT = {
-				puppet = FER
-				set_autonomy = { target = FER autonomy_state = autonomy_integrated_puppet }
 			}
 		}
 	}

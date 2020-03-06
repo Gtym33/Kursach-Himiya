@@ -1654,8 +1654,9 @@ country_event = {
 			has_country_flag = railway_self_government
 		}
 		modifier = {
-			factor = 0.8
+			factor = 1.25
 			has_country_flag = railway_militia
+			has_country_flag = railway_self_government
 		}
 	}
 	
@@ -2063,6 +2064,12 @@ country_event = {
 			country_event = { id = rcw_bolsheviks.216 days = 10 }
 			else = {
 				set_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
+				custom_effect_tooltip = remove_all_decists_from_CC
+				hidden_effect = {
+					add_to_variable = { var = decist_faction_CC value = -100 }
+					check_overlap_of_CC_n_CEC_deputies_add = yes
+					set_frame_of_CC_n_CEC = yes
+				}
 			}
 		}
 		ai_chance = {
@@ -2163,13 +2170,26 @@ country_event = {
 country_event = {
 	id = rcw_bolsheviks.211
 	title = rcw_bolsheviks.211.t
-	desc = rcw_bolsheviks.211.desc
+	desc = {
+		text = rcw_bolsheviks.211.desc
+		trigger = { has_idea = Felix_Dzerjinsky_5 }
+	}
+	desc = {
+		text = rcw_bolsheviks.211.desc_1
+		trigger = { NOT = { has_idea = Felix_Dzerjinsky_5 } }
+	}
 	picture = GFX_report_event_sov_felix_VCHK
 	
 	is_triggered_only = yes
 	
 	option = {
+		trigger = { has_idea = Felix_Dzerjinsky_5 }
 		name = rcw_bolsheviks.211.a
+	}
+	option = {
+		trigger = { NOT = { has_idea = Felix_Dzerjinsky_5 } }
+		name = rcw_bolsheviks.211.b
+		set_country_flag = all_party_discussion_decists_arrested
 	}
 }
 
@@ -2437,6 +2457,7 @@ country_event = {
 		trigger = { NOT = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } } }
 		
 		add_to_variable = { var = Trotskiy_power value = -1 }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.229 days = 30 random_days = 10 } }
 	}
 	option = {
 		name = rcw_bolsheviks.225.b
@@ -2449,6 +2470,7 @@ country_event = {
 		check_overlap_of_party_composition = yes
 		
 		add_to_variable = { var = Trotskiy_power value = 2 }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.229 days = 30 random_days = 10 } }
 	}
 }
 
@@ -2477,6 +2499,7 @@ country_event = {
 		remove_ideas = Lev_Trotsky_6
 		remove_ideas = Lev_Trotsky_army_chief
 		hidden_effect = { country_event = { id = rcw_bolsheviks.301 days = 1 } }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.229 days = 30 random_days = 10 } }
 	}
 }
 # Ноябрь 1920, забастовка в Москве и падение популярности коммунизма
@@ -2539,6 +2562,229 @@ country_event = {
 		hidden_effect = { country_event = { id = rcw_bolsheviks.301 days = 1 } }
 	}
 }
+# Ноябрь 1920, забастовка в Туле
+country_event = {
+	id = rcw_bolsheviks.229
+	title = rcw_bolsheviks.229.t
+	desc = rcw_bolsheviks.229.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	# Разнос парторганизаций и комиссия по выполнению требований забастовщиков
+	option = {
+		name = rcw_bolsheviks.229.a
+		add_political_power = -25
+		add_to_variable = { decist_faction_party_compositon = -0.1 }
+		custom_effect_tooltip = decist_fact_party_comp_minus_10
+		hidden_effect = { country_event = { id = rcw_bolsheviks.230 days = 1 } }
+	}
+	# Разнос парторганизаций частями РККА
+	option = {
+		name = rcw_bolsheviks.229.b
+		add_to_variable = { decist_faction_party_compositon = -0.20 }
+		add_to_variable = { center_faction_party_compositon = -0.10 }
+		add_to_variable = { left_faction_party_compositon = -0.05}
+		custom_effect_tooltip = decist_fact_party_comp_minus_20
+		custom_effect_tooltip = center_fact_party_comp_minus_10
+		custom_effect_tooltip = left_fact_party_comp_minus_5
+		check_overlap_of_party_composition = yes
+		hidden_effect = { country_event = { id = rcw_bolsheviks.230 days = 1 } }
+	}
+}
+# Ноябрь 1920, съезд профсоюзов, Троцкий vs Ленин (Томский)
+country_event = {
+	id = rcw_bolsheviks.230
+	title = rcw_bolsheviks.230.t
+	desc = {
+		text = rcw_bolsheviks.230.desc
+		trigger = { NOT = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } } }
+	}
+	desc = {
+		text = rcw_bolsheviks.230.desc_1
+		trigger = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } }
+	}
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	# Троцкий не входит в комиссию (Дима, чё за комиссия)
+	option = {
+		trigger = { NOT = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } } }
+		name = rcw_bolsheviks.230.a
+		add_to_variable = { var = Trotskiy_power value = -1 }
+	}
+	# Входит
+	option = {
+		name = rcw_bolsheviks.230.b
+		add_to_variable = { var = Trotskiy_power value = 1 }
+		if {
+			limit = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } }
+			add_to_variable = { moderate_faction_party_compositon = 0.05 }
+			add_to_variable = { right_faction_party_compositon = 0.05 }
+			custom_effect_tooltip = moderate_fact_party_comp_plus_5
+			custom_effect_tooltip = right_fact_party_comp_plus_5
+			check_overlap_of_party_composition = yes
+		}
+	}
+}
+
+# Декабрь 1920, пленум ЦК, чёто о профсоюзах
+country_event = {
+	id = rcw_bolsheviks.231
+	title = rcw_bolsheviks.231.t
+	desc = {
+		text = rcw_bolsheviks.231.desc
+		trigger = { NOT = { has_country_flag = Vladimir_Lenin_dead } }
+	}
+	desc = {
+		text = rcw_bolsheviks.231.desc_1
+		trigger = { has_country_flag = Vladimir_Lenin_dead }
+	}
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	# Вынести дискуссию в печать
+	option = {
+		trigger = { NOT = { has_country_flag = Vladimir_Lenin_dead } }
+		name = rcw_bolsheviks.231.a
+		add_to_variable = { var = Trotskiy_power value = -1 }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.232 days = 1 } }
+	}
+	# Нет.
+	option = {
+		trigger = { NOT = { has_country_flag = Vladimir_Lenin_dead } }
+		name = rcw_bolsheviks.231.b
+		add_to_variable = { var = Trotskiy_power value = 1 }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.232 days = 1 } }
+	}
+	# ЦК соглашается с Троцким скрипя зубами
+	option = {
+		trigger = { has_country_flag = Vladimir_Lenin_dead }
+		name = rcw_bolsheviks.231.c
+		if = {
+			limit = { has_country_flag = railway_self_government }
+			clr_country_flag = railway_self_government
+			add_to_variable = { decist_faction_party_compositon = 0.05 }
+			add_to_variable = { left_faction_party_compositon = 0.05 }
+			custom_effect_tooltip = decist_fact_party_comp_plus_5
+			custom_effect_tooltip = left_fact_party_comp_plus_5
+			check_overlap_of_party_composition = yes
+			
+			add_to_variable = { var = Trotskiy_power value = 1 }
+		}
+		hidden_effect = { country_event = { id = rcw_bolsheviks.232 days = 1 } }
+	}
+}
+# Декабрь 1920, пленум ЦК, чёто о требовании децистов с реформой СНК
+country_event = {
+	id = rcw_bolsheviks.232
+	title = rcw_bolsheviks.232.t
+	desc = rcw_bolsheviks.232.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	# Принять
+	option = {
+		name = rcw_bolsheviks.232.a
+		hidden_effect = { country_event = { id = rcw_bolsheviks.233 days = 30 random_days = 10 } }
+	}
+	# Нет.
+	option = {
+		name = rcw_bolsheviks.232.b
+		add_political_power = -50
+		
+		add_to_variable = { decist_faction_party_compositon = -0.05 }
+		custom_effect_tooltip = decist_fact_party_comp_minus_5
+		check_overlap_of_party_composition = yes
+		hidden_effect = { country_event = { id = rcw_bolsheviks.233 days = 30 random_days = 10 } }
+	}
+	# ВЧК арестует всех
+	option = {
+		trigger = { left_fact_party_is_ruling = yes }
+		name = rcw_bolsheviks.232.c
+		add_to_variable = { left_faction_party_compositon = -0.10 }
+		add_to_variable = { decist_faction_party_compositon = -0.20 }
+		add_to_variable = { moderate_faction_party_compositon = 0.05 }
+		add_to_variable = { right_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = left_fact_party_comp_minus_10
+		custom_effect_tooltip = decist_fact_party_comp_minus_20
+		custom_effect_tooltip = moderate_fact_party_comp_plus_5
+		custom_effect_tooltip = right_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+		
+		custom_effect_tooltip = remove_all_decists_from_CC
+		hidden_effect = {
+			add_to_variable = { var = decist_faction_CC value = -100 }
+			check_overlap_of_CC_n_CEC_deputies_add = yes
+			set_frame_of_CC_n_CEC = yes
+		}
+		#hidden_effect = { country_event = { id = rcw_bolsheviks.233 days = 30 random_days = 10 } }
+	}
+}
+# Январь 1921, Шляпников требует передать промышленность профсоюзам
+country_event = {
+	id = rcw_bolsheviks.233
+	title = rcw_bolsheviks.233.t
+	desc = rcw_bolsheviks.233.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	# Ничего не делать
+	option = {
+		name = rcw_bolsheviks.233.a
+		hidden_effect = { country_event = { id = rcw_bolsheviks.234 days = 40 random_days = 15 } }
+	}
+	# Начать гонения на оппозицию
+	option = {
+		name = rcw_bolsheviks.233.b
+		add_political_power = -50
+		
+		add_to_variable = { decist_faction_party_compositon = -0.05 }
+		custom_effect_tooltip = decist_fact_party_comp_minus_5
+		check_overlap_of_party_composition = yes
+		hidden_effect = { country_event = { id = rcw_bolsheviks.234 days = 40 random_days = 15 } }
+	}
+	# ВЧК арестует всех
+	option = {
+		trigger = { left_fact_party_is_ruling = yes }
+		name = rcw_bolsheviks.233.c
+		add_to_variable = { left_faction_party_compositon = -0.10 }
+		add_to_variable = { decist_faction_party_compositon = -0.10 }
+		add_to_variable = { moderate_faction_party_compositon = 0.05 }
+		add_to_variable = { right_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = left_fact_party_comp_minus_10
+		custom_effect_tooltip = decist_fact_party_comp_minus_10
+		custom_effect_tooltip = moderate_fact_party_comp_plus_5
+		custom_effect_tooltip = right_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+		
+		custom_effect_tooltip = remove_all_decists_from_CC
+		hidden_effect = {
+			add_to_variable = { var = decist_faction_CC value = -100 }
+			check_overlap_of_CC_n_CEC_deputies_add = yes
+			set_frame_of_CC_n_CEC = yes
+		}
+	}
+}
+# Март 1921, X съезд РКП (б)
+country_event = {
+	id = rcw_bolsheviks.234
+	title = rcw_bolsheviks.234.t
+	desc = rcw_bolsheviks.234.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	# Ленин и сворачивание Военного коммунизма
+	option = {
+		name = rcw_bolsheviks.234.a
+		
+	}
+}
 
 
 # Переворот Троцкого
@@ -2558,7 +2804,7 @@ country_event = {
 			AND = {
 				has_country_flag = RUS_RKP_b_VIII_decist_war_plan
 				OR = {
-					stability < 0.1
+					has_stability < 0.1
 					check_variable = { decist_faction_party_compositon < 0.1 }
 				}
 			}
@@ -2600,13 +2846,32 @@ country_event = {
 		tag = RUS
 		has_country_flag = RUS_soviet_power_flag
 		has_country_leader = { name = "Vladimir Lenin" ruling_only = yes }
+		check_variable = { Vladimir_Lenin_fact = 3 }
 		check_variable = { center_faction_party_compositon < 0.06 }
 	}
 	
-	is_triggered_only = yes
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 3
+	}
 	
 	option = {
 		name = rcw_bolsheviks.302.a
 		retire_country_leader = yes
+	}
+}
+# Ленин становится левым
+country_event = {
+	id = rcw_bolsheviks.303
+	title = rcw_bolsheviks.303.t
+	desc = rcw_bolsheviks.303.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.303.a
+		set_variable = { Vladimir_Lenin_fact = 2 }
 	}
 }

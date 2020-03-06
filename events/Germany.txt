@@ -310,23 +310,7 @@ country_event = {
 					}
 				}
 				FIN = {
-					PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_embargo } }
-					PREV = { remove_opinion_modifier = { target = FIN modifier = unrecognized_state_rel } }
-					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo_to_initiator }
-					remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel_to_initiator }
-					remove_from_array = { unrecognized_states = FIN.id }
-					add_ai_strategy = {
-						type = antagonize
-						id = GER
-						value = -100
-					}
-					GER = {
-						add_ai_strategy = {
-							type = antagonize
-							id = PREV
-							value = -100
-						}
-					}
+					THIS_country_will_be_recognized_by_PREV = yes
 				}
 			}
 		}
@@ -1108,13 +1092,7 @@ country_event = {
 			limit = { RUS = { has_country_flag = RUS_brest_peace_white } }
 			add_war_support = 0.15
 		}
-		else = {
-			add_war_support = -0.1
-		}
-		add_popularity = {
-			ideology = authoritarism
-			popularity = -0.07
-		}
+		set_country_flag = WWI_GER_last_teutonic_advance
 		hidden_effect = {
 			initiate_verification_of_the_popularity_of_coalitions = yes
 		}
@@ -1166,13 +1144,6 @@ country_event = {
 			limit = { RUS = { has_country_flag = RUS_brest_peace_white } }
 			add_war_support = 0.15
 		}
-		else = {
-			add_war_support = -0.1
-		}
-		add_popularity = {
-			ideology = authoritarism
-			popularity = -0.08
-		}
 		add_popularity = {
 			ideology = social_democracy
 			popularity = 0.06
@@ -1181,6 +1152,7 @@ country_event = {
 			ideology = communism
 			popularity = 0.12
 		}
+		set_country_flag = WWI_GER_last_teutonic_advance
 		hidden_effect = {
 			initiate_verification_of_the_popularity_of_coalitions = yes
 		}
@@ -1199,7 +1171,7 @@ country_event = {
 		has_global_flag = WWI_is_now
 		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
 		NOT = { has_war_with = RUS }
-		NOT = { has_country_flag = GER_monarchy_fall }
+		has_country_flag = WWI_GER_last_teutonic_advance
 		OR = {
 			AND = { FRA = { controls_state = 16 is_puppet = no } }
 			AND = { FRA = { is_puppet = yes NOT = { controls_state = 16 } } }
@@ -1214,13 +1186,10 @@ country_event = {
 	
 	option = {
 		name = germany.104.a
-		add_war_support = -0.4
+		add_war_support = -0.15
+		add_stability = -0.1
 		add_popularity = {
 			ideology = authoritarism
-			popularity = -0.1
-		}
-		add_popularity = {
-			ideology = despotism
 			popularity = -0.07
 		}
 		hidden_effect = {
@@ -1408,27 +1377,28 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
+			add_threat = -30
 			if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
 			if = {
-			limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
-				add_ideas =  mutiny_1
-				country_event = stability.23
-			else_if = {
-				limit = { has_idea = mutiny_1 }
-					remove_ideas = mutiny_1
-					add_ideas =  mutiny_2
+				limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
+					add_ideas =  mutiny_1
+					country_event = stability.23
+				else_if = {
+					limit = { has_idea = mutiny_1 }
+						remove_ideas = mutiny_1
+						add_ideas =  mutiny_2
+				}
+				else_if = {
+					limit = { has_idea = mutiny_2 }
+						remove_ideas = mutiny_2
+						add_ideas =  mutiny_3
+				}
+				else_if = {
+					limit = { has_idea = mutiny_3 }
+						add_stability = -0.10
+						add_war_support = -0.20
+				}
 			}
-			else_if = {
-				limit = { has_idea = mutiny_2 }
-					remove_ideas = mutiny_2
-					add_ideas =  mutiny_3
-			}
-			else_if = {
-				limit = { has_idea = mutiny_3 }
-					add_stability = -0.10
-					add_war_support = -0.20
-			}
-		}
 		}
 	}
 	
