@@ -2243,31 +2243,38 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.43.a
-		#set_variable = {
-			#var = SIB_pressure_CCA
-			#value = 1
-		#}
-		CCA = {country_event = { id = rcw_usfev.44 days = 1 } }
+		CCA = {
+			set_variable = {
+				var = SIB_pressure_CCA
+				value = 1
+			}
+		}
+		CCA = {	country_event = { id = rcw_usfev.44 days = 1 } }
 	}
-	#option = {
-		#name = rcw_usfev.43.b
-		#set_variable = {
-			#var = SIB_pressure_CCA
-			#value = 2
-		#}
-		#CCA = {country_event = { id = rcw_usfev.44 days = 1 } }
-	#}
-	#option = {
-		#name = rcw_usfev.43.c
-		#set_variable = {
-			#var = SIB_pressure_CCA
-			#value = 3
-		#}
-		#CCA = {country_event = { id = rcw_usfev.44 days = 1 } }
-	#}
+	option = {
+		name = rcw_usfev.43.b
+		trigger = { URL = { exists = yes is_puppet_of = CCA } }
+		CCA = {
+			set_variable = {
+				var = SIB_pressure_CCA
+				value = 2
+			}
+		}
+		CCA = {	country_event = { id = rcw_usfev.44 days = 1 } }
+	}
+	option = {
+		name = rcw_usfev.43.c
+		CCA = {
+			set_variable = {
+				var = SIB_pressure_CCA
+				value = 3
+			}
+		}
+		CCA = {	country_event = { id = rcw_usfev.44 days = 1 } }
+	}
 }
 
-# Сибирский ультиматум о передаче Челябинска (КОМУЧ)
+# Сибирский ультиматум о передаче Челябинска, контроля над Уральским правительством, аннексии (КОМУЧ)
 country_event = {
 	id = rcw_usfev.44
 	title = rcw_usfev.44.t
@@ -2278,55 +2285,51 @@ country_event = {
 
 	option = {
 		name = rcw_usfev.44.a
-		add_popularity = { ideology = authoritarism popularity = 0.1 }
-		add_popularity = { ideology = despotism popularity = 0.1 }
-		add_popularity = { ideology = fascism popularity = 0.1 }
-		add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
+		if = {
+			limit = { check_variable = { SIB_pressure_CCA = 1 } }
+			add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
 			SIB = {
 				add_opinion_modifier = { target = CCA modifier = SIB_accept }
-				transfer_state = 572
-				add_state_core = 572
 				country_event = { id = rcw_usfev.46 days = 1 }
 			}
-		#if = {
-		#	limit = { check_variable = { SIB_pressure_CCA = 1 } }
-		#	add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
-		#	SIB = {
-		#		add_opinion_modifier = { target = CCA modifier = SIB_accept }
-		#		transfer_state = 572
-		#		add_state_core = 572
-		#		country_event = { id = rcw_usfev.46 days = 1 }
-		#	}
-		#}
-		#if = {
-		#	limit = { check_variable = { SIB_pressure_CCA = 2 } }
-		#	SIB = {
-		#		puppet = CCA
-		#		set_autonomy = {
-		#			target = CCA
-		#			autonomy_state = autonomy_integrated_puppet
-		#		}
-		#		country_event = { id = rcw_usfev.46 days = 1 }
-		#	}
-		#}
-		#if = {
-		#	limit = { check_variable = { SIB_pressure_CCA = 3 } }
-		#	SIB = {
-		#		annex_country = { 
-		#		target = CCA 
-		#		transfer_troops = yes 
-		#		}
-		#		add_state_core = 251
-		#		add_state_core = 406
-		#		add_state_core = 407
-		#		add_state_core = 572
-		#		add_state_core = 573
-		#		add_state_core = 582
-		#		add_state_core = 651
-		#		add_state_core = 652
-		#		country_event = { id = rcw_usfev.46 days = 1 }
-		#	}
-		#}
+			if = {
+			limit = { URL = { exists = yes is_puppet_of = SIB } }
+			URL = {
+				transfer_state = 572
+				}
+				else = {
+					SIB = {
+						transfer_state = 572
+						add_state_core = 572
+					}
+				}
+			}
+		}
+		if = {
+			limit = { check_variable = { SIB_pressure_CCA = 2 } }
+			SIB = {
+				URL = { subjecting_script_with_transfer_parties_integrated_puppet = yes }
+				country_event = { id = rcw_usfev.46 days = 1 }
+			}
+		}
+		if = {
+			limit = { check_variable = { SIB_pressure_CCA = 3 } }
+			SIB = {
+				annex_country = { 
+				target = CCA 
+				transfer_troops = yes 
+				}
+				add_state_core = 251
+				add_state_core = 406
+				add_state_core = 407
+				add_state_core = 572
+				add_state_core = 573
+				add_state_core = 582
+				add_state_core = 651
+				add_state_core = 652
+				country_event = { id = rcw_usfev.46 days = 1 }
+			}
+		}
 		ai_chance = {
 			factor = 1
 		}
@@ -2350,6 +2353,10 @@ country_event = {
 	is_triggered_only = yes
 	fire_only_once = yes
 	
+	immediate = {
+		clear_variable = SIB_pressure_CCA
+	}
+	
 	option = {
 		name = rcw_usfev.45.a
 		add_war_support = 0.1
@@ -2362,7 +2369,6 @@ country_event = {
 	}
 	option = {
 		name = rcw_usfev.45.b
-		set_country_flag = meeting_fail
 		add_war_support = -0.05
 		ai_chance = {
 			factor = 1
@@ -2379,6 +2385,10 @@ country_event = {
 	
 	is_triggered_only = yes
 	fire_only_once = yes
+	
+	immediate = {
+		clear_variable = SIB_pressure_CCA
+	}
 	
 	option = {
 		name = rcw_usfev.46.a
@@ -3619,9 +3629,6 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.76.a
-		ai_chance = {
-			factor = 999
-		}
 		CPG = {
 			load_oob = CPG_eng
 			create_country_leader = { name = "Wilfrid Malleson" desc = "" picture = "gfx/leaders/ENG/Wilfrid_Malleson.dds" expire = "1947.1.1" ideology = despotism_ideology traits = { warmonger } }
@@ -4035,7 +4042,7 @@ country_event = {
 	}
 }
 
-###Ну там всяких чехов выгнать нахуй###
+###Разоружение чехословацкого легиона (Сибирь)###
 country_event = {
 	id = rcw_usfev.89
 	title = rcw_usfev.89.t
@@ -7113,6 +7120,234 @@ country_event = {
 	}
 }
 
+###Напряжение на линии соприкосновения Сибири и КОМУЧ###
+country_event = {
+	id = rcw_usfev.158
+	title = rcw_usfev.158.t
+	desc = rcw_usfev.158.d
+	picture = GFX_report_event_sib_czechoslovakians
+	
+	trigger = {
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		SIB = { exists = yes }
+		CCA = { exists = yes }
+		OR = {
+			AND = {
+				tag = CCA
+				controls_state = 653
+				653 = {
+					any_neighbor_state = { is_controlled_by = SIB }
+				}
+			}
+			AND = {
+				tag = SIB
+				controls_state = 653
+				653 = {
+					any_neighbor_state = { is_controlled_by = CCA }
+				}
+			}
+		}
+		NOT = {
+			SIB = { has_war_with = CCA }
+			CCA = { has_war_with = SIB }
+		}
+		SIB = { is_puppet = no }
+		CCA = { is_puppet = no }
+		URL = { exists = no }
+		OR = {
+			AND = {
+				CCA = {
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+						has_government = social_democracy
+						has_government = social_liberalism
+					}
+				}
+				SIB = {
+					OR = {
+						has_government = market_liberalism
+						has_government = social_conservatism
+						has_government = authoritarism
+						has_government = despotism
+						has_government = fascism
+						has_government = national_syndicalism
+					}
+				}
+			}
+			AND = {
+				CCA = {
+					OR = {
+						has_government = market_liberalism
+						has_government = social_conservatism
+						has_government = authoritarism
+						has_government = despotism
+						has_government = fascism
+						has_government = national_syndicalism
+					}
+				}
+				SIB = {
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+						has_government = social_democracy
+						has_government = social_liberalism
+					}
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.158.a
+		if = {
+			limit = { tag = CCA }
+			SIB = { country_event = { id = rcw_usfev.159 days = 1 } }
+		}
+		if = {
+			limit = { tag = SIB }
+			CCA = { country_event = { id = rcw_usfev.159 days = 1 } }
+		}
+	}
+	
+}
+
+###КОМУЧ и Сибирь ищут компромисс по границе###
+country_event = {
+	id = rcw_usfev.159
+	title = rcw_usfev.159.t
+	desc = rcw_usfev.159.d
+	picture = GFX_report_event_sib_czechoslovakians
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.159.a
+		ai_chance = { factor = 1 }
+		CCA = { add_ideas = SIB_CCA_border }
+		SIB = { add_ideas = SIB_CCA_border }
+	}
+	
+	option = {
+		name = rcw_usfev.159.b
+		ai_chance = { factor = 0 }
+		if = {
+		limit = { tag = CCA }
+			declare_war_on = {
+				target = SIB
+				type = annex_everything
+			}
+		}
+		if = {
+		limit = { tag = SIB }
+			declare_war_on = {
+				target = CCA
+				type = annex_everything
+			}
+		}
+	}
+}
+
+###Чехословаки отказываются вести боевые действия между собой###
+country_event = {
+	id = rcw_usfev.160
+	title = rcw_usfev.160.t
+	desc = rcw_usfev.160.d
+	picture = GFX_report_event_sib_czechoslovakians
+	
+	trigger = {
+		is_white_movement_country = yes
+		OR = {
+			has_template = "Brigada Chekhoslovatskogo legiona"
+			has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok"
+			has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+		}
+		any_other_country = {
+			has_war_with = ROOT
+			OR = {
+				has_template = "Brigada Chekhoslovatskogo legiona"
+				has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok"
+				has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.160.a
+		every_country = {
+			limit = {
+				OR = {
+					has_template = "Brigada Chekhoslovatskogo legiona"
+					has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok"
+					has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+				}
+			}
+			delete_unit_template_and_units = {
+				division_template = "Brigada Chekhoslovatskogo legiona"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+			}
+			every_unit_leader = { limit = { OR = { has_id = 88151 } } set_nationality = CZE }
+			every_unit_leader = { limit = { OR = { has_id = 88153 } } set_nationality = CZE }
+			every_unit_leader = { limit = { OR = { has_id = 92355 } } set_nationality = CZE }
+		}
+	}
+}
+
+###Скрытый ивент на удаление приграничной напряжённости###
+country_event = {
+	id = rcw_usfev.161
+	
+	hidden = yes
+	
+	trigger = {
+		has_idea = SIB_CCA_border
+		OR = {
+			AND = {
+				CCA = { NOT = { controls_state = 653 } }
+				SIB = { NOT = { controls_state = 653 } }
+			}
+			OR = {
+				SIB = { is_puppet_of = CCA }
+				CCA = { is_puppet_of = SIB }
+			}
+			OR = {
+				SIB = { has_war_with = CCA }
+				CCA = { has_war_with = SIB }
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		every_country = {
+				limit = { has_idea = SIB_CCA_border }
+				remove_ideas = SIB_CCA_border
+			}
+	}
+}
+
 
 # Расстрел Тряпки нормальный
 country_event = {
@@ -7198,8 +7433,8 @@ country_event = {
 		name = rcw_usfev.201.b
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
-		add_popularity = { ideology = authoritarism popularity = 0.15 }
-		add_popularity = { ideology = social_conservatism popularity = 0.05 }
+		add_popularity = { ideology = authoritarism popularity = 0.10 }
+		add_popularity = { ideology = social_conservatism popularity = 0.10 }
 		hidden_effect = {
 			random_list = {
 				30 = {
@@ -8511,6 +8746,24 @@ country_event = {
 					RSS = { add_ideas = help_from_foreign_interventionists }
 				}
 			}
+			if = {
+				limit = { URL = { is_puppet_of = CCA } }
+				RSS = {
+					annex_country = { 
+						target = URL
+						transfer_troops = no 
+					}
+				}
+			}
+			if = {
+				limit = { URL = { is_puppet_of = SIB } }
+				RSS = {
+					annex_country = { 
+						target = URL
+						transfer_troops = no 
+					}
+				}
+			}
 		}
 	}
 }
@@ -8535,6 +8788,15 @@ country_event = {
 			country_event = { id = rcw_usfev.1919 hours = 1 }
 			
 			SIB = {
+				if = {
+					limit = { URL = { is_puppet_of = SIB } }
+					RSS = {
+						annex_country = { 
+							target = URL
+							transfer_troops = yes
+						}
+					}
+				}
 				if = {
 					limit = { has_idea = SIB_siberian_army_idea }
 					#####RSS = { add_ideas = SIB_siberian_army_idea }
