@@ -3255,6 +3255,7 @@ country_event = {
 	
 	trigger = {
 		tag = SIB
+		always = no
 		surrender_progress > 0.4
 		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
 		NOT = {
@@ -3465,8 +3466,8 @@ country_event = {
 	trigger = {
 		tag = RUS
 		OR = {
-		has_government = communism
-		has_government = radical_socialism
+			has_government = communism
+			has_government = radical_socialism
 		}
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_country_flag = RUS_czechoslovak_legion_uprising
@@ -3482,6 +3483,9 @@ country_event = {
 		name = rcw_usfev.75.a
 		ai_chance = {
 			factor = 999
+		}
+		RUS = {
+			load_oob = RUS_Merv_red_guard
 		}
 		every_state = {
 			limit = {
@@ -3506,9 +3510,6 @@ country_event = {
 				}
 			}
 			CPG = { transfer_state = PREV }
-		}
-		RUS = {
-			load_oob = RUS_Merv_red_guard
 		}
 		CPG = {
 			inherit_technology = RUS
@@ -3541,6 +3542,9 @@ country_event = {
 		trigger = {
 			is_ai = no
 		}
+		RUS = {
+			load_oob = RUS_Merv_red_guard
+		}
 		every_state = {
 			limit = {
 				OR = {
@@ -3564,9 +3568,6 @@ country_event = {
 				}
 			}
 			CPG = { transfer_state = PREV }
-		}
-		RUS = {
-			load_oob = RUS_Merv_red_guard
 		}
 		CPG = {
 			inherit_technology = RUS
@@ -3898,10 +3899,10 @@ country_event = {
 	option = {
 		name = rcw_usfev.86.a
 		ai_chance = {
-			factor = 999
+			factor = 1
 		}
 		JAP = {
-		country_event = { id = rcw_usfev.87 days = 1 }
+			country_event = { id = rcw_usfev.87 days = 1 }
 		}
 		add_popularity = { ideology = radical_socialism popularity = 0.05 }
 		add_popularity = { ideology = communism popularity = 0.05 }
@@ -3925,15 +3926,17 @@ country_event = {
 	option = {
 		name = rcw_usfev.87.a
 		ai_chance = {
-			factor = 999
+			factor = 1
 		}
 		add_named_threat = {
 			threat = 5 
 			name = JAP_SIB
 		}
-		USA = {add_opinion_modifier = { target = JAP modifier = USA_no_accept_JAP }}
-		ENG = {add_opinion_modifier = { target = JAP modifier = ENT_no_accept_JAP }}
-		FRA = {add_opinion_modifier = { target = JAP modifier = ENT_no_accept_JAP }}
+		USA = { add_opinion_modifier = { target = JAP modifier = USA_no_accept_JAP } }
+		ENG = { add_opinion_modifier = { target = JAP modifier = ENT_no_accept_JAP } }
+		FRA = { add_opinion_modifier = { target = JAP modifier = ENT_no_accept_JAP } }
+		every_unit_leader = { limit = { OR = { has_id = 77427 } } add_unit_leader_trait = old_guard set_nationality = SIB }
+		every_unit_leader = { limit = { OR = { has_id = 77428 } } add_unit_leader_trait = old_guard set_nationality = SIB }
 		SIB = {
 			add_manpower = 100000
 			load_oob = SIB_JAP
@@ -3963,6 +3966,9 @@ country_event = {
 	}
 	option = {
 		name = rcw_usfev.87.b
+		ai_chance = {
+			factor = 0
+		}
 		add_opinion_modifier = { target = SIB modifier = JAP_no_accept_SIB_strong }
 		add_stability = 0.05
 		add_popularity = { ideology = national_syndicalism popularity = 0.02 }
@@ -4089,9 +4095,6 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.90.a
-		ai_chance = {
-			factor = 999
-		}
 		add_stability = 0.05
 		country_event = { id = rcw_usfev.91 days = 30 }
 	}
@@ -4110,7 +4113,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.91.a
 		ai_chance = {
-			factor = 10
+			factor = 1
 		}
 		set_cosmetic_tag = SIB_MONARCHY
 		set_politics = { ruling_party = authoritarism elections_allowed = no }
@@ -4130,6 +4133,18 @@ country_event = {
 		set_cosmetic_tag = SIB_MONARCHY
 		add_ideas = RUS_Dmitriy_II_idea
 		add_ideas = limited_monarchy_gov_form
+	}
+	
+	option = {
+		name = rcw_usfev.91.c
+		trigger = { OR = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } has_country_leader = { name = "Dmitriy II Romanov" ruling_only = no } } }
+		ai_chance = {
+			factor = 2
+		}
+		set_cosmetic_tag = SIB_MONARCHY
+		set_politics = { ruling_party = authoritarism elections_allowed = no }
+		add_ideas = limited_monarchy_gov_form
+		add_ideas = decrees_of_ruler_b_law
 	}
 }
 ###Провозглашение туркестанской автономии, если октябрьская революция (исторический вариант)###
@@ -6502,8 +6517,14 @@ country_event = {
 		ai_chance = {
 			factor = 2
 		}
+		if = {
+			limit = { tag = NRR }
+			set_politics = { ruling_party = despotism }
+			add_ideas = military_dictatorship_gov_form
+			add_ideas = emergency_laws_b_law
+		}
 		RSS = {
-			RSS = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } }
+			RSS = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
 			add_political_power = 10
 			add_war_support = 0.05
 		}
@@ -6922,7 +6943,11 @@ country_event = {
 	option = {
 		name = rcw_usfev.152.b
 		RSS = {
-		add_political_power = -20
+			add_political_power = -20
+			create_wargoal = {
+				type = annex_everything
+				target = ROOT
+			}
 		}
 	}
 
@@ -7302,6 +7327,42 @@ country_event = {
 	}
 }
 
+###Японские генералы убираются на Родину из Сибири###
+country_event = {
+	id = rcw_usfev.162
+	title = rcw_usfev.162.t
+	desc = rcw_usfev.162.d
+	picture = GFX_report_event_sib_czechoslovakians
+	
+	hidden = yes
+	
+	trigger = {
+		OR = { any_unit_leader = { has_trait = japan_advisor } }
+		OR = {
+			NOT = { tag = SIB }
+			has_war_with = JAP
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_usfev.160.a
+		every_unit_leader = {
+			limit = {
+				OWNER = { tag = ROOT }
+				has_trait = JAP_samurai_lineage
+			}
+			set_nationality = JAP
+		}
+		delete_unit_template_and_units = {
+				division_template = "Japanesen volunteers infantry brigade"
+			}
+	}
+}
+
 ###Скрытый ивент на удаление приграничной напряжённости###
 country_event = {
 	id = rcw_usfev.161
@@ -7350,6 +7411,10 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		set_country_flag = can_move_Nik
+	}
+	
 	option = {
 		name = rcw_usfev.198.a
 	}
@@ -7365,7 +7430,7 @@ country_event = {
 }
 
 
-# Расстрел Тряпки нормальный
+# Расстрел Николая II нормальный
 country_event = {
 	id = rcw_usfev.200
 	title = rcw_usfev.200.t
@@ -7416,7 +7481,7 @@ country_event = {
 	
 }
 
-# Захват тряпки КОМУЧём
+# Захват Николая II КОМУЧём
 country_event = {
 	id = rcw_usfev.201
 	title = rcw_usfev.201.t
@@ -7456,7 +7521,7 @@ country_event = {
 	}
 }
 
-# Расстрел тряпки КОМУЧём
+# Расстрел Николая II КОМУЧём
 country_event = {
 	id = rcw_usfev.202
 	title = rcw_usfev.202.t
@@ -7490,6 +7555,8 @@ country_event = {
 		every_unit_leader = { limit = { has_id = 88150 } promote_leader = yes }
 		set_politics = { ruling_party = authoritarism }
 		hidden_effect = {
+			create_country_leader = { name = "Vladimir Cappel" desc = "" picture = "gfx/leaders/RUS/Vladimir_Cappel.dds" expire = "1953.07.22" ideology = authoritarism_ideology traits = { } }
+			remove_despotism_leader = yes
 			set_temp_variable = { CW_size = 1 }
 			subtract_from_temp_variable = { CW_size = party_popularity@authoritarism }
 			subtract_from_temp_variable = { CW_size = party_popularity@market_liberalism }
@@ -7519,6 +7586,10 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.203.b
+		hidden_effect = {
+			create_country_leader = { name = "Vladimir Cappel" desc = "" picture = "gfx/leaders/RUS/Vladimir_Cappel.dds" expire = "1953.07.22" ideology = authoritarism_ideology traits = { } }
+			remove_despotism_leader = yes
+		}
 		set_temp_variable = { CW_size = party_popularity@authoritarism }
 		add_to_temp_variable = { CW_size = party_popularity@social_conservatism }
 		add_to_temp_variable = { CW_size = party_popularity@fascism }
@@ -7571,6 +7642,7 @@ country_event = {
 	
 	option = { #Николай, Николай, Коооляяяя.....
 		name = rcw_usfev.204.a
+		hidden_effect = { remove_authoritarism_leader = yes }
 		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character } }
 		create_field_marshal = { name = "Nikolay II Romanov" id = 77401 portrait_path = "gfx/leaders/RUS/Nikolay_II_Romanov_military.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
 		remove_ideas = RUS_Nikolay_II_idea
@@ -7597,6 +7669,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.204.c
+		hidden_effect = { remove_authoritarism_leader = yes }
 		create_country_leader = {
 			name = "Pavel Pertov"
 			desc = "RUS_Pavel_Pertov_DESC"
@@ -7611,6 +7684,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.204.e
+		hidden_effect = { remove_authoritarism_leader = yes }
 		create_country_leader = {
 			name = "Vasiliy Boldyrev"
 			desc = "RUS_Vasiliy_Boldyrev_DESC"
@@ -7825,7 +7899,7 @@ country_event = {
 	}
 }
 
-# Захват тряпки Сибирью
+# Захват Николая II Сибирью
 country_event = {
 	id = rcw_usfev.251
 	title = rcw_usfev.251.t
@@ -7840,13 +7914,15 @@ country_event = {
 	
 	trigger = {
 		OR = {
-		tag = SIB
-		tag = RSS
+			tag = SIB
+			tag = RSS
+			tag = RVA
 		}
 		controls_state = 653
 		RUS = { has_country_flag =  Nikolay_Alexandrovich_Romanov_Ekat NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
 		NOT = { CCA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
 		NOT = { SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
+		NOT = { RVA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
 	}
 	
 	option = {
@@ -7854,6 +7930,8 @@ country_event = {
 		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
+		add_popularity = { ideology = authoritarism popularity = 0.10 }
+		add_popularity = { ideology = social_conservatism popularity = 0.10 }
 	}
 }
 
@@ -8770,6 +8848,13 @@ country_event = {
 					}
 				}
 			}
+			
+			if = {
+				limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+				RSS = {
+					create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character } }
+				}
+			}
 		}
 	}
 }
@@ -9001,6 +9086,12 @@ country_event = {
 						}
 					}
 				}
+				if = {
+				limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+				RSS = {
+					create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character } }
+				}
+			}
 		}
 	}
 }
