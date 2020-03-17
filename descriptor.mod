@@ -1,12 +1,12 @@
-version="1.8.1"
+version="1.9.*"
 tags={
+	"Events"
+	"Gameplay"
 	"Historical"
 	"Ideologies"
 	"National Focuses"
-	"Military"
+	"Map"
 	"Technologies"
-	"Gameplay"
-	"Events"
 }
 name="Rise of Russia dev"
-supported_version="1.8.1"
+supported_version="1.9.1 beta"

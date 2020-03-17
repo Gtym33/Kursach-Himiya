@@ -106,6 +106,7 @@ country_event = {
 					state = 576
 					state = 577
 					state = 572
+					state = 1103
 					state = 573
 					state = 582
 					state = 652
@@ -200,6 +201,7 @@ country_event = {
 					state = 576
 					state = 577
 					state = 572
+					state = 1103
 					state = 573
 					state = 582
 					state = 652
@@ -374,6 +376,7 @@ country_event = {
 					state = 1072
 					state = 652 #Дутов
 					state = 572
+					state = 1103
 				}
 			}
 			add_core_of = CCA
@@ -573,6 +576,7 @@ country_event = {
 					state = 1072
 					state = 652 #Дутов
 					state = 572
+					state = 1103
 				}
 			}
 			add_core_of = CCA
@@ -781,6 +785,7 @@ country_event = {
 					state = 651
 					state = 1072
 					state = 572
+					state = 1103
 				}
 			}
 			CCA = { add_state_core = PREV }
@@ -803,6 +808,7 @@ country_event = {
 					state = 651
 					state = 1072
 					state = 572
+					state = 1103
 				}
 			}
 			CCA = { transfer_state = PREV }
@@ -874,6 +880,7 @@ country_event = {
 						state = 576
 						state = 577
 						state = 572
+						state = 1103
 						state = 573
 						state = 582
 						state = 652
@@ -1091,6 +1098,7 @@ country_event = {
 					state = 651
 					state = 1072
 					state = 572
+					state = 1103
 				}
 			}
 			CCA = { add_state_core = PREV }
@@ -1113,6 +1121,7 @@ country_event = {
 					state = 651
 					state = 1072
 					state = 572
+					state = 1103
 				}
 			}
 			CCA = { transfer_state = PREV }
@@ -1184,6 +1193,7 @@ country_event = {
 						state = 576
 						state = 577
 						state = 572
+						state = 1103
 						state = 573
 						state = 582
 						state = 652
@@ -1411,6 +1421,7 @@ country_event = {
 						state = 576
 						state = 577
 						state = 572
+						state = 1103
 						state = 573
 						state = 582
 						state = 652
@@ -1485,6 +1496,7 @@ country_event = {
 					state = 1072
 					#state = 652 #Дутов
 					state = 572
+					state = 1103
 				}
 			}
 			#add_core_of = SIB
@@ -2307,18 +2319,14 @@ country_event = {
 		if = {
 			limit = { check_variable = { SIB_pressure_CCA = 3 } }
 			SIB = {
-				annex_country = { 
-				target = CCA 
-				transfer_troops = yes 
+				annex_country = {
+					target = CCA
+					transfer_troops = yes
 				}
-				add_state_core = 251
-				add_state_core = 406
-				add_state_core = 407
-				add_state_core = 572
-				add_state_core = 573
-				add_state_core = 582
-				add_state_core = 651
-				add_state_core = 652
+				every_state = {
+					limit = { is_core_of = CCA }
+					add_core_of = SIB
+				}
 				country_event = { id = rcw_usfev.46 days = 1 }
 			}
 		}
@@ -2647,6 +2655,7 @@ country_event = {
 							state = 403
 							state = 398
 							state = 572
+							state = 1103
 							state = 644
 							state = 807
 							state = 562
@@ -2700,6 +2709,7 @@ country_event = {
 						state = 403
 						state = 398
 						state = 572
+						state = 1103
 						state = 644
 						state = 807
 						state = 562
@@ -2776,6 +2786,7 @@ country_event = {
 							state = 1041
 							state = 563
 							state = 572
+							state = 1103
 						}
 					}
 					SIB = { transfer_state = PREV add_state_core = PREV }
@@ -6747,36 +6758,81 @@ country_event = {
 		random_list = {
 			70 = {}
 			30 = {
-				RSS = {
-					start_civil_war = {
-						ideology = national_syndicalism
-						size = 0.3
-						capital = 586
-						states = { 
-							586 885 589 
+				if = {
+					limit = { SCH = { exists = yes } }
+					SCH = {
+						declare_war_on = {
+							target = ROOT
+							type = annex_everything
 						}
-						keep_unit_leaders_trigger = { NOT = { has_id = 92348 } }
-					}
-					random_other_country = {
-						limit = {
-							original_tag = RSS
-							has_government = national_syndicalism
-						}
-						set_cosmetic_tag = RSS_REBEL
-						create_country_leader = { name = "Boris Annenkov" desc = "" picture = "gfx/leaders/SIB/Boris_Annenkov.dds" expire = "1995.3.12" ideology = national_syndicalism_ideology traits = { warmonger } }
-					}
-					if = {
-						limit = { RSS = { has_war_with = RUS } }
-						random_other_country = {
-							limit = {
-								original_tag = RSS
-								has_government = national_syndicalism
-							}
-							set_stability = 0.9
-							set_war_support = 0.8
+						if = {
+							limit = { ROOT = { has_war_with = RUS } }
 							declare_war_on = {
 								target = RUS
 								type = annex_everything
+							}
+						}
+						if = {
+							limit = { ROOT = { has_war_with = TRK } }
+							declare_war_on = {
+								target = TRK
+								type = annex_everything
+							}
+						}
+					}
+					else = {
+						if = {
+							limit = { any_unit_leader = { has_id = 92348 } }
+							every_state = {
+								limit = {
+									OR = {
+										state = 586
+										state = 589
+										state = 885
+										state = 732
+									}
+								}
+								add_core_of = SCH
+							}
+							every_state = {
+								limit = {
+									#NOT = { is_controlled_by = RUS }
+									#NOT = { is_controlled_by = TRK }
+									OR = {
+										state = 586
+										state = 589
+										state = 885
+										state = 732
+										state = 909
+									}
+								}
+								SCH = { transfer_state = PREV }
+							}
+							hidden_effect = {
+								every_unit_leader = { limit = { has_id = 92348 } set_nationality = SCH }
+							}
+							SCH = {
+								add_ideas = neutral_foreign_policy_law
+								remove_all_foreing_locked_templates_from_liberated_country = yes
+								load_oob = SCH_cossaks
+								declare_war_on = {
+									target = ROOT
+									type = annex_everything
+								}
+								if = {
+									limit = { ROOT = { has_war_with = RUS } }
+									declare_war_on = {
+										target = RUS
+										type = annex_everything
+									}
+								}
+								if = {
+									limit = { ROOT = { has_war_with = TRK } }
+									declare_war_on = {
+										target = TRK
+										type = annex_everything
+									}
+								}
 							}
 						}
 					}
@@ -7026,14 +7082,14 @@ country_event = {
 	
 	trigger = {
 		NOT = { has_global_flag = RUS_civil_war_over }
-		is_main_former_russian_empire_country = yes
+		OR = {
+			tag = BKL
+			is_main_former_russian_empire_country = yes
+		}
 		MON = { exists = yes has_government = despotism any_neighbor_country = { any_other_country = { has_war_with = PREV has_government = communism } } }
 		any_unit_leader = { has_id = 77402 }
 		NOT = { has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes } }
 		has_manpower > 1999
-		has_army_manpower = {
-			size > 14999
-		}
 		surrender_progress > 0.69
 	}
 	
@@ -7096,6 +7152,9 @@ country_event = {
 			add_ideas = territorial_expansion_law
 			add_ideas = help_from_foreign_interventionists
 			load_oob = MON_Ungern
+			create_corps_commander = { name = "Alexandr Kaygorodov" portrait_path = "gfx/leaders/RUS/Alexandr_Kaygorodov.dds" traits = { trickster guerilla_fighter career_officer cavalry_officer } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Boris Rezukhin" portrait_path = "gfx/leaders/RUS/Boris_Rezukhin.dds" traits = { harsh_leader politically_connected } skill = 2 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Nikolay Kazagrandi" portrait_path = "gfx/leaders/RUS/Nikolay_Kazagrandi.dds" traits = { infantry_officer organizer ranger } skill = 2 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
 		}
 		random_other_country = {
 			limit = { original_tag = MON has_government = despotism }
@@ -7127,6 +7186,9 @@ country_event = {
 			add_ideas = territorial_expansion_law
 			add_ideas = help_from_foreign_interventionists
 			load_oob = MON_Ungern
+			create_corps_commander = { name = "Alexandr Kaygorodov" portrait_path = "gfx/leaders/RUS/Alexandr_Kaygorodov.dds" traits = { trickster guerilla_fighter career_officer cavalry_officer } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Boris Rezukhin" portrait_path = "gfx/leaders/RUS/Boris_Rezukhin.dds" traits = { harsh_leader politically_connected } skill = 2 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Nikolay Kazagrandi" portrait_path = "gfx/leaders/RUS/Nikolay_Kazagrandi.dds" traits = { infantry_officer organizer ranger } skill = 2 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
 		}
 		random_other_country = {
 			limit = { original_tag = MON has_government = despotism }
@@ -7401,35 +7463,6 @@ country_event = {
 	}
 }
 
-
-# Что делать с царём
-country_event = {
-	id = rcw_usfev.198
-	title = rcw_usfev.198.t
-	desc = rcw_usfev.198.d
-	picture = GFX_report_event_KILL_ALL_ROMANOV
-	
-	is_triggered_only = yes
-	
-	immediate = {
-		set_country_flag = can_move_Nik
-	}
-	
-	option = {
-		name = rcw_usfev.198.a
-	}
-	
-	option = {
-		name = rcw_usfev.198.b
-		hidden_effect = {
-			country_event = { id = rcw_usfev.203 days = 1 }
-			add_stability = -0.5
-			add_war_support = -0.5
-		}
-	}
-}
-
-
 # Расстрел Николая II нормальный
 country_event = {
 	id = rcw_usfev.200
@@ -7495,6 +7528,7 @@ country_event = {
 	}
 	
 	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = CCA
 		controls_state = 653
 		RUS = { has_country_flag = Nikolay_Alexandrovich_Romanov_Ekat NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
@@ -7514,10 +7548,26 @@ country_event = {
 	option = {
 		name = rcw_usfev.201.b
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
+		set_country_flag = right_monarcical_reaction_eser_side
+		activate_mission = CCA_moment_of_truth_eser
+		set_variable = { CCA_CW_eser_forces = 5 }
+		set_variable = { CCA_CW_right_forces = 2 }
+		set_variable = { CCA_CZE_support = 0 }
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
 		add_popularity = { ideology = authoritarism popularity = 0.10 }
 		add_popularity = { ideology = social_conservatism popularity = 0.10 }
-		country_event = { id = rcw_usfev.199 hours = 3 }
+	}
+	option = {
+		name = rcw_usfev.201.c
+		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
+		set_country_flag = right_monarcical_reaction_right_side
+		activate_mission = CCA_moment_of_truth_right
+		set_variable = { CCA_CW_eser_forces = 5 }
+		set_variable = { CCA_CW_right_forces = 2 }
+		set_variable = { CCA_CZE_support = 0 }
+		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
+		add_popularity = { ideology = authoritarism popularity = 0.10 }
+		add_popularity = { ideology = social_conservatism popularity = 0.10 }
 	}
 }
 
@@ -7537,98 +7587,6 @@ country_event = {
 		add_stability = 0.1
 	}
 }
-
-# Зло всегда возвращается, или монархический переворот в Ставке
-country_event = {
-	id = rcw_usfev.203
-	title = rcw_usfev.203.t
-	desc = rcw_usfev.203.d
-	picture = GFX_report_event_rcw_Nikolai2_CCA_devil_return
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_usfev.203.a
-		hidden_effect = { news_event = { id = news_n.31 hours = 48 } }
-		load_focus_tree = His_Imperial_Majesty_Military_Committee_focus
-		add_ideas = military_dictatorship_gov_form
-		every_unit_leader = { limit = { has_id = 88150 } promote_leader = yes }
-		set_politics = { ruling_party = authoritarism }
-		hidden_effect = {
-			create_country_leader = { name = "Vladimir Cappel" desc = "" picture = "gfx/leaders/RUS/Vladimir_Cappel.dds" expire = "1953.07.22" ideology = authoritarism_ideology traits = { } }
-			remove_despotism_leader = yes
-			set_temp_variable = { CW_size = 1 }
-			subtract_from_temp_variable = { CW_size = party_popularity@authoritarism }
-			subtract_from_temp_variable = { CW_size = party_popularity@market_liberalism }
-			subtract_from_temp_variable = { CW_size = party_popularity@social_conservatism }
-			subtract_from_temp_variable = { CW_size = party_popularity@despotism }
-			subtract_from_temp_variable = { CW_size = party_popularity@fascism }
-			start_civil_war = {
-				ideology = social_liberalism
-				size = CW_size
-				keep_unit_leaders = { 88150 }
-			}
-			random_other_country = {
-				limit = {
-					original_tag = ROOT
-					has_government = social_liberalism
-				}
-				if = {
-					limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism } } }
-					declare_war_on = {
-						target = RUS
-						type = annex_everything
-					}
-				}
-			}
-		}
-	}
-	
-	option = {
-		name = rcw_usfev.203.b
-		hidden_effect = {
-			create_country_leader = { name = "Vladimir Cappel" desc = "" picture = "gfx/leaders/RUS/Vladimir_Cappel.dds" expire = "1953.07.22" ideology = authoritarism_ideology traits = { } }
-			remove_despotism_leader = yes
-		}
-		set_temp_variable = { CW_size = party_popularity@authoritarism }
-		add_to_temp_variable = { CW_size = party_popularity@social_conservatism }
-		add_to_temp_variable = { CW_size = party_popularity@fascism }
-		add_to_temp_variable = { CW_size = party_popularity@despotism }
-		add_to_temp_variable = { CW_size = party_popularity@market_liberalism }
-		start_civil_war = {
-			ideology = authoritarism
-			size = CW_size
-		}
-		add_popularity = { ideology = social_conservatism popularity = -1 }
-		add_popularity = { ideology = authoritarism popularity = -1 }
-		hidden_effect = {
-			random_other_country = {
-				limit = {
-					original_tag = ROOT
-					has_government = authoritarism
-				}
-				every_unit_leader = { limit = { NOT = { has_id = 88150 } } set_nationality = ROOT }
-				add_ideas = military_dictatorship_gov_form
-				
-				if = {
-					limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy has_government = social_liberalism } } }
-					declare_war_on = {
-						target = RUS
-						type = annex_everything
-					}
-				}
-				if = {
-					limit = { SIB = { exists = yes  OR = { has_government = radical_socialism has_government = communism has_government = social_democracy has_government = social_liberalism } } }
-					declare_war_on = {
-						target = SIB
-						type = annex_everything
-					}
-				}
-			}
-		}
-	}
-}
-
 
 # Царь берёт прямое управление... или не берёт.
 country_event = {
@@ -7896,6 +7854,342 @@ country_event = {
 			}
 		}
 		ai_chance = { factor = 3 }
+	}
+}
+
+# Запрос Дутову от правительства КОМУЧа
+country_event = {
+	id = rcw_usfev.213
+	title = rcw_usfev.213.t
+	desc = rcw_usfev.213.d
+	picture = GFX_report_report_event_emperors_of_europe
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = { #Помощь будет отправлена
+		name = rcw_usfev.213.a
+		add_manpower = -2000
+		FROM = {
+			add_manpower = 2000
+			add_to_variable = { var = CCA_CW_eser_forces = 1 }
+			custom_effect_tooltip = CCA_CW_eser_forces_plus_1
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = 500
+				target = ROOT
+			}
+		}
+		ai_chance = { factor = 1 }
+	}
+	
+	option = { #В данный момент помощь правительству невозможна
+		name = rcw_usfev.213.b
+		ai_chance = { factor = 0 }
+	}
+}
+
+
+# Зло всегда возвращается, или монархический переворот в Ставке ("Раскол восточного фронта")
+country_event = {
+	id = rcw_usfev.214
+	title = rcw_usfev.214.t
+	desc = rcw_usfev.214.d
+	picture = GFX_report_event_rcw_Nikolai2_CCA_devil_return
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { has_country_flag = right_monarcical_reaction_right_side }
+		name = rcw_usfev.214.a
+		hidden_effect = {
+			start_civil_war = {
+				ideology = despotism
+				states = { 573 }
+				size = 1
+				keep_unit_leaders_trigger = { always = yes }
+			}
+			ROOT = { transfer_state = 573 }
+		}
+		hidden_effect = { news_event = { id = news_n.31 hours = 48 } }
+		every_unit_leader = { limit = { has_id = 88150 } promote_leader = yes }
+		set_politics = { ruling_party = authoritarism }
+		ROOT = { save_global_event_target_as = CCA_CW_right }
+		hidden_effect = {
+			create_country_leader = { name = "Vladimir Cappel" desc = "" picture = "gfx/leaders/RUS/Vladimir_Cappel.dds" expire = "1953.07.22" ideology = authoritarism_ideology traits = { } }
+			start_civil_war = {
+				ideology = social_liberalism
+				size = 0.3
+				keep_unit_leaders = { 88150 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+				}
+				save_global_event_target_as = CCA_CW_eser
+			}
+			event_target:CCA_CW_eser = {
+				load_focus_tree = Committee_of_Members_of_the_Constituent_Assembly_focus
+				if = {
+					limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism } } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+			}
+			event_target:CCA_CW_right = {
+				add_ideas = military_dictatorship_gov_form
+				load_focus_tree = His_Imperial_Majesty_Military_Committee_focus
+			}
+		}
+		
+		event_target:CCA_CW_right = {
+			division_template = {
+				name = "Monarhicheskaya Brigada"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 0 y = 2 }
+				}
+				is_locked = yes
+			}
+			set_temp_variable = { CCA_CW_right_forces_temp = ROOT.CCA_CW_right_forces }
+			spawn_right_units_in_CCA_CW_cycle = yes
+		}
+		event_target:CCA_CW_eser = {
+			division_template = {
+				name = "Narodnoarmeyskaya Brigada"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 0 y = 2 }
+				}
+				is_locked = yes
+			}
+			set_temp_variable = { CCA_CW_eser_forces_temp = ROOT.CCA_CW_eser_forces }
+			spawn_eser_units_in_CCA_CW_cycle = yes
+		}
+		if = {
+			limit = { event_target:CCA_CW_eser = { has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" } check_variable = { CCA_CZE_support > 2 } }
+			event_target:CCA_CW_eser = {
+				capital_scope = {
+					create_unit= {
+						division = "name = \"1-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = { event_target:CCA_CW_right_forces = { has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" } check_variable = { CCA_CZE_support < -2 } }
+			event_target:CCA_CW_right_forces = {
+				capital_scope = {
+					create_unit= {
+						division = "name = \"1-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+				}
+			}
+		}
+		else = {
+			event_target:CCA_CW_eser = {
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+				}
+			}
+			event_target:CCA_CW_right_forces = {
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+				}
+			}
+		}
+		
+		clr_country_flag = right_monarcical_reaction_right_side
+		clr_country_flag = right_monarcical_reaction_eser_side
+		clear_variable = CCA_CZE_support
+		clear_variable = CCA_CW_right_forces
+		clear_variable = CCA_CW_eser_forces
+	}
+	
+	option = {
+		trigger = { NOT = { has_country_flag = right_monarcical_reaction_right_side } }
+		name = rcw_usfev.214.b
+		hidden_effect = {
+			start_civil_war = {
+				ideology = despotism
+				states = { 573 }
+				size = 1
+				keep_unit_leaders_trigger = { always = yes }
+			}
+			ROOT = { transfer_state = 573 }
+		}
+		add_war_support = 0.05
+		hidden_effect = {
+			create_country_leader = { name = "Vladimir Cappel" desc = "" picture = "gfx/leaders/RUS/Vladimir_Cappel.dds" expire = "1953.07.22" ideology = authoritarism_ideology traits = { } }
+		}
+		start_civil_war = {
+			ideology = authoritarism
+			size = 0.7
+		}
+		add_popularity = { ideology = social_conservatism popularity = -1 }
+		add_popularity = { ideology = authoritarism popularity = -1 }
+		ROOT = { save_global_event_target_as = CCA_CW_eser }
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+				}
+				save_global_event_target_as = CCA_CW_right
+			}
+			event_target:CCA_CW_eser = {
+				every_unit_leader = { limit = { has_id = 88150 } promote_leader = yes }
+				every_unit_leader = { limit = { NOT = { has_id = 88150 } } set_nationality = ROOT }
+				
+				if = {
+					limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy has_government = social_liberalism } } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+			}
+			event_target:CCA_CW_right = {
+				add_ideas = military_dictatorship_gov_form
+				load_focus_tree = His_Imperial_Majesty_Military_Committee_focus
+			}
+		}
+		
+		event_target:CCA_CW_right = {
+			division_template = {
+				name = "Monarhicheskaya Brigada"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 0 y = 2 }
+				}
+				is_locked = yes
+			}
+			set_temp_variable = { CCA_CW_right_forces_temp = ROOT.CCA_CW_right_forces }
+			spawn_right_units_in_CCA_CW_cycle = yes
+		}
+		event_target:CCA_CW_eser = {
+			division_template = {
+				name = "Narodnoarmeyskaya Brigada"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 0 y = 2 }
+				}
+				is_locked = yes
+			}
+			set_temp_variable = { CCA_CW_eser_forces_temp = ROOT.CCA_CW_eser_forces }
+			spawn_eser_units_in_CCA_CW_cycle = yes
+		}
+		if = {
+			limit = { event_target:CCA_CW_eser = { has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" } check_variable = { CCA_CZE_support > 2 } }
+			event_target:CCA_CW_eser = {
+				capital_scope = {
+					create_unit= {
+						division = "name = \"1-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_eser_forces
+					}
+				}
+			}
+		}
+		else_if = {
+			limit = { event_target:CCA_CW_right_forces = { has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" } check_variable = { CCA_CZE_support < -2 } }
+			event_target:CCA_CW_right_forces = {
+				capital_scope = {
+					create_unit= {
+						division = "name = \"1-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Stanislava Checheka Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"1-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+					create_unit= {
+						division = "name = \"2-ya Brigada Sergeya Voycehovskogo Chekhoslovatskogo legiona\" division_template = \"Brigada Chekhoslovatskogo legiona Povolzh'e\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = event_target:CCA_CW_right_forces
+					}
+				}
+			}
+		}
+		else = {
+			event_target:CCA_CW_eser = {
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+				}
+			}
+			event_target:CCA_CW_right_forces = {
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e"
+				}
+			}
+		}
+		
+		clr_country_flag = right_monarcical_reaction_right_side
+		clr_country_flag = right_monarcical_reaction_eser_side
+		clear_variable = CCA_CZE_support
+		clear_variable = CCA_CW_right_forces
+		clear_variable = CCA_CW_eser_forces
 	}
 }
 
