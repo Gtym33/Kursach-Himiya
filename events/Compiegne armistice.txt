@@ -1024,25 +1024,32 @@ country_event = {
 			limit = { controls_state = 10 }
 			POL = { transfer_state = 10 transfer_state = 87 transfer_state = 98 transfer_state = 90 transfer_state = 1115 transfer_state = 1117 transfer_state = 1118 transfer_state = 1120 }
 		}
-		every_state = {
-			limit = {
-				is_controlled_by = ROOT
-				OR = {
-					state = 92
-					state = 904
-					state = 822
-					state = 1119
-					state = 97
+		if = {
+			limit = { POL = { exists = yes } }
+			every_state = {
+				limit = {
+					is_controlled_by = ROOT
+					OR = {
+						state = 92
+						state = 904
+						state = 822
+						state = 1119
+						state = 97
+					}
 				}
+				POL = { transfer_state = PREV }
 			}
-			POL = { transfer_state = PREV }
 		}
-		
 		if = {
 			limit = { RUS = { controls_state = 88 } }
 			RUS = { transfer_state = 88 }
-			else = {
+			else_if = {
+				limit = { POL = { exists = yes } }
 				POL = { transfer_state = 88 }
+			}
+			else_if = {
+				limit = { GER = { NOT = { has_country_flag = GER_monarchy_fall } } }
+				GER = { transfer_state = 88 }
 			}
 		}
 		if = {
@@ -2490,45 +2497,6 @@ country_event = {
 		set_global_flag = WWI_AUH_HAS_CAPITULATED
 		leave_faction = yes
 		add_ideas = neutral_foreign_policy_law
-		if = {
-			limit = { has_global_flag = WWI_ROM_HAS_CAPITULATED }
-			ROM = {
-				GER = { remove_resource_rights = 46 }
-					if  = {
-						limit = { owns_state = 81 }
-						81 = { set_demilitarized_zone = no }
-					}
-					if  = {
-						limit = { owns_state = 46 }
-						46 = { set_demilitarized_zone = no }
-					}
-					if  = {
-						limit = { owns_state = 855 }
-						855 = { set_demilitarized_zone = no }
-					}
-					if = {
-						limit = { owns_state = 77 }
-						77 = { set_demilitarized_zone = no }
-					}
-					if = {
-						limit = { owns_state = 856 }
-						856 = { set_demilitarized_zone = no }
-					}
-					if = {
-						limit = { owns_state = 820 }
-						820 = { set_demilitarized_zone = no }
-					}
-					if = {
-						limit = { owns_state = 1047 }
-						1047 = { set_demilitarized_zone = no }
-					}
-					if = {
-						limit = { owns_state = 819 }
-						819 = { set_demilitarized_zone = no }
-					}
-					clr_global_flag = WWI_ROM_HAS_CAPITULATED
-			}
-		}
 		ALB = {
 			if = {
 				limit = {
@@ -2970,25 +2938,32 @@ country_event = {
 			limit = { controls_state = 10 }
 			POL = { transfer_state = 10 transfer_state = 87 transfer_state = 98 transfer_state = 90 transfer_state = 1115 transfer_state = 1117 transfer_state = 1118 transfer_state = 1120 }
 		}
-		every_state = {
-			limit = {
-				is_controlled_by = ROOT
-				OR = {
-					state = 92
-					state = 904
-					state = 822
-					state = 1119
-					state = 97
+		if = {
+		limit = { POL = { exists = yes } }
+			every_state = {
+				limit = {
+					is_controlled_by = ROOT
+					OR = {
+						state = 92
+						state = 904
+						state = 822
+						state = 1119
+						state = 97
+					}
 				}
+				POL = { transfer_state = PREV }
 			}
-			POL = { transfer_state = PREV }
 		}
-		
 		if = {
 			limit = { RUS = { controls_state = 88 } }
 			RUS = { transfer_state = 88 }
-			else = {
+			else_if = {
+				limit = { POL = { exists = yes } }
 				POL = { transfer_state = 88 }
+			}
+			else_if = {
+				limit = { GER = { NOT = { has_country_flag = GER_monarchy_fall } } }
+				GER = { transfer_state = 88 }
 			}
 		}
 		if = {
@@ -3106,7 +3081,6 @@ country_event = {
 	fire_only_once = yes
 	
 	immediate = {
-		clr_country_flag = BUL_not_cap_yet
 		every_country = {
 			limit = { OR = { is_subject = no tag = AST tag = SAF tag = CAN tag = NZL } NOT = { has_country_flag = WWI_Entente_member } has_war_with = BUL OR = { is_in_faction_with = ENG is_in_faction_with = FRA } NOT = { is_in_faction_with = GER } NOT = { tag = BUL tag = TUR tag = GER tag = AUH } }
 			set_country_flag = WWI_Entente_member
@@ -3126,6 +3100,30 @@ country_event = {
 	}
 	
 	is_triggered_only = yes
+	
+	mean_time_to_happen = {
+		days = 30
+		modifier = {
+			factor = 0.1
+			surrender_progress > 0.12
+		}
+		modifier = {
+			factor = 0.1
+			surrender_progress > 0.14
+		}
+		modifier = {
+			factor = 0.1
+			surrender_progress > 0.16
+		}
+		modifier = {
+			factor = 0.1
+			surrender_progress > 0.18
+		}
+		modifier = {
+			factor = 0.1
+			surrender_progress > 0.2
+		}
+	}
 	
 	option = {
 		name = compiegne_armistice.2.a

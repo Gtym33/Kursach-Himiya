@@ -406,7 +406,38 @@ country_event = {
 		remove_ideas = RUS_labor_armies
 	}
 }
-
+# Свердлов умер
+country_event = {
+	id = rcw_bolsheviks.25
+	title = rcw_bolsheviks.25.t
+	desc = rcw_bolsheviks.25.desc
+	picture = GFX_report_event_sov_sverdlov_dead
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_government = communism
+		date > 1919.01.01
+		date < 1919.04.01
+		NOT = { has_country_flag = Yakov_Sverdlov_1 }
+		NOT = { has_country_leader = { name = "Yakov Sverdlov" } }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.25.a
+		set_country_flag = Yakov_Sverdlov_dead
+		if = {
+			limit = { has_idea = Yakov_Sverdlov_1 }
+			add_ideas = Mikhail_Kalinin_1
+		}
+	}
+}
 
 # Протесты левых эсеров против продовльственной диктатуры
 country_event = {
@@ -518,6 +549,7 @@ country_event = {
 					has_id = 19195
 					has_id = 19198
 					has_id = 19211
+					has_id = 77431
 				}
 			}
 			retire = yes
@@ -682,7 +714,12 @@ country_event = {
 			limit = { has_country_flag = arrested_VCHK }
 			remove_ideas_with_trait = head_of_intel_trait
 			set_country_flag = Felix_Dzerjinsky_arrested
-			add_ideas = Martyn_Latsis_4
+			if = {
+				limit = { has_idea = Felix_Dzerjinsky_4 }
+				remove_ideas_with_trait = security_minister_trait
+				add_ideas = Martyn_Latsis_4
+			}
+			add_ideas = Martyn_Latsis_5
 		}
 	}
 	
@@ -755,6 +792,7 @@ country_event = {
 		remove_ideas_with_trait = economy_minister_trait
 		remove_ideas_with_trait = security_minister_trait
 		remove_ideas_with_trait = head_of_intel_trait
+		add_ideas = allow_one_party_law
 		add_ideas = {
 			Prosh_Proshian_2
 			Isaac_Steinberg_3
@@ -823,6 +861,7 @@ country_event = {
 		set_variable = { radical_socialism_coalition = 0 }
 		
 		set_politics = { ruling_party = radical_socialism elections_allowed = no }
+		add_ideas = allow_one_party_law
 		remove_ideas_with_trait = head_of_government_trait
 		remove_ideas_with_trait = foreign_minister_trait
 		remove_ideas_with_trait = economy_minister_trait
@@ -868,6 +907,12 @@ country_event = {
 			ideology = communism
 			popularity = -0.15
 		}
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = RUS_Reds
+		if = {
+			limit = { NOT = { has_completed_focus = RUS_left_eser_focus } }
+			complete_national_focus = RUS_left_eser_focus
+		}
 	}
 }
 
@@ -890,9 +935,22 @@ country_event = {
 		set_variable = { radical_socialism_coalition = 0 }
 		remove_ideas_with_trait = radical_socialist_counselor
 		set_country_flag = left_esser_first_attack
-		set_variable = { var = RUS_left_SR_Moscow_control value = 0 }
-		set_variable = { var = RUS_bolsheviks_using_workers value = 0 }
-		set_variable = { var = RUS_bolsheviks_using_soilders value = 0 }
+		if = {
+			limit = { NOT = { has_variable = RUS_left_SR_Moscow_control } }
+			set_variable = { var = RUS_left_SR_Moscow_control value = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = RUS_bolsheviks_using_workers } }
+			set_variable = { var = RUS_bolsheviks_using_workers value = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = RUS_bolsheviks_using_soilders } }
+			set_variable = { var = RUS_bolsheviks_using_soilders value = 0 }
+		}
+		if = {
+			limit = { NOT = { has_country_flag = black_guard_destroyed } }
+			add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+		}
 		if = {
 			limit = { has_country_flag = left_esser_captured_power_station }
 			custom_effect_tooltip = rcw_bolsheviks.61.power_captured
@@ -1650,6 +1708,9 @@ country_event = {
 		remove_ideas_with_trait = economy_minister_trait
 		remove_ideas_with_trait = security_minister_trait
 		remove_ideas_with_trait = head_of_intel_trait
+		add_ideas = allow_one_party_law
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = RUS_Reds
 		if = {
 			limit = { has_country_leader = { name = "Maria Spiridonova" ruling_only = yes } }
 			add_ideas = {
@@ -1705,6 +1766,9 @@ country_event = {
 			clear_variable = RUS_left_SR_Moscow_control
 			add_stability = -0.05
 			add_political_power = 50
+			add_ideas = allow_one_party_law
+			drop_cosmetic_tag = yes
+			set_cosmetic_tag = RUS_Reds
 			add_popularity = {
 				ideology = radical_socialism
 				popularity = -0.15
@@ -1733,7 +1797,10 @@ country_event = {
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_government = communism
 		NOT = { has_global_flag = RUS_civil_war_over }
-		has_country_flag = RUS_left_SR_revolt_suppose
+		OR = {
+			has_country_flag = RUS_left_SR_revolt_suppose
+			CCA = { has_country_flag = left_esser_in_CCA }
+		}
 		CCA = {
 			exists = yes
 			OR = { has_government = radical_socialism has_government = social_liberalism }
@@ -1772,6 +1839,7 @@ country_event = {
 	option = {
 		name = rcw_bolsheviks.72.a
 		REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } retire = yes } }
+		set_country_flag = Mikhail_Muravyov_dead
 	}
 }
 # Мятеж Муравьёва успешен
@@ -2380,7 +2448,7 @@ country_event = {
 	
 	option = {
 		name = rcw_bolsheviks.74.a
-		trigger = { NOT = { has_government = radical_socialism } }
+		trigger = { NOT = { OR = { has_government = radical_socialism has_country_flag = left_esser_in_CCA } } }
 		declare_war_on = {
 			target = VLG
 			type = annex_everything
@@ -2440,7 +2508,7 @@ country_event = {
 		name = rcw_bolsheviks.199.a
 		add_political_power = -25
 		remove_ideas_with_trait = radical_socialist_counselor
-		country_event = { id = rcw_bolsheviks.200 days = 90 random_days = 20 }
+		country_event = { id = rcw_bolsheviks.200 days = 130 random_days = 20 }
 	}
 }
 # Восстание Левых Эсеров (без съезда)
@@ -2481,10 +2549,16 @@ country_event = {
 		set_variable = { var = RUS_left_SR_Moscow_control value = 0 }
 		set_variable = { var = RUS_bolsheviks_using_workers value = 0 }
 		set_variable = { var = RUS_bolsheviks_using_soilders value = 0 }
+		if = {
+			limit = { NOT = { has_country_flag = black_guard_destroyed } }
+			add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+		}
 		set_country_flag = RUS_left_SR_rise_in_progress
 		set_variable = { communism_coalition = 0 }
 		set_variable = { radical_socialism_coalition = 0 }
 		remove_ideas_with_trait = radical_socialist_counselor
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = RUS_Reds
 	}
 	
 	is_triggered_only = yes
@@ -2533,7 +2607,7 @@ country_event = {
 		name = rcw_bolsheviks.102.a
 		country_event = { id = rcw_bolsheviks.103 hours = 6 }
 		ai_chance = {
-			factor = 0
+			factor = 1
 		}
 	}
 	#Согласие
@@ -2541,7 +2615,7 @@ country_event = {
 		name = rcw_bolsheviks.102.b
 		country_event = { id = rcw_bolsheviks.104 hours = 12 }
 		ai_chance = {
-			factor = 1
+			factor = 4
 		}
 	}
 }
@@ -2565,6 +2639,7 @@ country_event = {
 			popularity = -0.05
 		}
 		set_country_flag = right_parties_is_illegal
+		set_global_flag = left_esser_in_CCA
 		add_ideas = allow_one_party_law
 		add_political_power = 25
 		add_stability = -0.1

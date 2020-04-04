@@ -2,10 +2,10 @@ focus_tree = {
 	id = Russia_Bolsheviks_focus
 	country = {
 		factor = 0
-		modifier = {
-			add = 10
-			tag = NOR
-		}
+		#modifier = {
+			#add = 10
+			#tag = NOR
+		#}
 	}
 	default = no
 
@@ -295,7 +295,7 @@ focus_tree = {
 	focus = {
 		id = RUS_prodrazverstka
 		icon = GFX_goal_RUS_prodrazverstka
-		cost = 5
+		cost = 3
 		available = {
 		}
 		ai_will_do = {
@@ -305,7 +305,10 @@ focus_tree = {
 			focus = RUS_struggle_against_counterrevolution
 		}
 		bypass = {
-			has_country_flag = war_communism_abolished
+			OR = {
+				has_country_flag = war_communism_abolished
+				has_idea = RUS_prodrazverstka_idea
+			}
 		}
 		x = 1
 		y = 1
@@ -323,7 +326,7 @@ focus_tree = {
 	focus = {
 		id = RUS_combeds
 		icon = GFX_goal_RUS_combeds
-		cost = 5
+		cost = 3
 		available = {
 		}
 		ai_will_do = {
@@ -336,6 +339,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_struggle_against_counterrevolution
 		completion_reward = {
+			add_political_power = 50
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 1
@@ -350,6 +354,9 @@ focus_tree = {
 		cost = 3
 		available = {
 			has_government = communism
+			NOT = { has_government = radical_socialism }
+			NOT = { has_country_flag = RUS_left_SR_revolt }
+			NOT = { has_country_flag = RUS_left_SR_rise_in_progress }
 		}
 		ai_will_do = {
 			factor = 1
@@ -380,9 +387,13 @@ focus_tree = {
 				ideological_expansion_law
 			}
 			
+			country_event = { id = rcw_bolsheviks.55 days = 1 }
+			
 			custom_effect_tooltip = changes_size_of_CC_to_15
 			hidden_effect = {
 				set_variable = { var = total_members_of_central_committee value = 15 }
+				drop_cosmetic_tag = yes
+				set_cosmetic_tag = RUS_Reds
 			}
 		}
 
@@ -393,11 +404,13 @@ focus_tree = {
 	focus = {
 		id = RUS_left_eser_focus
 		icon = GFX_goal_RUS_left_eser_focus
-		cost = 10
+		cost = 3
 		available = {
 			has_idea = two_party_system_law
 			check_variable = { communism_coalition = 1 }
 			check_variable = { radical_socialism_coalition = 1 }
+			NOT = { has_country_flag = RUS_left_SR_revolt }
+			NOT = { has_country_flag = RUS_left_SR_rise_in_progress }
 		}
 		ai_will_do = {
 			factor = 1
@@ -438,6 +451,8 @@ focus_tree = {
 				ideological_expansion_law
 			}
 			
+			country_event = { id = rcw_bolsheviks.55 days = 1 }
+			
 			hidden_effect = {
 				custom_effect_tooltip = changes_size_of_CC_to_15
 				set_variable = { var = total_members_of_central_committee value = 15 }
@@ -445,6 +460,8 @@ focus_tree = {
 					ideology = communism
 					popularity = -0.10
 				}
+				drop_cosmetic_tag = yes
+				set_cosmetic_tag = RUS_Reds
 			}
 		}
 
@@ -453,7 +470,7 @@ focus_tree = {
 	focus = {
 		id = RUS_crush_down_the_bolsheviks_left_eser
 		icon = GFX_goal_RUS_split_of_sovnarkom
-		cost = 10
+		cost = 2
 		available = {
 		}
 		ai_will_do = {
@@ -462,13 +479,310 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_left_eser_focus
 		}
-		x = -4
+		x = -7
 		y = 1
 		relative_position_id = RUS_left_eser_focus
 		completion_reward = {
-			#
+			add_popularity = { ideology = communism popularity = -0.10 }
 		}
-
+	}
+	
+	focus = {
+		id = RUS_restore_local_soviet_republik
+		icon = GFX_goal_RUS_split_of_sovnarkom
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_crush_down_the_bolsheviks_left_eser
+		}
+		bypass = {
+			has_idea = local_assembly_decisions_b_law
+		}
+		x = -7
+		y = 2
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			add_ideas = local_assembly_decisions_b_law
+		}
+	}
+	
+	focus = {
+		id = RUS_attempt_on_the_leader_of_the_white
+		icon = GFX_goal_CCA_terror
+		cost = 5
+		available = {
+			OR = {
+				AND = { RSS = { exists = yes has_capitulated = no OR = { has_country_leader = { name = "Alexandr Kolchak" ruling_only = yes } has_country_leader = { name = "Konstantin Sakharov" ruling_only = yes  } } has_war_with = RSS } }
+				AND = { SIB = { exists = yes has_capitulated = no has_country_leader = { name = "Konstantin Sakharov" ruling_only = yes } } has_war_with = SIB }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_restore_local_soviet_republik
+		}
+		x = -9
+		y = 3
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			country_event = { id = rcw_usfev.174 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RUS_compromise_with_the_right
+		icon = GFX_goal_RUS_concessions
+		cost = 1
+		available = {
+			CCA = { exists = yes }
+			CCA = { OR = { has_government = social_liberalism has_government = radical_socialism } }
+			#RSS = { exists = yes }
+			#RSS = { OR = { has_government = social_liberalism has_government = radical_socialism } }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_restore_local_soviet_republik
+		}
+		x = -5
+		y = 3
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			CCA = { country_event = { id = rcw_usfev.171 days = 1 } }
+		}
+	}
+	
+	focus = {
+		id = RUS_economic_liberalisation
+		icon = GFX_goal_RUS_split_of_sovnarkom
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_restore_local_soviet_republik
+		}
+		bypass = {
+			has_idea = workers_control_law
+			NOT = { has_idea = RUS_prodrazverstka_idea }
+		}
+		x = -7
+		y = 3
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			add_ideas = workers_control_law
+			add_ideas = RUS_exchange_in_kind_idea
+			remove_ideas = RUS_prodrazverstka_idea
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = -1
+			}
+		}
+	}
+	
+	focus = {
+		id = RUS_prodnalog_left_esser
+		icon = GFX_goal_RUS_prodnalog
+		cost = 5
+		available = {
+			OR = {
+				has_idea = foodstuffs_supply_crisis_4
+				has_idea = foodstuffs_supply_crisis_5
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_economic_liberalisation
+		}
+		x = -10
+		y = 4
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			add_ideas = RUS_prodnalog_idea
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.05
+			}
+		}
+	}
+	
+	focus = {
+		id = RUS_village_self-defense_groups
+		icon = GFX_goal_RUS_voluntary_agriculture_cooperatives
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_economic_liberalisation
+		}
+		x = -8
+		y = 4
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			add_ideas = RUS_village_guard_idea
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = 3
+			}
+		}
+	}
+	
+	focus = {
+		id = RUS_attraction_of_peasant_leaders
+		icon = GFX_goal_RUS_voluntary_agriculture_cooperatives
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_village_self-defense_groups
+		}
+		x = -8
+		y = 5
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			custom_effect_tooltip = RUS_attraction_of_peasant_leaders_tt
+		}
+	}
+	
+	focus = {
+		id = RUS_exchange_in_kind
+		icon = GFX_goal_RUS_monetary_reform
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_economic_liberalisation
+		}
+		x = -6
+		y = 4
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			if = {
+				limit = { has_idea = hyper_inflation_1 }
+				remove_ideas = hyper_inflation_1
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_2 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_2
+					add_idea = hyper_inflation_1
+				}
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_3 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_3
+					add_idea = hyper_inflation_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_4 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_4
+					add_idea = hyper_inflation_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_5 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_5
+					add_idea = hyper_inflation_4
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = RUS_monopoly_on_precious_metals
+		icon = GFX_goal_RUS_monetary_reform
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_exchange_in_kind
+		}
+		x = -6
+		y = 5
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			if = {
+				limit = { has_idea = hyper_inflation_1 }
+				remove_ideas = hyper_inflation_1
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_2 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_2
+					add_idea = hyper_inflation_1
+				}
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_3 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_3
+					add_idea = hyper_inflation_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_4 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_4
+					add_idea = hyper_inflation_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = hyper_inflation_5 }
+				swap_ideas = {
+					remove_idea = hyper_inflation_5
+					add_idea = hyper_inflation_4
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = RUS_decentralization
+		icon = GFX_goal_RUS_split_of_sovnarkom
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_economic_liberalisation
+		}
+		bypass = {
+			has_idea = confederal_gov_terr
+		}
+		x = -7
+		y = 7
+		relative_position_id = RUS_left_eser_focus
+		completion_reward = {
+			add_ideas = confederal_gov_terr
+		}
 	}
 
 	#focus = {
@@ -536,6 +850,7 @@ focus_tree = {
 		icon = GFX_goal_generic_war_with_comintern
 		cost = 5
 		available = {
+			NOT = { has_government = radical_socialism }
 		}
 		ai_will_do = {
 			factor = 1
@@ -611,9 +926,19 @@ focus_tree = {
 		relative_position_id = RUS_vchk
 		completion_reward = {
 			set_country_flag = RUS_secularization
-			add_popularity = {
-				ideology = communism
-				popularity = 0.05
+			if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.05
+				}
+				else_if = {
+					limit = { has_government = radical_socialism }
+					add_popularity = {
+						ideology = radical_socialism
+						popularity = 0.05
+					}
+				}
 			}
 		}
 
@@ -669,6 +994,7 @@ focus_tree = {
 		cost = 5
 		available = {
 			has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
+			NOT = { has_government = radical_socialism }
 		}
 		ai_will_do = {
 			factor = 1
@@ -734,9 +1060,26 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_vchk
 		completion_reward = {
-			add_popularity = {
-				ideology = communism
-				popularity = 0.05
+			if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.05
+				}
+				else_if = {
+					limit = { has_government = radical_socialism }
+					add_popularity = {
+						ideology = radical_socialism
+						popularity = 0.05
+					}
+				}
+				else_if = {
+					limit = { has_government = social_democracy }
+					add_popularity = {
+						ideology = social_democracy
+						popularity = 0.05
+					}
+				}
 			}
 		}
 
@@ -758,6 +1101,27 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_komsomol
 		completion_reward = {
+			if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.05
+				}
+				else_if = {
+					limit = { has_government = radical_socialism }
+					add_popularity = {
+						ideology = radical_socialism
+						popularity = 0.05
+					}
+				}
+				else_if = {
+					limit = { has_government = social_democracy }
+					add_popularity = {
+						ideology = social_democracy
+						popularity = 0.05
+					}
+				}
+			}
 		}
 
 	}
@@ -770,6 +1134,7 @@ focus_tree = {
 		cost = 5
 		available = {
 			NOT = { has_completed_focus = RUS_new_economic_policy }
+			NOT = { has_government = radical_socialism }
 			#NOT = { has_completed_focus = RUS_new_economic_policy_left_eser }
 		}
 		ai_will_do = {
@@ -789,6 +1154,12 @@ focus_tree = {
 		completion_reward = {
 			set_country_flag = war_communism
 			low_export_law = yes
+			if = {
+				limit = {
+					has_idea = workers_control_law
+				}
+				add_ideas = commanding_heights_law
+			}
 			if = {
 				limit = {
 					has_idea = tot_economic_mobilisation
@@ -906,10 +1277,10 @@ focus_tree = {
 		relative_position_id = RUS_trudovaya_povinnost
 		completion_reward = {
 			add_ideas = RUS_labor_armies
-					add_to_variable = {
-						var = global.RCW_green_var_Russian_SFSR
-						value = 1
-					}
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = 1
+			}
 			add_political_power = 50
 			add_to_variable = { var = Trotskiy_power value = 1 }
 		}
@@ -997,6 +1368,7 @@ focus_tree = {
 			NOT = {
 				has_country_flag = war_communism_abolished
 			}
+			NOT = { has_government = radical_socialism }
 			NOT = { has_idea = RUS_weak_state_suppression_apparatus }
 			NOT = { has_idea = RUS_weak_state_suppression_apparatus_1 }
 		}
@@ -1211,6 +1583,7 @@ focus_tree = {
 			}
 			NOT = { has_idea = RUS_weak_state_suppression_apparatus }
 			NOT = { has_idea = RUS_weak_state_suppression_apparatus_1 }
+			NOT = { has_government = radical_socialism }
 		}
 		ai_will_do = {
 			factor = 1
@@ -1296,10 +1669,10 @@ focus_tree = {
 				remove_idea = RUS_prodrazverstka_idea
 				add_idea = RUS_prodnalog_idea
 			}
-					add_to_variable = {
-						var = global.RCW_green_var_Russian_SFSR
-						value = -1
-					}
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = -1
+			}
 		}
 
 	}
@@ -1508,7 +1881,6 @@ focus_tree = {
 				}
 			}
 		}
-
 	}
 
 	focus = {
@@ -1632,7 +2004,6 @@ focus_tree = {
 				}
 			}
 		}
-
 	}
 
 
@@ -1657,6 +2028,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_reorganization_of_production_administration
 			focus = RUS_state_and_cooperative_banks
+			focus = RUS_decentralization
 		}
 		x = 10
 		y = 12
@@ -2381,8 +2753,12 @@ focus_tree = {
 			add_war_support = -0.025
 			add_political_power = 100
 			add_stability = 0.03
-			add_ideas = {
-				Lev_Trotsky_6
+			if = {
+				limit = { has_government = communism }
+				add_ideas = {
+					Lev_Trotsky_6
+				}
+				add_to_variable = { var = Trotskiy_power value = 1 }
 			}
 			custom_effect_tooltip = lack_of_officers_fall_1_tt
 			hidden_effect = {
@@ -2394,9 +2770,7 @@ focus_tree = {
 					is_locked = no
 				}
 			}
-			add_to_variable = { var = Trotskiy_power value = 1 }
 		}
-
 	}
 	focus = {
 		id = RUS_forced_mobilization
