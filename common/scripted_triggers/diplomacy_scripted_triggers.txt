@@ -83,6 +83,13 @@ DIPLOMACY_GUARANTEE_ENABLE_TRIGGER = {
 			always = no
 		}
 	}
+	if = {
+		limit = { FROM = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } } }
+		OR = {
+			has_global_flag = RUS_civil_war_over
+			NOT = { has_global_flag = RUS_civil_war_intervention_start }
+		}
+	}
 }
 
 DIPLOMACY_REVOKE_GUARANTEE_ENABLE_TRIGGER = {
@@ -818,6 +825,98 @@ DIPLOMACY_SEND_VOLUNTEERS_ENABLE_TRIGGER = {
 		custom_trigger_tooltip = {
 			tooltip = RULE_VOLUNTEERS_BLOCKED_TT
 			always = no
+		}
+	}
+	OR = {
+		is_neighbor_of = FROM
+		any_country = { is_in_faction_with = FROM is_neighbor_of = ROOT }
+		AND = {
+			any_state = {
+				CONTROLLER = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+				is_coastal = yes
+			}
+			any_state = {
+				CONTROLLER = {
+					OR = {
+						tag = FROM
+						is_in_faction_with = FROM
+					}
+				}
+				is_coastal = yes
+			}
+		}
+		FROM = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				NOT = { has_war_with = FROM }
+				custom_trigger_tooltip = {
+					tooltip = is_a_recognized_state_by_both
+					NOT = {
+						is_in_array = {
+							array = ROOT.unrecognized_states
+							value = PREV.id
+						}
+					}
+					NOT = {
+						is_in_array = {
+							array = FROM.unrecognized_states
+							value = PREV.id
+						}
+					}
+				}
+				#has_opinion = {
+				#	target = ROOT
+				#	value > -11
+				#}
+				OR = {
+					any_neighbor_country = { tag = ROOT }
+					any_neighbor_country = { is_in_faction_with = ROOT }
+					any_state = {
+						is_controlled_by = PREV
+						is_coastal = yes
+					}
+				}
+			}
+			ROOT = {
+				OR = {
+					any_state = {
+						is_controlled_by = ROOT
+						is_coastal = yes
+					}
+					any_neighbor_country = {
+						NOT = { has_war_with = ROOT }
+						NOT = { has_war_with = FROM }
+						custom_trigger_tooltip = {
+							tooltip = is_a_recognized_state_by_both
+							NOT = {
+								is_in_array = {
+									array = ROOT.unrecognized_states
+									value = PREV.id
+								}
+							}
+							NOT = {
+								is_in_array = {
+									array = FROM.unrecognized_states
+									value = PREV.id
+								}
+							}
+						}
+						#has_opinion = {
+						#	target = ROOT
+						#	value > -11
+						#}
+						any_state = {
+							is_controlled_by = PREV
+							is_coastal = yes
+						}
+					}
+				}
+			}
 		}
 	}
 }
