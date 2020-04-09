@@ -414,12 +414,13 @@ country_event = {
 	picture = GFX_report_event_sov_sverdlov_dead
 	
 	trigger = {
+		always = no # Испанки нет, это всё происки империалистов для установления фашистского режима
 		tag = RUS
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_government = communism
 		date > 1919.01.01
 		date < 1919.04.01
-		NOT = { has_country_flag = Yakov_Sverdlov_1 }
+		NOT = { has_idea = Yakov_Sverdlov_1 }
 		NOT = { has_country_leader = { name = "Yakov Sverdlov" } }
 	}
 	
@@ -564,6 +565,7 @@ country_event = {
 			every_unit_leader = { limit = { has_id = 19171 } retire = yes }
 			set_country_flag = Jukums_Vacietis_dead
 		}
+		add_stability = -0.05
 		create_corps_commander = { name = "Dmitry Magerovsky" id = 77434 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
 		create_corps_commander = { name = "Semyon Kotlyarevsky" id = 77435 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
 		create_corps_commander = { name = "Ivan Nudiga" id = 77436 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
@@ -577,7 +579,6 @@ country_event = {
 		create_corps_commander = { name = "Prosh Proshyan" id = 77444 portrait_path = "gfx/leaders/SOV/Prosh_Proshyan.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
 		create_corps_commander = { name = "Sergey Mstislavskiy" id = 77446 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
 		FRT = { every_unit_leader = { limit = {	OR = { has_id = 77423 } } set_nationality = RUS } }
-		add_stability = -0.05
 		if = {
 		limit = { has_country_leader = { name = "Vladimir Lenin" ruling_only = no } }
 			kill_communism_leader = yes
@@ -627,6 +628,12 @@ country_event = {
 				has_idea = two_party_system_law
 				check_variable = { communism_coalition = 1 }
 				check_variable = { radical_socialism_coalition = 1 }
+				OR = {
+					has_country_flag = brest_hardest
+					has_country_flag = brest_hard
+					has_country_flag = brest_average
+					has_country_flag = brest_soft
+				}
 			}
 			country_event = { id = rcw_bolsheviks.56 hours = 1 }
 			else = { add_stability = 0.05 }
@@ -639,27 +646,15 @@ country_event = {
 	id = rcw_bolsheviks.56
 	title = rcw_bolsheviks.56.t
 	desc = {
-		text =  rcw_bolsheviks.56.desc
+		text = rcw_bolsheviks.56.desc
 		trigger = {
-			OR = {
-				has_country_flag = brest_hardest
-				has_country_flag = brest_hard
-				has_country_flag = brest_average
-				has_country_flag = brest_soft
-			}
+			NOT = { has_completed_focus = RUS_left_eser_focus }
 		}
 	}
 	desc = {
-		text =  rcw_bolsheviks.56.desc_peas
+		text = rcw_bolsheviks.56.desc_1
 		trigger = {
-			NOT = {
-				OR = {
-					has_country_flag = brest_hardest
-					has_country_flag = brest_hard
-					has_country_flag = brest_average
-					has_country_flag = brest_soft
-				}
-			}
+			has_completed_focus = RUS_left_eser_focus
 		}
 	}
 	picture = GFX_report_event_sov_felix_VCHK
@@ -723,16 +718,18 @@ country_event = {
 	}
 	
 	immediate = {
-		if = {
-			limit = { has_country_flag = arrested_VCHK }
-			remove_ideas_with_trait = head_of_intel_trait
-			set_country_flag = Felix_Dzerjinsky_arrested
+		hidden_effect = {
 			if = {
-				limit = { has_idea = Felix_Dzerjinsky_4 }
-				remove_ideas_with_trait = security_minister_trait
-				add_ideas = Martyn_Latsis_4
+				limit = { has_country_flag = arrested_VCHK }
+				remove_ideas_with_trait = head_of_intel_trait
+				set_country_flag = Felix_Dzerjinsky_arrested
+				if = {
+					limit = { has_idea = Felix_Dzerjinsky_4 }
+					remove_ideas_with_trait = security_minister_trait
+					add_ideas = Martyn_Latsis_4
+				}
+				add_ideas = Martyn_Latsis_5
 			}
-			add_ideas = Martyn_Latsis_5
 		}
 	}
 	
@@ -781,15 +778,14 @@ country_event = {
 	fire_only_once = yes
 	
 	immediate = {
-			if = {
-				limit = { check_variable = { var = RUS_bolsheviks_using_soilders value = 2 compare = greater_than_or_equals } }
-				custom_effect_tooltip = rcw_bolsheviks.59.desc_sold
-				else_if = {
-					limit = { OR = { check_variable = { var = RUS_bolsheviks_using_workers value = 2 compare = greater_than_or_equals } check_variable = { party_popularity@radical_socialism > party_popularity@communism } } }
-					custom_effect_tooltip = rcw_bolsheviks.59.desc_work
-				}
+		if = {
+			limit = { check_variable = { var = RUS_bolsheviks_using_soilders value = 2 compare = greater_than_or_equals } }
+			custom_effect_tooltip = rcw_bolsheviks.59.desc_sold
+			else_if = {
+				limit = { OR = { check_variable = { var = RUS_bolsheviks_using_workers value = 2 compare = greater_than_or_equals } check_variable = { party_popularity@radical_socialism > party_popularity@communism } } }
+				custom_effect_tooltip = rcw_bolsheviks.59.desc_work
 			}
-			
+		}
 	}
 	
 	option = {
@@ -943,26 +939,28 @@ country_event = {
 	}
 	
 	immediate = {
-		set_country_flag = RUS_left_SR_rise_in_progress
-		set_variable = { communism_coalition = 0 }
-		set_variable = { radical_socialism_coalition = 0 }
-		remove_ideas_with_trait = radical_socialist_counselor
-		set_country_flag = left_esser_first_attack
-		if = {
-			limit = { NOT = { has_variable = RUS_left_SR_Moscow_control } }
-			set_variable = { var = RUS_left_SR_Moscow_control value = 0 }
-		}
-		if = {
-			limit = { NOT = { has_variable = RUS_bolsheviks_using_workers } }
-			set_variable = { var = RUS_bolsheviks_using_workers value = 0 }
-		}
-		if = {
-			limit = { NOT = { has_variable = RUS_bolsheviks_using_soilders } }
-			set_variable = { var = RUS_bolsheviks_using_soilders value = 0 }
-		}
-		if = {
-			limit = { NOT = { has_country_flag = black_guard_destroyed } }
-			add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+		hidden_effect = {
+			set_country_flag = RUS_left_SR_rise_in_progress
+			set_variable = { communism_coalition = 0 }
+			set_variable = { radical_socialism_coalition = 0 }
+			remove_ideas_with_trait = radical_socialist_counselor
+			set_country_flag = left_esser_first_attack
+			if = {
+				limit = { NOT = { has_variable = RUS_left_SR_Moscow_control } }
+				set_variable = { var = RUS_left_SR_Moscow_control value = 0 }
+			}
+			if = {
+				limit = { NOT = { has_variable = RUS_bolsheviks_using_workers } }
+				set_variable = { var = RUS_bolsheviks_using_workers value = 0 }
+			}
+			if = {
+				limit = { NOT = { has_variable = RUS_bolsheviks_using_soilders } }
+				set_variable = { var = RUS_bolsheviks_using_soilders value = 0 }
+			}
+			if = {
+				limit = { NOT = { has_country_flag = black_guard_destroyed } }
+				add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+			}
 		}
 		if = {
 			limit = { has_country_flag = left_esser_captured_power_station }
@@ -2559,19 +2557,21 @@ country_event = {
 	}
 	
 	immediate = {
-		set_variable = { var = RUS_left_SR_Moscow_control value = 0 }
-		set_variable = { var = RUS_bolsheviks_using_workers value = 0 }
-		set_variable = { var = RUS_bolsheviks_using_soilders value = 0 }
-		if = {
-			limit = { NOT = { has_country_flag = black_guard_destroyed } }
-			add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+		hidden_effect = {
+			set_variable = { var = RUS_left_SR_Moscow_control value = 0 }
+			set_variable = { var = RUS_bolsheviks_using_workers value = 0 }
+			set_variable = { var = RUS_bolsheviks_using_soilders value = 0 }
+			if = {
+				limit = { NOT = { has_country_flag = black_guard_destroyed } }
+				add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+			}
+			set_country_flag = RUS_left_SR_rise_in_progress
+			set_variable = { communism_coalition = 0 }
+			set_variable = { radical_socialism_coalition = 0 }
+			remove_ideas_with_trait = radical_socialist_counselor
+			drop_cosmetic_tag = yes
+			set_cosmetic_tag = RUS_Reds
 		}
-		set_country_flag = RUS_left_SR_rise_in_progress
-		set_variable = { communism_coalition = 0 }
-		set_variable = { radical_socialism_coalition = 0 }
-		remove_ideas_with_trait = radical_socialist_counselor
-		drop_cosmetic_tag = yes
-		set_cosmetic_tag = RUS_Reds
 	}
 	
 	is_triggered_only = yes
@@ -3190,12 +3190,12 @@ country_event = {
 	option = {
 		name = rcw_bolsheviks.117.a
 		add_political_power = 10
-		country_event = { id = rcw_bolsheviks.121 days = 4 }
-		country_event = { id = rcw_bolsheviks.122 days = 8 }
-		country_event = { id = rcw_bolsheviks.123 days = 15 }
+		country_event = { id = rcw_bolsheviks.121 days = 12 }
+		country_event = { id = rcw_bolsheviks.122 days = 18 }
+		country_event = { id = rcw_bolsheviks.123 days = 24 }
 		if = {
 			limit = { NOT = { has_country_flag = RUS_not_full_demob } }
-			country_event = { id = rcw_bolsheviks.124 days = 29 }
+			country_event = { id = rcw_bolsheviks.124 days = 36 }
 			country_event = { id = rcw_bolsheviks.125 days = 48 }
 		}
 		effect_tooltip = {
@@ -3238,10 +3238,10 @@ country_event = {
 			ideology = communism
 			popularity = -0.07
 		}
-		country_event = { id = rcw_bolsheviks.121 days = 4 }
-		country_event = { id = rcw_bolsheviks.122 days = 8 }
-		country_event = { id = rcw_bolsheviks.123 days = 15 }
-		#country_event = { id = rcw_bolsheviks.124 days = 29 }
+		country_event = { id = rcw_bolsheviks.121 days = 12 }
+		country_event = { id = rcw_bolsheviks.122 days = 18 }
+		country_event = { id = rcw_bolsheviks.123 days = 24 }
+		#country_event = { id = rcw_bolsheviks.124 days = 36 }
 		effect_tooltip = {
 			delete_unit_template_and_units = {
 				division_template = "Pekhotnaya Diviziya priziva 1902 goda"
@@ -4833,7 +4833,7 @@ country_event = {
 	# Ничего не делать
 	option = {
 		name = rcw_bolsheviks.233.a
-		hidden_effect = { country_event = { id = rcw_bolsheviks.235 days = 41 } }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.235 days = 44 } }
 	}
 	# Начать гонения на оппозицию
 	option = {
@@ -4844,7 +4844,7 @@ country_event = {
 		custom_effect_tooltip = decist_fact_party_comp_minus_5
 		check_overlap_of_party_composition = yes
 		hidden_effect = { country_event = { id = rcw_bolsheviks.234 days = 40 } }
-		hidden_effect = { country_event = { id = rcw_bolsheviks.235 days = 41 } }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.235 days = 44 } }
 	}
 	# ВЧК арестует всех
 	option = {
@@ -4868,7 +4868,7 @@ country_event = {
 		}
 		set_country_flag = Alexandr_Shlyapnikov_arrested
 		hidden_effect = { country_event = { id = rcw_bolsheviks.234 days = 40 } }
-		hidden_effect = { country_event = { id = rcw_bolsheviks.235 days = 41 } }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.235 days = 44 } }
 	}
 }
 
@@ -4886,8 +4886,17 @@ country_event = {
 			KRN = {
 				drop_cosmetic_tag = yes
 				transfer_state = 797
+				set_politics = { ruling_party = radical_socialism }
+				create_country_leader = { name = "Stepan Petrichenko" desc = KRN_Stepan_Petrichenko_DESC picture = "gfx/leaders/SOV/Stepan_Petrichenko.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
 			}
 			797 = { add_core_of = KRN }
+			if = {
+				limit = { has_country_flag = Alexandr_Shlyapnikov_arrested }
+				KRN = {
+					create_country_leader = { name = "Alexandr Shlyapnikov" desc = RUS_Alexandr_Shlyapnikov_DESC picture="gfx/leaders/SOV/Alexandr_Shlyapnikov.dds" expire="1935.1.1" ideology = syndicalism traits={  } }
+					set_politics = { ruling_party = communism }
+				}
+			}
 		}
 	}
 	
@@ -4896,6 +4905,150 @@ country_event = {
 		effect_tooltip = {
 			KRN = { transfer_state = 797 }
 		}
+		hidden_effect = { KRN = { load_oob = KRN_1921 } }
+		country_event = { id = rcw_bolsheviks.241 days = 1 }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.242 days = 4 } }
+	}
+	option = {
+		name = rcw_bolsheviks.234.b
+		effect_tooltip = {
+			KRN = { transfer_state = 797 }
+		}
+		hidden_effect = { KRN = { load_oob = KRN_1921 } }
+		country_event = { id = rcw_bolsheviks.241 days = 1 }
+		hidden_effect = { country_event = { id = rcw_bolsheviks.242 days = 4 } }
+		KRN = { change_tag_from = RUS }
+	}
+}
+
+# Штурм или осада
+country_event = {
+	id = rcw_bolsheviks.241
+	title = rcw_bolsheviks.241.t
+	desc = rcw_bolsheviks.241.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.241.a
+		start_border_war = {
+			attacker = {
+				state = 195
+				num_provinces = 2
+				on_win = rcw_bolsheviks.243
+				on_lose = rcw_bolsheviks.244
+				on_cancel = rcw_bolsheviks.245
+			}
+			
+			defender = {
+				state = 797
+				num_provinces = 1
+				on_win = rcw_bolsheviks.244
+				on_lose = rcw_bolsheviks.243
+				on_cancel = rcw_bolsheviks.245
+			}
+		}
+		add_stability = -0.03
+	}
+	option = {
+		name = rcw_bolsheviks.241.b
+		declare_war_on = { target = KRN type = annex_everything }
+		add_stability = -0.05
+		add_war_support = -0.1
+	}
+}
+
+# Отправить делегатов со съезда на подавление Кронштадта
+country_event = {
+	id = rcw_bolsheviks.242
+	title = rcw_bolsheviks.242.t
+	desc = rcw_bolsheviks.242.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.242.a
+		195 = {
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = RUS
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = RUS
+			}
+		}
+		add_political_power = -20
+		add_to_variable = { decist_faction_party_compositon = -0.05 }
+		custom_effect_tooltip = decist_fact_party_comp_minus_5
+		check_overlap_of_party_composition = yes
+	}
+	option = {
+		name = rcw_bolsheviks.242.b
+	}
+}
+
+# ахах Кронштандт слился
+country_event = {
+	id = rcw_bolsheviks.243
+	title = rcw_bolsheviks.243.t
+	desc = rcw_bolsheviks.243.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { tag = RUS }
+		name = rcw_bolsheviks.235.a
+		annex_country = {
+			target = KRN
+			transfer_troops = no
+		}
+	}
+	option = {
+		trigger = { tag = KRN }
+		name = rcw_bolsheviks.235.a
+	}
+}
+# НА КРОНШТАДСКИЙ ЛЁД МЫ НЕ ЗА ТО ЛОЖИЛИСЬ
+country_event = {
+	id = rcw_bolsheviks.244
+	title = rcw_bolsheviks.244.t
+	desc = rcw_bolsheviks.244.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { tag = KRN }
+		name = rcw_bolsheviks.244.a
+		KRN = {
+			transfer_state = 195
+		}
+	}
+	option = {
+		trigger = { tag = RUS }
+		name = rcw_bolsheviks.244.b
+	}
+}
+# Пат
+country_event = {
+	id = rcw_bolsheviks.245
+	title = rcw_bolsheviks.245.t
+	desc = rcw_bolsheviks.245.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.235.a
+	}
+	option = {
+		trigger = { tag = RUS }
+		name = rcw_bolsheviks.245.b
+		declare_war_on = { target = KRN type = annex_everything }
 	}
 }
 
@@ -5008,7 +5161,7 @@ country_event = {
 		name = rcw_bolsheviks.250.a
 		hidden_effect = {
 			if = {
-				limit = { NOT = { left_fact_party_is_ruling = yes } OR = { check_variable = { left_faction_party_compositon > center_faction_party_compositon } check_variable = { Trotskiy_power > 4 } } }
+				limit = { NOT = { left_fact_party_is_ruling = yes } OR = { check_variable = { left_faction_party_compositon > center_faction_party_compositon } check_variable = { Trotskiy_power > 4 } } NOT = { has_country_flag = demands_of_Kronstadt_sailors_accepted } }
 				country_event = rcw_bolsheviks.253 #Троцкий
 				if = {
 					limit = { KRN = { exists = yes NOT = { has_war_with = ROOT } } }
@@ -5019,6 +5172,10 @@ country_event = {
 						limit = { OR = { has_country_flag = demands_of_Kronstadt_sailors_accepted KRN = { controls_state = 195 } } }
 						if = {
 							limit = { KRN = { exists = yes } }
+							if = {
+								limit = { RUS = { is_ai = yes } KRN = { is_ai = no } }
+								RUS = { change_tag_from = KRN }
+							}
 							annex_country = {
 								target = KRN
 								transfer_troops = no
@@ -5033,6 +5190,17 @@ country_event = {
 									add_to_temp_variable = { decists_block = moderate_faction_party_compositon }
 									add_to_temp_variable = { decists_block = right_faction_party_compositon }
 									check_variable = { decists_block > 0.45 }
+								}
+								if = {
+									limit = { has_country_flag = Alexandr_Shlyapnikov_arrested }
+									if = {
+										limit = { RUS = { is_ai = yes } KRN = { is_ai = no } }
+										RUS = { change_tag_from = KRN }
+									}
+									annex_country = {
+										target = KRN
+										transfer_troops = no
+									}
 								}
 								country_event = rcw_bolsheviks.254 #Шляпа/Коллонтай
 								else = {
@@ -5060,10 +5228,7 @@ country_event = {
 							}
 							if = {
 								limit = { KRN = { exists = yes NOT = { has_war_with = ROOT } } }
-								annex_country = {
-									target = KRN
-									transfer_troops = no
-								}
+								declare_war_on = { target = KRN type = annex_everything }
 							}
 						}
 					}
