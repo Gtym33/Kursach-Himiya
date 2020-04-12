@@ -2017,22 +2017,36 @@ country_event = {
 				start_civil_war = {
 					ideology = radical_socialism
 					size = 0.4
+					keep_unit_leaders_trigger = { always = yes }
 				}
-		if = {
-			limit = {has_war_with = RUS}
 			random_other_country = {
 				limit = {
 					original_tag = CCA
 					has_government = radical_socialism
 				}
+				save_global_event_target_as = CCA_CW
 				set_stability = 0.9
 				set_war_support = 0.8
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
+				every_country = {
+					limit = {
+						has_war_with = CCA
+						NOT = { has_war_with = event_target:CCA_CW }
+					}
+					declare_war_on = { target = event_target:CCA_CW type = annex_everything }
 				}
+				event_target:CCA_CW = {
+					every_country = {
+						limit = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+				hidden_effect = { clear_global_event_target = CCA_CW }
 			}
-		}
 	}
 }
 
