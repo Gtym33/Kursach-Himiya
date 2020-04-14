@@ -328,10 +328,9 @@ country_event = {
 	picture = GFX_report_event_lat_latvia_in_danger
 	
 	trigger = {
-		tag = LAT
-		has_country_flag = LAT_beszashitna
 		NOT = { has_global_flag = RUS_civil_war_over }
-		has_war_with = RUS
+		tag = LAT
+		has_war = yes
 		has_army_manpower = {
 			size < 10000
 		}
@@ -341,10 +340,6 @@ country_event = {
 	
 	mean_time_to_happen = {
 		days = 0
-	}
-	
-	immediate = {
-		clr_country_flag = LAT_beszashitna
 	}
 	
 	option = {
@@ -1420,10 +1415,6 @@ country_event = {
 				EST = { exists = no }
 			}
 		}
-		modifier = {
-			factor = 0.01
-			has_global_flag = RUS_civil_war_over
-		}
 	}
 	
 	option = {
@@ -1491,15 +1482,24 @@ country_event = {
 					target = NWA
 					transfer_troops = yes
 				}
+				RUS = {
+					if = {
+						limit = { 191 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
+						transfer_state = 191
+					}
+					if = {
+						limit = { 1004 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
+						transfer_state = 1004
+					}
+				}
 			}
 		}
 		if = {
-			limit = { 191 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
-			transfer_state = 191
-		}
-		if = {
-			limit = { 1004 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
-			transfer_state = 1004
+			limit = { UBD = { exists = yes num_of_controlled_states < 4 } }
+			annex_country = {
+				target = UBD
+				transfer_troops = yes
+			}
 		}
 		EST = { change_tag_from = NWA }
 	}
@@ -2581,7 +2581,6 @@ country_event = {
 	trigger = {
 		tag = UBD
 		is_subject = no
-		has_war = no
 		LAT = { OR = { exists = no is_subject_of = UBD } }
 		EST = { OR = { exists = no is_subject_of = UBD } }
 		NOT = { has_country_flag = UBD_stability }
@@ -2604,30 +2603,6 @@ country_event = {
 	# Играть за Латвию
 	option = {
 		name = rcw_bfk.1918.a
-		every_state = {
-			limit = {
-				is_owned_by = ROOT
-				NOT = {
-					state = 914
-					state = 921
-					state = 13
-					state = 920
-					state = 1003
-					state = 915
-					state = 1002
-					state = 1020
-					state = 1021
-					state = 1023
-					state = 1019
-					state = 1048
-					state = 195
-					state = 1018
-					state = 1022
-					state = 1015
-				}
-			}
-			LAT = { transfer_state = PREV }
-		}
 		if = {
 			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 847 owns_state = 784 } }
 			every_state = {
@@ -2638,44 +2613,59 @@ country_event = {
 				LIT = { transfer_state = PREV }
 			}
 		}
-		EST = {
-			annex_country = {
-				target = ROOT
-				transfer_troops = yes
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 190
+					state = 867
+					state = 12
+					state = 866
+					state = 1001
+					state = 865
+				}
+			}
+			LAT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 914
+					state = 921
+					state = 13
+					state = 916
+					state = 920
+					state = 1003
+					state = 915
+					state = 1002
+				}
+			}
+			EST = { transfer_state = PREV }
+		}
+		if = {
+			limit = { UBD = { has_war_with = RUS } }
+			RUS = {
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
 			}
 		}
-		LAT = { inherit_technology = RUS }
-		EST = { inherit_technology = RUS }
-		LAT = { change_tag_from = ROOT }
+		EST = { country_event = { id = rcw_bfk.1919 days = 15 } }
+		LAT = { change_tag_from = UBD }
+		ai_chance = {
+			factor = 0
+		}
 	}
 	
 	# Играть за Эстонию
 	option = {
 		name = rcw_bfk.1918.b
-		every_state = {
-			limit = {
-				is_owned_by = ROOT
-				NOT = {
-					state = 914
-					state = 921
-					state = 13
-					state = 920
-					state = 1003
-					state = 915
-					state = 1002
-					state = 1020
-					state = 1021
-					state = 1023
-					state = 1019
-					state = 1048
-					state = 195
-					state = 1018
-					state = 1022
-					state = 1015
-				}
-			}
-			LAT = { transfer_state = PREV }
-		}
 		if = {
 			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 847 owns_state = 784 } }
 			every_state = {
@@ -2686,14 +2676,142 @@ country_event = {
 				LIT = { transfer_state = PREV }
 			}
 		}
-		EST = {
-			annex_country = {
-				target = ROOT
-				transfer_troops = yes
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 190
+					state = 867
+					state = 12
+					state = 866
+					state = 1001
+					state = 865
+				}
+			}
+			LAT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 914
+					state = 921
+					state = 13
+					state = 916
+					state = 920
+					state = 1003
+					state = 915
+					state = 1002
+				}
+			}
+			EST = { transfer_state = PREV }
+		}
+		if = {
+			limit = { UBD = { has_war_with = RUS } }
+			RUS = {
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
 			}
 		}
-		LAT = { inherit_technology = RUS }
-		EST = { inherit_technology = RUS }
-		EST = { change_tag_from = ROOT }
+		EST = { country_event = { id = rcw_bfk.1919 days = 15 } }
+		EST = { change_tag_from = UBD }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	# Играть за Балтику (смэрт)
+	option = {
+		name = rcw_bfk.1918.b
+		if = {
+			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 847 owns_state = 784 } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 190
+					state = 867
+					state = 12
+					state = 866
+					state = 1001
+					state = 865
+				}
+			}
+			LAT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 914
+					state = 921
+					state = 13
+					state = 916
+					state = 920
+					state = 1003
+					state = 915
+					state = 1002
+				}
+			}
+			EST = { transfer_state = PREV }
+		}
+		if = {
+			limit = { UBD = { has_war_with = RUS } }
+			RUS = {
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
+			}
+		}
+		EST = { country_event = { id = rcw_bfk.1919 days = 15 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# 
+country_event = {
+	id = rcw_bfk.1919
+	title = rcw_bfk.1919.t
+	desc = rcw_bfk.1919.d
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = EST
+		UBD = { exists = yes }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.1919.a
+		annex_country = {
+			target = UBD
+			transfer_troops = yes
+		}
+		if = {
+			limit = { is_ai = yes UBD = { is_ai = no } }
+			change_tag_from = UBD
+		}
 	}
 }
