@@ -22,11 +22,24 @@
 # authoritarian_parties - 4
 # reactionary_parties - 5
 
-# political_social_conservatives_in_liberal_coalition
+# radsoc_banned
+# commi_banned
+# socdem_banned
+# marketlib_banned
+# cons_banned
+# auth_banned
+# desp_banned
+# fasc_banned
+# natsynd_banned
+
+# right_parties_is_illegal
+
 # political_social_democrats_in_liberal_coalition
 # political_social_democrats_in_socialist_coalition
 # political_social_liberals_in_socialist_coalition
 # political_social_liberals_not_in_liberal_coalition
+# political_social_conservatives_in_liberal_coalition
+# political_national_syndicalism_in_socialist_coalition
 
 	add_ruling_party_popularity = {
 		if = {
@@ -444,6 +457,12 @@
 		if = {
 			limit = { check_variable = { national_syndicalism_coalition = 1 } }
 			add_to_variable = { socialist_parties = party_popularity@national_syndicalism }
+			else = {
+				if = {
+					limit = { has_country_flag = political_national_syndicalism_in_socialist_coalition }
+					if = { limit = { check_variable = { national_syndicalism_coalition = 0 } check_variable = { socialist_parties < party_popularity@national_syndicalism } } set_variable = { socialist_parties = party_popularity@national_syndicalism } }
+				}
+			}
 		}
 
 		set_variable = {
@@ -664,7 +683,7 @@
 		if = {
 			limit = { check_variable = { national_syndicalism_coalition = 5 } }
 			add_to_variable = { reactionary_parties = party_popularity@national_syndicalism }
-			else = { if = { limit = { check_variable = { national_syndicalism_coalition = 0 } check_variable = { reactionary_parties < party_popularity@national_syndicalism } } set_variable = { reactionary_parties = party_popularity@national_syndicalism } } }
+			else = { if = { limit = { NOT = { has_country_flag = political_national_syndicalism_in_socialist_coalition } check_variable = { national_syndicalism_coalition = 0 } check_variable = { reactionary_parties < party_popularity@national_syndicalism } } set_variable = { reactionary_parties = party_popularity@national_syndicalism } } }
 		}
 
 		set_first_wthout_ruling_legal_party_flag = yes
@@ -1278,7 +1297,7 @@
 			else = { set_temp_variable = { tempmarketlib = 0 } }
 		}
 		if = {
-			limit = { OR = { NOT = { has_government = radical_socialism has_government = communism } NOT = { has_country_flag = right_parties_is_illegal } } }
+			limit = { NOT = { has_government = radical_socialism has_government = communism } }
 			set_temp_variable = { tempcons = social_conservatism_party }
 			else = { set_temp_variable = { tempcons = 0 } }
 		}
@@ -1424,7 +1443,7 @@
 			else = { set_temp_variable = { tempmarketlib = 0 } }
 		}
 		if = {
-			limit = { NOT = { has_country_flag = first_legal_party_is_cons } OR = { NOT = { has_government = radical_socialism has_government = communism } NOT = { has_country_flag = right_parties_is_illegal } } }
+			limit = { NOT = { has_country_flag = first_legal_party_is_cons } NOT = { has_government = radical_socialism has_government = communism } }
 			set_temp_variable = { tempcons = social_conservatism_party }
 			else = { set_temp_variable = { tempcons = 0 } }
 		}
@@ -1570,7 +1589,7 @@
 			else = { set_temp_variable = { tempmarketlib = 0 } }
 		}
 		if = {
-			limit = { NOT = { has_country_flag = first_legal_party_is_cons has_country_flag = second_legal_party_is_cons } OR = { NOT = { has_government = radical_socialism has_government = communism } NOT = { has_country_flag = right_parties_is_illegal } } }
+			limit = { NOT = { has_country_flag = first_legal_party_is_cons has_country_flag = second_legal_party_is_cons } NOT = { has_government = radical_socialism has_government = communism } }
 			set_temp_variable = { tempcons = social_conservatism_party }
 			else = { set_temp_variable = { tempcons = 0 } }
 		}
@@ -1718,7 +1737,7 @@
 			else = { set_temp_variable = { tempmarketlib = 0 } }
 		}
 		if = {
-			limit = { NOT = { has_government = social_conservatism } OR = { NOT = { has_government = radical_socialism has_government = communism } NOT = { has_country_flag = right_parties_is_illegal } } }
+			limit = { NOT = { has_government = social_conservatism } NOT = { has_government = radical_socialism has_government = communism } }
 			set_temp_variable = { tempcons = social_conservatism_party }
 			else = { set_temp_variable = { tempcons = 0 } }
 		}
