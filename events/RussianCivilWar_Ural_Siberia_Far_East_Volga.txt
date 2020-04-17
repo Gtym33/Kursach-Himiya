@@ -2322,6 +2322,9 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.42.a
+		ai_chance = {
+			factor = 0
+		}
 		set_capital = 578
 		clr_country_flag = SIB_start_political_instability
 		add_ideas = {
@@ -2337,7 +2340,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.42.b
 		ai_chance = {
-			factor = 999
+			factor = 1
 		}
 		set_politics = {
 			ruling_party = market_liberalism
@@ -3089,7 +3092,14 @@ country_event = {
 	
 	trigger = {
 		tag = SIB
-		check_variable = { authoritarian_parties > 0.3 }
+		AND = {
+			OR = { has_government = social_liberalism has_government = social_democracy }
+			check_variable = { authoritarian_parties > 0.3 }
+		}
+		AND = {
+			OR = { has_government = market_liberalism }
+			check_variable = { authoritarian_parties > 0.35 }
+		}
 		NOT = {
 			has_government = social_conservatism
 			has_government = authoritarism
@@ -3113,7 +3123,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.b
-		set_politics = { ruling_party = social_conservatism elections_allowed = yes}
+		set_politics = { ruling_party = social_conservatism }
 		add_stability = -0.15
 		add_war_support = 0.02
 		add_popularity = { ideology = social_liberalism popularity = -0.25 }
@@ -3133,7 +3143,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.dd
-		set_politics = { ruling_party = fascism}
+		set_politics = { ruling_party = fascism }
 		every_unit_leader = { limit = { OR = { has_id = 92351 } is_field_marshal = no } promote_leader = yes }
 		add_stability = -0.15
 		add_war_support = 0.02
@@ -4282,7 +4292,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.91.b
 		ai_chance = {
-			factor = 0
+			factor = 1
 		}
 		set_cosmetic_tag = SIB_MONARCHY
 		add_ideas = RUS_Dmitriy_II_idea
@@ -4291,10 +4301,11 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.91.c
-		trigger = { OR = { has_country_leader = { name = "Nikolay II Romanov" ruling_only = yes } has_country_leader = { name = "Nikolay II Romanov" ruling_only = no } } }
+		trigger = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
 		ai_chance = {
-			factor = 2
+			factor = 4
 		}
+		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
 		set_cosmetic_tag = RUS_MONARCHY
 		set_politics = { ruling_party = authoritarism elections_allowed = no }
 		add_ideas = limited_monarchy_gov_form
@@ -7974,6 +7985,7 @@ country_event = {
 			}
 			CCA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
 			SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+			RVA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
 		}
 	}
 	
@@ -8024,6 +8036,7 @@ country_event = {
 		RUS = { has_country_flag = Nikolay_Alexandrovich_Romanov_Ekat NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
 		NOT = { CCA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
 		NOT = { SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
+		NOT = { RVA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
 	}
 	
 	option = {
@@ -8775,11 +8788,23 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.251.a
-		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
+		if = {
+			limit = { NOT = { tag = SIB } }
+			create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Nikolay_II_ALT2.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { inexperienced_imperialist weak_character} }
+		}
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
 		add_popularity = { ideology = authoritarism popularity = 0.10 }
 		add_popularity = { ideology = social_conservatism popularity = 0.10 }
+	}
+	option = {
+		name = rcw_usfev.251.b
+		trigger = { has_government = social_liberalism }
+		ai_chance = {
+			factor = 0
+		}
+		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
+		country_event = { id = rcw_usfev.202 days = 1 }
 	}
 }
 
