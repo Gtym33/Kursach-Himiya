@@ -883,6 +883,10 @@ country_event = {
 			}
 			CCA = { add_state_core = PREV }
 		}
+		if = {
+			limit = { OCH = { controls_state = 651 NOT = { controls_state = 251 } } }
+			CCA = { set_capital = 651 }
+		}
 		every_state = {
 			limit = {
 				OR = {
@@ -1198,6 +1202,10 @@ country_event = {
 				}
 			}
 			CCA = { add_state_core = PREV }
+		}
+		if = {
+			limit = { OCH = { controls_state = 651 NOT = { controls_state = 251 } } }
+			CCA = { set_capital = 651 }
 		}
 		every_state = {
 			limit = {
@@ -6764,8 +6772,8 @@ country_event = {
 	option = {
 		name = rcw_usfev.146.a
 		random_list = {
-			70 = {}
-			30 = {
+			50 = {}
+			50 = {
 				if = {
 					limit = { PRM = { exists = yes } }
 					PRM = {
@@ -6860,8 +6868,8 @@ country_event = {
 			}
 		}
 		random_list = {
-			70 = {}
-			30 = {
+			50 = {}
+			50 = {
 				if = {
 					limit = { BKL = { exists = yes} }
 					BKL = {
@@ -6908,8 +6916,8 @@ country_event = {
 			}
 		}
 		random_list = {
-			70 = {}
-			30 = {
+			50 = {}
+			50 = {
 				if = {
 					limit = { SCH = { exists = yes } }
 					SCH = {
@@ -7213,7 +7221,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.154.a
 		JAP = {
-		transfer_state = 655
+			transfer_state = 655
 		}
 		add_war_support = -0.1
 	}
@@ -7304,9 +7312,9 @@ country_event = {
 			add_ideas = territorial_expansion_law
 			add_ideas = help_from_foreign_interventionists
 			load_oob = MON_Ungern
-			create_corps_commander = { name = "Alexandr Kaygorodov" portrait_path = "gfx/leaders/RUS/Alexandr_Kaygorodov.dds" traits = { trickster guerilla_fighter career_officer cavalry_officer } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
-			create_corps_commander = { name = "Boris Rezukhin" portrait_path = "gfx/leaders/RUS/Boris_Rezukhin.dds" traits = { harsh_leader politically_connected } skill = 2 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
-			create_corps_commander = { name = "Nikolay Kazagrandi" portrait_path = "gfx/leaders/RUS/Nikolay_Kazagrandi.dds" traits = { infantry_officer organizer ranger } skill = 2 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+			create_corps_commander = { name = "Alexandr Kaygorodov" id = 77447 portrait_path = "gfx/leaders/RUS/Alexandr_Kaygorodov.dds" traits = { trickster guerilla_fighter career_officer cavalry_officer } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Boris Rezukhin" id = 77448 portrait_path = "gfx/leaders/RUS/Boris_Rezukhin.dds" traits = { harsh_leader politically_connected } skill = 2 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Nikolay Kazagrandi" id = 77449 portrait_path = "gfx/leaders/RUS/Nikolay_Kazagrandi.dds" traits = { infantry_officer organizer ranger } skill = 2 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
 		}
 		random_other_country = {
 			limit = { original_tag = MON has_government = despotism }
@@ -7963,6 +7971,199 @@ country_event = {
 	}
 }
 
+###Унгерн возвращается на родину, если война ещё не проиграна###
+country_event = {
+	id = rcw_usfev.178
+	title = rcw_usfev.178.t
+	desc = rcw_usfev.178.d
+	picture = GFX_report_event_sib_ungern_WAAAR
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = MON
+		has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes }
+		has_war = no
+		has_civil_war = no
+		any_neighbor_country = {
+			exists = yes
+			is_white_movement_country = yes
+			has_capitulated = no
+			is_puppet = no
+			NOT = { has_war_with = ROOT }
+			surrender_progress < 0.4
+			NOT = { has_government = radical_socialism has_government = communism }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_usfev.178.a
+		every_unit_leader = { limit = { OR = { has_id = 77402 has_id = 77447 has_id = 77448 has_id = 77449 } } set_nationality = REB }
+		retire_country_leader = yes
+		add_ideas = limited_monarchy_gov_form
+		add_ideas = neutral_foreign_policy_law
+		remove_ideas = help_from_foreign_interventionists
+		delete_unit_template_and_units = {
+			division_template = "Cavaleriyskaya brigada"
+		}
+		every_neighbor_country = {
+			limit = {
+				exists = yes
+				is_white_movement_country = yes
+				has_capitulated = no
+				is_puppet = no
+				NOT = { has_war_with = ROOT }
+				surrender_progress < 0.4
+				NOT = { has_government = radical_socialism has_government = communism }
+			}
+			country_event = { id = rcw_usfev.179 days = 1 }
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.178.b
+		trigger = { always = no }
+	}
+
+}
+
+###Унгерн вернулся###
+country_event = {
+	id = rcw_usfev.179
+	title = rcw_usfev.179.t
+	desc = rcw_usfev.179.d
+	picture = GFX_report_event_sib_ungern_WAAAR
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.179.a
+		REB = { every_unit_leader = { limit = { OR = { has_id = 77402 has_id = 77447 has_id = 77448 has_id = 77449 } } set_nationality = ROOT } }
+		add_popularity = { ideology = authoritarism popularity = 0.02 }
+		add_manpower = 2000
+		ROOT = { MON = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		division_template = {
+			name = "Kavaleriyskaya Diviziya"	# Cavalry
+			regiments = {
+				cavalry = { x = 0 y = 0 }
+				cavalry = { x = 0 y = 1 }
+				cavalry = { x = 1 y = 0 }
+				cavalry = { x = 1 y = 1 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+					division = "name = \"Otryad Ungerna\" division_template = \"Kavaleriyskaya Diviziya\" start_experience_factor = 1 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		}
+	}
+}
+
+###Дутов прорывается к белым###
+country_event = {
+	id = rcw_usfev.180
+	title = rcw_usfev.180.t
+	desc = rcw_usfev.180.d
+	picture = GFX_report_event_sib_ungern_WAAAR
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		tag = OCH
+		has_country_leader = { name = "Alexander Dutov" ruling_only = yes }
+		has_capitulated = yes
+		any_neighbor_country = {
+			exists = yes
+			is_white_movement_country = yes
+			has_capitulated = no
+			is_puppet = no
+			NOT = { has_war_with = ROOT }
+			surrender_progress < 0.4
+			NOT = { has_government = radical_socialism has_government = communism }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_usfev.180.a
+		every_neighbor_country = {
+			limit = {
+				exists = yes
+				is_white_movement_country = yes
+				has_capitulated = no
+				is_puppet = no
+				NOT = { has_war_with = ROOT }
+				surrender_progress < 0.4
+				NOT = { has_government = radical_socialism has_government = communism }
+			}
+			country_event = { id = rcw_usfev.181 days = 1 }
+		}
+	}
+}
+
+###Дутов прорвался###
+country_event = {
+	id = rcw_usfev.181
+	title = rcw_usfev.181.t
+	desc = rcw_usfev.181.d
+	picture = GFX_report_event_sib_ungern_WAAAR
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.181.a
+		OCH = { every_unit_leader = { set_nationality = ROOT } }
+		add_manpower = 2000
+		annex_country = {
+			target = OCH
+			transfer_troops = yes
+		}
+		every_state = {
+			limit = { is_core_of = OCH }
+			remove_core_of = OCH
+			add_core_of = ROOT
+		}
+		division_template = {
+			name = "Kazachya Diviziya"	# Cavalry
+			regiments = {
+				cavalry = { x = 0 y = 0 }
+				cavalry = { x = 0 y = 1 }
+				cavalry = { x = 1 y = 0 }
+				cavalry = { x = 1 y = 1 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+					division = "name = \"Otryad Dutova\" division_template = \"Kazachya Diviziya\" start_experience_factor = 1 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+		}
+	}
+}
+
 # Расстрел Николая II нормальный
 country_event = {
 	id = rcw_usfev.200
@@ -7999,7 +8200,7 @@ country_event = {
 		name = rcw_usfev.200.a
 		#news_event
 		ai_chance = {
-			factor = 9999
+			factor = 1
 		}
 		clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
 		set_country_flag = Nikolay_Alexandrovich_Romanov_dead
@@ -8010,6 +8211,9 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.200.b
+		ai_chance = {
+			factor = 0
+		}
 		trigger = { NOT = { has_government = radical_socialism } }
 		add_popularity = { ideology = communism popularity = -0.01 }
 	}
