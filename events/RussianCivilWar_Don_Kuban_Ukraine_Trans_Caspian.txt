@@ -3523,6 +3523,74 @@ country_event = {
 	}
 }
 
+# Отставка Деникина
+country_event = {
+	id = rcw_dkutc.106
+	title = rcw_dkutc.106.t
+	desc = rcw_dkutc.106.desc
+	picture = GFX_report_event_rcw_rva
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = RVA
+		has_war_with = RUS
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		OR = {
+			any_unit_leader = { has_id = 76428 }
+			has_country_leader = { name = "Anton Denikin" ruling_only = yes }
+		}
+		OR = {
+			AND = {
+				surrender_progress > 0.6
+				OR = { SIB = { exists = yes } CCA = { exists = yes } RSS = { exists = yes } }
+			}
+			AND = {
+				surrender_progress > 0.5
+				AND = { SIB = { exists = no } CCA = { exists = no } RSS = { exists = no } }
+			}
+			has_capitulated = yes
+		}
+		RUS = { AND = { controls_state = 219 controls_state = 195 surrender_progress < 0.3 } }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_dkutc.106.a
+		#news_event
+		every_unit_leader = { limit = { OR = { has_id = 76428 } } set_nationality = REB }
+		if = {
+			limit = { has_country_leader = { name = "Anton Denikin" } }
+			remove_despotism_leader = yes
+			create_country_leader = { name = "Alexander Lukomsky" desc = RUS_Alexander_Lukomsky_DESC picture = "gfx/leaders/RUS/Alexander_Lukomsky.dds" ideology = despotism_ideology traits = { warmonger } }
+		}
+		if = {
+			limit = { has_government = despotism }
+			drop_cosmetic_tag = yes
+			set_cosmetic_tag = RVA_rus_army
+			set_politics = { ruling_party = authoritarism }
+			create_country_leader = { name = "Pyotr Wrangel" desc = RUS_Pyotr_Wrangel_DESC picture = "gfx/leaders/RUS/Pyotr_Wrangel.dds" ideology = authoritarism_ideology traits = { warmonger } }
+		}
+	}
+	
+	option = {
+		name = rcw_dkutc.106.b
+		trigger = { has_government = despotism has_country_leader = { name = "Anton Denikin" } has_country_leader = { name = "Nikolay Nikolaevich Romanov" ruling_only = no } }
+		#news_event
+		every_unit_leader = { limit = { OR = { has_id = 76428 } } set_nationality = REB }
+		remove_despotism_leader = yes
+		create_country_leader = { name = "Alexander Lukomsky" desc = RUS_Alexander_Lukomsky_DESC picture = "gfx/leaders/RUS/Alexander_Lukomsky.dds" ideology = despotism_ideology traits = { warmonger } }
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = RVA_rus_army
+		set_politics = { ruling_party = authoritarism }
+	}
+	
+}
+
 # Дроздовский (Из Румынии походом)
 country_event = {
 	id = rcw_dkutc.109
@@ -5237,10 +5305,10 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = {
-	if = {
-		limit = { ROOT = { is_puppet = yes } }
-		country_event = { id = rcw_dkutc.135 days = 1 }
-	}
+		if = {
+			limit = { ROOT = { is_puppet = yes } }
+			country_event = { id = rcw_dkutc.135 days = 1 }
+		}
 	}
 
 	option = {
@@ -5297,30 +5365,18 @@ country_event = {
 			limit = { check_variable { temp_natsynd = temp_0 } }
 			set_politics = { ruling_party = national_syndicalism elections_allowed = no }
 		}
-		if = {
-			limit = { is_subject = yes }
-			country_event = rcw_dkutc.135
-		}
 	}
 	
 	option = {
 		name = rcw_dkutc.134.b
 		trigger = { NOT = { has_country_flag = RVA_authoritarism_coup_suppose } }
 		set_politics = { ruling_party = authoritarism elections_allowed = no }
-		if = {
-			limit = { is_subject = yes }
-			country_event = rcw_dkutc.135
-		}
 	}
 	
 	option = {
 		name = rcw_dkutc.134.c
 		trigger = { NOT = { has_country_flag = RVA_authoritarism_coup_fired } }
 		set_politics = { ruling_party = despotism elections_allowed = no }
-		if = {
-			limit = { is_subject = yes }
-			country_event = rcw_dkutc.135
-		}
 	}
 }
 
