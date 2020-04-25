@@ -14,7 +14,7 @@ focus_tree = {
 	focus = {
 		id = BUL_army_supply_and_regulation_directorate
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
 		}
 		ai_will_do = {
@@ -23,35 +23,20 @@ focus_tree = {
 		x = 12
 		y = 0
 		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_claims_for_albania
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_army_supply_and_regulation_directorate
-		}
-		x = 12
-		y = 1
-		completion_reward = {
-			
+			add_ideas = BUL_army_supply_n_regulation_directorate_idea
+			hidden_effect = { set_country_flag = { flag = BUL_AI_dont_pick_army_supply_revision_dec days = 85 } }
 		}
 	}
 	
 	focus = {
 		id = BUL_demand_the_northern_dobrogea
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			controls_state = 77
+			controls_state = 856
 		}
+		bypass = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
 		ai_will_do = {
 			factor = 1
 		}
@@ -61,16 +46,47 @@ focus_tree = {
 		x = 10
 		y = 1
 		completion_reward = {
-			
+			set_variable = { global.Central_Powers_major_conf_votes = 0 }
+			set_variable = { global.Central_Powers_major_conf_members = 0 }
+			set_variable = { global.Central_Powers_not_give_BUL_Dobruja = 0 }
+			set_variable = { global.Central_Powers_give_BUL_Dobruja = 0 }
+			if = {
+				limit = { has_war_with = ROM }
+				AUH = { country_event = bulgaria.11 }
+				else = { ROM = { country_event = bulgaria.11 } }
+			}
+		}
+	}
+	
+	focus = {
+		id = BUL_claims_for_albania
+		icon = GFX_goal_RSS_chernov
+		cost = 10
+		available = {
+			AUH = { controls_state = 44 }
+		}
+		bypass = { OR = { NOT = { has_global_flag = WWI_is_now } has_global_flag = WWI_BUL_HAS_CAPITULATED } }
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = BUL_army_supply_and_regulation_directorate
+		}
+		x = 12
+		y = 1
+		completion_reward = {
+			country_event = bulgaria.17
 		}
 	}
 	
 	focus = {
 		id = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			AUH = { controls_state = 108 }
 		}
+		bypass = { OR = { AND = { controls_state = 108 controls_state = 969 } has_global_flag = WWI_BUL_HAS_CAPITULATED NOT = { has_global_flag = WWI_is_now } } }
 		ai_will_do = {
 			factor = 1
 		}
@@ -80,15 +96,47 @@ focus_tree = {
 		x = 14
 		y = 1
 		completion_reward = {
-			
+			set_variable = { global.Central_Powers_major_conf_votes = 0 }
+			set_variable = { global.Central_Powers_major_conf_members = 0 }
+			set_variable = { global.Central_Powers_not_give_BUL_Novi_Pazar = 0 }
+			set_variable = { global.Central_Powers_give_BUL_Novi_Pazar = 0 }
+			every_other_country = {
+				limit = {
+					OR = {
+						AND = {
+							is_in_faction_with = ROOT
+							is_subject = no
+							capital_scope = { is_on_continent = europe }
+						}
+						tag = AUH
+					}
+				}
+				add_to_variable = { global.Central_Powers_major_conf_members = 1 }
+				if = {
+					limit = {
+						OR = {
+							tag = GER
+							tag = AUH
+							tag = TUR
+						}
+					}
+					set_variable = { vote_power = 2 }
+					else = { set_variable = { vote_power = 1 } }
+				}
+				country_event = { id = bulgaria.14 days = 1 }
+			}
 		}
 	}
 	
 	focus = {
 		id = BUL_withdrawal_of_german_money
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			OR = {
+				has_country_flag = BUL_betrayed_by_GER
+				NOT = { has_completed_focus = BUL_money_issue }
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -101,14 +149,45 @@ focus_tree = {
 		x = 10
 		y = 2
 		completion_reward = {
-			
+			if = {
+				limit = { has_idea = BUL_hyper_inflation_2 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_2
+					add_idea = BUL_hyper_inflation_1
+				}
+			}
+			else_if = {
+				limit = { has_idea = BUL_hyper_inflation_3 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_3
+					add_idea = BUL_hyper_inflation_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = BUL_hyper_inflation_4 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_4
+					add_idea = BUL_hyper_inflation_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = BUL_hyper_inflation_5 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_5
+					add_idea = BUL_hyper_inflation_4
+				}
+			}
+			else_if = {
+				limit = { has_idea = BUL_hyper_inflation_1 }
+				remove_ideas = BUL_hyper_inflation_1
+			}
 		}
 	}
 	
 	focus = {
 		id = BUL_nationalization_of_industry_and_mining_resources
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
 		}
 		ai_will_do = {
@@ -120,16 +199,19 @@ focus_tree = {
 		x = 10
 		y = 3
 		completion_reward = {
-			
+			remove_ideas = BUL_army_supply_n_regulation_directorate_idea_1
+			remove_ideas = BUL_army_supply_n_regulation_directorate_idea
+			add_political_power = 35
 		}
 	}
 	
 	focus = {
 		id = BUL_expulsion_of_german_capital
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
 		}
+		bypass = { NOT = { has_idea = BUL_dependent_bulgarian_economy } }
 		ai_will_do = {
 			factor = 1
 		}
@@ -139,15 +221,16 @@ focus_tree = {
 		x = 10
 		y = 4
 		completion_reward = {
-			
+			remove_ideas = BUL_dependent_bulgarian_economy
 		}
 	}
 	
 	focus = {
 		id = BUL_money_issue
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			NOT = { has_completed_focus = BUL_withdrawal_of_german_money }
 		}
 		ai_will_do = {
 			factor = 1
@@ -160,18 +243,51 @@ focus_tree = {
 		x = 14
 		y = 2
 		completion_reward = {
-			
+			add_political_power = 50
+			if = {
+				limit = { has_idea = BUL_hyper_inflation_1 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_1
+					add_idea = BUL_hyper_inflation_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = BUL_hyper_inflation_2 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_2
+					add_idea = BUL_hyper_inflation_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = BUL_hyper_inflation_3 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_3
+					add_idea = BUL_hyper_inflation_4
+				}
+			}
+			else_if = {
+				limit = { has_idea = BUL_hyper_inflation_4 }
+				swap_ideas = {
+					remove_idea = BUL_hyper_inflation_4
+					add_idea = BUL_hyper_inflation_5
+				}
+			}
+			else_if = {
+				limit = { NOT = { has_idea = BUL_hyper_inflation_5 } }
+				add_ideas = BUL_hyper_inflation_1
+			}
 		}
 	}
 	
 	focus = {
 		id = BUL_arms_purchase
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
 		}
+		bypass = { OR = { NOT = { is_in_faction_with = GER } is_faction_leader = yes } }
 		ai_will_do = {
-			factor = 1
+			factor = 10
 		}
 		prerequisite = {
 			focus = BUL_money_issue
@@ -179,15 +295,16 @@ focus_tree = {
 		x = 14
 		y = 3
 		completion_reward = {
-			
+			GER = { country_event = bulgaria.21 }
 		}
 	}
 	
 	focus = {
 		id = BUL_massive_propaganda
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			NOT = { has_country_flag = BUL_betrayed_by_GER }
 		}
 		ai_will_do = {
 			factor = 1
@@ -198,14 +315,14 @@ focus_tree = {
 		x = 14
 		y = 4
 		completion_reward = {
-			
+			add_ideas = BUL_building_Great_Bulgaria
 		}
 	}
 	
 	focus = {
 		id = BUL_new_government
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
 		}
 		ai_will_do = {
@@ -220,7 +337,7 @@ focus_tree = {
 		x = 12
 		y = 5
 		completion_reward = {
-			
+			country_event = bulgaria.31
 		}
 	}
 	
@@ -229,6 +346,10 @@ focus_tree = {
 		icon = GFX_goal_RSS_chernov
 		cost = 1
 		available = {
+			NOT = { has_country_flag = BUL_flag_war_must_go_on }
+		}
+		mutually_exclusive = {
+			focus = BUL_desperate_struggle
 		}
 		ai_will_do = {
 			factor = 1
@@ -236,7 +357,10 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_new_government
 		}
-		x = 9
+		bypass = {
+			NOT = { has_global_flag = WWI_is_now }
+		}
+		x = 10
 		y = 6
 		completion_reward = {
 			
@@ -253,48 +377,11 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = BUL_new_government
+			focus = BUL_quest_for_peace
+			focus = BUL_desperate_struggle
 		}
-		x = 11
-		y = 6
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_establishment_of_military_league
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_new_government
-		}
-		x = 13
-		y = 6
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_new_forts_in_macedonia
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_new_government
-		}
-		x = 15
-		y = 6
+		x = 12
+		y = 7
 		completion_reward = {
 			
 		}
@@ -312,7 +399,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_quest_for_peace
 		}
-		x = 9
+		x = 8
 		y = 7
 		completion_reward = {
 			
@@ -331,7 +418,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_amnesty_for_opposition
 		}
-		x = 8
+		x = 7
 		y = 8
 		completion_reward = {
 			
@@ -350,7 +437,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_amnesty_for_opposition
 		}
-		x = 10
+		x = 9
 		y = 8
 		completion_reward = {
 			
@@ -372,7 +459,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_rotate_bayonets
 		}
-		x = 9
+		x = 8
 		y = 9
 		completion_reward = {
 			
@@ -391,7 +478,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_demobilization
 		}
-		x = 9
+		x = 8
 		y = 10
 		completion_reward = {
 			
@@ -410,7 +497,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_wide_coalition
 		}
-		x = 6
+		x = 5
 		y = 11
 		completion_reward = {
 			
@@ -429,7 +516,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_wide_coalition
 		}
-		x = 4
+		x = 3
 		y = 11
 		completion_reward = {
 			
@@ -451,7 +538,7 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_orange_guard
 		}
-		x = 5
+		x = 4
 		y = 12
 		completion_reward = {
 			
@@ -473,7 +560,7 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_red_guard
 		}
-		x = 7
+		x = 6
 		y = 12
 		completion_reward = {
 			
@@ -653,7 +740,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_wide_coalition
 		}
-		x = 10
+		x = 7
 		y = 11
 		completion_reward = {
 			
@@ -672,7 +759,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_wide_coalition
 		}
-		x = 9
+		x = 8
 		y = 13
 		completion_reward = {
 			
@@ -689,12 +776,12 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = BUL_constitutional_bloc
-		}
-		prerequisite = {
 			focus = BUL_labor_service
 		}
-		x = 8
+		prerequisite = {
+			focus = BUL_constitutional_bloc
+		}
+		x = 7
 		y = 14
 		completion_reward = {
 			
@@ -714,7 +801,7 @@ focus_tree = {
 			focus = BUL_constitutional_bloc
 			focus = BUL_labor_service
 		}
-		x = 10
+		x = 9
 		y = 14
 		completion_reward = {
 			
@@ -736,7 +823,7 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_rupture_of_the_neiite_dictate
 		}
-		x = 9
+		x = 8
 		y = 15
 		completion_reward = {
 			
@@ -755,7 +842,7 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_compliance_obligations_neyinskih
 		}
-		x = 9
+		x = 8
 		y = 16
 		completion_reward = {
 			
@@ -765,27 +852,42 @@ focus_tree = {
 	focus = {
 		id = BUL_desperate_struggle
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
+			has_global_flag = WWI_is_now
+			NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+			has_country_flag = BUL_flag_war_must_go_on
+		}
+		bypass = {
+			has_global_flag = WWI_GER_sieg_im_Weltkrieg
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = BUL_establishment_of_military_league
-			focus = BUL_new_forts_in_macedonia
+			focus = BUL_new_government
+		}
+		mutually_exclusive = {
+			focus = BUL_quest_for_peace
 		}
 		x = 14
-		y = 7
+		y = 6
 		completion_reward = {
-			
+			rise_mobilization_law = yes
+			if = {
+				limit = { NOT = { has_idea = tot_economic_mobilisation } }
+				add_ideas = tot_economic_mobilisation
+				else = {
+					add_political_power = 150
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = BUL_black_professor_government
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 2
 		available = {
 		}
 		ai_will_do = {
@@ -800,15 +902,19 @@ focus_tree = {
 		x = 13
 		y = 8
 		completion_reward = {
-			
+			add_popularity = { ideology = fascism popularity = 0.05 }
+			set_politics = { ruling_party = fascism }
 		}
 	}
 	
 	focus = {
 		id = BUL_termination_of_the_constitution
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
+		}
+		bypass = {
+			NOT = { has_idea = BUL_turnovo_constitution }
 		}
 		ai_will_do = {
 			factor = 1
@@ -819,17 +925,22 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_black_professor_government
 		}
-		x = 15
+		x = 16
 		y = 8
 		completion_reward = {
-			
+			add_political_power = -50
+			remove_ideas = BUL_turnovo_constitution
+			swap_ideas = {
+				remove_idea = constitution_b_law
+				add_idea = emergency_laws_b_law
+			}
 		}
 	}
 	
 	focus = {
 		id = BUL_reactionary_professor
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 4
 		available = {
 		}
 		ai_will_do = {
@@ -838,10 +949,10 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_black_professor_government
 		}
-		x = 12
-		y = 9
+		x = 13
+		y = 10
 		completion_reward = {
-			
+			add_ideas = BUL_reactionary_professors_idea
 		}
 	}
 	
@@ -859,8 +970,8 @@ focus_tree = {
 			focus = BUL_wide_coalition
 			focus = BUL_termination_of_the_constitution
 		}
-		x = 13
-		y = 12
+		x = 12
+		y = 11
 		completion_reward = {
 			
 		}
@@ -880,8 +991,9 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = BUL_wide_coalition
+			focus = BUL_general_offensive
 		}
-		x = 12
+		x = 11
 		y = 13
 		completion_reward = {
 			
@@ -899,9 +1011,11 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = BUL_food_crisis_solution
-			focus = BUL_constitutional_bloc
 		}
-		x = 12
+		prerequisite = {
+			focus = BUL_labor_land_ownership
+		}
+		x = 11
 		y = 15
 		completion_reward = {
 			
@@ -922,8 +1036,8 @@ focus_tree = {
 			focus = BUL_wide_coalition
 			focus = BUL_termination_of_the_constitution
 		}
-		x = 11
-		y = 12
+		x = 10
+		y = 11
 		completion_reward = {
 			
 		}
@@ -932,7 +1046,7 @@ focus_tree = {
 	focus = {
 		id = BUL_creation_of_conventions
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
 		}
 		ai_will_do = {
@@ -945,14 +1059,35 @@ focus_tree = {
 		x = 14
 		y = 9
 		completion_reward = {
-			
+			add_stability = 0.05
+			add_political_power = 30
+		}
+	}
+	
+	focus = {
+		id = BUL_establishment_of_military_league
+		icon = GFX_goal_RSS_chernov
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = BUL_desperate_struggle
+		}
+		x = 19
+		y = 8
+		completion_reward = {
+			add_popularity = { ideology = despotism popularity = 0.07 }
+			add_ideas = BUL_military_league_activities
 		}
 	}
 	
 	focus = {
 		id = BUL_absolute_power
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
 		}
 		ai_will_do = {
@@ -968,14 +1103,16 @@ focus_tree = {
 		x = 16
 		y = 9
 		completion_reward = {
-			
+			set_politics = { ruling_party = authoritarism }
+			add_ideas = absolute_monarchy_gov_form
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
 		}
 	}
 	
 	focus = {
 		id = BUL_general_staff_dictatorship
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
 		}
 		ai_will_do = {
@@ -983,22 +1120,25 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = BUL_termination_of_the_constitution
-			focus = BUL_black_professor_government
+		}
+		prerequisite = {
+			focus = BUL_establishment_of_military_league
 		}
 		mutually_exclusive = {
 			focus = BUL_absolute_power
 		}
-		x = 18
+		x = 19
 		y = 9
 		completion_reward = {
-			
+			set_politics = { ruling_party = despotism }
+			add_ideas = military_dictatorship_gov_form
 		}
 	}
 	
 	focus = {
 		id = BUL_secret_police
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
 		}
 		ai_will_do = {
@@ -1008,18 +1148,20 @@ focus_tree = {
 			focus = BUL_general_staff_dictatorship
 			focus = BUL_creation_of_conventions
 		}
-		x = 18
+		x = 19
 		y = 10
 		completion_reward = {
-			
+			add_ideas = BUL_secret_police_idea
 		}
 	}
 	
 	focus = {
-		id = BUL_first_stormtroopers_balkans
+		id = BUL_iron_discipline
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 8
 		available = {
+			NOT = { has_idea = BUL_interunion_commission_idea }
+			has_war_support > 0.5
 		}
 		ai_will_do = {
 			factor = 1
@@ -1032,52 +1174,14 @@ focus_tree = {
 		x = 15
 		y = 10
 		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_iron_discipline
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_first_stormtroopers_balkans
-		}
-		x = 15
-		y = 11
-		completion_reward = {
-			
+			add_ideas = BUL_iron_discipline_idea
 		}
 	}
 	
 	focus = {
 		id = BUL_bulgarian_cavalry
 		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_first_stormtroopers_balkans
-		}
-		x = 17
-		y = 11
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_general_offensive
-		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
 		}
 		ai_will_do = {
@@ -1086,38 +1190,225 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_iron_discipline
 		}
+		x = 17
+		y = 11
+		completion_reward = {
+			add_ideas = BUL_sons_of_Kolev
+			division_template = {
+				name = "Kavaliriykf diviziya"
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+					cavalry = { x = 0 y = 2 }
+					cavalry = { x = 1 y = 0 }
+					cavalry = { x = 1 y = 1 }
+					cavalry = { x = 1 y = 2 }
+				}
+				support = {
+					engineer = { x = 0 y = 0 }
+				}
+				priority = 0
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Kavaliriykf diviziya\" division_template = \"Kavaliriykf diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Kavaliriykf diviziya\" division_template = \"Kavaliriykf diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BUL_first_stormtroopers_balkans
+		icon = GFX_goal_RSS_chernov
+		cost = 5
+		available = {
+			NOT = { has_idea = BUL_interunion_commission_idea }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			has_completed_focus = BUL_break_with_central_powers
+		}
+		prerequisite = {
+			focus = BUL_iron_discipline
+		}
 		x = 15
+		y = 11
+		completion_reward = {
+			if = {
+				limit = { NOT = { has_tech = stormtroopers4 } }
+				add_command_power = -25
+				#army_experience = -30
+			}
+			if = {
+				limit = { has_tech = stormtroopers3 }
+				set_technology = { stormtroopers4 = 1 }
+			}
+			else_if = {
+				limit = { has_tech = stormtroopers2 }
+				set_technology = { stormtroopers3 = 1 }
+			}
+			else_if = {
+				limit = { has_tech = stormtroopers }
+				set_technology = { stormtroopers2 = 1 }
+			}
+			else_if = {
+				limit = { has_tech = infantry_binoculars }
+				set_technology = { stormtroopers = 1 }
+			}
+			else = { set_technology = { infantry_binoculars = 1 stormtroopers = 1 } }
+			
+			division_template = {
+				name = "Balkanskiye shturmoviki"
+				regiments = {
+					stormtroopers = { x = 0 y = 0 }
+					stormtroopers = { x = 0 y = 1 }
+					stormtroopers = { x = 0 y = 2 }
+					stormtroopers = { x = 1 y = 0 }
+					stormtroopers = { x = 1 y = 1 }
+					stormtroopers = { x = 1 y = 2 }
+					stormtroopers = { x = 2 y = 0 }
+					stormtroopers = { x = 2 y = 1 }
+					stormtroopers = { x = 2 y = 2 }
+				}
+				support = {
+					field_guns = { x = 0 y = 0 }
+					engineer = { x = 0 y = 0 }
+				}
+				priority = 0
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Balkanskiye shturmoviki\" division_template = \"Balkanskiye shturmoviki\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BUL_new_forts_in_macedonia
+		icon = GFX_goal_RSS_chernov
+		cost = 5
+		available = {
+			controls_state = 106
+			controls_state = 993
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = BUL_first_stormtroopers_balkans
+		}
+		x = 14
 		y = 12
 		completion_reward = {
-			
+			106 = {
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 974
+				}
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 11856
+				}
+			}
+			993 = {
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 3833
+				}
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 13304
+				}
+			}
+			943 = {
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = 6886
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = BUL_general_offensive
+		icon = GFX_goal_RSS_chernov
+		cost = 8
+		available = {
+			NOT = { has_idea = BUL_thessaloniki_truce_BUL }
+		}
+		bypass = {
+			OR = { NOT = { has_global_flag = WWI_is_now } has_global_flag = WWI_BUL_HAS_CAPITULATED }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = BUL_first_stormtroopers_balkans
+		}
+		x = 16
+		y = 12
+		completion_reward = {
+			add_timed_idea = { idea = BUL_general_offensive_idea days = 56 }
 		}
 	}
 	
 	focus = {
 		id = BUL_last_fight_in_belgrade
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			NOT = { has_global_flag = WWI_is_now }
+			NOT = { has_idea = BUL_interunion_commission_idea }
+			has_army_manpower = {
+				size > 150000
+			}
+		}
+		bypass = {
+			NOT = { has_global_flag = WWI_is_now }
+			SER = { OR = { exists = no is_subject_of = ROOT } }
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		prerequisite = {
 			focus = BUL_general_offensive
-			focus = BUL_wide_coalition
 		}
-		x = 15
+		will_lead_to_war_with = SER
+		x = 16
 		y = 13
 		completion_reward = {
-			
+			country_event = bulgaria.41
 		}
 	}
 	
 	focus = {
 		id = BUL_section_of_the_austrian_inheritance
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			OR = {
+				AUH = { exists = no }
+				HUN = { exists = yes NOT = { is_subject = AUH is_subject = AUS } }
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -1125,17 +1416,31 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_last_fight_in_belgrade
 		}
-		x = 15
+		x = 16
 		y = 14
 		completion_reward = {
-			
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = SLO
+						is_core_of = BOS
+						is_core_of = CRO
+						is_core_of = SER
+						is_core_of = MAC
+					}
+					NOT = { is_owned_by = ROOT }
+					NOT = { is_core_of = ROOT }
+					NOT = { is_claimed_by = ROOT }
+				}
+				add_claim_by = ROOT
+			}
 		}
 	}
 	
 	focus = {
 		id = BUL_bulgarianization
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
 		}
 		ai_will_do = {
@@ -1144,18 +1449,28 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_general_offensive
 		}
-		x = 17
+		x = 19
 		y = 13
 		completion_reward = {
-			
+			remove_ideas = BUL_governor_general_of_macedonia
+			custom_effect_tooltip = RUS_bulgarianization_decs_tt
 		}
 	}
 	
 	focus = {
 		id = BUL_we_are_no_longer_paradise_submissive
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			TUR = {
+				controls_state = 341
+				controls_state = 860
+			}
+			has_war = no
+			has_war_support > 0.65
+			has_army_manpower = {
+				size > 150000
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -1164,18 +1479,57 @@ focus_tree = {
 			focus = BUL_bulgarianization
 			focus = BUL_secret_police
 		}
-		x = 17
+		will_lead_to_war_with = TUR
+		x = 18
 		y = 14
 		completion_reward = {
-			
+			effect_tooltip = {
+				create_wargoal = {
+					type = take_state_focus
+					target = TUR
+					generator = { 341 860 949 }
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = {
+						is_ai = no
+					}
+					create_wargoal = {
+						type = take_state_focus
+						target = TUR
+						generator = { 341 860 949 }
+					}
+					else = { declare_war_on = { target = TUR type = take_state_focus generator = { 341 860 949 } } }
+				}
+			}
+			set_country_flag = BUL_flag_we_are_no_longer_paradise_submissive
 		}
 	}
 	
 	focus = {
 		id = BUL_yugoslavia_coburgs
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			OR = {
+				has_government = authoritarism
+				has_idea = BUL_Ferdinand_I_idea
+				has_idea = BUL_Boris_III_idea
+			}
+			NOT = {
+				any_state = {
+					OR = {
+						is_core_of = SLO
+						is_core_of = BOS
+						is_core_of = CRO
+						is_core_of = SER
+						is_core_of = MAC
+					}
+					NOT = { is_owned_by = ROOT }
+				}
+			}
+			is_subject = no
 		}
 		ai_will_do = {
 			factor = 1
@@ -1190,18 +1544,40 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_san_stefan_ideal
 		}
-		x = 15
+		x = 16
 		y = 15
 		completion_reward = {
-			
+			remove_ideas = BUL_governor_general_of_macedonia
+			every_state = {
+				limit = {
+					NOT = { is_core_of = ROOT }
+					OR = {
+						is_core_of = SLO
+						is_core_of = BOS
+						is_core_of = CRO
+						is_core_of = SER
+						is_core_of = MAC
+					}
+				}
+				add_core_of = ROOT
+			}
+			set_cosmetic_tag = YUG
+			add_ideas = YUG_idea_croatian_opposition
+			add_ideas = YUG_idea_slovene_nationalism
+			hidden_effect = {
+				news_event = { id = news_n.1002 hours = 6 }
+			}
+			add_threat = 3
 		}
 	}
 	
 	focus = {
 		id = BUL_new_byzantium
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			controls_state = 341
+			owns_state = 341
 		}
 		ai_will_do = {
 			factor = 1
@@ -1216,18 +1592,38 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_san_stefan_ideal
 		}
-		x = 17
+		x = 18
 		y = 15
 		completion_reward = {
-			
+			reset_province_name = 9833
+			341 = {
+				reset_state_name = yes
+				add_core_of = ROOT
+			}
+			set_country_flag = achivement_i_swear_im_not_a_byzantophile
+			hidden_effect = {
+				news_event = { id = news_n.1001 hours = 6 }
+				set_global_flag = form_byzantine_empire_flag
+			}
+			set_cosmetic_tag = BYZ_UNIFIED
+			add_ideas = BUL_New_Byzantium_idea
+			set_capital = 341
+			add_threat = 3
 		}
 	}
 	
 	focus = {
 		id = BUL_san_stefan_ideal
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 10
 		available = {
+			has_war = no
+			818 = { is_core_of = ROOT }
+			106 = { is_core_of = ROOT }
+			993 = { is_core_of = ROOT }
+			947 = { is_core_of = ROOT }
+			856 = { is_core_of = ROOT }
+			184 = { is_core_of = ROOT }
 		}
 		ai_will_do = {
 			factor = 1
@@ -1244,10 +1640,11 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_yugoslavia_coburgs
 		}
-		x = 19
+		x = 20
 		y = 15
 		completion_reward = {
-			
+			add_stability = 0.15
+			add_war_support = -0.3
 		}
 	}
 
