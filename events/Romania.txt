@@ -1,1 +1,198 @@
-﻿
+﻿add_namespace = romania
+
+# Россия вышла из войны. Может и нам пора?
+country_event = {
+	id = romania.1
+	title = romania.1.t
+	desc = romania.1.desc
+	picture = GFX_report_event_bul_dobro_pole
+	
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.11.11
+		has_global_flag = WWI_is_now
+		tag = ROM
+		RUS = { NOT = { has_war_with = GER } }
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+		NOT = { has_global_flag = WWI_ROM_HAS_CAPITULATED }
+		is_subject = no
+		has_capitulated = no
+	}
+
+	mean_time_to_happen = {
+		days = 15
+	}
+	
+	option = {
+		name = romania.1.a
+		ai_chance = {
+			factor = 1
+		}
+		GER = { country_event = { id = romania.2 days = 1 } }
+	}
+	
+	option = {
+		name = romania.1.b
+		ai_chance = {
+			factor = 0
+		}
+		add_stability = 0.15
+		add_war_support = 0.10
+	}
+}
+
+# Переговоры с Румынией (Германия)
+country_event = {
+	id = romania.2
+	title = romania.2.t
+	desc = romania.2.desc
+	picture = GFX_report_event_bul_dobro_pole
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		NOT = { has_country_flag = GER_monarchy_fall }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = romania.2.a
+		trigger = { is_ai = no }
+		ai_chance = {
+			factor = 0
+		}
+		ROM = {
+			add_stability = 0.2
+			country_event = { id = romania.3 days = 1 }
+		}
+	}
+	
+	option = {
+		name = romania.2.b
+		ai_chance = {
+			factor = 1
+		}
+		ROM = {
+			country_event = { id = romania.4 days = 1 }
+		}
+	}
+}
+
+### Германия отклонила мирное предложение
+country_event = {
+	id = romania.3
+	title = romania.3.t
+	desc = romania.3.desc
+	picture = GFX_report_event_bul_dobro_pole
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = romania.3.a
+	}
+}
+
+# Бухарестский мирных договор
+country_event = {
+	id = romania.4
+	title = romania.4.t
+	desc = romania.4.desc
+	picture = GFX_report_event_bul_dobro_pole
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 15
+	}
+	
+	trigger = {
+		tag = ROM
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		GER = { NOT = { has_country_flag = GER_monarchy_fall } }
+		has_capitulated = yes
+	}
+	
+	immediate = {
+		remove_ideas = ROM_bonus_against_Central_powers
+	}
+	
+	option = {
+		name = romania.4.a
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			white_peace = ROM
+		}
+		leave_faction = yes
+		set_global_flag = WWI_ROM_HAS_CAPITULATED
+		country_event = { id = romania.5 hours = 2 }
+		every_country = {
+				limit = { OR = { is_in_faction_with = GER } }
+				ROOT = { give_military_access = PREV }
+			}
+		add_ideas = {
+			civilian_economy
+			disarmed_nation
+			neutral_foreign_policy_law
+		}
+		#hidden_effect = {
+			#country_event = { id = compiegne_armistice.-1 hours = 1 }
+		#}
+		if = {
+			limit = { AUH = { is_in_faction_with = GER NOT = { has_global_flag = AUH_lost_hope } } HUN = { exists = no } BNT = { exists = no } }
+			AUH = {
+				transfer_state = 820
+				transfer_state = 1047
+				transfer_state = 819
+			}
+		}
+		if = {
+			limit = { BUL = { is_in_faction_with = GER NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED } } }
+			BUL = {
+				transfer_state = 77
+				transfer_state = 856
+			}
+		}
+	}
+}
+
+# Постановка демилитаризованных зон, концессии, демобилизация
+country_event = {
+	id = romania.5
+	hidden = yes
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = romania.5.a
+		delete_unit_template_and_units = {
+			division_template = "Mobilized Infantry Division"
+		}
+		give_resource_rights = { receiver = GER state = 46 }
+		give_resource_rights = { receiver = GER state = 81 }
+		every_owned_state = {
+			limit = {
+				OR = {
+					state = 81
+					state = 46
+					state = 855
+					state = 77
+					state = 856
+					state = 820
+					state = 1047
+					state = 819
+				}
+			}
+			set_demilitarized_zone = yes
+		}
+	}
+}

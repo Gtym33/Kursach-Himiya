@@ -1,1 +1,168 @@
-﻿
+﻿add_namespace = poland
+
+# Независимость Польши после поражения Германии в ПМВ
+country_event = {
+	id = poland.1
+	title = poland.1.t
+	desc = poland.1.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.11.11
+		tag = POL
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+		is_subject = no
+		NOT = { has_country_leader = { name = "Józef Pilsudski" } }
+	}
+
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = poland.1.a
+		add_popularity = { ideology = authoritarism popularity = -1}
+		if = {
+			limit = {has_country_leader = { name = "Hans Beseler" } }
+			retire_country_leader = yes
+		}
+		add_popularity = { ideology = social_democracy popularity = 0.3 }
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		if = {
+			limit = {has_country_leader = { name = "Hans Beseler" } }
+			retire_country_leader = yes
+		}
+		create_country_leader = { name = "Józef Pilsudski" desc = POL_jozef_pilsudski_DESC picture = "gfx/leaders/POL/Jusef_Pilsudsky.dds" expire = "1935.1.1" ideology = despotism_ideology  traits = {  } }
+		create_field_marshal = {  name = "Józef Pilsudski" id = 69053 portrait_path = "gfx/leaders/POL/Jusef_Pilsudky_military.dds" traits = { politically_connected war_hero infantry_officer offensive_doctrine adaptable } skill = 3 attack_skill = 4 defense_skill = 1 planning_skill = 2 logistics_skill = 3 }
+		load_oob = POL_1917
+	}
+}
+
+# Захват ЗУНР
+country_event = {
+	id = poland.2
+	title = poland.2.t
+	desc = poland.2.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = POL
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+		GAL = { exists = yes is_puppet = no }
+	}
+
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = poland.2.a
+		ai_chance = {
+			factor = 100
+		}
+		add_war_support = 0.05
+		#add_popularity = { ideology = despotism popularity = 0.1 }
+		declare_war_on = {
+				target = GAL
+				type = annex_everything
+			}
+		hidden_effect = {GAL = {load_oob = GAL_defender}}
+		if = {
+			limit = { NOT ={ has_war_with = UKR has_war_with = USR } OR = { is_owner_neighbor_of = UKR is_owner_neighbor_of = USR } }
+			random_state = {
+				limit = {
+					OR = {
+						is_owned_by = USR
+						is_owned_by = UKR
+					}
+					is_core_of = POL
+					any_neighbor_state = {
+						is_owned_by = POL
+					}
+				}
+				POL = { transfer_state = PREV }
+			}
+		}
+	}
+	
+	option = {
+		name = poland.2.b
+		add_stability = 0.05
+		add_popularity = { ideology = despotism popularity = -0.05 }
+		declare_war_on = {
+				target = GAL
+				type = annex_everything
+			}
+		hidden_effect = {GAL = {load_oob = GAL_defender}}
+		if = {
+			limit = { NOT ={ has_war_with = UKR has_war_with = USR } OR = { is_owner_neighbor_of = UKR is_owner_neighbor_of = USR } }
+			random_state = {
+				limit = {
+					OR = {
+						is_owned_by = USR
+						is_owned_by = UKR
+					}
+					is_core_of = POL
+					any_neighbor_state = {
+						is_owned_by = POL
+					}
+				}
+				POL = { transfer_state = PREV }
+			}
+		}
+	}
+	
+	option = {
+		name = poland.2.c
+		add_war_support = -0.1
+		add_popularity = { ideology = despotism popularity = -0.3 }
+	}
+	
+}
+
+# ЗУНР отбилась
+country_event = {
+	id = poland.3
+	title = poland.3.t
+	desc = poland.3.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = POL
+		has_war_with = GAL
+		GAL = { is_puppet = no }
+		OR = {
+			NOT = {
+				controls_state = 10
+			}
+			has_capitulated = yes
+			surrender_progress > 0.4
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = poland.2.a
+		add_war_support = -0.3
+		every_country = {
+				limit = {
+					has_war_with = GAL
+					OR = {
+						tag = POL
+						is_in_faction_with = POL
+					}
+				}
+				white_peace = GAL
+		}
+	}
+	
+}
