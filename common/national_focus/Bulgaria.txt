@@ -339,32 +339,6 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = BUL_quest_for_peace
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-			NOT = { has_country_flag = BUL_flag_war_must_go_on }
-		}
-		mutually_exclusive = {
-			focus = BUL_desperate_struggle
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_new_government
-		}
-		bypass = {
-			NOT = { has_global_flag = WWI_is_now }
-		}
-		x = 10
-		y = 6
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
 		id = BUL_break_with_central_powers
 		icon = GFX_goal_RSS_chernov
 		cost = 1
@@ -385,9 +359,50 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = BUL_quest_for_peace
+		icon = GFX_goal_RSS_chernov
+		cost = 4
+		available = {
+			has_global_flag = WWI_is_now
+			NOT = { has_country_flag = BUL_flag_war_must_go_on }
+		}
+		mutually_exclusive = {
+			focus = BUL_desperate_struggle
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = BUL_new_government
+		}
+		bypass = {
+			OR = {
+				NOT = { has_global_flag = WWI_is_now }
+				has_global_flag = WWI_BUL_HAS_CAPITULATED
+			}
+			NOT = { has_global_flag = WWI_GER_sieg_im_Weltkrieg }
+		}
+		x = 10
+		y = 6
+		select_effect = {
+			add_war_support = -0.07
+			country_event = { id = bulgaria.51 days = 14 }
+		}
+		completion_reward = {
+			effect_tooltip = {
+				add_war_support = -0.07
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no }
+					country_event = { id = bulgaria.52 days = 2 }
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = BUL_amnesty_for_opposition
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 3
 		available = {
 		}
 		ai_will_do = {
@@ -399,7 +414,20 @@ focus_tree = {
 		x = 8
 		y = 7
 		completion_reward = {
-			
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.05
+			}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.05
+			}
+			add_stability = 0.05
+			add_political_power = -25
 		}
 	}
 	
@@ -408,6 +436,10 @@ focus_tree = {
 		icon = GFX_goal_RSS_chernov
 		cost = 1
 		available = {
+			OR = {
+				has_idea = BUL_Ferdinand_I_idea
+				has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes }
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -415,24 +447,52 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_amnesty_for_opposition
 		}
+		bypass = {
+			NOT = { has_idea = BUL_Ferdinand_I_idea }
+			NOT = { has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes } }
+		}
 		x = 7
 		y = 8
 		completion_reward = {
-			
+			hidden_effect = {
+				if = {
+					limit = { has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = no } }
+					remove_authoritarism_leader = yes
+				}
+			}
+			if = {
+				limit = { has_idea = BUL_Ferdinand_I_idea }
+				swap_ideas = {
+					remove_idea = BUL_Ferdinand_I_idea
+					add_idea = BUL_Boris_III_idea
+				}
+			}
+			add_stability = 0.05
 		}
 	}
 	
 	focus = {
 		id = BUL_rotate_bayonets
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 3
 		available = {
+			has_war = no
+			
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		prerequisite = {
 			focus = BUL_amnesty_for_opposition
+		}
+		bypass = {
+			OR = {
+				NOT = { has_global_flag = WWI_is_now }
+				AND = {
+					has_global_flag = WWI_TUR_HAS_CAPITULATED
+					has_global_flag = WWI_AUH_HAS_CAPITULATED
+				}
+			}
 		}
 		x = 9
 		y = 8
@@ -444,8 +504,10 @@ focus_tree = {
 	focus = {
 		id = BUL_demobilization
 		icon = GFX_goal_RSS_chernov
-		cost = 1
+		cost = 5
 		available = {
+			NOT = { has_global_flag = WWI_is_now }
+			has_war = no
 		}
 		ai_will_do = {
 			factor = 1
@@ -459,7 +521,35 @@ focus_tree = {
 		x = 8
 		y = 9
 		completion_reward = {
-			
+			if = {
+				limit = { NOT = { has_idea = disarmed_nation } }
+				add_ideas = volunteer_only
+			}
+			if = {
+				limit = { NOT = { has_idea = undisturbed_isolation has_idea = isolation } }
+				add_ideas = civilian_economy
+			}
+			if = {
+				limit = { OR = { has_idea = emergency_laws_b_law has_idea = decrees_of_ruler_b_law } }
+				add_ideas = constitution_b_law
+			}
+			if = {
+				limit = { OR = { has_idea = military_dictatorship_gov_form has_idea = absolute_monarchy_gov_form } }
+				if = {
+					limit = {
+						OR = {
+							has_idea = BUL_Ferdinand_I_idea
+							has_idea = BUL_Boris_III_idea
+							has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes }
+							has_country_leader = { name = "Boris III von Saxe-Coburg-Gotha" ruling_only = yes }
+						}
+					}
+					add_ideas = limited_monarchy_gov_form
+					else = {
+						add_ideas = parliamentary_republic_gov_form
+					}
+				}
+			}
 		}
 	}
 	
@@ -483,7 +573,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = BUL_one-party_system
+		id = BUL_return_of_prisoners_of_war
 		icon = GFX_goal_RSS_chernov
 		cost = 1
 		available = {
@@ -493,72 +583,9 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = BUL_wide_coalition
-		}
-		x = 5
-		y = 11
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_left_committees
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_wide_coalition
-		}
-		x = 3
-		y = 11
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_red_guard
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_one-party_system
-		}
-		mutually_exclusive = {
-			focus = BUL_orange_guard
-		}
-		x = 4
-		y = 12
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_orange_guard
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_one-party_system
-		}
-		mutually_exclusive = {
-			focus = BUL_red_guard
 		}
 		x = 6
-		y = 12
+		y = 11
 		completion_reward = {
 			
 		}
@@ -574,11 +601,10 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = BUL_red_guard
-			focus = BUL_orange_guard
+			focus = BUL_return_of_prisoners_of_war
 		}
-		x = 4
-		y = 13
+		x = 6
+		y = 12
 		completion_reward = {
 			
 		}
@@ -596,8 +622,8 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_labor_service
 		}
-		x = 4
-		y = 14
+		x = 5
+		y = 13
 		completion_reward = {
 			
 		}
@@ -618,8 +644,8 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = BUL_compliance_obligations_neyinskih
 		}
-		x = 4
-		y = 15
+		x = 5
+		y = 14
 		completion_reward = {
 			
 		}
@@ -637,8 +663,8 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_rupture_of_the_neiite_dictate
 		}
-		x = 3
-		y = 16
+		x = 4
+		y = 15
 		completion_reward = {
 			
 		}
@@ -656,8 +682,8 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_rupture_of_the_neiite_dictate
 		}
-		x = 5
-		y = 16
+		x = 6
+		y = 15
 		completion_reward = {
 			
 		}
@@ -676,8 +702,8 @@ focus_tree = {
 			focus = BUL_expulsion_of_the_Allied_Commission
 			focus = BUL_convoys_of_the_Comintern
 		}
-		x = 5
-		y = 17
+		x = 6
+		y = 16
 		completion_reward = {
 			
 		}
@@ -696,8 +722,8 @@ focus_tree = {
 			focus = BUL_expulsion_of_the_Allied_Commission
 			focus = BUL_convoys_of_the_Comintern
 		}
-		x = 3
-		y = 17
+		x = 4
+		y = 16
 		completion_reward = {
 			
 		}
@@ -718,46 +744,8 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_strike_on_romanian_currency
 		}
-		x = 4
-		y = 18
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_return_of_prisoners_of_war
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_wide_coalition
-		}
-		x = 7
-		y = 11
-		completion_reward = {
-			
-		}
-	}
-	
-	focus = {
-		id = BUL_constitutional_bloc
-		icon = GFX_goal_RSS_chernov
-		cost = 1
-		available = {
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = BUL_wide_coalition
-		}
-		x = 8
-		y = 13
+		x = 5
+		y = 17
 		completion_reward = {
 			
 		}
@@ -775,11 +763,8 @@ focus_tree = {
 		prerequisite = {
 			focus = BUL_labor_service
 		}
-		prerequisite = {
-			focus = BUL_constitutional_bloc
-		}
-		x = 7
-		y = 14
+		x = 9
+		y = 13
 		completion_reward = {
 			
 		}
@@ -795,11 +780,10 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = BUL_constitutional_bloc
 			focus = BUL_labor_service
 		}
-		x = 9
-		y = 14
+		x = 7
+		y = 13
 		completion_reward = {
 			
 		}
@@ -815,13 +799,13 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = BUL_constitutional_bloc
+			focus = BUL_wide_coalition
 		}
 		mutually_exclusive = {
 			focus = BUL_rupture_of_the_neiite_dictate
 		}
 		x = 8
-		y = 15
+		y = 14
 		completion_reward = {
 			
 		}
@@ -840,7 +824,7 @@ focus_tree = {
 			focus = BUL_compliance_obligations_neyinskih
 		}
 		x = 8
-		y = 16
+		y = 15
 		completion_reward = {
 			
 		}
@@ -1013,7 +997,7 @@ focus_tree = {
 			focus = BUL_labor_land_ownership
 		}
 		x = 11
-		y = 15
+		y = 14
 		completion_reward = {
 			
 		}

@@ -144,7 +144,6 @@ country_event = {
 	desc = bulgaria.2.d
 	picture = GFX_report_event_bul_stambolyisky_policy
 	
-	fire_only_once = yes
 	is_triggered_only = yes
 	
 	trigger = {
@@ -202,7 +201,6 @@ country_event = {
 	desc = bulgaria.3.d
 	picture = GFX_report_event_bul_with_central_powers
 	
-	fire_only_once = yes
 	is_triggered_only = yes
 	
 	trigger = {
@@ -212,18 +210,20 @@ country_event = {
 	}
 	
 	immediate = {
-		add_stability = -0.05
-		add_war_support = -0.10
-		if = {
-			limit = { has_idea = mutiny_1 NOT = { has_country_flag = crisis_in_progress } }
-			remove_ideas = mutiny_1
-			else_if = {
-				limit = { has_idea = mutiny_2 NOT = { has_country_flag = crisis_in_progress } }
-				remove_ideas = mutiny_2
-			}
-			else_if = {
-				limit = { has_idea = mutiny_3 NOT = { has_country_flag = crisis_in_progress } }
-				remove_ideas = mutiny_3
+		hidden_effect = {
+			add_stability = -0.05
+			add_war_support = -0.10
+			if = {
+				limit = { has_idea = mutiny_1 NOT = { has_country_flag = crisis_in_progress } }
+				remove_ideas = mutiny_1
+				else_if = {
+					limit = { has_idea = mutiny_2 NOT = { has_country_flag = crisis_in_progress } }
+					remove_ideas = mutiny_2
+				}
+				else_if = {
+					limit = { has_idea = mutiny_3 NOT = { has_country_flag = crisis_in_progress } }
+					remove_ideas = mutiny_3
+				}
 			}
 		}
 	}
@@ -232,12 +232,22 @@ country_event = {
 		name = bulgaria.3.a
 		add_political_power = -50
 		country_event = { id = compiegne_armistice.999 days = 2 }
+		set_country_flag = BUL_avoid_bunt_capitulations
+		effect_tooltip = {
+			add_stability = -0.05
+			add_war_support = -0.10
+		}
 	}
 	
 	option = {
 		name = bulgaria.3.b
 		add_political_power = -100
 		clr_country_flag = BUL_not_cap_yet
+		set_country_flag = BUL_avoid_bunt_capitulations
+		effect_tooltip = {
+			add_stability = -0.05
+			add_war_support = -0.10
+		}
 	}
 	
 }
@@ -1103,6 +1113,188 @@ country_event = {
 	
 	option = {
 		name = bulgaria.44.a
+	}
+}
+
+# Отправка дипломатов Антанте
+country_event = {
+	id = bulgaria.51
+	title = bulgaria.51.t
+	desc = bulgaria.51.d
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.51.a
+		every_country = {
+			limit = { has_country_flag = WWI_Entente_member is_subject = no }
+			hidden_effect = {
+				set_variable = { global.Entente_major_conf_members = 0 }
+				set_variable = { global.Entente_white_peace_with_BUL = 0 }
+				set_variable = { global.Entente_not_white_peace_with_BUL = 0 }
+				set_variable = { global.Entente_major_conf_votes = 0 }
+				if = {
+					limit = { FRA = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					FRA = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { ENG = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					ENG = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { USA = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					USA = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { RUS = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					RUS = { set_variable = { vote_power = 3 } }
+				}
+				if = {
+					limit = { FRA = { has_country_flag = WWI_Entente_member } RUS = { has_country_flag = WWI_Entente_member } }
+					add_to_variable = { global.Entente_major_conf_members = 4 }
+					FRA = { set_variable = { vote_power = 4 } }
+				}
+			}
+			country_event = { id = bulgaria.52 days = 2 }
+		}
+	}
+}
+# Болгарский запрос перемирия
+country_event = {
+	id = bulgaria.52
+	title = bulgaria.52.t
+	desc = bulgaria.52.d
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.52.a
+		add_to_variable = { global.Entente_white_peace_with_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_white_peace_with_BUL > global.Entente_not_white_peace_with_BUL } }
+					BUL = { country_event = bulgaria.53 }
+					else = {
+						BUL = { country_event = bulgaria.54 }
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_white_peace_with_BUL
+				clear_variable = global.Entente_not_white_peace_with_BUL
+			}
+		}
+	}
+	option = {
+		name = bulgaria.52.b
+		add_to_variable = { global.Entente_not_white_peace_with_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_white_peace_with_BUL > global.Entente_not_white_peace_with_BUL } }
+					BUL = { country_event = bulgaria.53 }
+					else = {
+						BUL = { country_event = bulgaria.54 }
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_white_peace_with_BUL
+				clear_variable = global.Entente_not_white_peace_with_BUL
+			}
+		}
+	}
+}
+# Ответ Антанты белый мир
+country_event = {
+	id = bulgaria.53
+	title = bulgaria.53.t
+	desc = bulgaria.53.d
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.53.a
+		add_war_support = -0.2
+		add_stability = 0.05
+		set_global_flag = WWI_BUL_HAS_CAPITULATED
+		BUL = {
+			clr_country_flag = BUL_claim_on_ALB_1
+			clr_country_flag = BUL_claim_on_ALB_2
+			clr_country_flag = BUL_claim_on_ALB_3
+		}
+		every_state = {
+			limit = {
+				region = 130
+				is_core_of = UKR
+				is_owned_by = AUH
+			}
+			UKR = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				region = 130
+				is_core_of = USR
+				is_owned_by = AUH
+			}
+			USR = { transfer_state = PREV }
+		}
+			leave_faction = yes
+			add_ideas = neutral_foreign_policy_law
+			every_country = {
+				limit = {
+					has_war_with = ROOT
+					OR = { is_faction_leader = yes is_in_faction = no }
+					NOT = { original_tag = ROOT }
+				}
+				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { is_subject_of = ROOT }
+				hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
+			}
+			every_country = {
+				limit = { OR = { tag = ENG tag = FRA tag = ITA tag = GRR } NOT = { is_in_faction_with = GER } }
+				PREV = { give_military_access = PREV }
+			}
+		if = {
+			limit = {
+				controls_state = 106
+			}
+			transfer_state = 106
+			transfer_state = 818
+			transfer_state = 993
+		}
+	}
+}
+# Ответ Антанты ол юр бэйс ар белонг ту ас вы хуесосы ебаные
+country_event = {
+	id = bulgaria.54
+	title = bulgaria.54.t
+	desc = bulgaria.54.d
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.54.a
+		country_event = compiegne_armistice.999
 	}
 }
 
