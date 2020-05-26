@@ -9,4 +9,5 @@ tags={
 	"Technologies"
 }
 name="Rise of Russia dev"
-supported_version="1.9.1 beta"
+supported_version="1.9.2"
+remote_file_id="2018041793"
