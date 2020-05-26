@@ -824,10 +824,6 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			every_state = {
-				limit = { is_core_of = FIN }
-				add_core_of = FNR
-			}
 			set_political_party = {
 				ideology = social_democracy
 				popularity = 0
@@ -841,9 +837,87 @@ country_event = {
 				popularity = 40
 			}
 			set_capital = 149
-			FNR = {
+			clr_country_flag = political_social_democrats_in_socialist_coalition
+			
+			set_global_flag = FIN_civil_war_begin
+			create_dynamic_country = {
+				original_tag = FIN
+				set_temp_variable = { red_FIN = this }
+				ROOT = {
+					every_owned_state = {
+						limit = { OR = { state = 111 state = 1049 state = 1050 state = 1051 state = 1053 state = 1055 state = 1056 } }
+						
+						var:red_FIN = {
+							transfer_state = PREV
+						}
+					}
+				}
+				set_country_flag = political_social_democrats_in_socialist_coalition
+				add_ideas = neutral_foreign_policy_law
+				add_opinion_modifier = { target = KRN modifier = socialist_social_democracy }
+				KRN = { add_opinion_modifier = { target = PREV modifier = socialist_social_democracy } }
 				set_cosmetic_tag = FNR_red
+				
+				create_field_marshal = {
+					name = "Kulervo Manner"
+					id = 6748
+					portrait_path = "gfx/leaders/FIN/Kulervo_Manner.dds"
+					traits = { media_personality }
+					skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 2 logistics_skill = 3
+				}
+
+				create_corps_commander = {
+					name = "Eero Haapalainen"
+					id = 6747
+					portrait_path = "gfx/leaders/FIN/Eero_Haapalainen.dds"
+					traits = { winter_specialist }
+					skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 2 logistics_skill = 2
+				}
+
+				create_corps_commander = {
+					name = "Adolf Taimi"
+					id = 6746
+					portrait_path = "gfx/leaders/FIN/Adolf_Taimi.dds"
+					traits = { ranger }
+					skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 2
+				}
+
+				create_corps_commander = {
+					name = "Eino Rahja"
+					id = 6745
+					portrait_path = "gfx/leaders/FIN/Eino_Rahja.dds"
+					traits = { }
+					skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 2
+				}
+
+				add_ideas = {
+					Kullervo_Manner_1
+					Yrjo_Sirola_2
+					Jalo_Kohonen_3
+					Eero_Haapalainen_4
+					Matti_Turkia_5
+					
+					Ali_Aaltonen_hc
+					
+					dependence_on_grain_imports
+					workers_control_law
+					planed_economy_law
+					sisu
+				}
+					set_politics = {
+						ruling_party = social_democracy
+						election_frequency = 36
+						elections_allowed = no
+					}
+					set_popularities = {
+						social_democracy = 50
+						communism = 50
+					}
+					create_country_leader = { name = "Yuryo Sirola" desc = FIN_Yuryo_Sirola_desc picture = "gfx/leaders/FIN/Yuryo_Sirola.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+					create_country_leader = { name = "Kulervo Manner" desc = FIN_Kulervo_Manner_desc picture = "gfx/leaders/FIN/Kulervo_Manner.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = {  } }
+				var:red_FIN = { save_global_event_target_as = red_FIN }
 			}
+			hidden_effect = { news_event = { id = news_n.16 hours = 12 } }
 		}
 	}
 	
@@ -851,28 +925,15 @@ country_event = {
 	option = {
 		name = petrograd_commune.22.a
 		add_stability = -0.15
-		set_global_flag = FIN_civil_war_begin
 		hidden_effect = {
 			remove_ideas = punakaarti
 		}
-		set_capital = 149
-		FNR = {
-			transfer_state = 111
-			transfer_state = 1049
-			transfer_state = 1050
-			transfer_state = 1051
-			transfer_state = 1053
-			transfer_state = 1055
-			transfer_state = 1056
+		event_target:red_FIN = {
 			declare_war_on = {
-				target = FIN
+				target = ROOT
 				type = annex_everything
 			}
 			load_oob = "FNR_punakaarti"
-			add_ideas = neutral_foreign_policy_law
-			inherit_technology = FIN
-			FNR = { add_opinion_modifier = { target = KRN modifier = socialist_social_democracy } }
-			KRN = { add_opinion_modifier = { target = FNR modifier = socialist_social_democracy } }
 		}
 	}
 	
@@ -884,26 +945,16 @@ country_event = {
 		hidden_effect = {
 			remove_ideas = punakaarti
 		}
-		set_capital = 149
-		FNR = {
-			transfer_state = 111
-			transfer_state = 1049
-			transfer_state = 1050
-			transfer_state = 1051
-			transfer_state = 1053
-			transfer_state = 1055
-			transfer_state = 1056
+		event_target:red_FIN = {
 			declare_war_on = {
-				target = FIN
+				target = ROOT
 				type = annex_everything
 			}
 			load_oob = "FNR_punakaarti"
-			add_ideas = neutral_foreign_policy_law
-			inherit_technology = FIN
-			FNR = { add_opinion_modifier = { target = KRN modifier = socialist_social_democracy } }
-			KRN = { add_opinion_modifier = { target = FNR modifier = socialist_social_democracy } }
 		}
-		FNR = { change_tag_from = FIN }
+		event_target:red_FIN = {
+			change_tag_from = ROOT
+		}
 	}
 }
 country_event = {
@@ -1358,7 +1409,7 @@ country_event = {
 			annex_country = { target = TRK transfer_troops = yes }
 			annex_country = { target = CPG transfer_troops = yes }
 			drop_cosmetic_tag = yes
-			FNR = { annex_country = { target = FIN transfer_troops = yes } }
+			event_target:red_FIN = { annex_country = { target = FIN transfer_troops = yes } }
 			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 			clr_country_flag = new_temp_capital
 			clr_country_flag = RUS_Order_N_1
@@ -1481,7 +1532,7 @@ country_event = {
 			annex_country = { target = TRK transfer_troops = yes }
 			annex_country = { target = CPG transfer_troops = yes }
 			drop_cosmetic_tag = yes
-			FNR = { annex_country = { target = FIN transfer_troops = yes } }
+			event_target:red_FIN = { annex_country = { target = FIN transfer_troops = yes } }
 			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 			clr_country_flag = new_temp_capital
 			clr_country_flag = RUS_Order_N_1
@@ -1941,7 +1992,7 @@ country_event = {
 			annex_country = { target = TRK transfer_troops = yes }
 			annex_country = { target = CPG transfer_troops = yes }
 			drop_cosmetic_tag = yes
-			FNR = { annex_country = { target = FIN transfer_troops = yes } }
+			event_target:red_FIN = { annex_country = { target = FIN transfer_troops = yes } }
 			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 			clr_country_flag = new_temp_capital
 			clr_country_flag = RUS_Order_N_1
@@ -2330,7 +2381,7 @@ country_event = {
 				annex_country = { target = PRM transfer_troops = yes }
 				annex_country = { target = TRK transfer_troops = yes }
 				annex_country = { target = CPG transfer_troops = yes }
-				FNR = { annex_country = { target = FIN transfer_troops = yes } }
+				event_target:red_FIN = { annex_country = { target = FIN transfer_troops = yes } }
 				clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 				if = {
 					limit = { has_idea = neutral_foreign_policy_law }

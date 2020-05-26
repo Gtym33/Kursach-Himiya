@@ -380,7 +380,7 @@ country_event = {
 							NOT = {
 								tag = PREV
 								former_russian_empire_baltic_states_country = yes
-								former_russian_empire_finland_country = yes
+								tag = FIN
 								has_war_with = PREV
 								is_in_faction_with = PREV
 							}
@@ -550,11 +550,6 @@ country_event = {
 	option = {
 		name = finland.14.a
 		add_stability = -0.05
-		send_equipment = {
-			type = infantry_equipment
-			amount = 2000
-			target = FNR
-		}
 		set_country_flag = red_guards_armed
 	}
 }
@@ -587,10 +582,6 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			every_state = {
-				limit = { is_core_of = FIN }
-				add_core_of = FNR
-			}
 			set_political_party = {
 				ideology = social_democracy
 				popularity = 0
@@ -605,9 +596,87 @@ country_event = {
 			}
 			set_capital = 149
 			clr_country_flag = political_social_democrats_in_socialist_coalition
-			FNR = {
+			
+			set_global_flag = FIN_civil_war_begin
+			set_capital = 149
+			create_dynamic_country = {
+				original_tag = FIN
+				set_temp_variable = { red_FIN = this }
+				ROOT = {
+					every_owned_state = {
+						limit = { OR = { state = 111 state = 1049 state = 1050 state = 1051 state = 1053 state = 1055 state = 1056 } }
+						
+						var:red_FIN = {
+							transfer_state = PREV
+						}
+					}
+				}
+				set_country_flag = political_social_democrats_in_socialist_coalition
+				add_ideas = neutral_foreign_policy_law
+				add_opinion_modifier = { target = RUS modifier = socialist_social_democracy }
+				RUS = { add_opinion_modifier = { target = PREV modifier = socialist_social_democracy } }
 				set_cosmetic_tag = FNR_red
+				
+				create_field_marshal = {
+					name = "Kulervo Manner"
+					id = 6748
+					portrait_path = "gfx/leaders/FIN/Kulervo_Manner.dds"
+					traits = { media_personality }
+					skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 2 logistics_skill = 3
+				}
+
+				create_corps_commander = {
+					name = "Eero Haapalainen"
+					id = 6747
+					portrait_path = "gfx/leaders/FIN/Eero_Haapalainen.dds"
+					traits = { winter_specialist }
+					skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 2 logistics_skill = 2
+				}
+
+				create_corps_commander = {
+					name = "Adolf Taimi"
+					id = 6746
+					portrait_path = "gfx/leaders/FIN/Adolf_Taimi.dds"
+					traits = { ranger }
+					skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 2
+				}
+
+				create_corps_commander = {
+					name = "Eino Rahja"
+					id = 6745
+					portrait_path = "gfx/leaders/FIN/Eino_Rahja.dds"
+					traits = { }
+					skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 2
+				}
+
+				add_ideas = {
+					Kullervo_Manner_1
+					Yrjo_Sirola_2
+					Jalo_Kohonen_3
+					Eero_Haapalainen_4
+					Matti_Turkia_5
+					
+					Ali_Aaltonen_hc
+					
+					dependence_on_grain_imports
+					workers_control_law
+					planed_economy_law
+					sisu
+				}
+					set_politics = {
+						ruling_party = social_democracy
+						election_frequency = 36
+						elections_allowed = no
+					}
+					set_popularities = {
+						social_democracy = 50
+						communism = 50
+					}
+					create_country_leader = { name = "Yuryo Sirola" desc = FIN_Yuryo_Sirola_desc picture = "gfx/leaders/FIN/Yuryo_Sirola.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+					create_country_leader = { name = "Kulervo Manner" desc = FIN_Kulervo_Manner_desc picture = "gfx/leaders/FIN/Kulervo_Manner.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = {  } }
+				var:red_FIN = { save_global_event_target_as = red_FIN }
 			}
+			hidden_effect = { news_event = { id = news_n.16 hours = 12 } }
 		}
 	}
 	
@@ -615,63 +684,37 @@ country_event = {
 	option = {
 		name = finland.15.a
 		add_stability = -0.15
-		set_global_flag = FIN_civil_war_begin
 		hidden_effect = {
 			remove_ideas = punakaarti
-			country_event = { id = finland.16 days = 1 }
+			country_event = { id = finland.16 hours = 1 }
 		}
-		set_capital = 149
-		FNR = {
-			transfer_state = 111
-			transfer_state = 1049
-			transfer_state = 1050
-			transfer_state = 1051
-			transfer_state = 1053
-			transfer_state = 1055
-			transfer_state = 1056
+		event_target:red_FIN = {
 			declare_war_on = {
-				target = FIN
+				target = ROOT
 				type = annex_everything
 			}
 			load_oob = "FNR_punakaarti"
-			add_ideas = neutral_foreign_policy_law
-			inherit_technology = FIN
-			FNR = { add_opinion_modifier = { target = RUS modifier = socialist_social_democracy } }
-			RUS = { add_opinion_modifier = { target = FNR modifier = socialist_social_democracy } }
 		}
-		hidden_effect = { news_event = { id = news_n.16 hours = 12 } }
 	}
 	
 	#Играть за красных
 	option = {
 		name = finland.15.b
 		add_stability = -0.15
-		set_global_flag = FIN_civil_war_begin
 		hidden_effect = {
 			remove_ideas = punakaarti
-			country_event = { id = finland.16 days = 1 }
+			country_event = { id = finland.16 hours = 1 }
 		}
-		set_capital = 149
-		FNR = {
-			transfer_state = 111
-			transfer_state = 1049
-			transfer_state = 1050
-			transfer_state = 1051
-			transfer_state = 1053
-			transfer_state = 1055
-			transfer_state = 1056
+		event_target:red_FIN = {
 			declare_war_on = {
-				target = FIN
+				target = ROOT
 				type = annex_everything
 			}
 			load_oob = "FNR_punakaarti"
-			add_ideas = neutral_foreign_policy_law
-			inherit_technology = FIN
-			FNR = { add_opinion_modifier = { target = RUS modifier = socialist_social_democracy } }
-			RUS = { add_opinion_modifier = { target = FNR modifier = socialist_social_democracy } }
 		}
-		hidden_effect = { news_event = { id = news_n.16 hours = 12 } }
-		FNR = { change_tag_from = FIN }
+		event_target:red_FIN = {
+			change_tag_from = ROOT
+		}
 	}
 }
 
@@ -712,12 +755,8 @@ country_event = {
 		NOT = { has_global_flag = FIN_civil_war_end }
 		has_global_flag = FIN_civil_war_begin
 		tag = FIN
-		FNR = {
-			OR = {
-				exists = no
-				has_capitulated = yes
-			}
-		}
+		has_country_flag = FIN_white_side
+		NOT = { any_other_country = { original_tag = FIN NOT = { is_subject_of = ROOT } } }
 	}
 	
 	mean_time_to_happen = {
@@ -732,15 +771,13 @@ country_event = {
 			limit = { is_subject = no }
 			drop_cosmetic_tag = yes
 		}
-		every_state = {
-			limit = { is_core_of = FNR }
-			remove_core_of = FNR
-		}
-		if = {
-			limit = { FNR = { exists = yes } }
-			annex_country = {
-				target = FNR
-				transfer_troops = no
+		every_other_country = {
+			limit = { original_tag = FIN is_subject_of = ROOT }
+			ROOT = {
+				annex_country = {
+					target = PREV
+					transfer_troops = no
+				}
 			}
 		}
 		set_province_name = { id = 11105 name = "Helsinki" }
@@ -766,13 +803,9 @@ country_event = {
 	trigger = {
 		NOT = { has_global_flag = FIN_civil_war_end }
 		has_global_flag = FIN_civil_war_begin
-		tag = FNR
-		FIN = {
-			OR = {
-				exists = no
-				has_capitulated = yes
-			}
-		}
+		tag = FIN
+		has_country_flag = FIN_red_side
+		NOT = { any_other_country = { original_tag = FIN NOT = { is_subject_of = ROOT } } }
 	}
 	
 	mean_time_to_happen = {
@@ -786,16 +819,15 @@ country_event = {
 		if = {
 			limit = { is_subject = no }
 			drop_cosmetic_tag = yes
+			hidden_effect = { set_cosmetic_tag = FIN_red_color }
 		}
-		every_state = {
-			limit = { is_core_of = FIN }
-			remove_core_of = FIN
-		}
-		if = {
-			limit = { FIN = { exists = yes } }
-			annex_country = {
-				target = FIN
-				transfer_troops = no
+		every_other_country = {
+			limit = { original_tag = FIN is_subject_of = ROOT }
+			ROOT = {
+				annex_country = {
+					target = PREV
+					transfer_troops = no
+				}
 			}
 		}
 		set_province_name = { id = 11105 name = "Helsinki" }
@@ -835,14 +867,14 @@ country_event = {
 	option = {
 		name = finland.19.a
 		every_state = {
-			limit = { is_core_of = FNR }
+			limit = { is_core_of = FIN }
 			remove_core_of = RUS
 			remove_core_of = RSS
 			remove_core_of = CCA
 		}
 		every_state = {
-			limit = { is_core_of = FNR is_owned_by = RUS }
-			FNR = { transfer_state = PREV }
+			limit = { is_core_of = FIN is_owned_by = RUS }
+			FIN = { transfer_state = PREV }
 		}
 		ai_chance = {
 			factor = 0
@@ -853,11 +885,11 @@ country_event = {
 	option = {
 		name = finland.19.b
 		every_state = {
-			limit = { is_core_of = FNR is_owned_by = RUS }
-			remove_core_of = FNR
+			limit = { is_core_of = FIN is_owned_by = RUS }
+			remove_core_of = FIN
 		}
 		every_state = {
-			limit = { is_core_of = RUS is_owned_by = FNR }
+			limit = { is_core_of = RUS is_owned_by = FIN }
 			remove_core_of = RUS
 			remove_core_of = RSS
 			remove_core_of = CCA
@@ -872,15 +904,15 @@ country_event = {
 		name = finland.19.b
 		effect_tooltip = {
 			every_state = {
-				limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FNR }
+				limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FIN }
 				RUS = { transfer_state = PREV }
 			}
 			every_state = {
-				limit = { is_core_of = FNR is_owned_by = RUS }
-				remove_core_of = FNR
+				limit = { is_core_of = FIN is_owned_by = RUS }
+				remove_core_of = FIN
 			}
 		}
-		hidden_effect = { FNR = { country_event = finland.20 } }
+		hidden_effect = { FIN = { country_event = finland.20 } }
 		ai_chance = {
 			factor = 0
 		}
@@ -899,12 +931,12 @@ country_event = {
 	option = {
 		name = finland.20.a
 		every_state = {
-			limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FNR }
+			limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FIN }
 			RUS = { transfer_state = PREV }
 		}
 		every_state = {
-			limit = { is_core_of = FNR is_owned_by = RUS }
-			remove_core_of = FNR
+			limit = { is_core_of = FIN is_owned_by = RUS }
+			remove_core_of = FIN
 		}
 		ai_chance = {
 			factor = 50
@@ -945,7 +977,8 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		tag = FNR
+		tag = FIN
+		has_country_flag = FIN_red_side
 		is_socialist_country = yes
 		is_in_faction = no
 		is_subject = no
