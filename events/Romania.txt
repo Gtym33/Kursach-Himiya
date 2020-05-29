@@ -7,16 +7,14 @@ country_event = {
 	desc = romania.1.desc
 	picture = GFX_report_event_bul_dobro_pole
 	
-	fire_only_once = yes
-	
 	trigger = {
 		has_start_date < 1918.11.11
 		has_global_flag = WWI_is_now
 		tag = ROM
+		NOT = { has_global_flag = WWI_ROM_HAS_CAPITULATED }
 		RUS = { NOT = { has_war_with = GER } }
 		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
 		NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
-		NOT = { has_global_flag = WWI_ROM_HAS_CAPITULATED }
 		is_subject = no
 		has_capitulated = no
 	}
@@ -24,6 +22,8 @@ country_event = {
 	mean_time_to_happen = {
 		days = 15
 	}
+	
+	fire_only_once = yes
 	
 	option = {
 		name = romania.1.a
@@ -50,13 +50,9 @@ country_event = {
 	desc = romania.2.desc
 	picture = GFX_report_event_bul_dobro_pole
 	
-	fire_only_once = yes
-	
 	trigger = {
-		tag = GER
 		has_global_flag = WWI_is_now
 		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
-		NOT = { has_country_flag = GER_monarchy_fall }
 	}
 	
 	is_triggered_only = yes
@@ -79,6 +75,7 @@ country_event = {
 			factor = 1
 		}
 		ROM = {
+			set_country_flag = ROM_Bukharest_peace
 			country_event = { id = romania.4 days = 1 }
 		}
 	}
@@ -114,38 +111,40 @@ country_event = {
 	}
 	
 	trigger = {
+		has_start_date < 1918.11.11
 		tag = ROM
 		has_global_flag = WWI_is_now
 		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
-		GER = { NOT = { has_country_flag = GER_monarchy_fall } }
-		has_capitulated = yes
+		OR = {
+			has_capitulated = yes
+			has_country_flag = ROM_Bukharest_peace
+		}
 	}
 	
 	immediate = {
-		remove_ideas = ROM_bonus_against_Central_powers
+		hidden_effect = {
+			remove_ideas = ROM_bonus_against_Central_powers
+			clr_country_flag = ROM_Bukharest_peace
+		}
 	}
 	
 	option = {
 		name = romania.4.a
 		every_country = {
-			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS is_in_faction_with = TGR AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
 			white_peace = ROM
 		}
 		leave_faction = yes
 		set_global_flag = WWI_ROM_HAS_CAPITULATED
-		country_event = { id = romania.5 hours = 2 }
 		every_country = {
-				limit = { OR = { is_in_faction_with = GER } }
-				ROOT = { give_military_access = PREV }
-			}
+			limit = { OR = { is_in_faction_with = GER } }
+			ROOT = { give_military_access = PREV }
+		}
 		add_ideas = {
 			civilian_economy
 			disarmed_nation
 			neutral_foreign_policy_law
 		}
-		#hidden_effect = {
-			#country_event = { id = compiegne_armistice.-1 hours = 1 }
-		#}
 		if = {
 			limit = { AUH = { is_in_faction_with = GER NOT = { has_global_flag = AUH_lost_hope } } HUN = { exists = no } BNT = { exists = no } }
 			AUH = {
@@ -161,6 +160,7 @@ country_event = {
 				transfer_state = 856
 			}
 		}
+		country_event = { id = romania.5 hours = 2 }
 	}
 }
 

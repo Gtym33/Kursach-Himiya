@@ -4,6 +4,1234 @@
 
 add_namespace = versailles
 
+# Инициация Болгарии
+country_event = {
+	id = versailles.100
+	title = versailles.100.t
+	desc = versailles.100.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	trigger = {
+		has_global_flag = versailles_peace_treaty_in_progress
+		has_country_flag = WWI_Entente_member
+		is_faction_leader = yes
+		has_global_flag = WWI_BUL_HAS_CAPITULATED
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	hidden = yes
+	
+	option = {
+		name = versailles.100.a
+		BUL = { leave_faction = yes }
+		hidden_effect = {
+			if = {
+				limit = { BUL = { NOT = { has_idea = BUL_interunion_commission_idea } } }
+				set_variable = { global.Entente_major_conf_members = 0 }
+				set_variable = { global.Entente_keep_white_peace_with_BUL = 0 }
+				set_variable = { global.Entente_not_keep_white_peace_with_BUL = 0 }
+				set_variable = { global.Entente_major_conf_votes = 0 }
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+					if = {
+						limit = { OR = { tag = USA tag = RUS } }
+						add_to_variable = { global.Entente_major_conf_members = 3 }
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = { OR = { tag = FRA tag = ENG } }
+						add_to_variable = { global.Entente_major_conf_members = 4 }
+						set_variable = { vote_power = 4 }
+					}
+					else = {
+						add_to_variable = { global.Entente_major_conf_members = 1 }
+						set_variable = { vote_power = 1 }
+					}
+					country_event = { id = versailles.101 days = 2 }
+				}
+				else = {
+					set_variable = { global.Entente_major_conf_members = 0 }
+					set_variable = { global.Entente_Dobruja_ROM = 0 }
+					set_variable = { global.Entente_Dobruja_not_fully_ROM = 0 }
+					set_variable = { global.Entente_major_conf_votes = 0 }
+					every_country = {
+						limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+						if = {
+							limit = { OR = { tag = USA tag = RUS } }
+							add_to_variable = { global.Entente_major_conf_members = 3 }
+							set_variable = { vote_power = 3 }
+						}
+						else_if = {
+							limit = { OR = { tag = FRA tag = ENG } }
+							add_to_variable = { global.Entente_major_conf_members = 4 }
+							set_variable = { vote_power = 4 }
+						}
+						else = {
+							add_to_variable = { global.Entente_major_conf_members = 1 }
+							set_variable = { vote_power = 1 }
+						}
+						country_event = { id = versailles.104 days = 2 }
+					}
+				}
+			}
+		}
+	}
+}
+
+# Болгарская проблема
+country_event = {
+	id = versailles.101
+	title = versailles.101.t
+	desc = versailles.101.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = { #Эти соглашения должны быть пересмотрены
+		name = versailles.101.a
+		add_to_variable = { global.Entente_not_keep_white_peace_with_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_keep_white_peace_with_BUL > global.Entente_not_keep_white_peace_with_BUL } }
+					BUL = { country_event = versailles.102 }
+					else = {
+						BUL = { country_event = versailles.103 } #Мы будем пилить болгар потому что они хуесосы, а договоры с ними не стоят бумаги, на которой написаны
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_keep_white_peace_with_BUL
+				clear_variable = global.Entente_not_keep_white_peace_with_BUL
+			}
+		}
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = { #Мы не станем нарушать обязательств
+		name = versailles.101.b
+		add_to_variable = { global.Entente_keep_white_peace_with_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_keep_white_peace_with_BUL > global.Entente_not_keep_white_peace_with_BUL } }
+					BUL = { country_event = versailles.102 }
+					else = {
+						BUL = { country_event = versailles.103 } #Мы будем пилить болгар потому что они хуесосы, а договоры с ними не стоят бумаги, на которой написаны
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_keep_white_peace_with_BUL
+				clear_variable = global.Entente_not_keep_white_peace_with_BUL
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 10
+				BUL = { has_country_flag = WWI_Entente_member }
+			}
+		}
+	}
+}
+
+# Благоприятная обстановка (Болгария)
+country_event = {
+	id = versailles.102
+	title = versailles.102.t
+	desc = versailles.102.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = versailles.102.a
+		add_stability = 0.04
+		clr_global_flag = WWI_BUL_HAS_CAPITULATED
+		#hidden_effect = { news_event = { id = news_n.202 hours = 24 } }
+	}
+}
+
+# Тревожная обстановка (Болгария)
+country_event = {
+	id = versailles.103
+	title = versailles.103.t
+	desc = versailles.103.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = versailles.103.a
+		add_stability = -0.05
+		add_political_power = -40
+		set_temp_variable = { ruling_party_popularity_change = -0.07 }
+		add_ruling_party_popularity = yes
+		
+		add_ideas = BUL_interunion_commission_idea
+		add_ideas = BUL_prisoners_of_war_in_SER_BUL
+		SER = { add_ideas = BUL_prisoners_of_war_in_SER_SER }
+		
+		hidden_effect = {
+			set_variable = { global.Entente_major_conf_members = 0 }
+			set_variable = { global.Entente_Dobruja_ROM = 0 }
+			set_variable = { global.Entente_Dobruja_not_fully_ROM = 0 }
+			set_variable = { global.Entente_major_conf_votes = 0 }
+			every_country = {
+				limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+				if = {
+					limit = { OR = { tag = USA tag = RUS } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					set_variable = { vote_power = 3 }
+				}
+				else_if = {
+					limit = { OR = { tag = FRA tag = ENG } }
+					add_to_variable = { global.Entente_major_conf_members = 4 }
+					set_variable = { vote_power = 4 }
+				}
+				else = {
+					add_to_variable = { global.Entente_major_conf_members = 1 }
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = versailles.104 days = 2 }
+			}
+		}
+	}
+}
+
+# Добруджу кому
+country_event = {
+	id = versailles.104
+	title = versailles.104.t
+	desc = versailles.104.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = { #Вся Добруджа должна быть румынской 
+		name = versailles.104.a
+		add_to_variable = { global.Entente_Dobruja_ROM = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				BUL = { country_event = versailles.105 } #Добруджианский кризис
+				if = {
+					limit = { check_variable = { global.Entente_Dobruja_not_fully_ROM > global.Entente_Dobruja_ROM } }
+					every_state = {
+						limit = {
+							OR = {
+								state = 855
+								state = 856
+							}
+							OWNER = { OR = { tag = BUL is_subject_of = BUL is_in_faction_with = BUL } }
+						}
+						ROM = { transfer_state = PREV }
+					}
+					random_state = {
+						limit = {
+							state = 77
+							OWNER = { OR = { tag = ROM is_subject_of = ROM is_in_faction_with = ROM } }
+						}
+						BUL = { transfer_state = PREV }
+					}
+					else = {
+						every_state = {
+							limit = {
+								OR = {
+									state = 855
+									state = 856
+									state = 77
+								}
+								OWNER = { OR = { tag = BUL is_subject_of = BUL is_in_faction_with = BUL } }
+							}
+							ROM = { transfer_state = PREV }
+						}
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_Dobruja_not_fully_ROM
+				clear_variable = global.Entente_Dobruja_ROM
+			}
+		}
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 10
+				OR = {
+					original_tag = ROM
+					original_tag = SER
+				}
+			}
+		}
+	}
+	option = { #Следует исходить из единственно справедливого этнического принципа
+		name = versailles.104.b
+		add_to_variable = { global.Entente_Dobruja_not_fully_ROM = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				BUL = { country_event = versailles.105 } #Добруджианский кризис
+				if = {
+					limit = { check_variable = { global.Entente_Dobruja_not_fully_ROM > global.Entente_Dobruja_ROM } }
+					every_state = {
+						limit = {
+							OR = {
+								state = 855
+								state = 856
+							}
+							OWNER = { OR = { tag = BUL is_subject_of = BUL is_in_faction_with = BUL } }
+						}
+						ROM = { transfer_state = PREV }
+					}
+					random_state = {
+						limit = {
+							state = 77
+							OWNER = { OR = { tag = ROM is_subject_of = ROM is_in_faction_with = ROM } }
+						}
+						BUL = { transfer_state = PREV }
+					}
+					else = {
+						every_state = {
+							limit = {
+								OR = {
+									state = 855
+									state = 856
+									state = 77
+								}
+								OWNER = { OR = { tag = BUL is_subject_of = BUL is_in_faction_with = BUL } }
+							}
+							ROM = { transfer_state = PREV }
+						}
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_Dobruja_not_fully_ROM
+				clear_variable = global.Entente_Dobruja_ROM
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 3
+				BUL = { has_country_flag = WWI_Entente_member }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					original_tag = ROM
+					original_tag = SER
+				}
+			}
+		}
+	}
+}
+
+# Добруджианский кризис
+country_event = {
+	id = versailles.105
+	title = versailles.105.t
+	desc = versailles.105.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = versailles.105.a
+		add_stability = -0.07
+		set_temp_variable = { ruling_party_popularity_change = -0.05 }
+		add_ruling_party_popularity = yes
+		
+		add_ideas = BUL_disjointed_government
+		
+		hidden_effect = {
+			if = {
+				limit = { 47 = { OWNER = { has_country_flag = WWI_Entente_member OR = { tag = GRR tag = GRE } } } }
+				set_variable = { global.Entente_major_conf_members = 0 }
+				set_variable = { global.Entente_Frackiya_BUL = 0 }
+				set_variable = { global.Entente_Frackiya_GRE = 0 }
+				set_variable = { global.Entente_major_conf_votes = 0 }
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+					if = {
+						limit = { OR = { tag = USA tag = RUS } }
+						add_to_variable = { global.Entente_major_conf_members = 3 }
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = { OR = { tag = FRA tag = ENG } }
+						add_to_variable = { global.Entente_major_conf_members = 4 }
+						set_variable = { vote_power = 4 }
+					}
+					else = {
+						add_to_variable = { global.Entente_major_conf_members = 1 }
+						set_variable = { vote_power = 1 }
+					}
+					country_event = { id = versailles.106 days = 2 }
+				}
+				else = {
+					set_variable = { global.Entente_major_conf_members = 0 }
+					set_variable = { global.Entente_major_conf_votes = 0 }
+					every_country = {
+						limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+						if = {
+							limit = { OR = { tag = USA tag = RUS } }
+							add_to_variable = { global.Entente_major_conf_members = 3 }
+							set_variable = { vote_power = 3 }
+						}
+						else_if = {
+							limit = { OR = { tag = FRA tag = ENG } }
+							add_to_variable = { global.Entente_major_conf_members = 4 }
+							set_variable = { vote_power = 4 }
+						}
+						else = {
+							add_to_variable = { global.Entente_major_conf_members = 1 }
+							set_variable = { vote_power = 1 }
+						}
+					}
+					if = {
+						limit = { 106 = { OWNER = { OR = { tag = BUL is_subject_of = BUL } } } }
+						set_variable = { global.Entente_MAC_SER = 0 }
+						set_variable = { global.Entente_MAC_indep = 0 }
+						set_variable = { global.Entente_MAC_BUL = 0 }
+						every_country = {
+							limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+							country_event = { id = versailles.108 days = 2 } #Македония
+						}
+					}
+					else_if = {
+						limit = { BUL = { NOT = { has_country_flag = WWI_Entente_member } } }
+						every_state = {
+							limit = { OR = { state = 106 state = 818 state = 817 state = 993 } is_owned_by = BUL }
+							SER = { transfer_state = PREV }
+						}
+						set_variable = { global.Entente_BUL_okrainy_SER = 0 }
+						set_variable = { global.Entente_BUL_okrainy_BUL = 0 }
+						every_country = {
+							limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+							country_event = { id = versailles.110 days = 2 } #Западные окраины
+						}
+					}
+					else = {
+						every_state = {
+							limit = { OR = { state = 106 state = 818 state = 817 state = 993 } is_owned_by = BUL }
+							SER = { transfer_state = PREV }
+						}
+						clear_variable = global.Entente_major_conf_votes
+						clear_variable = global.Entente_major_conf_members
+						
+						clr_global_flag = WWI_BUL_HAS_CAPITULATED
+						news_event = { id = news_n.202 hours = 24 }
+					}
+				}
+			}
+		}
+	}
+}
+
+# Фракия каво
+country_event = {
+	id = versailles.106
+	title = versailles.106.t
+	desc = versailles.106.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = { #Позиция Греции выглядит убедительнее
+		name = versailles.106.a
+		add_to_variable = { global.Entente_Frackiya_GRE = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_Frackiya_BUL > global.Entente_Frackiya_GRE } }
+					BUL = { country_event = { id = versailles.107 hours = 1 } } #референдум
+					47 = { OWNER = { country_event = { id = versailles.107 hours = 1 } } } #референдум
+					every_state = {
+						limit = {
+							OR = {
+								state = 982
+								state = 983
+							}
+						}
+						BUL = { transfer_state = PREV }
+					}
+					else = {
+						every_state = {
+							limit = {
+								OR = {
+									state = 982
+									state = 983
+								}
+							}
+							47 = { OWNER = { transfer_state = PREV.PREV } }
+						}
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_Frackiya_BUL
+				clear_variable = global.Entente_Frackiya_GRE
+				
+				set_variable = { global.Entente_major_conf_members = 0 }
+				set_variable = { global.Entente_major_conf_votes = 0 }
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+					if = {
+						limit = { OR = { tag = USA tag = RUS } }
+						add_to_variable = { global.Entente_major_conf_members = 3 }
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = { OR = { tag = FRA tag = ENG } }
+						add_to_variable = { global.Entente_major_conf_members = 4 }
+						set_variable = { vote_power = 4 }
+					}
+					else = {
+						add_to_variable = { global.Entente_major_conf_members = 1 }
+						set_variable = { vote_power = 1 }
+					}
+				}
+				if = {
+						limit = { 106 = { OWNER = { OR = { tag = BUL is_subject_of = BUL } } } }
+						set_variable = { global.Entente_MAC_SER = 0 }
+						set_variable = { global.Entente_MAC_indep = 0 }
+						set_variable = { global.Entente_MAC_BUL = 0 }
+						every_country = {
+							limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+							country_event = { id = versailles.108 days = 2 } #Македония
+						}
+				}
+				else_if = {
+						limit = { BUL = { NOT = { has_country_flag = WWI_Entente_member } } }
+						every_state = {
+							limit = { OR = { state = 106 state = 818 state = 817 state = 993 } is_owned_by = BUL }
+							SER = { transfer_state = PREV }
+						}
+						set_variable = { global.Entente_BUL_okrainy_SER = 0 }
+						set_variable = { global.Entente_BUL_okrainy_BUL = 0 }
+						every_country = {
+							limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+							country_event = { id = versailles.110 days = 2 } #Западные окраины
+						}
+				}
+				else = {
+						every_state = {
+							limit = { OR = { state = 106 state = 818 state = 817 state = 993 } is_owned_by = BUL }
+							SER = { transfer_state = PREV }
+						}
+						clear_variable = global.Entente_major_conf_votes
+						clear_variable = global.Entente_major_conf_members
+						
+						clr_global_flag = WWI_BUL_HAS_CAPITULATED
+						news_event = { id = news_n.202 hours = 24 }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 10
+				OR = {
+					original_tag = GRR
+					original_tag = GRE
+				}
+			}
+		}
+	}
+	option = { #Пусть население само решает свою судьбу
+		name = versailles.106.b
+		add_to_variable = { global.Entente_Frackiya_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_Frackiya_BUL > global.Entente_Frackiya_GRE } }
+					BUL = { country_event = { id = versailles.107 hours = 1 } } #референдум
+					47 = { OWNER = { country_event = { id = versailles.107 hours = 1 } } } #референдум
+					every_state = {
+						limit = {
+							OR = {
+								state = 982
+								state = 983
+							}
+						}
+						BUL = { transfer_state = PREV }
+					}
+					else = {
+						every_state = {
+							limit = {
+								OR = {
+									state = 982
+									state = 983
+								}
+							}
+							47 = { OWNER = { transfer_state = PREV.PREV } }
+						}
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_Frackiya_BUL
+				clear_variable = global.Entente_Frackiya_GRE
+				
+				set_variable = { global.Entente_major_conf_members = 0 }
+				set_variable = { global.Entente_major_conf_votes = 0 }
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+					if = {
+						limit = { OR = { tag = USA tag = RUS } }
+						add_to_variable = { global.Entente_major_conf_members = 3 }
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = { OR = { tag = FRA tag = ENG } }
+						add_to_variable = { global.Entente_major_conf_members = 4 }
+						set_variable = { vote_power = 4 }
+					}
+					else = {
+						add_to_variable = { global.Entente_major_conf_members = 1 }
+						set_variable = { vote_power = 1 }
+					}
+				}
+				if = {
+						limit = { 106 = { OWNER = { OR = { tag = BUL is_subject_of = BUL } } } }
+						set_variable = { global.Entente_MAC_SER = 0 }
+						set_variable = { global.Entente_MAC_indep = 0 }
+						set_variable = { global.Entente_MAC_BUL = 0 }
+						every_country = {
+							limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+							country_event = { id = versailles.108 days = 2 } #Македония
+						}
+				}
+				else_if = {
+						limit = { BUL = { NOT = { has_country_flag = WWI_Entente_member } } }
+						every_state = {
+							limit = { OR = { state = 106 state = 818 state = 817 state = 993 } is_owned_by = BUL }
+							SER = { transfer_state = PREV }
+						}
+						set_variable = { global.Entente_BUL_okrainy_SER = 0 }
+						set_variable = { global.Entente_BUL_okrainy_BUL = 0 }
+						every_country = {
+							limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+							country_event = { id = versailles.110 days = 2 } #Западные окраины
+						}
+				}
+				else = {
+						every_state = {
+							limit = { OR = { state = 106 state = 818 state = 817 state = 993 } is_owned_by = BUL }
+							SER = { transfer_state = PREV }
+						}
+						clear_variable = global.Entente_major_conf_votes
+						clear_variable = global.Entente_major_conf_members
+						
+						clr_global_flag = WWI_BUL_HAS_CAPITULATED
+						news_event = { id = news_n.202 hours = 24 }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 10
+				BUL = { has_country_flag = WWI_Entente_member }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					original_tag = GRR
+					original_tag = GRE
+				}
+			}
+		}
+	}
+}
+
+# Итоги референдума во Фракии (Болгария и Греция)
+country_event = {
+	id = versailles.107
+	title = versailles.107.t
+	desc = versailles.107.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { owns_state = 983 }
+		name = versailles.107.a
+		add_stability = 0.04
+	}
+	option = {
+		trigger = { NOT = { owns_state = 983 } }
+		name = versailles.107.b
+		add_political_power = -35
+	}
+}
+
+
+# Македония куда
+country_event = {
+	id = versailles.108
+	title = versailles.108.t
+	desc = versailles.108.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = { #Единство Сербии не может быть нарушено 
+		name = versailles.108.a
+		add_to_variable = { global.Entente_MAC_SER = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = {
+						check_variable = { global.Entente_MAC_SER > global.Entente_MAC_indep }
+						check_variable = { global.Entente_MAC_SER > global.Entente_MAC_BUL }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 817 state = 993 state = 947 } is_owned_by = BUL }
+						SER = { transfer_state = PREV }
+					}
+				}
+				else_if = {
+					limit = {
+						check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_indep }
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_SER } }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 993 } is_owned_by = SER }
+						BUL = { transfer_state = PREV }
+					}
+					BUL = { country_event = versailles.109 }
+					SER = { country_event = versailles.109 }
+				}
+				else_if = {
+					limit = {
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_indep } }
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_SER } }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 993 } OR = { is_owned_by = SER is_owned_by = BUL } }
+						MAC = { transfer_state = PREV }
+					}
+					hidden_effect = {
+						MAC = {
+							set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+							set_popularities = {
+								national_syndicalism = 34
+								social_democracy = 33
+								communism = 33
+							}
+							load_oob = MAC_indep_militia
+							create_country_leader = { name = "Todor Aleksandrov" desc = BUL_Todor_Aleksandrov_DESC picture = "gfx/leaders/BUL/Todor_Aleksandrov.dds" expire = "1924.8.31" ideology = national_bolshevism_ideology traits = {  } }
+							create_corps_commander = {
+								name = "Todor Aleksandrov"
+								id = 75014
+								portrait_path = "gfx/leaders/BUL/Todor_Aleksandrov.dds"
+								traits = { trait_mountaineer guerilla_fighter }
+								skill = 2
+								attack_skill = 2
+								defense_skill = 2
+								planning_skill = 2
+								logistics_skill = 2
+							}
+							add_ideas = {
+								soviet_republic_gov_form
+								federal_gov_terr
+								local_assembly_decisions_b_law
+								poliparty_system_law
+								territorial_expansion_law
+							}
+						}
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_MAC_SER
+				clear_variable = global.Entente_MAC_indep
+				clear_variable = global.Entente_MAC_BUL
+				
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+					if = {
+						limit = { OR = { tag = USA tag = RUS } }
+						add_to_variable = { global.Entente_major_conf_members = 3 }
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = { OR = { tag = FRA tag = ENG } }
+						add_to_variable = { global.Entente_major_conf_members = 4 }
+						set_variable = { vote_power = 4 }
+					}
+					else = {
+						add_to_variable = { global.Entente_major_conf_members = 1 }
+						set_variable = { vote_power = 1 }
+					}
+				}
+				if = {
+					limit = { SER = { owns_state = 106 } BUL = { NOT = { has_country_flag = WWI_Entente_member } } }
+					set_variable = { global.Entente_major_conf_members = 0 }
+					set_variable = { global.Entente_major_conf_votes = 0 }
+					set_variable = { global.Entente_BUL_okrainy_SER = 0 }
+					set_variable = { global.Entente_BUL_okrainy_BUL = 0 }
+					every_country = {
+						limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+						country_event = { id = versailles.110 days = 2 } #Западные окраины
+					}
+				}
+				else = {
+					clr_global_flag = WWI_BUL_HAS_CAPITULATED
+					news_event = { id = news_n.202 hours = 24 }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 3
+			modifier = {
+				factor = 10
+				original_tag = SER
+			}
+		}
+	}
+	
+	option = { #Суверенная Македония явится приемлемым компромиссом 
+		name = versailles.108.b
+		add_to_variable = { global.Entente_MAC_indep = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = {
+						check_variable = { global.Entente_MAC_SER > global.Entente_MAC_indep }
+						check_variable = { global.Entente_MAC_SER > global.Entente_MAC_BUL }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 817 state = 993 state = 947 } is_owned_by = BUL }
+						SER = { transfer_state = PREV }
+					}
+				}
+				else_if = {
+					limit = {
+						check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_indep }
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_SER } }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 993 } is_owned_by = SER }
+						BUL = { transfer_state = PREV }
+					}
+					BUL = { country_event = versailles.109 }
+					SER = { country_event = versailles.109 }
+				}
+				else_if = {
+					limit = {
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_indep } }
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_SER } }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 993 } OR = { is_owned_by = SER is_owned_by = BUL } }
+						MAC = { transfer_state = PREV }
+					}
+					hidden_effect = {
+						MAC = {
+							set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+							set_popularities = {
+								national_syndicalism = 34
+								social_democracy = 33
+								communism = 33
+							}
+							load_oob = MAC_indep_militia
+							create_country_leader = { name = "Todor Aleksandrov" desc = BUL_Todor_Aleksandrov_DESC picture = "gfx/leaders/BUL/Todor_Aleksandrov.dds" expire = "1924.8.31" ideology = national_bolshevism_ideology traits = {  } }
+							create_corps_commander = {
+								name = "Todor Aleksandrov"
+								id = 75014
+								portrait_path = "gfx/leaders/BUL/Todor_Aleksandrov.dds"
+								traits = { trait_mountaineer guerilla_fighter }
+								skill = 2
+								attack_skill = 2
+								defense_skill = 2
+								planning_skill = 2
+								logistics_skill = 2
+							}
+							add_ideas = {
+								soviet_republic_gov_form
+								federal_gov_terr
+								local_assembly_decisions_b_law
+								poliparty_system_law
+								territorial_expansion_law
+							}
+						}
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_MAC_SER
+				clear_variable = global.Entente_MAC_indep
+				clear_variable = global.Entente_MAC_BUL
+				
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+					if = {
+						limit = { OR = { tag = USA tag = RUS } }
+						add_to_variable = { global.Entente_major_conf_members = 3 }
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = { OR = { tag = FRA tag = ENG } }
+						add_to_variable = { global.Entente_major_conf_members = 4 }
+						set_variable = { vote_power = 4 }
+					}
+					else = {
+						add_to_variable = { global.Entente_major_conf_members = 1 }
+						set_variable = { vote_power = 1 }
+					}
+				}
+				if = {
+					limit = { SER = { owns_state = 106 } BUL = { NOT = { has_country_flag = WWI_Entente_member } } }
+					set_variable = { global.Entente_major_conf_members = 0 }
+					set_variable = { global.Entente_major_conf_votes = 0 }
+					set_variable = { global.Entente_BUL_okrainy_SER = 0 }
+					set_variable = { global.Entente_BUL_okrainy_BUL = 0 }
+					every_country = {
+						limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+						country_event = { id = versailles.110 days = 2 } #Западные окраины
+					}
+				}
+				else = {
+					clr_global_flag = WWI_BUL_HAS_CAPITULATED
+					news_event = { id = news_n.202 hours = 24 }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				BUL = { has_country_flag = WWI_Entente_member }
+			}
+			modifier = {
+				factor = 0
+				original_tag = SER
+			}
+		}
+	}
+	
+	option = { #После референдума сербам нечего будет возразить 
+		name = versailles.108.c
+		add_to_variable = { global.Entente_MAC_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = {
+						check_variable = { global.Entente_MAC_SER > global.Entente_MAC_indep }
+						check_variable = { global.Entente_MAC_SER > global.Entente_MAC_BUL }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 817 state = 993 state = 947 } is_owned_by = BUL }
+						SER = { transfer_state = PREV }
+					}
+				}
+				else_if = {
+					limit = {
+						check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_indep }
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_SER } }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 993 } is_owned_by = SER }
+						BUL = { transfer_state = PREV }
+					}
+					BUL = { country_event = versailles.109 }
+					SER = { country_event = versailles.109 }
+				}
+				else_if = {
+					limit = {
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_indep } }
+						NOT = { check_variable = { global.Entente_MAC_BUL > global.Entente_MAC_SER } }
+					}
+					every_state = {
+						limit = { OR = { state = 106 state = 818 state = 993 } OR = { is_owned_by = SER is_owned_by = BUL } }
+						MAC = { transfer_state = PREV }
+					}
+					hidden_effect = {
+						MAC = {
+							set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+							set_popularities = {
+								national_syndicalism = 34
+								social_democracy = 33
+								communism = 33
+							}
+							load_oob = MAC_indep_militia
+							create_country_leader = { name = "Todor Aleksandrov" desc = BUL_Todor_Aleksandrov_DESC picture = "gfx/leaders/BUL/Todor_Aleksandrov.dds" expire = "1924.8.31" ideology = national_bolshevism_ideology traits = {  } }
+							create_corps_commander = {
+								name = "Todor Aleksandrov"
+								id = 75014
+								portrait_path = "gfx/leaders/BUL/Todor_Aleksandrov.dds"
+								traits = { trait_mountaineer guerilla_fighter }
+								skill = 2
+								attack_skill = 2
+								defense_skill = 2
+								planning_skill = 2
+								logistics_skill = 2
+							}
+							add_ideas = {
+								soviet_republic_gov_form
+								federal_gov_terr
+								local_assembly_decisions_b_law
+								poliparty_system_law
+								territorial_expansion_law
+							}
+						}
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_MAC_SER
+				clear_variable = global.Entente_MAC_indep
+				clear_variable = global.Entente_MAC_BUL
+				
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+					if = {
+						limit = { OR = { tag = USA tag = RUS } }
+						add_to_variable = { global.Entente_major_conf_members = 3 }
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = { OR = { tag = FRA tag = ENG } }
+						add_to_variable = { global.Entente_major_conf_members = 4 }
+						set_variable = { vote_power = 4 }
+					}
+					else = {
+						add_to_variable = { global.Entente_major_conf_members = 1 }
+						set_variable = { vote_power = 1 }
+					}
+				}
+				if = {
+					limit = { SER = { owns_state = 106 } BUL = { NOT = { has_country_flag = WWI_Entente_member } } }
+					set_variable = { global.Entente_major_conf_members = 0 }
+					set_variable = { global.Entente_major_conf_votes = 0 }
+					set_variable = { global.Entente_BUL_okrainy_SER = 0 }
+					set_variable = { global.Entente_BUL_okrainy_BUL = 0 }
+					every_country = {
+						limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+						country_event = { id = versailles.110 days = 2 } #Западные окраины
+					}
+				}
+				else = {
+					clr_global_flag = WWI_BUL_HAS_CAPITULATED
+					news_event = { id = news_n.202 hours = 24 }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				BUL = { has_country_flag = WWI_Entente_member }
+			}
+			modifier = {
+				factor = 0
+				original_tag = SER
+			}
+		}
+	}
+}
+
+# Генерал для Болгарии
+country_event = {
+	id = versailles.109
+	title = versailles.109.t
+	desc = versailles.109.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { tag = BUL }
+		name = versailles.109.a
+		add_stability = 0.05
+		create_corps_commander = {
+			name = "Todor Aleksandrov"
+			id = 75014
+			portrait_path = "gfx/leaders/BUL/Todor_Aleksandrov.dds"
+			traits = { trait_mountaineer guerilla_fighter }
+			skill = 2
+			attack_skill = 2
+			defense_skill = 2
+			planning_skill = 2
+			logistics_skill = 2
+		}
+	}
+	option = {
+		trigger = { NOT = { tag = BUL } }
+		name = versailles.109.b
+		add_stability = -0.1
+	}
+}
+
+# Западные окраины чего
+country_event = {
+	id = versailles.110
+	title = versailles.110.t
+	desc = versailles.110.d
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = { #После катастрофы 1915 года сербы в полном праве поступать как угодно 
+		name = versailles.110.a
+		add_to_variable = { global.Entente_BUL_okrainy_SER = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_BUL_okrainy_SER > global.Entente_BUL_okrainy_BUL } }
+					every_state = {
+						limit = {
+							OR = {
+								state = 943
+								state = 942
+								state = 816
+							}
+							OWNER = { OR = { tag = BUL is_subject_of = BUL is_in_faction_with = BUL } }
+						}
+						SER = { transfer_state = PREV }
+					}
+					BUL = { add_stability = -0.06 }
+					else = {
+						every_state = {
+							limit = {
+								OR = {
+									state = 943
+									state = 942
+									state = 816
+								}
+								OWNER = { OR = { tag = SER is_subject_of = SER } }
+							}
+							BUL = { transfer_state = PREV }
+						}
+						BUL = { add_stability = 0.03 }
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_BUL_okrainy_BUL
+				clear_variable = global.Entente_BUL_okrainy_SER
+				
+				clr_global_flag = WWI_BUL_HAS_CAPITULATED
+				news_event = { id = news_n.202 hours = 24 }
+			}
+		}
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 10
+				original_tag = SER
+			}
+		}
+	}
+	option = { #Объясните сербам, что две деревни не спасут их армию через 20 лет 
+		name = versailles.110.b
+		add_to_variable = { global.Entente_BUL_okrainy_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_BUL_okrainy_SER > global.Entente_BUL_okrainy_BUL } }
+					every_state = {
+						limit = {
+							OR = {
+								state = 943
+								state = 942
+								state = 816
+							}
+							OWNER = { OR = { tag = BUL is_subject_of = BUL is_in_faction_with = BUL } }
+						}
+						SER = { transfer_state = PREV }
+					}
+					BUL = { add_stability = -0.06 }
+					else = {
+						every_state = {
+							limit = {
+								OR = {
+									state = 943
+									state = 942
+									state = 816
+								}
+								OWNER = { OR = { tag = SER is_subject_of = SER } }
+							}
+							BUL = { transfer_state = PREV }
+						}
+						BUL = { add_stability = 0.03 }
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_BUL_okrainy_BUL
+				clear_variable = global.Entente_BUL_okrainy_SER
+				
+				clr_global_flag = WWI_BUL_HAS_CAPITULATED
+				news_event = { id = news_n.202 hours = 24 }
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 3
+				BUL = { has_country_flag = WWI_Entente_member }
+			}
+			modifier = {
+				factor = 0
+				original_tag = SER
+			}
+		}
+	}
+}
+
 ###### Парижская мирная конференция ######
 
 # Начало конференции
@@ -14,6 +1242,7 @@ country_event = {
 	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	trigger = {
+		always = no
 		OR = {
 			tag = FRA
 			tag = ENG
@@ -1012,8 +2241,7 @@ country_event = {
 	option = {
 		name = versailles.1918.a
 		clr_global_flag = WWI_is_now
-		FRA = { dismantle_faction = yes }
-		ENG = { dismantle_faction = yes }
+		set_global_flag = versailles_peace_treaty_in_progress
 		if = {
 			limit = { has_global_flag = WWI_GER_sieg_im_Weltkrieg }
 			every_country = {
@@ -1028,6 +2256,8 @@ country_event = {
 			FRA = { add_threat = -30 }
 			RUS = { add_threat = -20 }
 			AUH = { add_threat = -15 }
+
+			GER = { clr_country_flag = GER_keep_BUL clr_country_flag = flag_GER_BUL_recrute_BUL_generals clr_country_flag = flag_GER_BUL_unite_progerman_opposition }
 		}
 	}
 }

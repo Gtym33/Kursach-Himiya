@@ -71,57 +71,30 @@ country_event = {
 				type = annex_everything
 			}
 		hidden_effect = {GAL = {load_oob = GAL_defender}}
-		if = {
-			limit = { NOT ={ has_war_with = UKR has_war_with = USR } OR = { is_owner_neighbor_of = UKR is_owner_neighbor_of = USR } }
-			random_state = {
-				limit = {
-					OR = {
-						is_owned_by = USR
-						is_owned_by = UKR
-					}
-					is_core_of = POL
-					any_neighbor_state = {
-						is_owned_by = POL
-					}
-				}
-				POL = { transfer_state = PREV }
-			}
-		}
 	}
 	
 	option = {
 		name = poland.2.b
+		ai_chance = {
+			factor = 0
+		}
 		add_stability = 0.05
 		add_popularity = { ideology = despotism popularity = -0.05 }
 		declare_war_on = {
 				target = GAL
 				type = annex_everything
 			}
-		hidden_effect = {GAL = {load_oob = GAL_defender}}
-		if = {
-			limit = { NOT ={ has_war_with = UKR has_war_with = USR } OR = { is_owner_neighbor_of = UKR is_owner_neighbor_of = USR } }
-			random_state = {
-				limit = {
-					OR = {
-						is_owned_by = USR
-						is_owned_by = UKR
-					}
-					is_core_of = POL
-					any_neighbor_state = {
-						is_owned_by = POL
-					}
-				}
-				POL = { transfer_state = PREV }
-			}
-		}
+		hidden_effect = { GAL = {load_oob = GAL_defender} }
 	}
 	
 	option = {
 		name = poland.2.c
+		ai_chance = {
+			factor = 0
+		}
 		add_war_support = -0.1
 		add_popularity = { ideology = despotism popularity = -0.3 }
 	}
-	
 }
 
 # ЗУНР отбилась
@@ -165,4 +138,190 @@ country_event = {
 		}
 	}
 	
+}
+
+# Конфликт с Литвой
+country_event = {
+	id = poland.4
+	title = poland.4.t
+	desc = poland.4.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	trigger = {
+		tag = POL
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+		owns_state = 822
+		LIT = { owns_state = 97 }
+		has_war = no
+	}
+
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		ai_chance = {
+			factor = 100
+		}
+		name = poland.2.a
+			start_border_war = {
+				change_state_after_war = yes
+				attacker = {
+					state = 822
+					num_provinces = 2
+					on_win = poland.6
+					on_lose = poland.5
+					on_cancel = poland.5
+				}
+				defender = {
+					state = 97
+					num_provinces = 3
+					on_win = poland.5
+					on_lose = poland.6
+					on_cancel = poland.5
+				}
+			}
+	}
+	option = {
+		ai_chance = {
+			factor = 0
+		}
+		name = poland.2.b
+	}
+}
+
+# Поражение (остановка)
+country_event = {
+	id = poland.5
+	title = poland.5.t
+	desc = poland.5.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.5.a
+	}
+}
+# Промежуточная победа
+country_event = {
+	id = poland.6
+	title = poland.6.t
+	desc = poland.6.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.6.a
+		if = {
+			limit = { tag = POL }
+			start_border_war = {
+				change_state_after_war = yes
+				attacker = {
+					state = 97
+					num_provinces = 3
+					on_win = poland.7
+					on_lose = poland.5
+					on_cancel = poland.5
+				}
+				defender = {
+					state = 956
+					num_provinces = 3
+					on_win = poland.5
+					on_lose = poland.7
+					on_cancel = poland.5
+				}
+			}
+		}
+	}
+}
+# Победа и переход в наступление на БНР
+country_event = {
+	id = poland.7
+	title = poland.7.t
+	desc = poland.7.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.7.a
+		if = {
+			limit = { tag = POL }
+			if = {
+				limit = { BLR = { owns_state = 927 } }
+				declare_war_on = {
+					target = BLR
+					type = annex_everything
+				}
+			}
+		}
+	}
+}
+
+# Холмщина и Подляшье
+country_event = {
+	id = poland.8
+	title = poland.8.t
+	desc = poland.8.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	trigger = {
+		tag = POL
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+		owns_state = 92
+		904 = { OWNER = { original_tag = UKR } }
+		1165 = { OWNER = { original_tag = UKR } }
+	}
+	
+	mean_time_to_happen = { days = 0 }
+	
+	fire_only_once = yes
+	
+	option = {
+		ai_chance = {
+			factor = 100
+		}
+		name = poland.7.a
+		transfer_state = 904
+		transfer_state = 1165
+		904 = { OWNER = { country_event = poland.9 } }
+	}
+	option = {
+		ai_chance = {
+			factor = 0
+		}
+		name = poland.7.b
+		
+	}
+}
+# Ответ Польше (Украина)
+country_event = {
+	id = poland.9
+	title = poland.9.t
+	desc = poland.9.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = {
+			factor = 100
+		}
+		name = poland.7.a
+		add_stability = -0.01
+	}
+	option = {
+		ai_chance = {
+			factor = 0
+		}
+		name = poland.7.b
+		declare_war_on = {
+			target = POL
+			type = annex_everything
+		}
+	}
 }

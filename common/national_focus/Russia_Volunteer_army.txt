@@ -372,23 +372,36 @@ focus_tree = {
 		id = RVA_restitution
 		icon = GFX_goal_RVA_restitution
 		cost = 3
+		
 		prerequisite = {
 			focus = RVA_governor_general
 		}
 		x = -3
 		y = 3
-		
+		available = {
+			any_state = {
+				is_controlled_by = ROOT
+				is_core_of = ROOT
+				OR = {
+					industrial_complex > 0
+					arms_factory > 0
+				}
+			}
+		}
 		completion_reward = {
+			custom_effect_tooltip = RVA_restitution_tt
 			add_stability = -0.07
-			random_owned_controlled_state  = {
+			random_state = {
 				limit = {
+					is_controlled_by = ROOT
+					is_core_of = ROOT
 					OR = {
 						industrial_complex > 0
 						arms_factory > 0
 					}
 					free_building_slots = {
 						building = arms_factory
-						size > 1
+						size > 0
 					}
 				}
 				add_building_construction = {
@@ -397,15 +410,17 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
-			random_owned_controlled_state  = {
+			random_state = {
 				limit = {
+					is_controlled_by = ROOT
+					is_core_of = ROOT
 					OR = {
 						industrial_complex > 0
 						arms_factory > 0
 					}
 					free_building_slots = {
 						building = industrial_complex
-						size > 1
+						size > 0
 					}
 				}
 				add_building_construction = {
@@ -646,6 +661,13 @@ focus_tree = {
 		y = 8
 
 		completion_reward = {
+			if = {
+				limit = { 219 = { OWNER = { NOT = { tag = ROOT } check_variable = { num_owned_states < 2 } } } }
+				219 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = yes } } } }
+			}
+			else_if = { limit = { NOT = { owns_state = 219 } } transfer_state = 219 }
+			add_state_core = 219
+			set_capital = 219
 			country_event = rcw_all_rus_NA.1
 		}
 	}
