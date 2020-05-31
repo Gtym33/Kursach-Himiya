@@ -97,6 +97,7 @@ country_event = {
 			ideology = national_syndicalism
 			popularity = 0.05
 		}
+		set_country_flag = BUL_bunt_capitulations
 		country_event = { id = bulgaria.2 days = 3 }
 		ai_chance = {
 			factor = 4
@@ -130,6 +131,7 @@ country_event = {
 		}
 		trigger = { is_in_faction_with = GER is_in_faction_with = AUH NOT = { GER = { has_country_flag = GER_monarchy_fall } } }
 		add_political_power = -70
+		set_country_flag = BUL_bunt_capitulations
 		country_event = { id = bulgaria.3 days = 7 }
 		ai_chance = {
 			factor = 1
@@ -173,7 +175,7 @@ country_event = {
 	option = {
 		name = bulgaria.2.c # Это поражение в войне
 		country_event = { id = compiegne_armistice.999 days = 1 }
-		set_country_flag = BUL_avoid_bunt_capitulations
+		clr_country_flag = BUL_bunt_capitulations
 		set_politics = {
 			ruling_party = national_syndicalism
 			elections_allowed = no
@@ -232,7 +234,7 @@ country_event = {
 		name = bulgaria.3.a
 		add_political_power = -50
 		country_event = { id = compiegne_armistice.999 days = 2 }
-		set_country_flag = BUL_avoid_bunt_capitulations
+		clr_country_flag = BUL_bunt_capitulations
 		effect_tooltip = {
 			add_stability = -0.05
 			add_war_support = -0.10
@@ -243,7 +245,7 @@ country_event = {
 		name = bulgaria.3.b
 		add_political_power = -100
 		clr_country_flag = BUL_not_cap_yet
-		set_country_flag = BUL_avoid_bunt_capitulations
+		clr_country_flag = BUL_bunt_capitulations
 		effect_tooltip = {
 			add_stability = -0.05
 			add_war_support = -0.10
@@ -266,11 +268,12 @@ country_event = {
 		has_start_date < 1918.11.11
 		has_global_flag = WWI_BUL_HAS_CAPITULATED
 		NOT = { has_government = national_syndicalism }
-		NOT = { has_country_flag = BUL_avoid_bunt_capitulations }
+		has_country_flag = BUL_bunt_capitulations
 	}
 	
 	option = {
 		name = bulgaria.4.a
+		clr_country_flag = BUL_bunt_capitulations
 		every_unit_leader = { limit = { OR = { has_id = 75001 has_id = 75002 has_id = 75003 has_id = 75004 has_id = 75005 } } set_nationality = REB }
 		hidden_effect = {
 		remove_ideas = BUL_Ferdinand_I_idea
@@ -335,6 +338,7 @@ country_event = {
 	
 	option = {
 		name = bulgaria.4.b
+		clr_country_flag = BUL_bunt_capitulations
 		every_unit_leader = { limit = { OR = { has_id = 75001 has_id = 75002 has_id = 75003 has_id = 75004 has_id = 75005 } } set_nationality = REB }
 		trigger = {
 			is_ai = no
@@ -497,8 +501,22 @@ country_event = {
 		if = {
 			limit = { has_country_flag = BUL_allies_help_Ferdinand_overtrow }
 			clr_country_flag = BUL_allies_help_Ferdinand_overtrow
-			remove_ideas = BUL_Ferdinand_I_idea
-			add_ideas = BUL_Boris_III_idea
+			if = {
+				limit = { has_idea = BUL_Ferdinand_I_idea }
+				swap_ideas = {
+					remove_idea = BUL_Ferdinand_I_idea
+					add_idea = BUL_Boris_III_idea
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_idea = BUL_Ferdinand_I_idea_hidden }
+					swap_ideas = {
+						remove_idea = BUL_Ferdinand_I_idea_hidden
+						add_idea = BUL_Boris_III_idea_hidden
+					}
+				}
+			}
 			if = {
 				limit = { has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes } }
 				retire_country_leader = yes
@@ -1516,40 +1534,29 @@ country_event = {
 	
 	option = {
 		name = bulgaria.51.a
-		every_country = {
-			limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
-			hidden_effect = {
-				set_variable = { global.Entente_major_conf_members = 0 }
-				set_variable = { global.Entente_white_peace_with_BUL = 0 }
-				set_variable = { global.Entente_not_white_peace_with_BUL = 0 }
-				set_variable = { global.Entente_major_conf_votes = 0 }
+		hidden_effect = {
+			set_variable = { global.Entente_major_conf_members = 0 }
+			set_variable = { global.Entente_white_peace_with_BUL = 0 }
+			set_variable = { global.Entente_not_white_peace_with_BUL = 0 }
+			set_variable = { global.Entente_major_conf_votes = 0 }
+			every_country = {
+				limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
 				if = {
-					limit = { FRA = { has_country_flag = WWI_Entente_member } }
+					limit = { OR = { tag = USA tag = RUS } }
 					add_to_variable = { global.Entente_major_conf_members = 3 }
-					FRA = { set_variable = { vote_power = 3 } }
+					set_variable = { vote_power = 3 }
 				}
-				if = {
-					limit = { ENG = { has_country_flag = WWI_Entente_member } }
-					add_to_variable = { global.Entente_major_conf_members = 3 }
-					ENG = { set_variable = { vote_power = 3 } }
-				}
-				if = {
-					limit = { USA = { has_country_flag = WWI_Entente_member } }
-					add_to_variable = { global.Entente_major_conf_members = 3 }
-					USA = { set_variable = { vote_power = 3 } }
-				}
-				if = {
-					limit = { RUS = { has_country_flag = WWI_Entente_member } }
-					add_to_variable = { global.Entente_major_conf_members = 3 }
-					RUS = { set_variable = { vote_power = 3 } }
-				}
-				if = {
-					limit = { FRA = { has_country_flag = WWI_Entente_member } RUS = { has_country_flag = WWI_Entente_member } }
+				else_if = {
+					limit = { OR = { tag = FRA tag = ENG } }
 					add_to_variable = { global.Entente_major_conf_members = 4 }
-					FRA = { set_variable = { vote_power = 4 } }
+					set_variable = { vote_power = 4 }
 				}
+				else = {
+					add_to_variable = { global.Entente_major_conf_members = 1 }
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = bulgaria.52 days = 2 }
 			}
-			country_event = { id = bulgaria.52 days = 2 }
 		}
 	}
 }
