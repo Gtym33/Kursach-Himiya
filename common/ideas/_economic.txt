@@ -10,15 +10,32 @@ ideas = {
 			cost = 100
 			
 			available = {
-				check_variable = { lib_and_soclib_parties < 0.5 }
-				NOT = { has_idea = soviet_republic_gov_form }
+				always = no
 			}
-			removal_cost = -1
+			allowed_to_remove = {
+				is_subject = no
+				OR = {
+					not_has_monocultural_agriculture_all = yes
+					has_war = yes
+					custom_trigger_tooltip = {
+						tooltip = ruling_coalition_is_socialist_or_socdem_tt
+						OR = {
+							ruling_coalition_is_socialist = yes
+							ruling_coalition_is_socdem = yes
+						}
+					}
+				}
+				if = {
+					limit = { has_idea = NIC_bryan_chamorro_treaty }
+					NOT = { has_idea = NIC_bryan_chamorro_treaty }
+				}
+			}
+			removal_cost = 100
 			modifier = {
-				political_power_gain = 0.3
-				production_speed_buildings_factor = 0.1
-				consumer_goods_factor = 0.1
+				production_speed_buildings_factor = -0.1
+				production_factory_max_efficiency_factor = -0.1
 				subjects_autonomy_gain = -0.01
+				min_export = 0.05
 			}
 			ai_will_do = {
 				factor = 0
@@ -32,12 +49,17 @@ ideas = {
 			
 			available = {
 				OR = {
-					has_government = market_liberalism
-					has_government = social_conservatism
-					has_government = despotism
+					has_idea = corporatocracy_law
+					AND = {
+						has_idea = interventionalism_law
+						OR = {
+							has_government = market_liberalism
+							has_government = social_conservatism
+							has_government = despotism
+						}
+						has_war = no
+					}
 				}
-				has_war = no
-				NOT = { has_idea = soviet_republic_gov_form }
 			}
 			allowed_to_remove = {
 				OR = {
@@ -62,6 +84,7 @@ ideas = {
 			available = {
 				OR = {
 					has_idea = laissez_faire_law
+					has_idea = corporatocracy_law
 					AND = {
 						NOT = { has_government = radical_socialism }
 						NOT = { is_socialist_country = yes }
@@ -132,10 +155,7 @@ ideas = {
 			
 			available = {
 				OR = {
-					has_government = radical_socialism
-					is_socialist_country = yes
-					has_government = social_democracy
-					has_government = social_liberalism
+					ruling_coalition_is_socialist = yes
 					has_government = despotism
 				}
 			}
@@ -158,10 +178,9 @@ ideas = {
 			
 			available = {
 				OR = {
-					has_government = radical_socialism
-					is_socialist_country = yes
+					ruling_coalition_is_socialist = yes
 					AND = {
-						has_government = social_democracy
+						ruling_coalition_is_socdem = yes
 						custom_trigger_tooltip = {
 							tooltip = socialist_parties_more_then_50_tt
 							check_variable = { socialist_parties > 0.5 }
@@ -246,11 +265,7 @@ ideas = {
 			available = {
 				OR = {
 					AND = {
-						OR = {
-							has_government = radical_socialism
-							is_socialist_country = yes
-							has_government = social_democracy
-						}
+						is_socialist_country = yes
 						OR = {
 							AND = {
 								has_country_flag = RUS_flag_soviet_power
@@ -308,31 +323,22 @@ ideas = {
 			available = {
 				NOT = {
 					has_government = radical_socialism
-					is_socialist_country = yes
+					has_government = communism
 					has_government = social_democracy
 					has_government = social_liberalism
 					has_government = national_syndicalism
 				}
 				custom_trigger_tooltip = {
-					tooltip = despotism_social_democratic_coalition_less_then_20_tt
-					check_variable = { despotism_social_democratic_coalition < 0.2 }
+					tooltip = socialist_parties_less_then_10_tt
+					check_variable = { socialist_parties < 0.1 }
+				}
+				custom_trigger_tooltip = {
+					tooltip = socdem_parties_less_then_10_tt
+					check_variable = { socdem_parties < 0.1 }
 				}
 			}
 			allowed_to_remove = {
-				OR = {
-					AND = {
-						NOT = { has_government = social_conservatism }
-						NOT = { has_government = authoritarism }
-						NOT = { has_government = despotism }
-						NOT = { is_fascist_country = yes }
-					}
-					AND = {
-						custom_trigger_tooltip = {
-							tooltip = despotism_social_democratic_coalition_more_then_10_tt
-							check_variable = { despotism_social_democratic_coalition > 0.1 }
-						}
-					}
-				}
+				NOT = { has_idea = corporatocracy_law }
 			}
 			modifier = {
 				production_factory_max_efficiency_factor = 0.05
@@ -341,7 +347,7 @@ ideas = {
 			}
 			cancel_if_invalid = no
 			ai_will_do = {
-				factor = 0
+				factor = 1
 			}
 		}
 		minimum_legislation = {
@@ -350,15 +356,40 @@ ideas = {
 			
 			removal_cost = -1
 			available = {
-				OR = {
-					has_idea = no_legislation
-					custom_trigger_tooltip = {
-						tooltip = socialist_parties_less_then_15_tt
-						check_variable = { socialist_parties < 0.15 }
+				if = {
+					limit = {
+						has_idea = no_legislation
+					}
+					OR = {
+						ruling_coalition_is_socialist = yes
+						ruling_coalition_is_socdem = yes
+						ruling_coalition_is_liberal = yes
+						custom_trigger_tooltip = {
+							tooltip = socialist_parties_more_then_10_tt
+							check_variable = { socialist_parties > 0.1 }
+						}
+						custom_trigger_tooltip = {
+							tooltip = socdem_parties_more_then_10_tt
+							check_variable = { socdem_parties > 0.1 }
+						}
+					}
+				}
+				if = {
+					limit = {
+						NOT = { has_idea = no_legislation }
+					}
+					OR = {
+						ruling_coalition_is_liberal = yes
+						ruling_coalition_is_authoritarian = yes
+						ruling_coalition_is_reactionary = yes
 					}
 					custom_trigger_tooltip = {
-						tooltip = despotism_social_democratic_coalition_less_then_20_tt
-						check_variable = { despotism_social_democratic_coalition < 0.2 }
+						tooltip = socialist_parties_less_then_20_tt
+						check_variable = { socialist_parties < 0.2 }
+					}
+					custom_trigger_tooltip = {
+						tooltip = socdem_parties_less_then_20_tt
+						check_variable = { socdem_parties < 0.2 }
 					}
 				}
 			}
@@ -368,8 +399,24 @@ ideas = {
 				consumer_goods_factor = 0.02
 			}
 			cancel_if_invalid = no
+			
 			ai_will_do = {
-				factor = 0
+				factor = 1
+				modifier = {
+					factor = 10
+					has_idea = no_legislation
+					OR = {
+						ruling_coalition_is_socialist = yes
+						ruling_coalition_is_socdem = yes
+						AND = {
+							ruling_coalition_is_liberal = yes
+							OR = {
+								check_variable = { socialist_parties > 0.15 }
+								check_variable = { socdem_parties > 0.15 }
+							}
+						}
+					}
+				}
 			}
 		}
 		acceptable_legislation = {
@@ -378,31 +425,50 @@ ideas = {
 			
 			removal_cost = -1
 			available = {
-				OR = {
-					AND = {
+				if = {
+					limit = {
 						OR = {
 							has_idea = no_legislation
 							has_idea = minimum_legislation
 						}
-						OR = {
-							has_government = radical_socialism
-							is_socialist_country = yes
-							has_government = social_democracy
-							has_government = social_liberalism
-							has_government = national_syndicalism
-							custom_trigger_tooltip = {
-								tooltip = despotism_social_democratic_coalition_more_then_25_tt
-								check_variable = { despotism_social_democratic_coalition > 0.25 }
+					}
+					OR = {
+						ruling_coalition_is_socialist = yes
+						ruling_coalition_is_socdem = yes
+						AND = {
+							ruling_coalition_is_liberal = yes
+							OR = {
+								custom_trigger_tooltip = {
+									tooltip = socialist_parties_more_then_20_tt
+									check_variable = { socialist_parties > 0.2 }
+								}
+								custom_trigger_tooltip = {
+									tooltip = socdem_parties_more_then_20_tt
+									check_variable = { socdem_parties > 0.2 }
+								}
 							}
 						}
+					}
+				}
+				if = {
+					limit = {
+						NOT = {
+							has_idea = no_legislation
+							has_idea = minimum_legislation
+						}
+					}
+					OR = {
+						ruling_coalition_is_liberal = yes
+						ruling_coalition_is_authoritarian = yes
+						ruling_coalition_is_reactionary = yes
 					}
 					custom_trigger_tooltip = {
 						tooltip = socialist_parties_less_then_20_tt
 						check_variable = { socialist_parties < 0.2 }
 					}
 					custom_trigger_tooltip = {
-						tooltip = despotism_social_democratic_coalition_less_then_30_tt
-						check_variable = { despotism_social_democratic_coalition < 0.30 }
+						tooltip = socdem_parties_less_then_20_tt
+						check_variable = { socdem_parties < 0.2 }
 					}
 				}
 			}
@@ -416,7 +482,25 @@ ideas = {
 			}
 			cancel_if_invalid = no
 			ai_will_do = {
-				factor = 0
+				factor = 1
+				modifier = {
+					factor = 10
+					OR = {
+						has_idea = no_legislation
+						has_idea = minimum_legislation
+					}
+					OR = {
+						ruling_coalition_is_socialist = yes
+						ruling_coalition_is_socdem = yes
+						AND = {
+							ruling_coalition_is_liberal = yes
+							OR = {
+								check_variable = { socialist_parties > 0.25 }
+								check_variable = { socdem_parties > 0.25 }
+							}
+						}
+					}
+				}
 			}
 		}
 		good_legislation = {
@@ -425,12 +509,14 @@ ideas = {
 			
 			removal_cost = -1
 			available = {
-				OR = {
-					has_government = radical_socialism
-					is_socialist_country = yes
-					has_government = social_democracy
-					has_government = social_liberalism
-					has_government = despotism
+				if = {
+					limit = { NOT = { has_idea = great_legislation } }
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+						has_government = social_democracy
+						has_government = social_liberalism
+					}
 				}
 			}
 			modifier = {
@@ -443,7 +529,19 @@ ideas = {
 			}
 			cancel_if_invalid = no
 			ai_will_do = {
-				factor = 0
+				factor = 1
+				modifier = {
+					factor = 10
+					OR = {
+						has_idea = no_legislation
+						has_idea = minimum_legislation
+						has_idea = acceptable_legislation
+					}
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+					}
+				}
 			}
 		}
 		great_legislation = {
@@ -454,12 +552,9 @@ ideas = {
 			available = {
 				OR = {
 					has_government = radical_socialism
-					is_socialist_country = yes
+					has_government = communism
 					has_government = social_democracy
-					custom_trigger_tooltip = {
-						tooltip = socialist_parties_less_then_30_tt
-						check_variable = { socialist_parties < 0.3 }
-					}
+					has_government = social_liberalism
 				}
 			}
 			allowed_to_remove = {
@@ -480,7 +575,7 @@ ideas = {
 			}
 			cancel_if_invalid = no
 			ai_will_do = {
-				factor = 0
+				factor = 1
 			}
 		}
 	}
@@ -532,7 +627,7 @@ ideas = {
 			
 			
 			available = {
-				
+				NOT = { has_idea = corporatocracy_law }
 			}
 		
 			cost = 150
@@ -565,7 +660,7 @@ ideas = {
 			
 			available = {
 				has_war = yes
-				OR = { has_idea = commanding_heights_law has_idea = planed_economy_law has_idea = state_capitalism_law }
+				NOT = { has_idea = corporatocracy_law has_idea = laissez_faire_law }
 				NOT = { has_idea = dependence_on_grain_imports }
 				NOT = { has_idea_with_trait = min_2_corporations_puppet }
 			}
