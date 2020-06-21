@@ -3542,7 +3542,7 @@ country_event = {
 		remove_unit_leader = 76321
 		if = {
 			limit = { NOT = { has_country_flag = Lavr_Kornilov_dead } }
-			RVA = { create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero warmonger dictator goal_in_politics } } }
+			RVA = { create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero warmonger russian_sulla goal_in_politics } } }
 		}
 		else_if = {
 			limit = { any_unit_leader = { has_id = 76428 } }
@@ -5054,12 +5054,18 @@ country_event = {
 	}
 	
 	option = {
-		trigger = { NOT = { has_completed_focus = RVA_restitution } }
+		trigger = { NOT = { OR = { has_completed_focus = RVA_restitution has_government = fascism has_government = authoritarism has_government = market_liberalism has_government = social_conservatism } } }
 		name = rcw_dku.125.b
 		add_political_power = -120
 		add_popularity = { ideology = social_democracy popularity = 0.07 }
-		add_popularity = { ideology = authoritarism popularity = -0.03 }
-		add_popularity = { ideology = despotism popularity = -0.03 }
+		if = {
+			limit = { has_country_flag = RVA_authoritarism_coup_suppose }
+			add_popularity = { ideology = despotism popularity = -0.07 }
+			else = {
+				add_popularity = { ideology = authoritarism popularity = -0.03 }
+				add_popularity = { ideology = despotism popularity = -0.03 }
+			}
+		}
 		add_war_support = -0.07
 		peasant_and_land_and_bread_question_fall = yes
 		add_timed_idea = { idea = peasant_and_land_and_bread_question_reformation_period days = 90 }
@@ -5143,6 +5149,7 @@ country_event = {
 	
 	option = {
 		name = rcw_dku.128.a
+		trigger = { NOT = { OR = { has_government = fascism has_government = social_conservatism } } }
 		add_political_power = -25
 		add_popularity = { ideology = social_democracy popularity = 0.07 }
 		add_stability = 0.05
@@ -5157,6 +5164,7 @@ country_event = {
 	
 	option = {
 		name = rcw_dku.128.c
+		trigger = { NOT = { has_government = fascism } }
 		set_country_flag = RVA_kadet_constitution
 		add_ideas = territorial_expansion_law
 		if = {
@@ -5215,10 +5223,28 @@ country_event = {
 		add_ideas = unitary_gov_terr
 		add_ideas = emergency_laws_b_law
 		add_popularity = { ideology = authoritarism popularity = 0.10 }
-		every_unit_leader = { limit = { OR = { has_id = 76428 } } set_nationality = REB }
 		if = {
-			limit = { has_country_leader = { name = "Anton Denikin" } }
+			limit = { has_country_leader = { name = "Anton Denikin" ruling_only = yes } }
 			remove_despotism_leader = yes
+			create_country_leader = { name = "Alexander Lukomsky" desc = RUS_Alexander_Lukomsky_DESC picture = "gfx/leaders/RUS/Alexander_Lukomsky.dds" ideology = despotism_ideology traits = { warmonger } }
+			every_unit_leader = { limit = { OR = { has_id = 76428 } } set_nationality = REB }
+		}
+		if = {
+			limit = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } }
+			remove_despotism_leader = yes
+			if = {
+				limit = { any_unit_leader = { has_id = 76321 } }
+				create_country_leader = { name = "Michael Alexeev" desc = RUS_Michael_Alexeev_DESC picture = "gfx/leaders/RUS/Michael_Alexeev.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger } }
+			}
+			else_if = {
+				limit = { any_unit_leader = { has_id = 76428 } }
+				create_country_leader = { name = "Anton Denikin" desc = RUS_Anton_Denikin_DESC picture = "gfx/leaders/RUS/Anton_Denikin.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger great_war_hero } }
+			}
+			else_if = {
+				limit = { any_unit_leader = { has_id = 77456 } }
+				create_country_leader = { name = "Alexander Lukomsky" desc = RUS_Alexander_Lukomsky_DESC picture = "gfx/leaders/RUS/Alexander_Lukomsky.dds" ideology = despotism_ideology traits = { warmonger } }
+			}
+			every_unit_leader = { limit = { OR = { has_id = 76547 } } set_nationality = REB }
 		}
 		hidden_effect = { remove_ideas = RVA_steel_discipline_idea }
 		set_country_flag = RVA_authoritarism_coup_fired
@@ -5235,12 +5261,9 @@ country_event = {
 		set_country_flag = RVA_authoritarism_coup_suppose
 		every_unit_leader = { limit = { OR = { has_id = 77659 } } set_nationality = REB }
 		every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = REB }
+		every_unit_leader = { limit = { OR = { has_id = 76836 } } set_nationality = REB }
 		if = {
-			limit = { has_country_leader = { name = "Alexandr Kutepov" }  }
-			remove_authoritarism_leader = yes
-		}
-		if = {
-			limit = { has_country_leader = { name = "Mikhael Drozdovsky" }  }
+			limit = { has_country_leader = { name = "Nikolay II Romanov" }  }
 			remove_authoritarism_leader = yes
 		}
 		if = {
@@ -5248,7 +5271,11 @@ country_event = {
 			remove_authoritarism_leader = yes
 		}
 		if = {
-			limit = { has_country_leader = { name = "Nikolay II Romanov" }  }
+			limit = { has_country_leader = { name = "Mikhael Drozdovsky" }  }
+			remove_authoritarism_leader = yes
+		}
+		if = {
+			limit = { has_country_leader = { name = "Alexandr Kutepov" }  }
 			remove_authoritarism_leader = yes
 		}
 	}
@@ -5364,8 +5391,8 @@ country_event = {
 	option = {
 		name = rcw_dku.133.a
 		if = {
-		limit = { has_idea = RVA_local_counterintelligence }
-		add_timed_idea = { idea = officers_purged_6 days = 56 }
+			limit = { has_idea = RVA_local_counterintelligence }
+			add_timed_idea = { idea = officers_purged_6 days = 56 }
 		}
 		add_popularity = { ideology = authoritarism popularity = -0.10 }
 		add_stability = 0.05
@@ -5401,6 +5428,10 @@ country_event = {
 	option = {
 		name = rcw_dku.134.a
 		trigger = { NOT = { has_country_flag = RVA_authoritarism_coup_fired } }
+		if = {
+			limit = { is_subject = yes }
+			country_event = rcw_dku.135
+		}
 		set_temp_variable = { temp_socdem = party_popularity@social_democracy }
 		set_temp_variable = { temp_0 = temp_socdem }
 		set_temp_variable = { temp_soclib = party_popularity@social_liberalism }
@@ -5451,10 +5482,6 @@ country_event = {
 		else_if = {
 			limit = { check_variable { temp_natsynd = temp_0 } }
 			set_politics = { ruling_party = national_syndicalism elections_allowed = no }
-		}
-		if = {
-			limit = { is_subject = yes }
-			country_event = rcw_dku.135
 		}
 	}
 	

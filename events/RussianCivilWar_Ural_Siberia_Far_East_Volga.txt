@@ -3717,7 +3717,10 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Florian_Fyodorovich.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { } }
+			if = {
+				limit = { tag = RSS }
+				create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Florian_Fyodorovich.dds" ideology = social_liberalism_ideology traits = { } }
+			}
 		}
 	}
 	
@@ -4397,6 +4400,10 @@ country_event = {
 					PRM = {
 						create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { } }
 					}
+					SIB = {
+						retire_ideology_leader = social_liberalism
+						create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Florian_Fyodorovich.dds" ideology = social_liberalism_ideology traits = { } }
+					}
 				}
 			}
 			hidden_effect = {
@@ -4475,6 +4482,10 @@ country_event = {
 					PRM = {
 						create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { } }
 					}
+					SIB = {
+						retire_ideology_leader = social_liberalism
+						create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Florian_Fyodorovich.dds" ideology = social_liberalism_ideology traits = { } }
+					}
 				}
 			}
 			hidden_effect = {
@@ -4518,9 +4529,10 @@ country_event = {
 		}
 		set_politics = { ruling_party = social_conservatism }
 		add_popularity = { ideology = authoritarism popularity = 0.05 }
-			}
+	}
 	option = {
 		name = rcw_usfev.96.b
+		trigger = { always = no }
 		ai_chance = {
 			factor = 1
 		}
@@ -4571,30 +4583,30 @@ country_event = {
 	option = {
 		name = rcw_usfev.97.a
 		ai_chance = {
-			factor = 100
-			}
-		if = {
-		limit = {SIB = {exists = yes}}
-		every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB }
+			factor = 1
 		}
 		if = {
-		limit = {RSS = {exists = yes}}
-		every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = RSS }
+			limit =  {SIB = { exists = yes } }
+			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB }
+		}
+		if = {
+			limit = { RSS = { exists = yes } }
+			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = RSS }
 		}
 		set_politics = { ruling_party = social_conservatism }
 		add_popularity = { ideology = communism popularity = 0.05 }
-			}
+	}
 			
 	option = {
 		name = rcw_usfev.97.b
 		add_stability = 0.05
 		if = {
-		limit = {SIB = {exists = yes}}
-		every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB }
+			limit =  {SIB = { exists = yes } }
+			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB }
 		}
 		if = {
-		limit = {RSS = {exists = yes}}
-		every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = RSS }
+			limit = { RSS = { exists = yes } }
+			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = RSS }
 		}
 		OVERLORD = { end_puppet = PRM }
 	}
@@ -4746,8 +4758,8 @@ country_event = {
 	option = {
 		name = rcw_usfev.101.a
 		add_stability = 0.05
-		}
 	}
+}
 
 ###Гайда требуют особых полномочий###
 country_event = {
@@ -4767,18 +4779,18 @@ country_event = {
 		add_popularity = { ideology = national_syndicalism popularity = 0.15 }
 		set_party_name = { ideology = national_syndicalism long_name = PRM_national_syndicalism_party_gajda_long name = PRM_national_syndicalism_party_gajda }
 		set_cosmetic_tag = PRM_g
-		}
+	}
 		
 	option = {
 		name = rcw_usfev.102.b
 		add_political_power = -100
 		JAP = {country_event = { id = rcw_usfev.103 days = 1 }}
-		}
+	}
 		
 	option = {
 		name = rcw_usfev.102.c
 		country_event = { id = rcw_usfev.104 hours = 3 }
-		}
+	}
 }
 
 ###Звонок за помощью в Токио от Приморья###
@@ -4915,7 +4927,7 @@ country_event = {
 		name = rcw_usfev.107.a
 		add_political_power = -100
 		add_popularity = { ideology = communism popularity = 0.25 }
-		}
+	}
 }
 
 ###Переворот в Приморье, если там много красных###
@@ -4933,6 +4945,10 @@ country_event = {
 			OVERLORD = { end_puppet = PRM }
 			leave_faction = yes
 			set_politics = { ruling_party = communism }
+			if = {
+				limit = { has_country_leader = { name = "Pyotr Derber" } }
+				retire_ideology_leader = social_liberalism
+			}
 			set_country_flag = political_social_liberals_in_socialist_coalition
 			clr_country_flag = political_social_liberals_not_in_liberal_coalition
 			every_unit_leader = { limit = { has_id = 88161 } set_nationality = REB }
@@ -4955,6 +4971,10 @@ country_event = {
 			OVERLORD = { end_puppet = PRM }
 			leave_faction = yes
 			set_politics = { ruling_party = social_liberalism }
+			if = {
+				limit = { has_country_leader = { name = "Pyotr Derber" } }
+				retire_ideology_leader = social_liberalism
+			}
 			set_country_flag = political_social_liberals_in_socialist_coalition
 			clr_country_flag = political_social_liberals_not_in_liberal_coalition
 			every_unit_leader = { limit = { has_id = 88161 } set_nationality = REB }
@@ -7680,8 +7700,8 @@ country_event = {
 		name = rcw_usfev.173.a
 		set_country_flag = political_social_liberals_in_socialist_coalition
 		clr_country_flag = political_social_liberals_not_in_liberal_coalition
-		annex_country = { target = CCA transfer_troops = yes }
 		CCA = { every_unit_leader = { set_nationality = RUS } }
+		annex_country = { target = CCA transfer_troops = yes }
 		add_ideas = {
 			Prosh_Proshian_2
 			Viktor_Chernov_3
@@ -9663,37 +9683,6 @@ country_event = {
 		add_political_power = -25
 		add_stability = -0.05
 		army_experience = 10
-	}
-}
-
-
-
-# Технический ивент если и в Сибири и в Приморье эсеры с Дербером 
-country_event = {
-	id = rcw_usfev.430
-	title = rcw_usfev.430.t
-	desc = rcw_usfev.430.d
-	picture = GFX_report_event_prm_diterikhs_coup
-	
-	trigger = {
-		tag = PRM
-		SIB = { exists = yes }
-		PRM = { exists = yes }
-		SIB = { has_country_leader = { ruling_only = yes name = "Pyotr Derber" } }
-		PRM = { has_country_leader = { name = "Pyotr Derber" } }
-	}
-	
-	hidden = yes
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = rcw_usfev.430.a
-		kill_ideology_leader = social_liberalism
 	}
 }
 

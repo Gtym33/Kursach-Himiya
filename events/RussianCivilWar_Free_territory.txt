@@ -1,0 +1,865 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_free_territory
+
+# Рост гражданской войны в деревне
+country_event = {
+	id = rcw_free_territory.-1
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	hidden = yes
+	
+	trigger = {
+		tag = FRT
+		has_variable = angry_peasants
+	}
+	
+	mean_time_to_happen = {
+		days = 365
+	}
+	
+	option = {
+		name = rcw_free_territory.-1.a
+		add_to_variable = { var = angry_peasants value = 1 }
+	}
+}
+
+# Снятие корок, когда вольница уничтожена
+country_event = {
+	id = rcw_free_territory.0
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	hidden = yes
+	
+	trigger = {
+		FRT = { exists = no }
+		any_state = { is_core_of = FRT }
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_free_territory.0.a
+		every_state = {
+			limit = { is_core_of = FRT }
+			remove_core_of = FRT
+		}
+	}
+}
+
+# Махно смещают, если низкий авторитет
+country_event = {
+	id = rcw_free_territory.1
+	title = rcw_free_territory.1.t
+	desc = rcw_free_territory.1.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = FRT
+		has_country_leader = { name = "Nestor Machno" ruling_only = yes }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		NOT = { has_global_flag = RUS_civil_war_over }
+		OR = {
+			has_idea = FRT_Makhno_low_authority_idea
+			has_idea = FRT_Makhno_very_low_authority_idea
+			AND = {
+				has_idea = FRT_Makhno_normal_authority_idea
+				has_idea = FRT_boys_are_unhappy_idea
+			}
+		}
+		OR = {
+			has_government = radical_socialism
+			has_government = despotism
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 60
+		modifier = {
+			factor = 0.5
+			has_idea = FRT_Makhno_very_low_authority_idea
+		}
+		modifier = {
+			factor = 0.5
+			has_idea = FRT_boys_are_unhappy_idea
+		}
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.1.a
+		delete_Makhno_authority = yes
+		retire_ideology_leader = despotism
+		retire_ideology_leader = radical_socialism
+		remove_ideas = FRT_boys_are_unhappy_idea
+		if = {
+			limit = { NOT = { has_government = despotism } }
+			set_politics = { ruling_party = radical_socialism elections_allowed = no }
+		}
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = agrarian_communism traits = { } }
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = despotism_ideology traits = { } }
+	}
+	
+	option = {
+		name = rcw_free_territory.1.b
+		delete_Makhno_authority = yes
+		retire_ideology_leader = despotism
+		retire_ideology_leader = radical_socialism
+		remove_ideas = FRT_boys_are_unhappy_idea
+		if = {
+			limit = { NOT = { has_government = despotism } }
+			set_politics = { ruling_party = social_democracy elections_allowed = no }
+		}
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" expire = "1935.1.1" ideology = agrarian_communism traits = { } }
+		create_country_leader = { name = "Peter Arshinov" desc = FRT_Peter_Arshinov_DESC picture = "gfx/leaders/FRT/Peter_Arshinov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { } }
+	}
+	
+	option = {
+		name = rcw_free_territory.1.c
+		trigger = { any_unit_leader = { has_id = 77424 } }
+		delete_Makhno_authority = yes
+		retire_ideology_leader = despotism
+		retire_ideology_leader = radical_socialism
+		remove_ideas = FRT_boys_are_unhappy_idea
+		if = {
+			limit = { NOT = { has_government = despotism } }
+			set_politics = { ruling_party = social_liberalism elections_allowed = no }
+		}
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = agrarian_communism traits = { } }
+		create_country_leader = { name = "Marusya Nikiforova" desc = FRT_Marusya_Nikiforova_DESC picture = "gfx/leaders/FRT/Marusya_Nikiforova.dds" ideology = despotism_ideology traits = { } }
+	}
+	
+	option = {
+		name = rcw_free_territory.1.d
+		trigger = { has_completed_focus = FRT_organization_of_the_operational_headquarters }
+		delete_Makhno_authority = yes
+		retire_ideology_leader = despotism
+		retire_ideology_leader = radical_socialism
+		remove_ideas = FRT_boys_are_unhappy_idea
+		if = {
+			limit = { NOT = { has_government = despotism } }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+		}
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = agrarian_communism traits = { } }
+		create_country_leader = { name = "Victor Belash" desc = FRT_Victor_Belash_DESC picture = "gfx/leaders/FRT/Victor_Belash.dds" ideology = despotism_ideology traits = { } }
+	}
+	
+	option = {
+		name = rcw_free_territory.1.e
+		trigger = { fascism > 0 }
+		delete_Makhno_authority = yes
+		retire_ideology_leader = despotism
+		retire_ideology_leader = radical_socialism
+		remove_ideas = FRT_boys_are_unhappy_idea
+		set_politics = { ruling_party = fascism elections_allowed = no }
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = agrarian_communism traits = { } }
+		create_country_leader = { name = "Grigory Yatsenko" desc = FRT_Grigory_Yatsenko_DESC picture = "gfx/leaders/FRT/Grigory_Yatsenko.dds" ideology = despotism_ideology traits = { } }
+	}
+	
+	option = {
+		name = rcw_free_territory.1.f
+		trigger = { any_unit_leader = { has_id = 77459 } }
+		delete_Makhno_authority = yes
+		retire_ideology_leader = despotism
+		retire_ideology_leader = radical_socialism
+		remove_ideas = FRT_boys_are_unhappy_idea
+		set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = agrarian_communism traits = { } }
+		create_country_leader = { name = "Leontiy Khristovoy" desc = FRT_Leontiy_Khristovoy_DESC picture = "gfx/leaders/FRT/Leontiy_Khristovoy.dds" ideology = despotism_ideology traits = { } }
+	}
+}
+
+# Вольная территория перекатывается в военную диктатуру обратно (и патернализм, если не сотрудничать с анархистами)
+country_event = {
+	id = rcw_free_territory.2
+	title = rcw_free_territory.2.t
+	desc = rcw_free_territory.2.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = FRT
+		has_completed_focus = FRT_convene_council
+		has_completed_focus = FRT_introduction_of_commandants
+		OR = {
+			has_completed_focus = FRT_anti_partisanship
+			has_completed_focus = FRT_collaboration_with_anarchists
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_free_territory.2.a
+		add_ideas = military_dictatorship_gov_form
+		if = {
+			limit = { has_completed_focus = FRT_anti_partisanship }
+			set_politics = { ruling_party = despotism elections_allowed = no }
+		}
+	}
+}
+
+# Гражданская война в деревне (бедняки пошли на богатых)
+country_event = {
+	id = rcw_free_territory.3
+	title = rcw_free_territory.3.t
+	desc = rcw_free_territory.3.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = FRT
+		has_variable = angry_peasants
+		check_variable = { angry_peasants > 2 }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_free_territory.3.a
+		clear_variable = angry_peasants
+		swap_ideas = {
+			remove_idea = FRT_stratification_of_peasants_idea
+			add_idea = FRT_civil_war_in_the_village_idea
+		}
+	}
+}
+
+# Отряды Махно потеряли социальную почву
+country_event = {
+	id = rcw_free_territory.4
+	title = rcw_free_territory.4.t
+	desc = rcw_free_territory.4.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = FRT
+		has_idea = FRT_civil_war_in_the_village_idea
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = rcw_free_territory.3.a
+		swap_ideas = {
+			remove_idea = FRT_peasant_army_idea
+			add_idea = FRT_peasant_army_crisis_idea
+		}
+	}
+}
+
+# Рабочие просят восстановить работу предприятий
+country_event = {
+	id = rcw_free_territory.5
+	title = rcw_free_territory.5.t
+	desc = rcw_free_territory.5.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = FRT
+		any_state = {
+   		 	is_controlled_by = FRT
+			OR = {
+				industrial_complex > 0
+				arms_factory > 0
+			}
+			NOT = { state = 852 }
+		}
+		NOT = { has_completed_focus = FRT_face_to_the_city }
+	}
+	
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.5.a
+		low_labor_legislation = yes
+		add_to_variable = { var = angry_workers value = 1 }
+	}
+	
+	option = {
+		name = rcw_free_territory.5.a
+		add_political_power = -25
+		add_war_support = -0.05
+		add_stability = -0.05
+		down_Makhno_authority = yes
+		add_timed_idea = { idea = FRT_boys_are_unhappy_idea days = 7 }
+	}
+}
+
+# Рабочие просят восстановить работу железной дороги
+country_event = {
+	id = rcw_free_territory.6
+	title = rcw_free_territory.6.t
+	desc = rcw_free_territory.6.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = FRT
+		any_state = {
+   		 	is_controlled_by = FRT
+			infrastructure > 3
+			NOT = { state = 852 }
+		}
+		NOT = { has_completed_focus = FRT_face_to_the_city }
+	}
+	
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.6.a
+		low_labor_legislation = yes
+		add_to_variable = { var = angry_workers value = 1 }
+	}
+	
+	option = {
+		name = rcw_free_territory.6.a
+		add_political_power = -25
+		add_war_support = -0.05
+		add_stability = -0.05
+		down_Makhno_authority = yes
+		add_timed_idea = { idea = FRT_boys_are_unhappy_idea days = 7 }
+	}
+}
+
+# Местный съезд советов
+country_event = {
+	id = rcw_free_territory.7
+	title = rcw_free_territory.7.t
+	desc = rcw_free_territory.7.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.7.a
+		trigger = { check_variable = { angry_workers < 3 } }
+		set_country_flag = FRT_workers_council
+	}
+	
+	option = {
+		name = rcw_free_territory.6.a
+		set_country_flag = FRT_peasants_council
+	}
+}
+
+# Всеукраинский съезд советов
+country_event = {
+	id = rcw_free_territory.8
+	title = rcw_free_territory.8.t
+	desc = rcw_free_territory.8.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.8.a
+		trigger = { has_completed_focus = FRT_face_to_the_city NOT = { has_country_flag = FRT_Makhno_soviet } }
+		complete_national_focus = FRT_building_syndicalism
+		set_politics = { ruling_party = radical_socialism elections_allowed = no }
+		create_country_leader = { name = "Vsevolod Volin" desc = FRT_Vsevolod_Volin_DESC picture = "gfx/leaders/FRT/Volin.dds" ideology = agrarian_communism traits = { } }
+	}
+	
+	option = {
+		name = rcw_free_territory.8.b
+		trigger = { has_country_flag = FRT_Makhno_soviet has_country_leader = { name = "Nestor Machno" ruling_only = yes } }
+		complete_national_focus = FRT_soviet_republic
+	}
+	
+	option = {
+		name = rcw_free_territory.8.c
+		trigger = { has_completed_focus = FRT_face_to_the_countryside NOT = { has_country_flag = FRT_Makhno_soviet } has_country_leader = { name = "Nestor Machno" ruling_only = yes } }
+		complete_national_focus = FRT_building_anarcho-capitalism
+	}
+	
+	option = {
+		name = rcw_free_territory.8.d
+		trigger = { has_completed_focus = FRT_face_to_the_countryside NOT = { has_country_flag = FRT_Makhno_soviet } }
+		complete_national_focus = FRT_building_peasants_republic
+	}
+}
+
+#########Анархистское покушение на Ленина
+country_event = {
+	id = rcw_free_territory.9
+	title = rcw_free_territory.9.t
+	desc = rcw_free_territory.9.d
+	
+	picture = GFX_report_event_cca_esser
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_free_territory.9.a
+		hidden_effect = {
+			RSS = {
+				random_list = {
+					20 = {
+						country_event = { id = rcw_free_territory.10 days = 1 }
+					}
+					60 = {
+						country_event = { id = rcw_free_territory.11 days = 1 }
+					}
+					20 = {
+						country_event = { id = rcw_free_territory.12 days = 1 }
+					}
+				}
+			}
+		}
+	}
+}
+
+#########Убийство/ранение/ничего######
+country_event = {
+	id = rcw_free_territory.10
+	title = rcw_free_territory.10.t
+	desc = rcw_free_territory.10.d
+	picture = GFX_report_event_cca_esser
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	trigger = { has_country_leader = { name = "Vladimir Lenin" ruling_only = yes } FRT = { NOT = { has_country_leader = { name = "Marusya Nikiforova" ruling_only = yes } } } }
+	
+	option = {
+		name = rcw_free_territory.10.a
+		kill_country_leader = yes
+		add_political_power = -50
+		add_stability = -0.05
+		add_war_support = -0.05
+	}
+}
+
+country_event = {
+	id = rcw_free_territory.11
+	title = rcw_free_territory.11.t
+	desc = rcw_free_territory.11.d
+	picture = GFX_report_event_cca_esser
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	trigger = { has_country_leader = { name = "Vladimir Lenin" ruling_only = yes } FRT = { NOT = { has_country_leader = { name = "Marusya Nikiforova" ruling_only = yes } } } }
+	
+	option = {
+		name = rcw_free_territory.11.a
+		add_war_support = 0.05
+	}
+}
+
+country_event = {
+	id = rcw_free_territory.12
+	title = rcw_free_territory.12.t
+	desc = rcw_free_territory.12.d
+	picture = GFX_report_event_cca_esser
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	trigger = { has_country_leader = { name = "Vladimir Lenin" ruling_only = yes } FRT = { NOT = { has_country_leader = { name = "Marusya Nikiforova" ruling_only = yes } } } }
+	
+	option = {
+		name = rcw_free_territory.12.a
+		add_war_support = 0.05
+		FRT = {
+			add_war_support = -0.05
+			kill_ideology_leader = social_liberalism
+			every_unit_leader = { limit = { OR = { has_id = 77424 } } retire = yes }
+		}
+	}
+}
+
+# Парни не одобря.т переход на сторону советской власти
+country_event = {
+	id = rcw_free_territory.13
+	title = rcw_free_territory.13.t
+	desc = rcw_free_territory.13.d
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_free_territory.13.a
+		add_war_support = 0.05
+		delete_Makhno_authority = yes
+		if = {
+			limit = { USR = { exists = yes } }
+			every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = USR }
+			USR = { set_politics = { ruling_party = communism } create_country_leader = { name = "Nestor Machno" desc = FRT_Nestor_Machno_DESC picture = "gfx/leaders/FRT/Nestor_Machno_ALT3.dds" ideology = leninism traits = { hedonist } } }
+		}
+		else = {
+			every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = RUS }
+		}
+		retire_ideology_leader = radical_socialism
+		retire_ideology_leader = despotism
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = agrarian_communism traits = { } }
+		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = despotism_ideology traits = { } }
+		RUS = {
+			declare_war_on = {
+				target = FRT
+				type = annex_everything
+			}
+		}
+	}
+}
+
+# Ивент у Украины о нейтралитетес Махно
+country_event = {
+	id = rcw_free_territory.14
+	title = rcw_free_territory.14.t
+	desc = rcw_free_territory.14.d
+	picture = GFX_report_event_cca_esser
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	trigger = { UKR = { exists = yes is_puppet = no NOT = { has_government = radical_socialism has_government = communism } has_capitulated = no } FRT = { exists = yes is_puppet = no NOT = { has_government = communism } } }
+	
+	option = {
+		name = rcw_free_territory.14.a
+		every_state = {
+			limit = { is_owned_by = UKR is_controlled_by = FRT }
+			UKR = { set_state_owner = FRT }
+		}
+		every_state = {
+			limit = { is_owned_by = FRT is_controlled_by = UKR }
+			FRT = { set_state_owner = UKR }
+		}
+		white_peace = FRT
+		set_global_flag = UKR_FRT_neutrality
+	}
+	
+	option = {
+		name = rcw_free_territory.14.b
+		
+	}
+}
+
+# Ивент у белых о нейтралитетес Махно
+country_event = {
+	id = rcw_free_territory.15
+	title = rcw_free_territory.15.t
+	desc = rcw_free_territory.15.d
+	picture = GFX_report_event_cca_esser
+	
+	is_triggered_only = yes
+	
+	trigger = { is_puppet = no has_capitulated = no FRT = { exists = yes is_puppet = no } }
+	
+	option = {
+		name = rcw_free_territory.15.a
+		every_state = {
+			limit = { is_owned_by = ROOT is_controlled_by = FRT }
+			ROOT = { set_state_owner = FRT }
+		}
+		every_state = {
+			limit = { is_owned_by = FRT is_controlled_by = ROOT }
+			FRT = { set_state_owner = ROOT }
+		}
+		white_peace = FRT
+		set_country_flag = whites_FRT_neutrality
+	}
+	
+	option = {
+		name = rcw_free_territory.15.b
+		
+	}
+}
+
+# Ивент у Махно при нейтралитете хотя бы части белых
+country_event = {
+	id = rcw_free_territory.16
+	title = rcw_free_territory.16.t
+	desc = rcw_free_territory.16.d
+	picture = GFX_report_event_cca_esser
+	
+	trigger = {
+		tag = FRT
+		any_other_country = {
+			has_country_flag = whites_FRT_neutrality
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.16.a
+		declare_war_on = {
+			target = RUS
+			type = annex_everything
+		}
+		if = {
+		limit = { USR = { exists = yes } }
+			declare_war_on = {
+				target = USR
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_free_territory.16.b
+		
+	}
+}
+
+# Ивент у USR, инфильтрация 1
+country_event = {
+	id = rcw_free_territory.17
+	title = rcw_free_territory.17.t
+	desc = rcw_free_territory.17.d
+	picture = GFX_report_event_cca_esser
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.16.a
+		FRT = {
+			diplomatic_relation = {
+				country = USR
+				relation = military_access
+				active = yes
+			}
+		}
+		diplomatic_relation = {
+			country = FRT
+			relation = military_access
+			active = yes
+		}
+		set_country_flag = FRT_USR_infiltration
+		FRT = { country_event = { id = rcw_free_territory.18 days = 1 } }
+	}
+	
+	option = {
+		name = rcw_free_territory.16.b
+		country_event = { id = rcw_free_territory.19 days = 1 }
+	}
+}
+
+# USR согласились
+country_event = {
+	id = rcw_free_territory.18
+	title = rcw_free_territory.18.t
+	desc = rcw_free_territory.18.d
+	picture = GFX_report_event_cca_esser
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.18.a
+		
+	}
+}
+
+# USR отказалась
+country_event = {
+	id = rcw_free_territory.19
+	title = rcw_free_territory.19.t
+	desc = rcw_free_territory.19.d
+	picture = GFX_report_event_cca_esser
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.19.a
+		
+	}
+}
+
+# USR подозревает о перевороте
+country_event = {
+	id = rcw_free_territory.20
+	title = rcw_free_territory.20.t
+	desc = rcw_free_territory.20.d
+	picture = GFX_report_event_cca_esser
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.20.a
+		clr_country_flag = FRT_USR_infiltration
+		set_country_flag = FRT_USR_infiltration_2
+	}
+	
+	option = {
+		name = rcw_free_territory.20.a
+		FRT = {
+			country_event = { id = rcw_free_territory.21 days = 1 }
+		}
+		clr_country_flag = FRT_USR_infiltration
+		set_country_flag = USR_FRT_not_easy
+		set_country_flag = FRT_USR_infiltration_2
+	}
+	
+	option = {
+		name = rcw_free_territory.20.a
+		FRT = {
+			diplomatic_relation = {
+				country = USR
+				relation = military_access
+				active = no
+			}
+			country_event = { id = rcw_free_territory.21 days = 1 }
+		}
+		diplomatic_relation = {
+			country = FRT
+			relation = military_access
+			active = no
+		}
+		clr_country_flag = FRT_USR_infiltration
+	}
+}
+
+# USR возможно что-то подозревает/разорвала сотрудничество
+country_event = {
+	id = rcw_free_territory.21
+	title = rcw_free_territory.21.t
+	desc = rcw_free_territory.21.d
+	picture = GFX_report_event_cca_esser
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.21.a
+		
+	}
+}
+
+# FRT свергает правительство УССР
+country_event = {
+	id = rcw_free_territory.22
+	title = rcw_free_territory.22.t
+	desc = rcw_free_territory.22.d
+	picture = GFX_report_event_cca_esser
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_free_territory.21.a
+		if = {
+			limit = { USR = { has_country_flag = USR_FRT_not_easy } }
+			USR = {
+				random_owned_state = {
+					limit = { is_controlled_by = USR }
+					create_unit = {
+						division = "name = \"Brigada anarkhistov\" division_template = \"Brigada opolcheniya\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = FRT
+					}
+				}
+				random_owned_state = {
+					limit = { is_controlled_by = USR }
+					create_unit = {
+						division = "name = \"Brigada anarkhistov\" division_template = \"Brigada opolcheniya\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = FRT
+					}
+				}
+				random_owned_state = {
+					limit = { is_controlled_by = USR }
+					create_unit = {
+						division = "name = \"Brigada anarkhistov\" division_template = \"Brigada opolcheniya\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = FRT
+					}
+				}
+			}
+			declare_war_on = {
+				target = USR
+				type = annex_everything
+			}
+		}
+		else = {
+			annex_country = {
+				target = USR
+				transfer_troops = no
+			}
+			every_state = {
+				limit = { is_core_of = USR }
+				add_core_of = FRT
+			}
+		}
+	}
+}
+
+# Махно становится совслужащим в УССР
+country_event = {
+	id = rcw_free_territory.1918
+	title = rcw_free_territory.1918.t
+	desc = rcw_free_territory.1918.desc
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_free_territory.1918.a
+		event_target:UNITED_COUNTRY = {
+			set_popularities = {
+					radical_socialism = var:radical_socialism_party
+					communism = var:communism_party
+					social_democracy = var:social_democracy_party
+					social_liberalism = var:social_liberalism_party
+					market_liberalism = var:market_liberalism_party
+					social_conservatism = var:social_conservatism_party
+					authoritarism = var:authoritarism_party
+					despotism = var:despotism_party
+					fascism = var:fascism_party
+					national_syndicalism = var:national_syndicalism_party
+			}
+		}
+		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
+		random_state = {
+			limit = { has_state_flag = new_capital }
+			event_target:UNITED_COUNTRY = { set_capital = PREV }
+			clr_state_flag = new_capital
+		}
+		clear_global_event_target = INTEGRATING_COUNTRY_MAJOR
+		clear_global_event_target = INTEGRATING_COUNTRY_MINOR
+		clear_global_event_target = UNITED_COUNTRY
+	}
+}
