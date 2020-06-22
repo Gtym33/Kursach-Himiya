@@ -1,0 +1,705 @@
+﻿###########################
+#economics events
+###########################
+
+add_namespace = economics
+
+
+add_namespace = economics_bananas
+
+# Банановая забастовка
+country_event = {
+	id = economics_bananas.1
+	title = economics_bananas.1.t
+	desc = {
+		text = economics_bananas.1.desc #UFC
+		trigger = {
+			OVL = { exists = yes original_tag = USA }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.1.desc_1 #another foreing company
+		trigger = {
+			OVL = { exists = yes NOT = { original_tag = USA } }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.1.desc_2 #domestic
+		trigger = {
+			OR = {
+				OVL = { exists = no }
+				check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL }
+			}
+		}
+	}
+	trigger = {
+		check_variable = { socialist_parties > 0 }
+		has_monocultural_agriculture_bananas = yes
+		NOT = { has_idea = great_legislation }
+		NOT = { has_country_flag = bananas_riot_crisis_in_progress }
+	}
+	mean_time_to_happen = {
+		days = 720
+		modifier = {
+			factor = 0.5
+			has_idea = no_legislation
+		}
+		modifier = {
+			factor = 0.75
+			has_idea = minimum_legislation
+		}
+		modifier = {
+			factor = 4
+			has_idea = good_legislation
+		}
+		modifier = {
+			factor = 0.5
+			has_idea = monocultural_agriculture_bananas
+		}
+		modifier = {
+			factor = 0.75
+			has_idea = monocultural_agriculture_bananas_0_66
+		}
+		modifier = {
+			factor = 1.25
+			has_idea = monocultural_agriculture_bananas_0_33
+		}
+		modifier = {
+			factor = 1.5
+			has_idea = monocultural_agriculture_bananas_0_25
+		}
+		modifier = {
+			factor = 0.9
+			check_variable = { socialist_parties > 0.03 }
+		}
+		modifier = {
+			factor = 0.85
+			check_variable = { socialist_parties > 0.06 }
+		}
+		modifier = {
+			factor = 0.8
+			check_variable = { socialist_parties > 0.09 }
+		}
+		modifier = {
+			factor = 0.75
+			check_variable = { socialist_parties > 0.12 }
+		}
+		modifier = {
+			factor = 0.7
+			check_variable = { socialist_parties > 0.15 }
+		}
+		modifier = {
+			factor = 0.6
+			check_variable = { socialist_parties > 0.2 }
+		}
+		modifier = {
+			factor = 0.5
+			check_variable = { socialist_parties > 0.25 }
+		}
+		modifier = {
+			factor = 0.4
+			check_variable = { socialist_parties > 0.3 }
+		}
+		modifier = {
+			factor = 2
+			OR = {
+				OVL = { exists = no }
+				check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL }
+			}
+		}
+	}
+	option = {
+		trigger = {
+			check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL }
+		}
+		name = economics_bananas.1.a # Согласиться на масштабные уступки
+		add_political_power = -80
+		rise_labor_legislation = yes
+		add_to_variable = { domestic_capital_economic_influence = -1 }
+		custom_effect_tooltip = domestic_capital_economic_influence_minus_1
+		add_to_variable = { count_successful_negotiations = 2 }
+	}
+	option = {
+		name = economics_bananas.1.b # Переговоры
+		
+		set_temp_variable = { t_1 = 1 }
+		add_to_temp_variable = { t_1 = count_successful_supressions }
+		set_temp_variable = { t_2 = 1 }
+		add_to_temp_variable = { t_2 = count_successful_negotiations }
+		
+		set_country_flag = bananas_riot_crisis_in_progress
+		add_ideas = workers_of_United_Fruit_Company_unrest_1
+		activate_mission = unrest_of_workers_of_United_Fruit_Company
+		if = {
+			limit = { OVL = { exists = yes } NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+			OVL = { country_event = { id = economics_bananas.2 days = 4 } } #Наши марионетки требуют принять требования рабочих
+			else = {
+				random_list = {
+					var:t_1 = {
+						country_event = { id = economics_bananas.5 days = 4 } #успешные переговоры
+					}
+					var:t_2 = {
+						country_event = { id = economics_bananas.6 days = 4 } #непомерные требования
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = economics_bananas.1.c # Подавить
+		random_list = {
+			65 = { #подавление
+				modifier = {
+					factor = var:count_successful_negotiations
+				}
+				modifier = {
+					factor = 0.5
+					has_idea = workers_of_United_Fruit_Company_unrest_2
+				}
+				modifier = {
+					factor = 0.25
+					has_idea = workers_of_United_Fruit_Company_unrest_3
+				}
+				country_event = { id = economics_bananas.7 days = 1 }
+			}
+			35 = { #кровопролитие
+				country_event = { id = economics_bananas.8 days = 1 }
+			}
+			10 = { #рабочие ушли к партизанам
+				modifier = {
+					factor = 0.75
+					has_idea = workers_of_United_Fruit_Company_unrest_2
+				}
+				modifier = {
+					factor = 0.5
+					has_idea = workers_of_United_Fruit_Company_unrest_3
+				}
+				country_event = { id = economics_bananas.9 days = 1 }
+			}
+			5 = { #усиление протеста (кровавая баня)
+				modifier = {
+					factor = 2
+					has_idea = workers_of_United_Fruit_Company_unrest_2
+				}
+				modifier = {
+					factor = 4
+					has_idea = workers_of_United_Fruit_Company_unrest_3
+				}
+				modifier = {
+					factor = var:count_successful_supressions
+				}
+				country_event = { id = economics_bananas.10 days = 1 }
+			}
+		}
+	}
+	option = {
+		name = economics_bananas.1.d # Игнорировать
+		set_country_flag = bananas_riot_crisis_in_progress
+		add_ideas = workers_of_United_Fruit_Company_unrest_1
+		activate_mission = unrest_of_workers_of_United_Fruit_Company
+		hidden_effect = {
+			if = {
+				limit = { OVL = { exists = yes } NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+				OVL = { country_event = economics_bananas.12 } #Наши марионетки не хотят защищать права нашей корпорации, что мы ответим?
+			}
+		}
+	}
+}
+
+# Наши марионетки требуют принять требования рабочих
+country_event = {
+	id = economics_bananas.2
+	title = economics_bananas.2.t
+	desc = {
+		text = economics_bananas.2.desc #UFC
+		trigger = {
+			original_tag = USA
+			FROM = { NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+		}
+	}
+	desc = {
+		text = economics_bananas.2.desc_1 #another foreing company
+		trigger = {
+			NOT = { original_tag = USA }
+			FROM = { NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.2.a # Принять
+		FROM = { country_event = { id = economics_bananas.3 days = 4 } }
+	}
+	option = {
+		name = economics_bananas.2.b # Отказ
+		FROM = { country_event = { id = economics_bananas.4 days = 4 } }
+	}
+}
+country_event = {
+	id = economics_bananas.3
+	title = economics_bananas.3.t
+	desc = {
+		text = economics_bananas.3.desc #UFC
+		trigger = {
+			OVL = { original_tag = USA }
+		}
+	}
+	desc = {
+		text = economics_bananas.3.desc_1 #another foreing company
+		trigger = {
+			OVL = { NOT = { original_tag = USA } }
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.3.a
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 }
+		clr_country_flag = bananas_riot_crisis_in_progress
+		add_political_power = -30
+		add_to_variable = { foreing_capital_economic_influence^OVL = -1 }
+		custom_effect_tooltip = foreing_capital_economic_influence_OVL_minus_1
+		add_to_variable = { count_successful_negotiations = 1 }
+	}
+}
+country_event = {
+	id = economics_bananas.4
+	title = economics_bananas.4.t
+	desc = {
+		text = economics_bananas.4.desc #UFC
+		trigger = {
+			OVL = { original_tag = USA }
+		}
+	}
+	desc = {
+		text = economics_bananas.4.desc_1 #another foreing company
+		trigger = {
+			OVL = { NOT = { original_tag = USA } }
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.4.a
+	}
+}
+
+#Переговоры
+country_event = {
+	id = economics_bananas.5
+	title = economics_bananas.5.t
+	desc = economics_bananas.5.desc
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.5.a
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 }
+		clr_country_flag = bananas_riot_crisis_in_progress
+		add_political_power = -30
+		add_to_variable = { count_successful_negotiations = 1 }
+	}
+}
+#Непомерные требования
+country_event = {
+	id = economics_bananas.6
+	title = economics_bananas.6.t
+	desc = economics_bananas.6.desc
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.6.a # Отказ
+	}
+	option = {
+		name = economics_bananas.6.b # Согласиться
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 }
+		clr_country_flag = bananas_riot_crisis_in_progress
+		add_political_power = -100
+		rise_labor_legislation = yes
+		if = {
+			limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 }
+			add_to_variable = { domestic_capital_economic_influence = -1 }
+			custom_effect_tooltip = domestic_capital_economic_influence_minus_1
+		}
+		else_if = {
+			limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 }
+			add_to_variable = { domestic_capital_economic_influence = -2 }
+			custom_effect_tooltip = domestic_capital_economic_influence_minus_2
+		}
+		else_if = {
+			limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 }
+			add_to_variable = { domestic_capital_economic_influence = -3 }
+			custom_effect_tooltip = domestic_capital_economic_influence_minus_3
+		}
+	}
+}
+
+#Подавление
+country_event = {
+	id = economics_bananas.7
+	title = economics_bananas.7.t
+	desc = {
+		text = economics_bananas.7.desc #UFC
+		trigger = {
+			OVL = { exists = yes original_tag = USA }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.7.desc_1 #another foreing company
+		trigger = {
+			OVL = { exists = yes NOT = { original_tag = USA } }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.7.desc_2 #domestic
+		trigger = {
+			OR = {
+				OVL = { exists = no }
+				check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL }
+			}
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.7.a
+		if = {
+			limit = { OR = { has_idea = workers_of_United_Fruit_Company_unrest_2 has_idea = workers_of_United_Fruit_Company_unrest_3 } }
+			add_to_variable = { count_successful_supressions = 1 }
+			else = { add_to_variable = { count_successful_supressions = -1 } }
+		}
+		add_to_variable = { count_successful_negotiations = -1 }
+		if = { limit = { check_variable = { count_successful_supressions < 0 } } set_variable = { count_successful_supressions = 0 } }
+		if = { limit = { check_variable = { count_successful_negotiations < 0 } } set_variable = { count_successful_negotiations = 0 } }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 }
+		clr_country_flag = bananas_riot_crisis_in_progress
+		if = { limit = { OVL = { exists = yes} NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } } set_country_flag = banana_unrest_supressed country_event = economics_bananas.11 }
+	}
+}
+#Кровопролитие
+country_event = {
+	id = economics_bananas.8
+	title = economics_bananas.8.t
+	desc = {
+		text = economics_bananas.8.desc #UFC
+		trigger = {
+			OVL = { exists = yes original_tag = USA }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.8.desc_1 #another foreing company
+		trigger = {
+			OVL = { exists = yes NOT = { original_tag = USA } }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.8.desc_2 #domestic
+		trigger = {
+			OR = {
+				OVL = { exists = no }
+				check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL }
+			}
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.8.a
+		if = {
+			limit = { OR = { has_idea = workers_of_United_Fruit_Company_unrest_2 has_idea = workers_of_United_Fruit_Company_unrest_3 } }
+			add_to_variable = { count_successful_supressions = 1 }
+			else = { add_to_variable = { count_successful_supressions = -1 } }
+		}
+		add_to_variable = { count_successful_negotiations = -1 }
+		if = { limit = { check_variable = { count_successful_supressions < 0 } } set_variable = { count_successful_supressions = 0 } }
+		if = { limit = { check_variable = { count_successful_negotiations < 0 } } set_variable = { count_successful_negotiations = 0 } }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 add_stability = -0.01 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 add_stability = -0.03 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 add_stability = -0.05 }
+		add_political_power = -20
+		clr_country_flag = bananas_riot_crisis_in_progress
+		if = { limit = { OVL = { exists = yes} NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } } set_country_flag = banana_unrest_killed country_event = economics_bananas.11 }
+	}
+}
+# Рабочие ушли в партизаны
+country_event = {
+	id = economics_bananas.9
+	title = economics_bananas.9.t
+	desc = {
+		text = economics_bananas.9.desc #UFC
+		trigger = {
+			OVL = { exists = yes original_tag = USA }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.9.desc_1 #another foreing company
+		trigger = {
+			OVL = { exists = yes NOT = { original_tag = USA } }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.9.desc_2 #domestic
+		trigger = {
+			OR = {
+				OVL = { exists = no }
+				check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL }
+			}
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.9.a
+		if = {
+			limit = { OR = { has_idea = workers_of_United_Fruit_Company_unrest_2 has_idea = workers_of_United_Fruit_Company_unrest_3 } }
+			add_to_variable = { count_successful_supressions = 1 }
+			else = { add_to_variable = { count_successful_supressions = -1 } }
+		}
+		add_to_variable = { count_successful_negotiations = -1 }
+		if = { limit = { check_variable = { count_successful_supressions < 0 } } set_variable = { count_successful_supressions = 0 } }
+		if = { limit = { check_variable = { count_successful_negotiations < 0 } } set_variable = { count_successful_negotiations = 0 } }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 add_stability = -0.01 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 add_stability = -0.03 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 add_stability = -0.05 }
+		add_political_power = -20
+		if = {
+			limit = { check_variable = { party_popularity@radical_socialism > party_popularity@communism } }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.03
+			}
+			else = {
+				add_popularity = {
+					ideology = communism
+					popularity = 0.03
+				}
+			}
+		}
+		clr_country_flag = bananas_riot_crisis_in_progress
+		if = { limit = { OVL = { exists = yes} NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } } set_country_flag = banana_unrest_escaped_in_jungles country_event = economics_bananas.11 }
+	}
+}
+# Усиление протеста
+country_event = {
+	id = economics_bananas.10
+	title = economics_bananas.10.t
+	desc = {
+		text = economics_bananas.10.desc #UFC
+		trigger = {
+			OVL = { exists = yes original_tag = USA }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.10.desc_1 #another foreing company
+		trigger = {
+			OVL = { exists = yes NOT = { original_tag = USA } }
+			NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } }
+		}
+	}
+	desc = {
+		text = economics_bananas.10.desc_2 #domestic
+		trigger = {
+			OR = {
+				OVL = { exists = no }
+				check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL }
+			}
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		trigger = { OVL = { exists = yes} NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+		name = economics_bananas.10.a
+		add_to_variable = { count_successful_negotiations = 2 }
+		if = { limit = { check_variable = { count_successful_supressions < 0 } } set_variable = { count_successful_supressions = 0 } }
+		if = { limit = { check_variable = { count_successful_negotiations < 0 } } set_variable = { count_successful_negotiations = 0 } }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 add_stability = -0.01 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 add_stability = -0.02 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 add_stability = -0.03 }
+		add_political_power = -100
+		clr_country_flag = bananas_riot_crisis_in_progress
+		
+		rise_labor_legislation = yes
+		add_to_variable = { domestic_capital_economic_influence = -1 }
+		custom_effect_tooltip = domestic_capital_economic_influence_minus_1
+		add_to_variable = { count_successful_negotiations = 2 }
+	}
+	option = {
+		name = economics_bananas.10.b # Банановая резня
+		if = {
+			limit = { OR = { has_idea = workers_of_United_Fruit_Company_unrest_2 has_idea = workers_of_United_Fruit_Company_unrest_3 } }
+			add_to_variable = { count_successful_supressions = 2 }
+		}
+		add_to_variable = { count_successful_negotiations = -1 }
+		if = { limit = { check_variable = { count_successful_supressions < 0 } } set_variable = { count_successful_supressions = 0 } }
+		if = { limit = { check_variable = { count_successful_negotiations < 0 } } set_variable = { count_successful_negotiations = 0 } }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 add_stability = -0.03 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 add_stability = -0.06 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 add_stability = -0.09 }
+		add_political_power = -20
+		if = {
+			limit = { check_variable = { party_popularity@radical_socialism > party_popularity@communism } }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.05
+			}
+			else = {
+				add_popularity = {
+					ideology = communism
+					popularity = 0.05
+				}
+			}
+		}
+		clr_country_flag = bananas_riot_crisis_in_progress
+		if = { limit = { OVL = { exists = yes} NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } } set_country_flag = banana_unrest_killed country_event = economics_bananas.11 }
+		#news_event
+	}
+}
+
+
+# Отчёт о подавлении забастовки
+country_event = {
+	id = economics_bananas.11
+	title = economics_bananas.11.t
+	desc = {
+		text = economics_bananas.11.desc #UFC
+		trigger = {
+			original_tag = USA
+			FROM = { has_country_flag = banana_unrest_supressed }
+		}
+	}
+	desc = {
+		text = economics_bananas.11.desc_1 #another foreing company
+		trigger = {
+			NOT = { original_tag = USA }
+			FROM = { has_country_flag = banana_unrest_supressed }
+		}
+	}
+	desc = {
+		text = economics_bananas.11.desc_2 #UFC
+		trigger = {
+			original_tag = USA
+			FROM = { has_country_flag = banana_unrest_killed }
+		}
+	}
+	desc = {
+		text = economics_bananas.11.desc_3 #another foreing company
+		trigger = {
+			NOT = { original_tag = USA }
+			FROM = { has_country_flag = banana_unrest_killed }
+		}
+	}
+	desc = {
+		text = economics_bananas.11.desc_4 #UFC
+		trigger = {
+			original_tag = USA
+			FROM = { has_country_flag = banana_unrest_escaped_in_jungles }
+		}
+	}
+	desc = {
+		text = economics_bananas.11.desc_5 #another foreing company
+		trigger = {
+			NOT = { original_tag = USA }
+			FROM = { has_country_flag = banana_unrest_escaped_in_jungles }
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.11.a
+		hidden_effect = {
+			FROM = {
+				clr_country_flag = banana_unrest_supressed
+				clr_country_flag = banana_unrest_killed
+				clr_country_flag = banana_unrest_escaped_in_jungles
+			}
+		}
+	}
+}
+
+# Наши марионетки не хотят защищать права нашей корпорации, что мы ответим?
+country_event = {
+	id = economics_bananas.12
+	title = economics_bananas.12.t
+	desc = {
+		text = economics_bananas.12.desc #UFC
+		trigger = {
+			original_tag = USA
+			FROM = { NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+		}
+	}
+	desc = {
+		text = economics_bananas.12.desc_1 #another foreing company
+		trigger = {
+			NOT = { original_tag = USA }
+			FROM = { NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.12.a # Игнорировать
+	}
+	option = {
+		name = economics_bananas.12.b # Потребовать от корпорации переговоров с рабочими
+		add_political_power = -30
+		FROM = { country_event = { id = economics_bananas.13 days = 1 } }
+	}
+	option = {
+		name = economics_bananas.12.c # Потребовать от правительства подавления волнений
+		add_political_power = 30
+		FROM = { country_event = { id = economics_bananas.14 days = 1 } }
+	}
+}
+country_event = {
+	id = economics_bananas.13
+	title = economics_bananas.13.t
+	desc = {
+		text = economics_bananas.13.desc #UFC
+		trigger = {
+			OVL = { original_tag = USA }
+		}
+	}
+	desc = {
+		text = economics_bananas.13.desc_1 #another foreing company
+		trigger = {
+			OVL = { NOT = { original_tag = USA } }
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.13.a
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 }
+		if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 }
+		clr_country_flag = bananas_riot_crisis_in_progress
+		add_to_variable = { foreing_capital_economic_influence^OVL = -1 }
+		custom_effect_tooltip = foreing_capital_economic_influence_OVL_minus_1
+		add_to_variable = { count_successful_negotiations = 1 }
+	}
+}
+country_event = {
+	id = economics_bananas.14
+	title = economics_bananas.14.t
+	desc = {
+		text = economics_bananas.14.desc #UFC
+		trigger = {
+			OVL = { original_tag = USA }
+		}
+	}
+	desc = {
+		text = economics_bananas.14.desc_1 #another foreing company
+		trigger = {
+			OVL = { NOT = { original_tag = USA } }
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = economics_bananas.14.a
+	}
+}

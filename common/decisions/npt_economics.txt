@@ -1,0 +1,298 @@
+international_economic_exploitation_exploited = {
+
+	unrest_of_workers_of_United_Fruit_Company = {
+		activation = { has_country_flag = bananas_riot_crisis_in_progress }
+		available = {
+			NOT = { has_country_flag = bananas_riot_crisis_in_progress }
+		}
+		days_mission_timeout = 90
+		timeout_effect = {
+			if = {
+				limit = { NOT = { has_idea = workers_of_United_Fruit_Company_unrest_1 has_idea = workers_of_United_Fruit_Company_unrest_2 has_idea = workers_of_United_Fruit_Company_unrest_3 } }
+				add_ideas = workers_of_United_Fruit_Company_unrest_1
+				activate_mission = unrest_of_workers_of_United_Fruit_Company
+			}
+			if = {
+				limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 }
+				swap_ideas = {
+					remove_idea = workers_of_United_Fruit_Company_unrest_1
+					add_idea = workers_of_United_Fruit_Company_unrest_2
+				}
+				activate_mission = unrest_of_workers_of_United_Fruit_Company
+			}
+			else_if = {
+				limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 }
+				swap_ideas = {
+					remove_idea = workers_of_United_Fruit_Company_unrest_2
+					add_idea = workers_of_United_Fruit_Company_unrest_3
+				}
+				activate_mission = unrest_of_workers_of_United_Fruit_Company
+			}
+			#else_if = {
+			#	limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 }
+			#	swap_ideas = {
+			#		remove_idea = workers_of_United_Fruit_Company_unrest_3
+			#		add_idea = workers_of_United_Fruit_Company_unrest_3
+			#	}
+			#	activate_mission = unrest_of_workers_of_United_Fruit_Company
+			#}
+		}
+		complete_effect = {
+			if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_1 } remove_ideas = workers_of_United_Fruit_Company_unrest_1 }
+			if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_2 } remove_ideas = workers_of_United_Fruit_Company_unrest_2 }
+			if = { limit = { has_idea = workers_of_United_Fruit_Company_unrest_3 } remove_ideas = workers_of_United_Fruit_Company_unrest_3 }
+		}
+	}
+	suppress_workers_unrest_of_United_Fruit_Company = {
+		icon = generic_army_support
+		available = {
+		}
+		visible = {
+			has_active_mission = unrest_of_workers_of_United_Fruit_Company
+		}
+		cost = 30
+		days_remove = 10
+		ai_will_do = {
+			factor = 0
+		}
+		remove_effect = {
+			random_list = {
+				65 = { #подавление
+					modifier = {
+						factor = var:count_successful_negotiations
+					}
+					modifier = {
+						factor = 0.5
+						has_idea = workers_of_United_Fruit_Company_unrest_2
+					}
+					modifier = {
+						factor = 0.25
+						has_idea = workers_of_United_Fruit_Company_unrest_3
+					}
+					country_event = { id = economics_bananas.7 days = 1 }
+				}
+				35 = { #кровопролитие
+					country_event = { id = economics_bananas.8 days = 1 }
+				}
+				10 = { #рабочие ушли к партизанам
+					modifier = {
+						factor = 0.75
+						has_idea = workers_of_United_Fruit_Company_unrest_2
+					}
+					modifier = {
+						factor = 0.5
+						has_idea = workers_of_United_Fruit_Company_unrest_3
+					}
+					country_event = { id = economics_bananas.9 days = 1 }
+				}
+				5 = { #усиление протеста (кровавая баня)
+					modifier = {
+						factor = 2
+						has_idea = workers_of_United_Fruit_Company_unrest_2
+					}
+					modifier = {
+						factor = 4
+						has_idea = workers_of_United_Fruit_Company_unrest_3
+					}
+					modifier = {
+						factor = var:count_successful_supressions
+					}
+					country_event = { id = economics_bananas.10 days = 1 }
+				}
+			}
+		}
+	}
+	make_agreements_with_workers_unrest_of_United_Fruit_Company = {
+		icon = generic_army_support
+		available = {
+		}
+		visible = {
+			has_active_mission = unrest_of_workers_of_United_Fruit_Company
+		}
+		cost = 30
+		days_remove = 10
+		ai_will_do = {
+			factor = 0
+		}
+		remove_effect = {
+			if = {
+				limit = { OVL = { exists = yes } NOT = { check_variable = { domestic_capital_economic_influence > foreing_capital_economic_influence^OVL } } }
+				OVL = { country_event = { id = economics_bananas.2 days = 4 } } #Наши марионетки требуют принять требования рабочих
+				else = {
+					random_list = {
+						var:t_1 = {
+							country_event = { id = economics_bananas.5 days = 4 } #успешные переговоры
+						}
+						var:t_2 = {
+							country_event = { id = economics_bananas.6 days = 4 } #непомерные требования
+						}
+					}
+				}
+			}
+		}
+	}
+
+	unrest_of_peasants_on_countryside = {
+		activation = { OR = { has_idea = peasants_on_countryside_unrest_1 has_idea = peasants_on_countryside_unrest_2 has_idea = peasants_on_countryside_unrest_3 } }
+		available = {
+			has_war = no
+		}
+		days_mission_timeout = 60
+		timeout_effect = {
+			if = {
+				limit = { has_idea = peasants_on_countryside_unrest_1 }
+				swap_ideas = {
+					remove_idea = peasants_on_countryside_unrest_1
+					add_idea = peasants_on_countryside_unrest_2
+				}
+				activate_mission = unrest_of_peasants_on_countryside
+			}
+			else_if = {
+				limit = { has_idea = peasants_on_countryside_unrest_2 }
+				swap_ideas = {
+					remove_idea = peasants_on_countryside_unrest_2
+					add_idea = peasants_on_countryside_unrest_3
+				}
+				activate_mission = unrest_of_peasants_on_countryside
+			}
+			#else_if = {
+			#	limit = { has_idea = peasants_on_countryside_unrest_3 }
+			#	swap_ideas = {
+			#		remove_idea = peasants_on_countryside_unrest_3
+			#		add_idea = peasants_on_countryside_unrest_3
+			#	}
+			#	activate_mission = unrest_of_peasants_on_countryside
+			#}
+		}
+		complete_effect = {
+			if = { limit = { has_idea = peasants_on_countryside_unrest_1 } remove_ideas = peasants_on_countryside_unrest_1 }
+			if = { limit = { has_idea = peasants_on_countryside_unrest_2 } remove_ideas = peasants_on_countryside_unrest_2 }
+			if = { limit = { has_idea = peasants_on_countryside_unrest_3 } remove_ideas = peasants_on_countryside_unrest_3 }
+		}
+	}
+	suppress_peasants_unrest_on_countryside = {
+		icon = generic_army_support
+		available = {
+		}
+		visible = {
+			has_active_mission = unrest_of_peasants_on_countryside
+		}
+		cost = 30
+		days_remove = 20
+		ai_will_do = {
+			factor = 0
+		}
+		remove_effect = {
+		}
+	}
+	make_agreements_with_peasants_unrest_on_countryside = {
+		icon = generic_army_support
+		available = {
+		}
+		visible = {
+			has_active_mission = unrest_of_peasants_on_countryside
+		}
+		cost = 30
+		days_remove = 20
+		ai_will_do = {
+			factor = 0
+		}
+		remove_effect = {
+		}
+	}
+
+	call_for_marines_from_OVL = {
+		
+	}
+	send_back_marines_to_OVL = {
+		
+	}
+
+	ask_for_a_loan_from_OVL = {
+		
+	}
+	give_customs_to_OVL = {
+		
+	}
+	take_customs_from_OVL = {
+		
+	}
+	rise_duties_for_export = {
+		
+	}
+	low_duties_for_export = {
+		
+	}
+	tax_United_Fruit_Company = {
+		
+	}
+	release_from_taxes_United_Fruit_Company = {
+		
+	}
+
+	give_land_to_United_Fruit_Company = {
+		
+	}
+	sell_land_to_United_Fruit_Company = {
+		
+	}
+	buy_some_land_from_United_Fruit_Company = {
+		
+	}
+	buy_by_force_some_land_from_United_Fruit_Company = {
+		
+	}
+	nationalize_some_land_from_United_Fruit_Company = {
+		
+	}
+	nationalize_all_land_from_United_Fruit_Company = {
+		
+	}
+
+	nationalize_landowners_land = {
+		
+	}
+	create_private_farms = {
+		
+	}
+	create_collective_farms = {
+		
+	}
+	kick_peasants_off_n_transfer_land_to_United_Fruit_Company = {
+		
+	}
+
+	creation_of_private_terror_units = {
+		
+	}
+	creation_of_private_army_for_United_Fruit_Company = {
+		
+	}
+	arrange_terror_raids_in_countryside = {
+		
+	}
+	forced_labor_on_land_of_United_Fruit_Company = {
+		
+	}
+	protect_by_killing_people_land_of_United_Fruit_Company = {
+		
+	}
+}
+international_economic_exploitation_exploiter = {
+	denationalizete_UFC = {
+		icon = generic_army_support
+		available = {
+		}
+		visible = {
+		}
+		cost = 30
+		days_remove = 20
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 0
+		}
+		remove_effect = {
+			OVL = { add_political_power = -100 }
+		}
+	}
+}

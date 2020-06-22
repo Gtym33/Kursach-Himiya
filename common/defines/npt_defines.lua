@@ -63,3 +63,5 @@ NDefines.NMilitary.COMBAT_SUPPLY_LACK_IMPACT = -0.44
 
 
 NDefines.NDiplomacy.TENSION_TIME_SCALE_START_DATE = "1917.1.1.1"
+
+NDefines_Graphics.NGraphics.POLITICAL_GRID_SMALL_BOX_LIMIT = 12
