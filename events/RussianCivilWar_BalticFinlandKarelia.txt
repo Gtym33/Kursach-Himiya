@@ -106,7 +106,7 @@ country_event = {
 	
 	trigger = {
 		tag = EST
-		is_puppet = no
+		is_subject = no
 		exists = yes
 	}
 	
@@ -293,7 +293,7 @@ country_event = {
 	trigger = {
 		tag = EST
 		NOT = { has_global_flag = RUS_civil_war_over }
-		is_puppet = no
+		is_subject = no
 		LAT = { has_war_with = WVA }
 		NOT = { has_war_with = WVA has_war_with = LAT }
 	}
@@ -963,11 +963,11 @@ country_event = {
 		has_country_flag = LAT_germanization
 		AND = {
 			OR = {
-				EST = {is_puppet_of = ROOT}
+				EST = {is_subject_of = ROOT}
 				AND = {EST = {exists = no} controls_state = 13}
 			}
 			OR = {
-				LIT = {is_puppet_of = ROOT}
+				LIT = {is_subject_of = ROOT}
 				AND = {LIT = {exists = no} controls_state = 11}
 			}
 		}
@@ -1221,7 +1221,7 @@ country_event = {
 		}
 		if = {
 			limit = { NWA = { exists = yes } }
-			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_country_flag = NWA_North_corps }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_country_flag = NWA_North_corps add_ideas = NWA_marching_army }
 		}
 		if = {
 			limit = { UBD = { exists = yes } }
@@ -1267,6 +1267,11 @@ country_event = {
 					}
 				}
 				set_THIS_country_non_recognize_PREV = yes
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+				producer = NWA
 			}
 		}
 		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
@@ -1332,6 +1337,11 @@ country_event = {
 					}
 				}
 				set_THIS_country_non_recognize_PREV = yes
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+				producer = NWA
 			}
 		}
 		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
@@ -1458,9 +1468,14 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.102.a
+		if = {
+			limit = { UBD = { exists = yes num_of_controlled_states < 4 } }
+			annex_country = {
+				target = UBD
+				transfer_troops = yes
+			}
+		}
 		add_political_power = -25
-		add_manpower = 8000
-		NWA = { drop_cosmetic_tag = yes }
 		if = {
 			limit = { NWA = { controls_state = 209 } }
 			if = {
@@ -1472,47 +1487,61 @@ country_event = {
 			}
 			give_military_access = NWA
 			NWA = { give_military_access = EST }
+			NWA = { drop_cosmetic_tag = yes }
 			NWA = { clr_country_flag = NWA_North_corps }
-			else = {
-				every_state = {
-					limit = {
-						is_owned_by = NWA
-						is_controlled_by = RUS
-					}
-					RUS = { transfer_state = PREV }
-				}
-				if = {
-					limit = { RUS = { owns_state = 209 } }
-					RUS = { transfer_state = 210 transfer_state = 1015 }
-				}
-				if = {
-					limit = { RUS = { owns_state = 210 NOT = { controls_state = 210 } } }
-					LAT = { transfer_state = 210 }
-				}
-				annex_country = {
-					target = NWA
-					transfer_troops = yes
-				}
-				RUS = {
-					if = {
-						limit = { 191 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
-						transfer_state = 191
-					}
-					if = {
-						limit = { 1004 = { OR = { is_owned_by = LAT is_owned_by = UBD } } }
-						transfer_state = 1004
+		}
+		else_if = {
+			limit = {
+				OR = {
+					owns_state = 191
+					owns_state = 1004
+					NWA = {
+						OR = {
+							owns_state = 191
+							owns_state = 1004
+						}
 					}
 				}
 			}
+			NWA = {
+				transfer_state = 191
+				transfer_state = 1004
+			}
+			every_state = {
+				limit = {
+					is_owned_by = NWA
+					is_controlled_by = RUS
+				}
+				RUS = { set_state_owner = PREV }
+			}
+			if = {
+				limit = { RUS = { owns_state = 209 } }
+				RUS = { set_state_owner = 210 set_state_owner = 1015 }
+			}
+			EST = { NWA = { subjecting_script_with_transfer_parties_colony = yes } }
 		}
-		if = {
-			limit = { UBD = { exists = yes num_of_controlled_states < 4 } }
+		else = {
+			add_manpower = 8000
+			every_state = {
+				limit = {
+					is_owned_by = NWA
+					is_controlled_by = RUS
+				}
+				set_state_flag = will_annexed_by_RUS
+			}
 			annex_country = {
-				target = UBD
+				target = NWA
 				transfer_troops = yes
 			}
+			every_state = {
+				limit = {
+					has_state_flag = will_annexed_by_RUS
+				}
+				clr_state_flag = will_annexed_by_RUS
+				RUS = { set_state_owner = PREV }
+			}
+			EST = { change_tag_from = NWA }
 		}
-		EST = { change_tag_from = NWA }
 	}
 }
 
@@ -1526,8 +1555,11 @@ country_event = {
 	trigger = {
 		tag = EST
 		has_war_with = RUS
-		NWA = { exists = no has_country_flag = NWA_North_corps }
-		controls_state = 209
+		NWA = { has_country_flag = NWA_North_corps OR = { exists = no is_subject_of = ROOT } }
+		OR = {
+			controls_state = 209
+			NWA = { controls_state = 209 }
+		}
 	}
 	
 	fire_only_once = yes
@@ -1538,29 +1570,49 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.105.a
-		EST = {
-			delete_unit_template_and_units = {
-				division_template = "Pekhotnyy polk"
-			}
-			delete_unit_template_and_units = {
-				division_template = "Kavaleristskiy polk"
-			}
-		}
-		NWA = {
-			transfer_state = 209
-			if = {
-				limit = { EST = { has_war_with = RUS } }
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
+		if = {
+			limit = { NWA = { exists = no } }
+			EST = {
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnyy polk"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Kavaleristskiy polk"
 				}
 			}
-			declare_war_on = {
-				target = EST
-				type = annex_everything
+			NWA = {
+				transfer_state = 209
+				if = {
+					limit = { EST = { has_war_with = RUS } NOT = { has_war_with = RUS} }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				load_oob = NWA_north_corps
+				clr_country_flag = NWA_North_corps
+				drop_cosmetic_tag = yes
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 1000
+					producer = NWA
+				}
 			}
-			load_oob = NWA_north_corps
-			clr_country_flag = NWA_North_corps
+			else = {
+				EST = { end_puppet = NWA }
+				NWA = {
+					declare_war_on = {
+						target = EST
+						type = annex_everything
+					}
+					clr_country_flag = NWA_North_corps
+					drop_cosmetic_tag = yes
+				}
+			}
 		}
 		ai_chance = {
 			factor = 0
@@ -1569,31 +1621,63 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.105.b
-		EST = {
-			delete_unit_template_and_units = {
-				division_template = "Pekhotnyy polk"
-			}
-			delete_unit_template_and_units = {
-				division_template = "Kavaleristskiy polk"
-			}
-		}
-		NWA = {
-			transfer_state = 209
-			if = {
-				limit = { EST = { has_war_with = RUS } }
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
+		if = {
+			limit = { NWA = { exists = no } }
+			EST = {
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnyy polk"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Kavaleristskiy polk"
 				}
 			}
-			give_military_access = EST
-			EST = { give_military_access = NWA }
-			load_oob = NWA_north_corps
-			clr_country_flag = NWA_North_corps
+			NWA = {
+				transfer_state = 209
+				if = {
+					limit = { EST = { has_war_with = RUS } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				give_military_access = EST
+				EST = { give_military_access = NWA }
+				load_oob = NWA_north_corps
+				clr_country_flag = NWA_North_corps
+				drop_cosmetic_tag = yes
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 1000
+					producer = NWA
+				}
+			}
+			else = {
+				EST = { end_puppet = NWA }
+				NWA = {
+					transfer_state = 209
+					give_military_access = EST
+					EST = { give_military_access = NWA }
+					clr_country_flag = NWA_North_corps
+					drop_cosmetic_tag = yes
+				}
+				every_state = {
+					limit = {
+						is_owned_by = NWA
+						OR = {
+							state = 191
+							state = 1004
+						}
+					}
+					EST = { transfer_state = PREV }
+				}
+			}
 		}
 		every_state = {
 			limit = {
-				is_controlled_by = EST
+				OR = {
+					is_controlled_by = EST
+					is_controlled_by = NWA
+				}
 				NOT = { is_core_of = EST }
 				OR = {
 					region = 132
@@ -1608,7 +1692,7 @@ country_event = {
 	}
 	
 	option = {
-		trigger = { is_ai = no }
+		trigger = { is_ai = no NWA = { exists = no } }
 		name = rcw_bfk.105.c
 		EST = {
 			delete_unit_template_and_units = {
@@ -1631,10 +1715,19 @@ country_event = {
 			EST = { give_military_access = NWA }
 			load_oob = NWA_north_corps
 			clr_country_flag = NWA_North_corps
+			drop_cosmetic_tag = yes
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+				producer = NWA
+			}
 		}
 		every_state = {
 			limit = {
-				is_controlled_by = EST
+				OR = {
+					is_controlled_by = EST
+					is_controlled_by = NWA
+				}
 				NOT = { is_core_of = EST }
 				OR = {
 					region = 132
@@ -1658,12 +1751,30 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.106.a
-		add_ideas = NWA_marching_army
+		hidden_effect = { remove_ideas = NWA_long_strategy }
+		if = {
+			limit = { NOT = { has_idea = NWA_marching_army } }
+			add_ideas = NWA_marching_army
+			else = {
+				effect_tooltip = {
+					add_ideas = NWA_marching_army
+				}
+			}
+		}
 	}
 	
 	option = {
 		name = rcw_bfk.106.b
-		add_ideas = NWA_long_strategy
+		hidden_effect = { remove_ideas = NWA_marching_army }
+		if = {
+			limit = { NOT = { has_idea = NWA_long_strategy } }
+			add_ideas = NWA_long_strategy
+			else = {
+				effect_tooltip = {
+					add_ideas = NWA_long_strategy
+				}
+			}
+		}
 	}
 }
 
@@ -2151,7 +2262,7 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.113.c
-		trigger = { is_puppet = no has_government = authoritarism }
+		trigger = { is_subject = no has_government = authoritarism }
 		set_state_owner = 195
 		set_capital = 195
 		add_stability = 0.10
@@ -2564,7 +2675,7 @@ country_event = {
 	trigger = {
 		tag = RSS
 		NWA = { has_country_flag = NWA_puppet }
-		NWA = { is_puppet = no }
+		NWA = { is_subject = no }
 	}
 	
 	fire_only_once = yes
