@@ -1327,7 +1327,7 @@ country_event = {
 		name = bulgaria.31.a
 		hidden_effect = {
 			remove_ideas_with_trait = head_of_government_trait
-			remove_ideas_with_trait = foreign_ministe_trait
+			remove_ideas_with_trait = foreign_minister_trait
 			remove_ideas_with_trait = economy_minister_trait
 			remove_ideas_with_trait = security_minister_trait
 			remove_ideas_with_trait = head_of_intel_trait
@@ -1356,7 +1356,7 @@ country_event = {
 		name = bulgaria.31.b
 		hidden_effect = {
 			remove_ideas_with_trait = head_of_government_trait
-			remove_ideas_with_trait = foreign_ministe_trait
+			remove_ideas_with_trait = foreign_minister_trait
 			remove_ideas_with_trait = security_minister_trait
 			remove_ideas_with_trait = economy_minister_trait
 			remove_ideas_with_trait = military_minister_trait
@@ -1636,21 +1636,63 @@ country_event = {
 			clr_country_flag = BUL_claim_on_ALB_2
 			clr_country_flag = BUL_claim_on_ALB_3
 		}
-		every_state = {
-			limit = {
-				region = 130
-				is_core_of = UKR
-				is_owned_by = AUH
+		hidden_effect = {
+			every_state = {
+				limit = {
+					region = 130
+					is_core_of = UKR
+					is_owned_by = AUH
+				}
+				UKR = { transfer_state = PREV }
 			}
-			UKR = { transfer_state = PREV }
+			every_state = {
+				limit = {
+					region = 130
+					is_core_of = USR
+					is_owned_by = AUH
+				}
+				USR = { transfer_state = PREV }
+			}
+			if = {
+				limit = { country_exists = CRI }
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 137
+							state = 1073
+							state = 1074
+						}
+						NOT = { is_core_of = ROOT }
+					}
+					CRI = { transfer_state = PREV }
+				}
+				else = {
+					random_other_country = {
+						limit = { OR = { owns_state = 137 owns_state = 1073 owns_state = 1074 } }
+						every_state = {
+							limit = {
+								is_owned_by = ROOT
+								OR = {
+									state = 137
+									state = 1073
+									state = 1074
+								}
+								NOT = { is_core_of = ROOT }
+							}
+							PREV = { transfer_state = PREV }
+						}
+					}
+				}
+			}
 		}
-		every_state = {
+		if = {
 			limit = {
-				region = 130
-				is_core_of = USR
-				is_owned_by = AUH
+				controls_state = 106
 			}
-			USR = { transfer_state = PREV }
+			transfer_state = 106
+			transfer_state = 818
+			transfer_state = 993
 		}
 			leave_faction = yes
 			add_ideas = neutral_foreign_policy_law
@@ -1670,14 +1712,6 @@ country_event = {
 				limit = { OR = { tag = ENG tag = FRA tag = ITA tag = GRR } NOT = { is_in_faction_with = GER } }
 				PREV = { give_military_access = PREV }
 			}
-		if = {
-			limit = {
-				controls_state = 106
-			}
-			transfer_state = 106
-			transfer_state = 818
-			transfer_state = 993
-		}
 	}
 }
 # Ответ Антанты ол юр бэйс ар белонг ту ас вы хуесосы ебаные
@@ -2053,6 +2087,7 @@ country_event = {
 			70 = { }
 			30 = { country_event = { id = bulgaria.66 days = 30 } }
 		}
+		custom_effect_tooltip = bulgaria_63_b_tt
 	}
 	option = {
 		trigger = { NOT = { has_country_flag = BUL_coalition_commie } }
@@ -2139,6 +2174,7 @@ country_event = {
 		name = bulgaria.65.c
 		set_variable = { social_liberalism_coalition = 3 }
 		set_variable = { market_liberalism_coalition = 3 }
+		custom_effect_tooltip = bulgaria_65_c_tt
 	}
 }
 
@@ -2170,7 +2206,7 @@ country_event = {
 	}
 	option = {
 		trigger = { NOT = { has_country_flag = flag_coalition_3_take } }
-		name = bulgaria.66.b #Пойдем на соглашение с рабочими
+		name = bulgaria.66.b #Пойдём на соглашение с рабочими
 		add_political_power = -30
 			if = {
 				limit = { has_country_flag = BUL_coalition_natsind }
@@ -2196,7 +2232,7 @@ country_event = {
 	}
 	option = {
 		trigger = { NOT = { has_country_flag = flag_coalition_3_take } }
-		name = bulgaria.66.c #Придется уступить коммунистам
+		name = bulgaria.66.c #Придётся уступить коммунистам
 		add_political_power = -15
 		add_popularity = { ideology = communism popularity = 0.05 }
 		
@@ -2250,10 +2286,10 @@ country_event = {
 	
 	option = {
 		trigger = {
-			check_variable = { party_popularity@national_syndicalism > socialist_parties }
-			check_variable = { party_popularity@national_syndicalism > socdem_parties }
-			check_variable = { party_popularity@national_syndicalism > liberal_parties }
-			check_variable = { party_popularity@national_syndicalism > party_popularity@social_conservatism }
+			NOT = { check_variable = { party_popularity@national_syndicalism < socialist_parties } }
+			NOT = { check_variable = { party_popularity@national_syndicalism < party_popularity@social_democracy } }
+			NOT = { check_variable = { party_popularity@national_syndicalism < liberal_parties } }
+			NOT = { check_variable = { party_popularity@national_syndicalism < party_popularity@social_conservatism } }
 		}
 		name = bulgaria.68.a
 		set_politics = { ruling_party = national_syndicalism elections_allowed = no }
@@ -2261,10 +2297,10 @@ country_event = {
 	}
 	option = {
 		trigger = {
-			check_variable = { party_popularity@communism > party_popularity@national_syndicalism }
-			check_variable = { party_popularity@communism > socdem_parties }
-			check_variable = { party_popularity@communism > liberal_parties }
-			check_variable = { party_popularity@communism > party_popularity@social_conservatism }
+			check_variable = { socialist_parties > party_popularity@national_syndicalism }
+			check_variable = { socialist_parties > party_popularity@social_democracy }
+			check_variable = { socialist_parties > liberal_parties }
+			check_variable = { socialist_parties > party_popularity@social_conservatism }
 		}
 		name = bulgaria.68.a
 		if = {
@@ -2280,9 +2316,9 @@ country_event = {
 	option = {
 		trigger = {
 			check_variable = { party_popularity@social_democracy > party_popularity@national_syndicalism }
-			check_variable = { party_popularity@social_democracy > party_popularity@communism }
-			check_variable = { party_popularity@social_democracy > liberal_parties }
-			check_variable = { party_popularity@social_democracy > party_popularity@social_conservatism }
+			NOT = { check_variable = { party_popularity@social_democracy < socialist_parties } }
+			NOT = { check_variable = { party_popularity@social_democracy < liberal_parties } }
+			NOT = { check_variable = { party_popularity@social_democracy < party_popularity@social_conservatism } }
 		}
 		name = bulgaria.68.a
 		set_politics = { ruling_party = social_democracy elections_allowed = no }
@@ -2290,9 +2326,16 @@ country_event = {
 	}
 	option = {
 		trigger = {
-			has_country_flag = BUL_coalition_marketlib
+			OR = {
+				has_country_flag = BUL_coalition_marketlib
+				AND = {
+					NOT = { has_country_flag = BUL_coalition_marketlib }
+					NOT = { has_country_flag = BUL_coalition_soclib }
+					NOT = { check_variable = { party_popularity@social_liberalism > party_popularity@market_liberalism } }
+				}
+			}
 			check_variable = { liberal_parties > party_popularity@national_syndicalism }
-			check_variable = { liberal_parties > party_popularity@communism }
+			NOT = { check_variable = { liberal_parties < socialist_parties } }
 			check_variable = { liberal_parties > party_popularity@social_democracy }
 			check_variable = { liberal_parties > party_popularity@social_conservatism }
 		}
@@ -2302,9 +2345,16 @@ country_event = {
 	}
 	option = {
 		trigger = {
-			NOT = { has_country_flag = BUL_coalition_marketlib }
+			OR = {
+				has_country_flag = BUL_coalition_soclib
+				AND = {
+					NOT = { has_country_flag = BUL_coalition_marketlib }
+					NOT = { has_country_flag = BUL_coalition_soclib }
+					check_variable = { party_popularity@social_liberalism > party_popularity@market_liberalism }
+				}
+			}
 			check_variable = { liberal_parties > party_popularity@national_syndicalism }
-			check_variable = { liberal_parties > party_popularity@communism }
+			NOT = { check_variable = { liberal_parties < socialist_parties } }
 			check_variable = { liberal_parties > party_popularity@social_democracy }
 			check_variable = { liberal_parties > party_popularity@social_conservatism }
 		}
@@ -2315,7 +2365,7 @@ country_event = {
 	option = {
 		trigger = {
 			check_variable = { party_popularity@social_conservatism > party_popularity@national_syndicalism }
-			check_variable = { party_popularity@social_conservatism > party_popularity@communism }
+			NOT = { check_variable = { party_popularity@social_conservatism < socialist_parties } }
 			check_variable = { party_popularity@social_conservatism > party_popularity@social_democracy }
 			check_variable = { party_popularity@social_conservatism > liberal_parties }
 		}
@@ -2759,124 +2809,11 @@ country_event = {
 }
 
 country_event = {
-	id = bulgaria.97
-	hidden = yes
-	trigger = {
-		tag = BUL
-		has_war = yes
-		has_global_flag = WWI_is_now
-		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
-		NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
-		has_war_with = ENG
-		OR = {
-			has_idea = foodstuffs_supply_crisis_1
-			has_idea = foodstuffs_supply_crisis_2
-			AND = {
-				has_idea = foodstuffs_supply_crisis_3
-				NOT = { has_idea = UKR_zerno_out }
-				OR = {
-					AND = { FRA = { controls_state = 16 is_puppet = no } }
-					AND = { FRA = { is_puppet = yes NOT = { controls_state = 16 } } }
-				}
-			}
-			AND = {
-				has_idea = foodstuffs_supply_crisis_4
-				OR = {
-					NOT = { has_idea = UKR_zerno_out }
-					OR = {
-						AND = { FRA = { controls_state = 16 is_puppet = no } }
-						AND = { FRA = { is_puppet = yes NOT = { controls_state = 16 } } }
-					}
-				}
-			}
-		}
-	}
-	mean_time_to_happen = {
-		days = 180
-		modifier = {
-			factor = 0.9
-			surrender_progress > 0.02
-		}
-		modifier = {
-			factor = 0.9
-			surrender_progress > 0.04
-		}
-		modifier = {
-			factor = 0.8
-			surrender_progress > 0.06
-		}
-		modifier = {
-			factor = 0.8
-			surrender_progress > 0.08
-		}
-		modifier = {
-			factor = 0.7
-			surrender_progress > 0.1
-		}
-		modifier = {
-			factor = 0.7
-			surrender_progress > 0.12
-		}
-		modifier = {
-			factor = 0.6
-			surrender_progress > 0.14
-		}
-		modifier = {
-			factor = 0.6
-			surrender_progress > 0.16
-		}
-		modifier = {
-			factor = 0.5
-			surrender_progress > 0.18
-		}
-		modifier = {
-			factor = 0.5
-			surrender_progress > 0.2
-		}
-		modifier = {
-			factor = 1.5
-			has_idea = UKR_zerno_out
-		}
-	}
-	option = {
-		if = {
-			limit = { has_idea = foodstuffs_supply_crisis_4 }
-			swap_ideas = {
-				remove_idea = foodstuffs_supply_crisis_4
-				add_idea = foodstuffs_supply_crisis_5
-			}
-		}
-		if = {
-			limit = { has_idea = foodstuffs_supply_crisis_3 }
-			swap_ideas = {
-				remove_idea = foodstuffs_supply_crisis_3
-				add_idea = foodstuffs_supply_crisis_4
-			}
-		}
-		if = {
-			limit = { has_idea = foodstuffs_supply_crisis_2 }
-			swap_ideas = {
-				remove_idea = foodstuffs_supply_crisis_2
-				add_idea = foodstuffs_supply_crisis_3
-			}
-		}
-		if = {
-			limit = { has_idea = foodstuffs_supply_crisis_1 }
-			swap_ideas = {
-				remove_idea = foodstuffs_supply_crisis_1
-				add_idea = foodstuffs_supply_crisis_2
-			}
-		}
-	}
-}
-
-country_event = {
 	id = bulgaria.98
 	hidden = yes
 	trigger = {
 		tag = BUL
 		OR = {
-			has_war = no
 			NOT = { has_global_flag = WWI_is_now }
 			has_global_flag = WWI_BUL_HAS_CAPITULATED
 			NOT = { has_war_with = ENG }
@@ -2904,52 +2841,6 @@ country_event = {
 				add_idea = foodstuffs_supply_crisis_1
 			}
 		}
-		if = {
-			limit = { has_idea = foodstuffs_supply_crisis_3 }
-			swap_ideas = {
-				remove_idea = foodstuffs_supply_crisis_3
-				add_idea = foodstuffs_supply_crisis_2
-			}
-		}
-		if = {
-			limit = { has_idea = foodstuffs_supply_crisis_4 }
-			swap_ideas = {
-				remove_idea = foodstuffs_supply_crisis_4
-				add_idea = foodstuffs_supply_crisis_3
-			}
-		}
-		if = {
-			limit = { has_idea = foodstuffs_supply_crisis_5 }
-			swap_ideas = {
-				remove_idea = foodstuffs_supply_crisis_5
-				add_idea = foodstuffs_supply_crisis_4
-			}
-		}
-	}
-}
-
-country_event = {
-	id = bulgaria.99
-	hidden = yes
-	trigger = {
-		tag = BUL
-		has_global_flag = WWI_is_now
-		has_idea = UKR_zerno_out
-		#OR = {
-			#AND = { ITA = { controls_state = 159 is_puppet = yes } }
-			#AND = { ITA = { is_puppet = no NOT = { controls_state = 159 } } }
-			#AND = { has_global_flag = WWI_ITA_HAS_CAPITULATED }
-		#}
-		OR = {
-			has_idea = foodstuffs_supply_crisis_3
-			has_idea = foodstuffs_supply_crisis_4
-			has_idea = foodstuffs_supply_crisis_5
-		}
-	}
-	mean_time_to_happen = {
-		days = 90
-	}
-	option = {
 		if = {
 			limit = { has_idea = foodstuffs_supply_crisis_3 }
 			swap_ideas = {

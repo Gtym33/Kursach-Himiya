@@ -13,6 +13,18 @@
 #	}
 #
 
+
+#is_socialist_country
+#is_democratic_country
+#is_neutral_country
+#is_fascist_country
+
+#ruling_coalition_is_socialist
+#ruling_coalition_is_socdem
+#ruling_coalition_is_liberal
+#ruling_coalition_is_authoritarian
+#ruling_coalition_is_reactionary
+
 can_lose_unity = {
 	has_stability > 60
 	OR = {
@@ -38,16 +50,13 @@ is_socialist_country = {
 			has_country_flag = political_social_democrats_in_socialist_coalition
 			has_government = social_democracy
 		}
-	}
-}
-
-is_fascist_country = {
-	OR = {
-		has_government = fascism
-		has_government = national_syndicalism
 		AND = {
-			has_country_flag = political_despotists_in_reactionary_coalition
-			has_government = despotism
+			has_country_flag = political_social_liberals_in_socialist_coalition
+			has_government = social_liberalism
+		}
+		AND = {
+			check_variable = { national_syndicalism_coalition = 1 }
+			has_government = national_syndicalism
 		}
 	}
 }
@@ -58,7 +67,10 @@ is_democratic_country = {
 			NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
 			has_government = social_democracy
 		}
-		has_government = social_liberalism
+		AND = {
+			NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
+			has_government = social_liberalism
+		}
 		has_government = market_liberalism
 		AND = {
 			has_country_flag = political_social_conservatives_in_liberal_coalition
@@ -74,9 +86,16 @@ is_neutral_country = {
 			NOT = { has_country_flag = political_social_conservatives_in_liberal_coalition }
 			has_government = social_conservatism
 		}
+		has_government = despotism
+	}
+}
+
+is_fascist_country = {
+	OR = {
+		has_government = fascism
 		AND = {
-			NOT = { has_country_flag = political_despotists_in_reactionary_coalition }
-			has_government = despotism
+			has_government = national_syndicalism
+			NOT = { check_variable = { national_syndicalism_coalition = 1 } }
 		}
 	}
 }
