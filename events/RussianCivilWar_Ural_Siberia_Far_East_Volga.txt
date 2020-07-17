@@ -580,13 +580,13 @@ country_event = {
 		}
 	}
 	desc = {
-		text = rcw_usfev.16.d_1
+		text = rcw_usfev.16.desc_1
 		trigger = {
 			OCH = { OR = { controls_state = 251 controls_state = 651 } }
 		}
 	}
 	desc = {
-		text = rcw_usfev.16.d_2
+		text = rcw_usfev.16.desc_2
 		trigger = {
 			NOT = { OCH = { OR = { controls_state = 251 controls_state = 651 } } }
 			has_global_flag = RUS_all_russian_constituent_assembly_ended
@@ -2077,7 +2077,7 @@ country_event = {
 		}
 	}
 	desc = {
-		text = rcw_usfev.18.d_1
+		text = rcw_usfev.18.desc_1
 		trigger = {
 			SOV = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy } }
 		}
@@ -2401,7 +2401,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_usfev.29.d_1
+		name = rcw_usfev.29.d
 				set_politics = { ruling_party = national_syndicalism}
 			add_ideas = {
 				military_dictatorship_gov_form
@@ -2512,7 +2512,7 @@ country_event = {
 #				has_country_flag = CCA_annex_SIB
 #				}
 #		}
-#				if = {limit = {KAZ = {is_puppet = yes}} puppet=KAZ}
+#				if = {limit = {KAZ = {is_subject = yes}} puppet=KAZ}
 #		puppet = SIB
 #
 #		hidden_effect = {
@@ -2555,7 +2555,7 @@ country_event = {
 	
 	trigger = {
 		tag = SIB
-		is_puppet = no
+		is_subject = no
 		NOT = { has_government = communism has_government = radical_socialism }
 		has_country_flag = SIB_start_political_instability
 	}
@@ -2584,6 +2584,10 @@ country_event = {
 			factor = 0
 		}
 		set_capital = 578
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = yes
+		}
 		clr_country_flag = SIB_start_political_instability
 		add_ideas = {
 			Pyotr_Derber_1
@@ -2639,7 +2643,7 @@ country_event = {
 	}
 	option = {
 		name = rcw_usfev.43.b
-		trigger = { URL = { exists = yes is_puppet_of = CCA } }
+		trigger = { URL = { exists = yes is_subject_of = CCA } }
 		CCA = {
 			set_variable = {
 				var = SIB_pressure_CCA
@@ -2680,7 +2684,7 @@ country_event = {
 				country_event = { id = rcw_usfev.46 days = 1 }
 			}
 			if = {
-			limit = { URL = { exists = yes is_puppet_of = SIB } }
+			limit = { URL = { exists = yes is_subject_of = SIB } }
 			URL = {
 				transfer_state = 572
 				}
@@ -3115,7 +3119,7 @@ country_event = {
 				remove_state_core = 581
 			}
 			if = {
-				limit = { PRM = { is_puppet_of = SIB } }
+				limit = { PRM = { is_subject_of = SIB } }
 				RUS = {
 					annex_country = { 
 						target = PRM 
@@ -3124,7 +3128,7 @@ country_event = {
 				}
 			}
 			if = {
-				limit = { OCH = { is_puppet_of = SIB } }
+				limit = { OCH = { is_subject_of = SIB } }
 				RUS = {
 					annex_country = { 
 						target = OCH 
@@ -3133,7 +3137,7 @@ country_event = {
 				}
 			}
 			if = {
-				limit = { BKL = { is_puppet_of = SIB } }
+				limit = { BKL = { is_subject_of = SIB } }
 				RUS = {
 					annex_country = { 
 						target = BKL 
@@ -3142,7 +3146,7 @@ country_event = {
 				}
 			}
 			if = {
-				limit = { CCA = { is_puppet_of = SIB } }
+				limit = { CCA = { is_subject_of = SIB } }
 				RUS = {
 					annex_country = { 
 						target = CCA 
@@ -3158,7 +3162,7 @@ country_event = {
 		every_state = { limit = { is_core_of = RUS } remove_claim_by = SIB }
 		
 			if = {
-				limit = { KAZ = { exists = yes OR = { is_puppet_of = SIB is_in_faction_with = SIB } } }
+				limit = { KAZ = { exists = yes OR = { is_subject_of = SIB is_in_faction_with = SIB } } }
 				every_country = {
 					limit = {
 						has_war_with = KAZ
@@ -3177,7 +3181,7 @@ country_event = {
 			}
 			
 			if = {
-				limit = { PRM = { exists = yes OR = { is_puppet_of = SIB is_in_faction_with = SIB } } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
+				limit = { PRM = { exists = yes OR = { is_subject_of = SIB is_in_faction_with = SIB } } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
 				every_state = {
 					limit = { is_core_of = PRM }
 					PRM = { transfer_state = PREV }
@@ -3221,7 +3225,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.54.b
 		if = { limit = { any_unit_leader = { has_id = 92345 } } every_unit_leader = { limit = { OR = { has_id = 92345 } } set_nationality = SCH } }
-		remove_despotism_leader = yes
+		retire_ideology_leader = despotism
 		set_country_flag = SIB_grishin_almazov_dissolved
 		if = {
 			limit = { has_idea = Alexey_Almazov_6 }
@@ -3273,80 +3277,106 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.a #Гришин
+		trigger = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = no } }
 		set_politics = { ruling_party = despotism }
-		trigger = { any_unit_leader = { has_id = 92345 } NOT = { has_country_flag = SIB_grishin_almazov_dissolved } }
+		add_ideas = military_dictatorship_gov_form
 		add_stability = -0.15
 		add_war_support = 0.02
 		add_popularity = { ideology = social_liberalism popularity = -0.25 }
 		add_popularity = { ideology = market_liberalism popularity = -0.1 }
 		add_popularity = { ideology = despotism popularity = 0.05 }
 		add_ideas = RSS_atamanshina
-		country_event = rcw_usfev.58
 		country_event = { id = rcw_usfev.57 days = 2 }
+		country_event = rcw_usfev.58
 	}
 	
 	option = {
 		name = rcw_usfev.55.b #Михайлов
+		trigger = { has_country_leader = { name = "Ivan Mikhailov" ruling_only = no } }
 		set_politics = { ruling_party = social_conservatism }
+		if = {
+			limit = { NOT = { has_idea = military_dictatorship_gov_form } }
+			add_ideas = presidential_republic_gov_form
+		}
 		add_stability = -0.15
 		add_war_support = 0.02
 		add_popularity = { ideology = social_liberalism popularity = -0.25 }
 		add_popularity = { ideology = market_liberalism popularity = -0.1 }
 		add_popularity = { ideology = social_conservatism popularity = 0.05 }
 		add_ideas = RSS_atamanshina
-		country_event = rcw_usfev.58
 		country_event = { id = rcw_usfev.57 days = 2 }
+		country_event = rcw_usfev.58
 	}
 	
 	option = {
 		name = rcw_usfev.55.c #Пепеляев
+		trigger = { has_country_leader = { name = "Viktor Pepelyaev" ruling_only = no } }
 		set_politics = { ruling_party = national_syndicalism }
+		add_ideas = military_dictatorship_gov_form
 		add_stability = -0.15
 		add_war_support = 0.02
 		add_popularity = { ideology = social_liberalism popularity = -0.25 }
 		add_popularity = { ideology = market_liberalism popularity = -0.1 }
 		add_popularity = { ideology = national_syndicalism popularity = 0.05 }
 		add_ideas = RSS_atamanshina
-		country_event = rcw_usfev.58
 		country_event = { id = rcw_usfev.57 days = 2 }
+		country_event = rcw_usfev.58
 	}
 	
 	option = {
 		name = rcw_usfev.55.d #Сахаров
+		trigger = { has_country_leader = { name = "Konstantin Sakharov" ruling_only = no } }
 		set_politics = { ruling_party = fascism }
-		every_unit_leader = { limit = { OR = { has_id = 92351 } is_field_marshal = no } promote_leader = yes }
+		add_ideas = military_dictatorship_gov_form
+		every_unit_leader = { limit = { has_id = 92351 is_field_marshal = no } promote_leader = yes }
 		add_stability = -0.15
 		add_war_support = 0.02
 		add_popularity = { ideology = social_liberalism popularity = -0.25 }
 		add_popularity = { ideology = market_liberalism popularity = -0.1 }
 		add_popularity = { ideology = fascism popularity = 0.05 }
 		add_ideas = RSS_atamanshina
-		country_event = rcw_usfev.58
 		country_event = { id = rcw_usfev.57 days = 2 }
+		country_event = rcw_usfev.58
 	}
 	
 	option = {
 		name = rcw_usfev.55.e #Дитерихс
-		trigger = { any_unit_leader = { has_id = 77400 } has_country_flag = SIB_grishin_almazov_dissolved }
-		set_politics = { ruling_party = despotism }
-		add_stability = -0.15
-		add_war_support = 0.02
-		add_popularity = { ideology = social_liberalism popularity = -0.25 }
-		add_popularity = { ideology = market_liberalism popularity = -0.1 }
-		add_popularity = { ideology = despotism popularity = 0.05 }
-		add_ideas = RSS_atamanshina
-		country_event = rcw_usfev.58
-		country_event = { id = rcw_usfev.57 days = 2 }
-	}
-	
-	option = {
-		name = rcw_usfev.55.f #Волков
+		trigger = { has_country_leader = { name = "Michael Diterihs" ruling_only = no } }
 		set_politics = { ruling_party = authoritarism }
+		add_ideas = military_dictatorship_gov_form
 		add_stability = -0.15
 		add_war_support = 0.02
 		add_popularity = { ideology = social_liberalism popularity = -0.25 }
 		add_popularity = { ideology = market_liberalism popularity = -0.1 }
 		add_popularity = { ideology = authoritarism popularity = 0.05 }
+		add_ideas = RSS_atamanshina
+		country_event = { id = rcw_usfev.57 days = 2 }
+		country_event = rcw_usfev.58
+	}
+	option = {
+		name = rcw_usfev.55.f #Волков
+		trigger = { has_country_leader = { name = "Vyacheslav Volkov" ruling_only = no } }
+		set_politics = { ruling_party = authoritarism }
+		add_ideas = military_dictatorship_gov_form
+		add_stability = -0.15
+		add_war_support = 0.02
+		add_popularity = { ideology = social_liberalism popularity = -0.25 }
+		add_popularity = { ideology = market_liberalism popularity = -0.1 }
+		add_popularity = { ideology = authoritarism popularity = 0.05 }
+		add_ideas = RSS_atamanshina
+		country_event = { id = rcw_usfev.57 days = 2 }
+	}
+	
+	option = {
+		name = rcw_usfev.55.g #Иванов-Ринов
+		trigger = { has_country_leader = { name = "Pavel Ivanov-Rinov" ruling_only = no } }
+		set_politics = { ruling_party = despotism }
+		add_ideas = military_dictatorship_gov_form
+		add_stability = -0.15
+		add_war_support = 0.02
+		add_popularity = { ideology = social_liberalism popularity = -0.25 }
+		add_popularity = { ideology = market_liberalism popularity = -0.1 }
+		add_popularity = { ideology = despotism popularity = 0.05 }
 		add_ideas = RSS_atamanshina
 		country_event = { id = rcw_usfev.57 days = 2 }
 	}
@@ -3408,6 +3438,10 @@ country_event = {
 	option = {
 		name = rcw_usfev.57.a #Только предателям Родины есть чего опасаться
 		add_ideas = SIB_white_terror_idea
+		add_to_variable = {
+			var = global.RCW_green_var_Siberia
+			value = 2
+		}
 		ai_chance = {
 			factor = 1
 		}
@@ -3417,6 +3451,10 @@ country_event = {
 		name = rcw_usfev.57.b #Несколько показательных судов позволят сохранить лицо
 		add_political_power = -30
 		add_timed_idea = { idea = SIB_white_terror_idea days = 70 }
+		add_to_variable = {
+			var = global.RCW_green_var_Siberia
+			value = 1
+		}
 		ai_chance = {
 			factor = 0
 		}
@@ -3623,7 +3661,7 @@ country_event = {
 				controls_state = 330
 				MON = { exists = yes }
 			}
-			MON = { is_puppet_of = TAN }
+			MON = { is_subject_of = TAN }
 		}
 	}
 	fire_only_once = yes
@@ -4884,11 +4922,11 @@ country_event = {
 	option = {
 		name = rcw_usfev.49.a
 		if = {
-			limit = { RSS = { exists = yes is_puppet = no } }
+			limit = { RSS = { exists = yes is_subject = no } }
 			RSS = { BKL = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
 		}
 		else_if = {
-			limit = { SIB = { exists = yes is_puppet = no } }
+			limit = { SIB = { exists = yes is_subject = no } }
 			SIB = { BKL = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
 		}
 	}
@@ -5293,6 +5331,7 @@ country_event = {
 		if = {
 			limit = { FROM = { has_country_flag = MON_offer_to_puppet } }
 			FROM = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } }
+			set_politics = { ruling_party = authoritarism }
 			else = {
 				if = {
 					limit = { FROM = { is_in_faction = yes } }
@@ -5586,7 +5625,7 @@ country_event = {
 		tag = PRM
 		OR = {
 			AND = {
-				is_puppet_of = RSS
+				is_subject_of = RSS
 				OR = {
 					RSS = { has_government = despotism }
 					RSS = { has_government = fascism }
@@ -5596,7 +5635,7 @@ country_event = {
 				}
 			}
 			AND = {
-				is_puppet_of = SIB
+				is_subject_of = SIB
 
 				OR = {
 					SIB = { has_government = despotism }
@@ -6146,15 +6185,15 @@ country_event = {
 		trigger = { NOT = { has_country_flag = rcw_usfev_110_Lazo_killed  has_country_flag = rcw_usfev_110_Krakoveckiy_killed  has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
 	}
 	desc = {
-		text = rcw_usfev.110.d_1
+		text = rcw_usfev.110.desc_1
 		trigger = { has_country_flag = rcw_usfev_110_Lazo_killed }
 	}
 	desc = {
-		text = rcw_usfev.110.d_2
+		text = rcw_usfev.110.desc_2
 		trigger = { has_country_flag = rcw_usfev_110_Krakoveckiy_killed }
 	}
 	desc = {
-		text = rcw_usfev.110.d_3
+		text = rcw_usfev.110.desc_3
 		trigger = { has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed }
 	}
 	picture = GFX_report_event_prm_nicolsk
@@ -6495,7 +6534,7 @@ country_event = {
 	
 	trigger = {
 		tag = PRM
-		is_puppet = no
+		is_subject = no
 		SIB = { exists = yes NOT = { has_government = communism has_government = radical_socialism } }
 		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
 	}
@@ -7733,6 +7772,7 @@ country_event = {
 	fire_only_once = yes
 	
 	immediate = {
+		
 	}
 	
 	option = {
@@ -7884,6 +7924,14 @@ country_event = {
 		random_list = {
 			50 = {}
 			50 = {
+				modifier = {
+					factor = 0
+					SCH = { exists = no }
+					NOT = { 586 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } }
+					NOT = { 589 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } }
+					NOT = { 885 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } }
+					NOT = { 732 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } }
+				}
 				if = {
 					limit = { SCH = { exists = yes } }
 					SCH = {
@@ -7922,8 +7970,13 @@ country_event = {
 							}
 							every_state = {
 								limit = {
-									#NOT = { is_controlled_by = RUS }
-									#NOT = { is_controlled_by = TRK }
+									CONTROLLER = {
+										OR = {
+											tag = ROOT
+											is_subject_of = ROOT
+											is_in_faction_with = ROOT
+										}
+									}
 									OR = {
 										state = 586
 										state = 589
@@ -7982,7 +8035,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.147.a
-		trigger = {ENG = {is_puppet = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
+		trigger = {ENG = {is_subject = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
 		add_political_power = -50
 		add_opinion_modifier = { target = ENG modifier = sazonov_cca_1 }
 		ENG = {country_event = { id = rcw_usfev.148 days = 1 }}
@@ -7990,7 +8043,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.147.b
-		trigger = {GER = {is_puppet = no NOT = {OR = {GER = {has_government = communism has_government = radical_socialism}}}}}
+		trigger = {GER = {is_subject = no NOT = {OR = {GER = {has_government = communism has_government = radical_socialism}}}}}
 		add_political_power = -50
 		add_opinion_modifier = { target = GER modifier = sazonov_cca_1 }
 		GER = {country_event = { id = rcw_usfev.148 days = 1 }}
@@ -8368,8 +8421,8 @@ country_event = {
 			SIB = { has_war_with = CCA }
 			CCA = { has_war_with = SIB }
 		}
-		SIB = { is_puppet = no }
-		CCA = { is_puppet = no }
+		SIB = { is_subject = no }
+		CCA = { is_subject = no }
 		URL = { exists = no }
 		OR = {
 			AND = {
@@ -8580,8 +8633,8 @@ country_event = {
 				SIB = { NOT = { controls_state = 653 } }
 			}
 			OR = {
-				SIB = { is_puppet_of = CCA }
-				CCA = { is_puppet_of = SIB }
+				SIB = { is_subject_of = CCA }
+				CCA = { is_subject_of = SIB }
 			}
 			OR = {
 				SIB = { has_war_with = CCA }
@@ -8985,7 +9038,7 @@ country_event = {
 			exists = yes
 			OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes }
 			has_capitulated = no
-			is_puppet = no
+			is_subject = no
 			NOT = { has_war_with = ROOT }
 			surrender_progress < 0.4
 			NOT = { has_government = radical_socialism has_government = communism }
@@ -9013,7 +9066,7 @@ country_event = {
 				exists = yes
 				OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes }
 				has_capitulated = no
-				is_puppet = no
+				is_subject = no
 				NOT = { has_war_with = ROOT }
 				surrender_progress < 0.4
 				NOT = { has_government = radical_socialism has_government = communism }
@@ -9087,7 +9140,7 @@ country_event = {
 			exists = yes
 			OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes }
 			has_capitulated = no
-			is_puppet = no
+			is_subject = no
 			NOT = { has_war_with = ROOT }
 			surrender_progress < 0.4
 			NOT = { has_government = radical_socialism has_government = communism }
@@ -9107,7 +9160,7 @@ country_event = {
 				exists = yes
 				OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes }
 				has_capitulated = no
-				is_puppet = no
+				is_subject = no
 				NOT = { has_war_with = ROOT }
 				surrender_progress < 0.4
 				NOT = { has_government = radical_socialism has_government = communism }
@@ -9403,7 +9456,7 @@ id = rcw_usfev.205
 	
 	option = { #Антата, етит твою мать
 		name = rcw_usfev.205.a
-		trigger = {ENG = {is_puppet = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
+		trigger = {ENG = {is_subject = no NOT = {OR = {ENG = {has_government = communism has_government = radical_socialism}}}}}
 		ENG = {country_event = rcw_usfev.206}
 		add_political_power = -50
 		add_opinion_modifier = { target = ENG modifier = sazonov_cca_1 }
@@ -9544,7 +9597,7 @@ country_event = {
 		trigger = { SIB = { exists = yes } }
 	}
 	desc = {
-		text = rcw_usfev.210.d_1
+		text = rcw_usfev.210.desc_1
 		trigger = { SIB = { exists = no } }
 	}
 	picture = GFX_report_event_comre_tsardom_in_siberia
@@ -10655,7 +10708,7 @@ country_event = {
 		TAN = {
 			OR = {
 				exists = no
-				is_puppet_of = MON
+				is_subject_of = MON
 			}
 		}
 	}
@@ -11557,7 +11610,7 @@ country_event = {
 				}
 			}
 			if = {
-				limit = { URL = { is_puppet_of = CCA } }
+				limit = { URL = { is_subject_of = CCA } }
 				RSS = {
 					annex_country = { 
 						target = URL
@@ -11566,7 +11619,7 @@ country_event = {
 				}
 			}
 			if = {
-				limit = { URL = { is_puppet_of = SIB } }
+				limit = { URL = { is_subject_of = SIB } }
 				RSS = {
 					annex_country = { 
 						target = URL
@@ -11609,7 +11662,7 @@ country_event = {
 			
 			SIB = {
 				if = {
-					limit = { URL = { is_puppet_of = SIB } }
+					limit = { URL = { is_subject_of = SIB } }
 					RSS = {
 						annex_country = { 
 							target = URL
