@@ -4,59 +4,446 @@
 
 add_namespace = rcw_usfev
 
-###Семёнов становится представителем российской власти на Дальнем востоке (до восстания чехов)###
+# Восстание забайкальских казаков (мятеж Семёнова)
 country_event = {
-	id = rcw_usfev.11
-	title = rcw_usfev.11.t
-	desc = rcw_usfev.11.desc
-
-	picture = GFX_report_event_rcw_sibir_uprising
+	id = rcw_usfev.1
+	title = rcw_usfev.1.t
+	desc = {
+		text = rcw_usfev.1.desc
+		trigger = {
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom }
+		}
+	}
+	desc = {
+		text = rcw_usfev.1.desc_1
+		trigger = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+			NOT = { has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom }
+		}
+	}
+	desc = {
+		text = rcw_usfev.1.desc_2
+		trigger = {
+			has_country_flag = RUS_all_russian_constituent_assembly_second_session_serfdom
+		}
+	}
+	picture = GFX_report_event_rus_kazaks_war
 	
 	trigger = {
-		NOT = { has_global_flag = RUS_civil_war_over }
-		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
-		NOT = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
-		tag = BKL
-		controls_state = 566
-		PRM = { exists = no }
-		SIB = { exists = no }
-		CCA = { exists = no }
-		RSS = { exists = no }
+		has_start_date < 1917.11.7
+		tag = RUS
+		BKL = { exists = no }
+		NOT = { has_country_flag = BKL_revolt }
+		NOT = { has_country_flag = RUS_cossacks_were_disbanded }
+		has_country_flag = RUS_Oktober_revolution_fired
 	}
-	
-	fire_only_once = yes
 	
 	mean_time_to_happen = {
 		days = 1
 	}
 	
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			every_unit_leader = { limit = { has_id = 77299 } set_nationality = BKL }
+			BKL = {
+				transfer_state = 761
+				transfer_state = 798
+				transfer_state = 950
+				transfer_state = 951
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+			if = {
+				limit = { has_country_flag = RUS_provisional_government_not_so_provisional }
+				BKL = { load_focus_tree = Transbaikal_white_cossaks_late_focus transfer_state = 563 }
+				else = {
+					remove_ideas = peasant_and_land_and_bread_question_0_5
+					add_ideas = marching_army_idea
+					set_cosmetic_tag = BKL_SMS
+				}
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kazach'ya brigada"
+			}
+		}
+	}
+	
 	option = {
-		name = rcw_usfev.11.a
-		drop_cosmetic_tag = yes
-		set_cosmetic_tag = BKL_REO
-		set_capital = 566
-		every_state = {
-			limit = {
-				is_core_of = RUS
-				OR = {
-					region = 149
-					region = 148
-					region = 155
+		name = rcw_usfev.1.a
+		set_country_flag = BKL_revolt
+		if = {
+			limit = { has_country_flag = RUS_provisional_government_not_so_provisional }
+			declare_war_on = {
+				target = BKL
+				type = annex_everything
+			}
+			hidden_effect = {
+				BKL = {
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 100
+						producer = JAP
+					}
+					add_equipment_to_stockpile = {
+						type = artillery_equipment
+						amount = 24
+						producer = JAP
+					}
+					division_template = {
+						name = "Pekhotniy batalyon"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 100
+						producer = FNG
+					}
+					division_template = {
+						name = "Miliceyskiy batalyon"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+						}
+					}
+					division_template = {
+						name = "Kavaleriyskaya brigada"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+					}
+					add_manpower = 2000
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 200
+						producer = BKL
+					}
+					division_template = {
+						name = "Kavaleriyskaya brigada"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"Yaponskiy pekhotniy otryad\" division_template = \"Pekhotniy batalyon\" start_experience_factor = 0.5 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Kitayskaya miliciya\" division_template = \"Miliceyskiy batalyon\" start_experience_factor = 0.2 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Kitayskaya miliciya\" division_template = \"Miliceyskiy batalyon\" start_experience_factor = 0.2 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Mongolskaya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.01 start_equipment_factor = 1"
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Otryad hunhuzov\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.1 start_equipment_factor = 1"
+							owner = ROOT
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 500
+						producer = BKL
+					}
+					add_equipment_to_stockpile = {
+						type = artillery_equipment
+						amount = 5
+						producer = BKL
+					}
+					add_timed_idea = { idea = BKL_russian_volunteers_idea days = 182 }
+					add_timed_idea = { idea = BKL_right_oficers days = 365 }
+					add_ideas = BKL_special_manchu_squad_idea
+					add_country_leader_trait = ataman
 				}
 			}
-			add_core_of = BKL
-		}
-		every_state = {
-			limit = {
-				is_owned_by = RUS
-				OR = {
-					region = 149
-					region = 148
-					region = 155
+			else = {
+				set_capital = 950
+				if = {
+					limit = { RUS = { OR = { has_completed_focus = RUS_struggle_against_counterrevolution NOT = { has_focus_tree = Russia_Bolsheviks_focus } } } }
+					RUS = {
+						declare_war_on = {
+							target = BKL
+							type = annex_everything
+						}
+					}
 				}
 			}
-			BKL = { set_state_owner = PREV }
 		}
+	}
+	option = {
+		name = rcw_usfev.1.b
+		trigger = {
+			is_ai = no
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_country_flag = RUS_Oktober_revolution_fired
+			}
+		}
+		set_country_flag = BKL_revolt
+		if = {
+			limit = { has_country_flag = RUS_provisional_government_not_so_provisional }
+			declare_war_on = {
+				target = BKL
+				type = annex_everything
+			}
+			hidden_effect = {
+				BKL = {
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 100
+						producer = JAP
+					}
+					add_equipment_to_stockpile = {
+						type = artillery_equipment
+						amount = 24
+						producer = JAP
+					}
+					division_template = {
+						name = "Pekhotniy batalyon"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 100
+						producer = FNG
+					}
+					division_template = {
+						name = "Miliceyskiy batalyon"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+						}
+					}
+					division_template = {
+						name = "Kavaleriyskaya brigada"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+					}
+					add_manpower = 2000
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 200
+						producer = BKL
+					}
+					division_template = {
+						name = "Kavaleriyskaya brigada"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"Yaponskiy pekhotniy otryad\" division_template = \"Pekhotniy batalyon\" start_experience_factor = 0.5 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Kitayskaya miliciya\" division_template = \"Miliceyskiy batalyon\" start_experience_factor = 0.2 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Kitayskaya miliciya\" division_template = \"Miliceyskiy batalyon\" start_experience_factor = 0.2 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Mongolskaya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.01 start_equipment_factor = 1"
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Otryad hunhuzov\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.1 start_equipment_factor = 1"
+							owner = ROOT
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 500
+						producer = BKL
+					}
+					add_equipment_to_stockpile = {
+						type = artillery_equipment
+						amount = 5
+						producer = BKL
+					}
+					add_timed_idea = { idea = BKL_russian_volunteers_idea days = 182 }
+					add_timed_idea = { idea = BKL_right_oficers days = 365 }
+					add_ideas = BKL_special_manchu_squad_idea
+					add_country_leader_trait = ataman
+				}
+			}
+			else = {
+				set_capital = 950
+				if = {
+					limit = { RUS = { OR = { has_completed_focus = RUS_struggle_against_counterrevolution NOT = { has_focus_tree = Russia_Bolsheviks_focus } } } }
+					RUS = {
+						declare_war_on = {
+							target = BKL
+							type = annex_everything
+						}
+					}
+				}
+			}
+		}
+		BKL = { change_tag_from = RUS }
+	}
+	option = {
+		name = rcw_usfev.1.c
+		trigger = {
+			is_ai = no
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+				has_country_flag = RUS_Oktober_revolution_fired
+			}
+		}
+		set_country_flag = BKL_revolt
+		if = {
+			limit = { has_country_flag = RUS_provisional_government_not_so_provisional }
+			declare_war_on = {
+				target = BKL
+				type = annex_everything
+			}
+			hidden_effect = {
+				BKL = {
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 100
+						producer = JAP
+					}
+					add_equipment_to_stockpile = {
+						type = artillery_equipment
+						amount = 24
+						producer = JAP
+					}
+					division_template = {
+						name = "Pekhotniy batalyon"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 100
+						producer = FNG
+					}
+					division_template = {
+						name = "Miliceyskiy batalyon"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+						}
+					}
+					division_template = {
+						name = "Kavaleriyskaya brigada"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+					}
+					add_manpower = 2000
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 200
+						producer = BKL
+					}
+					division_template = {
+						name = "Kavaleriyskaya brigada"
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"Yaponskiy pekhotniy otryad\" division_template = \"Pekhotniy batalyon\" start_experience_factor = 0.5 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Kitayskaya miliciya\" division_template = \"Miliceyskiy batalyon\" start_experience_factor = 0.2 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Kitayskaya miliciya\" division_template = \"Miliceyskiy batalyon\" start_experience_factor = 0.2 start_equipment_factor = 0.01 "
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Mongolskaya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.01 start_equipment_factor = 1"
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Otryad hunhuzov\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.1 start_equipment_factor = 1"
+							owner = ROOT
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 500
+						producer = BKL
+					}
+					add_equipment_to_stockpile = {
+						type = artillery_equipment
+						amount = 5
+						producer = BKL
+					}
+					add_timed_idea = { idea = BKL_russian_volunteers_idea days = 182 }
+					add_timed_idea = { idea = BKL_right_oficers days = 365 }
+					add_ideas = BKL_special_manchu_squad_idea
+					add_country_leader_trait = ataman
+				}
+			}
+			else = {
+				set_capital = 950
+				if = {
+					limit = { RUS = { OR = { has_completed_focus = RUS_struggle_against_counterrevolution NOT = { has_focus_tree = Russia_Bolsheviks_focus } } } }
+					RUS = {
+						declare_war_on = {
+							target = BKL
+							type = annex_everything
+						}
+					}
+				}
+			}
+		}
+		BKL = { change_tag_from = RUS }
 	}
 }
 
@@ -372,6 +759,10 @@ country_event = {
 		name = rcw_usfev.15.a
 		add_stability = -0.05
 		set_country_flag = RUS_czechoslovak_legion_uprising
+		if = {
+			limit = { country_exists = BKL owns_state = 563 divisions_in_state = { size > 0 state = 563 } }
+			BKL = { transfer_state = 563 }
+		}
 		every_state = {
 			limit = {
 				OR = {
@@ -471,6 +862,10 @@ country_event = {
 		name = rcw_usfev.15.b
 		add_stability = -0.05
 		set_country_flag = RUS_czechoslovak_legion_uprising
+		if = {
+			limit = { country_exists = BKL owns_state = 563 divisions_in_state = { size > 0 state = 563 } }
+			BKL = { transfer_state = 563 }
+		}
 		every_state = {
 			limit = {
 				OR = {
@@ -2791,41 +3186,6 @@ country_event = {
 	}
 }
 
-# Сибирь вводит войска в Челябинск (КОМУЧ)
-country_event = {
-	id = rcw_usfev.53
-	title = rcw_usfev.53.t
-	desc = rcw_usfev.53.desc
-
-	picture = GFX_report_event_rus_entente
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_usfev.53.a
-		add_war_support = 0.1
-		add_stability = 0.1
-		declare_war_on = {
-			target = SIB
-			type = annex_everything
-		}
-		ai_chance = {
-			factor = 2
-		}
-	}
-	option = {
-		name = rcw_usfev.53.b
-		add_popularity = { ideology = authoritarism popularity = 0.06 }
-		add_popularity = { ideology = despotism popularity = 0.06 }
-		add_popularity = { ideology = fascism popularity = 0.06 }
-		add_war_support = -0.1
-		add_stability = -0.1
-		ai_chance = {
-			factor = 1
-		}
-	}
-}
-
 ####Ультиматум Сибири Семёнову####
 country_event = {
 	id = rcw_usfev.47
@@ -3206,6 +3566,41 @@ country_event = {
 	}
 }
 
+# Сибирь вводит войска в Челябинск (КОМУЧ)
+country_event = {
+	id = rcw_usfev.53
+	title = rcw_usfev.53.t
+	desc = rcw_usfev.53.desc
+
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.53.a
+		add_war_support = 0.1
+		add_stability = 0.1
+		declare_war_on = {
+			target = SIB
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = rcw_usfev.53.b
+		add_popularity = { ideology = authoritarism popularity = 0.06 }
+		add_popularity = { ideology = despotism popularity = 0.06 }
+		add_popularity = { ideology = fascism popularity = 0.06 }
+		add_war_support = -0.1
+		add_stability = -0.1
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
 #########Унгрен и все все все сибирские военные######
 
 country_event = {
@@ -3439,7 +3834,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.57.a #Только предателям Родины есть чего опасаться
-		add_ideas = SIB_white_terror_idea
+		add_ideas = white_terror_idea
 		add_to_variable = {
 			var = global.RCW_green_var_Siberia
 			value = 2
@@ -3452,7 +3847,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.57.b #Несколько показательных судов позволят сохранить лицо
 		add_political_power = -30
-		add_timed_idea = { idea = SIB_white_terror_idea days = 70 }
+		add_timed_idea = { idea = white_terror_idea days = 70 }
 		add_to_variable = {
 			var = global.RCW_green_var_Siberia
 			value = 1
@@ -5986,7 +6381,7 @@ country_event = {
 	}
 }
 
-###Волнения в Приморье, если красные в Забайкалье###
+# Волнения в Приморье, если красные в Забайкалье
 country_event = {
 	id = rcw_usfev.107
 	title = rcw_usfev.107.t
@@ -6015,7 +6410,7 @@ country_event = {
 	}
 }
 
-###Переворот в Приморье, если там много красных###
+# Переворот в Приморье, если там много красных
 country_event = {
 	id = rcw_usfev.108
 	title = rcw_usfev.108.t
@@ -8280,8 +8675,13 @@ country_event = {
 		MON = { exists = yes has_government = despotism any_neighbor_country = { any_other_country = { has_war_with = PREV has_government = communism } } }
 		any_unit_leader = { has_id = 77402 }
 		NOT = { has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes } }
-		has_manpower > 1999
-		surrender_progress > 0.69
+		OR = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
+			has_government = social_liberalism
+			surrender_progress > 0.69
+		}
 	}
 	
 	fire_only_once = yes
@@ -11552,6 +11952,1050 @@ country_event = {
 		add_political_power = -25
 		add_stability = -0.05
 		army_experience = 10
+	}
+}
+
+# Народный совет Читы (Россия)
+country_event = {
+	id = rcw_usfev.321
+	title = rcw_usfev.321.t
+	desc = rcw_usfev.321.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		BKL = { exists = yes has_war_with = ROOT NOT = { has_government = radical_socialism has_government = communism has_government = social_democracy has_government = social_liberalism } }
+		controls_state = 563
+		NOT = { has_full_control_of_state = 563 }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	option = {
+		name = rcw_usfev.321.a
+		hidden_effect = { BKL = { country_event = rcw_usfev.322 } }
+	}
+}
+# Народный совет Читы (Семёнов)
+country_event = {
+	id = rcw_usfev.322
+	title = rcw_usfev.322.t
+	desc = rcw_usfev.322.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.321.a
+		hidden_effect = {
+			country_event = { id = rcw_usfev.323 days = 22 }
+			563 = { OWNER = { country_event = { id = rcw_usfev.324 days = 22 } } }
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.321.b
+		create_country_leader = { name = "Nikolay Komarovskiy" picture = "gfx/leaders/BKL/Nikolay_Komarovskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+		set_politics = { ruling_party = social_liberalism }
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.3
+		}
+		transfer_state = 563
+		load_focus_tree = Transbaikal_Chita_eser_focus
+	}
+}
+# Читинский совдеп (Семёнов)
+country_event = {
+	id = rcw_usfev.323
+	title = rcw_usfev.323.t
+	desc = rcw_usfev.323.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.323.a
+	}
+}
+# Читинский совет (Россия)
+country_event = {
+	id = rcw_usfev.324
+	title = rcw_usfev.324.t
+	desc = rcw_usfev.324.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.324.a
+	}
+}
+# Покушение на Семёнова (Забайкалье)
+country_event = {
+	id = rcw_usfev.325
+	title = rcw_usfev.325.t
+	desc = rcw_usfev.325.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = BKL
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired has_war_with = ROOT }
+		has_country_leader = {
+			name = "Grigory Semyonov"
+			ruling_only = yes
+		}
+		has_completed_focus = BKL_provisional_regional_government
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 90
+	}
+	
+	immediate = {
+		set_country_flag = BKL_assasination_of_Semyonov
+	}
+	
+	option = {
+		name = rcw_usfev.325.a
+		random_list = {
+			75 = {
+				country_event = rcw_usfev.326
+				modifier = {
+					factor = 0
+					any_unit_leader = { has_id = 88157 has_trait = wounded }
+				}
+			}
+			25 = {
+				country_event = rcw_usfev.327
+			}
+		}
+	}
+}
+# Атаман жив!
+country_event = {
+	id = rcw_usfev.326
+	title = rcw_usfev.326.t
+	desc = rcw_usfev.326.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.326.a
+		every_unit_leader = {
+			limit = { has_id = 88157 }
+			add_timed_unit_leader_trait = {
+				trait = wounded
+				days = 30
+			}
+		}
+	}
+}
+# Гибель атамана
+country_event = {
+	id = rcw_usfev.327
+	title = rcw_usfev.327.t
+	desc = rcw_usfev.327.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			kill_country_leader = yes
+			every_unit_leader = {
+				limit = { has_id = 88157 }
+				retire = yes
+			}
+			country_event = { id = rcw_usfev.328 days = 20 random_days = 20 }
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.327.a
+		create_country_leader = {
+			name = "Roman Fyodorovich von Ungern-Sternberg"
+			picture = "gfx/leaders/RUS/Roman_Fyodorovich_von_Ungern-Sternberg.dds"
+			expire = "1965.1.1"
+			ideology = despotism_ideology
+			traits = { spirit_of_genghis warmonger }
+		}
+	}
+	option = {
+		name = rcw_usfev.327.b
+		create_country_leader = { name = "Nikolay Komarovskiy" picture = "gfx/leaders/BKL/Nikolay_Komarovskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+		set_politics = { ruling_party = social_liberalism }
+		add_stability = -0.1
+	}
+	option = {
+		name = rcw_usfev.327.c
+		set_politics = { ruling_party = social_conservatism }
+		add_stability = -0.1
+	}
+}
+# Забайкалье в огне
+country_event = {
+	id = rcw_usfev.328
+	title = rcw_usfev.328.t
+	desc = rcw_usfev.328.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.328.a
+		start_civil_war = {
+			ideology = radical_socialism
+			size = 0.5
+			keep_unit_leaders_trigger  = {
+				always = yes
+			}
+		}
+	}
+	option = {
+		name = rcw_usfev.328.b
+		start_civil_war = {
+			ideology = radical_socialism
+			size = 0.5
+			keep_unit_leaders_trigger  = {
+				always = yes
+			}
+		}
+		random_other_country = {
+			limit = { has_government = radical_socialism }
+			change_tag_from = ROOT
+		}
+	}
+}
+# Восстание забайкальских казаков (халявные дивизии)
+country_event = {
+	id = rcw_usfev.329
+	title = rcw_usfev.329.t
+	desc = rcw_usfev.329.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = BKL
+		NOT = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
+			has_government = social_liberalism
+		}
+		divisions_in_state = {
+			size > 0
+			state = 563
+		}
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired has_war_with = ROOT NOT = { has_full_control_of_state = 563 } }
+		has_idea = BKL_russian_volunteers_idea
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_usfev.329.a
+		add_popularity = {
+			ideology = social_conservatism
+			popularity = 0.3
+		}
+		hidden_effect = {
+			division_template = {
+				name = "Kazachiy polk"
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+				}
+			}
+		}
+		563 = {
+			create_unit = {
+				division = "name = \"Zabaykalskiy Kazachiy polk\" division_template = \"Kazachiy polk\" start_experience_factor = 0.2 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"Zabaykalskiy Kazachiy polk\" division_template = \"Kazachiy polk\" start_experience_factor = 0.2 start_equipment_factor = 1"
+				owner = ROOT
+			}
+		}
+	}
+}
+# Балагатское движение
+country_event = {
+	id = rcw_usfev.330
+	title = rcw_usfev.330.t
+	desc = rcw_usfev.330.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = BKL
+		NOT = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
+			has_government = social_liberalism
+		}
+		has_completed_focus = BKL_call_of_foreigners
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 180
+		modifier = {
+			factor = 0.5
+			has_completed_focus = BKL_BRY_national_army
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.330.a
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.05
+		}
+		add_ideas = BKL_balagat_movement
+		custom_effect_tooltip = rcw_usfev_330_a_tt
+	}
+}
+# Балагатский вопрос
+country_event = {
+	id = rcw_usfev.331
+	title = rcw_usfev.331.t
+	desc = rcw_usfev.331.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		if = {
+			limit = { has_country_flag = BKL_Burnatcom_was_disbanded }
+			custom_effect_tooltip = rcw_usfev_331_desc_tt
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.331.a
+		remove_ideas = BKL_balagat_movement
+		hidden_effect = { remove_ideas = BKL_balagat_movement_1 }
+		country_event = { id = rcw_usfev.332 days = 60 }
+	}
+	option = {
+		name = rcw_usfev.331.b
+		if = {
+			limit = { has_idea = BKL_balagat_movement }
+			swap_ideas = {
+				remove_idea = BKL_balagat_movement
+				add_idea = BKL_balagat_movement_1
+			}
+		}
+	}
+	option = {
+		name = rcw_usfev.331.c
+		remove_ideas = BKL_balagat_movement
+		add_timed_idea = { idea = BKL_balagat_movement days = 180 }
+	}
+	option = {
+		trigger = { has_country_flag = BKL_Burnatcom_was_disbanded }
+		name = rcw_usfev.331.d
+		BRY = {
+			transfer_state = 564
+		}
+		puppet = BRY
+		BRY = {
+			set_politics = {
+				ruling_party = authoritarism
+			}
+			set_popularities = {
+				authoritarism = 100
+			}
+		}
+	}
+}
+# Радикализация балагатов
+country_event = {
+	id = rcw_usfev.332
+	title = rcw_usfev.332.t
+	desc = rcw_usfev.332.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.332.a
+		564 = {
+			remove_core_of = ROOT
+		}
+		add_stability = -0.05
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.03
+		}
+	}
+}
+# Состав Бурнацкома
+country_event = {
+	id = rcw_usfev.333
+	title = rcw_usfev.333.t
+	desc = rcw_usfev.333.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.333.a
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.05
+		}
+		add_stability = 0.1
+		add_war_support = -0.1
+	}
+	option = {
+		name = rcw_usfev.333.b
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.1
+		}
+		add_stability = 0.05
+		set_party_name = { ideology = national_syndicalism long_name = BKL_national_syndicalism_burpeopdum_party_long name = BKL_national_syndicalism_burpeopdum_party }
+		create_country_leader = { name = "Dashi Sampilon" desc = BKL_Dashi_Sampilon_DESC picture = "gfx/leaders/BKL/Dashi_Sampilon.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { } }
+		set_country_flag = BKL_Burnatcom_was_reformed
+	}
+	option = {
+		name = rcw_usfev.333.c
+		add_stability = -0.1
+		add_war_support = 0.1
+		add_political_power = 50
+		create_country_leader = { name = "Elbek-Jorji Rinchino" desc = BKL_Elbek-Jorji_Rinchino_DESC picture = "gfx/leaders/BKL/Elbek-Jorji_Rinchino.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { } }
+		set_country_flag = BKL_Burnatcom_was_disbanded
+	}
+}
+# Национально-земельный вопрос
+country_event = {
+	id = rcw_usfev.334
+	title = rcw_usfev.334.t
+	desc = rcw_usfev.334.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			OR = { has_country_flag = BKL_Burnatcom_was_reformed has_country_flag = BKL_Burnatcom_was_disbanded }
+		}
+		name = rcw_usfev.334.a
+		add_ideas = BKL_quotas_for_russian_immigrants_idea
+		add_timed_idea = { idea = peasant_and_land_and_bread_question_reformation_period days = 360 }
+		peasant_and_land_and_bread_question_fall = yes
+		add_stability = -0.03
+	}
+	option = {
+		trigger = {
+			NOT = { has_country_flag = BKL_Burnatcom_was_disbanded }
+		}
+		name = rcw_usfev.334.b
+		add_timed_idea = { idea = peasant_and_land_and_bread_question_reformation_period days = 480 }
+		peasant_and_land_and_bread_question_fall = yes
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.05
+		}
+		add_stability = 0.05
+		add_political_power = -50
+	}
+}
+# Назначение пандито хамбо-ламы
+country_event = {
+	id = rcw_usfev.335
+	title = rcw_usfev.335.t
+	desc = rcw_usfev.335.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.335.a
+		add_stability = 0.05
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.02
+		}
+		add_ideas = Namjil_Laydapov_without_briefcase
+	}
+	option = {
+		name = rcw_usfev.335.b
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.02
+		}
+		add_ideas = Lubsan_Sandan_Cindenov_without_briefcase
+	}
+	option = {
+		name = rcw_usfev.335.c
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.02
+		}
+		add_ideas = Syretor_Buyantuev_without_briefcase
+	}
+	option = {
+		name = rcw_usfev.335.d
+		add_ideas = Rinchin_sambu_Danjinov_without_briefcase
+	}
+}
+# Проблемы на Транссибе
+country_event = {
+	id = rcw_usfev.336
+	title = rcw_usfev.336.t
+	desc = rcw_usfev.336.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		OR = {
+			tag = RSS
+			tag = SIB
+		}
+		has_war_with = RUS
+		NOT = { has_war_with = BKL has_government = radical_socialism has_government = communism }
+		BKL = { has_idea = BKL_confiscation_idea has_completed_focus = BKL_cargo_requisition }
+	}
+	
+	option = {
+		name = rcw_usfev.336.a
+	}
+	option = {
+		name = rcw_usfev.336.b
+		BKL = { country_event = { id = rcw_usfev.337 days = 2 } }
+	}
+}
+# %СибирьНейм% выражает беспокойство
+country_event = {
+	id = rcw_usfev.337
+	title = rcw_usfev.337.t
+	desc = rcw_usfev.337.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.337.a
+		remove_ideas = BKL_confiscation_idea
+		add_offsite_building = { type = arms_factory level = -1 }
+		FROM = { country_event = { id = rcw_usfev.340 days = 1 } }
+	}
+	option = {
+		name = rcw_usfev.337.b
+		if = {
+			limit = { is_subject_of = FROM }
+			FROM = { end_puppet = ROOT }
+		}
+		custom_effect_tooltip = rcw_usfev_337_b_tt
+		FROM = { country_event = { id = rcw_usfev.338 days = 1 } }
+	}
+}
+# Напряжённость на Транссибе 
+country_event = {
+	id = rcw_usfev.338
+	title = rcw_usfev.338.t
+	desc = rcw_usfev.338.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.338.a
+		add_political_power = -25
+	}
+	option = {
+		name = rcw_usfev.338.b
+		FROM = { country_event = { id = rcw_usfev.339 days = 1 } }
+	}
+}
+# %СибирьНейм% выдвигает ультиматум 
+country_event = {
+	id = rcw_usfev.339
+	title = rcw_usfev.339.t
+	desc = rcw_usfev.339.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.339.a
+		add_stability = -0.05
+		add_political_power = -50
+		if = {
+			limit = { has_completed_focus = BKL_agreement_with_the_siberian_government }
+			FROM = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		}
+		remove_ideas = BKL_confiscation_idea
+		add_offsite_building = { type = arms_factory level = -1 }
+		FROM = { country_event = { id = rcw_usfev.340 days = 1 } }
+	}
+	option = {
+		name = rcw_usfev.339.b
+		FROM = { country_event = { id = rcw_usfev.341 days = 1 } }
+	}
+}
+# Чита идёт на уступки
+country_event = {
+	id = rcw_usfev.340
+	title = rcw_usfev.340.t
+	desc = rcw_usfev.340.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.340.a
+	}
+}
+# Байкальская война
+country_event = {
+	id = rcw_usfev.341
+	title = rcw_usfev.341.t
+	desc = rcw_usfev.341.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.341.a
+		declare_war_on = {
+			target = BKL
+			type = annex_everything
+		}
+	}
+}
+
+# Восстание Толстихина
+country_event = {
+	id = rcw_usfev.342
+	title = rcw_usfev.342.t
+	desc = rcw_usfev.342.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = BKL
+		is_subject = no
+		has_civil_war = no
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 100
+		modifier = {
+			factor = 0.7
+			has_idea = BKL_confiscation_idea
+			has_completed_focus = BKL_cargo_requisition
+		}
+		modifier = {
+			factor = 0.5
+			OR = {
+				has_war_with = SIB
+				has_war_with = RSS
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.342.a
+		create_country_leader = { name = "Ivan Tolstikhin" desc = "" picture = "gfx/leaders/BKL/Ivan_Tolstikhin.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = { } }
+		start_civil_war = {
+			ideology = social_liberalism
+			size = 0.25
+			keep_unit_leaders_trigger  = {
+				always = yes
+			}
+		}
+		if = {
+			limit = { any_other_country = { OR = { tag = RSS tag = SIB } has_war_with = RUS NOT = { has_government = radical_socialism has_government = communism } } }
+			random_other_country = {
+				limit = { OR = { tag = RSS tag = SIB } has_war_with = RUS NOT = { has_government = radical_socialism has_government = communism } }
+				random_other_country = {
+					limit = { tag = BKL has_government = social_liberalism }
+					subjecting_script_with_transfer_parties_semi_independent = yes
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_usfev.342.b
+		create_country_leader = { name = "Ivan Tolstikhin" desc = "" picture = "gfx/leaders/BKL/Ivan_Tolstikhin.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = { } }
+		start_civil_war = {
+			ideology = social_liberalism
+			size = 0.25
+			keep_unit_leaders_trigger  = {
+				always = yes
+			}
+		}
+		if = {
+			limit = { any_other_country = { OR = { tag = RSS tag = SIB } has_war_with = RUS NOT = { has_government = radical_socialism has_government = communism } } }
+			random_other_country = {
+				limit = { OR = { tag = RSS tag = SIB } has_war_with = RUS NOT = { has_government = radical_socialism has_government = communism } }
+				random_other_country = {
+					limit = { tag = BKL has_government = social_liberalism }
+					subjecting_script_with_transfer_parties_semi_independent = yes
+				}
+			}
+		}
+		random_other_country = {
+			limit = { tag = BKL has_government = social_liberalism }
+			change_tag_from = ROOT
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Иркутский военный округ
+country_event = {
+	id = rcw_usfev.343
+	title = rcw_usfev.343.t
+	desc = rcw_usfev.343.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.343.a
+		FROM = { country_event = { id = rcw_usfev.344 days = 1 } }
+		add_stability = 0.02
+		add_manpower = 5000
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_usfev.343.a
+		FROM = { country_event = { id = rcw_usfev.345 days = 1 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Передача Иркутска
+country_event = {
+	id = rcw_usfev.344
+	title = rcw_usfev.344.t
+	desc = rcw_usfev.344.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.344.a
+		transfer_state = 566
+		add_state_core = 566
+	}
+}
+# Статус кво
+country_event = {
+	id = rcw_usfev.345
+	title = rcw_usfev.345.t
+	desc = rcw_usfev.345.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.345.a
+	}
+}
+
+# Спонсирование Забайкалья
+country_event = {
+	id = rcw_usfev.346
+	title = rcw_usfev.346.t
+	desc = rcw_usfev.346.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.346.a
+		add_ideas = SIB_subsidies_for_BKL_idea
+		FROM = { add_ideas = BKL_subsidies_from_SIB_idea }
+		FROM = { country_event = { id = rcw_usfev.347 days = 1 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_usfev.346.a
+		FROM = { country_event = { id = rcw_usfev.348 days = 1 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Правительственные выплаты
+country_event = {
+	id = rcw_usfev.347
+	title = rcw_usfev.347.t
+	desc = rcw_usfev.347.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.347.a
+		effect_tooltip = {
+			add_ideas = BKL_subsidies_from_SIB_idea
+			FROM = { add_ideas = SIB_subsidies_for_BKL_idea }
+		}
+	}
+}
+# Скупость правительства
+country_event = {
+	id = rcw_usfev.348
+	title = rcw_usfev.348.t
+	desc = rcw_usfev.348.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.348.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_usfev.348.b
+		OVERLORD = { end_puppet = ROOT }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Государство Бурят-Монголия
+country_event = {
+	id = rcw_usfev.349
+	title = rcw_usfev.349.t
+	desc = rcw_usfev.349.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		if = {
+			limit = { has_country_leader = { name = "Grigory Semyonov" ruling_only = yes } }
+			custom_effect_tooltip = rcw_usfev_349_tt
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.349.a
+		BRY = {
+			transfer_state = 564
+			set_politics = {
+				ruling_party = social_liberalism
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.3
+			}
+			every_country = {
+				limit = {
+					has_offensive_war_with = ROOT
+				}
+				declare_war_on = {
+					target = BRY
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = {
+					has_defensive_war_with = ROOT
+					NOT = { has_war_with = BRY }
+				}
+				BRY = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+		}
+		transfer_units_fraction= {
+			target = BRY
+			size = 1
+			stockpile_ratio = 1
+			army_ratio = 1
+			navy_ratio = 1
+			air_ratio = 1
+			keep_unit_leaders_trigger = { always = no }
+		}
+		BRY = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			change_tag_from = ROOT
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		trigger = {
+			has_country_leader = { name = "Grigory Semyonov" ruling_only = yes }
+		}
+		name = rcw_usfev.349.b
+		BRY = {
+			transfer_state = 564
+			set_politics = {
+				ruling_party = despotism
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.3
+			}
+			every_country = {
+				limit = {
+					has_offensive_war_with = ROOT
+				}
+				declare_war_on = {
+					target = BRY
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = {
+					has_defensive_war_with = ROOT
+					NOT = { has_war_with = BRY }
+				}
+				BRY = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			create_country_leader = { name = "Grigory Semyonov" desc = RUS_Grigory_Semenov_DESC picture = "gfx/leaders/BKL/Grigory_Semyonov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { inexperienced_imperialist spirit_of_genghis } }
+		}
+		transfer_units_fraction= {
+			target = BRY
+			size = 1
+			stockpile_ratio = 1
+			army_ratio = 1
+			navy_ratio = 1
+			air_ratio = 1
+			keep_unit_leaders_trigger = { always = no }
+		}
+		BRY = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			change_tag_from = ROOT
+		}
+		ai_chance = {
+			factor = 999
+		}
+	}
+}
+
+# Нехватка офицеров у Забайкалья
+country_event = {
+	id = rcw_usfev.350
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	hidden = yes
+	
+	fire_only_once = yes
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = BKL
+		NOT = { has_completed_focus = BKL_chita_military_school }
+		OR = {
+			has_focus_tree = Transbaikal_white_cossaks_focus
+			has_focus_tree = Transbaikal_white_cossaks_late_focus
+		}
+		NOT = {
+			has_idea = lack_of_officers_10
+			has_idea = lack_of_officers_9
+			has_idea = lack_of_officers_8
+			has_idea = lack_of_officers_7
+			has_idea = lack_of_officers_6
+			has_idea = lack_of_officers_5
+			has_idea = lack_of_officers_4
+			has_idea = lack_of_officers_3
+			has_idea = lack_of_officers_2
+			has_idea = lack_of_officers_1
+		}
+		has_army_manpower = {
+			size > 12000
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		add_ideas = lack_of_officers_8
 	}
 }
 
