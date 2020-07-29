@@ -1138,10 +1138,10 @@ SOV_soviet_power_desisions = {
 		}
 		visible = {
 			has_country_flag = RUS_flag_soviet_power
+			NOT = { has_government = radical_socialism }
 			FRT = {
 				exists = yes
-				is_in_faction_with = ROOT
-				is_faction_leader = no
+				is_neighbor_of = ROOT
 				NOT = { has_government = communism }
 			}
 		}
@@ -1150,16 +1150,16 @@ SOV_soviet_power_desisions = {
 		ai_will_do = {
 			factor = 0
 			modifier = {
-				factor = 0
+				factor = 20
+				FRT = { NOT = { is_puppet_of = ROOT is_in_faction_with = ROOT } }
+				has_war = no
 			}
 		}
 		days_remove = 50
 		fire_only_once = yes
-		war_with_on_remove = FRT
 
 		remove_effect = {
-			FRT = { leave_faction = yes }
-			declare_war_on = { target = FRT type = annex_everything }
+			FRT = { country_event = { id = rcw_free_territory.30 days = 1 } }
 		}
 		complete_effect = {
 		}
@@ -1303,6 +1303,61 @@ SOV_soviet_power_desisions = {
 			annex_country = {
 				target = FER
 				transfer_troops = yes
+			}
+		}
+	}
+	
+	create_communist_blr = {
+	
+		icon = generic_political_discourse
+		
+		available = {
+			NOT = {
+				has_idea = RUS_weak_state_suppression_apparatus
+				has_idea = RUS_weak_state_suppression_apparatus_1
+				has_idea = RUS_weak_state_suppression_apparatus_2
+			}
+			has_full_control_of_state = 206
+		}
+		
+		visible = {
+			original_tag = RUS
+			OR = {
+				has_government = communism
+				has_government = radical_socialism
+			}
+			BLR = { exists = no }
+			NOT = { BLR = { is_puppet_of = ROOT } }
+		}
+		
+		cost = 15
+		
+		ai_will_do = {
+			factor = 500
+		}
+		
+		complete_effect = {
+			BLR = {
+				transfer_state = 206
+				set_politics = { ruling_party = communism }
+			}
+			every_state = {
+				limit = {
+					is_controlled_by = ROOT
+					is_core_of = BLR
+				}
+				BLR = { transfer_state = PREV }
+				remove_core_of = RUS
+				remove_core_of = RSS
+				remove_core_of = CCA
+				remove_core_of = RVA
+			}
+			ROOT = {
+				if = {
+					limit = { has_dlc = "Together for Victory" }
+					BLR = { subjecting_script_with_transfer_parties_dominion = yes }
+					else = { puppet = BLR }
+				}
 			}
 		}
 	}
