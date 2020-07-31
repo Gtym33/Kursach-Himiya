@@ -296,6 +296,13 @@ on_actions = {
 					#bolsheviks_fall = yes
 				#}
 			}
+			if = {
+				limit = { ROOT = { tag = RUS } FROM = { tag = RSS } }
+				every_state = {
+					limit = { is_core_of = RSS }
+					remove_core_of = RSS
+				}
+			}
 		}
 	}
 
@@ -412,59 +419,49 @@ on_actions = {
 				add_to_variable = { RVA_unification_var = 1 }
 			}
 			if = {
-				limit = { tag = RSS NOT = { has_global_flag = RUS_civil_war_over } always = no }
+				limit = { NOT = { has_global_flag = RUS_civil_war_over } OR = { tag = RSS tag = SIB } }
+				delete_unit_template_and_units = { division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" }
+				delete_unit_template_and_units = { division_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" }
+				delete_unit_template_and_units = { division_template = "Brigada Chekhoslovatskogo legiona" }
 				if = {
-					limit = { BKL = { exists = no } }
-					every_unit_leader = { limit = { has_id = 77299 } set_nationality = BKL }
-					BKL = {
-						transfer_state = 581
-						inherit_technology = RSS
-					}
+					limit = { BKL = { is_subject_of = ROOT } }
+					end_puppet = BKL
 				}
-				BKL = {
-					if = {
-						limit = { has_idea = neutral_foreign_policy_law }
-						add_ideas = realpolitic_policy_law
-					}
-					set_politics = { ruling_party = authoritarism }
-				}
-				every_country = {
-					limit = { is_subject_of = RSS }
-					end_puppet = RSS
-				}
-				every_country = {
-					limit = { has_offensive_war_with = RSS }
-					declare_war_on = {
-						target = BKL
-						type = annex_everything
-					}
-				}
-				every_country = {
-					limit = {
-						has_defensive_war_with = RSS
-						NOT = { has_war_with = BKL }
-					}
-					BKL = {
-						declare_war_on = {
-							target = PREV
-							type = annex_everything
-						}
-					}
-				}
-				BKL = { set_cosmetic_tag  = BKL_REO }
-				every_state = {
-					limit = { is_core_of = RSS }
-					remove_core_of = RSS
+				if = {
+					limit = { BKL = { is_in_faction_with = ROOT is_faction_leader = no } }
+					BKL = { leave_faction = yes }
 				}
 				every_state = {
-					limit = { is_owned_by = RSS }
+					limit = { is_owned_by = ROOT is_controlled_by = ROOT }
 					BKL = { set_state_owner = PREV }
 				}
 				every_state = {
-					limit = { is_controlled_by = RSS }
+					limit = { is_controlled_by = ROOT }
 					BKL = { set_state_controller = PREV }
 				}
-				BKL = { annex_country = { target = RSS transfer_troops = yes } }
+				transfer_units_fraction= {
+					target = BKL
+					size = 1
+					stockpile_ratio = 0.2
+					army_ratio = 1
+					navy_ratio = 1
+					air_ratio = 0
+					keep_unit_leaders_trigger = {
+						always = yes
+					}
+				}
+			}
+			if = {
+				limit = { original_tag = USR any_unit_leader = { has_id = 19194 } OR = { RUS = { has_country_flag = RUS_Oktober_revolution_fired } SOV = { exists = yes OR = { has_government = radical_socialism has_government = communism has_government = social_democracy } } } }
+				if = {
+					limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired } }
+					every_unit_leader = { limit = { has_id = 19194 } set_nationality = RUS }
+					else = { every_unit_leader = { limit = { has_id = 19194 } set_nationality = SOV } }
+				}
+			}
+			if = {
+				limit = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war tag = KRN }
+				RUS = { country_event = petrograd_commune.101 }
 			}
 		}
 	}
