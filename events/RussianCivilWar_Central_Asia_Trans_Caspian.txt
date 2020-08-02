@@ -9,7 +9,7 @@ add_namespace = rcw_catc
 country_event = {
 	id = rcw_catc.1
 	title = rcw_catc.1.t
-	desc = rcw_catc.1.d
+	desc = rcw_catc.1.desc
 	picture = GFX_report_event_sov_redarmy
 	
 	trigger = {
@@ -137,7 +137,7 @@ country_event = {
 country_event = {
 	id = rcw_catc.2
 	title = rcw_catc.2.t
-	desc = rcw_catc.2.d
+	desc = rcw_catc.2.desc
 	picture = GFX_report_event_sib_long_live_the_dmitry
 	
 	is_triggered_only = yes
@@ -168,11 +168,148 @@ country_event = {
 	}
 }
 
+# Рейхскомиссариат Туркестан ("Судьба Туркестана")
+country_event = {
+	id = rcw_catc.100
+	title = rcw_catc.100.t
+	desc = rcw_catc.100.desc
+	picture = GFX_report_event_kharkov
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		OR = {
+			tag = SIB
+			tag = RSS
+			tag = BKL
+			tag = CCA
+			tag = RVA
+			tag = CPG
+			tag = PRM
+		}
+		TRK = { OR = { exists = no AND = { has_capitulated = yes has_war_with = ROOT } } }
+		is_subject = no
+		405 = {
+			CONTROLLER = {
+				OR = {
+					tag = ROOT
+					is_subject_of = ROOT
+				}
+			}
+		}
+		NOT = {
+			any_state = {
+				is_core_of = TRK
+				NOT = { is_core_of = RUS }
+				NOT = { is_core_of = ROOT }
+				CONTROLLER = { has_war_with = ROOT NOT = { tag = TRK } }
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_catc.100.a
+	}
+	option = {
+		trigger = {
+			KAZ = { is_subject_of = ROOT }
+		}
+		name = rcw_catc.100.b
+		every_state = {
+			limit = {
+				is_core_of = TRK
+				NOT = { is_core_of = RUS }
+				NOT = { is_core_of = ROOT }
+				CONTROLLER = { has_war_with = ROOT NOT = { tag = TRK } }
+			}
+			if = {
+				limit = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				KAZ = { set_state_owner = PREV }
+			}
+			KAZ = { set_state_controller = PREV }
+		}
+	}
+	option = {
+		name = rcw_catc.100.c
+		add_political_power = -25
+		hidden_effect = {
+			TRK = {
+				OVERLORD = { end_puppet = PREV }
+				leave_faction = yes
+			}
+			if = {
+				limit = { OR = { is_in_faction = no is_faction_leader = yes } }
+				white_peace = TRK
+				else = {
+					random_other_country = {
+						limit = { is_in_faction_with = ROOT is_faction_leader = yes }
+						white_peace = TRK
+					}
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_core_of = TRK
+				NOT = { is_core_of = RUS }
+				NOT = { is_core_of = ROOT }
+				CONTROLLER = { has_war_with = ROOT NOT = { tag = TRK } }
+			}
+			TRK = { transfer_state = PREV }
+		}
+		puppet = PREV
+		set_autonomy = {
+			target = TRK
+			autonomy_state = autonomy_semi_independent
+		}
+	}
+	option = {
+		name = rcw_catc.100.d
+		add_political_power = -50
+		hidden_effect = {
+			TRK = {
+				OVERLORD = { end_puppet = PREV }
+				leave_faction = yes
+			}
+			if = {
+				limit = { OR = { is_in_faction = no is_faction_leader = yes } }
+				white_peace = TRK
+				else = {
+					random_other_country = {
+						limit = { is_in_faction_with = ROOT is_faction_leader = yes }
+						white_peace = TRK
+					}
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_core_of = TRK
+				NOT = { is_core_of = RUS }
+				NOT = { is_core_of = ROOT }
+				CONTROLLER = { has_war_with = ROOT NOT = { tag = TRK } }
+			}
+			TRK = { transfer_state = PREV }
+		}
+		puppet = PREV
+		set_autonomy = {
+			target = TRK
+			autonomy_state = autonomy_integrated_puppet
+		}
+	}
+}
+
+
 # Восстание в Ашбахаде
 country_event = {
 	id = rcw_catc.101
 	title = rcw_catc.101.t
-	desc = rcw_catc.101.d
+	desc = rcw_catc.101.desc
 	picture = GFX_report_event_kharkov
 	
 	trigger = {
