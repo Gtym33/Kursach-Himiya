@@ -3543,7 +3543,7 @@ country_event = {
 		remove_unit_leader = 76321
 		if = {
 			limit = { NOT = { has_country_flag = Lavr_Kornilov_dead } }
-			RVA = { create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero warmonger russian_sulla goal_in_politics } } }
+			RVA = { create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero warmonger russian_sulla } } }
 		}
 		else_if = {
 			limit = { any_unit_leader = { has_id = 76428 } }
@@ -5230,7 +5230,7 @@ country_event = {
 			limit = { has_country_leader = { name = "Anton Denikin" ruling_only = yes } }
 			retire_country_leader = yes
 			create_country_leader = { name = "Alexander Lukomsky" desc = RUS_Alexander_Lukomsky_DESC picture = "gfx/leaders/RUS/Alexander_Lukomsky.dds" ideology = despotism_ideology traits = { warmonger } }
-			every_unit_leader = { limit = { OR = { has_id = 76428 } } set_nationality = REB }
+			#every_unit_leader = { limit = { OR = { has_id = 76428 } } set_nationality = REB }
 		}
 		if = {
 			limit = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } }
@@ -5247,7 +5247,7 @@ country_event = {
 				limit = { any_unit_leader = { has_id = 77456 } }
 				create_country_leader = { name = "Alexander Lukomsky" desc = RUS_Alexander_Lukomsky_DESC picture = "gfx/leaders/RUS/Alexander_Lukomsky.dds" ideology = despotism_ideology traits = { warmonger } }
 			}
-			every_unit_leader = { limit = { OR = { has_id = 76547 } } set_nationality = REB }
+			#every_unit_leader = { limit = { OR = { has_id = 76547 } } set_nationality = REB }
 		}
 		hidden_effect = { remove_ideas = RVA_steel_discipline_idea }
 		set_country_flag = RVA_authoritarism_coup_fired
@@ -5262,9 +5262,9 @@ country_event = {
 		add_war_support = -0.05
 		add_manpower = -4000
 		set_country_flag = RVA_authoritarism_coup_suppose
-		every_unit_leader = { limit = { OR = { has_id = 77659 } } set_nationality = REB }
-		every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = REB }
-		every_unit_leader = { limit = { OR = { has_id = 76836 } } set_nationality = REB }
+		#every_unit_leader = { limit = { OR = { has_id = 77659 } } set_nationality = REB }
+		#every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = REB }
+		#every_unit_leader = { limit = { OR = { has_id = 76836 } } set_nationality = REB }
 		if = {
 			limit = { has_country_leader = { name = "Nikolay II Romanov" ruling_only = no }  }
 			retire_ideology_leader = authoritarism
@@ -5435,66 +5435,122 @@ country_event = {
 			limit = { is_subject = yes }
 			country_event = rcw_dku.135
 		}
-		set_temp_variable = { temp_socdem = party_popularity@social_democracy }
-		set_temp_variable = { temp_0 = temp_socdem }
-		set_temp_variable = { temp_soclib = party_popularity@social_liberalism }
-		set_temp_variable = { temp_marketlib = party_popularity@market_liberalism }
-		set_temp_variable = { temp_soccon = party_popularity@social_conservatism }
-		set_temp_variable = { temp_auth = party_popularity@authoritarism }		
-		set_temp_variable = { temp_fascism = party_popularity@fascism }
-		set_temp_variable = { temp_natsynd = party_popularity@national_syndicalism }
 		if = {
-			limit = { check_variable { temp_soclib > temp_0 } }
-			set_temp_variable = { temp_0 = temp_soclib }
+			limit = { NOT = { has_country_flag = RVA_authoritarism_coup_suppose } }
+			set_temp_variable = { temp_socdem = party_popularity@social_democracy }
+			set_temp_variable = { temp_0 = temp_socdem }
+			set_temp_variable = { temp_soclib = party_popularity@social_liberalism }
+			set_temp_variable = { temp_marketlib = party_popularity@market_liberalism }
+			set_temp_variable = { temp_soccon = party_popularity@social_conservatism }
+			set_temp_variable = { temp_auth = party_popularity@authoritarism }		
+			set_temp_variable = { temp_fascism = party_popularity@fascism }
+			set_temp_variable = { temp_natsynd = party_popularity@national_syndicalism }
+			if = {
+				limit = { check_variable { temp_soclib > temp_0 } }
+				set_temp_variable = { temp_0 = temp_soclib }
+			}
+			if = {
+				limit = { check_variable { temp_marketlib > temp_0 } }
+				set_temp_variable = { temp_0 = temp_marketlib }
+			}
+			if = {
+				limit = { check_variable { temp_soccon > temp_0 } }
+				set_temp_variable = { temp_0 = temp_soccon }
+			}
+			if = {
+				limit = { check_variable { temp_auth > temp_0 } }
+				set_temp_variable = { temp_0 = temp_auth }
+			}
+			if = {
+				limit = { check_variable { temp_fascism > temp_0 } }
+				set_temp_variable = { temp_0 = temp_fascism }
+			}
+			if = {
+				limit = { check_variable { temp_natsynd > temp_0 } }
+				set_temp_variable = { temp_0 = temp_natsynd }
+			}
+			if = {
+				limit = { check_variable { temp_socdem = temp_0 } }
+				set_politics = { ruling_party = social_democracy elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_soclib = temp_0 } }
+				set_politics = { ruling_party = social_liberalism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_marketlib = temp_0 } }
+				set_politics = { ruling_party = market_liberalism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_soccon = temp_0 } }
+				set_politics = { ruling_party = social_conservatism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_auth = temp_0 } }
+				set_politics = { ruling_party = authoritarism elections_allowed = no }
+				create_country_leader = { name = "Vasiliy Shulgin" desc = RUS_Vasiliy_Shulgin_DESC picture = "gfx/leaders/RUS/Vasiliy_Shulgin.dds" ideology = authoritarism_ideology traits = {  } }
+			}
+			else_if = {
+				limit = { check_variable { temp_fascism = temp_0 } }
+				set_politics = { ruling_party = fascism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_natsynd = temp_0 } }
+				set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+			}
 		}
-		if = {
-			limit = { check_variable { temp_marketlib > temp_0 } }
-			set_temp_variable = { temp_0 = temp_marketlib }
-		}
-		if = {
-			limit = { check_variable { temp_soccon > temp_0 } }
-			set_temp_variable = { temp_0 = temp_soccon }
-		}
-		if = {
-			limit = { check_variable { temp_auth > temp_0 } }
-			set_temp_variable = { temp_0 = temp_auth }
-		}
-		if = {
-			limit = { check_variable { temp_fascism > temp_0 } }
-			set_temp_variable = { temp_0 = temp_fascism }
-		}
-		if = {
-			limit = { check_variable { temp_natsynd > temp_0 } }
-			set_temp_variable = { temp_0 = temp_natsynd }
-		}
-		if = {
-			limit = { check_variable { temp_socdem = temp_0 } }
-			set_politics = { ruling_party = social_democracy elections_allowed = no }
-		}
-		else_if = {
-			limit = { check_variable { temp_soclib = temp_0 } }
-			set_politics = { ruling_party = social_liberalism elections_allowed = no }
-		}
-		else_if = {
-			limit = { check_variable { temp_marketlib = temp_0 } }
-			set_politics = { ruling_party = market_liberalism elections_allowed = no }
-		}
-		else_if = {
-			limit = { check_variable { temp_soccon = temp_0 } }
-			set_politics = { ruling_party = social_conservatism elections_allowed = no }
-		}
-		else_if = {
-			limit = { check_variable { temp_auth = temp_0 } }
-			set_politics = { ruling_party = authoritarism elections_allowed = no }
-			create_country_leader = { name = "Vasiliy Shulgin" desc = RUS_Vasiliy_Shulgin_DESC picture = "gfx/leaders/RUS/Vasiliy_Shulgin.dds" ideology = authoritarism_ideology traits = {  } }
-		}
-		else_if = {
-			limit = { check_variable { temp_fascism = temp_0 } }
-			set_politics = { ruling_party = fascism elections_allowed = no }
-		}
-		else_if = {
-			limit = { check_variable { temp_natsynd = temp_0 } }
-			set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+		else = {
+			set_temp_variable = { temp_socdem = party_popularity@social_democracy }
+			set_temp_variable = { temp_0 = temp_socdem }
+			set_temp_variable = { temp_soclib = party_popularity@social_liberalism }
+			set_temp_variable = { temp_marketlib = party_popularity@market_liberalism }
+			set_temp_variable = { temp_soccon = party_popularity@social_conservatism }
+			set_temp_variable = { temp_fascism = party_popularity@fascism }
+			set_temp_variable = { temp_natsynd = party_popularity@national_syndicalism }
+			if = {
+				limit = { check_variable { temp_soclib > temp_0 } }
+				set_temp_variable = { temp_0 = temp_soclib }
+			}
+			if = {
+				limit = { check_variable { temp_marketlib > temp_0 } }
+				set_temp_variable = { temp_0 = temp_marketlib }
+			}
+			if = {
+				limit = { check_variable { temp_soccon > temp_0 } }
+				set_temp_variable = { temp_0 = temp_soccon }
+			}
+			if = {
+				limit = { check_variable { temp_fascism > temp_0 } }
+				set_temp_variable = { temp_0 = temp_fascism }
+			}
+			if = {
+				limit = { check_variable { temp_natsynd > temp_0 } }
+				set_temp_variable = { temp_0 = temp_natsynd }
+			}
+			if = {
+				limit = { check_variable { temp_socdem = temp_0 } }
+				set_politics = { ruling_party = social_democracy elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_soclib = temp_0 } }
+				set_politics = { ruling_party = social_liberalism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_marketlib = temp_0 } }
+				set_politics = { ruling_party = market_liberalism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_soccon = temp_0 } }
+				set_politics = { ruling_party = social_conservatism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_fascism = temp_0 } }
+				set_politics = { ruling_party = fascism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable { temp_natsynd = temp_0 } }
+				set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+			}
 		}
 	}
 	
