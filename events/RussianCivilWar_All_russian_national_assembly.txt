@@ -315,6 +315,10 @@ country_event = {
 	option = {
 		name = rcw_all_rus_NA.5.a # Республика
 		set_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		if = {
+			limit = { tag = RVA }
+			set_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
+		}
 		hidden_effect = {
 			add_to_variable = { global.all_rus_NA_votes = 1 }
 			add_to_variable = { global.all_rus_NA_gov_form_rep = 1 }
@@ -726,6 +730,7 @@ country_event = {
 			clr_country_flag = RCW_Allrussian_national_assembly_leader
 			clr_country_flag = RCW_Allrussian_national_assembly_loyal
 			clr_country_flag = RCW_Allrussian_national_assembly_disloyal
+			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
 		}
 		dismantle_faction = yes
 		if = {
@@ -981,6 +986,7 @@ country_event = {
 		every_other_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			clr_country_flag = RCW_Allrussian_national_assembly_member
+			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
 			ROOT = { annex_country = { target = PREV transfer_troops = no } }
 		}
 		if = {
@@ -1199,23 +1205,245 @@ country_event = {
 	}
 }
 
+# Тревожная телеграмма (Сибирь)
 country_event = {
 	id = rcw_all_rus_NA.30
 	title = rcw_all_rus_NA.30.t
 	desc = rcw_all_rus_NA.30.d
 	picture = GFX_report_event_sib_kolchak_arrived
 	
-	is_triggered_only = yes
+	trigger = {
+		has_global_flag = RCW_Allrussian_national_assembly
+		original_tag = SIB
+		has_civil_war = no
+		any_country = { OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal } has_war = yes }
+		check_variable = { party_popularity@ruling_party < 0.3 }
+		OR = {
+			is_faction_leader = no
+			NOT = { any_country = { OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal } has_war_with = ROOT } }
+		}
+	}
 	
-	hidden = yes
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					is_faction_leader = yes
+					OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+					OR = {
+						controls_state = 219
+						any_other_country = {
+							is_in_faction_with = PREV
+							controls_state = 219
+						}
+					}
+				}
+				save_global_event_target_as = Moscow_allience
+			}
+			random_other_country = {
+				limit = {
+					is_faction_leader = yes
+					has_war_with = ROOT
+					OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+				}
+				save_global_event_target_as = hostile_allience
+			}
+			random_other_country = {
+				limit = {
+					is_faction_leader = yes
+					has_war_with = event_target:hostile_allience
+					OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+				}
+				save_global_event_target_as = not_hostile_allience
+			}
+		}
+	}
 	
 	option = {
-		name = rcw_all_rus_NA.24.a
-		every_country = {
-			limit = { is_in_faction_with = ROOT }
-			set_country_flag = some_kostily_recreate_faction
+		trigger = {
+			OR = {
+				is_in_faction = no
+				has_war = no
+			}
 		}
-		
+		name = rcw_all_rus_NA.24.a
+		leave_faction = yes
+		event_target:Moscow_allience = {
+			add_to_faction = ROOT
+		}
+		clear_global_event_target = Moscow_allience
+		clear_global_event_target = not_hostile_allience
+		clear_global_event_target = hostile_allience
+	}
+	option = {
+		trigger = {
+			NOT = { has_stability > 0.25 }
+		}
+		name = rcw_all_rus_NA.24.b
+		leave_faction = yes
+		event_target:Moscow_allience = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+		}
+		clear_global_event_target = Moscow_allience
+		clear_global_event_target = not_hostile_allience
+		clear_global_event_target = hostile_allience
+	}
+	option = {
+		trigger = {
+			OR = {
+				AND = {
+					has_stability > 0.25
+					OR = {
+						has_war = no
+						is_in_faction = no
+					}
+					event_target:Moscow_allience = { NOT = { has_government = ROOT } }
+				}
+				AND = {
+					has_war = yes
+					is_in_faction = yes
+				}
+			}
+		}
+		name = rcw_all_rus_NA.24.c
+		if = {
+			limit = {
+				OR = {
+					has_war = no
+					is_in_faction = no
+				}
+				event_target:Moscow_allience = { NOT = { has_government = ROOT } }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = radical_socialism } }
+				set_temp_variable = { temp = party_popularity@radical_socialism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = communism } }
+				set_temp_variable = { temp = party_popularity@communism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = social_democracy } }
+				set_temp_variable = { temp = party_popularity@social_democracy }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = social_liberalism } }
+				set_temp_variable = { temp = party_popularity@social_liberalism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = market_liberalism } }
+				set_temp_variable = { temp = party_popularity@market_liberalism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = social_conservatism } }
+				set_temp_variable = { temp = party_popularity@social_conservatism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = authoritarism } }
+				set_temp_variable = { temp = party_popularity@authoritarism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = despotism } }
+				set_temp_variable = { temp = party_popularity@despotism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = fascism } }
+				set_temp_variable = { temp = party_popularity@fascism }
+			}
+			if = {
+				limit = { event_target:Moscow_allience = { has_government = national_syndicalism } }
+				set_temp_variable = { temp = party_popularity@national_syndicalism }
+			}
+			event_target:Moscow_allience = {
+				ROOT = {
+					start_civil_war = {
+						ideology = PREV
+						size = temp
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_war = yes
+				is_in_faction = yes
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = radical_socialism } }
+				set_temp_variable = { temp = party_popularity@radical_socialism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = communism } }
+				set_temp_variable = { temp = party_popularity@communism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = social_democracy } }
+				set_temp_variable = { temp = party_popularity@social_democracy }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = social_liberalism } }
+				set_temp_variable = { temp = party_popularity@social_liberalism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = market_liberalism } }
+				set_temp_variable = { temp = party_popularity@market_liberalism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = social_conservatism } }
+				set_temp_variable = { temp = party_popularity@social_conservatism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = authoritarism } }
+				set_temp_variable = { temp = party_popularity@authoritarism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = despotism } }
+				set_temp_variable = { temp = party_popularity@despotism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = fascism } }
+				set_temp_variable = { temp = party_popularity@fascism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = national_syndicalism } }
+				set_temp_variable = { temp = party_popularity@national_syndicalism }
+			}
+			if = {
+				limit = { event_target:hostile_allience = { has_government = ROOT } }
+				event_target:not_hostile_allience = {
+					ROOT = {
+						set_politics ={
+							ruling_party = PREV
+						}
+					}
+				}
+			}
+			event_target:hostile_allience = {
+				ROOT = {
+					start_civil_war = {
+						ideology = PREV
+						size = temp
+					}
+				}
+			}
+			random_other_country = {
+				limit = { original_tag = ROOT NOT = { tag = ROOT } }
+				event_target:hostile_allience = {
+					add_to_faction = PREV
+				}
+			}
+		}
+		clear_global_event_target = Moscow_allience
+		clear_global_event_target = not_hostile_allience
+		clear_global_event_target = hostile_allience
 	}
 }
-
