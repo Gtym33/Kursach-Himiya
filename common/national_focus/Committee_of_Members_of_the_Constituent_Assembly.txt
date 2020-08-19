@@ -705,8 +705,8 @@ focus_tree = {
 		icon = GFX_goal_CCA_general
 		cost = 10
 		available = {
-			RVA = { exists =  yes }
 			NOT = { has_war_with = RVA }
+			is_neighbor_of = RVA
 			is_subject = no
 		}
 		ai_will_do = {
@@ -721,12 +721,11 @@ focus_tree = {
 		x = 15
 		y = 3
 		completion_reward = {
-		RVA = {
+			RVA = {
 				add_opinion_modifier = { target = CCA modifier = CCA_RVA_friendship }
-				country_event = { id = rcw_usfev.114 days = 1 }
-		}
-		add_popularity = { ideology = despotism popularity = 0.15 }
-		set_rule = { can_create_factions = yes }
+				country_event = { id = rcw_usfev.191 days = 1 }
+			}
+			add_popularity = { ideology = despotism popularity = 0.15 }
 			add_to_variable = {
 				var = global.RCW_green_var_CoMotCA
 				value = 2
@@ -739,9 +738,23 @@ focus_tree = {
 		icon = GFX_goal_CCA_general
 		cost = 10
 		available = {
-			always = no
-			NOT = { has_war_with = RVA }
-			is_neighbor_of = RVA
+			is_in_faction_with = RVA
+			OR = {
+				is_faction_leader = yes
+				RVA = { is_faction_leader = yes }
+			}
+			OR = {
+				NOT = { has_country_leader = { name = "Victor Chernov" ruling_only = yes } }
+				NOT = { RVA = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } } }
+			}
+			OR = {
+				strength_ratio = {
+					tag = RVA
+					ratio > 1
+				}
+				RSS = { exists = no }
+				NOT = { check_variable = { party_popularity@ruling_party < 0.5 } }
+			}
 		}
 		ai_will_do = {
 			factor = 10
@@ -752,7 +765,7 @@ focus_tree = {
 		x = 15
 		y = 4
 		completion_reward = {
-			country_event = { id = rcw_usfev.116 days = 1 }
+			country_event = { id = rcw_usfev.192 days = 1 }
 		}
 
 	}
