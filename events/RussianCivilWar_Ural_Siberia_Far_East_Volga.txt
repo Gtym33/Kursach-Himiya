@@ -56,7 +56,7 @@ country_event = {
 			every_unit_leader = { limit = { has_id = 77299 } set_nationality = BKL }
 			BKL = {
 				#transfer_state = 761
-				transfer_state = 798
+				#transfer_state = 798
 				transfer_state = 950
 				#transfer_state = 951
 				add_ideas = neutral_foreign_policy_law
@@ -80,9 +80,11 @@ country_event = {
 				limit = { has_country_flag = RUS_provisional_government_not_so_provisional }
 				BKL = { load_focus_tree = Transbaikal_white_cossaks_late_focus transfer_state = 563 }
 				else = {
-					remove_ideas = peasant_and_land_and_bread_question_0_5
-					add_ideas = marching_army_idea
-					set_cosmetic_tag = BKL_SMS
+					BKL = {
+						remove_ideas = peasant_and_land_and_bread_question_0_5
+						add_ideas = marching_army_idea
+						set_cosmetic_tag = BKL_SMS
+					}
 				}
 			}
 			delete_unit_template_and_units = {
@@ -444,6 +446,33 @@ country_event = {
 			}
 		}
 		BKL = { change_tag_from = RUS }
+	}
+}
+
+country_event = {
+	id = rcw_usfev.2
+	title = rcw_usfev.2.t
+	desc = rcw_usfev.2.desc
+
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = BKL
+		controls_state = 566
+		NOT = { owns_state = 566 }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_usfev.2.a
+		transfer_state = 566
+		add_state_core = 566
 	}
 }
 
@@ -2940,7 +2969,7 @@ country_event = {
 #			set_ruling_party_for_uniting_country_script = yes
 #			country_event = { id = rcw_usfev.1918 hours = 1 }
 #			every_state = {
-#				limit = { is_core_of = RUS }
+#				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 #				add_core_of = RSS
 #			}
 #		}
@@ -2961,7 +2990,7 @@ country_event = {
 			set_ruling_party_for_uniting_country_script_reverse = yes
 			country_event = { id = rcw_usfev.1918 hours = 1 }
 			every_state = {
-				limit = { is_core_of = RUS }
+				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 				add_core_of = RSS
 			}
 		}
@@ -5981,7 +6010,7 @@ country_event = {
 				SIB = { PRM = { subjecting_script_with_transfer_parties_semi_independent = yes } }
 				else = {
 					PRM = {
-						create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { } }
+						create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { leftist_freemason min_2_sovereignty_supporter propaganda_bungler goal } }
 					}
 					SIB = {
 						retire_ideology_leader = social_liberalism
@@ -6025,16 +6054,15 @@ country_event = {
 	option = {
 		name = rcw_usfev.96.a
 		ai_chance = {
-			factor = 4
+			factor = 1
 		}
 		set_politics = { ruling_party = social_conservatism }
 		add_popularity = { ideology = authoritarism popularity = 0.05 }
 	}
 	option = {
 		name = rcw_usfev.96.b
-		trigger = { always = no }
 		ai_chance = {
-			factor = 1
+			factor = 4
 		}
 	}
 }
@@ -6050,28 +6078,26 @@ country_event = {
 	
 	trigger = {
 		tag = PRM
-		OR = {
-			AND = {
-				is_subject_of = RSS
-				OR = {
-					RSS = { has_government = despotism }
-					RSS = { has_government = fascism }
-					RSS = { has_government = authoritarism }
-					RSS = { has_government = social_conservatism }
-					RSS = { has_government = national_syndicalism }
-				}
+		is_subject = yes
+		OVERLORD = {
+			OR = {
+				original_tag = SIB
+				original_tag = RSS
 			}
-			AND = {
-				is_subject_of = SIB
-
-				OR = {
-					SIB = { has_government = despotism }
-					SIB = { has_government = fascism }
-					SIB = { has_government = authoritarism }
-					SIB = { has_government = social_conservatism }
-					SIB = { has_government = national_syndicalism }
-				}
+			OR = {
+				has_government = despotism
+				has_government = fascism
+				has_government = authoritarism
+				has_government = social_conservatism
+				has_government = national_syndicalism
 			}
+		}
+		NOT = {
+			has_government = despotism
+			has_government = fascism
+			has_government = authoritarism
+			has_government = social_conservatism
+			has_government = national_syndicalism
 		}
 	}
 	
@@ -6086,14 +6112,7 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
-		if = {
-			limit =  {SIB = { exists = yes } }
-			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB }
-		}
-		if = {
-			limit = { RSS = { exists = yes } }
-			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = RSS }
-		}
+		every_unit_leader = { limit = { has_id = 77400 } set_nationality = OVERLORD }
 		set_politics = { ruling_party = social_conservatism }
 		add_popularity = { ideology = communism popularity = 0.05 }
 	}
@@ -6101,14 +6120,7 @@ country_event = {
 	option = {
 		name = rcw_usfev.97.b
 		add_stability = 0.05
-		if = {
-			limit =  {SIB = { exists = yes } }
-			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB }
-		}
-		if = {
-			limit = { RSS = { exists = yes } }
-			every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = RSS }
-		}
+		every_unit_leader = { limit = { has_id = 77400 } set_nationality = OVERLORD }
 		OVERLORD = { end_puppet = PRM }
 	}
 }
@@ -11454,9 +11466,12 @@ country_event = {
 		transfer_state = 798
 		transfer_state = 950
 		transfer_state = 951
+		transfer_state = 952
 		transfer_state = 717
 		transfer_state = 714
 		transfer_state = 761
+		transfer_state = 1192
+		transfer_state = 1193
 	}
 	option = {
 		name = rcw_usfev.302.b
@@ -11488,7 +11503,6 @@ country_event = {
 		trigger = {
 			owns_state = 798
 		}
-		transfer_state = 952
 	}
 }
 country_event = {
@@ -11558,7 +11572,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_usfev.321.a
+		name = rcw_usfev.322.a
 		hidden_effect = {
 			country_event = { id = rcw_usfev.323 days = 22 }
 			563 = { OWNER = { country_event = { id = rcw_usfev.324 days = 22 } } }
@@ -11566,7 +11580,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_usfev.321.b
+		name = rcw_usfev.322.b
 		create_country_leader = { name = "Nikolay Komarovskiy" picture = "gfx/leaders/BKL/Nikolay_Komarovskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
 		set_politics = { ruling_party = social_liberalism }
 		add_popularity = {
@@ -12814,7 +12828,7 @@ country_event = {
 			}
 			
 			every_state = {
-				limit = { is_core_of = RUS }
+				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 				add_core_of = RSS
 			}
 		}
@@ -13058,7 +13072,7 @@ country_event = {
 			}
 			
 			every_state = {
-				limit = { is_core_of = RUS }
+				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 				add_core_of = RSS
 			}
 		}

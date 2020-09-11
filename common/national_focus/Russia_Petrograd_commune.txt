@@ -390,11 +390,14 @@ focus_tree = {
 					set_politics = { ruling_party = radical_socialism }
 					add_ideas = neutral_foreign_policy_law
 				}
-				TRK = {
-					inherit_technology = RUS
-					add_popularity = { ideology = communism popularity = 0.2 }
-					set_politics = { ruling_party = communism }
-					add_ideas = neutral_foreign_policy_law
+				if = {
+					limit = { NOT = { country_exists = TRK } }
+					TRK = {
+						inherit_technology = RUS
+						add_popularity = { ideology = communism popularity = 0.2 }
+						set_politics = { ruling_party = communism }
+						add_ideas = neutral_foreign_policy_law
+					}
 				}
 				SIB = {
 					inherit_technology = RUS
@@ -498,28 +501,28 @@ focus_tree = {
 								}
 								add_core_of = PRM
 							}
-							every_state = {
-								limit = {
-									OR = {
-										state = 878
-										state = 584
-										state = 877
-										state = 876
-										state = 883
-										state = 886
-										state = 882
-										state = 742
-										state = 732
-										state = 874
-										state = 586
-										state = 884
-										state = 885
-										state = 589
-										state = 405
-									}
-								}
-								add_core_of = TRK
-							}
+							#every_state = {
+							#	limit = {
+							#		OR = {
+							#			state = 878
+							#			state = 584
+							#			state = 877
+							#			state = 876
+							#			state = 883
+							#			state = 886
+							#			state = 882
+							#			state = 742
+							#			state = 732
+							#			state = 874
+							#			state = 586
+							#			state = 884
+							#			state = 885
+							#			state = 589
+							#			state = 405
+							#		}
+							#	}
+							#	add_core_of = TRK
+							#}
 							every_state = {
 								limit = {
 									OR = {
@@ -581,17 +584,42 @@ focus_tree = {
 				}
 				PRM = { transfer_state = PREV }
 			}
-			every_state = {
-				limit {
-					OR = {
-						state = 405
-						state = 883
-						state = 742
-						state = 882
+			if = {
+				limit = { TRK = { OR = { exists = no has_war_with = RUS } } }
+				every_state = {
+					limit {
+						OR = {
+							state = 405
+							state = 883
+							state = 742
+							state = 882
+						}
+						is_controlled_by = RUS
 					}
-					is_controlled_by = RUS
+					TRK = { transfer_state = PREV }
 				}
-				TRK = { transfer_state = PREV }
+				TRK = {
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+					hidden_effect = {
+						every_country = {
+							limit = {
+								NOT = {
+									tag = ROOT
+									has_government = communism
+									has_government = radical_socialism
+									has_government = social_democracy
+									has_war_with = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+							set_THIS_country_non_recognize_PREV = yes
+						}
+						country_event = petrograd_commune.24
+					}
+				}
 			}
 			every_state = {
 				limit {
@@ -627,28 +655,6 @@ focus_tree = {
 					}
 				}
 				PRM = {
-					declare_war_on = {
-						target = RUS
-						type = annex_everything
-					}
-					hidden_effect = {
-						every_country = {
-							limit = {
-								NOT = {
-									tag = ROOT
-									has_government = communism
-									has_government = radical_socialism
-									has_government = social_democracy
-									has_war_with = ROOT
-									is_in_faction_with = ROOT
-								}
-							}
-							set_THIS_country_non_recognize_PREV = yes
-						}
-						country_event = petrograd_commune.24
-					}
-				}
-				TRK = {
 					declare_war_on = {
 						target = RUS
 						type = annex_everything
