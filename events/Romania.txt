@@ -129,7 +129,7 @@ country_event = {
 	option = {
 		name = romania.4.a
 		every_country = {
-			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS is_in_faction_with = TGR AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS is_in_faction_with = TGR is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
 			white_peace = ROM
 		}
 		leave_faction = yes
@@ -159,10 +159,11 @@ country_event = {
 			}
 		}
 		country_event = { id = romania.5 hours = 2 }
+		country_event = { id = romania.6 hours = 2 }
 	}
 }
 
-# Постановка демилитаризованных зон, концессии, демобилизация
+# Постановка демилитаризованных зон и концессии
 country_event = {
 	id = romania.5
 	hidden = yes
@@ -191,6 +192,178 @@ country_event = {
 				}
 			}
 			set_demilitarized_zone = yes
+		}
+	}
+}
+
+# Конфликт за Бессарабию
+country_event = {
+	id = romania.6
+	
+	title = romania.6.t
+	desc = romania.6.desc
+	
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { 78 = { CONTROLLER = { NOT = { former_russian_empire_ukraine_country = yes } } } }
+		name = romania.6.a
+		transfer_state = 78
+		transfer_state = 766
+	}
+	option = {
+		trigger = { 78 = { CONTROLLER = { former_russian_empire_ukraine_country = yes } } }
+		name = romania.6.b
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 79
+				num_provinces = 6
+				on_win = romania.7
+				on_lose = romania.8
+				on_cancel = romania.8
+			}
+			defender = {
+				state = 78
+				num_provinces = 5
+				on_win = romania.8
+				on_lose = romania.7
+				on_cancel = romania.8
+			}
+		}
+	}
+}
+# Победа Румынии в Бессарабии
+country_event = {
+	id = romania.7
+	
+	title = romania.7.t
+	desc = romania.7.desc
+	
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { owns_state = 78 }
+		name = romania.7.a
+	}
+	option = {
+		trigger = { NOT = { owns_state = 78 } }
+		name = romania.7.b
+		transfer_state = 78
+		if = {
+			limit = { 766 = { CONTROLLER = { controls_state = 78 } } }
+			transfer_state = 766
+			delete_unit_template_and_units = {
+				division_template = "Mobilized Infantry Division"
+			}
+			else = {
+				country_event = { id = romania.9 days = 2 }
+			}
+		}
+	}
+}
+# Поражение Румынии в Бессарабии
+country_event = {
+	id = romania.8
+	
+	title = romania.8.t
+	desc = romania.8.desc
+	
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { owns_state = 78 }
+		name = romania.8.a
+	}
+	option = {
+		trigger = { NOT = { owns_state = 78 } }
+		name = romania.8.b
+		delete_unit_template_and_units = {
+			division_template = "Mobilized Infantry Division"
+		}
+	}
+}
+# Атака на остатки Бессарабии
+country_event = {
+	id = romania.9
+	
+	title = romania.9.t
+	desc = romania.9.desc
+	
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = romania.9.a
+		start_border_war = {
+			change_state_after_war = yes
+			attacker = {
+				state = 78
+				num_provinces = 2
+				on_win = romania.10
+				on_lose = romania.11
+				on_cancel = romania.11
+			}
+			defender = {
+				state = 766
+				num_provinces = 2
+				on_win = romania.11
+				on_lose = romania.10
+				on_cancel = romania.11
+			}
+		}
+	}
+}
+# Победа Румынии
+country_event = {
+	id = romania.10
+	
+	title = romania.10.t
+	desc = romania.10.desc
+	
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { owns_state = 78 }
+		name = romania.10.a
+		delete_unit_template_and_units = {
+			division_template = "Mobilized Infantry Division"
+		}
+	}
+	option = {
+		trigger = { NOT = { owns_state = 78 } }
+		name = romania.10.b
+	}
+}
+# Поражение Румынии
+country_event = {
+	id = romania.11
+	
+	title = romania.11.t
+	desc = romania.11.desc
+	
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { owns_state = 78 }
+		name = romania.11.a
+	}
+	option = {
+		trigger = { NOT = { owns_state = 78 } }
+		name = romania.11.b
+		delete_unit_template_and_units = {
+			division_template = "Mobilized Infantry Division"
 		}
 	}
 }

@@ -12,6 +12,7 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
+		has_start_date < 1917.11.7
 		tag = RUS
 		has_country_flag = RUS_provisional_government_created
 		UKR = { exists = no }
@@ -38,6 +39,7 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
+		has_start_date < 1917.11.7
 		tag = RUS
 		has_country_flag = UKR_central_rada
 		has_country_flag = RUS_provisional_government_created
@@ -73,6 +75,7 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
+		has_start_date < 1917.11.7
 		tag = RUS
 		has_country_flag = UKR_allukraine_national_congress
 		has_country_flag = RUS_provisional_government_created
@@ -109,6 +112,7 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
+		has_start_date < 1917.11.7
 		tag = RUS
 		has_country_flag = UKR_first_allukraine_military_congress
 		has_country_flag = RUS_provisional_government_created
@@ -234,6 +238,7 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
+		has_start_date < 1917.11.7
 		tag = RUS
 		has_country_flag = UKR_central_rada_demands_refused
 		has_country_flag = RUS_provisional_government_created
@@ -477,11 +482,8 @@ country_event = {
 	option = {
 		name = budem_sledit_za_situaciey
 		end_puppet = UKR
-		every_state = {
-			limit = {
-				is_core_of = UKR
-				is_owned_by = RUS
-			}
+		every_owned_state = {
+			limit = { OR = { is_core_of = UKR is_core_of = ROM } NOT = { region = 133 region = 135 region = 137 state = 953 state = 227 state = 918 state = 958 state = 814 state = 221 state = 225 } }
 			UKR = { transfer_state = PREV }
 		}
 		remove_from_faction = UKR
@@ -495,29 +497,8 @@ country_event = {
 		UKR = {
 			clr_country_flag = UKR_central_rada_II_universal
 			add_ideas = neutral_foreign_policy_law
-			load_oob = UKR_1918
 			add_to_war = { targeted_alliance = RUS enemy = GER }
 			add_to_war = { targeted_alliance = RUS enemy = AUH }
-		}
-		if = {
-			limit = { RUS = { owns_state = 78 } }
-			if = {
-				limit = { controls_state = 78 }
-				MOL = { transfer_state = 78 }
-				else = {
-					ROM = { set_state_owner = 78 }
-				}
-			}
-		}
-		if = {
-			limit = { RUS = { owns_state = 766 } }
-			if = {
-				limit = { controls_state = 766 }
-				MOL = { transfer_state = 766 }
-				else = {
-					ROM = { set_state_owner = 766 }
-				}
-			}
 		}
 	}
 	
@@ -527,11 +508,8 @@ country_event = {
 			is_ai = no
 		}
 		end_puppet = UKR
-		every_state = {
-			limit = {
-				is_core_of = UKR
-				is_owned_by = RUS
-			}
+		every_owned_state = {
+			limit = { OR = { is_core_of = UKR is_core_of = ROM } NOT = { region = 133 region = 135 region = 137 state = 953 state = 227 state = 918 state = 958 state = 814 state = 221 state = 225 } }
 			UKR = { transfer_state = PREV }
 		}
 		remove_from_faction = UKR
@@ -545,29 +523,8 @@ country_event = {
 		UKR = {
 			clr_country_flag = UKR_central_rada_II_universal
 			add_ideas = neutral_foreign_policy_law
-			load_oob = UKR_1918
 			add_to_war = { targeted_alliance = RUS enemy = GER }
 			add_to_war = { targeted_alliance = RUS enemy = AUH }
-		}
-		if = {
-			limit = { RUS = { owns_state = 78 } }
-			if = {
-				limit = { controls_state = 78 }
-				MOL = { transfer_state = 78 }
-				else = {
-					ROM = { set_state_owner = 78 }
-				}
-			}
-		}
-		if = {
-			limit = { RUS = { owns_state = 766 } }
-			if = {
-				limit = { controls_state = 766 }
-				MOL = { transfer_state = 766 }
-				else = {
-					ROM = { set_state_owner = 766 }
-				}
-			}
 		}
 		
 		UKR = { change_tag_from = RUS }
@@ -594,7 +551,11 @@ country_event = {
 			}
 			every_state = {
 				limit = {
-					is_owned_by = UKR
+					is_core_of = USR
+					OR = {
+						is_owned_by = UKR
+						is_owned_by = RUS
+					}
 					OR = {
 						state = 200
 						state = 221
@@ -840,98 +801,415 @@ country_event = {
 		}
 	}
 }
-
-# Образование Одесской советской республики
+# Откол Румчерода и передача войск Украинского фронта Украине (пока что так, потом надо будет тебе, Дима, переделать как там должно быть по фокусам или чё там)
 country_event = {
 	id = ukraine.12
 	title = ukraine.12.t
 	desc = ukraine.12.d
 	picture = GFX_report_event_februrary_revolution
+	is_triggered_only = yes
+	
+	option = {
+		name = ukraine.12.a
+		every_owned_state = {
+			limit = {
+				OR = {
+					state = 202
+					state = 93
+					state = 193
+					state = 198
+					state = 199
+					state = 201
+					state = 203
+					state = 259
+					state = 959
+					state = 812
+					state = 868
+				}
+			}
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
+			}
+		}
+		UKR = {
+			RUS = {
+				transfer_units_fraction= {
+					target = PREV
+					size = 0.07
+					stockpile_ratio = 0.07
+					army_ratio = 0.07
+					navy_ratio = 0.0
+					air_ratio = 0.0
+					keep_unit_leaders_trigger = {
+						always = yes
+					}
+				}
+			}
+		}
+		if = {
+			limit = { NOT = { country_exists = ODS } }
+			every_owned_state = {
+				limit = { is_core_of = ODS }
+				ODS = { transfer_state = PREV }
+			}
+			every_owned_state = {
+				limit = { is_core_of = ROM }
+				UKR = { transfer_state = PREV }
+			}
+			ODS = {
+				RUS = {
+					if = {
+						limit = { ROM = { owns_state = 79 } }
+						ODS = { set_state_owner = 79 }
+						transfer_units_fraction= {
+							target = ODS
+							size = 0.02
+							stockpile_ratio = 0.02
+							army_ratio = 0.02
+							navy_ratio = 0.0
+							air_ratio = 0.0
+							keep_unit_leaders_trigger = {
+								always = yes
+							}
+						}
+						ROM = { set_state_owner = 79 }
+						else = {
+							transfer_units_fraction= {
+								target = ODS
+								size = 0.02
+								stockpile_ratio = 0.02
+								army_ratio = 0.02
+								navy_ratio = 0.0
+								air_ratio = 0.0
+								keep_unit_leaders_trigger = {
+									always = yes
+								}
+							}
+						}
+					}
+				}
+				
+				set_cosmetic_tag = ODS_RUMCHEROD
+				set_country_flag = ODS_RUMCHEROD
+				
+				subjecting_script_with_transfer_parties_dominion = yes
+			}
+			hidden_effect = {
+				transfer_units_fraction= {
+					target = ROM
+					size = 0.0
+					stockpile_ratio = 0.0
+					army_ratio = 0.0
+					navy_ratio = 0.0
+					air_ratio = 0.0
+					keep_unit_leaders_trigger = {
+						always = yes
+					}
+				}
+				ROM = {
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+				}
+			}
+		}
+	}
+	
+	option = {
+		trigger = { NOT = { country_exists = ODS } }
+		name = ukraine.12.b
+		every_owned_state = {
+			limit = {
+				OR = {
+					state = 202
+					state = 93
+					state = 193
+					state = 198
+					state = 199
+					state = 201
+					state = 203
+					state = 259
+					state = 959
+					state = 812
+					state = 868
+				}
+			}
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
+			}
+		}
+		UKR = {
+			RUS = {
+				transfer_units_fraction= {
+					target = PREV
+					size = 0.07
+					stockpile_ratio = 0.07
+					army_ratio = 0.07
+					navy_ratio = 0.0
+					air_ratio = 0.0
+					keep_unit_leaders_trigger = {
+						always = yes
+					}
+				}
+			}
+		}
+		if = {
+			limit = { NOT = { country_exists = ODS } }
+			every_owned_state = {
+				limit = { is_core_of = ODS }
+				ODS = { transfer_state = PREV }
+			}
+			every_owned_state = {
+				limit = { is_core_of = ROM }
+				UKR = { transfer_state = PREV }
+			}
+			ODS = {
+				RUS = {
+					if = {
+						limit = { ROM = { owns_state = 79 } }
+						ODS = { set_state_owner = 79 }
+						transfer_units_fraction= {
+							target = ODS
+							size = 0.02
+							stockpile_ratio = 0.02
+							army_ratio = 0.02
+							navy_ratio = 0.0
+							air_ratio = 0.0
+							keep_unit_leaders_trigger = {
+								always = yes
+							}
+						}
+						ROM = { set_state_owner = 79 }
+						else = {
+							transfer_units_fraction= {
+								target = ODS
+								size = 0.02
+								stockpile_ratio = 0.02
+								army_ratio = 0.02
+								navy_ratio = 0.0
+								air_ratio = 0.0
+								keep_unit_leaders_trigger = {
+									always = yes
+								}
+							}
+						}
+					}
+				}
+				
+				set_cosmetic_tag = ODS_RUMCHEROD
+				set_country_flag = ODS_RUMCHEROD
+				
+				subjecting_script_with_transfer_parties_dominion = yes
+			}
+			hidden_effect = {
+				transfer_units_fraction= {
+					target = ROM
+					size = 0.0
+					stockpile_ratio = 0.0
+					army_ratio = 0.0
+					navy_ratio = 0.0
+					air_ratio = 0.0
+					keep_unit_leaders_trigger = {
+						always = yes
+					}
+				}
+				ROM = {
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+				}
+			}
+		}
+		ODS = { change_tag_from = ROOT }
+	}
+}
+# Роспуск первого состава исполкома Румчерода
+country_event = {
+	id = ukraine.13
+	title = ukraine.13.t
+	desc = ukraine.13.d
+	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
-		tag = UKR
 		NOT = { has_global_flag = RUS_civil_war_over }
-		has_country_flag = UKR_fail_of_congress_of_councils
-		owns_state = 192
-		has_war_with = USR
+		tag = ODS
+		has_country_flag = ODS_RUMCHEROD
+		has_government = social_liberalism
 	}
 	
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
 		days = 40
-		modifier = {
-			factor = 0.9
-			surrender_progress > 0.1
+	}
+	
+	option = {
+		name = ukraine.13.a # да
+		add_popularity = {
+			ideology = communism
+			popularity = 0.1
 		}
-		modifier = {
-			factor = 0.8
-			surrender_progress > 0.15
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.1
 		}
-		modifier = {
-			factor = 0.7
-			surrender_progress > 0.2
+		country_event = { id = ukraine.14 days = 7 }
+		ai_chance = {
+			factor = 1
 		}
-		modifier = {
-			factor = 0.6
-			surrender_progress > 0.25
+	}
+	
+	option = {
+		name = ukraine.13.b
+		add_political_power = 30
+		country_event = { id = ukraine.14 days = 7 }
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
-		modifier = {
-			factor = 0.5
-			surrender_progress > 0.3
+	}
+}
+# Новые выборы в совет Румчерода
+country_event = {
+	id = ukraine.14
+	title = ukraine.14.t
+	desc = ukraine.14.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = ukraine.14.a
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
 		}
-		modifier = {
-			factor = 0.1
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		trigger = { communism < 0.3 }
+		name = ukraine.14.b
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		OVERLORD = { end_puppet = ROOT }
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+# Образование Одесской советской республики из Румчерода
+country_event = {
+	id = ukraine.15
+	title = ukraine.15.t
+	desc = {
+		text = ukraine.15.d
+		trigger = {
 			OR = {
-				USR = { controls_state = 192 }
-				RUS = { controls_state = 192 }
-				CRI = { controls_state = 192 }
+				has_government = radical_socialism
+				has_government = communism
+			}
+		}
+	}
+	desc = {
+		text = ukraine.15.d_1
+		trigger = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+		}
+	}
+	picture = GFX_report_event_februrary_revolution
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = ODS
+		has_country_flag = ODS_RUMCHEROD
+		OR = {
+			has_war_with = UKR
+			is_neighbor_of = RVA
+			is_neighbor_of = DON
+			is_neighbor_of = CUB
+			is_neighbor_of = RSS
+			is_neighbor_of = CRI
+			is_neighbor_of = USR
+			UKR = {
+				has_war_with = RUS
+			}
+			UKR = {
+				has_war_with = USR
 			}
 		}
 	}
 	
-	option = {
-		name = ukraine.12.a
-		ODS = {
-			add_ideas = neutral_foreign_policy_law
-			inherit_technology = UKR
-			transfer_state = 192
-			load_oob = ODS_rise
-			give_military_access = USR
-			declare_war_on = {
-				target = UKR
-				type = annex_everything
-			}
-			hidden_effect = {
-				if = {
-					limit = { RUS = { has_war_with = UKR } }
-					RUS = { ODS = { subjecting_script_with_transfer_parties_semi_independent = yes } }
-				}
-			}
-		}
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
 	}
 	
 	option = {
-		name = ukraine.12.b
-		ODS = {
-			add_ideas = neutral_foreign_policy_law
-			inherit_technology = UKR
-			transfer_state = 192
-			load_oob = ODS_rise
-			give_military_access = USR
-			declare_war_on = {
-				target = UKR
-				type = annex_everything
+		name = ukraine.15.a
+		clr_country_flag = ODS_RUMCHEROD
+		drop_cosmetic_tag = yes
+		
+		if = {
+			limit = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+				}
 			}
-			hidden_effect = {
-				if = {
-					limit = { RUS = { has_war_with = UKR } }
-					RUS = { ODS = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+			if = {
+				limit = { USR = { exists = yes } }
+				give_military_access = USR
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_government = radical_socialism
+					has_government = communism
+				}
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = -0.1
+			}
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.1
+			}
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = 0.3
+			}
+			if = {
+				limit = { OR = { NOT = { has_war_with = GER has_war_with = AUH } RVA = { OR = { has_war_with = GER has_war_with = AUH } } } RVA = { exists = yes is_in_faction = no } }
+				RVA = { create_faction = south_of_russia add_to_faction = ROOT }
+				else = {
+					if = {
+						limit = { RVA = { exists = yes is_faction_leader = yes } }
+						RVA = { add_to_faction = ROOT }
+					}
 				}
 			}
 		}
-		ODS = {
-			change_tag_from = UKR
+		
+		ai_chance = {
+			factor = 1
 		}
 	}
 }
@@ -1287,16 +1565,47 @@ country_event = {
 					owns_state = 200
 					controls_state = 200
 					NOT = {
-						owns_state = 227
-						controls_state = 227
+						owns_state = 852
+						controls_state = 852
 					}
-					227 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 227 } } } }
-					227 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					852 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 852 } } } }
+					852 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				852 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
 						state = 200
+						num_provinces = 2
+						on_win = ukraine.57
+						on_lose = ukraine.56
+						on_cancel = ukraine.58
+					}
+					defender = {
+						state = 852
+						num_provinces = 2
+						on_win = ukraine.56
+						on_lose = ukraine.57
+						on_cancel = ukraine.58
+					}
+				}
+			}
+			if = {
+				limit = {
+					owns_state = 852
+					controls_state = 852
+					NOT = {
+						owns_state = 227
+						controls_state = 227
+					}
+					227 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 227 } } } }
+					227 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
+				}
+				227 = { CONTROLLER = { transfer_state = PREV } }
+				start_border_war = {
+					change_state_after_war = yes
+					attacker = {
+						state = 852
 						num_provinces = 2
 						on_win = ukraine.57
 						on_lose = ukraine.56
@@ -1320,8 +1629,9 @@ country_event = {
 						controls_state = 227
 					}
 					227 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 227 } } } }
-					227 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					227 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				227 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
@@ -1349,8 +1659,9 @@ country_event = {
 						controls_state = 918
 					}
 					918 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 918 } } } }
-					918 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					918 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				918 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
@@ -1378,8 +1689,9 @@ country_event = {
 						controls_state = 953
 					}
 					953 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 953 } } } }
-					953 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					953 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				953 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
@@ -1407,8 +1719,9 @@ country_event = {
 						controls_state = 918
 					}
 					918 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 918 } } } }
-					918 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					918 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				918 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
@@ -1436,8 +1749,9 @@ country_event = {
 						controls_state = 953
 					}
 					953 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 953 } } } }
-					953 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					953 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				953 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
@@ -1465,8 +1779,9 @@ country_event = {
 						controls_state = 228
 					}
 					228 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 228 } } } }
-					228 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					228 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				228 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
@@ -1494,8 +1809,9 @@ country_event = {
 						controls_state = 218
 					}
 					218 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 218 } } } }
-					218 = { CONTROLLER = { NOT = { has_war_with = ROOT } } }
+					218 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
 				}
+				218 = { CONTROLLER = { transfer_state = PREV } }
 				start_border_war = {
 					change_state_after_war = yes
 					attacker = {
@@ -1517,13 +1833,15 @@ country_event = {
 			else_if = {
 				limit = {
 					OR = {
-						227 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 227 } } } }
-						918 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 918 } } } }
-						953 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 953 } } } }
-						228 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 228 } } } }
-						218 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 218 } } } }
+						852 = { OWNER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } any_owned_state = { NOT = { state = 852 } } } }
+						227 = { OWNER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } any_owned_state = { NOT = { state = 227 } } } }
+						918 = { OWNER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } any_owned_state = { NOT = { state = 918 } } } }
+						953 = { OWNER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } any_owned_state = { NOT = { state = 953 } } } }
+						228 = { OWNER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } any_owned_state = { NOT = { state = 228 } } } }
+						218 = { OWNER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } any_owned_state = { NOT = { state = 218 } } } }
 					}
 				}
+				852 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = no } } } }
 				227 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = no } } } }
 				918 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = no } } } }
 				953 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = no } } } }
@@ -1635,7 +1953,7 @@ country_event = {
 		}
 		USR = { annex_country = { target = UKR transfer_troops = no } }
 		every_country = {
-			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes tag = AUH } }
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes tag = AUH } }
 			white_peace = USR
 			white_peace = FRT
 			white_peace = ODS
