@@ -261,32 +261,49 @@ country_event = {                #Переворот Аманнулы#
 	is_triggered_only = yes
 	
 	option = {
-	name = afghanistan.10.a
-			ai_chance = {
+		name = afghanistan.10.a
+		ai_chance = {
 			factor = 25
 		}
-	add_popularity = {
-    ideology = national_syndicalism
-    popularity = 0.2
-}
-random_list = { 
-80 = { country_event = { id = afghanistan.11 }
-	create_country_leader = {
-	name = "Amanullah-Khan"
-	desc = ""
-	picture = "gfx/leaders/AFG/Amanullah_Khan.dds"
-	expire = "1965.1.1"
-	ideology = social_conservatism_ideology
-	traits = { }
-}
- }
-20 = { set_politics = {
-	ruling_party = national_syndicalism
-}
-country_event = { id = afghanistan.12 }
-start_civil_war = { ideology = social_conservatism size = 0.5 } }
-
-}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.2
+		}
+		create_field_marshal = {
+			name = "Amanullah-Khan"
+			portrait_path = "gfx/leaders/AFG/Amanullah_Khan.dds"
+			traits = { }
+			id = 14002
+			skill = 1
+			attack_skill = 1
+			defense_skill = 1
+			planning_skill = 1
+			logistics_skill = 1
+		}
+		random_list = {
+			80 = {
+				country_event = { id = afghanistan.11 }
+				create_country_leader = {
+					name = "Amanullah-Khan"
+					desc = ""
+					picture = "gfx/leaders/AFG/Amanullah_Khan.dds"
+					expire = "1965.1.1"
+					ideology = social_conservatism_ideology
+					traits = { }
+				}
+				every_unit_leader = {
+					limit = { has_id = 14001 }
+					retire = yes
+				}
+			}
+			20 = {
+				set_politics = {
+					ruling_party = national_syndicalism
+				}
+				country_event = { id = afghanistan.12 }
+				start_civil_war = { ideology = social_conservatism size = 0.5 keep_unit_leaders = { 14002 } }
+			}
+		}
 	}
 }
 country_event = {              #Декларация независимости/война против Индии#
@@ -297,20 +314,21 @@ country_event = {              #Декларация независимости/
 	is_triggered_only = yes
 	
 	option = {
-	name = afghanistan.11.a
-		hidden_effect = {
-		ENG = { end_puppet = RAJ } }
-	declare_war_on = {
-    target = RAJ
-    type = annex_everything
-}
-RAJ = { add_timed_idea = { idea = AFG_Unready_for_war_idea days = 125 } }
-    remove_ideas = { 
-	AFG_English-Afghan_1905_idea }
-    add_ideas = {
-	AFG_Cemetery_of_Empires_idea }
-	hidden_effect = { load_oob = "AFG_raj_war" }
-
+		name = afghanistan.11.a
+		RAJ = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			add_timed_idea = { idea = AFG_Unready_for_war_idea days = 125 }
+		}
+		remove_ideas = {
+			AFG_English-Afghan_1905_idea
+		}
+		add_ideas = {
+			AFG_Cemetery_of_Empires_idea
+		}
+		hidden_effect = { load_oob = "AFG_raj_war" }
 	}
 }
 country_event = {                #Сбор племен/поднятие войск во время гражданской войны против Насруллы#
@@ -321,25 +339,11 @@ country_event = {                #Сбор племен/поднятие вой�
 	is_triggered_only = yes
 	
 	option = {
-	name = afghanistan.12.a
-	every_unit_leader = {
-	limit = {
-	has_id = 1111 }
-	retire = yes
+		name = afghanistan.12.a
+		hidden_effect = {
+			load_oob = AFG_civil_war
+		}
 	}
-	create_field_marshal = {
-	name = "Amanullah-Khan"
-	portrait_path = "gfx/leaders/AFG/Amanullah_Khan.dds"
-	traits = { }
-	skill = 1
-	attack_skill = 1
-	defense_skill = 1
-	planning_skill = 1
-	logistics_skill = 1
-}
-	hidden_effect = {
-	load_oob = AFG_civil_war
-	} }
 }
 country_event = {                   #Афганистан не капнул, но и не добился ничего. Белый мир#
 	id = afghanistan.13
@@ -357,61 +361,71 @@ country_event = {                   #Афганистан не капнул, н�
 	}
 	
 	option = {
-	name = afghanistan.13.a
-	delete_unit_template_and_units = {
-    division_template = "Islamic revolts"
-    disband = no
-}
-white_peace = RAJ
-    hidden_effect = { ENG = { puppet = RAJ }
+		name = afghanistan.13.a
+		delete_unit_template_and_units = {
+			division_template = "Islamic revolts"
+			disband = no
+		}
+		every_country = {
+			limit = { OR = { tag = RAJ tag = ENG tag = PAK is_in_faction_with = RAJ is_in_faction_with = ENG is_in_faction_with = PAK } OR = { is_faction_leader = yes is_in_faction = no } }
+			white_peace = ROOT
+		}
 	}
-} }
+}
 country_event = {                      #Афганистан захватил соседние провинции Пакистана. Мир/продолжение войны#
 	id = afghanistan.14
 	title = afghanistan.14.t
 	desc = afghanistan.14.d
 	fire_only_once = yes
 	trigger = {
-	tag = AFG
-	AFG = { has_war_with = RAJ
-            controls_state = 442
-	        controls_state = 444
-			controls_state = 445 }
-	
+		tag = AFG
+		has_war_with = RAJ
+		controls_state = 442
+		controls_state = 444
+		controls_state = 445
+		NOT = {
+			owns_state = 442
+			owns_state = 444
+			owns_state = 445
+		}
 	}
 	
 	option = {
-	name = afghanistan.14.a
-				ai_chance = {
+		name = afghanistan.14.a
+		ai_chance = {
 			factor = 85
 		}
-	set_state_owner = 442
-	set_state_owner = 444
-	set_state_owner = 445
-	add_state_core = 442
-	add_state_core = 444
-	add_state_core = 445
-	delete_unit_template_and_units = {
-    division_template = "Islamic revolts"
-    disband = no
-}
-white_peace = RAJ
-    hidden_effect = { ENG = { puppet = RAJ }
+		add_state_core = 442
+		add_state_core = 444
+		add_state_core = 445
+		transfer_state = 442
+		transfer_state = 444
+		transfer_state = 445
+		delete_unit_template_and_units = {
+			division_template = "Islamic revolts"
+			disband = no
+		}
+		every_country = {
+			limit = { OR = { tag = RAJ tag = ENG tag = PAK is_in_faction_with = RAJ is_in_faction_with = ENG is_in_faction_with = PAK } OR = { is_faction_leader = yes is_in_faction = no } }
+			white_peace = ROOT
+		}
 	}
-} 	
-option = {
-	name = afghanistan.14.b
-				ai_chance = {
+	option = {
+		name = afghanistan.14.b
+		ai_chance = {
 			factor = 15
 		}
-    add_war_support = -0.2
-	add_state_core = 442
-	add_state_core = 444
-	add_state_core = 445
-	add_state_claim = 443
-    add_state_claim = 440
-	add_state_claim = 787
-	add_state_claim = 441
+		add_war_support = -0.2
+		add_state_core = 442
+		add_state_core = 444
+		add_state_core = 445
+		add_state_claim = 443
+		add_state_claim = 440
+		add_state_claim = 787
+		add_state_claim = 441
+		hidden_effect = {
+			country_event = { id = afghanistan.19 days = 21 }
+		}
 	}
 }
 country_event = {                                #Мир и создание Дурранийской Империи#
@@ -542,6 +556,37 @@ country_event = {             #Ивент для Британии в случа�
     ideology = market_liberalism
     popularity = -0.07
 }
+	}
+}
+
+country_event = {             #Дезертирство племён# 
+	id = afghanistan.19
+	title = afghanistan.19.t
+	desc = afghanistan.19.d
+	picture = GFX_report_event_afg_civil_war
+	is_triggered_only = yes
+	option = {
+		name = afghanistan.19.a
+		add_stability = 0.06
+		delete_unit_template_and_units = {
+			division_template = "Islamic revolts"
+			disband = no
+		}
+	}
+	option = {
+		name = afghanistan.19.b
+		add_political_power = -100
+		add_timed_idea = { idea = draft_dodging days = 90 }
+	}
+	option = {
+		name = afghanistan.19.c
+		add_timed_idea = { idea = draft_dodging days = 90 }
+		if = {
+			limit = { NOT = { has_country_flag = crisis_in_progress } }
+				set_country_flag = crisis_in_progress
+				add_ideas = mutiny_3
+				country_event = stability.23
+		}
 	}
 }
 
