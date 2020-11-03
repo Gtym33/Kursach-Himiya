@@ -4,6 +4,188 @@
 
 add_namespace = treaty_of_brest
 
+# Великая Отечественная война против немецкой-кайзеровских захватчиков
+country_event = {
+	id = treaty_of_brest.-3
+	title = treaty_of_brest.-3.t
+	desc = treaty_of_brest.-3.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.-3.a
+		add_war_support = 0.2
+		complete_national_focus = UKR_war_for_freedom
+		every_country = {
+			limit = {
+				OR = {
+					has_idea = brest_negotiation_truce_Russia_and_allies
+					has_idea = brest_negotiation_truce_small_Central_powers
+				}
+			}
+			remove_ideas = {
+				brest_negotiation_truce_Russia_and_allies
+				brest_negotiation_truce_small_Central_powers
+			}
+		}
+	}
+}
+
+# Немедленный демократический мир без аннексий и контрибуций
+country_event = {
+	id = treaty_of_brest.-2
+	title = treaty_of_brest.-2.t
+	desc = treaty_of_brest.-2.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.-2.a
+		every_country = {
+			limit = {
+				OR = {
+					has_idea = brest_negotiation_truce_Russia_and_allies
+					has_idea = brest_negotiation_truce_small_Central_powers
+				}
+			}
+			remove_ideas = {
+				brest_negotiation_truce_Russia_and_allies
+				brest_negotiation_truce_small_Central_powers
+			}
+		}
+		every_country = {
+			limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG tag = TUR is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS is_in_faction_with = TRG is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes is_in_faction = no } }
+			white_peace = UKR
+		}
+		UKR = {
+			if = {
+				limit = { is_faction_leader = no is_in_faction_with = ENG }
+				leave_faction = yes
+			}
+			add_stability = 0.1
+		}
+	}
+}
+
+# Мир с вводом немецких войск
+country_event = {
+	id = treaty_of_brest.-1
+	title = treaty_of_brest.-1.t
+	desc = treaty_of_brest.-1.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = treaty_of_brest.-1.a
+		every_country = {
+			limit = {
+				OR = {
+					has_idea = brest_negotiation_truce_Russia_and_allies
+					has_idea = brest_negotiation_truce_small_Central_powers
+				}
+			}
+			remove_ideas = {
+				brest_negotiation_truce_Russia_and_allies
+				brest_negotiation_truce_small_Central_powers
+			}
+		}
+		every_country = {
+			limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG tag = TUR is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS is_in_faction_with = TRG is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes is_in_faction = no } }
+			white_peace = UKR
+		}
+		UKR = {
+			if = {
+				limit = { is_faction_leader = no is_in_faction_with = ENG }
+				leave_faction = yes
+			}
+			add_stability = 0.1
+		}
+		GER = { UKR = { subjecting_script_with_transfer_parties_dominion = yes } }
+	}
+}
+
+# Предложение Украины если революционная война в РСФСР
+country_event = {
+	id = treaty_of_brest.0
+	title = treaty_of_brest.0.t
+	desc = treaty_of_brest.0.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		UKR = { add_timed_idea = { idea = brest_negotiation_truce_Russia_and_allies days = 170 } }
+		GER = { add_timed_idea = { idea = brest_negotiation_truce_small_Central_powers days = 170 } }
+		AUH = { add_timed_idea = { idea = brest_negotiation_truce_small_Central_powers days = 170 } }
+		BUL = { add_timed_idea = { idea = brest_negotiation_truce_small_Central_powers days = 170 } }
+		TUR = { add_timed_idea = { idea = brest_negotiation_truce_small_Central_powers days = 170 } }
+	}
+	
+	option = {
+		name = treaty_of_brest.0.a #начать переговоры по сепаратному миру с Украиной
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				NOT = { surrender_progress > 0.2 }
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = communism
+					has_government = radical_socialism
+					has_government = social_democracy
+				}
+			}
+		}
+		UKR = { country_event = { id = treaty_of_brest.-1 days = 3 } }
+	}
+	option = {
+		name = treaty_of_brest.0.b #немедленный демократический мир без аннексий и контрибуций
+		ai_chance = {
+			factor = 0
+			modifier = {
+				add = 99999
+				surrender_progress > 0.2
+			}
+			modifier = {
+				add = 99999
+				NOT = {
+					OR = {
+						controls_state = 763
+						controls_state = 85
+						controls_state = 62
+						controls_state = 64
+						controls_state = 87
+						controls_state = 1115
+						controls_state = 88
+					}
+				}
+			}
+			modifier = {
+				add = 99999
+				OR = {
+					has_government = communism
+					has_government = radical_socialism
+					has_government = social_democracy
+				}
+			}
+		}
+		UKR = { country_event = treaty_of_brest.-2 }
+	}
+	option = {
+		name = treaty_of_brest.2.c #война до победного конца
+		trigger = { always = no }
+		ai_chance = {
+			factor = 0
+		}
+		UKR = { country_event = treaty_of_brest.-3 }
+	}
+}
+
 # Начало переговоров
 country_event = {
 	id = treaty_of_brest.1
@@ -697,6 +879,7 @@ country_event = {
 	
 	option = {
 		name = treaty_of_brest.10.a #отправить делегацию
+		complete_national_focus = UKR_peace_negotiations_with_GER
 		GER = { country_event = treaty_of_brest.11 }
 		ai_chance = {
 			factor = 1
@@ -705,6 +888,7 @@ country_event = {
 	option = {
 		name = treaty_of_brest.10.b #мы будем воевать на стороне антанты
 		add_war_support = 0.05
+		complete_national_focus = UKR_war_for_freedom
 		trigger = {
 			is_ai = no
 		}

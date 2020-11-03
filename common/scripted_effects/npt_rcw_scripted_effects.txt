@@ -25,8 +25,16 @@ monarchy_fall = {
 		set_cosmetic_tag = RUS_POST_MONARCHY
 	}
 	if = {
+		limit = { NOT = { has_country_flag = sobor_non_abs_mon } }
+		add_ideas = RUS_damage_to_police_and_special_services
+	}
+	if = {
 		limit = { NOT = { has_country_flag = RUS_petrograd_soviet has_country_flag = RUS_Order_N_1 } }
 		country_event = russian_ovrthrw_of_mon.9
+	}
+	if = {
+		limit = { NOT = { has_country_flag = sobor_non_abs_mon } UKR = { exists = no } controls_state = 202 owns_state = 202 }
+		country_event = { id = ukraine.1 days = 2 }
 	}
 	if = {
 		limit = { NOT = { has_country_flag = sobor_non_abs_mon } }
@@ -129,6 +137,7 @@ remove_tsar_regime_unit_leaders = {
 	
 	every_unit_leader = { limit = { has_id = 77298 is_field_marshal = no } promote_leader = yes }
 	every_unit_leader = { limit = { has_id = 77657 is_field_marshal = no } promote_leader = yes }
+	every_unit_leader = { limit = { has_id = 77407 is_field_marshal = no } promote_leader = yes }
 	
 	if = {
 		limit = { NOT = { any_unit_leader = { has_id = 77650 } } }
@@ -141,7 +150,7 @@ remove_tsar_regime_unit_leaders = {
 }
 remove_white_unit_leaders = {
 	remove_tsar_regime_unit_leaders = yes
-	every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77650 } } set_nationality = REB } #RVA
+	every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77650 has_id = 77474 } } set_nationality = REB } #RVA
 	every_unit_leader = { limit = { OR = { has_id = 18702 has_id = 18701 } } set_nationality = DON }
 	every_unit_leader = { limit = { has_id = 77400 } set_nationality = PRM }
 	every_unit_leader = { limit = { has_id = 88147 } set_nationality = CCA }
@@ -168,6 +177,7 @@ remove_white_unit_leaders = {
 	every_unit_leader = { limit = { has_id = 77652 } set_nationality = REB }
 	every_unit_leader = { limit = { has_id = 77417 } set_nationality = REB }
 	every_unit_leader = { limit = { has_id = 77648 } set_nationality = NRR }
+	every_unit_leader = { limit = { has_id = 77488 } set_nationality = UKR }
 	if = {
 		limit = { UKR = { exists = yes NOT = { has_government = radical_socialism has_government = communism } } }
 		every_unit_leader = { limit = { has_id = 77399 } set_nationality = UKR }
@@ -335,7 +345,7 @@ bolsheviks_victory = {
 	}
 	add_ideas = workers_control_law
 	set_country_flag = railway_self_government
-			set_country_flag = RUS_soviet_power_set_workers_control #Сделать ивент на декрет о рабочем контроле
+	set_country_flag = RUS_soviet_power_set_workers_control #Сделать ивент на декрет о рабочем контроле
 	add_ideas = limited_conscription
 	hidden_effect = {
 		ROOT = {
@@ -438,6 +448,36 @@ bolsheviks_victory = {
 	}
 	
 	set_country_flag = RUS_Bukharin_gen_red_of_Pravda
+	
+		if = {
+			limit = { has_country_flag = RUS_Central_Rada_early_dissolve UKR = { exists = no } controls_state = 202 owns_state = 202 }
+			clr_country_flag = RUS_Central_Rada_early_dissolve
+			country_event = { id = ukraine.-7 days = 2 }
+		}
+		if = {
+			limit = { UKR = { exists = yes is_subject_of = ROOT has_capitulated = no controls_state = 202 } }
+			end_puppet = UKR
+			remove_from_faction = UKR
+			UKR = {
+				load_focus_tree = Ukraine_after_october_focus
+				country_event = { id = ukraine.-13 days = 1 }
+				remove_ideas = UKR_samostiyniki_vs_autonomists
+				remove_ideas = UKR_free_cossaks
+				add_to_war = { targeted_alliance = RUS enemy = GER }
+				add_to_war = { targeted_alliance = RUS enemy = AUH }
+				add_ideas = neutral_foreign_policy_law
+				add_ideas = {
+					UKR_friction_with_polish_communities
+					UKR_lack_of_a_clear_social_program
+					UKR_weak_state_suppression_apparatus
+				}
+				if = {
+					limit = { NOT = { has_completed_focus = UKR_solve_interethnic_problems } }
+					add_ideas = UKR_friction_with_jewish_communities
+				}
+			}
+		}
+	
 	if = {
 		limit = { has_country_flag = RUS_July_crisis_gov_of_bolsheviks_n_others }
 		activate_soviet_power_right = yes

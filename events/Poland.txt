@@ -23,15 +23,16 @@ country_event = {
 	
 	option = {
 		name = poland.1.a
-		add_popularity = { ideology = authoritarism popularity = -1}
+		drop_cosmetic_tag = yes
+		add_popularity = { ideology = authoritarism popularity = -1 }
 		if = {
-			limit = {has_country_leader = { name = "Hans Beseler" } }
+			limit = { has_country_leader = { name = "Hans Beseler" ruling_only = yes } }
 			retire_country_leader = yes
 		}
 		add_popularity = { ideology = social_democracy popularity = 0.3 }
 		set_politics = { ruling_party = despotism elections_allowed = no }
 		if = {
-			limit = {has_country_leader = { name = "Hans Beseler" } }
+			limit = { has_country_leader = { name = "Hans Beseler" ruling_only = yes } }
 			retire_country_leader = yes
 		}
 		create_country_leader = { name = "Józef Pilsudski" desc = POL_jozef_pilsudski_DESC picture = "gfx/leaders/POL/Jusef_Pilsudsky.dds" expire = "1935.1.1" ideology = despotism_ideology  traits = {  } }
@@ -65,7 +66,7 @@ country_event = {
 			factor = 100
 		}
 		add_war_support = 0.05
-		#add_popularity = { ideology = despotism popularity = 0.1 }
+		add_popularity = { ideology = despotism popularity = 0.1 }
 		declare_war_on = {
 				target = GAL
 				type = annex_everything
@@ -75,20 +76,6 @@ country_event = {
 	
 	option = {
 		name = poland.2.b
-		ai_chance = {
-			factor = 0
-		}
-		add_stability = 0.05
-		add_popularity = { ideology = despotism popularity = -0.05 }
-		declare_war_on = {
-				target = GAL
-				type = annex_everything
-			}
-		hidden_effect = { GAL = {load_oob = GAL_defender} }
-	}
-	
-	option = {
-		name = poland.2.c
 		ai_chance = {
 			factor = 0
 		}
@@ -258,6 +245,13 @@ country_event = {
 					target = BLR
 					type = annex_everything
 				}
+				if = {
+					limit = { BLR = { has_war_with = RUS } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
 			}
 		}
 	}
@@ -286,7 +280,7 @@ country_event = {
 		ai_chance = {
 			factor = 100
 		}
-		name = poland.7.a
+		name = poland.8.a
 		transfer_state = 904
 		transfer_state = 1165
 		904 = { OWNER = { country_event = poland.9 } }
@@ -295,7 +289,7 @@ country_event = {
 		ai_chance = {
 			factor = 0
 		}
-		name = poland.7.b
+		name = poland.8.b
 		
 	}
 }
@@ -312,17 +306,829 @@ country_event = {
 		ai_chance = {
 			factor = 100
 		}
-		name = poland.7.a
+		name = poland.9.a
+		trigger = { NOT = { has_country_flag = UKR_white } }
 		add_stability = -0.01
+		every_state = {
+			limit = {
+				is_controlled_by = UKR
+				OR = {
+					is_core_of = UKR
+					is_claimed_by = UKR
+				}
+				NOT = { is_owned_by = UKR }
+			}
+			UKR = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				NOT = { is_controlled_by = UKR }
+				OR = {
+					is_core_of = CONTROLLER
+					is_claimed_by = CONTROLLER
+				}
+				is_owned_by = UKR
+			}
+			CONTROLLER = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = { has_war_with = UKR OR = { is_faction_leader = yes is_in_faction = no } NOT = { has_war_with = POL } }
+			UKR = { white_peace = PREV }
+		}
+		POL = { UKR = { subjecting_script_with_transfer_parties_colony = yes } }
 	}
 	option = {
 		ai_chance = {
 			factor = 0
 		}
-		name = poland.7.b
+		name = poland.9.b
+		POL = { country_event = { id = poland.10 days = 1 } }
+	}
+	option = {
+		ai_chance = {
+			factor = 0
+		}
+		name = poland.9.c
 		declare_war_on = {
 			target = POL
 			type = annex_everything
 		}
+	}
+}
+
+# Польша реагирует на неуступчивость Украины
+country_event = {
+	id = poland.10
+	title = poland.10.t
+	desc = poland.10.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = {
+			factor = 0
+		}
+		name = poland.10.a
+	}
+	option = {
+		ai_chance = {
+			factor = 100
+		}
+		name = poland.10.b
+		declare_war_on = {
+			target = UKR
+			type = annex_everything
+		}
+		if = {
+			limit = { UKR = { has_war_with = RUS } }
+			declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+		}
+	}
+}
+
+# Польша или Россия предлагает другой стороне историчный мир
+country_event = {
+	id = poland.11
+	title = poland.11.t
+	desc = poland.11.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = {
+			factor = 4
+		}
+		name = poland.11.a
+		set_global_flag = POL_communist_peace_fired
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = BLR
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { UKR = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = UKR
+					transfer_troops = no 
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					is_core_of = POL
+					is_claimed_by = POL
+				}
+			}
+			POL = { transfer_state = PREV }
+		}
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = RUS } }
+			every_state = {
+				limit = {
+					is_owned_by = BLR
+					OR = {
+						is_core_of = POL
+						is_claimed_by = POL
+					}
+				}
+				POL = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { OR = { UKR = { exists = yes is_subject_of = RUS } USR = { exists = yes is_subject_of = RUS } } }
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = UKR
+						is_owned_by = USR
+					}
+					OR = {
+						is_core_of = POL
+						is_claimed_by = POL
+					}
+				}
+				POL = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes is_subject_of = RUS } }
+			every_state = {
+				limit = {
+					is_owned_by = LIT
+					OR = {
+						is_core_of = POL
+						is_claimed_by = POL
+					}
+				}
+				POL = { transfer_state = PREV }
+			}
+		}
+		every_country = {
+			limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+			POL = { white_peace = PREV }
+		}
+	}
+	option = {
+		ai_chance = {
+			factor = 1
+		}
+		name = poland.11.b
+		FROM = { country_event = poland.17 }
+	}
+}
+
+# Польша или Россия предлагает другой стороне мир с большими уступками для Польши
+country_event = {
+	id = poland.12
+	title = poland.12.t
+	desc = poland.12.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = {
+			factor = 2
+		}
+		name = poland.12.a
+		set_global_flag = POL_communist_peace_fired
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = BLR
+				}
+				BLR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { UKR = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = UKR
+				}
+				UKR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LAT = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LAT
+				}
+				LAT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { EST = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = EST
+				}
+				EST = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					is_core_of = POL
+					is_claimed_by = POL
+					is_core_of = BLR
+					is_claimed_by = BLR
+					is_core_of = UKR
+					is_claimed_by = UKR
+					is_core_of = LIT
+					is_claimed_by = LIT
+				}
+			}
+			POL = { transfer_state = PREV }
+		}
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = RUS } }
+			POL = {
+				annex_country = { 
+					target = BLR
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { OR = { UKR = { exists = yes is_subject_of = RUS } USR = { exists = yes is_subject_of = RUS } } }
+			if = {
+				limit = { UKR = { exists = yes is_subject_of = RUS } }
+				POL = {
+					annex_country = { 
+						target = UKR
+						transfer_troops = no 
+					}
+				}
+			}
+			if = {
+				limit = { USR = { exists = yes is_subject_of = RUS } }
+				POL = {
+					annex_country = { 
+						target = USR
+						transfer_troops = no 
+					}
+				}
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes is_subject_of = RUS } }
+			POL = {
+				annex_country = { 
+					target = LIT
+					transfer_troops = no 
+				}
+			}
+		}
+		every_country = {
+			limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+			POL = { white_peace = PREV }
+		}
+		
+	}
+	option = {
+		ai_chance = {
+			factor = 2
+		}
+		name = poland.12.b
+		FROM = { country_event = poland.17 }
+	}
+}
+
+# Польша или Россия предлагает другой стороне мир (Польша замкнута в границах царства польского)
+country_event = {
+	id = poland.13
+	title = poland.13.t
+	desc = poland.13.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = {
+			factor = 2
+		}
+		name = poland.13.a
+		set_global_flag = POL_communist_peace_fired
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = BLR
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { UKR = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = UKR
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = LIT
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { LAT = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = LAT
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { EST = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = EST
+					transfer_troops = no 
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				is_core_of = POL
+			}
+			POL = { transfer_state = PREV }
+		}
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = RUS } }
+			every_state = {
+				limit = {
+					is_owned_by = POL
+					OR = {
+						is_core_of = BLR
+						is_claimed_by = BLR
+					}
+				}
+				BLR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { OR = { UKR = { exists = yes is_subject_of = RUS } USR = { exists = yes is_subject_of = RUS } } }
+			if = {
+				limit = { UKR = { exists = yes is_subject_of = RUS } }
+				every_state = {
+					limit = {
+						is_owned_by = POL
+						OR = {
+							is_core_of = UKR
+							is_claimed_by = UKR
+						}
+					}
+					UKR = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { USR = { exists = yes is_subject_of = RUS } }
+				every_state = {
+					limit = {
+						is_owned_by = POL
+						OR = {
+							is_core_of = USR
+							is_claimed_by = USR
+						}
+					}
+					USR = { transfer_state = PREV }
+				}
+			}
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				POL = { white_peace = PREV }
+			}
+		}
+	}
+	option = {
+		ai_chance = {
+			factor = 2
+		}
+		name = poland.13.b
+		FROM = { country_event = poland.17 }
+	}
+}
+
+# Польша потерпела поражение от России
+country_event = {
+	id = poland.14
+	title = poland.14.t
+	desc = poland.14.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	trigger = {
+		tag = RUS
+		has_war_with = POL
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_government = communism
+		RUS = { is_subject = no }
+		POL = { is_subject = no }
+		NOT = { has_global_flag = RUS_civil_war_over }
+		NOT = { has_global_flag = POL_communist_peace_fired }
+		POL = {
+			surrender_progress > 0.8
+			NOT = {
+				controls_state = 10
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = poland.14.a
+		set_global_flag = POL_communist_peace_fired
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = BLR
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { UKR = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = UKR
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = LIT
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { LAT = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = LAT
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { EST = { exists = yes is_subject_of = POL } }
+			RUS = {
+				annex_country = { 
+					target = EST
+					transfer_troops = no 
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				is_core_of = POL
+			}
+			POL = { transfer_state = PREV }
+		}
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = RUS } }
+			every_state = {
+				limit = {
+					is_owned_by = POL
+					OR = {
+						is_core_of = BLR
+						is_claimed_by = BLR
+					}
+				}
+				BLR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { OR = { UKR = { exists = yes is_subject_of = RUS } USR = { exists = yes is_subject_of = RUS } } }
+			if = {
+				limit = { UKR = { exists = yes is_subject_of = RUS } }
+				every_state = {
+					limit = {
+						is_owned_by = POL
+						OR = {
+							is_core_of = UKR
+							is_claimed_by = UKR
+						}
+					}
+					UKR = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { USR = { exists = yes is_subject_of = RUS } }
+				every_state = {
+					limit = {
+						is_owned_by = POL
+						OR = {
+							is_core_of = USR
+							is_claimed_by = USR
+						}
+					}
+					USR = { transfer_state = PREV }
+				}
+			}
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				POL = { white_peace = PREV }
+			}
+			if = {
+				limit = { RUS = { is_faction_leader = yes } }
+				RUS = { add_to_faction = POL }
+			}
+			POL = {
+				add_popularity = { ideology = communism popularity = 0.15 }
+				set_politics = {
+					ruling_party = communism
+					elections_allowed = no
+				}
+				add_ideas = {
+					military_dictatorship_gov_form
+					local_assembly_decisions_b_law
+					unitary_gov_terr
+					allow_one_party_law
+					ideological_expansion_law
+					workers_control_law
+					
+					civilian_economy
+					disarmed_nation
+				}
+				create_country_leader = { name = "Jozef Unszlicht" desc = "" picture = "gfx/leaders/SOV/Jozef_Unszlicht.dds" ideology = leninism traits = { } }
+			}
+			RUS = { POL = { subjecting_script_with_transfer_parties_dominion = yes } }
+		}
+	}
+}
+
+# Россия потерпела поражение от Польши
+country_event = {
+	id = poland.15
+	title = poland.15.t
+	desc = poland.15.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	trigger = {
+		tag = RUS
+		has_war_with = POL
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_government = communism
+		RUS = { is_subject = no }
+		POL = { is_subject = no }
+		NOT = { has_global_flag = RUS_civil_war_over }
+		NOT = { has_global_flag = POL_communist_peace_fired }
+		RUS = {
+			surrender_progress > 0.6
+			NOT = {
+				controls_state = 206
+				controls_state = 202
+				OR = {
+					controls_state = 195
+					controls_state = 219
+					controls_state = 813
+				}
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = poland.15.a
+		set_global_flag = POL_communist_peace_fired
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = BLR
+				}
+				BLR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { UKR = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = UKR
+				}
+				UKR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LAT = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LAT
+				}
+				LAT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { EST = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = EST
+				}
+				EST = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { CRI = { exists = yes is_subject_of = POL } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = CRI
+				}
+				CRI = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					is_core_of = POL
+					is_claimed_by = POL
+					is_core_of = BLR
+					is_claimed_by = BLR
+					is_core_of = UKR
+					is_claimed_by = UKR
+					is_core_of = LIT
+					is_claimed_by = LIT
+					is_core_of = LAT
+					is_claimed_by = LAT
+					is_core_of = EST
+					is_claimed_by = EST
+					is_core_of = CRI
+					is_claimed_by = CRI
+				}
+			}
+			POL = { transfer_state = PREV }
+		}
+		if = {
+			limit = { BLR = { exists = yes is_subject_of = RUS } }
+			POL = {
+				annex_country = { 
+					target = BLR
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { OR = { UKR = { exists = yes is_subject_of = RUS } USR = { exists = yes is_subject_of = RUS } } }
+			if = {
+				limit = { UKR = { exists = yes is_subject_of = RUS } }
+				POL = {
+					annex_country = { 
+						target = UKR
+						transfer_troops = no 
+					}
+				}
+			}
+			if = {
+				limit = { USR = { exists = yes is_subject_of = RUS } }
+				POL = {
+					annex_country = { 
+						target = USR
+						transfer_troops = no 
+					}
+				}
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes is_subject_of = RUS } }
+			POL = {
+				annex_country = { 
+					target = LIT
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { LAT = { exists = yes is_subject_of = RUS } }
+			POL = {
+				annex_country = { 
+					target = LAT
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { EST = { exists = yes is_subject_of = RUS } }
+			POL = {
+				annex_country = { 
+					target = EST
+					transfer_troops = no 
+				}
+			}
+		}
+		if = {
+			limit = { CRI = { exists = yes is_subject_of = RUS } }
+			POL = {
+				annex_country = { 
+					target = CRI
+					transfer_troops = no 
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					state = 865
+					state = 210
+					state = 242
+					state = 243
+					state = 1016
+					#state = 1169
+					state = 224
+					state = 960
+					state = 220
+					state = 240
+				}
+			}
+			POL = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+			POL = { white_peace = PREV }
+		}
+		
+	}
+}
+
+# Оповещалка о отклонении мирного предложения
+country_event = {
+	id = poland.17
+	title = poland.17.t
+	desc = poland.17.d
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.17.a
+		
 	}
 }
