@@ -441,7 +441,7 @@ country_event = {
 ###### Ивенты взаиводействия белых и Антанты ######
 
 
-# Просьба любой страны о винтовках Антанты и признании Антанты
+# Просьба СЗА или Сибири или ВСЮР о винтовках Антанты и признании Антанты
 country_event = {
 	id = rcw.156
 	title = rcw.156.t
@@ -456,10 +456,6 @@ country_event = {
 	desc = {
 		text = rcw.156.desc_RVA
 		trigger = { FROM = { tag = RVA } }
-	}
-	desc = {
-		text = rcw.156.desc_UKR_puppet
-		trigger = { FROM = { tag = UKR is_puppet_of = RUS } }
 	}
 	
 	picture = GFX_report_event_nwa_allies
@@ -697,6 +693,7 @@ country_event = {
 	option = {
 		name = rcw.157.d
 		add_opinion_modifier = { target = FROM modifier = Entente_no_accept_SIB }
+		FROM = { country_event = rcw.161 }
 	}
 }
 
@@ -985,6 +982,144 @@ country_event = {
 		ai_chance = {
 			factor = 0
 		}
+	}
+}
+
+
+# Просьба Украины о винтовках Антанты и признании Антанты
+country_event = {
+	id = rcw.165
+	title = rcw.165.t
+	desc = {
+		text = rcw.165.desc_UKR_pup
+		trigger = { FROM = { former_russian_empire_ukraine_country = yes is_puppet_of = RUS } }
+	}
+	desc = {
+		text = rcw.165.desc_UKR_ind
+		trigger = { FROM = { former_russian_empire_ukraine_country = yes NOT = { is_puppet_of = RUS } } }
+	}
+	
+	picture = GFX_report_event_nwa_allies
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.165.a
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 999
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept_strong }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = FROM
+		}
+		FROM = {
+			if = {
+				limit = { NOT = { has_variable = global.Entente_support_count } }
+				set_variable = { global.Entente_support_count = 0 }
+			}
+			add_to_variable = { global.Entente_support_count = 100 }
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+		FROM = { country_event = rcw.158 }
+	}
+	
+	option = {
+		name = rcw.165.b
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 199
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 200
+			target = FROM
+		}
+		FROM = {
+			if = {
+				limit = { NOT = { has_variable = global.Entente_support_count } }
+				set_variable = { global.Entente_support_count = 0 }
+			}
+			add_to_variable = { global.Entente_support_count = 20 }
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+		FROM = { country_event = rcw.159 }
+	}
+	
+	option = {
+		name = rcw.165.c
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+		FROM = { country_event = rcw.160 }
+	}
+	
+	option = {
+		name = rcw.165.d
+		add_opinion_modifier = { target = FROM modifier = Entente_no_accept_SIB }
+		FROM = { country_event = rcw.161 }
 	}
 }
 
