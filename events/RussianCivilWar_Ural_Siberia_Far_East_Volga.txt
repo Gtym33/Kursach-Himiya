@@ -11774,6 +11774,7 @@ country_event = {
 			popularity = 0.3
 		}
 		transfer_state = 563
+		drop_cosmetic_tag = yes
 		load_focus_tree = Transbaikal_Chita_eser_focus
 		set_country_flag = BKL_not_white_cossaks_focus
 	}
@@ -12469,6 +12470,23 @@ country_event = {
 				}
 			}
 		}
+		random_other_country = {
+			limit = { tag = BKL has_government = social_liberalism }
+			load_focus_tree = Transbaikal_Chita_eser_focus
+			set_country_flag = BKL_not_white_cossaks_focus
+			save_global_event_target_as = BKL_CW
+		}
+		every_unit_leader = {
+			limit = { OR = { has_id = 77404 has_id = 77405 has_id = 77406 } }
+			set_nationality = event_target:BKL_CW
+		}
+		event_target:BKL_CW = {
+			every_unit_leader = {
+				limit = { NOT = { has_id = 77404 has_id = 77405 has_id = 77406 } }
+				set_nationality = ROOT
+			}
+		}
+		clear_global_event_target = BKL_CW
 		ai_chance = {
 			factor = 1
 		}
@@ -12503,6 +12521,23 @@ country_event = {
 				}
 			}
 		}
+		random_other_country = {
+			limit = { tag = BKL has_government = social_liberalism }
+			load_focus_tree = Transbaikal_Chita_eser_focus
+			set_country_flag = BKL_not_white_cossaks_focus
+			save_global_event_target_as = BKL_CW
+		}
+		every_unit_leader = {
+			limit = { OR = { has_id = 77404 has_id = 77405 has_id = 77406 } }
+			set_nationality = event_target:BKL_CW
+		}
+		event_target:BKL_CW = {
+			every_unit_leader = {
+				limit = { NOT = { has_id = 77404 has_id = 77405 has_id = 77406 } }
+				set_nationality = ROOT
+			}
+		}
+		clear_global_event_target = BKL_CW
 		random_other_country = {
 			limit = { tag = BKL has_government = social_liberalism }
 			change_tag_from = ROOT
@@ -12814,121 +12849,6 @@ country_event = {
 	}
 }
 
-# Бег Толстихина
-country_event = {
-	id = rcw_usfev.351
-	title = rcw_usfev.351.t
-	desc = rcw_usfev.351.desc
-
-	picture = GFX_report_event_bkl_hambo-lama
-	
-	trigger = {
-		NOT = { has_global_flag = RUS_civil_war_over }
-		original_tag = BKL
-		has_government = social_liberalism
-		has_country_leader = { name = "Ivan Tolstikhin" ruling_only = yes }
-		has_civil_war = yes
-		surrender_progress > 0.7
-		
-		any_other_country = {
-			OR = {
-				ROOT = { is_subject_of = PREV }
-				AND = {
-					OR = {
-						tag = RSS
-						tag = SIB
-					}
-					NOT = {
-						has_government = radical_socialism
-						has_government = communism
-						NOT = { has_war_with = ROOT }
-					}
-				}
-			}
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		name = rcw_usfev.351.a
-		
-		random_other_country = {
-			limit = {
-				OR = {
-					ROOT = { is_subject_of = PREV }
-					AND = {
-						OR = {
-							tag = RSS
-							tag = SIB
-						}
-						NOT = {
-							has_government = radical_socialism
-							has_government = communism
-							NOT = { has_war_with = ROOT }
-						}
-					}
-				}
-			}
-			ROOT = {
-				transfer_units_fraction= {
-					target = PREV
-					size = 1
-					stockpile_ratio = 1
-					army_ratio = 1
-					navy_ratio = 1
-					air_ratio = 1
-					keep_unit_leaders_trigger = {
-						always = no
-					}
-				}
-			}
-		}
-		
-		if = {
-			limit = {
-				is_subject = yes
-			}
-			OVERLORD = {
-				end_puppet = ROOT
-				if = {
-					limit = { OR = { is_in_faction = no is_faction_leader = yes } }
-					white_peace = BKL
-					else = {
-						random_other_country = {
-							limit = { is_faction_leader = yes is_in_faction_with = PREV }
-							white_peace = BKL
-						}
-					}
-				}
-			}
-		}
-		
-		random_other_country = {
-			limit = { original_tag = BKL }
-			annex_country = {
-				target = ROOT
-				transfer_troops = yes
-			}
-		}
-		
-		ai_chance = {
-			factor = 1
-		}
-	}
-	option = {
-		name = rcw_usfev.351.b
-		
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-
 # Военный переворот в Приморье
 country_event = {
 	id = rcw_usfev.352
@@ -12959,6 +12879,61 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
+	}
+}
+
+# Читинский эндшпиль
+country_event = {
+	id = rcw_usfev.353
+	title = rcw_usfev.353.t
+	desc = rcw_usfev.353.desc
+
+	picture = GFX_report_event_sov_redarm
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.353.a
+		FROM = {
+			every_unit_leader = {
+				set_nationality = ROOT
+			}
+		}
+		every_state = {
+			limit = { is_core_of = FROM }
+			add_core_of = ROOT
+		}
+		if = {
+			limit = { is_ai = yes FROM = { is_ai = no } }
+			change_tag_from = FROM
+		}
+		annex_country = {
+			target = FROM
+			transfer_troops = yes
+		}
+	}
+}
+
+# Отмена японских кредитов
+country_event = {
+	id = rcw_usfev.354
+	
+	trigger = {
+		tag = BKL
+		has_country_flag = BKL_japanese_loans_idea_f
+		NOT = { has_idea = BKL_japanese_loans_idea }
+	}
+	
+	hidden = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		clr_country_flag = BKL_japanese_loans_idea_f
+		add_offsite_building = { type = arms_factory level = -1 }
+		add_offsite_building = { type = industrial_complex level = -1 }
 	}
 }
 
