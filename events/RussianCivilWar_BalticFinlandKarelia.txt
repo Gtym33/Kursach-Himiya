@@ -283,7 +283,7 @@ country_event = {
 	}
 }
 
-# Вступление Эстонии в войну с ЗДА на стороне Латвии
+# Вступление Эстонии в войну с ЗДА на стороне Латвии ("Угроза с Юга")
 country_event = {
 	id = rcw_bfk.10
 	title = rcw_bfk.10.t
@@ -292,7 +292,6 @@ country_event = {
 	
 	trigger = {
 		tag = EST
-		NOT = { has_global_flag = RUS_civil_war_over }
 		is_subject = no
 		LAT = { has_war_with = WVA }
 		NOT = { has_war_with = WVA has_war_with = LAT }
@@ -312,11 +311,18 @@ country_event = {
 		}
 		give_military_access = LAT
 		LAT = { give_military_access = EST }
+		reverse_add_opinion_modifier = { target = LAT modifier = EST_helps_LAT }
+		ai_chance = {
+			factor = 1
+		}
 	}
 	
 	option = {
 		name = rcw_bfk.10.b
 		add_popularity = { ideology = despotism popularity = -0.1 }
+		ai_chance = {
+			factor = 0
+		}
 	}
 }
 
@@ -659,6 +665,13 @@ country_event = {
 		remove_ideas_with_trait = military_minister_trait
 		set_politics = { ruling_party = authoritarism }
 		set_country_flag = LAT_ger_gov
+		hidden_effect = {
+			remove_opinion_modifier = { target = EST modifier = EST_helps_LAT }
+			random_other_country = {
+				limit = { original_tag = EST NOT = { has_government = radical_socialism has_government = communism has_war_with = ROOT } }
+				country_event = { id = rcw_bfk.25 days = 2 }
+			}
+		}
 	}
 	
 }
@@ -885,27 +898,38 @@ country_event = {
 					target = LAT
 					type = annex_everything
 				}
-				every_country = {
-					limit = {
-						NOT = {
-							tag = PREV
-							is_any_former_russian_empire_country = yes
-							former_russian_empire_baltic_states_country = yes
-							has_war_with = PREV
-							is_in_faction_with = PREV
+				if = {
+					limit = { EST = { NOT = { has_war_with = ROOT has_war_with = WVA } is_subject = no } }
+					EST = { country_event = { id = rcw_bfk.10 days = 1 } }
+				}
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
 						}
+						set_THIS_country_non_recognize_PREV = yes
 					}
-					set_THIS_country_non_recognize_PREV = yes
 				}
 			}
+		}
+		ai_chance = {
+			factor = 1
 		}
 	}
 	
 	option = {
 		name = rcw_bfk.18.b
 		country_event = { id = rcw_bfk.19 days = 35 }
+		ai_chance = {
+			factor = 0
+		}
 	}
-	
 }
 
 # ЗДА идёт на восток
@@ -969,6 +993,10 @@ country_event = {
 						target = LAT
 						type = annex_everything
 					}
+					if = {
+						limit = { EST = { NOT = { has_war_with = ROOT has_war_with = WVA } is_subject = no } }
+						EST = { country_event = { id = rcw_bfk.10 days = 1 } }
+					}
 					hidden_effect = {
 						every_country = {
 							limit = {
@@ -1022,6 +1050,9 @@ country_event = {
 				}
 			}
 		}
+		ai_chance = {
+			factor = 0
+		}
 	}
 	
 	option = {
@@ -1070,6 +1101,10 @@ country_event = {
 				target = LAT
 				type = annex_everything
 			}
+			if = {
+				limit = { EST = { NOT = { has_war_with = ROOT has_war_with = WVA } is_subject = no } }
+				EST = { country_event = { id = rcw_bfk.10 days = 1 } }
+			}
 			hidden_effect = {
 				every_country = {
 					limit = {
@@ -1084,6 +1119,9 @@ country_event = {
 					set_THIS_country_non_recognize_PREV = yes
 				}
 			}
+		}
+		ai_chance = {
+			factor = 1
 		}
 	}
 }
@@ -1346,75 +1384,111 @@ country_event = {
 	}
 }
 
-# Восстание в форте "Красная горка"
+# Параход "Саратов" (Эстония)
 country_event = {
 	id = rcw_bfk.25
 	title = rcw_bfk.25.t
 	desc = rcw_bfk.25.d
-	picture = GFX_report_event_nwa_krasnya_gorka
+	picture = GFX_report_event_lat_niedra
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.25.a
+		set_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		ai_chance = {
+			factor = 7
+		}
+	}
+	option = {
+		name = rcw_bfk.25.b
+		reverse_add_opinion_modifier = { target = FROM modifier = EST_is_friend_for_LAT_Niedra }
+		ai_chance = {
+			factor = 3
+		}
+	}
+}
+
+# Встреча с ландвером (Эстония)
+country_event = {
+	id = rcw_bfk.26
+	title = rcw_bfk.26.t
+	desc = {
+		text = rcw_bfk.26.d
+		trigger = { NOT = { has_country_flag = EST_takes_delay_before_help_LAT } }
+	}
+	desc = {
+		text = rcw_bfk.26.d_1
+		trigger = { has_country_flag = EST_takes_delay_before_help_LAT }
+	}
+	picture = GFX_report_event_lat_niedra
 	
 	trigger = {
-		tag = RUS
-		OR = {
-			has_government = communism
-			has_government = radical_socialism
-		}
-		NOT = { has_country_flag = RUS_civil_war_over }
-		any_enemy_country = {
-			is_main_former_russian_empire_country_without_other_triggers = yes
-			has_capitulated = no
-			exists = yes
-		}
-		AND = {
-			OR = {
-				NOT = { controls_state = 1021 }
-				NOT = { controls_state = 797 }
-				NOT = { controls_state = 195 }
-				NOT = { controls_state = 219 }
-				NOT = { has_full_control_of_state = 1021 }
-				1021 = {
-					any_neighbor_state = {
-						NOT = { is_controlled_by = RUS }
-						CONTROLLER = {
-							is_main_former_russian_empire_country_without_other_triggers = yes
-							has_war_with = ROOT
-							NOT = {
-								tag = RUS
-								has_government = radical_socialism
-								has_government = communism
-							}
-						}
-					}
-				}
-			}
-			OR = {
-				any_state = {
-					region = 132
-					CONTROLLER = {
-						is_main_former_russian_empire_country_without_other_triggers = yes
-						has_war_with = ROOT
-						NOT = {
-							tag = RUS
-							has_government = radical_socialism
-							has_government = communism
-						}
-					}
-				}
-				219 = {
-					CONTROLLER = {
-						is_any_former_russian_empire_country = yes
-						has_war_with = ROOT
-						NOT = {
-							tag = RUS
-							has_government = radical_socialism
-							has_government = communism
-						}
-					}
-				}
+		tag = EST
+		NOT = { has_war_with = LAT }
+		LAT = { has_government = authoritarism has_country_flag = LAT_ger_gov }
+		has_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		any_state = {
+			is_controlled_by = ROOT
+			NOT = { state = 921 }
+			any_neighbor_state = {
+				is_controlled_by = LAT
 			}
 		}
 	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.26.a
+		clr_country_flag = EST_takes_delay_before_help_LAT
+		declare_war_on = {
+			target = LAT
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 3
+		}
+	}
+	option = {
+		trigger = {
+			NOT = { has_country_flag = EST_takes_delay_before_help_LAT }
+		}
+		name = rcw_bfk.26.b
+		set_country_flag = EST_takes_delay_before_help_LAT
+		country_event = { id = rcw_bfk.26 days = 14 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
 
+# Возвращение Ульманиса (Латвия)
+country_event = {
+	id = rcw_bfk.27
+	title = rcw_bfk.27.t
+	desc = rcw_bfk.27.d
+	picture = GFX_report_event_lat_niedra
+	
+	trigger = {
+		tag = LAT
+		has_government = authoritarism
+		has_country_flag = LAT_ger_gov
+		OR = {
+			has_civil_war = yes
+			AND = {
+				has_war_with = EST
+				EST = { has_country_flag = EST_will_help_Ulmanism_to_retake_LAT }
+			}
+		}
+		OR = {
+			any_other_country = { controls_state = 12 }
+			any_other_country = { has_full_control_of_state = 1001 }
+		}
+	}
+	
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
@@ -1422,86 +1496,74 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_bfk.25.a
+		name = rcw_bfk.27.a
+		
+		every_unit_leader = {
+			limit = {
+				OR = {
+					has_id = 34101
+					has_id = 34102
+				}
+			}
+			set_nationality = REB
+		}
+		clr_country_flag = LAT_ger_gov
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.15
+		}
+		add_opinion_modifier = { target = FROM modifier = EST_helps_LAT }
+		reverse_add_opinion_modifier = { target = FROM modifier = EST_helps_LAT }
 		if = {
-			limit = { NWA = { OR = { exists = no has_capitulated = yes } } }
-			random_other_country = {
-				limit = {
-					is_main_former_russian_empire_country_without_other_triggers = yes
-					has_war_with = ROOT
-					NOT = {
-						tag = RUS
-						has_government = radical_socialism
-						has_government = communism
-					}
-				}
-				if = {
-					limit = { NOT = { has_template = "Pekhotnyy polk" } }
-					division_template = {
-						name = "Pekhotnyy polk"
-						regiments = {
-							infantry = { x = 0 y = 0 }
-							infantry = { x = 0 y = 1 }
-						}
-						support = {
-							artillery = { x = 0 y = 0 }
-						}
-						priority = 1
-					}
-				}
-				1021 = {
-					create_unit = {
-						division = "name = \"Pekhotnaya polk\" division_template = \"Pekhotnaya polk\" start_experience_factor = 0.3 start_equipment_factor = 1.0"
-						owner = PREV
-					}
-				}
-				create_corps_commander = { name = "Nikolay Neklyudov" id = 77468 portrait_path = "gfx/leaders/RUS/Nikolay_Neklyudov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
-				country_event = rcw_bfk.26
+			limit = { EST = { has_country_flag = EST_will_help_Ulmanism_to_retake_LAT } }
+			EST = {
+				white_peace = LAT
+				country_event = rcw_bfk.28
 			}
 		}
-		else = {
-			NWA = {
+		if = {
+			limit = {
+				any_other_country = {
+					limit = { original_tag = ROOT has_war_with = ROOT has_government = despotism }
+				}
+			}
+			create_country_leader = { name = "Karlis Ulmanis" desc = "" picture = "gfx/leaders/LAT/Karlis_Ulmanis.dds" expire = "1965.1.1" ideology = despotism_ideology traits = { } }
+			random_other_country = {
+				limit = { original_tag = ROOT has_war_with = ROOT has_government = despotism }
+				ROOT = {
+					annex_country = {
+						target = PREV
+						transfer_troops = yes
+					}
+				}
+				every_unit_leader = {
+					set_nationality = ROOT
+				}
 				if = {
-					limit = { NOT = { has_template = "Pekhotnyy polk" } }
-					division_template = {
-						name = "Pekhotnyy polk"
-						regiments = {
-							infantry = { x = 0 y = 0 }
-							infantry = { x = 0 y = 1 }
-						}
-						support = {
-							artillery = { x = 0 y = 0 }
-						}
-						priority = 1
-					}
+					limit = { is_ai = no ROOT = { is_ai = yes } }
+					ROOT = { change_tag_from = PREV }
 				}
-				1021 = {
-					create_unit = {
-						division = "name = \"Pekhotnaya polk\" division_template = \"Pekhotnaya polk\" start_experience_factor = 0.3 start_equipment_factor = 1.0"
-						owner = PREV
-					}
-				}
-				create_corps_commander = { name = "Nikolay Neklyudov" id = 77468 portrait_path = "gfx/leaders/RUS/Nikolay_Neklyudov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
-				country_event = rcw_bfk.26
 			}
 		}
 	}
 }
 
-# Восстание в форте "Красная горка" (оповещалка)
+# Возвращение Ульманиса (Эстония)
 country_event = {
-	id = rcw_bfk.26
-	title = rcw_bfk.26.t
-	desc = rcw_bfk.26.d
-	picture = GFX_report_event_nwa_krasnya_gorka
+	id = rcw_bfk.28
+	title = rcw_bfk.28.t
+	desc = rcw_bfk.28.d
+	picture = GFX_report_event_lat_niedra
 	
 	is_triggered_only = yes
-
-	fire_only_once = yes
 	
 	option = {
-		name = rcw_bfk.26.a
-		add_war_support = 0.03
+		name = rcw_bfk.28.a
+		clr_country_flag = EST_will_help_Ulmanism_to_retake_LAT
 	}
 }
 
@@ -2909,21 +2971,31 @@ country_event = {
 		name = rcw_bfk.121.a
 		WVA = {
 			every_unit_leader = {
-				set_nationality = NWA
+				set_nationality = FROM
 			}
 		}
-		NWA = {
+		FROM = {
 			annex_country = {
 				target = WVA
 				transfer_troops = yes
 			}
 		}
+		ai_chance = {
+			factor = 3
+		}
 	}
 	
 	option = {
 		name = rcw_bfk.121.b
-		add_opinion_modifier = { target = NWA modifier = WVA_dont_merge_with_NWA }
-		NWA = { add_opinion_modifier = { target = WVA modifier = WVA_dont_merge_with_NWA } }
+		add_opinion_modifier = { target = FROM modifier = WVA_dont_merge_with_NWA }
+		FROM = { add_opinion_modifier = { target = WVA modifier = WVA_dont_merge_with_NWA } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				FROM = { has_completed_focus = NWA_orientation_berlin }
+			}
+		}
 	}
 }
 
@@ -3011,6 +3083,166 @@ country_event = {
 		ai_chance = {
 			factor = 0
 		}
+	}
+}
+
+
+# Восстание в форте "Красная горка"
+country_event = {
+	id = rcw_bfk.125
+	title = rcw_bfk.125.t
+	desc = rcw_bfk.125.d
+	picture = GFX_report_event_nwa_krasnya_gorka
+	
+	trigger = {
+		tag = RUS
+		OR = {
+			has_government = communism
+			has_government = radical_socialism
+		}
+		NOT = { has_country_flag = RUS_civil_war_over }
+		any_enemy_country = {
+			is_main_former_russian_empire_country_without_other_triggers = yes
+			has_capitulated = no
+			exists = yes
+		}
+		AND = {
+			OR = {
+				NOT = { controls_state = 1021 }
+				NOT = { controls_state = 797 }
+				NOT = { controls_state = 195 }
+				NOT = { controls_state = 219 }
+				NOT = { has_full_control_of_state = 1021 }
+				1021 = {
+					any_neighbor_state = {
+						NOT = { is_controlled_by = RUS }
+						CONTROLLER = {
+							is_main_former_russian_empire_country_without_other_triggers = yes
+							has_war_with = ROOT
+							NOT = {
+								tag = RUS
+								has_government = radical_socialism
+								has_government = communism
+							}
+						}
+					}
+				}
+			}
+			OR = {
+				any_state = {
+					region = 132
+					CONTROLLER = {
+						is_main_former_russian_empire_country_without_other_triggers = yes
+						has_war_with = ROOT
+						NOT = {
+							tag = RUS
+							has_government = radical_socialism
+							has_government = communism
+						}
+					}
+				}
+				219 = {
+					CONTROLLER = {
+						is_any_former_russian_empire_country = yes
+						has_war_with = ROOT
+						NOT = {
+							tag = RUS
+							has_government = radical_socialism
+							has_government = communism
+						}
+					}
+				}
+			}
+		}
+	}
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.125.a
+		if = {
+			limit = { NWA = { OR = { exists = no has_capitulated = yes } } }
+			random_other_country = {
+				limit = {
+					is_main_former_russian_empire_country_without_other_triggers = yes
+					has_war_with = ROOT
+					NOT = {
+						tag = RUS
+						has_government = radical_socialism
+						has_government = communism
+					}
+				}
+				if = {
+					limit = { NOT = { has_template = "Pekhotnyy polk" } }
+					division_template = {
+						name = "Pekhotnyy polk"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+						}
+						priority = 1
+					}
+				}
+				1021 = {
+					create_unit = {
+						division = "name = \"Pekhotnaya polk\" division_template = \"Pekhotnaya polk\" start_experience_factor = 0.3 start_equipment_factor = 1.0"
+						owner = PREV
+					}
+				}
+				create_corps_commander = { name = "Nikolay Neklyudov" id = 77468 portrait_path = "gfx/leaders/RUS/Nikolay_Neklyudov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+				country_event = rcw_bfk.126
+			}
+		}
+		else = {
+			NWA = {
+				if = {
+					limit = { NOT = { has_template = "Pekhotnyy polk" } }
+					division_template = {
+						name = "Pekhotnyy polk"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+						}
+						priority = 1
+					}
+				}
+				1021 = {
+					create_unit = {
+						division = "name = \"Pekhotnaya polk\" division_template = \"Pekhotnaya polk\" start_experience_factor = 0.3 start_equipment_factor = 1.0"
+						owner = PREV
+					}
+				}
+				create_corps_commander = { name = "Nikolay Neklyudov" id = 77468 portrait_path = "gfx/leaders/RUS/Nikolay_Neklyudov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+				country_event = rcw_bfk.126
+			}
+		}
+	}
+}
+
+# Восстание в форте "Красная горка" (оповещалка)
+country_event = {
+	id = rcw_bfk.126
+	title = rcw_bfk.126.t
+	desc = rcw_bfk.126.d
+	picture = GFX_report_event_nwa_krasnya_gorka
+	
+	is_triggered_only = yes
+
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.126.a
+		add_war_support = 0.03
 	}
 }
 
