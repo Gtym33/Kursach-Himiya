@@ -1028,6 +1028,11 @@ country_event = {
 			else = { CRO = { transfer_state = 963 } }
 		}
 		if = {
+			limit = { SER = { controls_state = 804 } }
+			SER = { set_state_owner = 804 }
+			else = { CRO = { transfer_state = 804 } }
+		}
+		if = {
 			limit = { SER = { controls_state = 104 } }
 			SER = { set_state_owner = 104 }
 			else = { CRO = { transfer_state = 104 } }
@@ -1345,6 +1350,92 @@ country_event = {
 	
 	option = {
 		name = compiegne_armistice.4.a
+		
+		set_global_flag = WWI_GER_HAS_CAPITULATED
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = GRE tag = GRR }
+				}
+				OR = { is_core_of = GRE is_core_of = GRR }
+				NOT = { is_core_of = ROOT }
+			}
+			random_other_country = {
+				limit = { OR = { tag = GRE tag = GRR } }
+				transfer_state = PREV
+			}
+		}
+		if = {
+			limit = { has_global_flag = WWI_GRE_HAS_CAPITULATED }
+			clr_global_flag = WWI_GRE_HAS_CAPITULATED
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = ROM }
+				}
+				is_core_of = ROM
+				NOT = { is_core_of = ROOT }
+			}
+			ROM = { transfer_state = PREV }
+		}
+		if = {
+			limit = { has_global_flag = WWI_ROM_HAS_CAPITULATED }
+			clr_global_flag = WWI_ROM_HAS_CAPITULATED
+			ROM = {
+				every_owned_state = {
+					ROOT = { remove_resource_rights = PREV }
+				}
+				every_owned_state = {
+					set_demilitarized_zone = no
+				}
+			}
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = BUL }
+				}
+				is_core_of = BUL
+				NOT = { is_core_of = ROOT }
+			}
+			BUL = { transfer_state = PREV }
+		}
+		if = {
+			limit = { has_idea = GER_dependent_bulgarian_economy }
+			remove_ideas = GER_dependent_bulgarian_economy
+			BUL = { remove_ideas = BUL_dependent_bulgarian_economy }
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = DON tag = UKR }
+				}
+				is_core_of = DON
+				NOT = { is_core_of = ROOT }
+			}
+			DON = { transfer_state = PREV }
+		}
 		if = {
 			limit = {
 				has_country_flag = DON_partner
@@ -1364,19 +1455,12 @@ country_event = {
 			DON = { remove_ideas = foreing_credit_for_DON }
 			clr_country_flag = DON_partner
 		}
+		
 		if = {
-			limit = { has_global_flag = WWI_ROM_HAS_CAPITULATED }
-			ROM = {
-				GER = { remove_resource_rights = 46 }
-				every_owned_state = {
-					set_demilitarized_zone = no
-				}
-				clr_global_flag = WWI_ROM_HAS_CAPITULATED
-			}
-		}
-		if = {
-			limit = { UKR = { is_subject_of = ROOT OR = { has_war_with = USR has_war_with = ODS } } }
+			limit = { UKR = { is_subject_of = ROOT } }
 			end_puppet = UKR
+			UKR = { remove_ideas = UKR_zerno_in }
+			remove_ideas = UKR_zerno_out
 			UKR = {
 				every_country = {
 					limit = { OR = { tag = ENG tag = USA is_in_faction_with = ENG is_in_faction_with = USA AND = { OR = { is_in_faction_with = FRA tag = FRA } NOT = { is_in_faction_with = GER } } } OR = { is_faction_leader = yes is_in_faction = no } }
@@ -1389,159 +1473,342 @@ country_event = {
 				leave_faction = yes
 				remove_ideas = help_from_foreign_interventionists
 			}
+		}
+		if = {
+			limit = { OR = { has_war_with = USR has_war_with = ODS } }
 			white_peace = USR
 			white_peace = ODS
 		}
-		#UKR = { remove_ideas = UKR_zerno_in }
-		#remove_ideas = UKR_zerno_out
-		if = {
-			limit = { owns_state = 907 }
-			234 = {
+		
+		every_state = {
+			limit = {
 				OWNER = {
-					transfer_state = 907
-				}
-			}
-		}
-		if = {
-			limit = { OR = { owns_state = 137 owns_state = 1073 owns_state = 1074 } CRI = { exists = no } }
-			every_state = {
-				limit = {
 					OR = {
-						is_owned_by = ROOT
-						OWNER = { is_subject_of = ROOT }
+						tag = ROOT
+						is_subject_of = ROOT
 					}
-					OR = {
-						state = 137
-						state = 1073
-						state = 1074
-					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
 				}
-				CRI = { transfer_state = PREV }
+				is_core_of = TUR
+				NOT = { is_core_of = ROOT }
 			}
-			CRI = { set_politics = { ruling_party = authoritarism } }
+			TUR = { transfer_state = PREV }
 		}
 		every_state = {
 			limit = {
-				region = 134
-				is_owned_by = GER
-				is_core_of = GEO
-			}
-			if = {
-				limit = { RVA = { exists = yes } }
-				RVA = { transfer_state = PREV }
-			}
-			else_if = {
-				limit = { RUS = { exists = yes } }
-				RUS = { transfer_state = PREV }
-			}
-			else = {
-				GEO = { transfer_state = PREV }
-			}
-		}
-		every_state = {
-			limit = {
-				region = 134
-				is_owned_by = GER
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
+				}
 				is_core_of = AZR
+				NOT = { is_core_of = ROOT }
 			}
 			AZR = { transfer_state = PREV }
 		}
 		every_state = {
 			limit = {
-				region = 134
-				is_owned_by = GER
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
+				}
+				is_core_of = GEO
+				NOT = { is_core_of = ROOT }
+			}
+			GEO = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
+				}
 				is_core_of = ARM
+				NOT = { is_core_of = ROOT }
 			}
 			ARM = { transfer_state = PREV }
 		}
 		every_state = {
 			limit = {
-				region = 134
-				is_owned_by = GER
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
+				}
+				is_core_of = PER
+				NOT = { is_core_of = ROOT }
+			}
+			PER = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
+				}
+				is_core_of = CHC
+				NOT = { is_core_of = ROOT }
+			}
+			CHC = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
+				}
 				is_core_of = DAG
+				NOT = { is_core_of = ROOT }
 			}
 			DAG = { transfer_state = PREV }
 		}
 		every_state = {
 			limit = {
-				is_owned_by = GER
-				is_core_of = CHC
-			}
-			CHC = { transfer_state = PREV }
-		}
-		every_state = {
-			limit = {
-				is_owned_by = GER
-				is_core_of = CHC
-			}
-			CHC = { transfer_state = PREV }
-		}
-		every_state = {
-			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TUR tag = AZR tag = GEO tag = ARM tag = PER tag = PER tag = CHC tag = DAG tag = MRC }
+				}
 				region = 134
-				is_owned_by = GER
+				NOT = { is_core_of = ROOT }
+			}
+			MRC = { transfer_state = PREV }
+		}
+		
+		if = {
+			limit = { any_state = { is_core_of = CRI OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+			CRI = { set_politics = { ruling_party = authoritarism } }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = CRI tag = UKR }
+				}
+				is_core_of = CRI
+				NOT = { is_core_of = ROOT }
+			}
+			CRI = { transfer_state = PREV }
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TRK tag = BUK tag = KHI tag = SCH tag = SIB tag = KAZ }
+				}
+				is_core_of = TRK
+				NOT = { is_core_of = ROOT }
+			}
+			TRK = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TRK tag = BUK tag = KHI tag = SCH tag = SIB tag = KAZ }
+				}
+				is_core_of = BUK
+				NOT = { is_core_of = ROOT }
+			}
+			BUK = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TRK tag = BUK tag = KHI tag = SCH tag = SIB tag = KAZ }
+				}
+				is_core_of = KHI
+				NOT = { is_core_of = ROOT }
+			}
+			KHI = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TRK tag = BUK tag = KHI tag = SCH tag = SIB tag = KAZ }
+				}
+				is_core_of = SCH
+				NOT = { is_core_of = ROOT }
+			}
+			SCH = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TRK tag = BUK tag = KHI tag = SCH tag = SIB tag = KAZ }
+				}
+				is_core_of = SIB
+				NOT = { is_core_of = ROOT }
+			}
+			SIB = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TRK tag = BUK tag = KHI tag = SCH tag = SIB tag = KAZ }
+				}
+				is_core_of = KAZ
+				NOT = { is_core_of = ROOT }
+			}
+			KAZ = { transfer_state = PREV }
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = TAN }
+				}
+				is_core_of = TAN
+				NOT = { is_core_of = ROOT }
+			}
+			TAN = { transfer_state = PREV }
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = BRY tag = BLK tag = AMR tag = PRM tag = ZKL }
+				}
+				is_core_of = BRY
+				NOT = { is_core_of = ROOT }
+			}
+			BRY = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = BRY tag = BLK tag = AMR tag = PRM tag = ZKL }
+				}
+				is_core_of = BLK
+				NOT = { is_core_of = ROOT }
+			}
+			BLK = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = BRY tag = BLK tag = AMR tag = PRM tag = ZKL }
+				}
+				is_core_of = AMR
+				NOT = { is_core_of = ROOT }
+			}
+			AMR = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = BRY tag = BLK tag = AMR tag = PRM tag = ZKL }
+				}
+				is_core_of = PRM
+				NOT = { is_core_of = ROOT }
+			}
+			PRM = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = BRY tag = BLK tag = AMR tag = PRM tag = ZKL }
+				}
+				is_core_of = ZKL
+				NOT = { is_core_of = ROOT }
+			}
+			ZKL = { transfer_state = PREV }
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = RVA tag = DON tag = MCW tag = RUS tag = UKR }
+				}
+				region = 135
+				NOT = { is_core_of = ROOT }
 			}
 			if = {
 				limit = { RVA = { exists = yes } }
 				RVA = { transfer_state = PREV }
 			}
-			else = {
-				RUS = { transfer_state = PREV }
-			}
-		}
-		every_state = {
-			limit = {
-				region = 135
-				is_owned_by = GER
-			}
-			if = {
+			else_if = {
 				limit = { DON = { exists = yes } }
 				DON = { transfer_state = PREV }
 			}
 			else_if = {
-				limit = { RVA = { exists = yes } }
-				RVA = { transfer_state = PREV }
-			}
-			else_if = {
-				limit = { KUB = { exists = yes } }
-				KUB = { transfer_state = PREV }
+				limit = { MCW = { exists = yes } }
+				MCW = { transfer_state = PREV }
 			}
 			else = {
 				RUS = { transfer_state = PREV }
-			}
-		}
-		every_state = {
-			limit = {
-				is_owned_by = GER
-				is_core_of = PRM
-			}
-			if = {
-				limit = { BKL = { exists = yes } }
-				BKL = { transfer_state = PREV }
-			}
-			else_if = {
-				limit = { ZKL = { exists = yes } }
-				ZKL = { transfer_state = PREV }
-			}
-			else_if = {
-				limit = { SIB = { exists = yes } }
-				SIB = { transfer_state = PREV }
-			}
-			else = {
-				PRM = { transfer_state = PREV }
-			}
-		}
-		every_state = {
-			limit = {
-				is_owned_by = GER
-				is_core_of = BKL
-			}
-			if = {
-				limit = { SIB = { exists = yes } }
-				SIB = { transfer_state = PREV }
-			}
-			else = {
-				BKL = { transfer_state = PREV }
 			}
 		}
 		every_state = {
@@ -1555,6 +1822,7 @@ country_event = {
 					region = 155
 					region = 212
 				}
+				NOT = { is_core_of = ROOT }
 			}
 			if = {
 				limit = { SIB = { exists = yes } }
@@ -1576,6 +1844,7 @@ country_event = {
 			limit = {
 				is_owned_by = GER
 				region = 136
+				NOT = { is_core_of = ROOT }
 			}
 			if = {
 				limit = { TRK = { exists = yes } }
@@ -1608,6 +1877,7 @@ country_event = {
 					region = 14
 					region = 138
 				}
+				NOT = { is_core_of = ROOT }
 			}
 			if = {
 				limit = { CCA = { exists = yes } }
@@ -1640,68 +1910,98 @@ country_event = {
 				AUS = { transfer_state = PREV }
 			}
 		}
-		if = {
-			limit = { LIT = { exists = no } }
-			every_state = {
-				limit = {
-					OR = {
-						is_owned_by = ROOT
-						OWNER = { is_subject_of = ROOT }
-					}
-					OR = {
-						state = 784
-						state = 998
-						state = 95
-						state = 956
-						state = 1024
-						state = 97
-						state = 910
-						state = 846
-						state = 847
-						state = 11
-						state = 189
-						state = 999
-					}
-				}
-				LIT = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { RUS = { NOT = { controls_state = 10 } } }
-			every_state = {
-				limit = {
-					OR = {
-						region = 38
-						state = 92
-						state = 904
-						state = 1165
-					}
-					is_controlled_by = ROOT
-					is_core_of = POL
-					NOT = { is_core_of = GER }
-				}
-				POL = { transfer_state = PREV }
-			}
-			else = {
-				RUS = { annex_country = { target = POL transfer_troops = no } }
-			}
-		}
-		if = {
+		
+		every_state = {
 			limit = {
-				BLR = { exists = no }
-				owns_state = 195
-				owns_state = 219
-				owns_state = 252
-			}
-			every_state = {
-				limit = {
-					is_owned_by = ROOT
-					is_core_of = BLR
-					NOT = { is_core_of = GER }
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = LIT tag = LAT tag = BLR tag = POL tag = UKR tag = UBD }
 				}
-				BLR = { transfer_state = PREV }
+				OR = {
+					state = 784
+					state = 998
+					state = 95
+					state = 956
+					state = 1024
+					state = 97
+					state = 910
+					state = 846
+					state = 847
+					state = 11
+					state = 189
+					state = 999
+					is_core_of = LIT
+				}
+				NOT = { is_core_of = ROOT }
 			}
+			LIT = { transfer_state = PREV }
 		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = LIT tag = LAT tag = EST tag = BLR tag = POL tag = UKR tag = UBD }
+				}
+				is_core_of = LAT
+				NOT = { state = 865 }
+				NOT = { is_core_of = ROOT }
+			}
+			LAT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+					}
+					NOT = { tag = LIT tag = LAT tag = EST tag = BLR tag = POL tag = UKR tag = UBD }
+				}
+				is_core_of = EST
+				NOT = { state = 1004 }
+				NOT = { is_core_of = ROOT }
+			}
+			EST = { transfer_state = PREV }
+		}
+		if = {
+			limit = { owns_state = 865 OR = { country_exists = UBD country_exists = LAT } }
+			1001 = { OWNER = { transfer_state = 865 } }
+		}
+		if = {
+			limit = { owns_state = 1004 OR = { country_exists = UBD country_exists = EST } }
+			191 = { OWNER = { transfer_state = 1004 } }
+		}
+		
+		every_state = {
+			limit = {
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						tag = AUH
+						is_subject_of = AUH
+					}
+					NOT = { tag = LIT tag = LAT tag = EST tag = BLR tag = POL tag = UKR tag = UBD }
+				}
+				OR = {
+					region = 38
+					state = 92
+					state = 904
+					state = 1165
+				}
+				is_core_of = POL
+				NOT = { is_core_of = ROOT }
+				NOT = { is_core_of = AUH }
+			}
+			POL = { transfer_state = PREV }
+		}
+		
 		every_state = {
 			limit = {
 				OR = {
@@ -1718,76 +2018,27 @@ country_event = {
 			}
 			UKR = { transfer_state = PREV }
 		}
-		if = {
-			limit = { owns_state = 206 }
-			every_state = {
-				limit = {
-					is_owned_by = ROOT
-					is_core_of = BLR
-					NOT = { is_claimed_by = UKR }
-					NOT = { is_core_of = UKR }
-					NOT = { is_claimed_by = LIT }
-					NOT = { is_core_of = LIT }
-					NOT = { is_claimed_by = LAT }
-					NOT = { is_core_of = LAT }
-					NOT = { is_claimed_by = GER }
-					NOT = { is_core_of = GER }
-				}
-				BLR = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { UBD = { exists = no } LAT = { exists = no } EST = { exists = no } }
-			every_state = {
-				limit = {
-					is_owned_by = ROOT
+		every_state = {
+			limit = {
+				OWNER = {
 					OR = {
-						state = 914
-						state = 921
-						state = 13
-						state = 920
-						state = 1003
-						state = 915
-						state = 1002
+						tag = ROOT
+						is_subject_of = ROOT
 					}
+					NOT = { tag = LIT tag = LAT tag = EST tag = BLR tag = POL tag = UKR tag = UBD }
 				}
-				EST = { transfer_state = PREV }
+				is_core_of = BLR
+				NOT = { is_core_of = ROOT }
 			}
-			every_state = {
-				limit = {
-					is_owned_by = ROOT
-					OR = {
-						state = 916
-						state = 191
-						state = 1001
-						state = 12
-						state = 866
-						state = 867
-						state = 190
-					}
-				}
-				LAT = { transfer_state = PREV }
-			}
+			BLR = { transfer_state = PREV }
 		}
-		if = {
-			limit = { owns_state = 865 OR = { country_exists = UBD country_exists = LAT } }
-			1001 = { OWNER = { transfer_state = 865 } }
-		}
-		if = {
-			limit = { owns_state = 1004 OR = { country_exists = UBD country_exists = EST } }
-			191 = { OWNER = { transfer_state = 1004 } }
-		}
+		
 		if = {
 			limit = {
 				OR = {
 					owns_state = 195
 					owns_state = 219
-					owns_state = 252
 				}
-			}
-			if = {
-				limit = { owns_state = 1004 OR = { country_exists = UBD country_exists = LAT country_exists = EST } }
-				191 = { OWNER = { transfer_state = 1004 } }
 			}
 			every_state = {
 				limit = {
@@ -1804,63 +2055,7 @@ country_event = {
 				MCW = { transfer_state = PREV }
 			}
 		}
-		set_global_flag = WWI_GER_HAS_CAPITULATED
-		add_ideas = neutral_foreign_policy_law
-		clr_country_flag = WWI_GER_last_teutonic_advance
-		add_threat = -30
-		if = { limit = { 28 = { is_owned_by = GER is_controlled_by = FRA } } FRA = { transfer_state = 28 } }
-		every_country = {
-			limit = { is_in_faction_with = GER NOT = { tag = GER tag = AUH tag = BUL tag = TUR } is_subject = no has_war_with = ENG }
-			leave_faction = yes
-			every_country = {
-				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
-				white_peace = PREV
-			}
-			every_country = {
-				limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
-				white_peace = PREV
-			}
-		}
-		every_country = {
-			limit = { is_subject_of = ROOT }
-			hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
-		}
-		leave_faction = yes
-		if = {
-			limit = {
-				any_country = {
-					NOT = { tag = GER }
-					is_socialist_country = yes
-					count_triggers = { amount = 9 controls_state = 66 controls_state = 763 controls_state = 68 controls_state = 64 controls_state = 65 controls_state = 60 controls_state = 829 controls_state = 51 controls_state = 42 controls_state = 54 controls_state = 52 controls_state = 830 controls_state = 61 controls_state = 67 controls_state = 59 controls_state = 57 controls_state = 85 }
-				}
-			}
-			set_country_flag = communist_occ
-			else = {
-				if = {
-					limit = {
-						any_country = {
-							NOT = { tag = GER }
-							is_socialist_country = yes
-							OR = { controls_state = 66 controls_state = 763 controls_state = 68 controls_state = 64 controls_state = 65 controls_state = 60 controls_state = 829 controls_state = 51 controls_state = 42 controls_state = 54 controls_state = 52 controls_state = 830 controls_state = 61 controls_state = 67 controls_state = 59 controls_state = 57 controls_state = 85 }
-						}
-					}
-					every_state = {
-						limit = {
-							is_owned_by = GER
-							CONTROLLER = { is_socialist_country = yes NOT = { tag = GER } }
-						}
-						DDR = { transfer_state = PREV }
-					}
-				}
-			}
-		}
-		if = {
-			limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired } }
-			every_state = {
-				limit = { is_owned_by = GER is_controlled_by = RUS OR = { NOT = { is_core_of = GER } is_core_of = RUS is_core_of = POL is_core_of = LIT is_core_of = LAT is_core_of = EST } }
-				RUS = { transfer_state = PREV }
-			}
-		}
+		
 		every_state = {
 			limit = { is_owned_by = GER is_core_of = BEL }
 			BEL = { transfer_state = PREV }
@@ -1868,126 +2063,6 @@ country_event = {
 		every_state = {
 			limit = { is_owned_by = GER is_core_of = FRA NOT = { state = 28 } }
 			FRA = { transfer_state = PREV }
-		}
-		if = {
-			limit = {
-				OR = {
-					has_global_flag = brest_litovsk_negotiations
-					has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
-					has_global_flag = brest_litovsk_GER_UKR_negotiations
-					has_global_flag = russia_rejects_german_ultimatum
-				}
-			}
-			clr_global_flag = brest_litovsk_negotiations
-			clr_global_flag = brest_litovsk_negotiations_GER_UKR_peace
-			clr_global_flag = brest_litovsk_GER_UKR_negotiations
-			clr_global_flag = russia_rejects_german_ultimatum
-			if = {
-				limit = { RUS = { owns_state = 12 NOT = { controls_state = 12 } } }
-				RUS = {
-					every_owned_state = {
-						limit = {
-							OR = {
-								state = 12
-								state = 867
-								state = 190
-								state = 866
-								state = 1001
-								state = 865
-							}
-							NOT = { is_controlled_by = RUS }
-						}
-						LAT = { transfer_state = PREV }
-					}
-				}
-			}
-			if = {
-				limit = { RUS = { owns_state = 13 NOT = { controls_state = 13 } } }
-				EST = { transfer_state = 914 transfer_state = 921 transfer_state = 13 transfer_state = 920 transfer_state = 1003 }
-				if = {
-					limit = { owns_state = 915 NOT = { controls_state = 915 } }
-					EST = { transfer_state = 915 transfer_state = 1002 }
-				}
-			}
-			RUS = {
-				add_popularity = {
-					ideology = communism
-					popularity = 0.05
-				}
-				add_popularity = {
-					ideology = radical_socialism
-					popularity = 0.1
-				}
-				add_war_support = 0.2
-				add_stability = 0.1
-				if = {
-					limit = { has_war_with = GER }
-					RUS = { country_event = treaty_of_brest.45 }
-				}
-			}
-		}
-		1117 = {
-			owner = { transfer_state = 762 }
-		}
-		1115 = {
-			owner = { transfer_state = 86 }
-		}
-		if = {
-			limit = {
-				RUS = {
-					NOT = {
-						has_country_flag = RUS_brest_peace_fired
-						has_global_flag = WWI_RUS_HAS_CAPITULATED
-					}
-					has_war_with = GER
-					RUS = {
-						OR = {
-							is_in_faction_with = ENG
-							NOT = { country_exists = DDR }
-						}
-					}
-				}
-			}
-			if = {
-				limit = { RUS = { owns_state = 189 } }
-				every_state = {
-					limit = {
-						is_owned_by = GER
-						OR = {
-							state = 188
-							state = 763
-							state = 5
-							state = 827
-							state = 1000
-							state = 85
-							state = 828
-							state = 86
-							state = 63
-						}
-					}
-					RUS = { transfer_state = PREV }
-				}
-			}
-		}
-		if = {
-			limit = { country_exists = DDR }
-				every_state = {
-					limit = {
-						is_owned_by = GER
-						OR = {
-							state = 188
-							state = 763
-							state = 5
-							state = 827
-							state = 1000
-							state = 85
-							state = 828
-							state = 86
-							state = 63
-						}
-					}
-					DDR = { transfer_state = PREV }
-				}
 		}
 		every_state = {
 			limit = {
@@ -2054,29 +2129,509 @@ country_event = {
 			ENG = { transfer_state = PREV }
 		}
 		
-		hidden_effect = {
+		if = {
+			limit = { has_war_with = RUS }
+			
 			if = {
-				limit = {
-					has_war_with = RUS
-					RUS = { has_country_flag = RUS_Oktober_revolution_fired OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_country_flag = RUS_brest_peace_fired } }
-				}
-				RUS = { country_event = treaty_of_brest.1917 }
-				else = {
+				limit = { 651 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				BSH = {
 					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_BSH_TAR_CHV
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_controlled_by = ROOT
+						is_core_of = BSH
+						NOT = { is_core_of = ROOT }
+					}
+					BSH = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { 249 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				TAR = {
+					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_BSH_TAR_CHV
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_controlled_by = ROOT
+						is_core_of = TAR
+						NOT = { is_core_of = ROOT }
+					}
+					TAR = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { 256 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				CHV = {
+					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_BSH_TAR_CHV
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_controlled_by = ROOT
+						is_core_of = CHV
+						NOT = { is_core_of = ROOT }
+					}
+					CHV = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { 137 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 1073 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 1074 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				CRI = {
+					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_CRI
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_controlled_by = ROOT
+						is_core_of = CRI
+						NOT = { is_core_of = ROOT }
+					}
+					CRI = { transfer_state = PREV }
+				}
+			}
+			
+			if = {
+				limit = { 218 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 1044 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				DON = {
+					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_DON
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_controlled_by = ROOT
+						is_core_of = DON
+						NOT = { is_core_of = ROOT }
+					}
+					DON = { transfer_state = PREV }
+				}
+			}
+			
+			if = {
+				limit = { 13 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 920 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 191 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				EST = {
+					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_EST_LAT_LIT
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_core_of = EST
+						NOT = { is_core_of = ROOT }
+					}
+					EST = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { 12 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 1001 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 865 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				LAT = {
+					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_EST_LAT_LIT
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_core_of = LAT
+						NOT = { is_core_of = ROOT }
+					}
+					LAT = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { 784 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 11 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } 189 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } } }
+				LIT = {
+					if = {
+						limit = { OR = { exists = no is_subject_of = ROOT } }
+						set_country_flag = WWI_post_german_russia_collaborators_new_country_EST_LAT_LIT
+					}
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						OR = {
+							is_core_of = LIT
+							state = 998
+							state = 95
+							state = 1024
+							state = 910
+							state = 956
+							state = 97
+						}
+						NOT = { is_core_of = ROOT }
+					}
+					LIT = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { 10 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } 87 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } 90 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } }
+				POL = {
+					if = {
+						limit = { OR = { exists = no has_army_manpower = { size < 1000 } } }
+						set_country_flag = WWI_post_german_russia_collaborators_has_no_army
+					}
+				}
+				every_state = {
+					limit = {
+						OR = {
+							region = 38
+							state = 92
+							state = 904
+							state = 1165
+						}
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+							}
+						}
+						OWNER = { NOT = { is_subject_of = ROOT } }
+						is_core_of = POL
+						NOT = { is_core_of = ROOT }
+					}
+					POL = { transfer_state = PREV }
+				}
+				every_state = {
+					limit = {
+						OR = {
+							region = 38
+							state = 92
+							state = 904
+							state = 1165
+						}
+						CONTROLLER = {
+							OR = {
+								tag = AUH
+								is_subject_of = AUH
+							}
+						}
+						OWNER = { NOT = { is_subject_of = AUH } }
+						is_core_of = POL
+						NOT = { is_core_of = AUH }
+					}
+					POL = { transfer_state = PREV }
+				}
+				else = {
+					hidden_effect = { RUS = { annex_country = { target = POL transfer_troops = no } } }
+				}
+			}
+			
+			every_country = {
+				limit = { has_country_flag = WWI_post_german_russia_collaborators_has_no_army }
+				if = {
+					limit = { tag = BSH }
+					load_oob = BSH_1918_CCA_autonomy
+				}
+				if = {
+					limit = { tag = TAR }
+					load_oob = TAR_1918_CCA_autonomy
+				}
+				if = {
+					limit = { tag = CHV }
+					load_oob = CHV_1918_CCA_autonomy
+				}
+				if = {
+					limit = { tag = CRI }
+					load_oob = CRI_1918
+				}
+				if = {
+					limit = { tag = DON }
+					load_oob = DON_Cossack_mob
+				}
+				if = {
+					limit = { tag = EST }
+					country_event = rcw_bfk.3
+					country_event = rcw_bfk.4
+				}
+				if = {
+					limit = { tag = LAT }
+					country_event = rcw_bfk.11
+				}
+				if = {
+					limit = { tag = LIT }
+					country_event = rcw_bfk.163
+					country_event = rcw_bfk.164
+					country_event = rcw_bfk.168
+				}
+				if = {
+					limit = { tag = POL }
+					country_event = { id = poland.1 hours = 2 }
+				}
+				clr_country_flag = WWI_post_german_russia_collaborators_has_no_army
+			}
+			
+			if = {
+				limit = { any_country = { has_country_flag = WWI_post_german_russia_collaborators_new_country_BSH_TAR_CHV } }
+				RUS = { country_event = { id = rcw_britishseas.1 days = 1 } }
+			}
+			if = {
+				limit = { any_country = { has_country_flag = WWI_post_german_russia_collaborators_new_country_CRI } }
+				RUS = { country_event = { id = rcw_britishseas.2 days = 1 } }
+			}
+			if = {
+				limit = { any_country = { has_country_flag = WWI_post_german_russia_collaborators_new_country_DON } }
+				RUS = { country_event = { id = rcw_britishseas.3 days = 1 } }
+			}
+			if = {
+				limit = { any_country = { has_country_flag = WWI_post_german_russia_collaborators_new_country_EST_LAT_LIT } }
+				RUS = { country_event = { id = rcw_britishseas.4 days = 1 } }
+			}
+			if = {
+				limit = { country_exists = POL any_country = { has_country_flag = WWI_post_german_russia_collaborators_new_country_EST_LAT_LIT } }
+				RUS = { set_country_flag = WWI_post_german_russia_collaborators_new_country_POL }
+			}
+			if = {
+				limit = { country_exists = POL NOT = { any_country = { has_country_flag = WWI_post_german_russia_collaborators_new_country_EST_LAT_LIT } } }
+				RUS = { country_event = { id = rcw_britishseas.5 days = 1 } }
+			}
+			
+			RUS = {
+				if = {
+					limit = { NOT = { controls_state = 763 } }
+					set_country_flag = RUS_does_not_take_Prussia
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = GER
+					OR = {
+						state = 188
+						state = 763
+						state = 5
+						state = 827
+						state = 1000
+						state = 85
+						state = 828
+						state = 86
+						state = 63
+					}
+				}
+				RUS = { transfer_state = PREV }
+			}
+			RUS = {
+				if = {
+					limit = { NOT = { controls_state = 10 } }
+					every_owned_state = {
 						limit = {
-							has_war_with = RUS
-							RUS = { OR = { NOT = { has_country_flag = RUS_Oktober_revolution_fired } AND = { is_in_faction = yes is_faction_leader = no } has_country_flag = RUS_brest_peace_fired } }
+							is_core_of = PRE
+							is_core_of = POL
+							CONTROLLER = {
+								NOT = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT }
+							}
 						}
-						every_country = {
-							limit = { OR = { tag = RUS is_in_faction_with = RUS } OR = { is_faction_leader = yes is_in_faction = no } }
-							ROOT = { white_peace = PREV }
+						POL = { transfer_state = PREV }
+					}
+				}
+			}
+			RUS = {
+				if = {
+					limit = { has_country_flag = RUS_does_not_take_Prussia }
+					clr_country_flag = RUS_does_not_take_Prussia
+					every_owned_state = {
+						limit = {
+							is_core_of = PRE
+							CONTROLLER = {
+								NOT = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT }
+							}
 						}
+						PRE = { transfer_state = PREV }
+					}
+					PRE = { inherit_technology = GER }
+					country_event = { id = rcw_britishseas.6 days = 3 }
+					GER = { country_event = rcw_britishseas.7 }
+				}
+			}
+		}
+		
+		if = {
+			limit = {
+				RUS = {
+					has_war_with = ROOT
+					OR = {
+						is_in_faction = no
+						is_faction_leader = yes
+					}
+				}
+			}
+			RUS = { country_event = treaty_of_brest.1917 }
+		}
+		
+		if = {
+			limit = {
+				OR = {
+					has_global_flag = brest_litovsk_negotiations
+					has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+					has_global_flag = brest_litovsk_GER_UKR_negotiations
+					has_global_flag = russia_rejects_german_ultimatum
+					has_global_flag = GER_average_peace_brest_tech_flag
+					has_global_flag = GER_average_peace_brest_alt_demand_tech_flag
+				}
+			}
+			clr_global_flag = brest_litovsk_negotiations
+			clr_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+			clr_global_flag = brest_litovsk_GER_UKR_negotiations
+			clr_global_flag = russia_rejects_german_ultimatum
+			clr_global_flag = GER_average_peace_brest_tech_flag
+			clr_global_flag = GER_average_peace_brest_alt_demand_tech_flag
+		}
+		
+		
+		add_ideas = neutral_foreign_policy_law
+		clr_country_flag = WWI_GER_last_teutonic_advance
+		add_threat = -30
+		if = { limit = { 28 = { is_owned_by = GER is_controlled_by = FRA } } FRA = { transfer_state = 28 } }
+		every_country = {
+			limit = { is_in_faction_with = GER NOT = { tag = GER tag = AUH tag = BUL tag = TUR } is_subject = no has_war_with = ENG }
+			leave_faction = yes
+			every_country = {
+				limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } is_faction_leader = yes }
+				white_peace = PREV
+			}
+			every_country = {
+				limit = { OR = { tag = GEO tag = ARM tag = AZR tag = BAK } OR = { is_faction_leader = yes is_in_faction = no } }
+				white_peace = PREV
+			}
+		}
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
+		}
+		leave_faction = yes
+		if = {
+			limit = {
+				any_country = {
+					NOT = { tag = GER }
+					is_socialist_country = yes
+					count_triggers = { amount = 9 controls_state = 66 controls_state = 763 controls_state = 68 controls_state = 64 controls_state = 65 controls_state = 60 controls_state = 829 controls_state = 51 controls_state = 42 controls_state = 54 controls_state = 52 controls_state = 830 controls_state = 61 controls_state = 67 controls_state = 59 controls_state = 57 controls_state = 85 }
+				}
+			}
+			set_country_flag = communist_occ
+			else = {
+				if = {
+					limit = {
+						any_country = {
+							NOT = { tag = GER }
+							is_socialist_country = yes
+							OR = { controls_state = 66 controls_state = 763 controls_state = 68 controls_state = 64 controls_state = 65 controls_state = 60 controls_state = 829 controls_state = 51 controls_state = 42 controls_state = 54 controls_state = 52 controls_state = 830 controls_state = 61 controls_state = 67 controls_state = 59 controls_state = 57 controls_state = 85 }
+						}
+					}
+					every_state = {
+						limit = {
+							is_owned_by = GER
+							CONTROLLER = { is_socialist_country = yes NOT = { tag = GER } }
+						}
+						DDR = { transfer_state = PREV }
 					}
 				}
 			}
 		}
-			add_ideas = neutral_foreign_policy_law
-			add_ideas = disarmed_nation
+		
+		add_ideas = disarmed_nation
+		if = {
+			limit = { NOT = { has_idea = undisturbed_isolation has_idea = isolation } }
+			add_ideas = civilian_economy
+		}
+		
 			every_country = {
 				limit = {
 					has_war_with = ROOT
@@ -2092,33 +2647,15 @@ country_event = {
 				}
 				ROOT = { white_peace = PREV }
 			}
-		every_country = {
-			limit = { is_subject_of = GER }
-			hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
-		}
+		
 		hidden_effect = {
 			country_event = { id = compiegne_armistice.-1 hours = 1 }
 		}
-		if = {
-			limit = { NOT = { has_idea = undisturbed_isolation has_idea = isolation } }
-			add_ideas = civilian_economy
+		1117 = {
+			owner = { transfer_state = 762 } #Каттовиц
 		}
-		hidden_effect = {
-			if = {
-				limit = { NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED } OR = { has_global_flag = WWI_AUH_HAS_CAPITULATED has_global_flag = WWI_TUR_HAS_CAPITULATED } }
-				BUL = { country_event = compiegne_armistice.2 }
-			}
-		}
-		BUL = {
-			if = {
-				limit = { has_idea = BUL_dependent_bulgarian_economy }
-				remove_ideas = BUL_dependent_bulgarian_economy
-			}
-		}
-		
-		if = {
-			limit = { has_idea = GER_dependent_bulgarian_economy }
-			remove_ideas = GER_dependent_bulgarian_economy
+		1115 = {
+			owner = { transfer_state = 86 } #Познань
 		}
 	}
 	option = {
