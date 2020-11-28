@@ -688,19 +688,7 @@ country_event = {
 			set_country_flag = Jukums_Vacietis_dead
 		}
 		add_stability = -0.05
-		create_corps_commander = { name = "Dmitry Magerovsky" id = 77434 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Semyon Kotlyarevsky" id = 77435 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Ivan Nudiga" id = 77436 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Grigory Oreshkin" id = 77437 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Sergey Mikhailov" id = 77438 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 } #Я (Д. Ю. Ладыгин) не уверен в имени этого человека
-		create_corps_commander = { name = "Pavel Lazimir" id = 77439 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 } #Я (Д. Ю. Ладыгин) не уверен был ли он на момент восстания левым эсером
-		create_corps_commander = { name = "Yakov Fishman" id = 77440 portrait_path = "gfx/leaders/SOV/Yakov_Fishman.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Yuriy Sablin" id = 77441 portrait_path = "gfx/leaders/SOV/Yuriy_Sablin.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Vasiliy Likhobadin" id = 77442 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Sergey Mstislavskiy" id = 77443 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Prosh Proshyan" id = 77444 portrait_path = "gfx/leaders/SOV/Prosh_Proshyan.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		create_corps_commander = { name = "Sergey Mstislavskiy" id = 77446 portrait_path = "gfx/leaders/RGR/Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
-		FRT = { every_unit_leader = { limit = {	OR = { has_id = 77423 } } set_nationality = RUS } }
+		add_left_esser_unit_leaders = yes
 		if = {
 			limit = { has_country_leader = { name = "Vladimir Lenin" ruling_only = no } }
 			kill_ideology_leader = communism
@@ -1943,10 +1931,10 @@ country_event = {
 			has_country_flag = RUS_left_SR_revolt_suppose
 			CCA = { has_country_flag = main_left_essers_is_here }
 		}
-		CCA = {
-			exists = yes
-			OR = { has_government = radical_socialism has_government = social_liberalism }
-		}
+		#CCA = {
+			#exists = yes
+			#OR = { has_government = radical_socialism has_government = social_liberalism }
+		#}
 	}
 	
 	immediate = {
@@ -1995,13 +1983,28 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			every_state = {
-				limit = {
-					is_owned_by = RUS
-					is_in_home_area = yes
-					any_neighbor_state = { is_controlled_by = CCA }
+			if = {
+				limit = { any_neighbor_country = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS } }
+				every_state = {
+					limit = {
+						is_owned_by = RUS
+						is_controlled_by = RUS
+						is_in_home_area = yes
+						any_neighbor_state = { CONTROLLER = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS } }
+					}
+					save_event_target_as = RUS_state_mutiny_VLG
 				}
-				save_event_target_as = RUS_state_mutiny_VLG
+			}
+			else = {
+				every_state = {
+					limit = {
+						is_owned_by = RUS
+						is_controlled_by = RUS
+						is_in_home_area = yes
+						any_neighbor_state = { NOT = { is_owned_by = RUS is_controlled_by = RUS } }
+					}
+					save_event_target_as = RUS_state_mutiny_VLG
+				}
 			}
 			every_unit_leader = { limit = { OR = { has_id = 19188 } } retire = yes }
 		}
@@ -2010,46 +2013,41 @@ country_event = {
 	option = {
 		name = rcw_bolsheviks.73.a
 		if = {
-			limit = { controls_state = 250 }
+			limit = { controls_state = 250 any_state = { region = 40 NOT = { is_controlled_by = RUS } CONTROLLER = { has_war_with = RUS } } }
+			every_state = {
+				limit = {
+					OR = {
+						state = 239
+						state = 250
+						state = 251
+						state = 1070
+						state = 1071
+						state = 1072
+						state = 401
+						state = 217
+						state = 813
+						state = 815
+						state = 237
+						state = 236
+						state = 407
+						state = 406
+						state = 402
+						state = 587
+						state = 652
+						state = 651
+						state = 1072
+						state = 1069
+						state = 1068
+					}
+					is_core_of = RUS
+				}
+				add_core_of = VLG
+			}
 			VLG = {
 				transfer_state = 250
-				every_state = {
-					limit = {
-						OR = {
-							state = 239
-							state = 250
-							state = 251
-							state = 1070
-							state = 1071
-							state = 1072
-							state = 401
-							state = 217
-							state = 813
-							state = 815
-							state = 237
-							state = 236
-							state = 407
-							state = 406
-							state = 402
-							state = 587
-							state = 652
-							state = 651
-							state = 1072
-							state = 1069
-							state = 1068
-						}
-					}
-					add_core_of = VLG
-				}
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						is_controlled_by = CCA
-					}
-					add_core_of = VLG
-				}
-				create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { dictator } }
+				create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { warmonger isolationist_revolutionary } }
 				set_politics = { ruling_party = radical_socialism elections_allowed = no }
+				load_focus_tree = Muravyov_mutiny_focus
 				REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = VLG } }
 				add_ideas = military_dictatorship_gov_form
 				add_ideas = federal_gov_terr
@@ -2057,19 +2055,12 @@ country_event = {
 				add_ideas = allow_one_party_law
 				add_ideas = ideological_expansion_law
 				add_ideas = workers_control_law
-				add_ideas = war_economy
-				add_ideas = extensive_conscription
+				add_ideas = low_economic_mobilisation
+				add_ideas = volunteer_only
+				add_ideas = RUS_new_red_army_idea
+				add_ideas = weak_centralization_idea
+				add_ideas = VLG_sympathy_of_the_peasants
 				inherit_technology = RUS
-				add_equipment_to_stockpile = {
-					type = infantry_equipment_great_war
-					amount = 5000
-					producer = RUS
-				}
-				add_equipment_to_stockpile = {
-					type = support_equipment_1
-					amount = 300
-					producer = RUS
-				}
 				remove_all_foreing_locked_templates_from_liberated_country = yes
 				division_template = {
 					name = "Pekhotnaya brigada"
@@ -2085,30 +2076,17 @@ country_event = {
 						cavalry = { x = 0 y = 1 }
 					}
 				}
-				random_owned_state = {
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
+				RUS = {
+					transfer_units_fraction= {
+						target = VLG
+						size = 0.1
+						stockpile_ratio = 0.1
+						army_ratio = 0.1
+						navy_ratio = 0.0
+						air_ratio = 0.0
+						keep_unit_leaders_trigger = {
+							always = yes
+						}
 					}
 				}
 				declare_war_on = {
@@ -2122,10 +2100,10 @@ country_event = {
 						type = annex_everything
 					}
 				}
-				if = {
-					limit = { CCA = { exists = yes OR = { has_government = radical_socialism has_government = social_liberalism } } }
-					CCA = { country_event = { id = rcw_bolsheviks.74 days = 1 } }
-				}
+				#if = {
+					#limit = { CCA = { exists = yes OR = { has_government = radical_socialism has_government = social_liberalism } } }
+					#CCA = { country_event = { id = rcw_bolsheviks.74 days = 1 } }
+				#}
 				hidden_effect = {
 					every_country = {
 						limit = {
@@ -2142,17 +2120,9 @@ country_event = {
 				}
 			}
 			else = {
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						is_in_home_area = yes
-						any_neighbor_state = { is_controlled_by = CCA }
-					}
-					save_event_target_as = RUS_state_mutiny_VLG
-				}
 				VLG = {
 				transfer_state = event_target:RUS_state_mutiny_VLG
-				every_state = {
+				random_state = {
 					limit = {
 						OR = {
 							state = event_target:RUS_state_mutiny_VLG
@@ -2162,41 +2132,14 @@ country_event = {
 				}
 				every_state = {
 					limit = {
-						OR = {
-							state = 239
-							state = 250
-							state = 251
-							state = 1070
-							state = 1071
-							state = 1072
-							state = 401
-							state = 217
-							state = 813
-							state = 815
-							state = 237
-							state = 236
-							state = 407
-							state = 406
-							state = 402
-							state = 587
-							state = 652
-							state = 651
-							state = 1072
-							state = 1069
-							state = 1068
-						}
-					}
-					add_core_of = VLG
-				}
-				every_state = {
-					limit = {
 						is_owned_by = RUS
-						is_controlled_by = CCA
+						is_controlled_by = VLG
 					}
 					add_core_of = VLG
 				}
 				create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { dictator } }
 				set_politics = { ruling_party = radical_socialism elections_allowed = no }
+				load_focus_tree = Muravyov_mutiny_focus
 				REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = VLG } }
 				add_ideas = military_dictatorship_gov_form
 				add_ideas = federal_gov_terr
@@ -2204,8 +2147,9 @@ country_event = {
 				add_ideas = allow_one_party_law
 				add_ideas = ideological_expansion_law
 				add_ideas = workers_control_law
-				add_ideas = war_economy
-				add_ideas = extensive_conscription
+				add_ideas = low_economic_mobilisation
+				add_ideas = volunteer_only
+				add_ideas = RUS_new_red_army_idea
 				inherit_technology = RUS
 				add_equipment_to_stockpile = {
 					type = infantry_equipment_great_war
@@ -2232,30 +2176,17 @@ country_event = {
 						cavalry = { x = 0 y = 1 }
 					}
 				}
-				random_owned_state = {
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
+				RUS = {
+					transfer_units_fraction= {
+						target = VLG
+						size = 0.1
+						stockpile_ratio = 0.1
+						army_ratio = 0.1
+						navy_ratio = 0.0
+						air_ratio = 0.0
+						keep_unit_leaders_trigger = {
+							always = yes
+						}
 					}
 				}
 				declare_war_on = {
@@ -2287,293 +2218,6 @@ country_event = {
 						set_THIS_country_non_recognize_PREV = yes
 					}
 				}
-			}
-			}
-		}
-	}
-	
-	option = {
-		name = rcw_bolsheviks.73.b
-		if = {
-			limit = { controls_state = 250 }
-			VLG = {
-				transfer_state = 250
-				every_state = {
-					limit = {
-						OR = {
-							state = 239
-							state = 250
-							state = 251
-							state = 1070
-							state = 1071
-							state = 1072
-							state = 401
-							state = 217
-							state = 813
-							state = 815
-							state = 237
-							state = 236
-							state = 407
-							state = 406
-							state = 402
-							state = 587
-							state = 652
-							state = 651
-							state = 1072
-							state = 1069
-							state = 1068
-						}
-					}
-					add_core_of = VLG
-				}
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						is_controlled_by = CCA
-					}
-					add_core_of = VLG
-				}
-				create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { dictator } }
-				set_politics = { ruling_party = radical_socialism elections_allowed = no }
-				REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = VLG } }
-				add_ideas = military_dictatorship_gov_form
-				add_ideas = federal_gov_terr
-				add_ideas = local_assembly_decisions_b_law
-				add_ideas = allow_one_party_law
-				add_ideas = ideological_expansion_law
-				add_ideas = workers_control_law
-				add_ideas = war_economy
-				add_ideas = extensive_conscription
-				inherit_technology = RUS
-				add_equipment_to_stockpile = {
-					type = infantry_equipment_great_war
-					amount = 5000
-					producer = RUS
-				}
-				add_equipment_to_stockpile = {
-					type = support_equipment_1
-					amount = 300
-					producer = RUS
-				}
-				remove_all_foreing_locked_templates_from_liberated_country = yes
-				division_template = {
-					name = "Pekhotnaya brigada"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-					}
-				}
-				division_template = {
-					name = "Kavaleriyskaya brigada"
-					regiments = {
-						cavalry = { x = 0 y = 0 }
-						cavalry = { x = 0 y = 1 }
-					}
-				}
-				random_owned_state = {
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-				}
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
-				}
-				every_country = {
-					limit = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS NOT = { original_tag = CCA has_government = social_liberalism } }
-					declare_war_on = {
-						target = VLG
-						type = annex_everything
-					}
-				}
-				if = {
-					limit = { CCA = { exists = yes OR = { has_government = radical_socialism has_government = social_liberalism } } }
-					CCA = { country_event = { id = rcw_bolsheviks.74 days = 1 } }
-				}
-				hidden_effect = {
-					every_country = {
-						limit = {
-							NOT = {
-								tag = PREV
-								is_any_former_russian_empire_country = yes
-								former_russian_empire_baltic_states_country = yes
-								has_war_with = PREV
-								is_in_faction_with = PREV
-							}
-						}
-						set_THIS_country_non_recognize_PREV = yes
-					}
-				}
-				change_tag_from = RUS
-			}
-			else = {
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						is_in_home_area = yes
-						any_neighbor_state = { is_controlled_by = CCA }
-					}
-					save_event_target_as = RUS_state_mutiny_VLG
-				}
-				VLG = {
-				transfer_state = event_target:RUS_state_mutiny_VLG
-				every_state = {
-					limit = {
-						OR = {
-							state = event_target:RUS_state_mutiny_VLG
-						}
-					}
-					add_core_of = VLG
-				}
-				every_state = {
-					limit = {
-						OR = {
-							state = 239
-							state = 250
-							state = 251
-							state = 1070
-							state = 1071
-							state = 1072
-							state = 401
-							state = 217
-							state = 813
-							state = 815
-							state = 237
-							state = 236
-							state = 407
-							state = 406
-							state = 402
-							state = 587
-							state = 652
-							state = 651
-							state = 1072
-							state = 1069
-							state = 1068
-						}
-					}
-					add_core_of = VLG
-				}
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						is_controlled_by = CCA
-					}
-					add_core_of = VLG
-				}
-				create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { dictator } }
-				set_politics = { ruling_party = radical_socialism elections_allowed = no }
-				REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = VLG } }
-				add_ideas = military_dictatorship_gov_form
-				add_ideas = federal_gov_terr
-				add_ideas = local_assembly_decisions_b_law
-				add_ideas = allow_one_party_law
-				add_ideas = ideological_expansion_law
-				add_ideas = workers_control_law
-				add_ideas = war_economy
-				add_ideas = extensive_conscription
-				inherit_technology = RUS
-				add_equipment_to_stockpile = {
-					type = infantry_equipment_great_war
-					amount = 5000
-					producer = RUS
-				}
-				add_equipment_to_stockpile = {
-					type = support_equipment_1
-					amount = 300
-					producer = RUS
-				}
-				remove_all_foreing_locked_templates_from_liberated_country = yes
-				division_template = {
-					name = "Pekhotnaya brigada"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-					}
-				}
-				division_template = {
-					name = "Kavaleriyskaya brigada"
-					regiments = {
-						cavalry = { x = 0 y = 0 }
-						cavalry = { x = 0 y = 1 }
-					}
-				}
-				random_owned_state = {
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Pekhotnaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-					create_unit = {
-						division = "name = \"Pekhotnaya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-						owner = VLG
-					}
-				}
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
-				}
-				every_country = {
-					limit = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS NOT = { original_tag = CCA has_government = social_liberalism } }
-					declare_war_on = {
-						target = VLG
-						type = annex_everything
-					}
-				}
-				if = {
-					limit = { CCA = { exists = yes OR = { has_government = radical_socialism has_government = social_liberalism } } }
-					CCA = { country_event = { id = rcw_bolsheviks.74 days = 1 } }
-				}
-				hidden_effect = {
-					every_country = {
-						limit = {
-							NOT = {
-								tag = PREV
-								is_any_former_russian_empire_country = yes
-								former_russian_empire_baltic_states_country = yes
-								has_war_with = PREV
-								is_in_faction_with = PREV
-							}
-						}
-						set_THIS_country_non_recognize_PREV = yes
-					}
-				}
-				change_tag_from = RUS
 			}
 			}
 		}
