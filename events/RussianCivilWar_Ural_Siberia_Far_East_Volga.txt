@@ -1146,6 +1146,15 @@ country_event = {
 				limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
 				load_oob = CCA_czechoslovak_legion
 			}
+			if = {
+				limit = { OCH = { exists = no } }
+				OCH = {
+					every_unit_leader = {
+						set_nationality = CCA
+					}
+				}
+				load_oob = OCH_cossaks
+			}
 			hidden_effect = {
 				every_country = {
 					limit = {
@@ -1370,6 +1379,15 @@ country_event = {
 			if = {
 				limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
 				load_oob = CCA_czechoslovak_legion
+			}
+			if = {
+				limit = { OCH = { exists = no } }
+				OCH = {
+					every_unit_leader = {
+						set_nationality = CCA
+					}
+				}
+				load_oob = OCH_cossaks
 			}
 			hidden_effect = {
 				every_country = {
@@ -2677,7 +2695,7 @@ country_event = {
 }
 	
 	
-#########Воткинское восстание######
+#########Ижевско-воткинское восстание######
 country_event = {
 	id = rcw_usfev.19
 	title = rcw_usfev.19.t
@@ -2685,33 +2703,129 @@ country_event = {
 
 	picture = GFX_report_event_rcw_votkinsk_uprising
 	
-	#trigger = {
-	#	NOT = { has_global_flag = RUS_civil_war_over }
-	#	tag = RUS
-	#	has_country_flag = RUS_Oktober_revolution_fired
-	#	CCA = {
-	#		NOT = { has_government = authoritarism }
-	#		OR = {
-	#			controls_state = 249
-	#			controls_state = 399
-	#		}
-	#	}
-	#}
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = { has_war_with = GER }
+		any_country = {
+			is_main_former_russian_empire_country_without_other_triggers = yes
+			has_war_with = RUS
+		}
+		NOT = { has_country_flag = IZH_yet_freedom }
+		controls_state = 399
+	}
 	
+	mean_time_to_happen = {
+		days = 150
+		modifier = {
+			factor = 0.5
+			OR = {
+				any_state = {
+					region = 40
+					NOT = { is_controlled_by = RUS }
+				}
+				surrender_progress > 0.3
+			}
+		}
+		modifier = {
+			factor = 0.05
+			OR = {
+				399 = {
+					any_neighbor_state = {
+						CONTROLLER = {
+							is_main_former_russian_empire_country_without_other_triggers = yes
+							has_war_with = RUS
+						}
+					}
+				}
+				surrender_progress > 0.6
+			}
+		}
+	}
 	
-	is_triggered_only = yes
+	fire_only_once = yes
+	
+	#is_triggered_only = yes
 	
 	option = {
 		name = rcw_usfev.19.a
-		CCA = {
-			transfer_state = 399
-			add_state_core = 399
-			load_oob = "CCA_rebel"
+		set_country_flag = IZH_yet_freedom
+		every_country = {
+			limit = {
+				is_main_former_russian_empire_country_without_other_triggers = yes
+				NOT = { tag = RUS }
+				any_state = {
+					region = 40
+					is_controlled_by = PREV
+				}
+			}
 			country_event = rcw_usfev.24
 		}
+		UDM = {
+			transfer_state = 399
+			set_cosmetic_tag = IZH
+			inherit_technology = RUS
+			load_oob = "IZH_rebel"
+			load_focus_tree = Izhevsk_uprising_focus
+			add_ideas = {
+				weak_centralization_idea
+				VLG_sympathy_of_the_peasants
+				IZH_factory-city
+				IZH_apathy_is_death
+				hyper_inflation_1
+				RUS_collapse_of_railway_system_1
+			}
+			create_country_leader = { name = "Nikolay Yevseyev" desc = RUS_Nikolay_Yevseyev_DESC picture = "gfx/leaders/UDM/Nikolay_Yevseyev.dds" ideology = social_liberalism_ideology traits = {  } }
+			country_event = { id = rcw_usfev.25 days = 1 }
+		}
+		declare_war_on = {
+			target = UDM
+			type = annex_everything
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.19.b
+		trigger = { is_ai = no }
+		set_country_flag = IZH_yet_freedom
+		every_country = {
+			limit = {
+				is_main_former_russian_empire_country_without_other_triggers = yes
+				NOT = { tag = RUS }
+				any_state = {
+					region = 40
+					is_controlled_by = PREV
+				}
+			}
+			country_event = rcw_usfev.24
+		}
+		UDM = {
+			transfer_state = 399
+			set_cosmetic_tag = IZH
+			inherit_technology = RUS
+			load_oob = "IZH_rebel"
+			load_focus_tree = Izhevsk_uprising_focus
+			add_ideas = {
+				weak_centralization_idea
+				VLG_sympathy_of_the_peasants
+				IZH_factory-city
+				IZH_apathy_is_death
+				hyper_inflation_1
+				RUS_collapse_of_railway_system_1
+			}
+			create_country_leader = { name = "Nikolay Yevseyev" desc = RUS_Nikolay_Yevseyev_DESC picture = "gfx/leaders/UDM/Nikolay_Yevseyev.dds" ideology = social_liberalism_ideology traits = {  } }
+			country_event = { id = rcw_usfev.25 days = 1 }
+		}
+		declare_war_on = {
+			target = UDM
+			type = annex_everything
+		}
+		UDM = { change_tag_from = RUS }
 	}
 }
 
+###Оповещалка для белых в Поволожье
 country_event = {
 	id = rcw_usfev.24
 	title = rcw_usfev.19.t
@@ -2722,7 +2836,29 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_usfev.19.a
+		name = rcw_usfev.24.a
+	}
+}
+
+###Сомнения (Радсоцы в Ижевске)
+country_event = {
+	id = rcw_usfev.25
+	title = rcw_usfev.25.t
+	desc = rcw_usfev.25.desc
+
+	picture = GFX_report_event_sov_redarm
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.25.a
+		add_stability = 0.01
+	}
+	
+	option = {
+		name = rcw_usfev.25.b
+		add_stability = -0.05
+		country_event = { id = rcw_usfev.183 days = 1 }
 	}
 }
 
@@ -9670,6 +9806,71 @@ country_event = {
 	}
 }
 
+###Мирная сдача власти###
+country_event = {
+	id = rcw_usfev.183
+	title = rcw_usfev.183.t
+	desc = rcw_usfev.183.desc
+
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.183.a
+		set_politics = {
+			ruling_party = radical_socialism
+			elections_allowed = no
+		}
+		create_country_leader = { name = "Semyon Soldatov" desc = RUS_Semyon_Soldatov_DESC picture = "gfx/leaders/generic_russia_10.dds" ideology = anarchist_syndicalism traits = { worker_and_peasant } }
+		every_country = {
+			limit = {
+				is_main_former_russian_empire_country_without_other_triggers = yes
+				NOT = { has_war_with = ROOT }
+				is_subject = no
+			}
+			declare_war_on = { target = ROOT type = annex_everything }
+		}
+	}
+}
+
+###Ижевские повстанцы на стороне белых без восстания###
+country_event = {
+	id = rcw_usfev.184
+	title = rcw_usfev.184.t
+	desc = rcw_usfev.184.desc
+
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		is_main_former_russian_empire_country_without_other_triggers = yes
+		has_war_with = RUS
+		RUS = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			NOT = { has_country_flag = IZH_yet_freedom }
+		}
+		controls_state = 399
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.184.a
+		RUS = { set_country_flag = IZH_yet_freedom }
+		if = {
+			limit = { has_government = social_liberalism }
+			load_oob = IZH_rebel
+		}
+		else = {
+			load_oob = IZH_rebel_small
+		}
+	}
+}
 
 # Союз с генералами у КОМУЧа
 country_event = {

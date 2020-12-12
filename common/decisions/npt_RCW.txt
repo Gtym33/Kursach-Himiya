@@ -659,6 +659,7 @@ foreign_politics = {
 			}
 		}
 		visible = {
+			NOT = { has_global_flag = RUS_civil_war_over }
 			is_subject = no
 			NOT = { has_war_with = CRI }
 			controls_state = 907
@@ -675,7 +676,7 @@ foreign_politics = {
 		available = {
 		}
 		icon = generic_political_discourse
-		fire_only_once = yes
+		
 		days_remove = 14
 		cost = 15
 		remove_effect = {
@@ -689,47 +690,50 @@ foreign_politics = {
 		}
 	}
 	
-	POL_historic_peace_with_bolsheviks = {
+	
+	RCW_RUS_POL_peace_POL_superiority = { #Rzeczpospolita from 1772
 
 		icon = generic_army_support
 
 		allowed = {
-			OR = {
-				original_tag = POL
-				original_tag = RUS
-			}
+			original_tag = RUS
 		}
 
 		available = {
-			OR = {
-				has_war_with = RUS
-				has_war_with = POL
+			POL = {
+				surrender_progress < 0.01
 			}
-			OR = {
-				POL = {
-					AND = {
-						surrender_progress > 0.01
-						surrender_progress < 0.4
+			custom_trigger_tooltip = {
+				tooltip = RCW_POL_RUS_peace_POL_superiority_trigger_tt
+				OR = {
+					count_triggers = {
+						amount = 3
+						12 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						206 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						202 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						241 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						242 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						209 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
 					}
-				}
-				RUS = {
-					AND = {
-						surrender_progress > 0.01
-						surrender_progress < 0.4
-					}
+					219 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					195 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
 				}
 			}
 		}
 		visible = {
 			NOT = { has_global_flag = RUS_civil_war_over }
-			OR = {
-				has_war_with = RUS
-				has_war_with = POL
-			}
-			NOT = { has_global_flag = POL_communist_peace_fired }
-			is_subject = no
+			has_war_with = POL
+			NOT = { has_global_flag = POL_RUS_peace_fired }
 			RUS = { is_subject = no }
 			POL = { is_subject = no }
+			OR = {
+				12 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				206 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				202 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				241 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				242 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				209 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+			}
 		}
 		
 		days_remove = 35
@@ -738,14 +742,20 @@ foreign_politics = {
 			factor = 10
 			modifier = {
 				factor = 0
-				OR = {
-					controls_state = 10
-					controls_state = 206
-					controls_state = 202
-					controls_state = 195
-					controls_state = 219
-					surrender_progress < 0.1
+				NOT = {
+					219 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					195 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
 				}
+				RUS = {
+					strength_ratio = {
+						tag = POL
+						ratio > 1.2
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POL_RUS_peace_delay
 			}
 		}
 		
@@ -765,51 +775,42 @@ foreign_politics = {
 		}
 		
 		remove_effect = {
-			
+			set_country_flag = {
+				flag = POL_RUS_peace_delay
+				days = 60
+				value = 1
+			}
 		}
 	}
 	
-	POL_poland_plus_peace_with_bolsheviks = {
+	RCW_RUS_POL_peace_POL_advantage = { #historic
 
 		icon = generic_army_support
 
 		allowed = {
-			OR = {
-				original_tag = POL
-				original_tag = RUS
-			}
+			original_tag = RUS
 		}
 
 		available = {
-			OR = {
-				has_war_with = RUS
-				has_war_with = POL
+			POL = {
+				surrender_progress < 0.05
 			}
-			AND = {
-				POL = {
-					surrender_progress < 0.4
-				}
-				RUS = {
-					OR = {
-						NOT = {
-							controls_state = 206
-							controls_state = 202
-						}
-						surrender_progress > 0.4
-					}
-				}
+			any_state = {
+				OWNER = { OR = { tag = RUS is_subject_of = RUS } }
+				OR = { is_core_of = POL is_claimed_by = POL }
+				CONTROLLER = { OR = { tag = POL is_subject_of = POL } }
 			}
 		}
 		visible = {
 			NOT = { has_global_flag = RUS_civil_war_over }
-			OR = {
-				has_war_with = RUS
-				has_war_with = POL
-			}
-			NOT = { has_global_flag = POL_communist_peace_fired }
-			is_subject = no
+			has_war_with = POL
+			NOT = { has_global_flag = POL_RUS_peace_fired }
 			RUS = { is_subject = no }
 			POL = { is_subject = no }
+			any_state = {
+				OR = { is_core_of = POL is_claimed_by = POL }
+				OWNER = { OR = { tag = RUS is_subject_of = RUS } }
+			}
 		}
 		
 		days_remove = 35
@@ -818,20 +819,21 @@ foreign_politics = {
 			factor = 10
 			modifier = {
 				factor = 0
+				tag = POL
 				OR = {
-					AND = {
-						tag = POL
-						controls_state = 195
-						controls_state = 219
-						surrender_progress < 0.3
-					}
-					AND = {
-						tag = RUS
-						controls_state = 195
-						controls_state = 219
-						surrender_progress < 0.5
-					}
+					219 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					195 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					12 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					206 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					202 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					241 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					242 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					209 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
 				}
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POL_RUS_peace_delay
 			}
 		}
 		
@@ -851,43 +853,38 @@ foreign_politics = {
 		}
 		
 		remove_effect = {
-			
+			set_country_flag = {
+				flag = POL_RUS_peace_delay
+				days = 60
+				value = 1
+			}
 		}
 	}
 	
-	POL_poland_minus_peace_with_bolsheviks = {
+	RCW_RUS_POL_peace_RUS_advantage = { #Kerzon line
 
 		icon = generic_army_support
 
 		allowed = {
-			OR = {
-				original_tag = POL
-				original_tag = RUS
-			}
+			original_tag = RUS
 		}
 
 		available = {
-			OR = {
-				has_war_with = RUS
-				has_war_with = POL
+			POL = {
+				surrender_progress > 0.25
 			}
-			AND = {
-				POL = {
-					surrender_progress > 0.4
-				}
-				RUS = {
-					surrender_progress < 0.4
+			NOT = {
+				any_state = {
+					OWNER = { OR = { tag = RUS is_subject_of = RUS } }
+					OR = { is_core_of = POL is_claimed_by = POL }
+					CONTROLLER = { OR = { tag = POL is_subject_of = POL } }
 				}
 			}
 		}
 		visible = {
 			NOT = { has_global_flag = RUS_civil_war_over }
-			OR = {
-				has_war_with = RUS
-				has_war_with = POL
-			}
-			NOT = { has_global_flag = POL_communist_peace_fired }
-			is_subject = no
+			has_war_with = POL
+			NOT = { has_global_flag = POL_RUS_peace_fired }
 			RUS = { is_subject = no }
 			POL = { is_subject = no }
 		}
@@ -898,16 +895,18 @@ foreign_politics = {
 			factor = 10
 			modifier = {
 				factor = 0
-				AND = {
-					tag = POL
-					surrender_progress < 0.7
+				OR = {
+					controls_state = 10
+					controls_state = 206
+					controls_state = 202
+					controls_state = 195
+					controls_state = 219
+					surrender_progress < 0.1
 				}
-				AND = {
-					tag = RUS
-					POL = {
-						surrender_progress > 0.5
-					}
-				}
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POL_RUS_peace_delay
 			}
 		}
 		
@@ -927,7 +926,254 @@ foreign_politics = {
 		}
 		
 		remove_effect = {
+			set_country_flag = {
+				flag = POL_RUS_peace_delay
+				days = 60
+				value = 1
+			}
+		}
+	}
+	
+	RCW_POL_RUS_peace_POL_superiority = { #Rzeczpospolita from 1772
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = POL
+		}
+
+		available = {
+			POL = {
+				surrender_progress < 0.01
+			}
+			custom_trigger_tooltip = {
+				tooltip = RCW_POL_RUS_peace_POL_superiority_trigger_tt
+				OR = {
+					count_triggers = {
+						amount = 3
+						12 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						206 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						202 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						241 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						242 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+						209 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					}
+					219 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					195 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+				}
+			}
+		}
+		visible = {
+			NOT = { has_global_flag = RUS_civil_war_over }
+			has_war_with = RUS
+			NOT = { has_global_flag = POL_RUS_peace_fired }
+			RUS = { is_subject = no }
+			POL = { is_subject = no }
+			OR = {
+				12 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				206 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				202 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				241 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				242 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+				209 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } }
+			}
+		}
+		
+		days_remove = 35
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				NOT = {
+					219 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					195 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+				}
+				RUS = {
+					strength_ratio = {
+						tag = POL
+						ratio > 1.2
+					}
+				}
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POL_RUS_peace_delay
+			}
+		}
+		
+		modifier = {
 			
+		}
+		
+		complete_effect = {
+			if = {
+				limit = { tag = POL }
+				RUS = { country_event = { id = poland.11 days = 1 } }
+			}
+			if = {
+				limit = { tag = RUS }
+				POL = { country_event = { id = poland.11 days = 1 } }
+			}
+		}
+		
+		remove_effect = {
+			set_country_flag = {
+				flag = POL_RUS_peace_delay
+				days = 60
+				value = 1
+			}
+		}
+	}
+	
+	RCW_POL_RUS_peace_POL_advantage = { #historic
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = POL
+		}
+
+		available = {
+			POL = {
+				surrender_progress < 0.05
+			}
+			any_state = {
+				OWNER = { OR = { tag = RUS is_subject_of = RUS } }
+				OR = { is_core_of = POL is_claimed_by = POL }
+				CONTROLLER = { OR = { tag = POL is_subject_of = POL } }
+			}
+		}
+		visible = {
+			NOT = { has_global_flag = RUS_civil_war_over }
+			has_war_with = RUS
+			NOT = { has_global_flag = POL_RUS_peace_fired }
+			RUS = { is_subject = no }
+			POL = { is_subject = no }
+			any_state = {
+				OR = { is_core_of = POL is_claimed_by = POL }
+				OWNER = { OR = { tag = RUS is_subject_of = RUS } }
+			}
+		}
+		
+		days_remove = 35
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				tag = POL
+				OR = {
+					219 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					195 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					12 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					206 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					202 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					241 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					242 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+					209 = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } }
+				}
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POL_RUS_peace_delay
+			}
+		}
+		
+		modifier = {
+			
+		}
+		
+		complete_effect = {
+			if = {
+				limit = { tag = POL }
+				RUS = { country_event = { id = poland.12 days = 1 } }
+			}
+			if = {
+				limit = { tag = RUS }
+				POL = { country_event = { id = poland.12 days = 1 } }
+			}
+		}
+		
+		remove_effect = {
+			set_country_flag = {
+				flag = POL_RUS_peace_delay
+				days = 60
+				value = 1
+			}
+		}
+	}
+	
+	RCW_POL_RUS_peace_RUS_advantage = { #Kerzon line
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = POL
+		}
+
+		available = {
+			POL = {
+				surrender_progress > 0.25
+			}
+			NOT = {
+				any_state = {
+					OWNER = { OR = { tag = RUS is_subject_of = RUS } }
+					OR = { is_core_of = POL is_claimed_by = POL }
+					CONTROLLER = { OR = { tag = POL is_subject_of = POL } }
+				}
+			}
+		}
+		visible = {
+			NOT = { has_global_flag = RUS_civil_war_over }
+			has_war_with = RUS
+			NOT = { has_global_flag = POL_RUS_peace_fired }
+			RUS = { is_subject = no }
+			POL = { is_subject = no }
+		}
+		
+		days_remove = 35
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				OR = {
+					controls_state = 10
+					controls_state = 206
+					controls_state = 202
+					controls_state = 195
+					controls_state = 219
+					surrender_progress < 0.1
+				}
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POL_RUS_peace_delay
+			}
+		}
+		
+		modifier = {
+			
+		}
+		
+		complete_effect = {
+			if = {
+				limit = { tag = POL }
+				RUS = { country_event = { id = poland.13 days = 1 } }
+			}
+			if = {
+				limit = { tag = RUS }
+				POL = { country_event = { id = poland.13 days = 1 } }
+			}
+		}
+		
+		remove_effect = {
+			set_country_flag = {
+				flag = POL_RUS_peace_delay
+				days = 60
+				value = 1
+			}
 		}
 	}
 	
@@ -990,6 +1236,10 @@ foreign_politics = {
 						RUS = { surrender_progress > 0.2 }
 					}
 				}
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POL_RUS_peace_delay
 			}
 		}
 		
