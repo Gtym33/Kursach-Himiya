@@ -4108,3 +4108,59 @@ country_event = {
 		hidden_effect = { if = { limit = { RUS = { has_country_flag = RGR_dont_exists } } RUS = { country_event = { id = rcw_g.4 days = 60 random = 960 } clr_country_flag = RGR_dont_exists } } }
 	}
 }
+
+###Разруха таймер###
+country_event = {
+	id = rcw_g.32
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = { has_global_flag = RUS_devastation_fired }
+	}
+	
+	option = {
+		if = {
+			limit = {
+				NOT = {
+					has_global_flag = RUS_civil_war_over
+				}
+			}
+			random_country = {
+				country_event = { id = rcw_g.32 days = 7 }
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_global_flag = RUS_civil_war_over
+					has_global_flag = RUS_devastation_fired
+				}
+				OR = {
+					RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+					has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+					has_global_flag = RUS_Kornilov_civil_war
+				}
+			}
+			add_to_variable = { var = global.RUS_devastation value = 1 }
+		}
+		if = {
+			limit = {
+				NOT = { has_global_flag = RUS_civil_war_over }
+				check_variable = { global.RUS_devastation > 312 }
+			}
+			set_global_flag = RUS_devastation_fired
+			every_country = {
+				limit = {
+					has_war = yes
+					is_any_former_russian_empire_country = yes
+					NOT = { tag = RGR }
+				}
+				country_event = rcw.102
+				#news_event
+			}
+		}
+	}
+}
