@@ -949,6 +949,84 @@ country_event = {
 	}
 }
 
+# Бросить Финляндию?
+country_event = {
+	id = russian_ovrthrw_of_mon.25
+	title = russian_ovrthrw_of_mon.25.t
+	desc = russian_ovrthrw_of_mon.25.d
+	picture = GFX_report_event_provisional_government_wins
+	
+	trigger = {
+		tag = RUS
+		has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_war_with = KRN
+		FIN = { is_subject_of = RUS }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = russian_ovrthrw_of_mon.24.a
+		add_stability = 0.03
+	}
+	
+	option = {
+		name = russian_ovrthrw_of_mon.24.b
+		add_manpower = 25000
+		FIN = { country_event = finland.23 }
+	}
+}
+
+# Перенос ставки в Сибирь?
+country_event = {
+	id = russian_ovrthrw_of_mon.26
+	title = russian_ovrthrw_of_mon.26.t
+	desc = russian_ovrthrw_of_mon.26.d
+	picture = GFX_report_event_provisional_government_wins
+	
+	trigger = {
+		tag = RUS
+		always = no
+		has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+		NOT = { has_global_flag = RUS_civil_war_over }
+		any_state = {
+			is_capital = yes
+			any_neighbor_state = {
+				NOT = { is_controlled_by = RUS }
+			}
+		}
+		NOT = { has_country_flag = stavka_is_lost }
+		SIB = { exists = no }
+		has_war = yes
+		controls_state = 653
+		has_completed_focus = RUS_mon_on_w_siberian_mobilization
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = russian_ovrthrw_of_mon.24.a
+		add_stability = 0.1
+		add_war_support = 0.1
+	}
+	
+	option = {
+		name = russian_ovrthrw_of_mon.24.b
+		set_capital = 653
+		add_stability = -0.1
+		add_war_support = -0.1
+	}
+}
+
 # Всероссийский земский собор
 country_event = {
 	id = russian_ovrthrw_of_mon.31
@@ -1064,6 +1142,7 @@ country_event = {
 	}
 	option = { #Парламентская Республика
 		name = russian_ovrthrw_of_mon.32.c
+		trigger = { NOT = { has_country_flag = RUS_duma_dissolved } }
 		country_event = { id = russian_ovrthrw_of_mon.33 days = 2 }
 		if = {
 			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
@@ -1088,6 +1167,7 @@ country_event = {
 	}
 	option = { #Президентская Республика
 		name = russian_ovrthrw_of_mon.32.d
+		trigger = { NOT = { has_country_flag = RUS_duma_dissolved } }
 		country_event = { id = russian_ovrthrw_of_mon.33 days = 2 }
 		if = {
 			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
@@ -1112,6 +1192,7 @@ country_event = {
 	}
 	option = { #Верховный правитель
 		name = russian_ovrthrw_of_mon.32.e
+		trigger = { NOT = { has_country_flag = RUS_duma_dissolved } }
 		country_event = { id = russian_ovrthrw_of_mon.33 days = 2 }
 		if = {
 			limit = { has_idea = Nikolay_Alexandrovich_Romanov_army_chief }
@@ -1497,7 +1578,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 1
+		days = 0
 	}
 	
 	fire_only_once = yes
@@ -1980,6 +2061,7 @@ country_event = {
 	picture = GFX_report_event_long_feb_petrograd_commune
 	
 	trigger = {
+		always = no
 		tag = RUS
 		has_country_flag = RUS_monarchy_not_fall
 		NOT = { has_country_flag = RUS_monarchy_ultimatum_of_overtrow_fired }
@@ -2011,7 +2093,30 @@ country_event = {
 				set_cosmetic_tag = KRN_Petrograd_commune
 				set_party_name = { ideology = despotism long_name = KRN_despotism_party_commune_long name = KRN_despotism_party_commune }
 				set_party_name = { ideology = national_syndicalism long_name = KRN_national_syndicalism_party_commune_long name = KRN_national_syndicalism_party_commune }
-				add_ideas = RUS_red_guards
+				add_ideas = {
+					RUS_red_guards
+					KRN_volyntsi
+					KRN_sailors
+					KRN_anarchists
+					#RUS_Order_N_1_4
+					decentralization_of_goverment
+					decentralization_of_army
+					peasant_and_land_and_bread_question_0_5
+				}
+				if = {
+					limit = {
+						RUS = {
+							OR = {
+								has_country_flag = RUS_duma_dissolved
+								has_government = fascism
+								has_government = national_syndicalism
+								has_completed_focus = RUS_mobilization_of_monarchical_forces
+								has_completed_focus = RUS_mon_on_w_military_dictatorship
+							}
+						}
+					}
+					add_ideas = KRN_victory_or_death
+				}
 				if = {
 					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_1 } }
 					add_ideas = RUS_collapse_of_railway_system_1
@@ -2114,6 +2219,35 @@ country_event = {
 					traits = { guerilla_fighter }
 					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
 				}
+				create_corps_commander = {
+					name = "Timofey Kirpichnikov"
+					id = 77432
+					portrait_path = "gfx/leaders/RUS/Timofey_Kirpichnikov.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				create_corps_commander = {
+					name = "Vladimir Shatov"
+					id = 77433
+					portrait_path = "gfx/leaders/RUS/Vladimir_Shatov.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				create_corps_commander = {
+					name = "Aleksey Borovoy"
+					id = 77434
+					portrait_path = "gfx/leaders/RUS/Aleksey_Borovoy.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				create_corps_commander = {
+					name = "Iustin Zhuk"
+					id = 77435
+					portrait_path = "gfx/leaders/RUS/Iustin_Zhuk.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				FRT = { every_unit_leader = { limit = {	OR = { has_id = 77423 has_id = 77424 } } set_nationality = KRN } }
 
 				create_country_leader = { name = "Petrosovet" desc = RUS_Petrosovet_DESC picture = "gfx/leaders/RGR/Free_Soviets.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
 				create_country_leader = {
@@ -2410,6 +2544,7 @@ country_event = {
 		name = russian_ovrthrw_of_mon.98.a
 		add_war_support = -0.05
 		remove_one_priziv_from_army = yes
+		set_country_flag = stavka_is_lost
 	}
 }
 # Отношение к новой Русской революции
@@ -2667,10 +2802,10 @@ country_event = {
 		OR = {
 			has_country_flag = RUS_mon_loyal_generals
 			has_completed_focus = RUS_mon_on_w_military_dictatorship
-			AND = {
+			#AND = {
 				has_completed_focus = RUS_mon_on_w_Great_Zemsky_Sobor
-				NOT = { has_country_flag = sobor_in_progress }
-			}
+				#NOT = { has_country_flag = sobor_in_progress }
+			#}
 			has_completed_focus = RUS_regent_mikhail
 			has_war = no
 		}
@@ -2688,7 +2823,30 @@ country_event = {
 				set_cosmetic_tag = KRN_Petrograd_commune
 				set_party_name = { ideology = despotism long_name = KRN_despotism_party_commune_long name = KRN_despotism_party_commune }
 				set_party_name = { ideology = national_syndicalism long_name = KRN_national_syndicalism_party_commune_long name = KRN_national_syndicalism_party_commune }
-				add_ideas = RUS_red_guards
+				add_ideas = {
+					RUS_red_guards
+					KRN_volyntsi
+					KRN_sailors
+					KRN_anarchists
+					#RUS_Order_N_1_4
+					decentralization_of_goverment
+					decentralization_of_army
+					peasant_and_land_and_bread_question_0_5
+				}
+				if = {
+					limit = {
+						RUS = {
+							OR = {
+								has_country_flag = RUS_duma_dissolved
+								has_government = fascism
+								has_government = national_syndicalism
+								has_completed_focus = RUS_mobilization_of_monarchical_forces
+								has_completed_focus = RUS_mon_on_w_military_dictatorship
+							}
+						}
+					}
+					add_ideas = KRN_victory_or_death
+				}
 				if = {
 					limit = { RUS = { has_idea = RUS_collapse_of_railway_system_1 } }
 					add_ideas = RUS_collapse_of_railway_system_1
@@ -2791,6 +2949,35 @@ country_event = {
 					traits = { guerilla_fighter }
 					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
 				}
+				create_corps_commander = {
+					name = "Timofey Kirpichnikov"
+					id = 77432
+					portrait_path = "gfx/leaders/RUS/Timofey_Kirpichnikov.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				create_corps_commander = {
+					name = "Vladimir Shatov"
+					id = 77433
+					portrait_path = "gfx/leaders/RUS/Vladimir_Shatov.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				create_corps_commander = {
+					name = "Aleksey Borovoy"
+					id = 77434
+					portrait_path = "gfx/leaders/RUS/Aleksey_Borovoy.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				create_corps_commander = {
+					name = "Iustin Zhuk"
+					id = 77435
+					portrait_path = "gfx/leaders/RUS/Iustin_Zhuk.dds"
+					traits = { guerilla_fighter }
+					skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1
+				}
+				FRT = { every_unit_leader = { limit = {	OR = { has_id = 77423 has_id = 77424 } } set_nationality = KRN } }
 
 				create_country_leader = { name = "Petrosovet" desc = RUS_Petrosovet_DESC picture = "gfx/leaders/RGR/Free_Soviets.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
 				create_country_leader = {
@@ -2798,7 +2985,7 @@ country_event = {
 					desc = RUS_Alexandr_Shlyapnikov_DESC
 					picture="gfx/leaders/SOV/Alexandr_Shlyapnikov.dds"
 					expire="1935.1.1"
-					ideology = leninism
+					ideology = syndicalism
 					traits={ }
 				}
 				create_country_leader = {

@@ -4,6 +4,31 @@
 
 add_namespace = petrograd_commune
 
+# Сверхрасширение
+country_event = {
+	id = petrograd_commune.-1
+	title = petrograd_commune.-1.t
+	desc = petrograd_commune.-1.desc
+	picture = GFX_report_event_sov_cities_fights
+	
+	trigger = {
+		tag = KRN
+		num_of_controlled_states > 12
+		NOT = { has_idea = decentralization_of_goverment }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.-1.a
+		add_ideas = KRN_administrative_overload_1
+	}
+}
+
 # Отношение к войне
 country_event = {
 	id = petrograd_commune.0
@@ -164,12 +189,12 @@ country_event = {
 			}
 		}
 		RUS = {
-		if = {
-			limit = { has_completed_focus = RUS_purification_of_imperial_army }
-				add_timed_idea = { idea = disorganization_of_army days = 14 }
-				else = {
+			if = {
+				limit = { has_completed_focus = RUS_purification_of_imperial_army }
 					add_timed_idea = { idea = disorganization_of_army days = 28 }
-				}
+					else = {
+						add_timed_idea = { idea = disorganization_of_army days = 42 }
+					}
 			}
 			remove_one_priziv_from_army = yes
 			set_province_controller = 6380
@@ -196,8 +221,13 @@ country_event = {
 	id = petrograd_commune.4
 	
 	hidden = yes
-
+	
+	trigger = {
+		KRN = { exists = yes }
+	}
+	
 	is_triggered_only = yes
+	
 	option = {
 		if = {
 			limit = { has_country_flag = pcf_1 }
@@ -458,12 +488,12 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
-		radical_socialism > var:party_popularity@national_syndicalism
+		check_variable = { party_popularity@radical_socialism > party_popularity@national_syndicalism }
 	}
 	
 	option = {
 		name = petrograd_commune.6.a
-		remove_national_syndicalism_leader = yes
+		retire_ideology_leader = national_syndicalism
 		create_country_leader = {
 			name = "Pavel Dybenko"
 			desc = SOV_Pavel_Dybenko_DESC
@@ -527,6 +557,7 @@ country_event = {
 		}
 	}
 }
+
 country_event = {
 	id = petrograd_commune.8
 	title = petrograd_commune.8.t
@@ -637,6 +668,12 @@ country_event = {
 
 	is_triggered_only = yes
 	
+	immediate = {
+		hidden_effect = {
+			remove_ideas = decentralization_of_army
+		}
+	}
+	
 	option = {
 		name = petrograd_commune.12.a
 		add_political_power = -50
@@ -725,6 +762,32 @@ country_event = {
 	}
 }
 
+#Взятие Хельсинки за коммуну до фокуса
+country_event = {
+	id = petrograd_commune.20
+	title = petrograd_commune.20.t
+	desc = petrograd_commune.20.desc
+	picture = GFX_report_event_cimmerman_telegramm
+	
+	trigger = {
+		tag = KRN
+		has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_war_with = FIN
+		FIN = { is_subject_of = RUS }
+		controls_state = 111
+	}
+
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = petrograd_commune.20.a
+		add_war_support = 0.05
+		complete_national_focus	= KRN_support_finnish_seim
+	}
+}
 
 # Красные в Финляндии поддерживают революцию, поэтому мы поставим военную диктатуру (Россия)
 country_event = {
@@ -1067,6 +1130,7 @@ country_event = {
 	
 	trigger = {
 		tag = KRN
+		date > 1917.5.28
 		has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 		OR = {
 			has_idea = foodstuffs_supply_crisis_1
@@ -1075,7 +1139,10 @@ country_event = {
 			has_idea = foodstuffs_supply_crisis_4
 			has_idea = foodstuffs_supply_crisis_5
 		}
-		NOT = { has_global_flag = RUS_civil_war_over }
+		NOT = {
+			has_global_flag = RUS_civil_war_over
+			has_country_flag = KRN_blockade_not_ability_to_fire
+		}
 		OR = {
 			num_of_controlled_states < 30
 			NOT = { any_owned_state = { has_state_category = town } }
@@ -1085,79 +1152,14 @@ country_event = {
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
-		days = 180
-	}
-	
-	immediate = {
-		hidden_effect = {
-			if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
-			if = {
-				limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
-					add_ideas =  mutiny_3
-					country_event = stability.23
-				else_if = {
-					limit = { has_idea = mutiny_1 }
-						remove_ideas = mutiny_1
-						add_ideas =  mutiny_3
-				}
-				else_if = {
-					limit = { has_idea = mutiny_2 }
-						remove_ideas = mutiny_2
-						add_ideas =  mutiny_3
-				}
-				else_if = {
-					limit = { has_idea = mutiny_3 }
-						add_stability = -0.10
-						add_war_support = -0.20
-				}
-			}
-		}
+		days = 100
 	}
 	
 	option = {
 		name = petrograd_commune.25.a
-		if = {
-			limit = { has_government = radical_socialism }
-			add_popularity = {
-				ideology = radical_socialism
-				popularity = -0.25
-			}
-		}
-		if = {
-			limit = { has_government = communism }
-			add_popularity = {
-				ideology = communism
-				popularity = -0.25
-			}
-		}
-		if = {
-			limit = { has_government = social_democracy }
-			add_popularity = {
-				ideology = social_democracy
-				popularity = -0.25
-			}
-		}
-		if = {
-			limit = { has_government = social_liberalism }
-			add_popularity = {
-				ideology = social_liberalism
-				popularity = -0.25
-			}
-		}
-		if = {
-			limit = { has_government = market_liberalism }
-			add_popularity = {
-				ideology = market_liberalism
-				popularity = -0.25
-			}
-		}
-		if = {
-			limit = { has_government = national_syndicalism }
-			add_popularity = {
-				ideology = national_syndicalism
-				popularity = -0.25
-			}
-		}
+		set_temp_variable = { ruling_party_popularity_change = -0.25 }
+		add_ruling_party_popularity = yes
+		clear_variable = ruling_party_popularity_change
 		remove_ideas = {
 			foodstuffs_supply_crisis_1
 			foodstuffs_supply_crisis_2
@@ -1166,9 +1168,10 @@ country_event = {
 			foodstuffs_supply_crisis_5
 		}
 		add_ideas = foodstuffs_supply_crisis_5
-		add_political_power = -500
-		add_stability = -1
-		add_war_support = -1
+		add_political_power = -300
+		add_ideas = KRN_great_famine
+		add_stability = -0.15
+		add_war_support = -0.15
 	}
 }
 
@@ -1189,7 +1192,7 @@ country_event = {
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
-		days = 3
+		days = 1
 	}
 	
 	option = {
@@ -1277,7 +1280,10 @@ country_event = {
 			NOT = {
 				has_government = radical_socialism
 				has_government = communism
-				has_government = national_syndicalism
+				AND = {
+					has_government = national_syndicalism
+					has_country_leader = { name = "Pavel Dybenko" ruling_only = yes }
+				}
 			}
 		}
 	}
@@ -1362,22 +1368,14 @@ country_event = {
 		name = petrograd_commune.93.a
 		hidden_effect = {
 			KRN = {
-				set_politics = { ruling_party = radical_socialism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = communism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = social_democracy }
-				retire_country_leader = yes
-				set_politics = { ruling_party = social_liberalism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = market_liberalism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = authoritarism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = despotism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = national_syndicalism }
-				retire_country_leader = yes
+				retire_ideology_leader = radical_socialism
+				retire_ideology_leader = communism
+				retire_ideology_leader = social_democracy
+				retire_ideology_leader = social_liberalism
+				retire_ideology_leader = market_liberalism
+				retire_ideology_leader = authoritarism
+				retire_ideology_leader = despotism
+				retire_ideology_leader = national_syndicalism
 				remove_ideas = {
 					RUS_red_guards
 					RGR_punitive_forces_idea
@@ -1485,22 +1483,14 @@ country_event = {
 		name = petrograd_commune.94.a
 		hidden_effect = {
 			KRN = {
-				set_politics = { ruling_party = radical_socialism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = communism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = social_democracy }
-				retire_country_leader = yes
-				set_politics = { ruling_party = social_liberalism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = market_liberalism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = authoritarism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = despotism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = national_syndicalism }
-				retire_country_leader = yes
+				retire_ideology_leader = radical_socialism
+				retire_ideology_leader = communism
+				retire_ideology_leader = social_democracy
+				retire_ideology_leader = social_liberalism
+				retire_ideology_leader = market_liberalism
+				retire_ideology_leader = authoritarism
+				retire_ideology_leader = despotism
+				retire_ideology_leader = national_syndicalism
 				remove_ideas = {
 					RUS_red_guards
 					RGR_punitive_forces_idea
@@ -1703,22 +1693,14 @@ country_event = {
 		hidden_effect = {
 			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 			KRN = {
-				set_politics = { ruling_party = radical_socialism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = communism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = social_democracy }
-				retire_country_leader = yes
-				set_politics = { ruling_party = social_liberalism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = market_liberalism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = authoritarism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = despotism }
-				retire_country_leader = yes
-				set_politics = { ruling_party = national_syndicalism }
-				retire_country_leader = yes
+				retire_ideology_leader = radical_socialism
+				retire_ideology_leader = communism
+				retire_ideology_leader = social_democracy
+				retire_ideology_leader = social_liberalism
+				retire_ideology_leader = market_liberalism
+				retire_ideology_leader = authoritarism
+				retire_ideology_leader = despotism
+				retire_ideology_leader = national_syndicalism
 				remove_ideas = {
 					RUS_red_guards
 					RGR_punitive_forces_idea
@@ -1788,166 +1770,14 @@ country_event = {
 		hidden_effect = {
 			clr_global_flag = RUS_monarchy_Petrograd_commune_civil_war
 			KRN = {
-			 if = {
-			 		limit = { has_government = radical_socialism }
-					set_politics = { ruling_party = radical_socialism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = communism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = social_democracy }
-					retire_country_leader = yes
-					set_politics = { ruling_party = social_liberalism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = market_liberalism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = authoritarism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = despotism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = national_syndicalism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = radical_socialism }
-					else_if = {
-						limit = { has_government = communism }
-						set_politics = { ruling_party = radical_socialism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-					}
-					else_if = {
-						limit = { has_government = social_democracy }
-						set_politics = { ruling_party = radical_socialism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-					}
-					else_if = {
-						limit = { has_government = social_liberalism }
-						set_politics = { ruling_party = radical_socialism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-					}
-					else_if = {
-						limit = { has_government = market_liberalism }
-						set_politics = { ruling_party = radical_socialism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-					}
-					else_if = {
-						limit = { has_government = authoritarism }
-						set_politics = { ruling_party = radical_socialism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-					}
-					else_if = {
-						limit = { has_government = despotism }
-						set_politics = { ruling_party = radical_socialism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-					}
-					else_if = {
-						limit = { has_government = national_syndicalism }
-						set_politics = { ruling_party = radical_socialism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = communism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_democracy }
-						retire_country_leader = yes
-						set_politics = { ruling_party = social_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = market_liberalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = authoritarism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = despotism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-						retire_country_leader = yes
-						set_politics = { ruling_party = national_syndicalism }
-					}
-				}
+			 	retire_ideology_leader = radical_socialism
+				retire_ideology_leader = communism
+				retire_ideology_leader = social_democracy
+				retire_ideology_leader = social_liberalism
+				retire_ideology_leader = market_liberalism
+				retire_ideology_leader = authoritarism
+				retire_ideology_leader = despotism
+				retire_ideology_leader = national_syndicalism
 				remove_ideas = {
 					RUS_red_guards
 					RGR_punitive_forces_idea
@@ -2129,7 +1959,7 @@ country_event = {
 				}
 			}
 			else_if = {
-				limit = { KRN = { has_government = national_syndicalism } }
+				limit = { KRN = { has_government = national_syndicalism has_country_leader = { name = "Pavel Dybenko" ruling_only = yes } } }
 				set_country_flag = legitimized_bolsheviks
 				bolsheviks_victory = yes
 				add_red_unit_leaders = yes
@@ -2153,6 +1983,28 @@ country_event = {
 					ideology = national_syndicalism
 					popularity = 0.3
 				}
+			}
+			else_if = {
+				limit = { KRN = { has_government = national_syndicalism has_country_leader = { name = "Boris Savinkov" ruling_only = yes } } }
+				create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+				set_politics = {
+					ruling_party = national_syndicalism
+					elections_allowed = no
+				}
+				set_party_name = { ideology = social_democracy long_name = KRN_market_liberalism_party_long name = KRN_market_liberalism_party }
+				remove_ideas_with_trait = head_of_government_trait
+				remove_ideas_with_trait = economy_minister_trait
+				remove_ideas_with_trait = security_minister_trait
+				remove_ideas_with_trait = head_of_intel_trait
+				add_ideas = {
+					Alexander_Kerensky_1
+					Sergey_Prokopovich_3
+					Nikolay_Avksentiev_4
+					Alexander_Zarudny_5
+				}
+				set_country_flag = RUS_provisional_government_created
+				load_focus_tree = Russia_Provisional_government_focus
+				set_country_flag = RUS_has_czechoslovak_legion
 			}
 			else_if = {
 				limit = { KRN = { has_government = despotism } }
@@ -2335,22 +2187,14 @@ country_event = {
 			limit = { NOT = { tag = KRN } }
 			hidden_effect = {
 				KRN = {
-					set_politics = { ruling_party = radical_socialism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = communism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = social_democracy }
-					retire_country_leader = yes
-					set_politics = { ruling_party = social_liberalism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = market_liberalism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = authoritarism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = despotism }
-					retire_country_leader = yes
-					set_politics = { ruling_party = national_syndicalism }
-					retire_country_leader = yes
+					retire_ideology_leader = radical_socialism
+					retire_ideology_leader = communism
+					retire_ideology_leader = social_democracy
+					retire_ideology_leader = social_liberalism
+					retire_ideology_leader = market_liberalism
+					retire_ideology_leader = authoritarism
+					retire_ideology_leader = despotism
+					retire_ideology_leader = national_syndicalism
 					remove_ideas = {
 						RUS_red_guards
 						RGR_punitive_forces_idea
