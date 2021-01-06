@@ -1,0 +1,2702 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_czechs
+
+country_event = {
+	id = rcw_czechs.0
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		add_to_variable = { var = SOV_czechs_corps_unrest value = 1 }
+	}
+}
+
+# Чехословацкий национальный совет создаёт отделение в России
+country_event = {
+	id = rcw_czechs.1
+	title = rcw_czechs.1.t
+	desc = rcw_czechs.1.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	trigger = {
+		has_global_flag = WWI_is_now
+		tag = RUS
+		has_war_with = AUH
+		NOT = { has_country_flag = RUS_has_czechoslovak_legion }
+		NOT = { has_global_flag = brest_litovsk_negotiations }
+		CZE = { exists = no }
+		OR = {
+			NOT = { has_country_flag = RUS_monarchy_not_fall }
+			has_country_flag = RUS_revolution_suppressed
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	option = {
+		trigger = {
+			OR = {
+				has_government = authoritarism
+				has_idea = RUS_Nikolay_II_idea
+				has_idea = RUS_Mikhail_II_idea
+				has_idea = RUS_Dmitriy_II_idea
+			}
+		}
+		name = rcw_czechs.1.a # Республика в Чехии? У нас свои планы
+		set_country_flag = RUS_v_CZE_u_nas_svoi_plany
+	}
+	option = {
+		name = rcw_czechs.1.b
+		set_country_flag = RUS_has_czechoslovak_legion
+		custom_effect_tooltip = rcw_czechs_1_tt
+	}
+}
+
+# Технический ивент, который посылает корпус либо в Россию, либо в Чехию
+country_event = {
+	id = rcw_czechs.2
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_has_czechoslovak_legion
+		NOT = { has_country_flag = RUS_czechoslovak_legion_evac_progress }
+		OR = {
+			has_country_flag = RUS_revolution_suppressed
+			AND = {
+				has_country_flag = general_kornilov
+				has_variable = RUS_Kornilov_gov_stability
+				NOT = { has_country_flag = RUS_Kornilov_civil_war_near }
+				has_completed_focus = RUS_war_to_victorious_end
+			}
+			AND = {
+				CZE = { exists = yes }
+				NOT = { has_global_flag = WWI_is_now }
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	hidden = yes
+	
+	mean_time_to_happen = {
+		days = 90
+		modifier = {
+			factor = 0.1
+			has_completed_focus = RUS_war_to_victorious_end
+		}
+		modifier = {
+			factor = 0.1
+			CZE = { exists = yes }
+			NOT = { has_global_flag = WWI_is_now }
+		}
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				CZE = { exists = yes }
+				NOT = { has_global_flag = WWI_is_now }
+			}
+			CZE = { country_event = rcw_czechs.3 }
+			else = {
+				country_event = rcw_czechs.3
+			}
+		}
+	}
+}
+
+# Чехословацкий корпус сформирован/Прибытие чешского корпуса из России
+country_event = {
+	id = rcw_czechs.3
+	title = {
+		text = rcw_czechs.3.t
+		trigger = { tag = RUS }
+	}
+	title = {
+		text = rcw_czechs.3.t_1
+		trigger = { NOT = { tag = RUS } }
+	}
+	desc = {
+		text = rcw_czechs.3.desc
+		trigger = { tag = RUS }
+	}
+	desc = {
+		text = rcw_czechs.3.desc_1
+		trigger = { NOT = { tag = RUS } }
+	}
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		set_country_flag = RUS_has_formed_czechoslovak_legion
+	}
+	
+	option = {
+		trigger = { tag = RUS }
+		name = rcw_czechs.3.a
+		
+		SIB = { every_unit_leader = { limit = { has_id = 92354 } set_nationality = ROOT } }
+		CCA = { every_unit_leader = { limit = { has_id = 88153 } set_nationality = ROOT } }
+		
+		hidden_effect = {
+			division_template = {
+				name = "Diviziya Chekhoslovatskogo corpusa"		# Elite
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 0 y = 3 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
+					infantry = { x = 1 y = 3 }
+					infantry = { x = 2 y = 0 }
+					infantry = { x = 2 y = 1 }
+					infantry = { x = 2 y = 2 }
+					infantry = { x = 2 y = 3 }
+					infantry = { x = 3 y = 0 }
+					infantry = { x = 3 y = 1 }
+					infantry = { x = 3 y = 2 }
+					infantry = { x = 3 y = 3 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+				}
+				priority = 2
+				is_locked = yes
+			}
+		}
+		
+		if = {
+			limit = { any_owned_state = { is_controlled_by = ROOT is_in_home_area = yes any_neighbor_state = { CONTROLLER = { has_war_with = ROOT } } } }
+			random_owned_state = {
+				limit = { is_controlled_by = ROOT is_in_home_area = yes any_neighbor_state = { CONTROLLER = { has_war_with = ROOT } } }
+				create_unit = {
+					division = "name = \"1-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"2-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+			else = {
+				random_owned_state = {
+					limit = { is_controlled_by = ROOT }
+					create_unit = {
+						division = "name = \"1-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"2-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+		}
+	}
+	option = {
+		trigger = { NOT = { tag = RUS } }
+		name = rcw_czechs.3.a_1
+		
+		REB = { every_unit_leader = { limit = { has_id = 92354 } set_nationality = ROOT } }
+		REB = { every_unit_leader = { limit = { has_id = 88153 } set_nationality = ROOT } }
+		REB = { every_unit_leader = { limit = { has_id = 92355 } set_nationality = ROOT } }
+		REB = { every_unit_leader = { limit = { has_id = 88151 } set_nationality = ROOT } }
+		
+		hidden_effect = {
+			division_template = {
+				name = "Diviziya Chekhoslovatskogo corpusa"		# Elite
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 0 y = 3 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
+					infantry = { x = 1 y = 3 }
+					infantry = { x = 2 y = 0 }
+					infantry = { x = 2 y = 1 }
+					infantry = { x = 2 y = 2 }
+					infantry = { x = 2 y = 3 }
+					infantry = { x = 3 y = 0 }
+					infantry = { x = 3 y = 1 }
+					infantry = { x = 3 y = 2 }
+					infantry = { x = 3 y = 3 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+				}
+				priority = 2
+				is_locked = yes
+			}
+		}
+		
+		capital_scope = {
+			create_unit = {
+				division = "name = \"1-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"2-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+	}
+}
+
+# Положение чехословацкого корпуса
+country_event = {
+	id = rcw_czechs.4
+	title = rcw_czechs.4.t
+	desc = rcw_czechs.4.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	trigger = {
+		has_global_flag = WWI_is_now
+		tag = RUS
+		has_country_flag = RUS_has_czechoslovak_legion
+		NOT = { has_country_flag = RUS_has_formed_czechoslovak_legion }
+		OR = {
+			has_global_flag = RUS_all_russian_constituent_assembly_ended
+			has_country_flag = RUS_karaul_ustal
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	option = {
+		trigger = {
+			has_war_with = AUH
+			has_country_flag = RUS_all_russian_constituent_assembly_third_session_war
+		}
+		name = rcw_czechs.4.a
+		country_event = rcw_czechs.3
+	}
+	option = {
+		name = rcw_czechs.4.b
+		set_country_flag = RUS_czechoslovak_legion_evac_progress
+		country_event = { id = rcw_czechs.5 days = 60 }
+	}
+}
+
+# Маршрут эвакуации корпуса
+country_event = {
+	id = rcw_czechs.5
+	title = rcw_czechs.5.t
+	desc = rcw_czechs.5.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_country_flag = RUS_czechoslovak_legion_evac_progress
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				213 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = ENG is_subject_of = ENG } } }
+				214 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = ENG is_subject_of = ENG } } }
+			}
+			custom_effect_tooltip = rcw_czechs_5_tt_north
+		}
+		if = {
+			limit = {
+				NOT = { has_war_with = RVA has_war_with = DON has_war_with = KUB }
+				OR = {
+					233 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+					1073 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+				}
+				797 = {
+					OWNER = { NOT = { has_war_with = ENG } }
+					CONTROLLER = { NOT = { has_war_with = ENG } }
+				}
+				949 = {
+					OWNER = { NOT = { has_war_with = ENG } }
+					CONTROLLER = { NOT = { has_war_with = ENG } }
+				}
+			}
+			custom_effect_tooltip = rcw_czechs_5_tt_south
+		}
+		if = {
+			limit = { 408 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = FER is_subject_of = FER } } } }
+			custom_effect_tooltip = rcw_czechs_5_tt_east
+		}
+		if = {
+			limit = {
+				UKR = {
+					exists = yes
+					NOT = { has_war_with = RUS }
+					has_war_with = AUH
+					has_completed_focus = UKR_war_for_freedom
+				}
+				OR = {
+					233 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+					1073 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+				}
+				797 = {
+					OWNER = { NOT = { has_war_with = ENG } }
+					CONTROLLER = { NOT = { has_war_with = ENG } }
+				}
+				949 = {
+					OWNER = { NOT = { has_war_with = ENG } }
+					CONTROLLER = { NOT = { has_war_with = ENG } }
+				}
+			}
+			custom_effect_tooltip = rcw_czechs_5_tt_UKR
+		}
+		if = {
+			limit = {
+				OR = { NOT = { controls_state = 213 } NOT = { controls_state = 214 } }
+				NOT = { 408 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = FER is_subject_of = FER } } } }
+				OR = {
+					NOT = {
+						OR = {
+							233 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+							1073 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+						}
+						797 = {
+							OWNER = { NOT = { has_war_with = ENG } }
+							CONTROLLER = { NOT = { has_war_with = ENG } }
+						}
+						949 = {
+							OWNER = { NOT = { has_war_with = ENG } }
+							CONTROLLER = { NOT = { has_war_with = ENG } }
+						}
+					}
+					AND = {
+						UKR = {
+							OR = {
+								exists = no
+								has_war_with = RUS
+								NOT = { has_war_with = AUH }
+								NOT = { has_completed_focus = UKR_war_for_freedom }
+							}
+						}
+						OR = { has_war_with = RVA has_war_with = DON has_war_with = KUB }
+					}
+				}
+			}
+			custom_effect_tooltip = rcw_czechs_5_tt_no_direction
+		}
+	}
+	
+	option = {
+		trigger = {
+			213 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = ENG is_subject_of = ENG } } }
+			214 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = ENG is_subject_of = ENG } } }
+		}
+		name = rcw_czechs.5.a
+		set_country_flag = SOV_czechs_evac_way_north
+		rise_collapse_of_railway_system = yes
+		set_variable = { var = SOV_czechs_corps_unrest value = 2 }
+		hidden_effect = {
+			country_event = { id = rcw_czechs.0 days = 80 }
+			country_event = { id = rcw_czechs.0 days = 100 }
+		}
+		
+		activate_mission = SOV_czechs_evac_first_echelon_mission
+		hidden_effect = {
+			if = {
+				limit = { has_idea = collapse_of_railway_system_1 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 10 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_2 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 20 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_3 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 30 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_4 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 40 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_5 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 50 }
+			}
+		}
+		
+		activate_mission = SOV_czechs_evac_echelons_loading_mission
+		hidden_effect = {
+			if = {
+				limit = { has_idea = collapse_of_railway_system_1 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 10 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_2 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 20 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_3 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 30 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_4 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 40 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_5 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 50 }
+			}
+		}
+		
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { 408 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = FER is_subject_of = FER } } } }
+		name = rcw_czechs.5.b
+		set_country_flag = SOV_czechs_evac_way_east
+		rise_collapse_of_railway_system = yes
+		set_variable = { var = SOV_czechs_corps_unrest value = 1 }
+		hidden_effect = {
+			country_event = { id = rcw_czechs.0 days = 80 }
+			country_event = { id = rcw_czechs.0 days = 100 }
+		}
+		
+		activate_mission = SOV_czechs_evac_first_echelon_mission
+		hidden_effect = {
+			add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 7 }
+			if = {
+				limit = { has_idea = collapse_of_railway_system_1 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 10 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_2 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 20 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_3 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 30 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_4 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 40 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_5 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 50 }
+			}
+		}
+		
+		activate_mission = SOV_czechs_evac_echelons_loading_mission
+		hidden_effect = {
+			add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 10 }
+			if = {
+				limit = { has_idea = collapse_of_railway_system_1 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 10 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_2 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 20 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_3 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 30 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_4 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 40 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_5 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 50 }
+			}
+		}
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = {
+			NOT = { has_war_with = RVA has_war_with = DON has_war_with = KUB }
+			OR = {
+				233 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+				1073 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+			}
+			797 = {
+				OWNER = { NOT = { has_war_with = ENG } }
+				CONTROLLER = { NOT = { has_war_with = ENG } }
+			}
+			949 = {
+				OWNER = { NOT = { has_war_with = ENG } }
+				CONTROLLER = { NOT = { has_war_with = ENG } }
+			}
+		}
+		name = rcw_czechs.5.c
+		set_country_flag = SOV_czechs_evac_way_south
+		rise_collapse_of_railway_system = yes
+		set_variable = { var = SOV_czechs_corps_unrest value = 1 }
+		hidden_effect = {
+			country_event = { id = rcw_czechs.0 days = 80 }
+			country_event = { id = rcw_czechs.0 days = 100 }
+		}
+		
+		activate_mission = SOV_czechs_evac_first_echelon_mission
+		hidden_effect = {
+			if = {
+				limit = { has_idea = collapse_of_railway_system_1 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 10 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_2 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 20 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_3 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 30 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_4 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 40 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_5 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_first_echelon_mission days = 50 }
+			}
+		}
+		
+		activate_mission = SOV_czechs_evac_echelons_loading_mission
+		hidden_effect = {
+			if = {
+				limit = { has_idea = collapse_of_railway_system_1 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 10 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_2 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 20 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_3 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 30 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_4 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 40 }
+			}
+			if = {
+				limit = { has_idea = collapse_of_railway_system_5 }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 50 }
+			}
+		}
+		
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = {
+			UKR = {
+				exists = yes
+				NOT = { has_war_with = RUS }
+				has_war_with = AUH
+				has_completed_focus = UKR_war_for_freedom
+			}
+			OR = {
+				233 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+				1073 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+			}
+			797 = {
+				OWNER = { NOT = { has_war_with = ENG } }
+				CONTROLLER = { NOT = { has_war_with = ENG } }
+			}
+			949 = {
+				OWNER = { NOT = { has_war_with = ENG } }
+				CONTROLLER = { NOT = { has_war_with = ENG } }
+			}
+		}
+		name = rcw_czechs.5.d
+		
+		UKR = { country_event = rcw_czechs.8 }
+		
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = {
+			OR = {
+				NOT = { 213 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = ENG is_subject_of = ENG } } } }
+				NOT = { 214 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = ENG is_subject_of = ENG } } } }
+			}
+			NOT = { 408 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT tag = FER is_subject_of = FER } } } }
+			OR = {
+				NOT = {
+					OR = {
+						233 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+						1073 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT has_government = ROOT } } }
+					}
+					797 = {
+						OWNER = { NOT = { has_war_with = ENG } }
+						CONTROLLER = { NOT = { has_war_with = ENG } }
+					}
+					949 = {
+						OWNER = { NOT = { has_war_with = ENG } }
+						CONTROLLER = { NOT = { has_war_with = ENG } }
+					}
+				}
+				AND = {
+					UKR = {
+						OR = {
+							exists = no
+							has_war_with = RUS
+							NOT = { has_war_with = AUH }
+							NOT = { has_completed_focus = UKR_war_for_freedom }
+						}
+					}
+					OR = { has_war_with = RVA has_war_with = DON has_war_with = KUB }
+				}
+			}
+		}
+		name = rcw_czechs.5.e #чехи, вас некуда
+		
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+
+# Корабли для чешского корпуса
+country_event = {
+	id = rcw_czechs.6
+	title = rcw_czechs.6.t
+	desc = rcw_czechs.6.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			has_equipment = {
+				convoy > 49
+			}
+		}
+		name = rcw_czechs.6.a #Предоставьте все необходимое
+		set_country_flag = SOV_czechs_evac_ships_loading_in_progress
+		activate_mission = SOV_czechs_evac_ships_loading_mission
+		add_days_mission_timeout = { mission = SOV_czechs_evac_ships_loading_mission days = -50 }
+		
+		custom_effect_tooltip = rcw_czechs_6_a_tt
+		add_equipment_to_stockpile = {
+			type = convoy_1
+			amount = -50
+		}
+		set_country_flag = SOV_czechs_evac_gived_50_ships
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_czechs.6.b #Проинформируйте союзников о проблеме
+		set_country_flag = SOV_czechs_evac_ships_loading_in_progress
+		activate_mission = SOV_czechs_evac_ships_loading_mission
+		every_country = {
+			limit = { is_in_faction_with = ENG is_subject = no is_major = yes }
+			country_event = rcw_czechs.7
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Проблемы с эвакуацией чешского корпуса
+country_event = {
+	id = rcw_czechs.7
+	title = rcw_czechs.7.t
+	desc = rcw_czechs.7.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.7.a #Сейчас конвои нужны нам самим
+		ai_chance = {
+			factor = 4
+			modifier = {
+				factor = 0
+				OR = { original_tag = ENG original_tag = FRA original_tag = USA }
+			}
+		}
+	}
+	option = {
+		trigger = {
+			has_equipment = {
+				convoy > 9
+			}
+		}
+		name = rcw_czechs.7.b #Хорошо, отправляйте корабли
+		FROM = { add_days_mission_timeout = { mission = SOV_czechs_evac_ships_loading_mission days = -10 } }
+		
+		add_equipment_to_stockpile = {
+			type = convoy_1
+			amount = -10
+		}
+		set_country_flag = SOV_czechs_evac_gived_10_ships
+		custom_effect_tooltip = rcw_czechs_7_b_tt
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Чехи на Украине
+country_event = {
+	id = rcw_czechs.8
+	title = rcw_czechs.8.t
+	desc = rcw_czechs.8.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.8.a
+		if = {
+			limit = {
+				CZE = { exists = yes }
+				NOT = { has_global_flag = WWI_is_now }
+			}
+			CZE = { country_event = rcw_czechs.3 }
+			else = {
+				random_country = {
+					limit = { is_in_faction_with = ENG is_faction_leader = yes }
+					country_event = { id = rcw_czechs.3 days = 60 }
+				}
+			}
+		}
+		
+		ai_chance = {
+			factor = 4
+		}
+	}
+	option = {
+		trigger = {
+			OR = {
+				CZE = { exists = no }
+				has_global_flag = WWI_is_now
+			}
+		}
+		name = rcw_czechs.8.b
+		
+		add_political_power = -35
+		
+		random_country = {
+			limit = { is_in_faction_with = ENG is_faction_leader = yes }
+			country_event = { id = rcw_czechs.9 days = 1 }
+		}
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Украина просит оставить чешский корпус
+country_event = {
+	id = rcw_czechs.9
+	title = rcw_czechs.9.t
+	desc = rcw_czechs.9.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.9.a
+		FROM = { country_event = rcw_czechs.3 }
+		ai_chance = {
+			factor = 4
+		}
+	}
+	option = {
+		name = rcw_czechs.9.b
+		FROM = { country_event = rcw_czechs.10 }
+		country_event = { id = rcw_czechs.3 days = 60 }
+		add_political_power = -35
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Отказ
+country_event = {
+	id = rcw_czechs.10
+	title = rcw_czechs.10.t
+	desc = rcw_czechs.10.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.10.a
+	}
+}
+
+#Ивенты на недовольство
+
+#Проигрышный мир с Германией
+country_event = {
+	id = rcw_czechs.11
+	
+	hidden = yes
+	
+	trigger = {
+		has_variable = SOV_czechs_corps_unrest
+		has_country_flag = RUS_has_czechoslovak_legion
+		has_country_flag = RUS_czechoslovak_legion_evac_progress
+		OR = {
+			has_country_flag = RUS_brest_peace_hardest
+			has_country_flag = RUS_brest_peace_hard
+			has_country_flag = RUS_brest_peace_average
+			has_country_flag = RUS_brest_peace_soft
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		if = {
+			limit = { has_country_flag = RUS_brest_peace_hardest }
+			add_to_variable = { var = SOV_czechs_corps_unrest value = 6 }
+		}
+		if = {
+			limit = { has_country_flag = RUS_brest_peace_hard }
+			add_to_variable = { var = SOV_czechs_corps_unrest value = 5 }
+		}
+		if = {
+			limit = { has_country_flag = RUS_brest_peace_average }
+			add_to_variable = { var = SOV_czechs_corps_unrest value = 4 }
+		}
+		if = {
+			limit = { has_country_flag = RUS_brest_peace_soft }
+			add_to_variable = { var = SOV_czechs_corps_unrest value = 3 }
+		}
+	}
+}
+
+#Разгон учредилки
+country_event = {
+	id = rcw_czechs.12
+	
+	hidden = yes
+	
+	trigger = {
+		has_variable = SOV_czechs_corps_unrest
+		has_country_flag = RUS_has_czechoslovak_legion
+		has_country_flag = RUS_czechoslovak_legion_evac_progress
+		has_country_flag = RUS_karaul_ustal
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		add_to_variable = { var = SOV_czechs_corps_unrest value = 1 }
+	}
+}
+
+#Столкновения чехов и интернационалистов
+country_event = {
+	id = rcw_czechs.13
+	title = rcw_czechs.13.t
+	desc = rcw_czechs.13.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	trigger = {
+		has_variable = SOV_czechs_corps_unrest
+		has_country_flag = RUS_has_czechoslovak_legion
+		has_country_flag = RUS_czechoslovak_legion_evac_progress
+		has_completed_focus = RUS_red_interbrigades
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			add_to_variable = { var = SOV_czechs_corps_unrest value = 1 }
+			if = {
+				limit = { has_active_mission = SOV_czechs_evac_echelons_loading_mission }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 10 }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_czechs.13.a
+		effect_tooltip = {
+			if = {
+				limit = { has_active_mission = SOV_czechs_evac_echelons_loading_mission }
+				add_days_mission_timeout = { mission = SOV_czechs_evac_echelons_loading_mission days = 10 }
+			}
+		}
+	}
+}
+
+#Чехи не подчиняютя
+country_event = {
+	id = rcw_czechs.14
+	title = rcw_czechs.14.t
+	desc = rcw_czechs.14.desc
+	picture = GFX_report_event_rus_revolt_kerensky-krasnov
+	
+	trigger = {
+		has_variable = SOV_czechs_corps_unrest
+		has_country_flag = RUS_has_czechoslovak_legion
+		has_country_flag = RUS_czechoslovak_legion_evac_progress
+		check_variable = { SOV_czechs_corps_unrest > 8 }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_czechs.14.a #Каждый чехословак, найденный  вооруженным на линии ж/д путей, должен быть расстрелян 
+		add_to_variable = { var = SOV_czechs_corps_unrest value = 2 }
+		
+		custom_effect_tooltip = rcw_czechs_14_a_tt
+		
+		ai_chance = {
+			factor = 9
+		}
+	}
+	option = {
+		name = rcw_czechs.14.b
+		
+		add_political_power = -50
+		add_war_support = -0.04
+		
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+
+#SOV_czechs_evac_way_north
+#SOV_czechs_evac_way_east
+#SOV_czechs_evac_way_south
+#SOV_czechs_evac_first_echelon_completed
+#SOV_czechs_evac_echelons_loading_completed
+#SOV_czechs_evac_last_echelon_completed
+#SOV_czechs_evac_ships_loading_in_progress
+
+# Мятеж чехословацкого корпуса
+country_event = {
+	id = rcw_czechs.15
+	title = rcw_czechs.15.t
+	desc = rcw_czechs.15.desc
+
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_variable = SOV_czechs_corps_unrest
+		has_country_flag = RUS_has_czechoslovak_legion
+		has_country_flag = RUS_czechoslovak_legion_evac_progress
+		check_variable = { SOV_czechs_corps_unrest > 9 }
+		NOT = { has_country_flag = RUS_red_czechoslovak_legion }
+		NOT = { has_country_flag = RUS_czechoslovak_legion_uprising }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = RUS_has_czechoslovak_legion
+			clr_country_flag = RUS_czechoslovak_legion_evac_progress
+			set_country_flag = RUS_czechoslovak_legion_uprising
+			set_equipment_fraction = 0.8
+		}
+		
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_north
+				
+				NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_1_1
+			custom_effect_tooltip = SOV_czechs_uprising_position_1_1_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_north
+				
+				has_country_flag = SOV_czechs_evac_first_echelon_completed
+				NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_1_2
+			custom_effect_tooltip = SOV_czechs_uprising_position_1_2_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_north
+				
+				OR = {
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+				}
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_1_3
+			custom_effect_tooltip = SOV_czechs_uprising_position_1_3_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_north
+				
+				has_country_flag = SOV_czechs_evac_first_echelon_completed
+				has_country_flag = SOV_czechs_evac_echelons_loading_completed
+				has_country_flag = SOV_czechs_evac_last_echelon_completed
+			}
+			set_country_flag = SOV_czechs_uprising_position_1_4
+			custom_effect_tooltip = SOV_czechs_uprising_position_1_4_tt
+		}
+		
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_east
+				
+				NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_2_1
+			custom_effect_tooltip = SOV_czechs_uprising_position_2_1_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_east
+				
+				has_country_flag = SOV_czechs_evac_first_echelon_completed
+				NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_2_2 #историчная
+			custom_effect_tooltip = SOV_czechs_uprising_position_2_2_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_east
+				
+				OR = {
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+				}
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_2_3
+			custom_effect_tooltip = SOV_czechs_uprising_position_2_3_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_east
+				
+				has_country_flag = SOV_czechs_evac_first_echelon_completed
+				has_country_flag = SOV_czechs_evac_echelons_loading_completed
+				has_country_flag = SOV_czechs_evac_last_echelon_completed
+			}
+			set_country_flag = SOV_czechs_uprising_position_2_4
+			custom_effect_tooltip = SOV_czechs_uprising_position_2_4_tt
+		}
+		
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_south
+				
+				NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_3_1
+			custom_effect_tooltip = SOV_czechs_uprising_position_3_1_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_south
+				
+				has_country_flag = SOV_czechs_evac_first_echelon_completed
+				NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_3_2
+			custom_effect_tooltip = SOV_czechs_uprising_position_3_2_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_south
+				
+				OR = {
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+				}
+				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			}
+			set_country_flag = SOV_czechs_uprising_position_3_3
+			custom_effect_tooltip = SOV_czechs_uprising_position_3_3_tt
+		}
+		if = {
+			limit = {
+				has_country_flag = SOV_czechs_evac_way_south
+				
+				has_country_flag = SOV_czechs_evac_first_echelon_completed
+				has_country_flag = SOV_czechs_evac_echelons_loading_completed
+				has_country_flag = SOV_czechs_evac_last_echelon_completed
+			}
+			set_country_flag = SOV_czechs_uprising_position_3_4
+			custom_effect_tooltip = SOV_czechs_uprising_position_3_4_tt
+		}
+		
+		hidden_effect = {
+			clr_country_flag = SOV_czechs_evac_way_north
+			clr_country_flag = SOV_czechs_evac_way_east
+			clr_country_flag = SOV_czechs_evac_way_south
+			clr_country_flag = SOV_czechs_evac_first_echelon_completed
+			clr_country_flag = SOV_czechs_evac_echelons_loading_completed
+			clr_country_flag = SOV_czechs_evac_last_echelon_completed
+			clr_country_flag = SOV_czechs_evac_ships_loading_in_progress
+		}
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_czechs.15.a
+		SOV_czechs_corps_uprising_srr_effect = yes
+	}
+	option = {
+		trigger = {
+			is_ai = no
+			OR = {
+				has_country_flag = SOV_czechs_uprising_position_1_1
+				has_country_flag = SOV_czechs_uprising_position_1_2
+				has_country_flag = SOV_czechs_uprising_position_1_3
+				has_country_flag = SOV_czechs_uprising_position_3_1
+				has_country_flag = SOV_czechs_uprising_position_3_2
+			}
+		}
+		name = rcw_czechs.15.b
+		SOV_czechs_corps_uprising_srr_effect = yes
+		CCA = { change_tag_from = ROOT }
+	}
+	option = {
+		trigger = {
+			is_ai = no
+			OR = {
+				has_country_flag = SOV_czechs_uprising_position_2_1
+				has_country_flag = SOV_czechs_uprising_position_2_2
+				has_country_flag = SOV_czechs_uprising_position_3_2
+			}
+		}
+		name = rcw_czechs.15.c
+		SOV_czechs_corps_uprising_srr_effect = yes
+		SIB = { change_tag_from = ROOT }
+	}
+	option = {
+		trigger = {
+			is_ai = no
+			OR = {
+				has_country_flag = SOV_czechs_uprising_position_3_1
+				has_country_flag = SOV_czechs_uprising_position_3_2
+				has_country_flag = SOV_czechs_uprising_position_3_3
+			}
+		}
+		name = rcw_czechs.15.d
+		SOV_czechs_corps_uprising_srr_effect = yes
+		DON = { change_tag_from = ROOT }
+	}
+	option = {
+		trigger = {
+			is_ai = no
+			OR = {
+				has_country_flag = SOV_czechs_uprising_position_1_1
+				has_country_flag = SOV_czechs_uprising_position_1_2
+				has_country_flag = SOV_czechs_uprising_position_1_3
+				has_country_flag = SOV_czechs_uprising_position_1_4
+			}
+		}
+		name = rcw_czechs.15.e
+		SOV_czechs_corps_uprising_srr_effect = yes
+		NRR = { change_tag_from = ROOT }
+	}
+	option = {
+		trigger = {
+			is_ai = no
+			has_country_flag = SOV_czechs_uprising_position_2_4
+		}
+		name = rcw_czechs.15.f
+		SOV_czechs_corps_uprising_srr_effect = yes
+		PRM = { change_tag_from = ROOT }
+	}
+	option = {
+		trigger = {
+			is_ai = no
+			OR = {
+				has_country_flag = SOV_czechs_uprising_position_3_2
+				has_country_flag = SOV_czechs_uprising_position_3_3
+				has_country_flag = SOV_czechs_uprising_position_3_4
+			}
+			RVA = { exists = no }
+		}
+		name = rcw_czechs.15.g
+		SOV_czechs_corps_uprising_srr_effect = yes
+		KUB = { change_tag_from = ROOT }
+	}
+}
+
+# Свержение советской власти в Поволжье
+country_event = {
+	id = rcw_czechs.16
+	title = rcw_czechs.16.t
+	desc = {
+		text = rcw_czechs.16.desc # восстали эсеры
+		trigger = {
+			OR = {
+				AND = {
+					NOT = { has_global_flag = RUS_all_russian_constituent_assembly_ended }
+					NOT = { has_government = social_liberalism }
+				}
+				has_government = market_liberalism
+			}
+		}
+	}
+	desc = {
+		text = rcw_czechs.16.desc_1 # восстали кадеты
+		trigger = {
+			OR = {
+				has_global_flag = RUS_all_russian_constituent_assembly_ended
+				has_government = social_liberalism
+			}
+			NOT = { has_government = market_liberalism }
+		}
+	}
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = { CCA = { exists = no } }
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			set_global_flag = CCA_fired
+			if = {
+				limit = {
+					OR = {
+						has_global_flag = RUS_all_russian_constituent_assembly_ended
+						has_government = social_liberalism
+					}
+					NOT = { has_government = market_liberalism }
+				}
+				CCA = {
+					add_popularity = {
+						ideology = market_liberalism
+						popularity = 0.2
+					}
+					set_politics = {
+						ruling_party = market_liberalism
+						elections_allowed = no
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_czechs.16.a
+		add_war_support = 0.15
+		fall_collapse_of_railway_system_3 = yes
+		hidden_effect = {
+			every_state = {
+				limit = {
+					is_core_of = RUS
+					OR = {
+						state = 251
+						state = 1070
+						state = 1071 #Уральские казаки
+						state = 406 #Уральские казаки
+						state = 407 #Уральские казаки
+						state = 573
+						state = 582
+						state = 651
+						state = 1072
+						state = 652 #Дутов
+						state = 572
+						state = 1103
+						state = 250
+						state = 255
+						state = 1100
+						state = 1101
+						state = 252
+					}
+				}
+				add_core_of = CCA
+			}
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					any_country = {
+						is_subject_of = ROOT
+						PREV = { is_owned_by = PREV }
+					}
+				}
+				OR = {
+					state = 251
+					state = 1070
+					state = 1071 #Уральские казаки
+					state = 406 #Уральские казаки
+					state = 407 #Уральские казаки
+					state = 573
+					state = 582
+					state = 651
+					state = 1072
+					state = 652 #Дутов
+					state = 572
+					state = 1103
+				}
+			}
+			CCA = { transfer_state = PREV }
+		}
+		hidden_effect = { DON = { remove_ideas = DON_Peoples_army_presence_idea } }
+		hidden_effect = {
+			CCA = {
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				inherit_technology = ROOT
+				load_oob = CCA_1918
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = CCA_czechoslovak_corps
+				}
+				if = {
+					limit = { OCH = { exists = no } }
+					OCH = {
+						every_unit_leader = {
+							set_nationality = CCA
+						}
+					}
+					load_oob = OCH_cossaks
+				}
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+		if = {
+			limit = { SIB = { exists = yes } }
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						is_owned_by = KAZ
+						any_country = {
+							is_subject_of = ROOT
+							PREV = { is_owned_by = PREV }
+						}
+					}
+					OR = {
+						state = 516
+						state = 1043
+						state = 566
+						state = 567
+						state = 568
+						state = 569
+						state = 571
+						state = 1067
+						state = 575
+						state = 576
+						state = 577
+						
+						state = 583
+						state = 588
+						state = 590
+					}
+				}
+				SIB = { transfer_state = PREV }
+			}
+			SIB = {
+				load_oob = SIB_1918
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = { SIB = { exists = yes } KAZ = { exists = yes } }
+				SIB = { KAZ = { subjecting_script_with_transfer_parties = yes } }
+			}
+			if = {
+				limit = { SIB = { exists = no } KAZ = { exists = yes } }
+				CCA = { KAZ = { subjecting_script_with_transfer_parties = yes } }
+			}
+			if = {
+				limit = { has_global_flag = main_left_essers_is_here }
+				clr_global_flag = main_left_essers_is_here
+				CCA = {
+					set_country_flag = main_left_essers_is_here
+					set_popularities = {
+						radical_socialism = 16
+						communism = 5
+						social_democracy = 12
+						social_liberalism = 22
+						market_liberalism = 13
+						social_conservatism = 7
+						authoritarism = 5
+						despotism = 10
+						fascism = 5
+						national_syndicalism = 5
+					}
+					create_country_leader = { name = "Boris Kamkov" desc = RUS_Boris_Kamkov_DESC picture = "gfx/leaders/SOV/Boris_Kamkov.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { } }
+					create_country_leader = { name = "Maria Spiridonova" desc = RUS_Maria_Spiridonova_DESC picture = "gfx/leaders/SOV/Maria_Spiridonova.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { permanent_revolutionary  } }
+					add_ideas = Vladimir_Trutovskiy_3
+					add_ideas = local_assembly_decisions_b_law
+				}
+			}
+		}
+		CCA = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = { SIB = { exists = yes } }
+			SIB = {
+				declare_war_on = {
+					target = ROOT
+					type = annex_everything
+				}
+			}
+		}
+	}
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = rcw_czechs.16.b
+		set_global_flag = CCA_fired
+		add_war_support = 0.15
+		fall_collapse_of_railway_system_3 = yes
+		hidden_effect = {
+			every_state = {
+				limit = {
+					is_core_of = RUS
+					OR = {
+						state = 251
+						state = 1070
+						state = 1071 #Уральские казаки
+						state = 406 #Уральские казаки
+						state = 407 #Уральские казаки
+						state = 573
+						state = 582
+						state = 651
+						state = 1072
+						state = 652 #Дутов
+						state = 572
+						state = 1103
+						state = 250
+						state = 255
+						state = 1100
+						state = 1101
+						state = 252
+					}
+				}
+				add_core_of = CCA
+			}
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					any_country = {
+						is_subject_of = ROOT
+						PREV = { is_owned_by = PREV }
+					}
+				}
+				OR = {
+					state = 251
+					state = 1070
+					state = 1071 #Уральские казаки
+					state = 406 #Уральские казаки
+					state = 407 #Уральские казаки
+					state = 573
+					state = 582
+					state = 651
+					state = 1072
+					state = 652 #Дутов
+					state = 572
+					state = 1103
+				}
+			}
+			CCA = { transfer_state = PREV }
+		}
+		hidden_effect = { DON = { remove_ideas = DON_Peoples_army_presence_idea } }
+		hidden_effect = {
+			CCA = {
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				inherit_technology = ROOT
+				load_oob = CCA_1918
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = CCA_czechoslovak_corps
+				}
+				if = {
+					limit = { OCH = { exists = no } }
+					OCH = {
+						every_unit_leader = {
+							set_nationality = CCA
+						}
+					}
+					load_oob = OCH_cossaks
+				}
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+		if = {
+			limit = { SIB = { exists = yes } }
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						is_owned_by = KAZ
+						any_country = {
+							is_subject_of = ROOT
+							PREV = { is_owned_by = PREV }
+						}
+					}
+					OR = {
+						state = 516
+						state = 1043
+						state = 566
+						state = 567
+						state = 568
+						state = 569
+						state = 571
+						state = 1067
+						state = 575
+						state = 576
+						state = 577
+						
+						state = 583
+						state = 588
+						state = 590
+					}
+				}
+				SIB = { transfer_state = PREV }
+			}
+			SIB = {
+				load_oob = SIB_1918
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = { SIB = { exists = yes } KAZ = { exists = yes } }
+				SIB = { KAZ = { subjecting_script_with_transfer_parties = yes } }
+			}
+			if = {
+				limit = { SIB = { exists = no } KAZ = { exists = yes } }
+				CCA = { KAZ = { subjecting_script_with_transfer_parties = yes } }
+			}
+			if = {
+				limit = { has_global_flag = main_left_essers_is_here }
+				clr_global_flag = main_left_essers_is_here
+				CCA = {
+					set_country_flag = main_left_essers_is_here
+					set_popularities = {
+						radical_socialism = 16
+						communism = 5
+						social_democracy = 12
+						social_liberalism = 22
+						market_liberalism = 13
+						social_conservatism = 7
+						authoritarism = 5
+						despotism = 10
+						fascism = 5
+						national_syndicalism = 5
+					}
+					create_country_leader = { name = "Boris Kamkov" desc = RUS_Boris_Kamkov_DESC picture = "gfx/leaders/SOV/Boris_Kamkov.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { } }
+					create_country_leader = { name = "Maria Spiridonova" desc = RUS_Maria_Spiridonova_DESC picture = "gfx/leaders/SOV/Maria_Spiridonova.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { permanent_revolutionary  } }
+					add_ideas = Vladimir_Trutovskiy_3
+					add_ideas = local_assembly_decisions_b_law
+				}
+			}
+		}
+		CCA = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = { SIB = { exists = yes } }
+			SIB = {
+				declare_war_on = {
+					target = ROOT
+					type = annex_everything
+				}
+			}
+		}
+		
+		CCA = { change_tag_from = RUS }
+	}
+}
+
+# Потеря Урала
+country_event = {
+	id = rcw_czechs.17
+	title = rcw_czechs.17.t
+	desc = rcw_czechs.17.desc
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.17.a
+		add_war_support = 0.15
+		fall_collapse_of_railway_system_3 = yes
+		
+		if = {
+			limit = { SIB = { exists = no } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+							state = 40
+							state = 567
+							state = 569
+							state = 570
+							state = 578
+							state = 654
+							state = 654
+							state = 909
+							state = 1067
+							
+							state = 566
+							state = 575
+							state = 564
+							state = 565
+							state = 644
+							state = 574
+							state = 1207
+							state = 1206
+							state = 1208
+							
+							state = 516
+							state = 1043
+							state = 568
+							state = 571
+							state = 576
+							state = 577
+							state = 572
+							state = 1103
+							state = 573
+							state = 582
+							state = 652
+							state = 651
+							state = 1025
+							state = 1072
+							state = 398
+							state = 581
+							state = 911
+							state = 653
+							state = 403
+							state = 580
+							state = 579
+							
+							state = 583
+							state = 588
+							state = 590
+							state = 1102
+						}
+					}
+					add_core_of = SIB
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 408
+						state = 1034
+						state = 1035
+						state = 1036
+						state = 1037
+						state = 1038
+						state = 409
+						state = 560
+						state = 561
+						state = 563
+						state = 637
+						state = 807
+						state = 657
+						state = 655
+						state = 562
+						state = 1185
+						state = 1186
+						state = 1039
+						state = 1041
+						state = 1187
+						state = 1184
+						state = 1040
+					}
+				}
+				SIB = { add_state_claim = PREV }
+			}
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						any_country = {
+							is_subject_of = ROOT
+							PREV = { is_owned_by = PREV }
+						}
+					}
+					OR = {
+						state = 40
+						state = 567
+						state = 569
+						state = 570
+						state = 578
+						state = 654
+						state = 654
+						state = 909
+						state = 1067
+					}
+				}
+				SIB = { transfer_state = PREV }
+			}
+			hidden_effect = {
+				SIB = {
+					add_ideas = neutral_foreign_policy_law
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+					inherit_technology = ROOT
+					country_event = { id = rcw_usfev.54 days = 60 }
+					country_event = { id = rcw_usfev.56 days = 120 }
+					if = {
+						limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+						load_oob = SIB_czechoslovak_corps
+					}
+					add_timed_idea = {
+						idea = SIB_right_oficers
+						days = 200
+					}
+					set_country_flag = SIB_start_political_instability
+					country_event = { id = rcw_usfev.42 days = 2 }
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+		
+		every_state = {
+			limit = {
+				OR = {
+					state = 516
+					state = 1043
+					state = 566
+					state = 567
+					state = 568
+					state = 569
+					state = 571
+					state = 1067
+					state = 575
+					state = 576
+					state = 577
+					
+					state = 583
+					state = 588
+					state = 590
+					
+					state = 572
+				}
+				OR = {
+					is_owned_by = ROOT
+					any_country = {
+						is_subject_of = ROOT
+						PREV = { is_owned_by = PREV }
+					}
+				}
+			}
+			SIB = { transfer_state = PREV }
+		}
+		hidden_effect = {
+			SIB = {
+				load_oob = SIB_1918
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = URL_czechoslovak_corps
+				}
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = { KAZ = { exists = yes } }
+				SIB = { KAZ = { subjecting_script_with_transfer_parties = yes } }
+			}
+		}
+		SIB = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+	}
+	option = {
+		name = rcw_czechs.17.b
+		add_war_support = 0.15
+		fall_collapse_of_railway_system_3 = yes
+		every_state = {
+			limit = {
+				OR = {
+					state = 516
+					state = 1043
+					state = 566
+					state = 567
+					state = 568
+					state = 569
+					state = 571
+					state = 1067
+					state = 575
+					state = 576
+					state = 577
+					
+					state = 583
+					state = 588
+					state = 590
+					
+					state = 572
+				}
+				OR = {
+					is_owned_by = ROOT
+					any_country = {
+						is_subject_of = ROOT
+						PREV = { is_owned_by = PREV }
+					}
+				}
+			}
+			SIB = { transfer_state = PREV }
+		}
+		hidden_effect = {
+			SIB = {
+				load_oob = SIB_1918
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = URL_czechoslovak_corps
+				}
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = { KAZ = { exists = yes } }
+				SIB = { KAZ = { subjecting_script_with_transfer_parties = yes } }
+			}
+		}
+		SIB = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		
+		SIB = { change_tag_from = RUS }
+	}
+}
+
+# Мятеж в Приморье
+country_event = {
+	id = rcw_czechs.18
+	title = rcw_czechs.18.t
+	desc = rcw_czechs.18.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		PRM = { exists = no }
+	}
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.18.a
+		every_state = {
+			limit = {
+				OR = {
+					state = 560
+					state = 409
+					state = 408
+					state = 655
+					state = 1034
+					state = 1035
+					state = 1036
+					state = 1037
+					state = 1038
+					state = 1185
+					state = 1186
+				}
+			}
+			add_core_of = PRM
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = RUS
+					is_owned_by = FER
+				}
+				OR = {
+					state = 717
+					state = 560
+					state = 409
+					state = 408
+					state = 655
+					state = 1034
+					state = 1035
+					state = 1036
+					state = 1037
+					state = 1038
+					state = 1185
+					state = 1186
+				}
+			}
+			PRM = { transfer_state = PREV }
+		}
+		hidden_effect = {
+			PRM = {
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				inherit_technology = ROOT
+				country_event = { id = rcw_usfev.96 days = 6 }
+				load_oob = PRM_contra
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = PRM_czechoslovak_corps
+				}
+				if = {
+					limit = { FER = { exists = yes } }
+					FER = { set_province_controller = 12559 load_oob = RUS_PRM_red_guard }
+					else = { RUS = { set_province_controller = 12559 load_oob = RUS_PRM_red_guard } }
+				}
+				if = {
+					limit = { SIB = { exists = yes has_government = social_liberalism } }
+					SIB = { PRM = { subjecting_script_with_transfer_parties_dominion = yes } }
+					else = {
+						PRM = {
+							create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { leftist_freemason min_2_sovereignty_supporter propaganda_bungler goal } }
+						}
+						SIB = {
+							retire_ideology_leader = social_liberalism
+							create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Florian_Fyodorovich.dds" ideology = social_liberalism_ideology traits = { } }
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		PRM = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			declare_war_on = {
+				target = FER
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = rcw_czechs.18.b
+		every_state = {
+			limit = {
+				OR = {
+					state = 560
+					state = 409
+					state = 408
+					state = 655
+					state = 1034
+					state = 1035
+					state = 1036
+					state = 1037
+					state = 1038
+					state = 1185
+					state = 1186
+				}
+			}
+			add_core_of = PRM
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = RUS
+					is_owned_by = FER
+				}
+				OR = {
+					state = 717
+					state = 560
+					state = 409
+					state = 408
+					state = 655
+					state = 1034
+					state = 1035
+					state = 1036
+					state = 1037
+					state = 1038
+					state = 1185
+					state = 1186
+				}
+			}
+			PRM = { transfer_state = PREV }
+		}
+		hidden_effect = {
+			PRM = {
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				inherit_technology = ROOT
+				country_event = { id = rcw_usfev.96 days = 6 }
+				load_oob = PRM_contra
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = PRM_czechoslovak_corps
+				}
+				if = {
+					limit = { FER = { exists = yes } }
+					FER = { set_province_controller = 12559 load_oob = RUS_PRM_red_guard }
+					else = { RUS = { set_province_controller = 12559 load_oob = RUS_PRM_red_guard } }
+				}
+				if = {
+					limit = { SIB = { exists = yes has_government = social_liberalism } }
+					SIB = { PRM = { subjecting_script_with_transfer_parties_dominion = yes } }
+					else = {
+						PRM = {
+							create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { leftist_freemason min_2_sovereignty_supporter propaganda_bungler goal } }
+						}
+						SIB = {
+							retire_ideology_leader = social_liberalism
+							create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Florian_Fyodorovich.dds" ideology = social_liberalism_ideology traits = { } }
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		PRM = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			declare_war_on = {
+				target = FER
+				type = annex_everything
+			}
+		}
+		PRM = { change_tag_from = RUS }
+	}
+}
+
+# Потеря Севера
+country_event = {
+	id = rcw_czechs.19
+	title = rcw_czechs.19.t
+	desc = rcw_czechs.19.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.19.a
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					state = 213
+					state = 964
+					state = 722
+					state = 214
+					state = 913
+					state = 1086
+					state = 351
+					state = 1089
+					state = 1090
+					state = 1092
+					state = 1087
+				}
+			}
+			NRR = { transfer_state = PREV }
+		}
+		NRR = { load_oob = NRR_1918 }
+		NRR = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = rcw_czechs.19.b
+		every_state = {
+			limit = {
+				is_owned_by = RUS
+				OR = {
+					state = 213
+					state = 964
+					state = 722
+					state = 214
+					state = 913
+					state = 1086
+					state = 351
+					state = 1089
+					state = 1090
+					state = 1092
+					state = 1087
+				}
+			}
+			NRR = { transfer_state = PREV }
+		}
+		NRR = { load_oob = NRR_1918 }
+		NRR = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		NRR = { change_tag_from = RUS }
+	}
+}
+
+# Мятеж в Крыму
+country_event = {
+	id = rcw_czechs.20
+	title = rcw_czechs.20.t
+	desc = rcw_czechs.20.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			OR = {
+				tag = CRI
+				CRI = { exists = no }
+			}
+		}
+		name = rcw_czechs.20.a
+		if = {
+			limit = { CRI = { exists = no } }
+			every_state = {
+				limit = {
+					CONTROLLER = { OR = { tag = RUS is_subject_of = RUS RUS = { has_government = PREV } } }
+					is_core_of = CRI
+				}
+				CRI = { transfer_state = PREV }
+			}
+			CRI = {
+				load_oob = CRI_1918
+				set_capital = 1074
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+			}
+		}
+		CRI = {
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+			create_country_leader = { name = "Mikhail Diterihs" desc = "" picture = "gfx/leaders/SIB/Mikhail_Diterihs.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = { warmonger_old_general great_war_hero staunch_monarchist min_1_traditionalist min_1_spiritual_leader anti_democrat } }
+			hidden_effect = {
+				white_peace = RVA
+				white_peace = KUB
+				white_peace = DON
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = CRI_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising OR = { has_country_flag = SOV_czechs_uprising_position_3_3 has_country_flag = SOV_czechs_uprising_position_3_4 } } }
+					load_oob = UKR_czechoslovak_corps
+				}
+			}
+			set_cosmetic_tag = CRI_Diterihs
+		}
+		REB = { every_unit_leader = { limit = { has_id = 77400 } set_nationality = CRI } } # Mikhail Diterihs
+		CRI = {
+			declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		trigger = {
+			CRI = { exists = no }
+			is_ai = no
+		}
+		name = rcw_czechs.20.b
+		if = {
+			limit = { CRI = { exists = no } }
+			every_state = {
+				limit = {
+					CONTROLLER = { OR = { tag = RUS is_subject_of = RUS RUS = { has_government = PREV } } }
+					is_core_of = CRI
+				}
+				CRI = { transfer_state = PREV }
+			}
+			CRI = {
+				load_oob = CRI_1918
+				set_capital = 1074
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+			}
+		}
+		CRI = {
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+			create_country_leader = { name = "Mikhail Diterihs" desc = "" picture = "gfx/leaders/SIB/Mikhail_Diterihs.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = { warmonger_old_general great_war_hero staunch_monarchist min_1_traditionalist min_1_spiritual_leader anti_democrat } }
+			hidden_effect = {
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = CRI_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising OR = { has_country_flag = SOV_czechs_uprising_position_3_3 has_country_flag = SOV_czechs_uprising_position_3_4 } } }
+					load_oob = UKR_czechoslovak_corps
+				}
+			}
+			set_cosmetic_tag = CRI_Diterihs
+		}
+		REB = { every_unit_leader = { limit = { has_id = 77400 } set_nationality = CRI } } # Mikhail Diterihs
+		CRI = {
+			declare_war_on = {
+				target = RUS
+				type = annex_everything
+			}
+		}
+		CRI = { change_tag_from = ROOT }
+	}
+	
+	option = {
+		trigger = {
+			CRI = { exists = yes }
+			NOT = { tag = CRI }
+			is_ai = no
+		}
+		name = rcw_czechs.20.b
+		CRI = { change_tag_from = ROOT }
+	}
+}
+
+# Красночехи
+country_event = {
+	id = rcw_czechs.41
+	title = rcw_czechs.41.t
+	desc = rcw_czechs.41.desc
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		set_country_flag = RUS_has_formed_czechoslovak_legion
+		set_country_flag = RUS_red_czechoslovak_legion
+		
+		hidden_effect = {
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_north
+					
+					NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_1_1
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_north
+					
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_1_2
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_north
+					
+					OR = {
+						has_country_flag = SOV_czechs_evac_first_echelon_completed
+						has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					}
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_1_3
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_north
+					
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					has_country_flag = SOV_czechs_evac_last_echelon_completed
+				}
+				set_country_flag = SOV_czechs_uprising_position_1_4
+			}
+			
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_east
+					
+					NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_2_1
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_east
+					
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_2_2 #историчная
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_east
+					
+					OR = {
+						has_country_flag = SOV_czechs_evac_first_echelon_completed
+						has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					}
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_2_3
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_east
+					
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					has_country_flag = SOV_czechs_evac_last_echelon_completed
+				}
+				set_country_flag = SOV_czechs_uprising_position_2_4
+			}
+			
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_south
+					
+					NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_3_1
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_south
+					
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_3_2
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_south
+					
+					OR = {
+						has_country_flag = SOV_czechs_evac_first_echelon_completed
+						has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					}
+					NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
+				}
+				set_country_flag = SOV_czechs_uprising_position_3_3
+			}
+			if = {
+				limit = {
+					has_country_flag = SOV_czechs_evac_way_south
+					
+					has_country_flag = SOV_czechs_evac_first_echelon_completed
+					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					has_country_flag = SOV_czechs_evac_last_echelon_completed
+				}
+				set_country_flag = SOV_czechs_uprising_position_3_4
+			}
+			clr_country_flag = RUS_czechoslovak_legion_evac_progress
+			clr_country_flag = SOV_czechs_evac_way_north
+			clr_country_flag = SOV_czechs_evac_way_east
+			clr_country_flag = SOV_czechs_evac_way_south
+			clr_country_flag = SOV_czechs_evac_first_echelon_completed
+			clr_country_flag = SOV_czechs_evac_echelons_loading_completed
+			clr_country_flag = SOV_czechs_evac_last_echelon_completed
+			clr_country_flag = SOV_czechs_evac_ships_loading_in_progress
+		}
+	}
+	
+	option = {
+		name = rcw_czechs.41.a
+		
+		REB = { every_unit_leader = { limit = { has_id = 92354 } set_nationality = ROOT } }
+		REB = { every_unit_leader = { limit = { has_id = 88153 } set_nationality = ROOT } }
+		
+		REB = { every_unit_leader = { limit = { has_id = 92355 } set_nationality = CZE } }
+		REB = { every_unit_leader = { limit = { has_id = 88151 } set_nationality = CZE } }
+		
+		hidden_effect = {
+			division_template = {
+				name = "Diviziya Chekhoslovatskogo corpusa"		# Elite
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 0 y = 3 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					infantry = { x = 1 y = 2 }
+					infantry = { x = 1 y = 3 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+					field_hospital = { x = 0 y = 2 }
+				}
+				priority = 2
+				is_locked = yes
+			}
+		}
+		
+		
+		if = {
+			limit = { has_country_flag = SOV_czechs_evac_way_east NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed } }
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					OR = {
+						state = 255
+						state = 651
+						state = 572
+						state = 571
+						state = 570
+						state = 566
+					}
+				}
+				set_state_flag = czechs_legion_point
+			}
+		}
+		if = {
+			limit = { has_country_flag = SOV_czechs_evac_way_east has_country_flag = SOV_czechs_evac_first_echelon_completed NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed } }
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					OR = {
+						state = 255
+						state = 651
+						state = 572
+						state = 571
+						state = 570
+						state = 566
+						state = 563
+						state = 408
+					}
+				}
+				set_state_flag = czechs_legion_point
+			}
+		}
+		if = {
+			limit = { has_country_flag = SOV_czechs_evac_way_east has_country_flag = SOV_czechs_evac_first_echelon_completed has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					OR = {
+						state = 572
+						state = 571
+						state = 570
+						state = 566
+						state = 563
+						state = 408
+					}
+				}
+				set_state_flag = czechs_legion_point
+			}
+		}
+		if = {
+			limit = { has_country_flag = SOV_czechs_evac_way_east has_country_flag = SOV_czechs_evac_last_echelon_completed }
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					OR = {
+						state = 566
+						state = 563
+						state = 408
+					}
+				}
+				set_state_flag = czechs_legion_point
+			}
+		}
+
+		random_owned_state = {
+			limit = { is_controlled_by = ROOT has_state_flag = czechs_legion_point }
+			create_unit = {
+				division = "name = \"1-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		random_owned_state = {
+			limit = { is_controlled_by = ROOT has_state_flag = czechs_legion_point }
+			create_unit = {
+				division = "name = \"2-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		random_owned_state = {
+			limit = { is_controlled_by = ROOT has_state_flag = czechs_legion_point }
+			create_unit = {
+				division = "name = \"3-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		random_owned_state = {
+			limit = { is_controlled_by = ROOT has_state_flag = czechs_legion_point }
+			create_unit = {
+				division = "name = \"4-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		random_owned_state = {
+			limit = { is_controlled_by = ROOT has_state_flag = czechs_legion_point }
+			create_unit = {
+				division = "name = \"5-ya Diviziya Chekhoslovatskogo corpusa\" division_template = \"Diviziya Chekhoslovatskogo corpusa\" start_experience_factor = 0.6 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		every_state = { limit = { has_state_flag = czechs_legion_point } clr_state_flag = czechs_legion_point }
+	}
+}
