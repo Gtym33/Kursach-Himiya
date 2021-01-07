@@ -1845,16 +1845,16 @@ country_event = {
 	
 	immediate = {
 		if = {
-			limit = { UKR = { has_completed_focus = UKR_the_promise_of_radical_reforms } }
-			custom_effect_tooltip = ukraine.-24_promise_of_radical_reforms
-		}
-		if = {
 			limit = { UKR = { has_completed_focus = UKR_contract_with_industrialists } }
 			custom_effect_tooltip = ukraine.-24_contract_with_industrialists
 		}
 		if = {
 			limit = { UKR = { has_completed_focus = UKR_seize_the_arsenals } }
 			custom_effect_tooltip = ukraine.-24_seize_the_arsenals
+		}
+		if = {
+			limit = { UKR = { has_completed_focus = UKR_the_promise_of_radical_reforms } }
+			custom_effect_tooltip = ukraine.-24_promise_of_radical_reforms
 		}
 	}
 	
@@ -2346,12 +2346,13 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	fire_only_once = yes
+	immediate = {
+		hidden_effect = { set_cosmetic_tag = USR_Ukr_People_Rep_Sov }
+	}
 	
 	option = {
 		name = ukraine.-8.a
 		USR = {
-			change_tag_from = UKR
 			annex_country = { target = UKR transfer_troops = yes }
 			inherit_technology = UKR
 			add_ideas = neutral_foreign_policy_law
@@ -2373,53 +2374,58 @@ country_event = {
 					type = annex_everything
 				}
 			}
-			every_state = {
-				limit = {
-					is_claimed_by = UKR
+			hidden_effect = {
+				every_state = {
+					limit = {
+						is_core_of = UKR
+					}
+					add_core_of = PREV
 				}
-				set_state_flag = subject_save_claim
-			}
-			RUS = { USR = { subjecting_script_with_transfer_parties_dominion = yes } }
-			every_state = {
-				limit = {
-					has_state_flag = subject_save_claim
+				every_state = {
+					limit = {
+						is_claimed_by = UKR
+					}
+					set_state_flag = subject_save_claim
 				}
-				add_claim_by = UKR
-				clr_state_flag = subject_save_claim
 			}
-			every_country = {
-				limit = {
-					NOT = {
-						tag = PREV
-						has_government = communism
-						has_government = radical_socialism
-						has_government = social_democracy
-						is_any_former_russian_empire_country = yes
-						former_russian_empire_baltic_states_country = yes
-						has_war_with = PREV
-						is_in_faction_with = PREV
+			RUS = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						has_state_flag = subject_save_claim
+					}
+					add_claim_by = PREV
+					clr_state_flag = subject_save_claim
+				}
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							has_government = communism
+							has_government = radical_socialism
+							has_government = social_democracy
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+				every_state = {
+					limit = {
+						is_owned_by = RUS
+						is_core_of = PREV
+					}
+					PREV = { set_state_owner = PREV }
+					if = {
+						limit = { is_fully_controlled_by = RUS }
+						PREV = { set_state_controller = PREV }
 					}
 				}
-				set_THIS_country_non_recognize_PREV = yes
 			}
 		}
-		every_state = {
-			limit = {
-				is_core_of = UKR
-			}
-			add_core_of = USR
-		}
-		every_state = {
-			limit = {
-				is_owned_by = RUS
-				is_core_of = USR
-			}
-			USR = { set_state_owner = PREV }
-			if = {
-				limit = { is_fully_controlled_by = RUS }
-				USR = { set_state_controller = PREV }
-			}
-		}
+		USR = { change_tag_from = ROOT }
 	}
 }
 
@@ -2444,9 +2450,16 @@ country_event = {
 		name = ukraine.-7.a
 		UKR = {
 			transfer_state = 202
-			load_focus_tree = blank_focus
-			country_event = ukraine.-8
+			hidden_effect = { country_event = { id = ukraine.-8 hours = 2 } }
 		}
+	}
+	option = {
+		name = ukraine.-7.b
+		UKR = {
+			transfer_state = 202
+			hidden_effect = { country_event = { id = ukraine.-8 hours = 2 } }
+		}
+		UKR = { change_tag_from = ROOT }
 	}
 }
 
