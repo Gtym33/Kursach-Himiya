@@ -2,7 +2,42 @@
 # Russian Civil War Events
 ###########################
 
-add_namespace = rcw_amrprm#rcw_usfev
+add_namespace = rcw_amrprm
+
+country_event = {
+	id = rcw_amrprm.1
+	title = rcw_amrprm.1.t
+	desc = rcw_amrprm.1.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = FER
+		has_country_flag = FER_start_political_instability
+		communism > 0.3
+	}
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.1.a
+		
+		set_politics = { ruling_party = communism elections_allowed = no }
+		clr_country_flag = FER_start_political_instability
+		
+		RUS = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		
+		every_country = {
+			limit = { has_war_with = RUS NOT = { has_war_with = ROOT } is_subject = no }
+			ROOT = {
+				declare_war_on = {
+					target = PREV
+					type = annex_everything
+				}
+			}
+		}
+	}
+}
 
 # Восстание в Приморье (если Семёнов взял Владивосток)
 country_event = {

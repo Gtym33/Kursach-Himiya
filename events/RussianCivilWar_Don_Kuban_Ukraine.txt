@@ -311,74 +311,82 @@ country_event = {
 	
 	option = {
 		name = rcw_dku.3.a #подавить выступление
-		hidden_effect = {
-			every_country = { limit = { original_tag = DON } delete_unit_template_and_units = { division_template = "Kazachya brigada" } }
-		}
-		start_civil_war = {
-			ideology = communism
-			size = 0
-			capital = 218
-			states = {
-				218 228 953 227
-			}
-			keep_unit_leaders_trigger = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } }
-		}
-		hidden_effect = {
-			save_global_event_target_as = DON_2_CW
-			random_other_country = {
-				limit = { original_tag = DON has_government = communism }
-				create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = { min_4_man_of_the_people adventurous_daredevil } }
-				create_country_leader = { name = "Nikolay Golubov" desc = DON_Nikolay_Golubov_DESC picture = "gfx/leaders/DON/Nikolay_Golubov.dds" expire = "1935.1.1" ideology = national_bolshevism_ideology traits = { min_4_man_of_the_people adventurous_daredevil goal_in_politics min_1_local_tyrant min_2_sovereignty_supporter } }
-				load_focus_tree = Don_red_cossaks_focus
-				save_global_event_target_as = DON_CW
-				add_popularity = { ideology = national_syndicalism popularity = 0.25 }
-				add_popularity = { ideology = radical_socialism popularity = 0.4 }
-				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
-				add_ideas = {
-					soviet_republic_gov_form
-					federal_gov_terr
-					local_assembly_decisions_b_law
-					two_party_system_law
-					neutral_foreign_policy_law
+		save_global_event_target_as = DON_2_CW
+		add_popularity = { ideology = communism popularity = -0.2 }
+		create_dynamic_country = {
+				original_tag = DON
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
 				}
-				division_template = {
-					name = "Krasnaya Gvardiya"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
+				hidden_effect = {
+					set_popularities = {
+						social_democracy = 50
+						communism = 50
 					}
-					priority = 0
-					is_locked = yes
-				}
-				if = {
-					limit = { KUB = { exists = yes NOT = { has_government = radical_socialism has_government = communism } is_subject = no } }
-					declare_war_on = { target = KUB type = annex_everything }
-				}
-			}
-			hidden_effect = {
-				RUS = { every_unit_leader = { limit = { OR = { has_id = 28003 has_id = 28004 } } set_nationality = event_target:DON_CW } }
-				event_target:DON_CW = {
-					every_country = {
-						limit = {
-							is_in_array = {
-								array = unrecognized_states
-								value = ROOT.id
+					add_popularity = { ideology = national_syndicalism popularity = 0.25 }
+					add_popularity = { ideology = radical_socialism popularity = 0.4 }
+					set_temp_variable = { red_DON = this }
+					ROOT = {
+						every_owned_state = {
+							limit = { OR = { state = 218 state = 228 state = 953 state = 227 } }
+							
+							var:red_DON = {
+								transfer_state = PREV
 							}
 						}
-						set_THIS_country_non_recognize_PREV = yes
+					}
+					set_capital = 218
+					add_random_ministers = yes
+					add_random_ministers = yes
+					create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = { min_4_man_of_the_people adventurous_daredevil } }
+					create_country_leader = { name = "Victor Kovalyov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Victor_Kovalyov.dds" expire = "1935.1.1" ideology = leninism traits = { min_4_man_of_the_people min_1_totalist_chairman silent_workhorse } }
+					create_country_leader = { name = "Nikolay Golubov" desc = DON_Nikolay_Golubov_DESC picture = "gfx/leaders/DON/Nikolay_Golubov.dds" expire = "1935.1.1" ideology = national_bolshevism_ideology traits = { min_4_man_of_the_people adventurous_daredevil goal_in_politics min_1_local_tyrant min_2_sovereignty_supporter } }
+					load_focus_tree = Don_red_cossaks_focus
+					save_global_event_target_as = DON_CW
+					set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+					add_ideas = {
+						soviet_republic_gov_form
+						federal_gov_terr
+						local_assembly_decisions_b_law
+						two_party_system_law
+						neutral_foreign_policy_law
+					}
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+						is_locked = yes
+					}
+					declare_war_on = { target = ROOT type = annex_everything }
+					if = {
+						limit = { KUB = { exists = yes NOT = { has_government = radical_socialism has_government = communism } is_subject = no } }
+						declare_war_on = { target = KUB type = annex_everything }
 					}
 				}
-			}
-			218 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
 		}
 		hidden_effect = {
-			load_oob = DON_Kaledin
-			set_division_template_lock = {
-				division_template = "Kazachya brigada"
-				is_locked = no
+			ROOT = { every_unit_leader = { limit = { OR = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = event_target:DON_CW } }
+			RUS = { every_unit_leader = { limit = { OR = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = event_target:DON_CW } }
+			event_target:DON_CW = { every_unit_leader = { limit = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = ROOT } }
+			event_target:DON_CW = {
+				every_country = {
+					limit = {
+						is_in_array = {
+							array = unrecognized_states
+							value = ROOT.id
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
 			}
 		}
+		218 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
 		hidden_effect = { clear_global_event_target = DON_CW }
 		ai_chance = {
 			factor = 1
@@ -387,74 +395,82 @@ country_event = {
 	option = {
 		trigger = { is_ai = no }
 		name = rcw_dku.3.b #играть за них
-		hidden_effect = {
-			every_country = { limit = { original_tag = DON } delete_unit_template_and_units = { division_template = "Kazachya brigada" } }
-		}
-		start_civil_war = {
-			ideology = communism
-			size = 0
-			capital = 218
-			states = {
-				218 228 953 227
-			}
-			keep_unit_leaders_trigger = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } }
-		}
-		hidden_effect = {
-			save_global_event_target_as = DON_2_CW
-			random_other_country = {
-				limit = { original_tag = DON has_government = communism }
-				create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = { min_4_man_of_the_people adventurous_daredevil } }
-				create_country_leader = { name = "Nikolay Golubov" desc = DON_Nikolay_Golubov_DESC picture = "gfx/leaders/DON/Nikolay_Golubov.dds" expire = "1935.1.1" ideology = national_bolshevism_ideology traits = { min_4_man_of_the_people adventurous_daredevil goal_in_politics min_1_local_tyrant min_2_sovereignty_supporter } }
-				load_focus_tree = Don_red_cossaks_focus
-				save_global_event_target_as = DON_CW
-				add_popularity = { ideology = national_syndicalism popularity = 0.25 }
-				add_popularity = { ideology = radical_socialism popularity = 0.4 }
-				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
-				add_ideas = {
-					soviet_republic_gov_form
-					federal_gov_terr
-					local_assembly_decisions_b_law
-					two_party_system_law
-					neutral_foreign_policy_law
+		save_global_event_target_as = DON_2_CW
+		add_popularity = { ideology = communism popularity = -0.2 }
+		create_dynamic_country = {
+				original_tag = DON
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
 				}
-				division_template = {
-					name = "Krasnaya Gvardiya"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
+				hidden_effect = {
+					set_popularities = {
+						social_democracy = 50
+						communism = 50
 					}
-					priority = 0
-					is_locked = yes
-				}
-				if = {
-					limit = { KUB = { exists = yes NOT = { has_government = radical_socialism has_government = communism } is_subject = no } }
-					declare_war_on = { target = KUB type = annex_everything }
-				}
-			}
-			hidden_effect = {
-				RUS = { every_unit_leader = { limit = { OR = { has_id = 28003 has_id = 28004 } } set_nationality = event_target:DON_CW } }
-				event_target:DON_CW = {
-					every_country = {
-						limit = {
-							is_in_array = {
-								array = unrecognized_states
-								value = ROOT.id
+					add_popularity = { ideology = national_syndicalism popularity = 0.25 }
+					add_popularity = { ideology = radical_socialism popularity = 0.4 }
+					set_temp_variable = { red_DON = this }
+					ROOT = {
+						every_owned_state = {
+							limit = { OR = { state = 218 state = 228 state = 953 state = 227 } }
+							
+							var:red_DON = {
+								transfer_state = PREV
 							}
 						}
-						set_THIS_country_non_recognize_PREV = yes
+					}
+					set_capital = 218
+					add_random_ministers = yes
+					add_random_ministers = yes
+					create_country_leader = { name = "Fyodor Podtyolkov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Fyodor_Podtyolkov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = { min_4_man_of_the_people adventurous_daredevil } }
+					create_country_leader = { name = "Victor Kovalyov" desc = DON_Fyodor_Podtyolkov_DESC picture = "gfx/leaders/DON/Victor_Kovalyov.dds" expire = "1935.1.1" ideology = leninism traits = { min_4_man_of_the_people min_1_totalist_chairman silent_workhorse } }
+					create_country_leader = { name = "Nikolay Golubov" desc = DON_Nikolay_Golubov_DESC picture = "gfx/leaders/DON/Nikolay_Golubov.dds" expire = "1935.1.1" ideology = national_bolshevism_ideology traits = { min_4_man_of_the_people adventurous_daredevil goal_in_politics min_1_local_tyrant min_2_sovereignty_supporter } }
+					load_focus_tree = Don_red_cossaks_focus
+					save_global_event_target_as = DON_CW
+					set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+					add_ideas = {
+						soviet_republic_gov_form
+						federal_gov_terr
+						local_assembly_decisions_b_law
+						two_party_system_law
+						neutral_foreign_policy_law
+					}
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+						is_locked = yes
+					}
+					declare_war_on = { target = ROOT type = annex_everything }
+					if = {
+						limit = { KUB = { exists = yes NOT = { has_government = radical_socialism has_government = communism } is_subject = no } }
+						declare_war_on = { target = KUB type = annex_everything }
 					}
 				}
-			}
-			218 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
 		}
 		hidden_effect = {
-			load_oob = DON_Kaledin
-			set_division_template_lock = {
-				division_template = "Kazachya brigada"
-				is_locked = no
+			ROOT = { every_unit_leader = { limit = { OR = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = event_target:DON_CW } }
+			RUS = { every_unit_leader = { limit = { OR = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = event_target:DON_CW } }
+			event_target:DON_CW = { every_unit_leader = { limit = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = ROOT } }
+			event_target:DON_CW = {
+				every_country = {
+					limit = {
+						is_in_array = {
+							array = unrecognized_states
+							value = ROOT.id
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
 			}
 		}
+		218 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
 		hidden_effect = { clear_global_event_target = DON_CW }
 		random_other_country = {
 			limit = { original_tag = DON has_government = communism }
@@ -3449,17 +3465,8 @@ country_event = {
 		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
 		has_government = despotism
 		has_country_leader = { name = "Anton Denikin" ruling_only = yes }
-		OR = {
-			AND = {
-				surrender_progress > 0.6
-				OR = { SIB = { exists = yes } CCA = { exists = yes } RSS = { exists = yes } }
-			}
-			AND = {
-				surrender_progress > 0.5
-				AND = { SIB = { exists = no } CCA = { exists = no } RSS = { exists = no } }
-			}
-			has_capitulated = yes
-		}
+		has_completed_focus = RVA_moscow_directive
+		num_of_controlled_states < 10
 		RUS = { AND = { controls_state = 219 controls_state = 195 surrender_progress < 0.3 } }
 	}
 	
