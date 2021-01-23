@@ -25,6 +25,7 @@ country_event = {
 	
 	option = {
 		name = petrograd_commune.-1.a
+		remove_ideas = KRN_revolution_under_siege
 		add_ideas = KRN_administrative_overload_1
 	}
 }
@@ -102,6 +103,7 @@ country_event = {
 			ruling_party = social_liberalism
 			elections_allowed = no
 		}
+		country_event = petrograd_commune.29
 	}
 	option = {
 		name = petrograd_commune.1.b
@@ -110,6 +112,7 @@ country_event = {
 			ruling_party = social_democracy
 			elections_allowed = no
 		}
+		country_event = petrograd_commune.29
 	}
 	option = {
 		name = petrograd_commune.1.c
@@ -118,6 +121,7 @@ country_event = {
 			ruling_party = communism
 			elections_allowed = no
 		}
+		country_event = petrograd_commune.30
 	}
 }
 
@@ -191,10 +195,10 @@ country_event = {
 		RUS = {
 			if = {
 				limit = { has_completed_focus = RUS_purification_of_imperial_army }
-					add_timed_idea = { idea = disorganization_of_army days = 28 }
-					else = {
-						add_timed_idea = { idea = disorganization_of_army days = 42 }
-					}
+				add_timed_idea = { idea = disorganization_of_army_commune_civil_war days = 14 }
+			}
+			else = {
+				add_timed_idea = { idea = disorganization_of_army_commune_civil_war days = 28 }
 			}
 			remove_one_priziv_from_army = yes
 			set_province_controller = 6380
@@ -436,13 +440,20 @@ country_event = {
 	}
 }
 
+#Вопрос балтийского флота
 country_event = {
 	id = petrograd_commune.5
 	title = petrograd_commune.5.t
 	desc = petrograd_commune.5.desc
 	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		has_country_leader = { name = "Pavel Dybenko" ruling_only = no }
+	}
 
 	is_triggered_only = yes
+	
+	fire_only_once = yes
 	
 	option = {
 		name = petrograd_commune.5.a
@@ -479,6 +490,8 @@ country_event = {
 		ai_chance = { factor = 1 }
 	}
 }
+
+#Дыбенко меняет профессию
 country_event = {
 	id = petrograd_commune.6
 	title = petrograd_commune.6.t
@@ -494,36 +507,29 @@ country_event = {
 	option = {
 		name = petrograd_commune.6.a
 		retire_ideology_leader = national_syndicalism
+		if = {
+			limit = { has_idea = KRN_savinkovtsy }
+			create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		}
+		set_country_flag = KRN_Dybenko_is_radsoc
 		create_country_leader = {
 			name = "Pavel Dybenko"
 			desc = SOV_Pavel_Dybenko_DESC
 			picture = "gfx/leaders/SOV/Pavel_Dybenko_leader.dds"
 			ideology = anarchist_communism
-			traits = { }
+			traits = { batska }
 		}
 	}
 }
+
+#Вторая волна революции
 country_event = {
 	id = petrograd_commune.7
 	title = petrograd_commune.7.t
 	desc = petrograd_commune.7.desc
 	picture = GFX_report_event_sov_cities_fights
 	
-	trigger = {
-		tag = KRN
-		NOT = {
-			has_government = radical_socialism
-			has_government = communism
-		}
-		OR = {
-			radical_socialism > 0.2
-			communism > 0.2
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
+	is_triggered_only = yes
 	
 	fire_only_once = yes
 	
@@ -535,10 +541,15 @@ country_event = {
 			popularity = 0.05
 		}
 		add_stability = 0.05
+		hidden_effect = { country_event = { id = petrograd_commune.68 days = 80 } }
 	}
 	option = {
 		name = petrograd_commune.7.b
 		add_stability = -0.05
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.05
+		}
 		add_popularity = {
 			ideology = communism
 			popularity = 0.05
@@ -547,13 +558,37 @@ country_event = {
 			ideology = national_syndicalism
 			popularity = 0.05
 		}
+		#hidden_effect = {
+			#random_list = {
+				#50 = {
+					#country_event = petrograd_commune.8
+					#country_event = petrograd_commune.9
+				#}
+				#50 = {}
+			#}
+		#}
+		set_country_flag = KRN_revolution_continues
 	}
 	option = {
 		name = petrograd_commune.7.c
-		set_politics = { ruling_party = radical_socialism }
-		add_popularity = {
-			ideology = radical_socialism
-			popularity = 0.05
+		trigger = { always = no }
+		if = {
+			limit = {}
+			effect_tooltip = {
+				set_politics = { ruling_party = radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.05
+				}
+			}
+			hidden_effect = { country_event = petrograd_commune.69 }
+		}
+		else = {
+			set_politics = { ruling_party = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.05
+			}
 		}
 	}
 }
@@ -564,15 +599,17 @@ country_event = {
 	desc = petrograd_commune.8.desc
 	picture = GFX_report_event_rus_bronevik
 	
-	trigger = {
-		tag = KRN
-		NOT = { has_government = communism }
-		communism > 0.25
-	}
+	is_triggered_only = yes
 	
-	mean_time_to_happen = {
-		days = 1
-	}
+	#trigger = {
+		#tag = KRN
+		#NOT = { has_government = communism }
+		#communism > 0.25
+	#}
+	
+	#mean_time_to_happen = {
+		#days = 1
+	#}
 	
 	fire_only_once = yes
 	
@@ -615,15 +652,17 @@ country_event = {
 	desc = petrograd_commune.9.desc
 	picture = GFX_report_event_rus_krondshtat_marine
 	
-	trigger = {
-		tag = KRN
-		NOT = { has_government = national_syndicalism }
-		national_syndicalism > 0.2
-	}
+	is_triggered_only = yes
 	
-	mean_time_to_happen = {
-		days = 1
-	}
+	#trigger = {
+		#tag = KRN
+		#NOT = { has_government = national_syndicalism }
+		#national_syndicalism > 0.2
+	#}
+	
+	#mean_time_to_happen = {
+		#days = 1
+	#}
 	
 	fire_only_once = yes
 	
@@ -660,6 +699,49 @@ country_event = {
 	}
 }
 
+# Интро, большевики
+country_event = {
+	id = petrograd_commune.10
+	title = petrograd_commune.10.t
+	desc = petrograd_commune.10.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.10.a
+		hidden_effect = { country_event = { id = petrograd_commune.11 days = 1 } }
+		add_war_support = 0.05
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Petrogradskaya krasnaya gvardiya\" division_template = \"Petrogradskaya krasnaya gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+		}
+	}
+}
+
+# Интро, демократы
+country_event = {
+	id = petrograd_commune.11
+	title = petrograd_commune.11.t
+	desc = petrograd_commune.11.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.11.a
+		hidden_effect = { country_event = { id = petrograd_commune.16 days = 1 } }
+		add_stability = 0.05
+	}
+}
+
+#Как нам обустроить армию?
 country_event = {
 	id = petrograd_commune.12
 	title = petrograd_commune.12.t
@@ -690,6 +772,11 @@ country_event = {
 		name = petrograd_commune.12.b
 		add_political_power = -25
 		add_ideas = RUS_military_commissars_idea
+		if = {
+			limit = { has_idea = KRN_Dybenko_vs_Kirpichnikov }
+			remove_ideas = KRN_Dybenko_vs_Kirpichnikov
+			add_ideas = KRN_regular_officer
+		}
 		add_popularity = {
 			ideology = communism
 			popularity = 0.03
@@ -762,6 +849,150 @@ country_event = {
 	}
 }
 
+# Интро, Кирпичников
+country_event = {
+	id = petrograd_commune.16
+	title = petrograd_commune.16.t
+	desc = petrograd_commune.16.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.16.a
+		hidden_effect = { country_event = { id = petrograd_commune.17 days = 1 } }
+		add_war_support = 0.05
+		division_template = {
+			name = "Gvardeyskaya Pekhotnaya Diviziya"		# Elite
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+				infantry = { x = 1 y = 0 }
+				infantry = { x = 1 y = 1 }
+				infantry = { x = 1 y = 2 }
+				infantry = { x = 2 y = 0 }
+				artillery_brigade = { x = 2 y = 1 }
+				artillery_brigade = { x = 2 y = 2 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }
+				field_hospital = { x = 0 y = 2 }
+				artillery = { x = 0 y = 3 }
+			}
+			is_locked = yes
+			priority = 2
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Petrogradskaya rezervnaya garnizonnaya diviziya\" division_template = \"Gvardeyskaya Pekhotnaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+		}
+	}
+}
+
+# Интро, Дыбенко
+country_event = {
+	id = petrograd_commune.17
+	title = petrograd_commune.17.t
+	desc = petrograd_commune.17.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.17.a
+		hidden_effect = { country_event = { id = petrograd_commune.18 days = 1 } }
+		add_war_support = 0.05
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Morskaya pekhota\" division_template = \"Morskaya pekhota\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+			create_unit = {
+				division = "name = \"Morskaya pekhota\" division_template = \"Morskaya pekhota\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+			create_unit = {
+				division = "name = \"Morskaya pekhota\" division_template = \"Morskaya pekhota\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+		}
+	}
+}
+
+# Интро, Савинков
+country_event = {
+	id = petrograd_commune.18
+	title = petrograd_commune.18.t
+	desc = petrograd_commune.18.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.18.a
+		hidden_effect = { country_event = { id = petrograd_commune.19 days = 1 } }
+		add_war_support = 0.05	
+		division_template = {
+			name = "Letuchiy otryad"		# Cavalry
+			regiments = {
+				cavalry = { x = 0 y = 0 }
+				cavalry = { x = 0 y = 1 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Letuchiy otryad\" division_template = \"Letuchiy otryad\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+			create_unit = {
+				division = "name = \"Letuchiy otryad\" division_template = \"Letuchiy otryad\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+			create_unit = {
+				division = "name = \"Letuchiy otryad\" division_template = \"Letuchiy otryad\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+		}
+	}
+}
+
+# Интро, Кирилловцы
+country_event = {
+	id = petrograd_commune.19
+	title = petrograd_commune.19.t
+	desc = petrograd_commune.19.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.19.a
+		hidden_effect = { country_event = { id = petrograd_commune.27 days = 1 } }
+		add_stability = 0.05
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Petrogradskaya rezervnaya garnizonnaya diviziya\" division_template = \"Garnizonnaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+		}
+	}
+}
+
 #Взятие Хельсинки за коммуну до фокуса
 country_event = {
 	id = petrograd_commune.20
@@ -777,6 +1008,8 @@ country_event = {
 		FIN = { is_subject_of = RUS }
 		controls_state = 111
 	}
+	
+	fire_only_once = yes
 
 	mean_time_to_happen = {
 		days = 0
@@ -818,11 +1051,11 @@ country_event = {
 			hidden_effect = {
 				country_event = {
 					id = petrograd_commune.22
-					days = 14
+					days = 1
 				}
 				country_event = {
 					id = petrograd_commune.23
-					days = 14
+					days = 1
 				}
 			}
 		}
@@ -857,11 +1090,11 @@ country_event = {
 			hidden_effect = {
 				country_event = {
 					id = petrograd_commune.22
-					days = 14
+					days = 1
 				}
 				country_event = {
 					id = petrograd_commune.23
-					days = 14
+					days = 1
 				}
 			}
 			if = {
@@ -1192,7 +1425,7 @@ country_event = {
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
-		days = 1
+		days = 0
 	}
 	
 	option = {
@@ -1204,6 +1437,155 @@ country_event = {
 	}
 }
 
+# Интро, анархисты
+country_event = {
+	id = petrograd_commune.27
+	title = petrograd_commune.27.t
+	desc = petrograd_commune.27.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.27.a
+		hidden_effect = { country_event = { id = petrograd_commune.28 days = 1 } }
+		add_war_support = 0.05
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Petrogradskaya krasnaya gvardiya\" division_template = \"Petrogradskaya krasnaya gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = KRN
+			}
+		}
+	}
+}
+
+# Выбор главкома
+country_event = {
+	id = petrograd_commune.28
+	title = petrograd_commune.28.t
+	desc = petrograd_commune.28.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = petrograd_commune.28.a
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.05
+		}
+		add_ideas = KRN_Dybenko_vs_Kirpichnikov
+	}
+	
+	option = {
+		name = petrograd_commune.28.b
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.05
+		}
+		add_ideas = KRN_Dybenko
+	}
+	
+	option = {
+		name = petrograd_commune.28.c
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.05
+		}
+		add_ideas = KRN_Kirpichnikov
+	}
+	
+	option = {
+		name = petrograd_commune.28.d
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.05
+		}
+		add_ideas = KRN_no_military_leader
+	}
+}
+
+# Недовольство большевиков выборами
+country_event = {
+	id = petrograd_commune.29
+	title = petrograd_commune.29.t
+	desc = {
+		text = petrograd_commune.29.desc_soc_dem
+		trigger = { has_government = social_democracy }
+	}
+	desc = {
+		text = petrograd_commune.29.desc_soc_lib
+		trigger = { has_government = social_liberalism }
+	}
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	
+	option = {
+		name = petrograd_commune.29.a
+		add_stability = 0.05
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_everyone
+	}
+	
+	option = {
+		trigger = {
+			has_government = social_liberalism
+			OR = {
+				has_idea = KRN_Dybenko_vs_Kirpichnikov
+				has_idea = KRN_no_military_leader
+			}
+			always = no
+		}
+		name = petrograd_commune.29.b
+	}
+}
+
+# Недовольство большевиками
+country_event = {
+	id = petrograd_commune.30
+	title = petrograd_commune.30.t
+	desc = petrograd_commune.30.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	
+	option = {
+		name = petrograd_commune.30.a
+		add_stability = 0.05
+		country_event = petrograd_commune.29
+		random_list = {
+			50 = {
+				set_politics = {
+					ruling_party = social_liberalism
+					elections_allowed = no
+				}
+			}
+			50 = {
+				set_politics = {
+					ruling_party = social_democracy
+					elections_allowed = no
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = petrograd_commune.30.b
+		add_stability = -0.05
+		hidden_effect = { country_event = { id = petrograd_commune.32 days = 1 } }
+	}
+}
 
 country_event = {
 	id = petrograd_commune.31
@@ -1257,6 +1639,1690 @@ country_event = {
 		add_war_support = -0.1
 		add_stability = -0.1
 		ai_chance = { factor = 0 }
+	}
+}
+
+# Поиск союзников
+country_event = {
+	id = petrograd_commune.32
+	title = petrograd_commune.32.t
+	desc = petrograd_commune.32.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.32.a
+		country_event = petrograd_commune.33
+	}
+	
+	option = {
+		name = petrograd_commune.32.b
+		hidden_effect = {
+			country_event = petrograd_commune.38
+		}
+		effect_tooltip = {
+			country_event = petrograd_commune.35
+		}
+	}
+	
+	option = {
+		name = petrograd_commune.32.c
+		set_country_flag = KRN_Kirill_is_more_powerful
+		country_event = petrograd_commune.35
+	}
+	
+	option = {
+		name = petrograd_commune.32.d
+		set_country_flag = KRN_Savinkov_is_more_powerful
+		country_event = petrograd_commune.35
+		if = {
+			limit = { has_idea = KRN_Dybenko_vs_Kirpichnikov }
+			country_event = petrograd_commune.34
+		}
+	}
+}
+
+# Дыбенко принудил к компромиссу
+country_event = {
+	id = petrograd_commune.33
+	title = petrograd_commune.33.t
+	desc = petrograd_commune.33.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.33.a
+		if = {
+			limit = { has_idea = KRN_no_military_leader }
+			remove_ideas = KRN_no_military_leader
+			add_ideas = KRN_Dybenko
+		}
+		add_stability = 0.05
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_everyone
+		set_country_flag = KRN_Dybenko_is_more_powerful
+	}
+}
+
+# Энгельгардт принудил к компромиссу
+country_event = {
+	id = petrograd_commune.34
+	title = petrograd_commune.34.t
+	desc = petrograd_commune.34.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.34.a
+		if = {
+			limit = { has_idea = KRN_no_military_leader }
+			remove_ideas = KRN_no_military_leader
+			add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		}
+		add_stability = 0.05
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_everyone
+		set_country_flag = KRN_Kirill_is_more_powerful
+	}
+}
+
+# Противостояние большевиков и их шепиловых
+country_event = {
+	id = petrograd_commune.35
+	title = petrograd_commune.35.t
+	desc = petrograd_commune.35.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.35.a
+		effect_tooltip = {
+			add_stability = -0.01
+			add_political_power = 25
+		}
+		hidden_effect = {
+			random_list = {
+				50 = {
+					country_event = petrograd_commune.37
+				}
+				50 = {
+					country_event = petrograd_commune.36
+				}
+			}
+		}
+	}
+}
+
+# Большевики проиграли
+country_event = {
+	id = petrograd_commune.36
+	title = petrograd_commune.36.t
+	desc = petrograd_commune.36.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.36.a
+		add_popularity = {
+			ideology = communism
+			popularity = -0.05
+		}
+		remove_ideas = RUS_red_guards
+		if = {
+			limit = { has_country_flag = KRN_Savinkov_is_more_powerful }
+			clr_country_flag = KRN_Savinkov_is_more_powerful
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+			remove_ideas = KRN_savinkovtsy
+		}
+		else_if = {
+			limit = { has_country_flag = KRN_Kirill_is_more_powerful }
+			clr_country_flag = KRN_Kirill_is_more_powerful
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -1
+			}
+			remove_ideas = KRN_kirillovtsy
+			if = {
+				limit = { has_idea = KRN_Dybenko_vs_Kirpichnikov }
+				remove_ideas = KRN_Dybenko_vs_Kirpichnikov
+				add_ideas = KRN_Dybenko
+			}
+		}
+		if = {
+			limit = { has_idea = KRN_no_military_leader }
+			remove_ideas = KRN_no_military_leader
+			add_ideas = KRN_Dybenko
+		}
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_everyone_expect_communist
+	}
+}
+
+# Большевики выиграли
+country_event = {
+	id = petrograd_commune.37
+	title = petrograd_commune.37.t
+	desc = petrograd_commune.37.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.37.a
+		remove_ideas = KRN_volyntsi
+		if = {
+			limit = { has_country_flag = KRN_Savinkov_is_more_powerful }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -1
+			}
+			remove_ideas = KRN_kirillovtsy
+			if = {
+				limit = { OR = { has_idea = KRN_Dybenko_vs_Kirpichnikov has_idea = KRN_Kirpichnikov } }
+				remove_ideas = {
+					KRN_Dybenko_vs_Kirpichnikov
+					KRN_Kirpichnikov
+				}
+				add_ideas = KRN_Dybenko
+			}
+		}
+		else_if = {
+			limit = { has_country_flag = KRN_Kirill_is_more_powerful }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+			remove_ideas = KRN_savinkovtsy
+			if = {
+				limit = { has_idea = KRN_Kirpichnikov }
+				remove_ideas = KRN_Kirpichnikov
+				add_ideas = KRN_Dybenko
+			}
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_communist_Dybenko_and_Kirill_or_Savinkov
+	}
+}
+
+# Кирпичников разгнал большевиков, но не победил
+country_event = {
+	id = petrograd_commune.38
+	title = petrograd_commune.38.t
+	desc = petrograd_commune.38.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.38.a
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		effect_tooltip = {
+			add_stability = 0.15
+		}
+		hidden_effect = { country_event = petrograd_commune.39 }
+	}
+}
+
+# Требование Кирпичникова
+country_event = {
+	id = petrograd_commune.39
+	title = petrograd_commune.39.t
+	desc = petrograd_commune.39.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.39.a
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		random_list = {
+			60 = {
+				country_event = petrograd_commune.54
+			}
+			40 = {
+				country_event = petrograd_commune.55
+			}
+		}
+	}
+	
+	option = {
+		name = petrograd_commune.39.b
+		add_popularity = {
+			ideology = social_democracy
+			popularity = -0.05
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.05
+		}
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		effect_tooltip = {
+			add_stability = 0.15
+		}
+		hidden_effect = { country_event = petrograd_commune.40 }
+	}
+}
+
+# Дыбенко объявляет Кирпичникова врагом народа
+country_event = {
+	id = petrograd_commune.40
+	title = petrograd_commune.40.t
+	desc = petrograd_commune.40.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.40.a
+		if = {
+			limit = { OR = { has_idea = KRN_Dybenko has_idea = KRN_Dybenko_vs_Kirpichnikov has_idea = KRN_no_military_leader } }
+			remove_ideas = KRN_Dybenko
+			remove_ideas = KRN_Dybenko_vs_Kirpichnikov
+			remove_ideas = KRN_no_military_leader
+			add_ideas = KRN_Kirpichnikov
+		}
+		country_event = petrograd_commune.41
+	}
+}
+
+# Выбор как разогнать красную гвардию
+country_event = {
+	id = petrograd_commune.41
+	title = petrograd_commune.41.t
+	desc = petrograd_commune.41.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.41.a
+		country_event = petrograd_commune.47
+	}
+	
+	option = {
+		name = petrograd_commune.41.b
+		random_list = {
+			50 = {
+				country_event = petrograd_commune.49
+			}
+			50 = {
+				country_event = petrograd_commune.42
+			}
+		}
+	}
+}
+
+# Разгон красной гвардии Кирпичников, успех
+country_event = {
+	id = petrograd_commune.42
+	title = petrograd_commune.42.t
+	desc = petrograd_commune.42.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.42.a
+		remove_ideas = RUS_red_guards
+		add_popularity = {
+			ideology = communism
+			popularity = -0.05
+		}
+		random_list = {
+			50 ={
+				country_event = petrograd_commune.43
+			}
+			50 = {
+				random_list = {
+					50 = {
+						country_event = petrograd_commune.44
+					}
+					50 = {
+						country_event = petrograd_commune.48
+					}
+				}
+			}
+		}
+	}
+}
+
+# Победа Кирпичникова и Савинкова
+country_event = {
+	id = petrograd_commune.43
+	title = petrograd_commune.43.t
+	desc = petrograd_commune.43.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.43.a
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_only_Savinkov
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.05
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.05
+		}
+		remove_ideas = {
+			KRN_sailors
+			KRN_kirillovtsy
+		}
+		retire_ideology_leader = authoritarism
+		retire_ideology_leader = national_syndicalism
+		create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+	}
+}
+
+# Победа Кирилла и Савинкова
+country_event = {
+	id = petrograd_commune.44
+	title = petrograd_commune.44.t
+	desc = petrograd_commune.44.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.44.a
+		country_event = petrograd_commune.45
+		set_politics = {
+			ruling_party = authoritarism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.05
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.05
+		}
+		remove_ideas = {
+			KRN_sailors
+			KRN_volyntsi
+			KRN_Kirpichnikov
+		}
+		add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		retire_ideology_leader = despotism
+		retire_ideology_leader = national_syndicalism
+		create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+	}
+}
+
+# Сделка Кирилла и Савинкова
+country_event = {
+	id = petrograd_commune.45
+	title = petrograd_commune.45.t
+	desc = petrograd_commune.45.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.45.a
+		add_stability = 0.05
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_only_Savinkov
+	}
+	
+	option = {
+		name = petrograd_commune.45.b
+		effect_tooltip = {
+			retire_ideology_leader = national_syndicalism
+			remove_ideas = KRN_savinkovtsy
+		}
+		hidden_effect = {
+			random_list = {
+				50 = {
+					retire_ideology_leader = national_syndicalism
+					remove_ideas = KRN_savinkovtsy
+					add_popularity = {
+						ideology = national_syndicalism
+						popularity = -1
+					}
+					set_country_flag = KRN_only_anarchy
+				}
+				50 = {
+					country_event = petrograd_commune.46
+				}
+			}
+		}
+	}
+}
+
+# Савинков смог победить Кирилла
+country_event = {
+	id = petrograd_commune.46
+	title = petrograd_commune.46.t
+	desc = petrograd_commune.46.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.45.a
+		retire_ideology_leader = authoritarism
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		remove_ideas = KRN_kirillovtsy
+		remove_ideas = KRN_Dybenko_vs_Kirpichnikov
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_only_anarchy
+	}
+}
+
+# Кирпичников выбирает союзников
+country_event = {
+	id = petrograd_commune.47
+	title = petrograd_commune.47.t
+	desc = petrograd_commune.47.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.47.a
+		effect_tooltip = { country_event = treaty_of_brest.4 }
+		set_country_flag = KRN_Savinkov_is_more_powerful
+		hidden_effect = { country_event = petrograd_commune.49 }
+	}
+	
+	option = {
+		name = petrograd_commune.47.b
+		effect_tooltip = { country_event = treaty_of_brest.4 }
+		set_country_flag = KRN_Kirill_is_more_powerful
+		hidden_effect = { country_event = petrograd_commune.49 }
+	}
+}
+
+# Дыбенко победил
+country_event = {
+	id = petrograd_commune.48
+	title = petrograd_commune.48.t
+	desc = petrograd_commune.48.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.48.a
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
+		retire_ideology_leader = authoritarism
+		retire_ideology_leader = despotism
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.1
+		}
+		remove_ideas = {
+			KRN_kirillovtsy
+			KRN_savinkovtsy
+			KRN_volyntsi
+			KRN_Dybenko_vs_Kirpichnikov
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko } }
+			add_ideas = KRN_Dybenko
+		}
+		if = {
+			limit = { NOT = { has_idea = RUS_red_guards } }
+			add_ideas = RUS_red_guards
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_Dybenko_and_bolsheviks
+		set_country_flag = KRN_Dybenko_is_more_powerful
+	}
+}
+
+# Кирпичников арестован
+country_event = {
+	id = petrograd_commune.49
+	title = petrograd_commune.49.t
+	desc = petrograd_commune.49.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.49.a
+		country_event = petrograd_commune.50
+		remove_ideas = {
+			KRN_Kirpichnikov
+			KRN_volyntsi
+		}
+		add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		if = {
+			limit = { has_country_flag = KRN_Savinkov_is_more_powerful }
+			add_popularity = {
+				ideology = despotism
+				popularity = -1
+			}
+			retire_ideology_leader = despotism
+			retire_ideology_leader = national_syndicalism
+			set_politics = {
+				ruling_party = national_syndicalism
+				elections_allowed = no
+			}
+			every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+			create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		}
+		else_if = {
+			limit = { has_country_flag = KRN_Kirill_is_more_powerful }
+			add_popularity = {
+				ideology = despotism
+				popularity = -1
+			}
+			retire_ideology_leader = despotism
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+			every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+		}
+		else = {
+			random_list = {
+				50 = {
+					add_popularity = {
+						ideology = despotism
+						popularity = -1
+					}
+					retire_ideology_leader = despotism
+					retire_ideology_leader = national_syndicalism
+					set_politics = {
+						ruling_party = national_syndicalism
+						elections_allowed = no
+					}
+					set_country_flag = KRN_Savinkov_is_more_powerful
+					every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+					create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+				}
+				50 = {
+					add_popularity = {
+						ideology = despotism
+						popularity = -1
+					}
+					retire_ideology_leader = despotism
+					set_politics = {
+						ruling_party = authoritarism
+						elections_allowed = no
+					}
+					set_country_flag = KRN_Kirill_is_more_powerful
+					every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+				}
+			}
+		}
+	}
+}
+
+# Дыбенко требует не трогать рабочих
+country_event = {
+	id = petrograd_commune.50
+	title = petrograd_commune.50.t
+	desc = petrograd_commune.50.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.50.a
+		random_list = {
+			50 = {
+				if = {
+				limit = { NOT = { has_government = social_liberalism } }
+					if = {
+						limit = { RUS = { has_country_flag = Alexander_Kerensky_dead } }
+						set_politics = {
+							ruling_party = social_democracy
+							elections_allowed = no
+						}
+					}
+					else = {
+						set_politics = {
+							ruling_party = social_liberalism
+							elections_allowed = no
+						}
+					}
+				}
+				add_ideas = RUS_red_guards
+				set_country_flag = KRN_unstable_stability
+				set_country_flag = KRN_everyone
+				set_country_flag = KRN_Dybenko_is_more_powerful
+			}
+			50 = {
+				country_event = petrograd_commune.51
+			}
+		}
+	}
+	
+	option = {
+		name = petrograd_commune.50.b
+		country_event = petrograd_commune.51
+	}
+}
+
+# Кирилл и Савинков против Дыбенко и больщевиков
+country_event = {
+	id = petrograd_commune.51
+	title = petrograd_commune.51.t
+	desc = petrograd_commune.51.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.51.a
+		random_list = {
+			50 = {
+				country_event = petrograd_commune.52
+			}
+			50 = {
+				country_event = petrograd_commune.53
+			}
+		}
+	}
+}
+
+# Дыбенко победил
+country_event = {
+	id = petrograd_commune.52
+	title = petrograd_commune.52.t
+	desc = petrograd_commune.52.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.52.a
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
+		retire_ideology_leader = authoritarism
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.1
+		}
+		remove_ideas = {
+			KRN_kirillovtsy
+			KRN_savinkovtsy
+			KRN_volyntsi
+			KRN_Dybenko_vs_Kirpichnikov
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko } }
+			add_ideas = KRN_Dybenko
+		}
+		if = {
+			limit = { NOT = { has_idea = RUS_red_guards } }
+			add_ideas = RUS_red_guards
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_Dybenko_and_bolsheviks
+		set_country_flag = KRN_Dybenko_is_more_powerful
+	}
+}
+
+# Победа Кирилла и Савинкова
+country_event = {
+	id = petrograd_commune.53
+	title = petrograd_commune.53.t
+	desc = petrograd_commune.53.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.53.a
+		country_event = petrograd_commune.45
+		if = {
+			limit = { has_government = social_liberalism }
+			country_event = petrograd_commune.58
+		}
+		set_politics = {
+			ruling_party = authoritarism
+			elections_allowed = no
+		}
+		remove_ideas = {
+			KRN_sailors
+			KRN_Dybenko
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+			RUS_red_guards
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko_vs_Kirpichnikov } }
+			add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		}
+		retire_ideology_leader = national_syndicalism
+		create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+	}
+}
+
+# Керенский убит
+country_event = {
+	id = petrograd_commune.54
+	title = petrograd_commune.54.t
+	desc = petrograd_commune.54.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.54.a
+		country_event = petrograd_commune.40
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -1
+		}
+		retire_ideology_leader = social_liberalism
+		RUS = { set_country_flag = Alexander_Kerensky_dead }
+	}
+}
+
+# Керенский ищет союзников
+country_event = {
+	id = petrograd_commune.55
+	title = petrograd_commune.55.t
+	desc = petrograd_commune.55.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.55.a
+		country_event = petrograd_commune.56
+	}
+	
+	option = {
+		name = petrograd_commune.55.b
+		random_list = {
+			50 = { country_event = petrograd_commune.57 }
+			50 = { country_event = petrograd_commune.59 }
+		}
+	}
+}
+
+# Дыбенко победил Кирпичникова по просьбе Керенского
+country_event = {
+	id = petrograd_commune.56
+	title = petrograd_commune.56.t
+	desc = petrograd_commune.56.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.56.a
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		retire_ideology_leader = despotism
+		every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.1
+		}
+		remove_ideas = {
+			KRN_volyntsi
+			KRN_Dybenko_vs_Kirpichnikov
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko } }
+			add_ideas = KRN_Dybenko
+		}
+		if = {
+			limit = { NOT = { has_idea = RUS_red_guards } }
+			add_ideas = RUS_red_guards
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_Dybenko_and_everyone
+		set_country_flag = KRN_Dybenko_is_more_powerful
+	}
+}
+
+# Кирпичников арестован, но главный Керенский
+country_event = {
+	id = petrograd_commune.57
+	title = petrograd_commune.57.t
+	desc = petrograd_commune.57.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.57.a
+		country_event = petrograd_commune.50
+		remove_ideas = KRN_Kirpichnikov
+		add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		retire_ideology_leader = despotism
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+	}
+}
+
+# Керенского кинули
+country_event = {
+	id = petrograd_commune.58
+	title = petrograd_commune.58.t
+	desc = petrograd_commune.58.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.58.a
+	}
+}
+
+# Большевики оправились и что-то мутят
+country_event = {
+	id = petrograd_commune.59
+	title = petrograd_commune.59.t
+	desc = petrograd_commune.59.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.59.a
+		country_event = petrograd_commune.60
+	}
+	
+	option = {
+		name = petrograd_commune.59.b
+		custom_effect_tooltip = no_good_idea
+		effect_tooltip = { country_event = petrograd_commune.42 }
+		hidden_effect = {
+			random_list = {
+				50 = {
+					country_event = petrograd_commune.66
+				}
+				50 = {
+					country_event = petrograd_commune.67
+				}
+			}
+		}
+	}
+}
+
+# Волынцев побили
+country_event = {
+	id = petrograd_commune.60
+	title = petrograd_commune.60.t
+	desc = petrograd_commune.60.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.60.a
+		remove_ideas = KRN_Kirpichnikov
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		retire_ideology_leader = despotism
+		every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+		country_event = petrograd_commune.62
+	}
+	
+	option = {
+		name = petrograd_commune.60.b
+		remove_ideas = KRN_Kirpichnikov
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		retire_ideology_leader = despotism
+		every_unit_leader = { limit = { OR = { has_id = 77432 } } retire = yes }
+		custom_effect_tooltip = no_good_idea
+		hidden_effect = {
+			country_event = petrograd_commune.61
+		}
+	}
+}
+
+# Савинков перешёл на сторону большевиков
+country_event = {
+	id = petrograd_commune.61
+	title = petrograd_commune.61.t
+	desc = petrograd_commune.61.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.61.a
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
+		retire_ideology_leader = authoritarism
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.1
+		}
+		remove_ideas = {
+			KRN_kirillovtsy
+			KRN_Dybenko_vs_Kirpichnikov
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko } }
+			add_ideas = KRN_Dybenko
+		}
+		if = {
+			limit = { NOT = { has_idea = RUS_red_guards } }
+			add_ideas = RUS_red_guards
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_Dybenko_and_Savinkov
+		set_country_flag = KRN_Savinkov_is_more_powerful
+	}
+}
+
+# Победа над большевиками, но Кирилл и Керенский могут поссорится
+country_event = {
+	id = petrograd_commune.62
+	title = petrograd_commune.62.t
+	desc = petrograd_commune.62.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.62.a
+		retire_ideology_leader = communism
+		add_popularity = {
+			ideology = communism
+			popularity = -1
+		}
+		remove_ideas = {
+			KRN_sailors
+			KRN_Dybenko
+			KRN_no_military_leader
+			RUS_red_guards
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko_vs_Kirpichnikov } }
+			add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		}
+		retire_ideology_leader = national_syndicalism
+		create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+		country_event = petrograd_commune.63
+	}
+	
+	option = {
+		name = petrograd_commune.62.b
+		retire_ideology_leader = communism
+		add_popularity = {
+			ideology = communism
+			popularity = -1
+		}
+		remove_ideas = {
+			KRN_sailors
+			KRN_Dybenko
+			KRN_no_military_leader
+			RUS_red_guards
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko_vs_Kirpichnikov } }
+			add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		}
+		retire_ideology_leader = national_syndicalism
+		create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+		country_event = petrograd_commune.64
+	}
+}
+
+# Керенский победил с Кириллом и Савинковым
+country_event = {
+	id = petrograd_commune.63
+	title = petrograd_commune.63.t
+	desc = petrograd_commune.63.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.63.a
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_Kerensky_Savinkov_Kirill
+		set_country_flag = KRN_Savinkov_is_more_powerful
+	}
+	
+	option = {
+		name = petrograd_commune.63.b
+		effect_tooltip = {
+			retire_ideology_leader = authoritarism
+			remove_ideas = KRN_kirillovtsy
+		}
+		hidden_effect = {
+			random_list = {
+				50 = {
+					retire_ideology_leader = authoritarism
+					remove_ideas = KRN_kirillovtsy
+					add_popularity = {
+						ideology = authoritarism
+						popularity = -1
+					}
+				}
+				50 = {
+					country_event = petrograd_commune.65
+				}
+			}
+		}
+	}
+}
+
+# Керенского кинули после победы
+country_event = {
+	id = petrograd_commune.64
+	title = petrograd_commune.64.t
+	desc = petrograd_commune.64.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.64.a
+		set_politics = {
+			ruling_party = authoritarism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -1
+		}
+		retire_ideology_leader = social_liberalism
+		RUS = { set_country_flag = Alexander_Kerensky_dead }
+		country_event = petrograd_commune.45
+	}
+}
+
+# Кирилл победил Савинкова
+country_event = {
+	id = petrograd_commune.65
+	title = petrograd_commune.65.t
+	desc = petrograd_commune.65.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.65.a
+		set_politics = {
+			ruling_party = authoritarism
+			elections_allowed = no
+		}
+		retire_ideology_leader = national_syndicalism
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -1
+		}
+		remove_ideas = {
+			KRN_savinkovtsy
+			KRN_no_military_leader
+		}
+		add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_only_anarchy
+	}
+}
+
+# Кирпичников победил
+country_event = {
+	id = petrograd_commune.66
+	title = petrograd_commune.66.t
+	desc = petrograd_commune.66.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.66.a
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		retire_ideology_leader = authoritarism
+		retire_ideology_leader = national_syndicalism
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -1
+		}
+		remove_ideas = {
+			KRN_kirillovtsy
+			KRN_savinkovtsy
+			KRN_Dybenko_vs_Kirpichnikov
+			KRN_Dybenko
+			KRN_no_military_leader
+			RUS_red_guards
+		}
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+		if = {
+			limit = { NOT = { has_idea = KRN_volyntsi } }
+			add_ideas = KRN_volyntsi
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Kirpichnikov } }
+			add_ideas = KRN_Kirpichnikov
+		}
+		set_country_flag = KRN_unstable_stability
+		set_country_flag = KRN_only_anarchy
+	}
+}
+
+# Анархия
+country_event = {
+	id = petrograd_commune.67
+	title = petrograd_commune.67.t
+	desc = petrograd_commune.67.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.67.a
+		set_politics = {
+			ruling_party = radical_socialism
+			elections_allowed = no
+		}
+		retire_ideology_leader = authoritarism
+		retire_ideology_leader = despotism
+		retire_ideology_leader = national_syndicalism
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -1
+		}
+		remove_ideas = {
+			KRN_kirillovtsy
+			KRN_savinkovtsy
+			KRN_volyntsi
+			KRN_Dybenko_vs_Kirpichnikov
+			KRN_Dybenko
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+			RUS_red_guards
+		}
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+	}
+}
+
+#Подставной кандидат или военный лидер утратил кредит доверия
+country_event = {
+	id = petrograd_commune.68
+	title = petrograd_commune.68.t
+	desc = petrograd_commune.68.desc
+	picture = GFX_report_event_cimmerman_telegramm
+	
+	trigger = {
+		has_war_with = RUS
+	}
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.68.a
+		set_country_flag = KRN_revolution_continues
+	}
+}
+
+#Военные лидеры заполняют вакуум власти
+country_event = {
+	id = petrograd_commune.69
+	title = petrograd_commune.69.t
+	desc = petrograd_commune.69.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.69.a
+		
+	}
+}
+
+# Дыбенко опрокинул большевиков
+country_event = {
+	id = petrograd_commune.70
+	title = petrograd_commune.70.t
+	desc = petrograd_commune.70.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.70.a
+		if = {
+			limit = { has_country_flag = KRN_Dybenko_is_radsoc }
+			set_politics = {
+				ruling_party = radical_socialism
+				elections_allowed = no
+			}
+		}
+		else = {
+			set_politics = {
+				ruling_party = national_syndicalism
+				elections_allowed = no
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = -1
+		}
+		remove_ideas = {
+			RUS_red_guards
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko } }
+			add_ideas = KRN_Dybenko
+		}
+		clr_country_flag = KRN_revolution_continues
+	}
+}
+
+# Анархия
+country_event = {
+	id = petrograd_commune.71
+	title = petrograd_commune.71.t
+	desc = petrograd_commune.71.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.71.a
+		set_politics = {
+			ruling_party = radical_socialism
+			elections_allowed = no
+		}
+		retire_ideology_leader = authoritarism
+		retire_ideology_leader = despotism
+		retire_ideology_leader = national_syndicalism
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -1
+		}
+		remove_ideas = {
+			KRN_kirillovtsy
+			KRN_savinkovtsy
+			KRN_volyntsi
+			KRN_Dybenko_vs_Kirpichnikov
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+			RUS_red_guards
+		}
+		if = {
+			limit = { NOT = { has_idea = KRN_Dybenko } has_country_leader = { name = "Pavel Dybenko" ruling_only = yes } }
+			add_ideas = KRN_Dybenko
+		}
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+	}
+}
+
+# Савинков опрокинул Кирпичникова
+country_event = {
+	id = petrograd_commune.72
+	title = petrograd_commune.72.t
+	desc = petrograd_commune.72.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.72.a
+		set_politics = {
+			ruling_party = national_syndicalism
+			elections_allowed = no
+		}
+		retire_ideology_leader = despotism
+		add_popularity = {
+			ideology = despotism
+			popularity = -1
+		}
+		remove_ideas = {
+			KRN_volyntsi
+			KRN_Kirpichnikov
+			KRN_no_military_leader
+		}
+		every_unit_leader = { limit = { OR = { has_id = 77432 } } set_nationality = REB }
+	}
+}
+
+# Противостояние Дыбенко и Савинкова (Кирила)
+country_event = {
+	id = petrograd_commune.73
+	title = petrograd_commune.73.t
+	desc = petrograd_commune.73.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.73.a
+		random_list = {
+			50 = {
+				if = {
+					limit = { has_country_flag = KRN_communist_Dybenko_and_Kirill_or_Savinkov has_country_flag = KRN_Kirill_is_more_powerful }
+					country_event = petrograd_commune.77
+				}
+				else = {
+					country_event = petrograd_commune.75
+				}
+			}
+			50 = {
+				country_event = petrograd_commune.74
+			}
+		}
+		every_unit_leader = { limit = { OR = { has_id = 19173 has_id = 19194 has_id = 19194 } } set_nationality = REB }
+	}
+}
+
+# Победа Дыбенко
+country_event = {
+	id = petrograd_commune.74
+	title = petrograd_commune.74.t
+	desc = petrograd_commune.74.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.74.a
+		if = {
+			limit = { has_country_flag = KRN_Dybenko_is_radsoc }
+			set_politics = {
+				ruling_party = radical_socialism
+				elections_allowed = no
+			}
+		}
+		else = {
+			set_politics = {
+				ruling_party = national_syndicalism
+				elections_allowed = no
+			}
+		}
+		remove_ideas = {
+			KRN_savinkovtsy
+			RUS_red_guards
+			KRN_no_military_leader
+		}
+	}
+}
+
+# Победа Савинкова
+country_event = {
+	id = petrograd_commune.75
+	title = petrograd_commune.75.t
+	desc = petrograd_commune.75.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.75.a
+		set_politics = {
+			ruling_party = national_syndicalism
+			elections_allowed = no
+		}
+		if = {
+			limit = { has_country_flag = KRN_Dybenko_is_radsoc }
+			retire_ideology_leader = radical_socialism
+		}
+		else = {
+			retire_ideology_leader = national_syndicalism
+			create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" ideology = national_syndicalism_ideology  traits = { dictator ideological_crusader adventurous_daredevil political_dancer min_4_prince_of_terror } }
+		}
+		remove_ideas = {
+			KRN_sailors
+			KRN_Dybenko
+			KRN_no_military_leader
+		}
+		every_unit_leader = { limit = { OR = { has_id = 19173 } } set_nationality = REB }
+	}
+}
+
+# Керенский в сделку не входил
+country_event = {
+	id = petrograd_commune.76
+	title = petrograd_commune.76.t
+	desc = petrograd_commune.76.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.76.a
+		set_politics = {
+			ruling_party = authoritarism
+			elections_allowed = no
+		}
+		set_country_flag = KRN_45_another_desc
+		country_event = petrograd_commune.45
+	}
+}
+
+# Победа Кирилла
+country_event = {
+	id = petrograd_commune.77
+	title = petrograd_commune.77.t
+	desc = petrograd_commune.77.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_commune.77.a
+		set_politics = {
+			ruling_party = authoritarism
+			elections_allowed = no
+		}
+		remove_ideas = {
+			KRN_sailors
+			KRN_Dybenko
+			KRN_no_military_leader
+			KRN_Dybenko_vs_Kirpichnikov
+		}
+		add_ideas = KRN_Dybenko_vs_Kirpichnikov
+		every_unit_leader = { limit = { OR = { has_id = 19173 } } set_nationality = REB }
 	}
 }
 
@@ -1966,7 +4032,7 @@ country_event = {
 					picture = "gfx/leaders/SOV/Pavel_Dybenko.dds"
 					expire = "1935.1.1"
 					ideology = national_bolshevism_ideology
-					traits = { dictator }
+					traits = { dictator father_to_the_sailors }
 				}
 				set_politics = {
 					ruling_party = national_syndicalism
