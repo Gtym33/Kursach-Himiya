@@ -1,4 +1,4 @@
-version="1.9.*"
+version="1.10.*"
 tags={
 	"Events"
 	"Gameplay"
@@ -8,6 +8,6 @@ tags={
 	"Map"
 	"Technologies"
 }
-name="Rise of Russia dev"
-supported_version="1.9.2"
-remote_file_id="2018041793"
+name="Rise of Russia"
+supported_version="1.10.3"
+remote_file_id="1285457891"
