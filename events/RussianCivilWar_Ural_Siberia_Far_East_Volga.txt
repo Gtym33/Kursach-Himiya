@@ -620,6 +620,7 @@ country_event = {
 					state = 1072
 					state = 572
 					state = 1103
+					state = 1231
 				}
 			}
 			CCA = { add_state_core = PREV }
@@ -745,6 +746,7 @@ country_event = {
 					state = 1072
 					state = 572
 					state = 1103
+					state = 1231
 				}
 			}
 			CCA = { add_state_core = PREV }
@@ -2002,6 +2004,7 @@ country_event = {
 							state = 714
 							state = 1209
 							state = 573
+							state = 1231
 							state = 582
 							state = 651
 							state = 652
@@ -2056,6 +2059,7 @@ country_event = {
 						state = 714
 						state = 1209
 						state = 573
+						state = 1231
 						state = 582
 						state = 651
 						state = 652
@@ -2077,6 +2081,7 @@ country_event = {
 			remove_state_core = 652
 			remove_state_core = 582
 			remove_state_core = 573
+			remove_state_core = 1231
 			remove_state_core = 581
 		}
 		}
@@ -4096,28 +4101,28 @@ country_event = {
 		USA = {add_opinion_modifier = { target = JAP modifier = USA_no_accept_JAP }}
 		ENG = {add_opinion_modifier = { target = JAP modifier = ENT_no_accept_JAP }}
 		FRA = {add_opinion_modifier = { target = JAP modifier = ENT_no_accept_JAP }}
-			hidden_effect = {
-				every_country = {
-					limit = {
-						OR = {
-							tag = ROOT
-							is_in_faction_with = ROOT
-							is_subject_of = ROOT
-						}
-					}
-					if = {
-						limit = {
-							is_in_array = {
-								array = unrecognized_states
-								value = FROM.id
-							}
-						}
-						FROM = {
-							THIS_country_will_be_recognized_by_PREV = yes
-						}
-					}
-				}
-			}
+		#hidden_effect = {
+		#	every_country = {
+		#		limit = {
+		#			OR = {
+		#				tag = ROOT
+		#				is_in_faction_with = ROOT
+		#				is_subject_of = ROOT
+		#			}
+		#		}
+		#		if = {
+		#			limit = {
+		#				is_in_array = {
+		#					array = unrecognized_states
+		#					value = FROM.id
+		#				}
+		#			}
+		#			FROM = {
+		#				THIS_country_will_be_recognized_by_PREV = yes
+		#			}
+		#		}
+		#	}
+		#}
 	}
 	option = {
 		name = rcw_usfev.85.b
@@ -4185,28 +4190,28 @@ country_event = {
 			add_manpower = 100000
 			load_oob = SIB_JAP
 		}
-			hidden_effect = {
-				every_country = {
-					limit = {
-						OR = {
-							tag = ROOT
-							is_in_faction_with = ROOT
-							is_subject_of = ROOT
-						}
-					}
-					if = {
-						limit = {
-							is_in_array = {
-								array = unrecognized_states
-								value = FROM.id
-							}
-						}
-						FROM = {
-							THIS_country_will_be_recognized_by_PREV = yes
-						}
-					}
-				}
-			}
+		#hidden_effect = {
+		#	every_country = {
+		#		limit = {
+		#			OR = {
+		#				tag = ROOT
+		#				is_in_faction_with = ROOT
+		#				is_subject_of = ROOT
+		#			}
+		#		}
+		#		if = {
+		#			limit = {
+		#				is_in_array = {
+		#					array = unrecognized_states
+		#					value = FROM.id
+		#				}
+		#			}
+		#			FROM = {
+		#				THIS_country_will_be_recognized_by_PREV = yes
+		#			}
+		#		}
+		#	}
+		#}
 	}
 	option = {
 		name = rcw_usfev.87.b
@@ -4237,8 +4242,8 @@ country_event = {
 			factor = 999
 		}
 		JAP = {
-			USA = { add_opinion_modifier = { target = JAP modifier = USA_no_accept_JAP_strong } }
-			CHI = { add_opinion_modifier = { target = JAP modifier = CHI_no_accept_JAP } }
+			USA = { add_opinion_modifier = { target = PREV modifier = USA_no_accept_JAP_strong } }
+			CHI = { add_opinion_modifier = { target = PREV modifier = CHI_no_accept_JAP } }
 		}
 		every_state = {
 			limit = {
@@ -4249,6 +4254,14 @@ country_event = {
 					state = 555
 					state = 1104
 				}
+				NOT = {
+					state = 951
+					state = 1193
+					state = 952
+					state = 1209
+					state = 1216
+					state = 950
+				}
 				CONTROLLER = {
 					OR = {
 						tag = ROOT
@@ -4258,6 +4271,47 @@ country_event = {
 			}
 			JAP = { transfer_state = PREV }
 		}
+		every_state = {
+			limit = {
+				OR = {
+					state = 951
+					state = 1193
+					state = 952
+					state = 1209
+					state = 1216
+					state = 950
+				}
+				OWNER = {
+					any_owned_state = {
+						NOT = {
+							state = 951
+							state = 1193
+							state = 952
+							state = 1209
+							state = 1216
+							state = 950
+						}
+					}
+				}
+			}
+			HRB = { transfer_state = PREV }
+		}
+		JAP = { HRB = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
+		HRB = {
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+			retire_ideology_leader = social_conservatism
+			add_popularity = {
+				ideology = authoritarism
+				popularity = party_popularity@social_conservatism
+			}
+			add_popularity = {
+				ideology = social_conservatism
+				popularity = -1
+			}
+			create_country_leader = { name = "Hitomi Jiro" desc = "" picture = "gfx/leaders/JAP/Hitomi_Jiro.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = { } }
+			set_cosmetic_tag = HRB_Chinese_eastern_railroad_JAP_CHI
+		}
+		
 		add_equipment_to_stockpile = {
 			type = infantry_equipment_great_war
 			amount = 20000
@@ -4269,28 +4323,28 @@ country_event = {
 			producer = JAP
 		}
 		
-		hidden_effect = {
-			every_country = {
-				limit = {
-					OR = {
-						tag = JAP
-						is_in_faction_with = JAP
-						is_subject_of = JAP
-					}
-				}
-				if = {
-					limit = {
-						is_in_array = {
-							array = unrecognized_states
-							value = ROOT.id
-						}
-					}
-					ROOT = {
-						THIS_country_will_be_recognized_by_PREV = yes
-					}
-				}
-			}
-		}
+		#hidden_effect = {
+		#	every_country = {
+		#		limit = {
+		#			OR = {
+		#				tag = JAP
+		#				is_in_faction_with = JAP
+		#				is_subject_of = JAP
+		#			}
+		#		}
+		#		if = {
+		#			limit = {
+		#				is_in_array = {
+		#					array = unrecognized_states
+		#					value = ROOT.id
+		#				}
+		#			}
+		#			ROOT = {
+		#				THIS_country_will_be_recognized_by_PREV = yes
+		#			}
+		#		}
+		#	}
+		#}
 	}
 }
 
@@ -7764,7 +7818,7 @@ country_event = {
 
 # Кто же признает монарха вновь? ХМММММ
 country_event = {
-id = rcw_usfev.205
+	id = rcw_usfev.205
 	title = rcw_usfev.205.t
 	desc = rcw_usfev.205.desc
 
@@ -7867,7 +7921,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.208.a
-		add_stability = -0.1
+		add_stability = -0.05
 	}
 
 }
