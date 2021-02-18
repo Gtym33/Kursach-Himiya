@@ -202,7 +202,7 @@ country_event = {
 	}
 }
 
-# Эстляндская трудовая коммуна
+# Эстляндская трудовая коммуна (советская республика)
 country_event = {
 	id = rcw_bfk.9
 	title = rcw_bfk.9.t
@@ -215,7 +215,10 @@ country_event = {
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_war_with = EST
 		EST = { has_civil_war = no }
-		controls_state = 915
+		any_state = {
+			is_owned_by = EST
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+		}
 	}
 	
 	fire_only_once = yes
@@ -226,55 +229,86 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.9.a
+		create_dynamic_country = {
+			original_tag = EST
+			save_global_event_target_as = EST_CW
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				create_country_leader = { name = "Jaan Anvelt" desc = EST_jaan_anvelt_DESC picture = "gfx/leaders/EST/Jaan_Anvelt.dds" expire = "1935.1.1" ideology = leninism  traits = {  } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = EST
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = EST
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:EST_CW = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = EST
+				type = annex_everything
+			}
+			set_cosmetic_tag = EST_labor_commune
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:EST_CW } }
+				declare_war_on = {
+					target = event_target:EST_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:EST_CW } }
+				event_target:EST_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:EST_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
 		EST = {
-			start_civil_war = {
-				ideology = communism
-				size = 0.3
-				capital = 915
-				states = { 915 }
+			transfer_units_fraction= {
+				target = event_target:EST_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
 				keep_unit_leaders_trigger = { always = yes }
 			}
 		}
-		every_state = {
-			limit = {
-				is_owned_by = EST
-				is_controlled_by = RUS
-			}
-			every_country = {
-				limit = { original_tag = EST has_government = communism }
-				transfer_state = PREV
-			}
-		}
-		every_country = {
-			limit = { original_tag = EST has_government = communism }
-			set_cosmetic_tag = EST_labor_commune
-		}
-		if = {
-			limit = { has_war_with = NWA }
-			every_country = {
-				limit = { original_tag = EST has_government = communism }
-				declare_war_on = {
-					target = NWA
-					type = annex_everything
-				}
-			}
-		}
-		if = {
-			limit = { has_war_with = WVA }
-			every_country = {
-				limit = { original_tag = EST has_government = communism }
-				declare_war_on = {
-					target = WVA
-					type = annex_everything
-				}
-			}
-		}
+		clear_global_event_target = EST_CW
 		ai_chance = {
 			factor = 999
-		}
-		every_country = {
-			limit = { original_tag = EST has_government = communism }
-			RUS = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
 		}
 	}
 	option = {
@@ -1692,7 +1726,7 @@ country_event = {
 		}
 	}
 }
-# Латвийская ССР
+# Латвийская социалистическая советская республика
 country_event = {
 	id = rcw_bfk.31
 	title = rcw_bfk.31.t
@@ -1705,19 +1739,9 @@ country_event = {
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_war_with = LAT
 		LAT = { has_civil_war = no }
-		OR = {
-			AND = {
-				controls_state = 865
-				LAT = { owns_state = 865 }
-			}
-			AND = {
-				controls_state = 1001
-				LAT = { owns_state = 1001 }
-			}
-			AND = {
-				controls_state = 866
-				LAT = { owns_state = 866 }
-			}
+		any_state = {
+			is_owned_by = LAT
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
 		}
 	}
 	
@@ -1729,53 +1753,84 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.31.a
+		create_dynamic_country = {
+			original_tag = LAT
+			save_global_event_target_as = LAT_CW
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				create_country_leader = { name = "Peter Stuchka" desc = "" picture = "gfx/leaders/LAT/Petr_Stuchka.dds" expire = "1965.1.1" ideology = leninism traits = { } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LAT
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LAT
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:LAT_CW = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = LAT
+				type = annex_everything
+			}
+			set_cosmetic_tag = LAT_socsovrep
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:LAT_CW } }
+				declare_war_on = {
+					target = event_target:LAT_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:LAT_CW } }
+				event_target:LAT_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:LAT_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
 		LAT = {
-			start_civil_war = {
-				ideology = communism
-				size = 0.3
-				capital = 865
-				states = { 865 }
+			transfer_units_fraction= {
+				target = event_target:LAT_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
 				keep_unit_leaders_trigger = { always = yes }
 			}
 		}
-		every_state = {
-			limit = {
-				is_owned_by = LAT
-				is_controlled_by = RUS
-			}
-			every_country = {
-				limit = { original_tag = LAT has_government = communism }
-				transfer_state = PREV
-			}
-		}
-		every_country = {
-			limit = { original_tag = LAT has_government = communism }
-			set_cosmetic_tag = LAT_socsovrep
-		}
-		if = {
-			limit = { has_war_with = NWA }
-			every_country = {
-				limit = { original_tag = LAT has_government = communism }
-				declare_war_on = {
-					target = NWA
-					type = annex_everything
-				}
-			}
-		}
-		if = {
-			limit = { has_war_with = WVA }
-			every_country = {
-				limit = { original_tag = LAT has_government = communism }
-				declare_war_on = {
-					target = WVA
-					type = annex_everything
-				}
-			}
-		}
-		every_country = {
-			limit = { original_tag = LAT has_government = communism }
-			RUS = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
-		}
+		clear_global_event_target = LAT_CW
 		ai_chance = {
 			factor = 999
 		}
@@ -3370,7 +3425,10 @@ country_event = {
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_war_with = LIT
 		LIT = { has_civil_war = no }
-		controls_state = 784
+		any_state = {
+			is_owned_by = LIT
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+		}
 	}
 	
 	fire_only_once = yes
@@ -3381,55 +3439,86 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.9.a
+		create_dynamic_country = {
+			original_tag = LIT
+			save_global_event_target_as = LIT_CW
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				#create_country_leader
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LIT
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LIT
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:LIT_CW = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = LIT
+				type = annex_everything
+			}
+			set_cosmetic_tag = LIT_sovrep
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
+				declare_war_on = {
+					target = event_target:LIT_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
+				event_target:LIT_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:LIT_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
 		LIT = {
-			start_civil_war = {
-				ideology = communism
-				size = 0.3
-				capital = 784
-				states = { 784 }
+			transfer_units_fraction= {
+				target = event_target:LIT_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
 				keep_unit_leaders_trigger = { always = yes }
 			}
 		}
-		every_state = {
-			limit = {
-				is_owned_by = LIT
-				is_controlled_by = RUS
-			}
-			every_country = {
-				limit = { original_tag = LIT has_government = communism }
-				transfer_state = PREV
-			}
-		}
-		#every_country = {
-			#limit = { original_tag = LIT has_government = communism }
-			#set_cosmetic_tag = EST_labor_commune
-		#}
-		if = {
-			limit = { has_war_with = NWA }
-			every_country = {
-				limit = { original_tag = LIT has_government = communism }
-				declare_war_on = {
-					target = NWA
-					type = annex_everything
-				}
-			}
-		}
-		if = {
-			limit = { has_war_with = WVA }
-			every_country = {
-				limit = { original_tag = LIT has_government = communism }
-				declare_war_on = {
-					target = WVA
-					type = annex_everything
-				}
-			}
-		}
+		clear_global_event_target = LIT_CW
 		ai_chance = {
 			factor = 999
-		}
-		every_country = {
-			limit = { original_tag = LIT has_government = communism }
-			RUS = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
 		}
 	}
 	option = {
