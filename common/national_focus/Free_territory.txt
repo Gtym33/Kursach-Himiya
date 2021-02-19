@@ -18,6 +18,9 @@
 		available = {
 			#
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		x = 8
 		y = 0
 		completion_reward = {
@@ -43,6 +46,9 @@
 			}
 			num_of_controlled_states > 4
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
@@ -64,16 +70,19 @@
 		icon = GFX_focus_generic_military_academy
 		cost = 2
 		available = {
-			OR = { has_completed_focus = FRT_face_to_the_countryside has_completed_focus = FRT_face_to_the_city }
 			controls_state = 202
 			surrender_progress < 0.2
 			num_of_controlled_states > 10
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
-			focus = FRT_local_congress_of_soviets
+			focus = FRT_face_to_the_countryside
+			focus = FRT_face_to_the_city
 		}
 		x = 8
-		y = 7
+		y = 6
 		completion_reward = {
 			rise_Makhno_authority = yes
 			country_event = rcw_free_territory.8
@@ -87,11 +96,14 @@
 		available = {
 			has_war = yes
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_all-ukrainian_congress_of_soviets
 		}
 		x = 8
-		y = 8
+		y = 7
 		completion_reward = {
 			custom_effect_tooltip = FRT_quest_for_peace_tooltip
 		}
@@ -104,11 +116,14 @@
 		available = {
 			always = no
 		}
-		prerequisite = {
-			focus = FRT_all-ukrainian_congress_of_soviets
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_face_to_the_city
+		}
+		prerequisite = {
+			focus = FRT_all-ukrainian_congress_of_soviets
 		}
 		mutually_exclusive = {
 			focus = FRT_soviet_republic
@@ -119,8 +134,8 @@
 		mutually_exclusive = {
 			focus = FRT_building_peasants_republic
 		}
-		x = 11
-		y = 9
+		x = 9
+		y = 8
 		completion_reward = {
 			add_ideas = soviet_republic_gov_form
 			add_ideas = local_assembly_decisions_b_law
@@ -134,11 +149,14 @@
 		available = {
 			has_completed_focus = FRT_workers_self-government
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_building_syndicalism
 		}
-		x = 11
-		y = 10
+		x = 9
+		y = 9
 		completion_reward = {
 			swap_ideas = {
 				remove_idea = FRT_workers_self-government
@@ -154,11 +172,14 @@
 		available = {
 			#
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_syndicates
 		}
-		x = 11
-		y = 11
+		x = 9
+		y = 10
 		completion_reward = {
 			remove_ideas = FRT_peasant_army_idea
 			remove_ideas = FRT_peasant_army_crisis_idea
@@ -173,6 +194,22 @@
 		cost = 2
 		available = {
 			always = no
+			RSR = { is_socialist_country = yes }
+			NOT = { has_war_with = RSR }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { has_idea = FRT_Makhno_very_high_authority_idea }
+			}
+			modifier = {
+				factor = 10
+				has_idea = FRT_Makhno_very_high_authority_idea
+			}
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_city
 		}
 		prerequisite = {
 			focus = FRT_all-ukrainian_congress_of_soviets
@@ -186,8 +223,8 @@
 		mutually_exclusive = {
 			focus = FRT_building_peasants_republic
 		}
-		x = 13
-		y = 9
+		x = 11
+		y = 8
 		completion_reward = {
 			effect_tooltip = {
 				add_ideas = parliamentary_republic_gov_form
@@ -196,23 +233,42 @@
 			if = {
 				limit = { has_idea = FRT_Makhno_very_high_authority_idea }
 				if = {
-					limit = { OR = { USR = { exists = no } UKR = { NOT = { has_government = communism has_government = radical_socialism } } } }
-					ROOT = { save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR save_global_event_target_as = INTEGRATING_COUNTRY_MINOR initiate_verification_of_the_popularity_of_coalitions = yes capital_scope = { set_state_flag = new_capital } }
-					USR = { save_global_event_target_as = UNITED_COUNTRY }
-					USR = { inherit_technology = ROOT }
-					USR = { set_politics = { ruling_party = communism } create_country_leader = { name = "Nestor Machno" desc = FRT_Nestor_Machno_DESC picture = "gfx/leaders/FRT/Nestor_Machno_ancap.dds" ideology = leninism traits = { hedonist } } }
-					party_populatiry_addition_script_1 = yes
-					hidden_effect = { random_state = { limit = { is_owned_by = ROOT } USR = { transfer_state = PREV } } }
-					country_event = { id = rcw_free_territory.1918 hours = 1 }
+					limit = {
+						any_other_country = {
+							OR = {
+								original_tag = USR
+								original_tag = UKR
+							}
+							is_socialist_country = yes
+						}
+					}
+					random_other_country = {
+						limit = {
+							OR = {
+								original_tag = USR
+								original_tag = UKR
+							}
+							is_socialist_country = yes
+						}
+						ROOT = { every_unit_leader = { set_nationality = PREV } }
+						annex_country = { target = ROOT transfer_troops = yes }
+						set_politics = { ruling_party = communism }
+						create_country_leader = { name = "Nestor Machno" desc = FRT_Nestor_Machno_DESC picture = "gfx/leaders/FRT/Nestor_Machno_ancap.dds" ideology = leninism traits = { hedonist } }
+						if = { limit = { is_ai = yes ROOT = { is_ai = no } } change_tag_from = ROOT }
+					}
+					else = {
+						ROOT = { save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR save_global_event_target_as = INTEGRATING_COUNTRY_MINOR initiate_verification_of_the_popularity_of_coalitions = yes capital_scope = { set_state_flag = new_capital } }
+						USR = { save_global_event_target_as = UNITED_COUNTRY }
+						USR = { inherit_technology = ROOT }
+						USR = { set_politics = { ruling_party = communism } create_country_leader = { name = "Nestor Machno" desc = FRT_Nestor_Machno_DESC picture = "gfx/leaders/FRT/Nestor_Machno_ancap.dds" ideology = leninism traits = { hedonist } } }
+						party_populatiry_addition_script_1 = yes
+						hidden_effect = { random_state = { limit = { is_owned_by = ROOT } USR = { transfer_state = PREV } } }
+						country_event = { id = rcw_free_territory.1918 hours = 1 }
+					}
 				}
 				else = {
-					every_unit_leader = { set_nationality = USR }
-					USR = { annex_country = { target = FRT transfer_troops = yes } set_politics = { ruling_party = communism } create_country_leader = { name = "Nestor Machno" desc = FRT_Nestor_Machno_DESC picture = "gfx/leaders/FRT/Nestor_Machno_ancap.dds" ideology = leninism traits = { hedonist } } }
-					if = { limit = { is_ai = no USR = { is_ai = yes } } USR = { change_tag_from = FRT } }
+					country_event = { id = rcw_free_territory.13 hours = 1 }
 				}
-			}
-			else = {
-				country_event = { id = rcw_free_territory.13 hours = 1 }
 			}
 		}
 	}
@@ -223,6 +279,9 @@
 		cost = 2
 		available = {
 			always = no
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_all-ukrainian_congress_of_soviets
@@ -239,8 +298,8 @@
 		mutually_exclusive = {
 			focus = FRT_building_peasants_republic
 		}
-		x = 9
-		y = 9
+		x = 7
+		y = 8
 		completion_reward = {
 			add_ideas = unitary_gov_terr
 			add_ideas = local_assembly_decisions_b_law
@@ -254,11 +313,14 @@
 		available = {
 			#
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_building_anarcho-capitalism
 		}
-		x = 9
-		y = 10
+		x = 7
+		y = 9
 		completion_reward = {
 			remove_ideas = FRT_peasant_army_idea
 			remove_ideas = FRT_peasant_army_crisis_idea
@@ -273,11 +335,14 @@
 		available = {
 			#
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_standing_army
 		}
-		x = 9
-		y = 11
+		x = 7
+		y = 10
 		completion_reward = {
 			remove_ideas = FRT_civil_war_in_the_village_idea
 			add_ideas = RUS_exchange_in_kind_idea
@@ -291,6 +356,9 @@
 		cost = 2
 		available = {
 			always = no
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_all-ukrainian_congress_of_soviets
@@ -307,8 +375,8 @@
 		mutually_exclusive = {
 			focus = FRT_building_syndicalism
 		}
-		x = 7
-		y = 9
+		x = 5
+		y = 8
 		completion_reward = {
 			clear_variable = angry_peasants
 			remove_ideas = FRT_peasant_army_crisis_idea
@@ -323,11 +391,14 @@
 		available = {
 			#
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_building_peasants_republic
 		}
-		x = 7
-		y = 10
+		x = 5
+		y = 9
 		completion_reward = {
 			remove_ideas = FRT_civil_war_in_the_village_idea
 			add_timed_idea = { idea = FRT_civil_war_in_the_village_idea days = 90 }
@@ -344,11 +415,14 @@
 		available = {
 			has_war = no
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_raskulachivaniye
 		}
-		x = 7
-		y = 11
+		x = 5
+		y = 10
 		completion_reward = {
 			add_ideas = soviet_republic_gov_form
 			add_ideas = local_assembly_decisions_b_law
@@ -363,13 +437,16 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_economic_liberalization
 			focus = FRT_dissolve_boys
 			focus = FRT_workers_self_defense
 		}
-		x = 9
-		y = 12
+		x = 8
+		y = 11
 		completion_reward = {
 			if = {
 				limit = { NOT = { has_completed_focus = FRT_building_peasants_republic } }
@@ -392,10 +469,13 @@
 				NOT = { state = 852 }
 			}
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
-		x = 13
+		x = -2
 		y = 1
 		completion_reward = {
 			add_ideas = emergency_laws_b_law
@@ -410,10 +490,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
-		x = 2
+		x = 0
 		y = 1
 		completion_reward = {
 			add_ideas = RGR_voluntary_mobilization_idea
@@ -428,10 +511,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_recruitment_of_volunteers
 		}
-		x = 2
+		x = 0
 		y = 2
 		completion_reward = {
 			add_ideas = FRT_black_cavalry_idea
@@ -465,13 +551,16 @@
 		available = {
 			has_completed_focus = FRT_local_congress_of_soviets
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_black_cavalry
 		}
 		mutually_exclusive = {
 			focus = FRT_fight_against_partisans
 		}
-		x = 1
+		x = -1
 		y = 3
 		completion_reward = {
 			add_war_support = 0.1
@@ -496,10 +585,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_freemen
 		}
-		x = -3
+		x = -5
 		y = 4
 		completion_reward = {
 			add_ideas = RGR_deserters_collection_idea
@@ -520,10 +612,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_freemen
 		}
-		x = -5
+		x = -7
 		y = 4
 		completion_reward = {
 			add_ideas = RGR_free_cossackship_idea
@@ -545,10 +640,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_freemen
 		}
-		x = -7
+		x = -9
 		y = 4
 		completion_reward = {
 			137 = { add_core_of = FRT }
@@ -570,10 +668,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_freemen
 		}
-		x = -1
+		x = -3
 		y = 4
 		completion_reward = {
 			add_ideas = RGR_consolidation_of_units_idea
@@ -603,10 +704,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_establish_a_council_of_revolutionary_rebels
 		}
-		x = -1
+		x = -3
 		y = 5
 		completion_reward = {
 			add_ideas = FRT_enlargement_of_partisan_units_idea
@@ -694,10 +798,13 @@
 		available = {
 		
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_enlargement_of_partisan_units
 		}
-		x = -1
+		x = -3
 		y = 6
 		completion_reward = {
 			add_ideas = FRT_operational_headquarters_idea
@@ -714,13 +821,16 @@
 			has_government = despotism
 			has_completed_focus = FRT_local_congress_of_soviets
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_black_cavalry
 		}
 		mutually_exclusive = {
 			focus = FRT_freemen
 		}
-		x = 3
+		x = 1
 		y = 3
 		completion_reward = {
 			down_Makhno_authority = yes
@@ -818,10 +928,13 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_fight_against_partisans
 		}
-		x = 3
+		x = 1
 		y = 4
 		completion_reward = {
 			army_experience = 500
@@ -857,10 +970,13 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_mobilization_of_officers
 		}
-		x = 3
+		x = 1
 		y = 5
 		completion_reward = {
 			capital_scope = {
@@ -912,10 +1028,13 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_copying_army_structure
 		}
-		x = 3
+		x = 1
 		y = 6
 		completion_reward = {
 			down_Makhno_authority = yes
@@ -934,6 +1053,9 @@
 		available = {
 			has_country_leader = { name = "Nestor Machno" ruling_only = yes }
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_freemen
 			focus = FRT_fight_against_partisans
@@ -941,7 +1063,7 @@
 		bypass = {
 			NOT = { has_country_leader = { name = "Nestor Machno" ruling_only = yes } }
 		}
-		x = 1
+		x = -1
 		y = 4
 		completion_reward = {
 			hidden_effect = {
@@ -1004,13 +1126,16 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
 		mutually_exclusive = {
 			focus = FRT_secularization
 		}
-		x = 9
+		x = 11
 		y = 1
 		completion_reward = {
 			add_popularity = { ideology = fascism popularity = 0.05 }
@@ -1026,13 +1151,16 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
 		mutually_exclusive = {
 			focus = FRT_support_the_orthodox_church
 		}
-		x = 11
+		x = 13
 		y = 1
 		completion_reward = {
 			add_popularity = { ideology = radical_socialism popularity = 0.05 }
@@ -1046,13 +1174,16 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
 		mutually_exclusive = {
 			focus = FRT_a_blind_eye_to_massacres
 		}
-		x = 7
+		x = 6
 		y = 1
 		completion_reward = {
 			add_popularity = { ideology = radical_socialism popularity = -0.10 }
@@ -1071,13 +1202,16 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
 		mutually_exclusive = {
 			focus = FRT_limit_pogroms
 		}
-		x = 5
+		x = 4
 		y = 1
 		completion_reward = {
 			add_stability = -0.10
@@ -1107,6 +1241,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_a_blind_eye_to_massacres
 			focus = FRT_limit_pogroms
@@ -1114,8 +1251,8 @@
 		mutually_exclusive = {
 			focus = FRT_save_prisons
 		}
-		x = 7
-		y = 3
+		x = 6
+		y = 2
 		completion_reward = {
 			remove_ideas = FRT_lack_of_police_idea
 			add_stability = -0.05
@@ -1137,6 +1274,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_a_blind_eye_to_massacres
 			focus = FRT_limit_pogroms
@@ -1144,8 +1284,8 @@
 		mutually_exclusive = {
 			focus = FRT_blow_up_prisons
 		}
-		x = 5
-		y = 3
+		x = 4
+		y = 2
 		completion_reward = {
 			remove_ideas = FRT_lack_of_police_idea
 			add_political_power = -25
@@ -1161,11 +1301,14 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
-		x = 4
-		y = 2
+		x = 3
+		y = 3
 		completion_reward = {
 			add_equipment_to_stockpile = {
 				type = infantry_equipment_great_war
@@ -1182,11 +1325,14 @@
 		available = {
 			NOT = { has_country_flag = FRT_workers_council }
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
-		x = 6
-		y = 2
+		x = 2
+		y = 1
 		completion_reward = {
 			rise_Makhno_authority = yes
 			if = {
@@ -1219,11 +1365,14 @@
 		available = {
 			NOT = { has_country_flag = FRT_workers_council }
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_requisitions_confiscations_expropriations
 		}
-		x = 6
-		y = 4
+		x = 2
+		y = 2
 		completion_reward = {
 			rise_Makhno_authority = yes
 			if = {
@@ -1256,6 +1405,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_convene_council
 		}
@@ -1275,6 +1427,9 @@
 		cost = 2
 		available = {
 			
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_convene_council
@@ -1303,6 +1458,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_collaboration_with_anarchists
 		}
@@ -1319,6 +1477,9 @@
 		cost = 2
 		available = {
 			#
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_collaboration_with_anarchists
@@ -1339,6 +1500,9 @@
 			has_country_leader = { name = "Nestor Machno" ruling_only = yes }
 			has_idea = FRT_Makhno_very_high_authority_idea
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_establish_anarchist_media
 		}
@@ -1357,6 +1521,9 @@
 		available = {
 			has_completed_focus = FRT_one-party_system
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_collaboration_with_anarchists
 		}
@@ -1374,6 +1541,9 @@
 		cost = 2
 		available = {
 			
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_create_counterintelligence
@@ -1395,6 +1565,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_establish_anarchist_media
 		}
@@ -1410,9 +1583,13 @@
 		icon = GFX_goal_backstab
 		cost = 2
 		available = {
-			NOT = { has_country_leader = { name = "Marusya Nikiforova" ruling_only = yes } has_war_with = RUS }
-			NOT = { has_war_with = RUS }
-			is_neighbor_of = RUS
+			NOT = { has_country_leader = { name = "Marusya Nikiforova" ruling_only = yes } }
+			RSR = { is_socialist_country = yes }
+			NOT = { has_war_with = RSR }
+			is_neighbor_of = RSR
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_create_counterintelligence
@@ -1431,6 +1608,9 @@
 		cost = 2
 		available = {
 			
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_establish_anarchist_media
@@ -1465,6 +1645,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_establish_anarchist_media
 		}
@@ -1486,13 +1669,16 @@
 		available = {
 			has_country_flag = FRT_peasants_council
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
-			focus = FRT_convene_council
+			focus = FRT_local_congress_of_soviets
 		}
 		mutually_exclusive = {
 			focus = FRT_face_to_the_city
 		}
-		x = 9
+		x = 7
 		y = 4
 		completion_reward = {
 			add_popularity = { ideology = market_liberalism popularity = 0.2 }
@@ -1512,6 +1698,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_face_to_the_countryside
 		}
@@ -1529,6 +1718,9 @@
 		cost = 2
 		available = {
 			
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_organize_handicraft_workshops
@@ -1549,13 +1741,19 @@
 		available = {
 			has_country_flag = FRT_workers_council
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_one-party_system
+		}
+		prerequisite = {
+			focus = FRT_local_congress_of_soviets
 		}
 		mutually_exclusive = {
 			focus = FRT_face_to_the_countryside
 		}
-		x = 11
+		x = 9
 		y = 4
 		completion_reward = {
 			rise_labor_legislation = yes
@@ -1568,6 +1766,9 @@
 		cost = 2
 		available = {
 			
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_face_to_the_city
@@ -1598,6 +1799,9 @@
 		available = {
 			
 		}
+		ai_will_do = {
+			factor = 1
+		}
 		prerequisite = {
 			focus = FRT_creating_monetary_system
 		}
@@ -1615,7 +1819,7 @@
 		available = {
 			is_neighbor_of = UKR
 			is_puppet = no
-			UKR = { NOT = { has_government = radical_socialism has_government = communism } has_country_flag = UKR_white has_capitulated = no is_puppet = no has_civil_war = no }
+			UKR = { NOT = { is_socialist_country = yes } has_country_flag = UKR_white has_capitulated = no is_puppet = no has_civil_war = no }
 			UKR = { surrender_progress > 0.09 }
 			any_country	 = {
 				has_war_with = UKR
@@ -1625,6 +1829,9 @@
 				has_war_with = FRT
 				NOT = { tag = UKR }
 			}
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_convene_council
@@ -1641,8 +1848,11 @@
 		icon = GFX_goal_international
 		cost = 2
 		available = {
-			NOT = { has_war_with = RUS }
-			RUS = { exists = yes has_government = communism has_capitulated = no }
+			RSR = { is_socialist_country = yes }
+			NOT = { has_war_with = RSR }
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_convene_council
@@ -1662,7 +1872,10 @@
 		icon = GFX_goal_leavy_sov
 		cost = 2
 		available = {
-			is_puppet_of = RUS
+			is_subject = yes
+		}
+		ai_will_do = {
+			factor = 0
 		}
 		prerequisite = {
 			focus = FRT_compromise_with_bolsheviks
@@ -1670,10 +1883,10 @@
 		x = 18
 		y = 2
 		completion_reward = {
-			RUS = {
+			OVERLORD = {
 				annex_country = {
-					target = FRT
-					transfer_troops = no
+					target = ROOT
+					transfer_troops = yes
 				}
 			}
 		}
@@ -1684,17 +1897,15 @@
 		icon = GFX_goal_compromisse_whites
 		cost = 2
 		available = {
-			any_country	= {
+			any_country = {
 				has_war_with = FRT
 				is_neighbor_of = FRT
-				AND = {
-					OR = { tag = CRI tag = DON tag = RVA tag = KUB tag = CCA AND = { tag = UKR has_country_flag = UKR_white } }
-					NOT = {
-						has_government = radical_socialism
-						has_government = communism
-					}
-				}
+				OR = { tag = CRI tag = DON tag = RVA tag = KUB tag = CCA AND = { tag = UKR has_country_flag = UKR_white } }
+				NOT = { is_socialist_country = yes }
 			}
+		}
+		ai_will_do = {
+			factor = 0
 		}
 		prerequisite = {
 			focus = FRT_convene_council
@@ -1709,12 +1920,11 @@
 				limit = {
 					has_war_with = FRT
 					is_neighbor_of = FRT
-					AND = {
-						OR = { tag = CRI tag = DON tag = RVA tag = KUB }
-						NOT = {
-							has_government = radical_socialism
-							has_government = communism
-						}
+					OR = { tag = CRI tag = DON tag = RVA tag = KUB tag = CCA AND = { tag = UKR has_country_flag = UKR_white } }
+					NOT = { is_socialist_country = yes }
+					OR = {
+						is_faction_leader = yes
+						AND = { is_in_faction = no is_subject = no }
 					}
 				}
 				country_event = { id = rcw_free_territory.15 days = 1 }
@@ -1728,6 +1938,9 @@
 		cost = 2
 		available = {
 			USR = { exists = yes has_capitulated = no is_neighbor_of = FRT NOT = { has_war_with = FRT } }
+		}
+		ai_will_do = {
+			factor = 1
 		}
 		prerequisite = {
 			focus = FRT_convene_council

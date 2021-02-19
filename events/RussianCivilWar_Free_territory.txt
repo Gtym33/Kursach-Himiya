@@ -619,9 +619,9 @@ country_event = {
 			limit = { USR = { exists = yes } }
 			every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = USR }
 			USR = { set_politics = { ruling_party = communism } create_country_leader = { name = "Nestor Machno" desc = FRT_Nestor_Machno_DESC picture = "gfx/leaders/FRT/Nestor_Machno_ancap.dds" ideology = leninism traits = { hedonist } } }
-		}
-		else = {
-			every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = RUS }
+			else = {
+				every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = RUS }
+			}
 		}
 		retire_ideology_leader = radical_socialism
 		retire_ideology_leader = despotism
@@ -683,20 +683,47 @@ country_event = {
 	option = {
 		name = rcw_free_territory.15.a
 		every_state = {
-			limit = { is_owned_by = ROOT is_controlled_by = FRT }
-			ROOT = { set_state_owner = FRT }
+			limit = {
+				is_controlled_by = FROM
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			FROM = { transfer_state = PREV }
 		}
 		every_state = {
-			limit = { is_owned_by = FRT is_controlled_by = ROOT }
-			FRT = { set_state_owner = ROOT }
+			limit = {
+				CONTROLLER = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				OR = {
+					is_core_of = CONTROLLER
+					is_claimed_by = CONTROLLER
+				}
+				is_owned_by = FROM
+			}
+			CONTROLLER = { transfer_state = PREV }
 		}
-		white_peace = FRT
+		white_peace = FROM
 		set_country_flag = whites_FRT_neutrality
+		ai_chance = {
+			factor = 1
+		}
 	}
 	
 	option = {
 		name = rcw_free_territory.15.b
-		add_war_support = 0.1
+		ai_chance = {
+			factor = 0
+		}
 	}
 }
 
@@ -1441,104 +1468,58 @@ country_event = {
 			factor = 4
 		}
 		name = rcw_free_territory.35.a
-		set_country_flag = FRT_white_peace_fired
-		if = {
-			limit = { USR = { exists = yes is_subject_of = ROOT } }
-			FRT = {
-				annex_country = { 
-					target = USR
-					transfer_troops = no 
+		every_country = {
+			limit = {
+				is_subject_of = ROOT
+				OR = {
+					original_tag = USR
+					original_tag = ODS
+					original_tag = CRI
+					original_tag = GRG
 				}
 			}
-		}
-		if = {
-			limit = { ODS = { exists = yes is_subject_of = ROOT } }
-			FRT = {
-				annex_country = { 
-					target = ODS
-					transfer_troops = no 
-				}
-			}
-		}
-		if = {
-			limit = { CRI = { exists = yes is_subject_of = ROOT } }
-			FRT = {
-				annex_country = { 
-					target = CRI
-					transfer_troops = no 
-				}
-			}
-		}
-		if = {
-			limit = { GRG = { exists = yes is_subject_of = ROOT } }
-			FRT = {
-				annex_country = { 
-					target = GRG
+			FROM = {
+				annex_country = {
+					target = PREV
 					transfer_troops = no 
 				}
 			}
 		}
 		every_state = {
 			limit = {
-				is_owned_by = ROOT
+				is_controlled_by = FROM
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				CONTROLLER = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
 				OR = {
-					is_core_of = UKR
-					is_claimed_by = UKR
-					is_core_of = FRT
-					is_claimed_by = FRT
+					is_core_of = CONTROLLER
+					is_claimed_by = CONTROLLER
 				}
+				is_owned_by = FROM
 			}
-			FRT = { transfer_state = PREV }
-		}
-		if = {
-			limit = { BLR = { exists = yes is_subject_of = ROOT } }
-			every_state = {
-				limit = {
-					is_owned_by = BLR
-					OR = {
-						is_core_of = UKR
-						is_claimed_by = UKR
-						is_core_of = FRT
-						is_claimed_by = FRT
-					}
-				}
-				FRT = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { POL = { exists = yes is_subject_of = ROOT } }
-			every_state = {
-				limit = {
-					is_owned_by = POL
-					OR = {
-						is_core_of = UKR
-						is_claimed_by = UKR
-						is_core_of = FRT
-						is_claimed_by = FRT
-					}
-				}
-				FRT = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { DON = { exists = yes is_subject_of = ROOT } }
-			every_state = {
-				limit = {
-					is_owned_by = DON
-					OR = {
-						is_core_of = UKR
-						is_claimed_by = UKR
-						is_core_of = FRT
-						is_claimed_by = FRT
-					}
-				}
-				FRT = { transfer_state = PREV }
-			}
+			CONTROLLER = { transfer_state = PREV }
 		}
 		every_country = {
-			limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
-			FRT = { white_peace = PREV }
+			limit = { OR = { tag = ROOT is_in_faction_with = ROOT is_subject_of = ROOT } has_war_with = FROM }
+			FROM = { white_peace = PREV }
 		}
+		set_country_flag = FRT_white_peace_fired
 	}
 	
 	option = {
