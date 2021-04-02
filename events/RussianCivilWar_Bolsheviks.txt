@@ -195,11 +195,11 @@ country_event = {
 		add_political_power = -15
 		add_popularity = {
 			ideology = communism
-			popularity = -0.025
+			popularity = -0.05
 		}
 		add_popularity = {
 			ideology = radical_socialism
-			popularity = 0.025
+			popularity = 0.05
 		}
 	}
 }
@@ -217,6 +217,8 @@ country_event = {
 		name = rcw_bolsheviks.21.a
 		rise_hyper_inflation = yes
 		add_ideas = RUS_winning_class
+		set_country_flag = RUS_start_bolshevik_economy
+		country_event = { id = rcw_bolsheviks.28 days = 1 }
 	}
 }
 
@@ -361,24 +363,39 @@ country_event = {
 		}
 	}
 }
+
+# Отмена трудармий
 country_event = {
 	id = rcw_bolsheviks.24
-	hidden = yes
+	title = rcw_bolsheviks.24.t
+	desc = rcw_bolsheviks.24.desc
+	picture = GFX_report_event_all_power_to_the_soviets
+	
 	trigger = {
 		has_global_flag = RUS_civil_war_over
 		tag = RUS
 		has_idea = RUS_labor_armies
 		has_war = no
-		NOT = { left_fact_party_is_ruling = yes }
 	}
+	
 	mean_time_to_happen = {
 		days = 1
 	}
+	
 	fire_only_once = yes
+	
 	option = {
+		name = rcw_bolsheviks.24.a
 		remove_ideas = RUS_labor_armies
 	}
+	
+	option = {
+		trigger = { left_fact_party_is_ruling = yes }
+		name = rcw_bolsheviks.24.b
+		add_war_support = -0.05
+	}
 }
+
 # Свердлов умер
 country_event = {
 	id = rcw_bolsheviks.25
@@ -414,8 +431,282 @@ country_event = {
 	}
 }
 
+# Подчинение ВЧК
+country_event = {
+	id = rcw_bolsheviks.26
+	title = rcw_bolsheviks.26.t
+	desc = rcw_bolsheviks.26.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_government = communism
+	}
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.26.a
+		trigger = {
+			NOT = {
+				OR = {
+					has_country_leader = { name = "Nikolay Bukharin" ruling_only = yes }
+					decist_fact_party_is_ruling = yes
+				}
+			}
+		}
+		add_ideas = RUS_avenging_sword_of_the_revolution_idea
+		add_to_variable = { left_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = left_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.26.b
+		add_stability = 0.01
+		add_to_variable = { decist_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = decist_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+}
 
-# Протесты левых эсеров против продовльственной диктатуры
+# Дискуссия о ВЧК
+country_event = {
+	id = rcw_bolsheviks.27
+	title = rcw_bolsheviks.27.t
+	desc = rcw_bolsheviks.27.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_government = communism
+		has_idea = RUS_avenging_sword_of_the_revolution_idea
+		NOT = { has_global_flag = RUS_civil_war_over }
+	}
+	
+	mean_time_to_happen = {
+		days = 50
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.27.a
+		set_country_flag = RUS_can_enlarge_VCHK
+		add_to_variable = { var = Trotskiy_power value = -1 }
+		add_to_variable = { left_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = left_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.27.b
+		add_stability = 0.01
+	}
+	
+	option = {
+		name = rcw_bolsheviks.27.c
+		swap_ideas = {
+			remove_idea = RUS_avenging_sword_of_the_revolution_idea
+			add_idea = RUS_VChK_is_controlled_by_the_NKVD_idea
+		}
+		add_to_variable = { moderate_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = moderate_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.27.d
+		swap_ideas = {
+			remove_idea = RUS_avenging_sword_of_the_revolution_idea
+			add_idea = RUS_VChK_is_controlled_by_the_VTSIK_idea
+		}
+		add_to_variable = { center_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = center_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.27.e
+		remove_ideas = RUS_avenging_sword_of_the_revolution_idea
+		add_to_variable = { decist_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = decist_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+}
+
+# Вопрос партийного строительства
+country_event = {
+	id = rcw_bolsheviks.28
+	title = rcw_bolsheviks.28.t
+	desc = rcw_bolsheviks.28.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		tag = RUS
+		has_government = communism
+	}
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.28.a
+		add_political_power = -25
+		add_popularity = {
+			ideology = communism
+			popularity = -0.1
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.1
+		}
+		add_to_variable = { left_faction_party_compositon = 0.1 }
+		custom_effect_tooltip = left_fact_party_comp_plus_10
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.28.b
+		add_political_power = -10
+		add_popularity = {
+			ideology = communism
+			popularity = -0.05
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.05
+		}
+		add_to_variable = { left_faction_party_compositon = -0.05 }
+		custom_effect_tooltip = left_fact_party_comp_minus_5
+		add_to_variable = { center_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = center_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.28.c
+		add_stability = -0.02
+		add_to_variable = { left_faction_party_compositon = -0.1 }
+		custom_effect_tooltip = left_fact_party_comp_minus_10
+		add_to_variable = { decist_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = decist_fact_party_comp_plus_5
+		add_to_variable = { right_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = right_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+}
+
+# Изменить отношение к социалистам?
+country_event = {
+	id = rcw_bolsheviks.29
+	title = rcw_bolsheviks.29.t
+	desc = rcw_bolsheviks.29.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_government = communism
+		NOT = { has_global_flag = RUS_civil_war_over }
+		any_enemy_country = {
+			OR = {
+				is_former_russian_empire_settled_non_cossack_country = yes
+				former_russian_empire_cossack_country = yes 
+			}
+			NOT = {
+				has_government = radical_socialism
+				has_government = social_democracy
+				has_government = social_liberalism
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 15
+	}
+	
+	option = {
+		name = rcw_bolsheviks.29.a
+		add_to_variable = { left_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = left_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.29.b
+		add_stability = -0.01
+		add_political_power = -10
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.05
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.1
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+		swap_ideas = {
+			remove_idea = red_terror_idea
+			add_idea = not_socialist_red_terror_idea
+		}
+		add_to_variable = { center_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = center_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+	}
+}
+
+# Приток левых эсеров в партию
+country_event = {
+	id = rcw_bolsheviks.30
+	title = rcw_bolsheviks.30.t
+	desc = rcw_bolsheviks.30.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.30.a
+		add_political_power = -10
+		add_to_variable = { decist_faction_party_compositon = 0.15 }
+		add_to_variable = { left_faction_party_compositon = -0.05 }
+		add_to_variable = { moderate_faction_party_compositon = -0.1 }
+		custom_effect_tooltip = decist_fact_party_comp_plus_15
+		custom_effect_tooltip = left_fact_party_comp_minus_5
+		custom_effect_tooltip = moderate_fact_party_comp_minus_10
+		check_overlap_of_party_composition = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.30.b
+		add_stability = -0.01
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.1
+		}
+		add_to_variable = {
+			var = global.RCW_green_var_Russian_SFSR
+			value = 3
+		}
+		add_to_variable = { left_faction_party_compositon = 0.1 }
+		custom_effect_tooltip = left_fact_party_comp_plus_10
+		check_overlap_of_party_composition = yes
+	}
+}
+
+# Протесты левых эсеров против продовольственной диктатуры
 country_event = {
 	id = rcw_bolsheviks.51
 	title = rcw_bolsheviks.51.t
@@ -971,7 +1262,7 @@ country_event = {
 	}
 }
 
-# Левые эсеры штурмуют здание ВЧК
+# Левые эсеры штурмуют штаб ВЧК
 country_event = {
 	id = rcw_bolsheviks.62
 	title = rcw_bolsheviks.62.t
@@ -1753,13 +2044,7 @@ country_event = {
 				ideology = radical_socialism
 				popularity = -0.15
 			}
-			add_to_variable = { decist_faction_party_compositon = 0.15 }
-			add_to_variable = { left_faction_party_compositon = -0.05 }
-			add_to_variable = { moderate_faction_party_compositon = -0.1 }
-			custom_effect_tooltip = decist_fact_party_comp_plus_15
-			custom_effect_tooltip = left_fact_party_comp_minus_5
-			custom_effect_tooltip = moderate_fact_party_comp_minus_10
-			check_overlap_of_party_composition = yes
+			country_event = { id = rcw_bolsheviks.30 hours = 5 }
 		}
 	}
 }
@@ -2555,6 +2840,13 @@ country_event = {
 		}
 		hidden_effect = { country_event = { id = rcw_bolsheviks.112 days = 6 random = 8 } }
 		add_ideas = disarmed_nation
+		set_temp_variable = { temp1 = RUS.manpower_k }
+		set_temp_variable = { temp2 = RUS.manpower_k }
+		multiply_temp_variable = { temp2 = 1000 }
+		divide_temp_variable = { temp2 = 100 }
+		multiply_temp_variable = { temp2 = 60 }
+		subtract_from_temp_variable = { temp1 = temp2 }
+		add_manpower = var:temp1
 	}
 }
 # Демобилизация призыва 1900-го года
@@ -3469,6 +3761,116 @@ country_event = {
 		name = rcw_bolsheviks.135.c
 		trigger = { has_government = social_democracy }
 		news_event = { id = news_n.113 hours = 1 }
+	}
+}
+
+# Ранение лидера (Троцкого)
+country_event = {
+	id = rcw_bolsheviks.136
+	title = rcw_bolsheviks.136.t
+	desc = rcw_bolsheviks.136.desc
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		tag = RUS
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_war = yes
+		has_country_leader = { name = "Lev Trotsky" ruling_only = yes }
+		any_unit_leader = { has_id = 19170 }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	option = {
+		name = rcw_bolsheviks.136.a
+		add_political_power = -50
+		add_war_support = 0.05
+		set_country_flag = Lev_Trotsky_hurt
+		add_timed_idea = { idea = red_army_is_weakened days = 14 }
+	}
+}
+
+# Смерть лидера (Троцкого)
+country_event = {
+	id = rcw_bolsheviks.137
+	title = rcw_bolsheviks.137.t
+	desc = rcw_bolsheviks.137.desc
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		tag = RUS
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_war = yes
+		surrender_progress > 0.49
+		#has_country_leader = { name = "Lev Trotsky" ruling_only = yes }
+		any_unit_leader = { has_id = 19170 }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 100
+	}
+	
+	option = {
+		name = rcw_bolsheviks.137.a
+		add_political_power = -50
+		every_unit_leader = { limit = { has_id = 19170 } retire = yes }
+		create_field_marshal = {  name = "Ephraim Sklyansky" id = 77490 portrait_path = "gfx/leaders/SOV/Ephraim_Sklyansky.dds" traits = { politically_connected } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 2 }
+		if = {
+			limit = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } }
+			kill_ideology_leader = communism
+			create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Ephraim_Sklyansky.dds" ideology = stalinism traits = { } }
+			#news_event
+		}
+		set_country_flag = Lev_Trotsky_dead
+		SOV = { set_country_flag = Lev_Trotsky_dead }
+		remove_ideas = {
+			Lev_Trotsky_1
+			Lev_Trotsky_2
+			Lev_Trotsky_6
+			Lev_Trotsky_army_chief
+		}
+		add_timed_idea = { idea = red_army_is_weakened days = 45 }
+	}
+}
+
+# Экономический коллапс
+country_event = {
+	id = rcw_bolsheviks.150
+	title = rcw_bolsheviks.150.t
+	desc = rcw_bolsheviks.150.desc
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		tag = RUS
+		has_government = communism
+	}
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.150.a
+		add_ideas = RUS_economic_collapse_of_the_left_idea
+		hidden_effect = { country_event = { id = rcw_bolsheviks.234 days = 15 random_days = 60 } }
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.15
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.1
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
 	}
 }
 
@@ -4619,7 +5021,7 @@ country_event = {
 				drop_cosmetic_tag = yes
 				transfer_state = 860
 				set_politics = { ruling_party = radical_socialism }
-				create_country_leader = { name = "Stepan Petrichenko" desc = KRN_Stepan_Petrichenko_DESC picture = "gfx/leaders/SOV/Stepan_Petrichenko.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
+				create_country_leader = { name = "Stepan Petrichenko" desc = KRN_Stepan_Petrichenko_DESC picture = "gfx/leaders/SOV/Stepan_Petrichenko.dds" expire = "1935.1.1" ideology = democratic_socialism traits = { baltic_fleet_sailor } }
 			}
 			860 = { add_core_of = KRN }
 			if = {
