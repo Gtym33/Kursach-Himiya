@@ -82,17 +82,36 @@ SOV_VChK_desisions = {
 		}
 		complete_effect = {
 			clr_country_flag = death_penalty_moratorium
-			add_popularity = {
-				ideology = communism
-				popularity = -0.02
+			if = {
+				limit = {
+					NOT = { has_country_flag = Moisey_Uritskiy_dead }
+					NOT = { has_country_flag = Vladimir_Lenin_dead }
+					NOT = { has_country_flag = Vladimir_Lenin_hurt }
+					date < 1919.1.1
+					surrender_progress < 0.5
+				}
+				add_popularity = {
+					ideology = communism
+					popularity = -0.07
+				}
+				add_to_variable = { decist_faction_party_compositon = 0.1 }
+				custom_effect_tooltip = decist_fact_party_comp_plus_10
+				check_overlap_of_party_composition = yes
 			}
-			add_to_variable = { decist_faction_party_compositon = 0.05 }
-			add_to_variable = { moderate_faction_party_compositon = 0.05 }
-			custom_effect_tooltip = decist_fact_party_comp_plus_5
-			custom_effect_tooltip = moderate_fact_party_comp_plus_5
-			check_overlap_of_party_composition = yes
+			else = {
+				add_popularity = {
+					ideology = communism
+					popularity = -0.02
+				}
+				add_to_variable = { decist_faction_party_compositon = 0.05 }
+				add_to_variable = { moderate_faction_party_compositon = 0.05 }
+				custom_effect_tooltip = decist_fact_party_comp_plus_5
+				custom_effect_tooltip = moderate_fact_party_comp_plus_5
+				check_overlap_of_party_composition = yes
+			}
 		}
 	}
+	
 	VChK_appoint_Felix_Dzerjinsky_as_field_marshal = {
 
 		icon = generic_army_support
@@ -153,6 +172,28 @@ SOV_VChK_desisions = {
 			clr_country_flag = Felix_Dzerjinsky_in_office_forever
 		}
 	}
+	
+	forgive_FED = {
+
+		icon = generic_army_support
+
+		visible = {
+			NOT = { has_idea = Felix_Dzerjinsky_5 }
+			NOT = { has_idea = Felix_Dzerjinsky_6 }
+			has_country_flag = RUS_left_SR_revolt_suppose
+			has_country_flag = Felix_Dzerjinsky_in_office_forever
+		}
+		cost = 5
+		fire_only_once = yes
+		ai_will_do = {
+			factor = 1
+		}
+		complete_effect = {
+			add_ideas = Felix_Dzerjinsky_5
+			add_ideas = Felix_Dzerjinsky_6
+		}
+	}
+	
 	destroy_black_guard = {
 
 		icon = generic_army_support
@@ -184,6 +225,7 @@ SOV_VChK_desisions = {
 			set_country_flag = black_guard_destroyed
 		}
 	}
+	
 	blow_up_the_Cathedral_of_Christ_the_Savior = {
 		available = {
 			owns_state = 219
@@ -228,6 +270,7 @@ SOV_VChK_desisions = {
 			}
 		}
 	}
+	
 	move_Nik_to_Moskow_for_court = {
 
 		icon = generic_army_support
@@ -1334,6 +1377,8 @@ SOV_soviet_power_desisions = {
 		
 		cost = 15
 		
+		fire_only_once = yes
+		
 		ai_will_do = {
 			factor = 500
 		}
@@ -1360,6 +1405,47 @@ SOV_soviet_power_desisions = {
 					BLR = { subjecting_script_with_transfer_parties_dominion = yes }
 					else = { puppet = BLR }
 				}
+			}
+		}
+	}
+	
+	dissolve_combeds = {
+	
+		icon = generic_political_discourse
+		
+		available = {
+			original_tag = RUS
+			has_government = communism
+			has_completed_focus = RUS_combeds
+		}
+		
+		visible = {
+			original_tag = RUS
+			has_government = communism
+			has_completed_focus = RUS_combeds
+			NOT = { has_country_flag = RUS_combeds_yet_dissolved }
+			has_idea = allow_one_party_law
+		}
+		
+		cost = 100
+		
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 500
+			modifier = {
+				factor = 0
+				NOT = { has_idea = RUS_degenerate_kombeds } 
+			}
+		}
+		
+		complete_effect = {
+			if = {
+				limit = { NOT = { has_idea = RUS_degenerate_kombeds } }
+				set_country_flag = RUS_combeds_yet_dissolved
+			}
+			else = {
+				remove_ideas = RUS_degenerate_kombeds
 			}
 		}
 	}
