@@ -457,6 +457,14 @@ focus_tree = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 2
 			}
+			if = {
+				limit = {
+					has_idea = two_party_system_law
+					check_variable = { communism_coalition = 1 }
+					check_variable = { radical_socialism_coalition = 1 }
+				}
+				country_event = rcw_bolsheviks.51
+			}
 		}
 
 	}
@@ -477,10 +485,19 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_struggle_against_counterrevolution
 		completion_reward = {
+			remove_ideas = RUS_bolsheviks_vs_left_esser
 			add_political_power = 50
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 1
+			}
+			if = {
+				limit = {
+					has_idea = two_party_system_law
+					check_variable = { communism_coalition = 1 }
+					check_variable = { radical_socialism_coalition = 1 }
+				}
+				country_event = rcw_bolsheviks.52
 			}
 		}
 
@@ -933,7 +950,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_struggle_against_counterrevolution
 		}
-		x = 3
+		x = 4
 		y = 3
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
@@ -960,13 +977,13 @@ focus_tree = {
 		icon = GFX_goal_generic_war_with_comintern
 		cost = 5
 		available = {
-			NOT = { has_government = radical_socialism }
+			has_government = communism
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_vchk
+			focus = RUS_soviet_power
 		}
 		x = -1
 		y = 2
@@ -1016,7 +1033,47 @@ focus_tree = {
 				add_to_faction = USR
 			}
 		}
-
+	}
+	
+	focus = {
+		id = RUS_extraordinary_party_congress
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 5
+		available = {
+			has_government = communism
+			decist_fact_party_is_ruling = no
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_comintern
+		}
+		bypass = {
+			has_global_flag = RUS_civil_war_over
+		}
+		x = -1
+		y = 3
+		relative_position_id = RUS_vchk
+		completion_reward = {
+			add_political_power = 150
+			if = {
+				limit = { has_idea = RUS_weak_state_suppression_apparatus_1 }
+				remove_ideas = RUS_weak_state_suppression_apparatus_1
+			}
+			else_if = {
+				limit = { has_idea = RUS_weak_state_suppression_apparatus }
+				swap_ideas = {
+					remove_idea = RUS_weak_state_suppression_apparatus
+					add_idea = RUS_weak_state_suppression_apparatus_1
+				}
+			}
+			add_to_variable = { left_faction_party_compositon = 0.05 }
+			custom_effect_tooltip = left_fact_party_comp_plus_5
+			add_to_variable = { decist_faction_party_compositon = 0.05 }
+			custom_effect_tooltip = decist_fact_party_comp_plus_5
+			check_overlap_of_party_composition = yes
+		}
 	}
 
 	focus = {
@@ -1110,6 +1167,9 @@ focus_tree = {
 			}
 			add_political_power = -50
 			add_stability = -0.01
+			add_to_variable = { right_faction_party_compositon = 0.15 }
+			custom_effect_tooltip = right_fact_party_comp_plus_15
+			check_overlap_of_party_composition = yes
 		}
 
 	}
@@ -1349,7 +1409,30 @@ focus_tree = {
 				add_ideas = low_economic_mobilisation
 			}
 		}
-
+	}
+	
+	focus = {
+		id = RUS_organization_of_the_war_industry_council
+		icon = GFX_goal_RUS_reorganization_of_labor_armies
+		cost = 10
+		available = {
+			has_idea = RUS_handicraft_period
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_trudovaya_povinnost
+		}
+		bypass = {
+			NOT = { has_idea = RUS_handicraft_period }
+		}
+		x = -3
+		y = 1
+		relative_position_id = RUS_trudovaya_povinnost
+		completion_reward = {
+			remove_ideas = RUS_handicraft_period
+		}
 	}
 
 	focus = {
@@ -2803,6 +2886,35 @@ focus_tree = {
 				value = -1
 			}
 		}
+	}
+	
+	focus = {
+		id = RUS_collection_of_weapons
+		icon = GFX_goal_RUS_agrocultural_investment_banks
+		cost = 4
+		available = {
+			NOT = { has_government = radical_socialism }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_fight_against_deserters
+		}
+		x = 3
+		y = 3
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_popularity = { ideology = communism popularity = -0.07 }
+			add_popularity = { ideology = radical_socialism popularity = 0.07 }
+			add_war_support = -0.04
+			add_stability = 0.03
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_great_war
+				amount = 6500
+				producer = RUS
+			}
+		}
 
 	}
 
@@ -3103,12 +3215,9 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_council_of_workers_and_peasants_defense
-		}
-		prerequisite = {
 			focus = RUS_vsevobuch
 		}
-		x = -2
+		x = -3
 		y = 6
 		relative_position_id = RUS_WPRA
 		completion_reward = {
