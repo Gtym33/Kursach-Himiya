@@ -11159,32 +11159,42 @@ country_event = {
 		set_country_flag = rcw_usfev_408_opt_b
 	}
 }
-# технический ивент
+# технический ивент на переворот в Оренбурге (Россия)
 country_event = {
 	id = rcw_usfev.409
+	title = rcw_usfev.409.t
+	desc = rcw_usfev.409.desc
 	trigger = {
-		tag = OCH
-		communism > 0.3
-		has_focus_tree = Orenburg_white_cossaks_focus
-		NOT = { has_completed_focus = OCH_ban_military_revolutionary_commitette }
-		NOT = { has_completed_focus = OCH_rising_of_Orenburg_cossacks }
+		tag = RUS
+		has_focus_tree = Russia_Bolsheviks_focus
+		has_country_flag = OCH_revolt
+		OCH = {
+			exists = yes
+			controls_state = 652
+			communism > 0.3
+			has_focus_tree = Orenburg_white_cossaks_focus
+			NOT = { has_completed_focus = OCH_ban_military_revolutionary_commitette }
+			NOT = { has_completed_focus = OCH_rising_of_Orenburg_cossacks }
+		}
 	}
-	hidden = yes
-	fire_only_once = yes
+	
 	mean_time_to_happen = {
 		days = 30
 		modifier = {
 			factor = 0.66
-			has_country_flag = rcw_usfev_403_opt_a
+			OCH = { has_country_flag = rcw_usfev_403_opt_a }
 		}
 		modifier = {
 			factor = 1.66
-			has_country_flag = rcw_usfev_403_opt_b
+			OCH = { has_country_flag = rcw_usfev_403_opt_b }
 		}
 	}
+	
+	fire_only_once = yes
+	
 	option = {
 		name = rcw_usfev.409.a
-		country_event = rcw_usfev.410
+		OCH = { country_event = rcw_usfev.410 }
 	}
 }
 # Переворот в Оренбурге
@@ -11325,7 +11335,150 @@ country_event = {
 	}
 }
 
+# Второе появление Оренбурга
+country_event = {
+	id = rcw_usfev.421
+	title = rcw_usfev.421.t
+	desc = rcw_usfev.421.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	trigger = {
+		tag = RUS
+		owns_state = 652
+		OCH = { exists = no }
+		has_country_flag = OCH_revolt
+	}
+	
+	mean_time_to_happen = {
+		days = 90
+		modifier = {
+			factor = 0.01
+			652 = { CONTROLLER = { has_war_with = ROOT } }
+		}
+		modifier = {
+			factor = 0.01
+			251 = { CONTROLLER = { has_war_with = ROOT } }
+		}
+	}
+	
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { 652 = { CONTROLLER = { has_war_with = ROOT } } }
+				set_country_flag = OCH_occupied_by_whites
+				652 = { CONTROLLER = { set_country_flag = OCH_occupier } }
+			}
+			OCH = {
+				transfer_state = 652
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kazach'ya brigada"
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_usfev.421.a
+		OCH = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			complete_national_focus = OCH_rising_of_Orenburg_cossacks
+			add_ideas = OCH_divided_host_idea
+			hidden_effect = {
+				remove_ideas = FRT_lack_of_control_of_field_commanders
+				remove_ideas = FRT_lack_of_control_of_field_commanders_3
+				remove_ideas = OCH_burnt_villages_1
+				remove_ideas = OCH_burnt_villages_2
+			}
+			add_ideas = FRT_lack_of_control_of_field_commanders_2
+			add_ideas = OCH_burnt_villages_3
+			set_party_name = { 
+				ideology = social_liberalism
+				long_name = OCH_social_liberalism_party_long
+				name = OCH_social_liberalism_party
+			}
+			create_country_leader = { name = "Valentin Baranovskiy" desc = OCH_Valentin_Baranovskiy_desc picture = "gfx/leaders/OCH/Valentin_Baranovskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+		}
+		if = {
+			limit = { has_country_flag = OCH_occupied_by_whites }
+			random_other_country = {
+				limit = { has_country_flag = OCH_occupier }
+				clr_country_flag = OCH_occupier
+				puppet = OCH
+			}
+			clr_country_flag = OCH_occupied_by_whites
+		}
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = rcw_usfev.421.b
+		OCH = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			complete_national_focus = OCH_rising_of_Orenburg_cossacks
+			add_ideas = OCH_divided_host_idea
+			hidden_effect = {
+				remove_ideas = FRT_lack_of_control_of_field_commanders
+				remove_ideas = FRT_lack_of_control_of_field_commanders_3
+				remove_ideas = OCH_burnt_villages_1
+				remove_ideas = OCH_burnt_villages_2
+			}
+			add_ideas = FRT_lack_of_control_of_field_commanders_2
+			add_ideas = OCH_burnt_villages_3
+			set_party_name = { 
+				ideology = social_liberalism
+				long_name = OCH_social_liberalism_party_long
+				name = OCH_social_liberalism_party
+			}
+			create_country_leader = { name = "Valentin Baranovskiy" desc = OCH_Valentin_Baranovskiy_desc picture = "gfx/leaders/OCH/Valentin_Baranovskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+		}
+		if = {
+			limit = { has_country_flag = OCH_occupied_by_whites }
+			random_other_country = {
+				limit = { has_country_flag = OCH_occupier }
+				clr_country_flag = OCH_occupier
+				puppet = OCH
+			}
+			clr_country_flag = OCH_occupied_by_whites
+		}
+		OCH = { change_tag_from = ROOT }
+	}
+}
 
+# Проблемы в армии
+country_event = {
+	id = rcw_usfev.422
+	title = rcw_usfev.422.t
+	desc = rcw_usfev.422.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev.422.a
+		add_ideas = lack_of_officers_4
+		add_ideas = OCH_low_discipline_idea
+	}
+}
 
 
 
