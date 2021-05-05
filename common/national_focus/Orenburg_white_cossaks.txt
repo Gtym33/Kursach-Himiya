@@ -652,7 +652,7 @@ focus_tree = {
 				}
 			}
 			country_event = { id = rcw_usfev.422 days = 1 }
-			create_corps_commander = { name = "Kirill Karagin" id = 89158 portrait_path = "gfx/leaders/OCH/Kirill_Karagin.dds" traits = { politically_connected cavalry_officer } skill = 1 attack_skill = 4 defense_skill = 1 planning_skill = 3 logistics_skill = 3 }
+			create_corps_commander = { name = "Kirill Kargin" id = 89158 portrait_path = "gfx/leaders/OCH/Kirill_Kargin.dds" traits = { politically_connected cavalry_officer } skill = 1 attack_skill = 4 defense_skill = 1 planning_skill = 3 logistics_skill = 3 }
 		}
 	}
 	focus = {
@@ -672,6 +672,13 @@ focus_tree = {
 		x = 0
 		y = 1
 		completion_reward = {
+			add_timed_idea = { idea = OCH_wide_offensive_idea days = 20 }
+			hidden_effect = {
+				if = {
+					limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 }
+					country_event = { id = rcw_usfev.423 days = 14 }
+				}
+			}
 		}
 	}
 	
@@ -892,8 +899,9 @@ focus_tree = {
 	focus = {
 		id = OCH_visit_Samara
 		icon = GFX_goal_OCH_visit_Samara
-		cost = 1
+		cost = 1.5
 		available = {
+			is_subject_of = CCA
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -906,13 +914,31 @@ focus_tree = {
 		x = -1
 		y = 1
 		completion_reward = {
+			country_event = rcw_usfev.426
+			OVERLORD = { country_event = rcw_usfev.426 }
 		}
 	}
 	focus = {
 		id = OCH_visit_Omsk
 		icon = GFX_goal_OCH_visit_Omsk
-		cost = 1
+		cost = 1.5
 		available = {
+			OR = {
+				NOT = { is_subject_of = CCA }
+				has_completed_focus = OCH_visit_Samara
+			}
+			571 = {
+				OWNER = {
+					OR = {
+						tag = SIB
+						tag = RSS
+						tag = BKL
+					}
+					NOT = { has_government = radical_socialism }
+					NOT = { has_government = communism }
+					NOT = { has_war_with = ROOT }
+				}
+			}
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -925,14 +951,21 @@ focus_tree = {
 		x = 1
 		y = 1
 		completion_reward = {
+			country_event = rcw_usfev.427
+			571 = { OWNER = { country_event = rcw_usfev.427 } }
 		}
 	}
 	
 	focus = {
 		id = OCH_integration_in_CoMotCA
 		icon = GFX_goal_OCH_integration_in_CoMotCA
-		cost = 1
+		cost = 3
 		available = {
+			is_subject_of = CCA
+			has_opinion = {
+				target = CCA
+				value > 99
+			}
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -950,40 +983,51 @@ focus_tree = {
 		x = -1
 		y = 1
 		completion_reward = {
-		}
-	}
-	focus = {
-		id = OCH_authonomy_for_Cossack_Host
-		icon = GFX_goal_OCH_authonomy_for_Cossack_Host
-		cost = 1
-		available = {
-		}
-		cancel_if_invalid = yes
-		ai_will_do = {
-			factor = 10
-		}
-		prerequisite = {
-			focus = OCH_visit_Samara
-		}
-		prerequisite = {
-			focus = OCH_visit_Omsk
-		}
-		mutually_exclusive = {
-			focus = OCH_integration_in_CoMotCA
-			focus = OCH_eastern_unity
-			focus = OCH_integration_in_Volunteers_Army
-		}
-		relative_position_id = OCH_visit_Samara
-		x = 1
-		y = 1
-		completion_reward = {
+			every_unit_leader = {
+				set_nationality = OVERLORD
+			}
+			every_state = {
+				limit = { is_core_of = ROOT }
+				add_core_of = OVERLORD
+			}
+			every_state = {
+				limit = { is_claimed_by = ROOT NOT = { is_core_of = ROOT is_core_of = OVERLORD } }
+				add_claim_by = OVERLORD
+			}
+			OVERLORD = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+			if = {
+				limit = { is_ai = no OVERLORD = { is_ai = yes } }
+				OVERLORD = { change_tag_from = ROOT }
+			}
 		}
 	}
 	focus = {
 		id = OCH_eastern_unity
 		icon = GFX_goal_OCH_eastern_unity
-		cost = 1
+		cost = 3
 		available = {
+			any_other_country = {
+				owns_state = 571
+				OR = {
+					tag = SIB
+					tag = RSS
+					tag = BKL
+				}
+				NOT = { has_government = radical_socialism }
+				NOT = { has_government = communism }
+				NOT = { has_war_with = ROOT }
+				ROOT = {
+					has_opinion = {
+						target = PREV
+						value > 99
+					}
+				}
+			}
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -1001,6 +1045,77 @@ focus_tree = {
 		x = 1
 		y = 1
 		completion_reward = {
+			random_other_country = {
+				limit = {
+					owns_state = 571
+					OR = {
+						tag = SIB
+						tag = RSS
+						tag = BKL
+					}
+					NOT = { has_government = radical_socialism }
+					NOT = { has_government = communism }
+					NOT = { has_war_with = ROOT }
+				}
+				ROOT = {
+					every_unit_leader = {
+						set_nationality = PREV.PREV
+					}
+					every_state = {
+						limit = { is_core_of = ROOT }
+						add_core_of = PREV.PREV
+					}
+					every_state = {
+						limit = { is_claimed_by = ROOT NOT = { is_core_of = ROOT is_core_of = PREV.PREV } }
+						add_claim_by = PREV.PREV
+					}
+					PREV = {
+						annex_country = {
+							target = ROOT
+							transfer_troops = yes
+						}
+					}
+					if = {
+						limit = { is_ai = no PREV = { is_ai = yes } }
+						PREV = { change_tag_from = ROOT }
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = OCH_authonomy_for_Cossack_Host
+		icon = GFX_goal_OCH_authonomy_for_Cossack_Host
+		cost = 3
+		available = {
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		prerequisite = {
+			focus = OCH_visit_Samara
+		}
+		prerequisite = {
+			focus = OCH_visit_Omsk
+		}
+		mutually_exclusive = {
+			focus = OCH_integration_in_CoMotCA
+			focus = OCH_eastern_unity
+			focus = OCH_integration_in_Volunteers_Army
+		}
+		relative_position_id = OCH_visit_Samara
+		x = 1
+		y = 1
+		completion_reward = {
+			country_event = rcw_usfev.433
+			hidden_effect = {
+				if = {
+					limit = { OR = { AND = { is_subject_of = CCA has_completed_focus = OCH_visit_Omsk } is_subject_of = SIB } }
+					OVERLORD = { country_event = rcw_usfev.434 }
+				}
+			}
 		}
 	}
 	
@@ -1087,6 +1202,10 @@ focus_tree = {
 		icon = GFX_goal_OCH_Volunteers_Army_headship
 		cost = 1
 		available = {
+			is_neighbor_of = RVA
+			NOT = { has_war_with = RVA }
+			NOT = { has_completed_focus = OCH_eastern_union_federation }
+			NOT = { has_completed_focus = OCH_eastern_union_confederation }
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -1099,13 +1218,16 @@ focus_tree = {
 		x = 4
 		y = 1
 		completion_reward = {
+			RVA = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+			RVA = { country_event = rcw_usfev.431 }
 		}
 	}
 	focus = {
 		id = OCH_integration_in_Volunteers_Army
 		icon = GFX_goal_OCH_integration_in_Volunteers_Army
-		cost = 1
+		cost = 3
 		available = {
+			is_subject_of = RVA
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -1123,6 +1245,28 @@ focus_tree = {
 		x = 0
 		y = 1
 		completion_reward = {
+			every_unit_leader = {
+				set_nationality = OVERLORD
+			}
+			every_state = {
+				limit = { is_core_of = ROOT }
+				add_core_of = OVERLORD
+			}
+			every_state = {
+				limit = { is_claimed_by = ROOT NOT = { is_core_of = ROOT is_core_of = OVERLORD } }
+				add_claim_by = OVERLORD
+			}
+			OVERLORD = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+			OVERLORD = { country_event = { id = rcw_usfev.432 days = 1 } }
+			if = {
+				limit = { is_ai = no OVERLORD = { is_ai = yes } }
+				OVERLORD = { change_tag_from = ROOT }
+			}
 		}
 	}
 
@@ -1233,7 +1377,7 @@ focus_tree = {
 	
 	focus = {
 		id = OCH_supress_regionalism
-		icon = GFX_goal_OCH_Provisional_government
+		icon = GFX_goal_OCH_supress_regionalism
 		cost = 1
 		available = {
 		}
@@ -1271,7 +1415,7 @@ focus_tree = {
 	}
 	focus = {
 		id = OCH_local_mobilisation
-		icon = GFX_goal_OCH_Provisional_government
+		icon = GFX_goal_OCH_local_mobilisation
 		cost = 1
 		available = {
 		}
@@ -1284,6 +1428,73 @@ focus_tree = {
 		}
 		relative_position_id = OCH_uprising_under_our_banners
 		x = 2
+		y = 1
+		completion_reward = {
+		}
+	}
+
+	focus = {
+		id = OCH_eastern_union
+		icon = GFX_goal_OCH_eastern_union
+		cost = 1
+		available = {
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		prerequisite = {
+			focus = OCH_Provisional_government
+		}
+		prerequisite = {
+			focus = OCH_liberation_of_Russia_from_Bolsheviks
+		}
+		relative_position_id = OCH_Provisional_government
+		x = 0
+		y = 1
+		completion_reward = {
+		}
+	}
+	focus = {
+		id = OCH_eastern_union_federation
+		icon = GFX_goal_OCH_eastern_union_federation
+		cost = 1
+		available = {
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		prerequisite = {
+			focus = OCH_eastern_union
+		}
+		mutually_exclusive = {
+			focus = OCH_eastern_union_confederation
+		}
+		relative_position_id = OCH_eastern_union
+		x = -1
+		y = 1
+		completion_reward = {
+		}
+	}
+	focus = {
+		id = OCH_eastern_union_confederation
+		icon = GFX_goal_OCH_eastern_union_confederation
+		cost = 1
+		available = {
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		prerequisite = {
+			focus = OCH_eastern_union
+		}
+		mutually_exclusive = {
+			focus = OCH_eastern_union_federation
+		}
+		relative_position_id = OCH_eastern_union
+		x = 1
 		y = 1
 		completion_reward = {
 		}

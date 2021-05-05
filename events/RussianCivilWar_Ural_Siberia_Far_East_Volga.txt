@@ -11260,6 +11260,9 @@ country_event = {
 			}
 			add_ideas = Ivan_Akulinin_1
 		}
+		ai_chance = {
+			factor = 1
+		}
 	}
 	option = {
 		trigger = {
@@ -11286,6 +11289,9 @@ country_event = {
 				}
 			}
 		}
+		ai_chance = {
+			factor = 100
+		}
 	}
 	option = {
 		trigger = {
@@ -11311,6 +11317,9 @@ country_event = {
 					elections_allowed = no
 				}
 			}
+		}
+		ai_chance = {
+			factor = 1
 		}
 	}
 }
@@ -11361,6 +11370,7 @@ country_event = {
 		}
 	}
 	
+	fire_only_once = yes
 	
 	immediate = {
 		hidden_effect = {
@@ -11370,6 +11380,7 @@ country_event = {
 				652 = { CONTROLLER = { set_country_flag = OCH_occupier } }
 			}
 			OCH = {
+				set_country_flag = OCH_second_revolt
 				transfer_state = 652
 				add_ideas = neutral_foreign_policy_law
 				remove_all_foreing_locked_templates_from_liberated_country = yes
@@ -11480,8 +11491,420 @@ country_event = {
 	}
 }
 
+# Оппозиционная статья
+country_event = {
+	id = rcw_usfev.423
+	title = rcw_usfev.423.t
+	desc = rcw_usfev.423.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev.423.a
+	}
+	option = {
+		name = rcw_usfev.423.b
+	}
+}
 
+# Признание Комуча?
+country_event = {
+	id = rcw_usfev.424
+	title = rcw_usfev.424.t
+	desc = rcw_usfev.424.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = OCH
+		is_neighbor_of = CCA
+		NOT = { has_war_with = CCA }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.424.a
+		country_event = rcw_usfev.425
+		CCA = { country_event = rcw_usfev.425 }
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = rcw_usfev.424.b
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
 
+# Заочное признание
+country_event = {
+	id = rcw_usfev.425
+	title = rcw_usfev.425.t
+	desc = rcw_usfev.425.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { NOT = { tag = CCA } }
+		name = rcw_usfev.425.a
+		CCA = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		effect_tooltip = {
+			CCA = {
+				send_equipment = {
+					equipment = infantry_equipment
+					amount = 300
+					target = ROOT
+				}
+			}
+		}
+	}
+	option = {
+		trigger = { tag = CCA }
+		name = rcw_usfev.425.b
+		effect_tooltip = {
+			FROM = { subjecting_script_with_transfer_parties_semi_independent = yes }
+		}
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = 300
+			target = FROM
+		}
+	}
+}
+
+# Визит в Самару
+country_event = {
+	id = rcw_usfev.426
+	title = rcw_usfev.426.t
+	desc = rcw_usfev.426.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { is_subject_of = CCA }
+		name = rcw_usfev.426.a
+	}
+	option = {
+		trigger = { NOT = { is_subject_of = CCA } }
+		name = rcw_usfev.426.b
+	}
+}
+
+# Визит в Омск
+country_event = {
+	id = rcw_usfev.427
+	title = rcw_usfev.427.t
+	desc = rcw_usfev.427.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { NOT = { owns_state = 571 } }
+		name = rcw_usfev.427.a
+		effect_tooltip = {
+			571 = {
+				OWNER = {
+					send_equipment = {
+						equipment = support_equipment
+						amount = 150
+						target = ROOT
+					}
+				}
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = { is_subject_of = CCA }
+				country_event = { id = rcw_usfev.428 days = 1 }
+				CCA = { country_event = { id = rcw_usfev.428 days = 1 } }
+				571 = { OWNER = { country_event = { id = rcw_usfev.428 days = 1 } } }
+			}
+			if = {
+				limit = { 571 = { OWNER = { any_unit_leader = { has_id = 92345 } } } }
+				country_event = { id = rcw_usfev.429 days = 1 }
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_subject = no
+			}
+		}
+	}
+	option = {
+		trigger = { NOT = { owns_state = 571 } is_subject = no }
+		name = rcw_usfev.427.b
+		effect_tooltip = {
+			571 = {
+				OWNER = {
+					send_equipment = {
+						equipment = support_equipment
+						amount = 150
+						target = ROOT
+					}
+				}
+			}
+		}
+		571 = { OWNER = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { owns_state = 571 }
+		name = rcw_usfev.427.c
+		send_equipment = {
+			equipment = support_equipment
+			amount = 150
+			target = FROM
+		}
+	}
+}
+
+# Скандальное интервью
+country_event = {
+	id = rcw_usfev.428
+	title = rcw_usfev.428.t
+	desc = {
+		text = rcw_usfev.428.desc
+		trigger = {
+			NOT = { tag = CCA owns_state = 571 }
+		}
+	}
+	desc = {
+		text = rcw_usfev.428.desc_1
+		trigger = {
+			tag = CCA
+		}
+	}
+	desc = {
+		text = rcw_usfev.428.desc_2
+		trigger = {
+			owns_state = 571
+		}
+	}
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { NOT = { tag = CCA owns_state = 571 } }
+		name = rcw_usfev.428.a
+		reverse_add_opinion_modifier = { target = CCA modifier = OCH_scandalous_interview }
+	}
+	option = {
+		trigger = { tag = CCA }
+		name = rcw_usfev.428.b
+		add_opinion_modifier = { target = FROM modifier = OCH_scandalous_interview }
+	}
+	option = {
+		trigger = { owns_state = 571 }
+		name = rcw_usfev.428.c
+	}
+}
+
+# Беседа с Гришиным-Алмазовым
+country_event = {
+	id = rcw_usfev.429
+	title = rcw_usfev.429.t
+	desc = rcw_usfev.429.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.429.a
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { has_country_flag = OCH_second_revolt }
+			}
+		}
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = OCH_second_revolt } }
+		name = rcw_usfev.429.b
+		RSS = { set_country_flag = OCH_will_try_to_influence_RSS }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Объединение Оренбургского казачества
+country_event = {
+	id = rcw_usfev.430
+	title = rcw_usfev.430.t
+	desc = rcw_usfev.430.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		any_other_country = {
+			is_subject_of = ROOT
+			tag = OCH
+		}
+		all_state = {
+			OR = {
+				NOT = { is_core_of = OCH }
+				CONTROLLER = {
+					NOT = { tag = OCH }
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.430.a
+		every_state = {
+			limit = { is_core_of = OCH }
+			OCH = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_usfev.430.b
+		ai_chance = {
+			factor = 2
+		}
+	}
+}
+
+# Поддержка с востока (Доброволия)
+country_event = {
+	id = rcw_usfev.431
+	title = rcw_usfev.431.t
+	desc = rcw_usfev.431.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.431.a
+		effect_tooltip = { FROM = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+	}
+}
+
+# Присоединение оренбуржцев (Доброволия)
+country_event = {
+	id = rcw_usfev.432
+	title = rcw_usfev.432.t
+	desc = rcw_usfev.432.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.432.a
+	}
+}
+
+# Приказ №568
+country_event = {
+	id = rcw_usfev.433
+	title = rcw_usfev.433.t
+	desc = rcw_usfev.433.desc
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.433.a
+		add_stability = 0.2
+	}
+}
+
+# Дутов охуел (КОМУЧ/Сибирь)
+country_event = {
+	id = rcw_usfev.434
+	title = rcw_usfev.434.t
+	desc = {
+		text = rcw_usfev.434.desc
+		trigger = { tag = CCA }
+	}
+	desc = {
+		text = rcw_usfev.434.desc_1
+		trigger = { NOT = { tag = CCA } }
+	}
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.434.a
+		FROM = { country_event = { id = rcw_usfev.435 days = 1 } }
+	}
+}
+# Недовольство Комитета/Недовольство Сибири
+country_event = {
+	id = rcw_usfev.435
+	title = {
+		text = rcw_usfev.435.t
+		trigger = { FROM = { tag = CCA } }
+	}
+	title = {
+		text = rcw_usfev.434.t_1
+		trigger = { FROM = { NOT = { tag = CCA } } }
+	}
+	desc = {
+		text = rcw_usfev.434.desc
+		trigger = { FROM = { tag = CCA } }
+	}
+	desc = {
+		text = rcw_usfev.434.desc_1
+		trigger = { FROM = { NOT = { tag = CCA } } }
+	}
+	picture = GFX_report_event_rss_orenburg_gambit
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { FROM = { tag = CCA } }
+		name = rcw_usfev.435.a
+		reverse_add_opinion_modifier = { target = OVERLORD modifier = OCH_discontent_of_overlord }
+	}
+	option = {
+		trigger = { FROM = { tag = CCA } }
+		name = rcw_usfev.435.b
+		OVERLORD = { end_puppet = ROOT }
+		reverse_add_opinion_modifier = { target = OVERLORD modifier = OCH_traitor_of_overlord }
+	}
+	option = {
+		trigger = { FROM = { NOT = { tag = CCA } }
+		name = rcw_usfev.435.a_1
+		reverse_add_opinion_modifier = { target = OVERLORD modifier = OCH_discontent_of_overlord }
+	}
+	option = {
+		trigger = { FROM = { NOT = { tag = CCA } }
+		name = rcw_usfev.435.b_1
+		OVERLORD = { end_puppet = ROOT }
+		reverse_add_opinion_modifier = { target = OVERLORD modifier = OCH_traitor_of_overlord }
+	}
+}
 
 
 
@@ -11546,7 +11969,7 @@ country_event = {
 			if = {
 				limit = { URL = { is_subject_of = CCA } }
 				RSS = {
-					annex_country = { 
+					annex_country = {
 						target = URL
 						transfer_troops = no 
 					}
@@ -11555,7 +11978,7 @@ country_event = {
 			if = {
 				limit = { UDM = { is_subject_of = CCA } }
 				RSS = {
-					annex_country = { 
+					annex_country = {
 						target = UDM
 						transfer_troops = no 
 					}
