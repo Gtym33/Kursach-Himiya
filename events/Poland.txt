@@ -354,13 +354,13 @@ country_event = {
 			limit = {
 				is_owned_by = ROOT
 				OR = {
-					is_core_of = POL
-					is_claimed_by = POL
+					is_core_of = FROM
+					is_claimed_by = FROM
 				}
 			}
-			POL = { set_state_owner = PREV }
+			FROM = { set_state_owner = PREV }
 		}
-		POL = {
+		FROM = {
 			every_country = {
 				limit = { has_war_with = ROOT NOT = { has_war_with = PREV } }
 				PREV = { add_to_war = { targeted_alliance = ROOT enemy = PREV } }
@@ -370,23 +370,29 @@ country_event = {
 				}
 			}
 		}
-		POL = { UKR = { subjecting_script_with_transfer_parties_colony = yes } }
+		FROM = { UKR = { subjecting_script_with_transfer_parties_colony = yes } }
 	}
 	option = {
 		ai_chance = {
 			factor = 0
 		}
 		name = poland.9.b
-		POL = { country_event = { id = poland.10 days = 1 } }
+		FROM = { country_event = { id = poland.10 days = 1 } }
 	}
 	option = {
 		ai_chance = {
 			factor = 0
 		}
 		name = poland.9.c
-		declare_war_on = {
-			target = POL
-			type = annex_everything
+		every_country = {
+			limit = {
+				former_russian_empire_ukraine_country = yes
+				NOT = { has_war_with = ROOT }
+			}
+			declare_war_on = {
+				target = FROM
+				type = annex_everything
+			}
 		}
 	}
 }
@@ -412,9 +418,17 @@ country_event = {
 			factor = 100
 		}
 		name = poland.10.b
-		declare_war_on = {
-			target = UKR
-			type = annex_everything
+		every_country = {
+			limit = {
+				former_russian_empire_ukraine_country = yes
+				NOT = { has_war_with = ROOT }
+			}
+			ROOT = {
+				declare_war_on = {
+					target = PREV
+					type = annex_everything
+				}
+			}
 		}
 		if = {
 			limit = { UKR = { has_war_with = RUS } }
