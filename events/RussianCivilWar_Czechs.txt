@@ -1063,6 +1063,11 @@ country_event = {
 		check_variable = { SOV_czechs_corps_unrest > 9 }
 		NOT = { has_country_flag = RUS_red_czechoslovak_legion }
 		NOT = { has_country_flag = RUS_czechoslovak_legion_uprising }
+		OR = {
+			NOT = { has_country_flag = SOV_czechs_evac_way_east }
+			CCA = { exists = no }
+			has_country_flag = SOV_czechs_evac_echelons_loading_completed
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -1104,8 +1109,14 @@ country_event = {
 				has_country_flag = SOV_czechs_evac_way_north
 				
 				OR = {
-					has_country_flag = SOV_czechs_evac_first_echelon_completed
-					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					AND = {
+						has_country_flag = SOV_czechs_evac_first_echelon_completed
+						NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					}
+					AND = {
+						NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+						has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					}
 				}
 				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
 			}
@@ -1151,8 +1162,14 @@ country_event = {
 				has_country_flag = SOV_czechs_evac_way_east
 				
 				OR = {
-					has_country_flag = SOV_czechs_evac_first_echelon_completed
-					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					AND = {
+						has_country_flag = SOV_czechs_evac_first_echelon_completed
+						NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					}
+					AND = {
+						NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+						has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					}
 				}
 				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
 			}
@@ -1198,8 +1215,14 @@ country_event = {
 				has_country_flag = SOV_czechs_evac_way_south
 				
 				OR = {
-					has_country_flag = SOV_czechs_evac_first_echelon_completed
-					has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					AND = {
+						has_country_flag = SOV_czechs_evac_first_echelon_completed
+						NOT = { has_country_flag = SOV_czechs_evac_echelons_loading_completed }
+					}
+					AND = {
+						NOT = { has_country_flag = SOV_czechs_evac_first_echelon_completed }
+						has_country_flag = SOV_czechs_evac_echelons_loading_completed
+					}
 				}
 				NOT = { has_country_flag = SOV_czechs_evac_last_echelon_completed }
 			}
@@ -1947,6 +1970,146 @@ country_event = {
 		name = rcw_czechs.17.b
 		add_war_support = 0.15
 		fall_collapse_of_railway_system_3 = yes
+		
+		if = {
+			limit = { SIB = { exists = no } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+							state = 40
+							state = 567
+							state = 569
+							state = 570
+							state = 578
+							state = 654
+							state = 654
+							state = 909
+							state = 1067
+							
+							state = 566
+							state = 575
+							state = 564
+							state = 565
+							state = 644
+							state = 574
+							state = 1207
+							state = 1206
+							state = 1208
+							
+							state = 516
+							state = 1043
+							state = 568
+							state = 571
+							state = 576
+							state = 577
+							state = 572
+							state = 1103
+							state = 573
+							state = 582
+							state = 652
+							state = 651
+							state = 1025
+							state = 1072
+							state = 398
+							state = 581
+							state = 911
+							state = 653
+							state = 403
+							state = 580
+							state = 579
+							
+							state = 583
+							state = 588
+							state = 590
+							state = 1102
+							state = 1231
+						}
+					}
+					add_core_of = SIB
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 408
+						state = 1034
+						state = 1035
+						state = 1036
+						state = 1037
+						state = 1038
+						state = 409
+						state = 560
+						state = 561
+						state = 563
+						state = 637
+						state = 807
+						state = 657
+						state = 655
+						state = 562
+						state = 1185
+						state = 1186
+						state = 1039
+						state = 1041
+						state = 1187
+						state = 1184
+						state = 1040
+					}
+				}
+				SIB = { add_state_claim = PREV }
+			}
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						any_country = {
+							is_subject_of = ROOT
+							PREV = { is_owned_by = PREV }
+						}
+					}
+					OR = {
+						state = 40
+						state = 567
+						state = 569
+						state = 570
+						state = 578
+						state = 654
+						state = 654
+						state = 909
+						state = 1067
+					}
+				}
+				SIB = { transfer_state = PREV }
+			}
+			hidden_effect = {
+				SIB = {
+					add_ideas = neutral_foreign_policy_law
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+					inherit_technology = ROOT
+					country_event = { id = rcw_usfev.54 days = 60 }
+					country_event = { id = rcw_usfev.56 days = 120 }
+					add_timed_idea = {
+						idea = SIB_right_oficers
+						days = 200
+					}
+					set_country_flag = SIB_start_political_instability
+					country_event = { id = rcw_usfev.42 days = 2 }
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+		
 		every_state = {
 			limit = {
 				OR = {
@@ -1982,6 +2145,10 @@ country_event = {
 		hidden_effect = {
 			SIB = {
 				load_oob = SIB_1918
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+					load_oob = SIB_czechoslovak_corps
+				}
 				if = {
 					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
 					load_oob = URL_czechoslovak_corps
