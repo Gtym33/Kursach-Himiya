@@ -669,17 +669,12 @@ country_event = {
 		ai_chance = {
 			factor = 2
 		}
-		RVA = { 
-			annex_country = { target = NVA transfer_troops = yes }
-		}
+		RVA = { annex_country = { target = NVA transfer_troops = yes } }
 		every_state = { limit = { is_core_of = NVA }
 			add_core_of = RVA
 		}
-		NVA = {
-			every_unit_leader = { set_nationality = RVA }
-		}
+		NVA = { every_unit_leader = { set_nationality = RVA } }
 		RVA = { change_tag_from = ROOT }
-		NVA = { country_event = { id = rcw_nva_tech.15  } }
 	}
 }
 
@@ -698,9 +693,17 @@ country_event = {
 		set_politics = { ruling_party = FROM }
 		if = { limit = { NVA = { has_country_leader = { name = "Boris Savinkov" ruling_only = yes }	} }
 			create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Boris_Savinkov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology  traits = { leader_of_dark_circles ideological_crusader political_activist political_dancer min_4_prince_of_terror } }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.15
+			}
 		}
 		else_if = { limit = { NVA = { has_country_leader = { name = "Alexander Dikgof-Derental" ruling_only = yes } } }		
 			create_country_leader = { name = "Alexander Dikgof-Derental" desc = RUS_Alexander_Dikgof-Derental_DESC picture = "gfx/leaders/NVA/Alexander_Dikgof.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology  traits = { goal political_dancer pervert } }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.15
+			}
 		}
 		else_if = { limit = { NVA = { has_country_leader = { name = "Alexandr Perkhurov" ruling_only = yes } } }		
 			set_party_name = {
@@ -709,6 +712,10 @@ country_event = {
 				name = NVA_despotism_party
 			}
 			create_country_leader = { name = "Alexandr Perkhurov" desc = RUS_Alexandr_Perkhurov_DESC picture = "gfx/leaders/RUS/Alexandr_Perkhurov.dds" expire = "1935.1.1" ideology = despotism_ideology  traits = { goal_in_politics warmonger_old_general } }
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.15
+			}
 		}
 		else_if = { limit = { NVA = { has_country_leader = { name = "Veniamin Rychkov" ruling_only = yes } } }
 			set_party_name = {
@@ -717,17 +724,17 @@ country_event = {
 				name = NVA_fascism_party
 			}
 			create_country_leader = { name = "Veniamin Rychkov" desc = RUS_Veniamin_Rychkov_DESC picture = "gfx/leaders/BKL/Veniamin_Rychkov.dds" expire = "1935.1.1" ideology = fascism_ideology  traits = { warmonger_old_general } }
-		}
-		if = { limit = { NVA = { is_in_faction = yes } }
-			NVA = {add_to_faction = RVA}
-		}
-	    RVA = { annex_country = { target = NVA transfer_troops = yes } }
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.15
+			}
+		}	
+		RVA = { annex_country = { target = NVA transfer_troops = yes } }
 		every_state = { limit = { is_core_of = NVA }
 			add_core_of = RVA
 		}
-	    NVA = { every_unit_leader = { set_nationality = RVA } }
-	    RVA = { change_tag_from = FROM }	
-		NVA = { country_event = { id = rcw_nva_tech.15  } }
+		NVA = { every_unit_leader = { set_nationality = RVA } }
+		RVA = { change_tag_from = ROOT }
 	}	
 	
 	option = {
@@ -764,7 +771,7 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
-		NVA = { country_event = { id = rcw_nva.14 days = 1 } }
+		NVA = { country_event = { id = rcw_nva.14 hours = 3 } }
 		if = { limit = { NVA = {is_in_faction = no } }
 			NVA = { create_faction = Volga_Front}
 			NVA = { add_to_faction = NRR }
@@ -776,7 +783,7 @@ country_event = {
 	
 	option = {
 		name = rcw_nva.13.b
-		NVA = { country_event = { id = rcw_nva.15 days = 1 } }
+		NVA = { country_event = { id = rcw_nva.15 hours = 3 } }
 		ai_chance = {
 			factor = 2
 		}
@@ -832,68 +839,54 @@ country_event = {
 		add_political_power = -50
 		if = { limit = {
 				AND = {
-						NVA = {is_in_faction = no }
-					OR = { 
-						RSS = {is_in_faction = no }
-						SIB = {is_in_faction = no }
-						CCA = {is_in_faction = no }
+					NVA = {is_in_faction = no }
+					AND = {
+						ROOT = {is_in_faction = no }
+						NVA = { is_neighbor_of = ROOT }
 					}
 				}
 			}
 			NVA = { create_faction = Volga_Front}	  
-			if = { limit = { RSS = {exists = yes } }  NVA = {add_to_faction = RSS } }
-			else_if = { limit = { SIB = {exists = yes } }  NVA = {add_to_faction = SIB } }
-			else_if = { limit = { CCA = {exists = yes } }  NVA = {add_to_faction = CCA } }	   
+			NVA = {add_to_faction = ROOT }    
 		}	 
 		else_if = { 
 			limit = {
 				AND = { 
 					NVA = {is_in_faction = yes }
-					OR = {
-						RSS = {is_in_faction = no }
-						SIB = {is_in_faction = no }
-						CCA = {is_in_faction = no }
+					AND = {
+						ROOT = {is_in_faction = no }
+						NVA = { is_neighbor_of = ROOT }
 					}
 				}
 			}
-			if = { limit = { RSS = {exists = yes } }  NVA = {add_to_faction = RSS } }
-			else_if = { limit = { SIB = {exists = yes } }  NVA = {add_to_faction = SIB } }
-			else_if = { limit = { CCA = {exists = yes } }  NVA = {add_to_faction = CCA } }
+			NVA = {add_to_faction = ROOT } 
 		}	 
 		else_if = { 
 			limit = {
 				NVA = {is_in_faction = no }
-				OR = {
-					RSS = {is_in_faction = yes }
-					SIB = {is_in_faction = yes }
-					CCA = {is_in_faction = yes }
+				AND = {
+					ROOT = {is_in_faction = yes }
+					NVA = { is_neighbor_of = ROOT }
 				}
 			}
-			if = { limit = { RSS = {exists = yes } }  RSS = {add_to_faction = NVA } }
-			else_if = { limit = { SIB = {exists = yes } }  SIB = {add_to_faction = NVA } }
-			else_if = { limit = { CCA = {exists = yes } }  CCA = {add_to_faction = NVA } }
+			ROOT = {add_to_faction = NVA } 
 		}	 	 
 	    else_if = { 
 			limit = {
 				NVA = {is_in_faction = yes }
-				OR = {
-					RSS = {is_in_faction = yes }
-					SIB = {is_in_faction = yes }
-					CCA = {is_in_faction = yes }
+				AND = {
+					ROOT = {is_in_faction = yes }
+					NVA = { is_neighbor_of = ROOT }
 				}
 			}
-			if = { limit = { NRR = {  is_in_faction_with = NVA	} }
-				NRR =  {leave_faction = yes}		 
-				if = { limit = { RSS = {exists = yes } }  RSS = {add_to_faction = NRR } }
-				else_if = { limit = { SIB = {exists = yes } }  SIB = {add_to_faction = NRR } }
-				else_if = { limit = { CCA = {exists = yes } }  CCA = {add_to_faction = NRR } }
-			}		 
+			every_country = { limit = { is_in_faction_with = NVA }
+				leave_faction = yes
+				PREV = { add_to_faction = ROOT }
+			}				 
 			NVA = {dismantle_faction = yes}
-			if = { limit = { RSS = {exists = yes } }  RSS = {add_to_faction = NVA } }
-			else_if = { limit = { SIB = {exists = yes } }  SIB = {add_to_faction = NVA } }
-			else_if = { limit = { CCA = {exists = yes } }  CCA = {add_to_faction = NVA } }
+			ROOT = {add_to_faction = NVA } 
 	    }	
-		NVA = {country_event = { id = rcw_nva.18 days = 1 }}
+		NVA = {country_event = { id = rcw_nva.18 }}
 	}
 	
 	option = {
@@ -1513,7 +1506,8 @@ country_event = {
 	is_triggered_only = yes	
 	picture = GFX_report_event_rva_democratic_constitution
 	option = {
-	    name = rcw_nva.26.a					   
+	    name = rcw_nva.26.a	
+		trigger = { NOT = { has_country_flag = Boris_Savinkov_dead } }
         add_ideas = {Boris_Savinkov_1}
 	}
     option = {
@@ -2369,7 +2363,7 @@ country_event = {
 		hidden_effect = {
 			set_global_flag = SZRiS_mission_is_on
 		    DON = {unlock_decision_category_tooltip = RVA_DON_SZRiS_missions}
-		    RVA = {unlock_decision_category_tooltip = RVA_DON_SZRiS_missions}			
+		    RVA = {unlock_decision_category_tooltip = RVA_DON_SZRiS_missions}
 			set_variable = { var = global.success_reb_count value = 0 } 
 			set_variable = { var = global.op_count value = 0 } 
 			set_variable = { var = cell_org_count value = 0 }
@@ -2620,6 +2614,10 @@ country_event = {
 		}
         set_politics = {
 	        ruling_party = despotism
+		}
+		add_popularity = {
+            ideology = despotism
+            popularity = 0.25
 		}
 	}
 }
@@ -3162,7 +3160,7 @@ country_event = {
 		name = rcw_nva.62.a	
 		RUS = {
 			add_timed_idea = {
-				idea = decentralization_of_army
+				idea = disorganization_of_army
 				days = 30
 			}
 			add_stability = -0.2
@@ -3187,7 +3185,7 @@ country_event = {
 		NVA = { country_event = {id = rcw_nva.72 days = 2} }
 		RUS = {
 			add_timed_idea = {
-				idea = decentralization_of_army
+				idea = disorganization_of_army
 				days = 30
 			}
 			add_stability = -0.2
@@ -3396,6 +3394,10 @@ country_event = {
 		every_unit_leader = { limit = { OR = { has_id = 77501 } } retire = yes }
 		add_ideas = { NVA_high_military_influence }
 		set_politics = { ruling_party = despotism }
+		add_popularity = {
+            ideology = despotism
+            popularity = 0.25
+		}
 	}
 	option = {
 		name = rcw_nva.73.b
@@ -3404,6 +3406,10 @@ country_event = {
 		every_unit_leader = { limit = { OR = { has_id = 77501 } } retire = yes }
 		add_ideas = { NVA_high_military_influence }
 		set_politics = { ruling_party = fascism }
+		add_popularity = {
+            ideology = fascism
+            popularity = 0.25
+		}
 	}
 	option = {
 		name = rcw_nva.73.c
@@ -3893,6 +3899,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.1.a
+		trigger = { RUS = {controls_province = 121} }
 		random_list = {
             global.success_in_yaroslavl = {
 		        248 = { set_state_flag  = success_cell_in_yaroslavl }
@@ -3922,7 +3929,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 248 = { has_state_flag = yaroslavl_cell_destroyed  } }
+	    trigger = {
+			OR = {
+				248 = { has_state_flag = yaroslavl_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 121} }
+			}
+		}
 		name = rcw_nva_tech.1.b	
 		country_event = { id = rcw_nva_tech.2 }
 	}
@@ -3936,6 +3948,7 @@ country_event = {
 	hidden = yes
 	option = {
 		name = rcw_nva_tech.2.a
+		trigger = { RUS = {controls_province = 6356} }
 		random_list = {
 			global.success_in_rostov = {
 				248 = { set_state_flag  = success_cell_in_rostov }
@@ -3969,7 +3982,12 @@ country_event = {
 		}
 	}
 	option = {
-		trigger = { 248 = { has_state_flag = rostov_cell_destroyed  } }
+		trigger = { 
+			OR = {
+				248 = { has_state_flag = rostov_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 6356} }
+			}
+		}
 		name = rcw_nva_tech.2.b		
 		if = { limit = { NOT = { 248 = { has_state_flag  = success_cell_in_yaroslavl } } }
 			country_event = { id = rcw_nva_tech.3 }
@@ -3985,6 +4003,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.3.a
+		trigger = { RUS = {controls_province = 6167} }
 		random_list = {
             global.success_in_rybinsk = {
 	            248 = { set_state_flag  = success_cell_in_rybinsk }
@@ -4033,7 +4052,12 @@ country_event = {
 		
 	}
 	option = {
-	    trigger = { 248 = { has_state_flag = rybinsk_cell_destroyed  } }
+	    trigger = {
+			OR = {
+				248 = { has_state_flag = rybinsk_cell_destroyed  }
+				NOT = { RUS = {controls_province = 6167} }
+			} 
+		}
 		name = rcw_nva_tech.3.b	
 		if = { 
 			limit = {
@@ -4055,6 +4079,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.4.a
+		trigger = { RUS = {controls_province = 6362} }
 		random_list = {
             global.success_in_murom = {
 		        1219 = { set_state_flag  = success_cell_in_murom }
@@ -4100,7 +4125,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 1219 = { has_state_flag = murom_cell_destroyed  } }
+	    trigger = { 
+			OR = {
+				1219 = { has_state_flag = murom_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 6362} }
+			}
+		}
 		name = rcw_nva_tech.4.b	
 		if = { 
 			limit = {
@@ -4123,6 +4153,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.5.a
+		trigger = { RUS = {controls_province = 6338} }
 		random_list = {
             global.success_in_kazan = {
 		        249 = { set_state_flag  = success_cell_in_kazan }
@@ -4169,7 +4200,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 249 = { has_state_flag = kazan_cell_destroyed  } }
+	    trigger = {
+			OR = {
+				249 = { has_state_flag = kazan_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 6338} }
+			}
+		}
 		name = rcw_nva_tech.5.b
 		if = { 
 			limit = {
@@ -4193,6 +4229,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.6.a
+		trigger = { RUS = {controls_province = 11375} }
 		random_list = {
             global.success_in_nizhniy_novgorod = {
 		        252 = { set_state_flag  = success_cell_in_nizhniy_novgorod }
@@ -4240,7 +4277,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 252 = { has_state_flag = nizhniy_novgorod_cell_destroyed  } }
+	    trigger = { 
+			OR = {
+				252 = { has_state_flag = nizhniy_novgorod_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 11375} }
+			}
+		}
 		name = rcw_nva_tech.6.b	
 		if = { 
 			limit = {
@@ -4265,6 +4307,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.7.a
+		trigger = { RUS = {controls_province = 3190} }
 		random_list = {
             global.success_in_kostroma = {
 		        1234 = { set_state_flag  = success_cell_in_kostroma }
@@ -4313,7 +4356,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 1234 = { has_state_flag = kostroma_cell_destroyed  } }
+	    trigger = { 
+			OR = {
+				1234 = { has_state_flag = kostroma_cell_destroyed  }
+				NOT = { RUS = {controls_province = 3190} }
+			} 
+		}
 		name = rcw_nva_tech.7.b	
 		if = { 
 			limit = {
@@ -4339,6 +4387,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.8.a
+		trigger = { RUS = {controls_province = 9311} }
 		random_list = {
             global.success_in_vladimir = {
 		        1219 = { set_state_flag  = success_cell_in_vladimir }
@@ -4388,7 +4437,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 1219 = { has_state_flag = vladimir_cell_destroyed  } }
+	    trigger = { 
+			OR = {
+				1219 = { has_state_flag = vladimir_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 9311} }
+			}
+		}
 		name = rcw_nva_tech.8.b	
 		if = { 
 			limit = {
@@ -4415,6 +4469,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.9.a
+		trigger = { RUS = {controls_province = 9131} }
 		random_list = {
             global.success_in_vologda = {
 		        351 = { set_state_flag  = success_cell_in_vologda }
@@ -4465,7 +4520,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 351 = { has_state_flag = vologda_cell_destroyed  } }
+	    trigger = { 
+			OR = {
+				351 = { has_state_flag = vologda_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 9131} }
+			}
+		}
 		name = rcw_nva_tech.9.b	
 		if = { 
 			limit = {
@@ -4493,6 +4553,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.10.a
+		trigger = { RUS = {controls_province = 6269} }
 		random_list = {
             global.success_in_ivanovo_voznesenskoe = {
 		        253 = { set_state_flag  = success_cell_in_ivanovo_voznesenskoe }
@@ -4544,7 +4605,12 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 253 = { has_state_flag = ivanovo_voznesenskoe_cell_destroyed  } }
+	    trigger = { 
+			OR = {
+				253 = { has_state_flag = ivanovo_voznesenskoe_cell_destroyed  } 
+				NOT =  { RUS = {controls_province = 6269} }
+			}
+		}
 		name = rcw_nva_tech.10.b
 		if = { 
 			limit = {
@@ -4573,6 +4639,7 @@ country_event = {
 	hidden = yes
 	option = {	    
 		name = rcw_nva_tech.11.a
+		trigger = { RUS = {controls_province = 6380} }
 		random_list = {
             global.success_in_moscow = {
 		        219 = { set_state_flag  = success_cell_in_moscow }
@@ -4623,8 +4690,22 @@ country_event = {
 		}
 	}
 	option = {
-	    trigger = { 219 = { has_state_flag = moscow_cell_destroyed  } }
-		name = rcw_nva_tech.11.b	
+	    trigger = { 
+			OR = {
+				219 = { has_state_flag = moscow_cell_destroyed  } 
+				NOT = { RUS = {controls_province = 6380} }
+			}
+		}
+		name = rcw_nva_tech.11.b
+		if = { limit = { NOT = { 219 = { has_state_flag = moscow_cell_destroyed  } } }
+			hidden_effect = {
+				NVA = {
+					add_ideas = NVA_intelligence_network
+					create_corps_commander = { name = "Friedrich Briedis" id = 77508 portrait_path = "gfx/leaders/NVA/Friedrich_Briedis.dds" traits = {  trait_reckless infantry_officer } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 4 logistics_skill = 3 }
+					create_corps_commander = { name = "Alexander Vilenkin" id = 77507 portrait_path = "gfx/leaders/NVA/Alexander_Vilenkin.dds" traits = { cavalry_officer } skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }	        				
+				}         
+			}
+		}
 		country_event = { id = rcw_nva_tech.13 }
 		NVA = { remove_all_foreing_locked_templates_from_liberated_country = yes }
 	}
@@ -4721,9 +4802,7 @@ country_event = {
 		else_if = { limit = { RUS = { has_idea = collapse_of_railway_system_5 } }  NVA = { add_ideas = collapse_of_railway_system_5 } }				
 	
 		if = { 
-			limit = { 
-				check_variable = { global.success_reb_count = 1}
-			} 
+			limit = { check_variable = { global.success_reb_count < 2} } 
 			remove_ideas = { decentralization_of_goverment }
 			add_timed_idea = { 
 				idea = NVA_one_city_success 
@@ -4756,41 +4835,6 @@ country_event = {
 		}	
 	}	
 }
-#Интеграция с ДА
-country_event = {
-    id = rcw_nva_tech.15
-	title = rcw_nva_tech.15.t
-	desc = rcw_nva_tech.15.desc	
-	hidden = yes	
-	is_triggered_only = yes
-		
-	option = {
-		name = rcw_nva_tech.15.a
-		event_target:UNITED_COUNTRY = {
-			set_popularities = {
-					radical_socialism = var:radical_socialism_party
-					communism = var:communism_party
-					social_democracy = var:social_democracy_party
-					social_liberalism = var:social_liberalism_party
-					market_liberalism = var:market_liberalism_party
-					social_conservatism = var:social_conservatism_party
-					authoritarism = var:authoritarism_party
-					despotism = var:despotism_party
-					fascism = var:fascism_party
-					national_syndicalism = var:national_syndicalism_party
-			}
-		}
-		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
-		random_state = {
-			limit = { has_state_flag = new_capital }
-			event_target:UNITED_COUNTRY = { set_capital = PREV }
-			clr_state_flag = new_capital
-		}
-		clear_global_event_target = INTEGRATING_COUNTRY_MAJOR
-		clear_global_event_target = INTEGRATING_COUNTRY_MINOR
-		clear_global_event_target = UNITED_COUNTRY	
-	}	
-}
 #Генерал Стогов на вандею
 country_event = {
     id = rcw_nva_tech.16
@@ -4802,6 +4846,61 @@ country_event = {
 	option = {
 		name = rcw_nva_tech.16.a
 		create_corps_commander = { name = "Nikolay Stogov" id = 77509  portrait_path = "gfx/leaders/RUS/Nikolay_Stogov.dds" traits = { fast_planner } skill = 3 attack_skill = 3 defense_skill = 3 planning_skill = 4 logistics_skill = 4 } 
+	}	
+}
+#Перенос генералов при капитуляции
+country_event = {
+    id = rcw_nva_tech.17
+	title = rcw_nva_tech.17.t
+	desc = rcw_nva_tech.17.desc	
+	hidden = yes
+	fire_only_once = yes
+	
+	trigger = {
+		tag = NVA
+		OR = {
+			AND = {
+				has_global_flag = {
+					flag = moment_of_truth_happened
+					days > 21
+				}
+				NVA = { exists = no }
+			}
+			NVA = { has_capitulated = yes }
+		}
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = rcw_nva_tech.17.a
+		if = { limit = { CCA = { exists = yes } }
+			NVA = { every_unit_leader = { limit = { NOT = { has_id = 77502 } } set_nationality = CCA } }
+			if = { limit = { RSS = { has_completed_focus = RSS_ban_ataman } }
+				NVA = { every_unit_leader = { limit = { has_id = 77502 } set_nationality = BKL } }
+			}
+			else_if = { limit = { RSS = { NOT = { has_completed_focus = RSS_ban_ataman } } }
+				NVA = { every_unit_leader = { limit = { has_id = 77502 } set_nationality = CCA } }
+			}
+		}
+		else_if = { limit = { SIB = { exists = yes } }
+			NVA = { every_unit_leader = { limit = { NOT = { has_id = 77502 } } set_nationality = SIB } }
+			if = { limit = { RSS = { has_completed_focus = RSS_ban_ataman } }
+				NVA = { every_unit_leader = { limit = { has_id = 77502 } set_nationality = BKL } }
+			}
+			else_if = { limit = { RSS = { NOT = { has_completed_focus = RSS_ban_ataman } } }
+				NVA = { every_unit_leader = { limit = { has_id = 77502 } set_nationality = SIB } }
+			}
+		}
+		else_if = { limit = { RSS = { exists = yes } }
+			NVA = { every_unit_leader = { limit = { NOT = { has_id = 77502 } } set_nationality = RSS } }
+			if = { limit = { RSS = { has_completed_focus = RSS_ban_ataman } }
+				NVA = { every_unit_leader = { limit = { has_id = 77502 } set_nationality = BKL } }
+			}
+			else_if = { limit = { RSS = { NOT = { has_completed_focus = RSS_ban_ataman } } }
+				NVA = { every_unit_leader = { limit = { has_id = 77502 } set_nationality = RSS } }
+			}
+		}
 	}	
 }
 	#########
