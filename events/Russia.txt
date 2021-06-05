@@ -642,6 +642,7 @@ country_event = {
 	option = {
 		name = russia.15.a
 		set_country_flag = RUS_April_crisis_fired
+		set_country_flag = RUS_provisional_government_socialist_gov
 		add_popularity = {
 			ideology = social_conservatism
 			popularity = -0.15
@@ -781,6 +782,7 @@ country_event = {
 		has_country_flag = RUS_provisional_government_created
 		has_country_flag = RUS_first_allrussian_congress_of_soviets
 		NOT = { has_country_flag = RUS_dacha_Durnovo_event_fired }
+		NOT = { has_country_flag = RUS_dacha_Durnovo_cleared }
 	}
 	fire_only_once = yes
 	mean_time_to_happen = {
@@ -800,7 +802,13 @@ country_event = {
 		hidden_effect = {
 			random_list = {
 				95 = { country_event = { id = russia.18 days = 1 } }
-				5 = { set_country_flag = RUS_dacha_Durnovo_cleared }
+				5 = {
+					set_country_flag = RUS_dacha_Durnovo_cleared
+					add_popularity = {
+						ideology = radical_socialism
+						popularity = -0.01
+					}
+				}
 			}
 		}
 		custom_effect_tooltip = russia.17.a_tt
@@ -926,7 +934,10 @@ country_event = {
 		tag = RUS
 		has_country_flag = RUS_provisional_government_created
 		has_country_flag = RUS_first_allrussian_congress_of_soviets
-		has_country_flag = RUS_dacha_Durnovo_event_fired
+		OR = {
+			has_country_flag = RUS_dacha_Durnovo_event_fired
+			has_country_flag = RUS_dacha_Durnovo_cleared
+		}
 		NOT = { has_country_flag = general_kornilov }
 	}
 	fire_only_once = yes
@@ -965,6 +976,7 @@ country_event = {
 		set_country_flag = RUS_1_July_meeting
 	}
 	option = {
+		trigger = { NOT = { has_country_flag = RUS_dacha_Durnovo_cleared } }
 		name = russia.20.c #разогнать демонстрации, очистить дачу анархистов
 		ai_chance = {
 			factor = 1
@@ -976,6 +988,25 @@ country_event = {
 		add_popularity = {
 			ideology = radical_socialism
 			popularity = -0.01
+		}
+		set_country_flag = RUS_1_July_meeting_force_supressed
+		set_country_flag = RUS_1_July_meeting
+		set_country_flag = RUS_dacha_Durnovo_cleared
+		add_political_power = 15
+	}
+	option = {
+		trigger = { has_country_flag = RUS_dacha_Durnovo_cleared }
+		name = russia.20.d #разогнать демонстрации
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = -0.03
 		}
 		set_country_flag = RUS_1_July_meeting_force_supressed
 		set_country_flag = RUS_1_July_meeting
@@ -1007,6 +1038,13 @@ country_event = {
 		}
 		NOT = { has_country_flag = general_kornilov }
 		NOT = { has_country_flag = RUS_second_coalition_gov }
+		OR = {
+			has_idea_with_trait = market_liberal_counselor
+			has_idea_with_trait = social_conservative_counselor
+			has_idea_with_trait = authoritarian_counselor
+			has_idea_with_trait = despotist_counselor
+			has_idea_with_trait = fascist_counselor
+		}
 	}
 	fire_only_once = yes
 	mean_time_to_happen = {
@@ -1396,7 +1434,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		trigger = { NOT = { has_country_flag = RUS_second_coalition_gov } }
+		trigger = { NOT = { has_country_flag = RUS_second_coalition_gov has_country_flag = RUS_provisional_government_socialist_gov } }
 		name = russia.24.a
 		if = {
 			limit = { has_country_flag = RUS_16_July_military_supression }
@@ -1411,7 +1449,7 @@ country_event = {
 		hidden_effect = { news_event = { id = news_n.11 hours = 72 } }
 	}
 	option = {
-		trigger = { has_country_flag = RUS_second_coalition_gov }
+		trigger = { OR = { has_country_flag = RUS_second_coalition_gov has_country_flag = RUS_provisional_government_socialist_gov } }
 		name = russia.24.b
 		if = {
 			limit = { has_country_flag = RUS_16_July_military_supression }
@@ -1457,11 +1495,24 @@ country_event = {
 	option = {
 		trigger = {
 			OR = {
+				has_government = market_liberalism
+				has_government = social_conservatism
+				has_government = authoritarism
+				has_government = despotism
+				has_government = fascism
+			}
+			OR = {
 				has_country_flag = RUS_April_crisis_provisional_government_win
 				NOT = {
 					has_country_flag = UKR_central_rada_demands_accepted
 					has_country_flag = UKR_central_rada_II_universal
 					UKR = { exists = yes is_subject = no NOT = { has_war_with = ROOT } }
+				}
+				NOT = {
+					has_idea = RUS_dvoevlastie_1
+					has_idea = RUS_dvoevlastie_2
+					has_idea = RUS_dvoevlastie_3
+					has_idea = RUS_dvoevlastie_4
 				}
 			}
 		}
@@ -1578,7 +1629,13 @@ country_event = {
 	
 	option = {
 		name = russia.28.a
-		retire_country_leader = yes
+		if = {
+			limit = {
+				has_government = market_liberalism
+				has_country_leader = { name = "Georgiy Lvov" ruling_only = yes }
+			}
+			retire_country_leader = yes
+		}
 		create_country_leader = {
 			name = "Alexandr Kerensky"
 			desc=RUS_Alexandr_Kerensky_DESC
@@ -1670,13 +1727,30 @@ country_event = {
 			Nikolay_Avksentiev_4
 			Alexander_Zarudny_5
 		}
-		remove_ideas = {
-			RUS_dvoevlastie_2
-			RUS_dvoevlastie_3
-			RUS_dvoevlastie_4
+		if = {
+			limit = { NOT = { has_completed_focus = RUS_autoritarian_democracy } }
+			remove_ideas = {
+				RUS_dvoevlastie_2
+				RUS_dvoevlastie_3
+				RUS_dvoevlastie_4
+			}
+			add_ideas = RUS_dvoevlastie_1
+			else = {
+				remove_ideas = {
+					RUS_dvoevlastie_1
+					RUS_dvoevlastie_2
+					RUS_dvoevlastie_3
+					RUS_dvoevlastie_4
+				}
+			}
 		}
-		add_ideas = RUS_dvoevlastie_1
-		retire_country_leader = yes
+		if = {
+			limit = {
+				has_government = market_liberalism
+				has_country_leader = { name = "Georgiy Lvov" ruling_only = yes }
+			}
+			retire_country_leader = yes
+		}
 		create_country_leader = {
 			name = "Alexandr Kerensky"
 			desc=RUS_Alexandr_Kerensky_DESC
@@ -1746,12 +1820,23 @@ country_event = {
 			Nikolay_Avksentiev_4
 			Alexander_Zarudny_5
 		}
-		remove_ideas = {
-			RUS_dvoevlastie_2
-			RUS_dvoevlastie_3
-			RUS_dvoevlastie_4
+		if = {
+			limit = { NOT = { has_completed_focus = RUS_autoritarian_democracy } }
+			remove_ideas = {
+				RUS_dvoevlastie_2
+				RUS_dvoevlastie_3
+				RUS_dvoevlastie_4
+			}
+			add_ideas = RUS_dvoevlastie_1
+			else = {
+				remove_ideas = {
+					RUS_dvoevlastie_1
+					RUS_dvoevlastie_2
+					RUS_dvoevlastie_3
+					RUS_dvoevlastie_4
+				}
+			}
 		}
-		add_ideas = RUS_dvoevlastie_1
 		add_popularity = {
 			ideology = social_liberalism
 			popularity = -0.05
@@ -2126,6 +2211,7 @@ country_event = {
 			has_country_flag = Kornilov_affair_fail
 		}
 		NOT = { has_country_flag = general_kornilov }
+		NOT = { has_government = fascism has_government = despotism has_government = authoritarism has_government = social_conservatism has_government = market_liberalism } 
 	}
 	
 	mean_time_to_happen = {
@@ -3236,6 +3322,7 @@ country_event = {
 	
 	option = {
 		name = russia.153.a
+		set_country_flag = RUS_provisional_government_socialist_gov
 		add_popularity = {
 			ideology = social_conservatism
 			popularity = -0.15
