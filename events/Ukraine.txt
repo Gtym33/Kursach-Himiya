@@ -2332,33 +2332,42 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = {
-		hidden_effect = { set_cosmetic_tag = USR_Ukr_People_Rep_Sov }
+		hidden_effect = { USR = { set_cosmetic_tag = USR_Ukr_People_Rep_Sov } }
 	}
 	
 	option = {
 		name = ukraine.-8.a
+		hidden_effect = {
+			capital_scope = { USR = { transfer_state = PREV } }
+			USR = {
+				inherit_technology = UKR
+				add_ideas = neutral_foreign_policy_law
+				if = {
+					limit = { RUS = { has_war_with = GER } }
+					add_to_war = { targeted_alliance = RUS enemy = GER }
+				}
+				if = {
+					limit = { RUS = { has_war_with = AUH } }
+					add_to_war = { targeted_alliance = RUS enemy = AUH }
+				}
+				if = {
+					limit = { DON = { exists = yes has_war_with = RUS } }
+					declare_war_on = {
+						target = DON
+						type = annex_everything
+					}
+				}
+				if = {
+					limit = { RVA = { exists = yes has_war_with = RUS } }
+					declare_war_on = {
+						target = RVA
+						type = annex_everything
+					}
+				}
+			}
+		}
 		USR = {
 			annex_country = { target = UKR transfer_troops = yes }
-			inherit_technology = UKR
-			add_ideas = neutral_foreign_policy_law
-			if = {
-				limit = { RUS = { has_war_with = GER } }
-				add_to_war = { targeted_alliance = RUS enemy = GER }
-			}
-			if = {
-				limit = { DON = { exists = yes has_war_with = RUS } }
-				declare_war_on = {
-					target = DON
-					type = annex_everything
-				}
-			}
-			if = {
-				limit = { RVA = { exists = yes has_war_with = RUS } }
-				declare_war_on = {
-					target = RVA
-					type = annex_everything
-				}
-			}
 			hidden_effect = {
 				every_state = {
 					limit = {
@@ -2379,7 +2388,10 @@ country_event = {
 					limit = {
 						has_state_flag = subject_save_claim
 					}
-					add_claim_by = PREV
+					if = {
+						limit = { OR = { is_claimed_by = BLR NOT = { is_core_of = RUS is_core_of = BLR } } }
+						add_claim_by = PREV
+					}
 					clr_state_flag = subject_save_claim
 				}
 				every_country = {
@@ -3723,7 +3735,104 @@ country_event = {
 	option = {
 		name = ukraine.11.b #провести съезд как обычно
 		complete_national_focus = UKR_not_interfere_with_the_congress
-		USR = { change_tag_from = UKR annex_country = { target = UKR transfer_troops = yes } }
+		if = {
+			limit = { USR = { exists = no } }
+			hidden_effect = { USR = { set_cosmetic_tag = USR_Ukr_People_Rep_Sov } }
+			hidden_effect = {
+				capital_scope = { USR = { transfer_state = PREV } }
+				USR = {
+					inherit_technology = UKR
+					add_ideas = neutral_foreign_policy_law
+					if = {
+						limit = { RUS = { has_war_with = GER } }
+						add_to_war = { targeted_alliance = RUS enemy = GER }
+					}
+					if = {
+						limit = { RUS = { has_war_with = AUH } }
+						add_to_war = { targeted_alliance = RUS enemy = AUH }
+					}
+					if = {
+						limit = { DON = { exists = yes has_war_with = RUS } }
+						declare_war_on = {
+							target = DON
+							type = annex_everything
+						}
+					}
+					if = {
+						limit = { RVA = { exists = yes has_war_with = RUS } }
+						declare_war_on = {
+							target = RVA
+							type = annex_everything
+						}
+					}
+				}
+			}
+			USR = {
+				annex_country = { target = UKR transfer_troops = yes }
+				hidden_effect = {
+					every_state = {
+						limit = {
+							is_core_of = UKR
+						}
+						add_core_of = PREV
+					}
+					every_state = {
+						limit = {
+							is_claimed_by = UKR
+						}
+						set_state_flag = subject_save_claim
+					}
+				}
+				RUS = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
+				hidden_effect = {
+					every_state = {
+						limit = {
+							has_state_flag = subject_save_claim
+						}
+						if = {
+							limit = { OR = { is_claimed_by = BLR NOT = { is_core_of = RUS is_core_of = BLR } } }
+							add_claim_by = PREV
+						}
+						clr_state_flag = subject_save_claim
+					}
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								has_government = communism
+								has_government = radical_socialism
+								has_government = social_democracy
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+					every_state = {
+						limit = {
+							is_owned_by = RUS
+							is_core_of = PREV
+						}
+						PREV = { set_state_owner = PREV }
+						if = {
+							limit = { is_fully_controlled_by = RUS }
+							PREV = { set_state_controller = PREV }
+						}
+					}
+				}
+			}
+			else = {
+				USR = {
+					annex_country = {
+						target = ROOT
+						transfer_troops = yes
+					}
+				}
+			}
+		}
+		USR = { change_tag_from = ROOT }
 		ai_chance = {
 			factor = 0
 		}
