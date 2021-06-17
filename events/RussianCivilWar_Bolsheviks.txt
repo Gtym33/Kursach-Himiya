@@ -204,7 +204,7 @@ country_event = {
 	}
 }
 
-# Штурм госбанка
+# Штурм госбанка/Крах/Победивший класс
 country_event = {
 	id = rcw_bolsheviks.21
 	title = rcw_bolsheviks.21.t
@@ -1553,7 +1553,6 @@ country_event = {
 	
 	trigger = {
 		has_country_flag = RUS_Oktober_revolution_fired
-		has_war = no
 		has_completed_focus = RUS_prodrazverstka
 		has_government = communism
 		has_idea = two_party_system_law
@@ -1594,7 +1593,6 @@ country_event = {
 	
 	trigger = {
 		has_country_flag = RUS_Oktober_revolution_fired
-		has_war = no
 		has_completed_focus = RUS_combeds
 		has_government = communism
 		has_idea = two_party_system_law
@@ -1720,10 +1718,7 @@ country_event = {
 				check_variable = { radical_socialism_coalition = 1 }
 				OR = {
 					has_country_flag = RUS_brest_peace_fired
-					has_country_flag = brest_hardest
-					has_country_flag = brest_hard
-					has_country_flag = brest_average
-					has_country_flag = brest_soft
+					has_completed_focus = RUS_left_eser_focus
 				}
 			}
 			country_event = { id = rcw_bolsheviks.56 hours = 1 }
@@ -1739,13 +1734,13 @@ country_event = {
 	desc = {
 		text = rcw_bolsheviks.56.desc
 		trigger = {
-			NOT = { has_completed_focus = RUS_left_eser_focus }
+			has_country_flag = RUS_brest_peace_fired
 		}
 	}
 	desc = {
 		text = rcw_bolsheviks.56.desc_1
 		trigger = {
-			has_completed_focus = RUS_left_eser_focus
+			NOT = { has_country_flag = RUS_brest_peace_fired }
 		}
 	}
 	picture = GFX_report_event_sov_felix_VCHK
@@ -1758,15 +1753,37 @@ country_event = {
 		name = rcw_bolsheviks.56.a
 		if = {
 			limit = {
-				OR = {
-					has_country_flag = brest_hardest
-					has_country_flag = brest_hard
-					has_country_flag = brest_average
-					has_country_flag = brest_soft
-				}
+				has_country_flag = RUS_brest_peace_fired
 			}
 			country_event = { id = rcw_bolsheviks.57 days = 1 }
-			else = { country_event = { id = rcw_bolsheviks.58 days = 1 } }
+			else = {
+				if = {
+					limit = { has_completed_focus = RUS_VChK }
+					if = {
+						limit = { has_completed_focus = RUS_left_eser_focus check_variable = { party_popularity@radical_socialism > party_popularity@communism } }
+						add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+						else = {
+							if = {
+								limit = { OR = { has_completed_focus = RUS_left_eser_focus check_variable = { party_popularity@radical_socialism > party_popularity@communism } } }
+								random_list = {
+									80 = { add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 } }
+									20 = { set_country_flag = left_esser_arrested }
+								}
+								else = {
+									random_list = {
+										5 = { add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 } }
+										95 = { set_country_flag = left_esser_arrested }
+									}
+								}
+							}
+						}
+					}
+					country_event = { id = rcw_bolsheviks.61 hours = 2 }
+					else = {
+						country_event = { id = rcw_bolsheviks.60 hours = 2 }
+					}
+				}
+			}
 		}
 	}
 }
@@ -1835,20 +1852,20 @@ country_event = {
 		trigger = { has_country_flag = arrested_VCHK }
 		name = rcw_bolsheviks.58.a
 		if = {
+			limit = { has_completed_focus = RUS_left_eser_focus check_variable = { party_popularity@radical_socialism > party_popularity@communism } }
+			add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+		}
+		else_if = {
 			limit = { OR = { has_completed_focus = RUS_left_eser_focus check_variable = { party_popularity@radical_socialism > party_popularity@communism } } }
-				random_list = {
-					80 = { add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 } }
-					20 = { set_country_flag = left_esser_arrested }
-				}
-			else_if = {
-				limit = { AND = { has_completed_focus = RUS_left_eser_focus check_variable = { party_popularity@radical_socialism > party_popularity@communism } } }
-				add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 }
+			random_list = {
+				80 = { add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 } }
+				20 = { set_country_flag = left_esser_arrested }
 			}
-			else = {
-				random_list = {
-					5 = { add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 } }
-					95 = { set_country_flag = left_esser_arrested }
-				}
+		}
+		else = {
+			random_list = {
+				5 = { add_to_variable = { var = RUS_left_SR_Moscow_control value = 1 } }
+				95 = { set_country_flag = left_esser_arrested }
 			}
 		}
 		country_event = { id = rcw_bolsheviks.61 hours = 2 }
@@ -3265,22 +3282,37 @@ country_event = {
 country_event = {
 	id = rcw_bolsheviks.199
 	title = rcw_bolsheviks.199.t
-	desc = rcw_bolsheviks.199.desc
+	desc = {
+		text = rcw_bolsheviks.199.desc
+		trigger = { NOT = { has_completed_focus = RUS_left_eser_focus } }
+	}
+	desc = {
+		text = rcw_bolsheviks.199.desc_1
+		trigger = { has_completed_focus = RUS_left_eser_focus }
+	}
 	picture = GFX_report_event_sov_protest_of_moderate_socialists_against_the_bolsheviksv
 	
 	trigger = {
 		tag = RUS
 		has_idea_with_trait = radical_socialist_counselor
 		has_country_flag = RUS_Oktober_revolution_fired
-		has_country_flag = RUS_brest_peace_fired
-		controls_state = 195
-		controls_state = 219
 		has_government = communism
-		NOT = { has_completed_focus = RUS_left_eser_focus }
-		NOT = { has_completed_focus = RUS_break_brest_peace }
 		has_idea = two_party_system_law
 		check_variable = { communism_coalition = 1 }
 		check_variable = { radical_socialism_coalition = 1 }
+		NOT = { has_country_flag = RUS_left_SR_rise_in_progress	}
+		NOT = { has_country_flag = RUS_left_SR_revolt_suppose }
+		NOT = { has_country_flag = RUS_left_SR_revolt }
+		OR = {
+			AND = {
+				has_country_flag = RUS_brest_peace_fired
+				NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+				controls_state = 195
+				controls_state = 219
+				NOT = { has_completed_focus = RUS_break_brest_peace }
+			}
+			has_completed_focus = RUS_left_eser_focus
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -3305,26 +3337,7 @@ country_event = {
 	
 	trigger = {
 		has_country_flag = RUS_Oktober_revolution_fired
-		has_country_flag = RUS_brest_peace_fired
-		OR = {
-			OR = {
-				has_country_flag = brest_hardest
-				has_country_flag = brest_hard
-				has_country_flag = brest_average
-				has_country_flag = brest_soft
-			}
-			OR = {
-				has_completed_focus = RUS_combeds
-				has_completed_focus = RUS_prodrazverstka
-			}
-		}
 		has_government = communism
-		NOT = { has_completed_focus = RUS_left_eser_focus }
-		NOT = { has_completed_focus = RUS_soviet_power }
-		has_idea = two_party_system_law
-		check_variable = { communism_coalition = 1 }
-		check_variable = { radical_socialism_coalition = 1 }
-		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
 		NOT = { has_country_flag = RUS_left_SR_rise_in_progress	}
 		NOT = { has_country_flag = RUS_left_SR_revolt_suppose }
 		NOT = { has_country_flag = RUS_left_SR_revolt }
@@ -4723,87 +4736,6 @@ country_event = {
 	}
 }
 
-# Проблемы с жд
-country_event = {
-	id = rcw_bolsheviks.151
-	title = rcw_bolsheviks.151.t
-	desc = rcw_bolsheviks.151.desc
-	picture = GFX_report_event_sov_demobilisation
-	
-	trigger = {
-		tag = RUS
-		has_war = yes
-		NOT = { has_global_flag = RUS_civil_war_over }
-		OR = {
-			country_exists = SIB
-			country_exists = CCA
-			country_exists = RSS
-			country_exists = BKL
-			country_exists = OCH
-			country_exists = RVA
-			country_exists = DON
-		}
-		surrender_progress > 0.1
-		OR = {
-			has_idea = collapse_of_railway_system_1
-			has_idea = collapse_of_railway_system_2
-			has_idea = collapse_of_railway_system_3
-			has_idea = collapse_of_railway_system_4
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 300
-		modifier = {
-			factor = 0.8
-			has_country_flag = railway_self_government
-		}
-		modifier = {
-			factor = 1.25
-			has_country_flag = railway_militia
-			has_country_flag = railway_self_government
-		}
-		modifier = {
-			factor = 1.25
-			227 = { CONTROLLER = { OR = { tag = ROOT has_government = communism } NOT = { has_war_with = ROOT } } }
-			918 = { CONTROLLER = { OR = { tag = ROOT has_government = communism } NOT = { has_war_with = ROOT } } }
-			958 = { CONTROLLER = { OR = { tag = ROOT has_government = communism } NOT = { has_war_with = ROOT } } }
-		}
-	}
-	
-	option = {
-		name = rcw_bolsheviks.151.a
-		if = {
-			limit = { has_idea = collapse_of_railway_system_1 }
-			swap_ideas = {
-				remove_idea = collapse_of_railway_system_1
-				add_idea = collapse_of_railway_system_2
-			}
-		}
-		else_if = {
-			limit = { has_idea = collapse_of_railway_system_2 }
-			swap_ideas = {
-				remove_idea = collapse_of_railway_system_2
-				add_idea = collapse_of_railway_system_3
-			}
-		}
-		else_if = {
-			limit = { has_idea = collapse_of_railway_system_3 }
-			swap_ideas = {
-				remove_idea = collapse_of_railway_system_3
-				add_idea = collapse_of_railway_system_4
-			}
-		}
-		else_if = {
-			limit = { has_idea = collapse_of_railway_system_4 }
-			swap_ideas = {
-				remove_idea = collapse_of_railway_system_4
-				add_idea = collapse_of_railway_system_5
-			}
-		}
-	}
-}
-
 # Разгром Чёрной гвардии
 country_event = {
 	id = rcw_bolsheviks.198
@@ -5600,6 +5532,7 @@ country_event = {
 		add_political_power = -50
 		add_to_variable = { decist_faction_party_compositon = -0.1 }
 		custom_effect_tooltip = decist_fact_party_comp_minus_10
+		check_overlap_of_party_composition = yes
 		hidden_effect = { country_event = { id = rcw_bolsheviks.228 days = 1 } }
 	}
 	# Разнос парторганизаций частями РККА
