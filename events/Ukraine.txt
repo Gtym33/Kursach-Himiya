@@ -5939,3 +5939,176 @@ country_event = {
 		}
 	}
 }
+
+
+
+
+# Победа советской власти на Украине
+country_event = {
+	id = ukraine.120
+	title = ukraine.120.t
+	desc = ukraine.120.desc
+	picture = GFX_report_event_rcw_rva
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		OR = {
+			AND = {
+				tag = USR
+				OR = { has_government = radical_socialism has_government = communism }
+			}
+			AND = {
+				tag = ODS
+				OR = { has_government = radical_socialism has_government = communism }
+				USR = { exists = no }
+			}
+			AND = {
+				tag = FRT
+				has_government = communism
+				ODS = { exists = no }
+				USR = { exists = no }
+			}
+			AND = {
+				tag = RUS
+				has_country_flag = RUS_Oktober_revolution_fired
+				FRT = { exists = no }
+				ODS = { exists = no }
+				USR = { exists = no }
+			}
+		}
+		UKR = { NOT = { has_war_with = ROOT } OR = { exists = no has_government = radical_socialism has_government = communism } }
+		ODS = { NOT = { has_war_with = ROOT } OR = { exists = no has_government = radical_socialism has_government = communism } }
+		FRT = { NOT = { has_war_with = ROOT } OR = { exists = no has_government = communism } }
+		868 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		202 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		203 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		959 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		193 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		259 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		1063 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		221 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		197 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		196 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		200 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+		201 = { CONTROLLER = { OR = { has_government = radical_socialism has_government = communism } } }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = ukraine.120.a
+		if = {
+			limit = { 202 = { NOT = { is_core_of = USR } } }
+			every_state = {
+				limit = { is_core_of = UKR }
+				add_core_of = USR
+			}
+		}
+		if = {
+			limit = { USR = { exists = no } UKR = { exists = no } }
+			USR = { transfer_state = 202 }
+			every_country = {
+				limit = { has_war_with = RUS is_any_former_russian_empire_country = yes is_subject = no }
+				USR = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				ODS = {
+					exists = yes
+					OR = { has_government = communism has_government = radical_socialism }
+				}
+			}
+			USR = {
+				if = {
+					limit = { ODS = { is_ai = no } ROOT = { is_ai = yes } }
+					change_tag_from = ODS
+				}
+				annex_country = {
+					target = ODS
+					transfer_troops = yes 
+				}
+			}
+			every_state = {
+				limit = { is_core_of = ODS }
+				remove_core_of = ODS
+			}
+		}
+		if = {
+			limit = {
+				UKR = {
+					exists = yes
+					OR = { has_government = communism has_government = radical_socialism }
+				}
+			}
+			hidden_effect = {
+				random_state = {
+					limit = { is_owned_by = UKR is_core_of = UKR }
+					USR = { transfer_state = PREV }
+				}
+			}
+			USR = {
+				if = {
+					limit = { UKR = { is_ai = no } ROOT = { is_ai = yes } }
+					change_tag_from = UKR
+				}
+				annex_country = {
+					target = UKR
+					transfer_troops = yes
+				}
+			}
+		}
+		if = {
+			limit = { UKR = { exists = no } }
+			every_state = {
+				limit = { is_core_of = UKR }
+				remove_core_of = UKR
+			}
+			every_state = {
+				limit = { is_claimed_by = UKR }
+				remove_claim_by = UKR
+			}
+		}
+		every_state = {
+			limit = { is_core_of = USR }
+			remove_core_of = RUS
+			remove_core_of = RSS
+			remove_core_of = CCA
+		}
+		every_state = {
+			limit = { OR = { is_core_of = RUS is_core_of = BLR } NOT = { is_claimed_by = BLR } }
+			remove_claim_by = USR
+		}
+		every_state = {
+			limit = { is_core_of = USR is_owned_by = RUS }
+			USR = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = { is_core_of = RUS is_owned_by = USR }
+			RUS = { transfer_state = PREV }
+		}
+		USR = {
+			if = {
+				limit = { has_idea = neutral_foreign_policy_law }
+				add_ideas = realpolitic_policy_law
+			}
+			if = {
+				limit = { controls_state = 202 }
+				set_capital = 202
+			}
+		}
+		if = {
+			limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired is_faction_leader = yes } }
+			RUS = { add_to_faction = USR }
+		}
+	}
+}
