@@ -13548,3 +13548,552 @@ country_event = {
 		clear_global_event_target = UNITED_COUNTRY
 	}
 }
+
+
+
+#Уральский блок
+
+# Восстание уральских казаков
+country_event = {
+	id = rcw_usfev.1920
+	title = rcw_usfev.1920.t
+	desc = rcw_usfev.1920.desc
+	trigger = {
+		has_start_date < 1917.11.7
+		tag = RUS
+		NOT = { has_global_flag = RUS_civil_war_over }
+		UCH = { exists = no }
+		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = { has_country_flag = RUS_cossacks_were_disbanded }
+		any_owned_state = { is_core_of = UCH }
+	}
+
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			OCH = {
+				transfer_state = 406
+				transfer_state = 407
+				transfer_state = 1071
+				add_ideas = neutral_foreign_policy_law
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kazach'ya brigada"
+			}
+		}
+	}
+
+	option = {
+		name = rcw_usfev.1920.a
+		UCH = {
+			if = {
+				limit = { RUS = { OR = { has_completed_focus = RUS_struggle_against_counterrevolution NOT = { has_focus_tree = Russia_Bolsheviks_focus } } } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
+			}
+			country_event = { id = rcw_usfev.1930 days = 30 }
+		}
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = rcw_usfev.1920.b
+		UCH = {
+			if = {
+				limit = { RUS = { OR = { has_completed_focus = RUS_struggle_against_counterrevolution NOT = { has_focus_tree = Russia_Bolsheviks_focus } } } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
+			}
+			country_event = { id = rcw_usfev.1930 days = 30 }
+		}
+		UCH = { change_tag_from = RUS }
+	}
+}
+
+#Экстренный войсковой съезд
+country_event = {
+	id = rcw_usfev.1921
+	title = rcw_usfev.1921.t
+	desc = rcw_usfev.1921.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1921.a
+		retire_ideology_leader = social_conservatism
+		create_country_leader = {
+			name = "Vasiliy Martynov"
+			picture = "gfx/leaders/UCH/Vasiliy_Martynov.dds"
+			ideology = social_conservatism_ideology
+			traits = { warmonger_old_general }
+		}
+		add_ideas = {
+			presidential_republic_gov_form
+			Vladimir_Akutin_6
+			Guryan_Fomichev_1
+		}
+	}
+}
+
+#Переворот в столице со стороны большевиков
+country_event = {
+	id = rcw_usfev.1922
+	title = rcw_usfev.1922.t
+	desc = rcw_usfev.1922.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1922.a #Нелегетимно!
+		add_stability = -0.1
+		country_event = { id = rcw_usfev.1923 days = 2 } 
+	}
+}
+
+#Контрпереворот
+country_event = {
+	id = rcw_usfev.1923
+	title = rcw_usfev.1923.t
+	desc = rcw_usfev.1923.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1923.a #Значит, новые выборы
+		add_stability = 0.05
+		unlock_national_focus = UCH_vybory
+		complete_national_focus = UCH_borba_s_sovetom
+	}
+}
+
+#Арест Уральского совета рабочих и солдатских депутатов	
+country_event = {
+	id = rcw_usfev.1924
+	title = rcw_usfev.1924.t
+	desc = rcw_usfev.1924.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1924.a
+		remove_ideas = UCH_dvoevlastie
+	}
+}
+
+#Делегация от Уральского войска (Вылезает по решениям у страны, к которой отправляли делегацию)
+country_event = {
+	id = rcw_usfev.1925
+	title = rcw_usfev.1925.t
+	desc = rcw_usfev.1925.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1925.a
+		puppet = UCH
+		set_autonomy = {
+			target = UCH
+			autonomy_state = autonomy_semi_independent
+		}
+	}
+	
+	option = {
+		name = rcw_usfew.1925.b
+		trigger = { has_equipment = { infantry_equipment > 199 } has_equipment = { artillery_equipment > 39 } has_equipment = { support_equipment > 19 } }
+		puppet = UCH
+		set_autonomy = {
+			target = UCH
+			autonomy_state = autonomy_semi_independent
+		}
+		UCH = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 200
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment
+				amount = 40
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment
+				amount = 20
+			}
+		}
+	}
+}
+
+#Атака стариков
+country_event = {
+	id = rcw_usfev.1926
+	title = rcw_usfev.1926.t
+	desc = rcw_usfev.1926.desc
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = OCH
+		surrender_progress > 0.2
+	}
+	fire_only_once = yes
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = rcw_usfev_1926.a
+		add_war_support = 0.1
+	}
+}
+
+#Переизбрание атамана
+country_event = {
+	id = rcw_usfev.1927
+	title = rcw_usfev.1927.t
+	desc = rcw_usfev.1927.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev.1927.a
+		set_politics = { ruling_party = national_syndicalism }
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.3
+		}
+		set_party_name = {
+			ideology = national_syndicalism
+			long_name = UCH_national_syndicalism_party_long_new
+			name = UCH_national_syndicalism_party_new
+		}
+	}
+	option = {
+		name = rcw_usfev.1927.b
+		create_country_leader = {
+			name = "Vasiliy Martynov"
+			picture = "gfx/leaders/UCH/Vasiliy_Martynov.dds"
+			ideology = social_conservatism_ideology
+			traits = { warmonger_old_general }
+		}
+	}
+	option = {
+		name = rcw_usfev.1927.c
+		create_country_leader = {
+			name = "Mikhail Borodin"
+			picture = "gfx/leaders/UCH/Mikhail_Borodin.dds"
+			ideology = social_conservatism_ideology
+			traits = { warmonger_old_general }
+		}
+	}
+}
+
+#Объединение с уральцами(Оренбург)
+country_event = {
+	id = rcw_usfev.1928
+	title = rcw_usfev.1928.t
+	desc = rcw_usfev.1928.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev_1928.a
+		annex_country = {
+			target = FROM
+			transfer_troops = yes
+		}
+		if = {
+			limit = { is_ai = yes FROM = { is_ai = no } }
+			change_tag_from = FROM
+		}
+	}
+	option = {
+		FROM = { country_event = { id = rcw_usfev.1929 days = 1 } }
+	}
+}
+
+#Отказ
+country_event = {
+	id = rcw_usfev.1929
+	title = rcw_usfev.1929.t
+	desc = rcw_usfev.1929.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev_1929.a
+		add_opinion_modifier = {
+			target = OCH
+			modifier = UCH_klyatie_orenburghtsi_otkazalys
+		}
+	}
+}
+
+#Возвращение Казачьей льготной дивизии
+country_event = {
+	id = rcw_usfev.1930
+	title = rcw_usfev.1930.t
+	desc = rcw_usfev.1930.desc
+	is_triggered_only = yes
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+	}
+	option = {
+		name = rcw_usfev_1930.a
+		REB = {
+			every_unit_leader = {
+				limit = { OR = { has_id = 42344 has_id = 24567 } }
+				set_nationality = ROOT
+			}
+		}
+		add_manpower = 5000
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 100
+		}
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = UCH_drujina }
+				country_event = { id = rcw_usfev.1931 days = 10 }
+				else = {
+					country_event = { id = rcw_usfev.1933 days = 10 }
+					country_event = { id = rcw_usfev.1935 days = 16 }
+				}
+			}
+		}
+		country_event = { id = rcw_usfev.1934 days = 14 }
+	}
+}
+
+#Погромы
+country_event = {
+	id = rcw_usfev.1931
+	title = rcw_usfev.1931.t
+	desc = rcw_usfev.1931.desc
+	fire_only_once = yes
+	is_triggered_only = yes
+	option = {
+		add_stability = -0.05
+		country_event = { id = rcw_usfev.1932 days = 1 }
+	}
+}
+
+#Отставка атамана
+country_event = {
+	id = rcw_usfev.1932
+	title = rcw_usfev.1932.t
+	desc = rcw_usfev.1932.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1932.a
+		add_political_power = -50
+		retire_ideology_leader = social_conservatism
+		create_country_leader = {
+			name = "Voyskovoe pravlenie"
+			picture = "gfx/leaders/UCH/Voyskovoe_pravlenie.dds"
+			ideology = social_conservatism_ideology
+			traits = { goal }
+		}
+	}
+}
+
+#Погромы с переворотом
+country_event = {
+	id = rcw_usfev.1933
+	title = rcw_usfev.1933.t
+	desc = rcw_usfev.1933.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1933.a
+		add_stability = -0.1
+	}
+}
+
+#Возвращение 1-го, 8-го и 2-го казачьих полков.
+country_event = {
+	id = rcw_usfev.1934
+	title = rcw_usfev.1934.t
+	desc = rcw_usfev.1934.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1934.a
+		add_manpower = 2000
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 300
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.05
+		}
+		REB = {
+			every_unit_leader = {
+				limit = { OR = { has_id = 88155 has_id = 65458 has_id = 35652 } }
+				set_nationality = ROOT
+			}
+		}
+		CCA = {
+			every_unit_leader = {
+				limit = { has_id = 88155 }
+				set_nationality = ROOT
+			}
+		}
+	}
+}
+
+#Контрпереворот
+country_event = {
+	id = rcw_usfev.1935
+	title = rcw_usfev.1935.t
+	desc = rcw_usfev.1935.desc
+	is_triggered_only = yes
+	option = {
+		unlock_national_focus = UCH_vybory
+		add_stability = 0.05
+	}
+}
+
+#Конфликт Щепихина и войскового правления 
+country_event = {
+	id = rcw_usfev.1936
+	title = rcw_usfev.1936.t
+	desc = rcw_usfev.1936.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev_1936.a
+		add_political_power = -130
+	}
+	option = {
+		name = rcw_usfev_1936.b
+		if = {
+			limit = { has_idea = Matvey_Martynov_army_chief }
+			remove_ideas = Matvey_Martynov_army_chief
+			add_ideas = Vladimir_Akutin_army_chief
+		}
+		if = {
+			limit = { has_idea = Sergey_Shepekhin_high_command }
+			remove_ideas = Sergey_Shepekhin_high_command
+			add_ideas = Sergey_Kirillov_high_command
+		}
+		random_other_country = {
+			limit = {
+				OR = {
+					exists = yes
+					tag = CCA
+				}
+				OR = {
+					tag = CCA
+					tag = SIB
+					tag = RSS
+					tag = OCH
+				}
+			}
+			ROOT = {
+				every_unit_leader = {
+					limit = { has_id = 88155 }
+					set_nationality = PREV
+				}
+			}
+		}
+	}
+}
+
+#Ультиматум
+country_event = {
+	id = rcw_usfev.1937
+	title = rcw_usfev.1937.t
+	desc = rcw_usfev.1937.desc
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = UCH
+		RSR = {
+			controls_state = 652
+			controls_state = 239
+		}
+	}
+	fire_only_once = yes
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = rcw_usfev.1937.a
+		UCH = {
+			country_event = { id = rcw_usfev.1938 days = 2 }
+		}
+	}
+}
+
+#Захват Илека
+country_event = {
+	id = rcw_usfev.1938
+	title = rcw_usfev.1938.t
+	desc = rcw_usfev.1938.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev.1938.a
+		country_event = { id = rcw_usfev.1939 days = 1 }
+		country_event = { id = rcw_usfev.1940 days = 3 }
+	}
+}
+
+#Собрание офицеров
+country_event = {
+	id = rcw_usfev.1939
+	title = rcw_usfev.1939.t
+	desc = rcw_usfev.1939.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfev.1939.a
+		rise_mobilization_law = yes
+		rise_mobilization_economy_law = yes
+	}
+}
+
+#Илецкий бой
+country_event = {
+	id = rcw_usfev.1940
+	title = rcw_usfev.1940.t
+	desc = rcw_usfev.1940.desc
+	is_triggered_only = yes
+	option = {
+		name = rcw_usfew.1940.a
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 50
+		}
+		declare_war_on = {
+			target = RUS
+			type = annex_everything
+		}
+	}
+}
+
+#Постановление
+country_event = {
+	id = rcw_usfev.1941
+	title = rcw_usfev.1941.t
+	desc = rcw_usfev.1941.desc
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = UCH
+		has_country_leader = {
+			name = "Voyskovoe pravlenie"
+			ruling_only = yes
+		}
+		surrender_progress > 0.5
+	}
+	mean_time_to_happen = {
+		days = 1
+	}
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.1941.a
+		set_politics = { ruling_party = despotism }
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.1
+		}
+		add_ideas = military_dictatorship_gov_form
+		add_ideas = emergency_laws_b_law
+		complete_national_focus = UCH_vybory
+	}
+}
