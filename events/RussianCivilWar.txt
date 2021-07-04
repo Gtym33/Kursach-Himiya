@@ -2198,20 +2198,12 @@ country_event = {
 	trigger = {
 		NOT = { has_global_flag = RUS_civil_war_over }
 		NOT = { has_global_flag = RCW_Allrussian_national_assembly }
+		NOT = { has_global_flag = dont_fire_Rus_CW_end }
 		has_global_flag = RUS_civil_war_intervention_start
 		RUS = { NOT = { has_country_flag = RUS_dont_fire_CW_end } }
-		NOT = { has_government = radical_socialism has_government = communism }
 		219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
-		is_former_russian_empire_russian_settled_non_cossack_country = yes
-		OR = {
-			has_idea = DON_volunteer_recruitment_network_idea
-			has_idea = DON_Volunteer_army_presence_idea
-			NOT = {
-				any_other_country = { OR = { has_idea = DON_volunteer_recruitment_network_idea has_idea = DON_Volunteer_army_presence_idea } }
-			}
-			#has_idea = DON_Peoples_army_presence_idea
-		}
-		NOT = { is_main_former_russian_empire_country_exept_Siberia = yes }
+		is_subject = no
+		NOT = { is_former_russian_empire_russian_country = yes }
 	}
 	
 	fire_only_once = yes
@@ -2224,16 +2216,11 @@ country_event = {
 	}
 	
 	option = {
+		trigger = { any_country = { is_main_former_russian_empire_country = yes exists = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_war_with = ROOT } } }
 		name = rcw.1919.a
-		if = {
-			limit = { any_country = { russian_country_can_call_national_assambly = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } } }
-			random_country = {
-				limit = { russian_country_can_call_national_assambly = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } }
-				transfer_state = 219
-			}
-			else = {
-				RVA = { transfer_state = 219 country_event = { id = rcw_all_rus_NA.1 hours = 1 } }
-			}
+		random_country = {
+			limit = { is_main_former_russian_empire_country = yes exists = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_war_with = ROOT } }
+			transfer_state = 219
 		}
 		clr_global_flag = dont_fire_Rus_CW_end
 	}
@@ -2243,21 +2230,13 @@ country_event = {
 			if = {
 				limit = { RVA = { exists = no } OR = { DON = { OR = { has_idea = DON_volunteer_recruitment_network_idea has_idea = DON_Volunteer_army_presence_idea } } KUB = { has_idea = DON_Volunteer_army_presence_idea } } }
 				country_event = { id = rcw.1920 days = 14 }
-			}
-			else_if = {
-				limit = { CCA = { exists = no } }
-				every_country = {
-					limit = { is_main_former_russian_empire_country = yes }
-					declare_war_on = { target = ROOT type = annex_everything }
+				else = {
+					every_country = {
+						limit = { is_main_former_russian_empire_country = yes }
+						declare_war_on = { target = ROOT type = annex_everything }
+					}
+					clr_global_flag = dont_fire_Rus_CW_end
 				}
-				clr_global_flag = dont_fire_Rus_CW_end
-			}
-			else = {
-				every_country = {
-					limit = { is_main_former_russian_empire_country = yes }
-					declare_war_on = { target = ROOT type = annex_everything }
-				}
-				clr_global_flag = dont_fire_Rus_CW_end
 			}
 		}
 	}
@@ -2562,49 +2541,43 @@ country_event = {
 
 	trigger = {
 		NOT = { has_global_flag = RUS_civil_war_over }
-		RUS = { NOT = { has_country_flag = RUS_dont_fire_CW_end } }
 		NOT = { has_global_flag = RCW_Allrussian_national_assembly }
 		NOT = { has_global_flag = dont_fire_Rus_CW_end }
 		has_global_flag = RUS_civil_war_intervention_start
-		219 = {
-			OWNER = {
-				OR = {
-					tag = ROOT
-					is_subject_of = ROOT
-				}
-			}
-		}
+		RUS = { NOT = { has_country_flag = RUS_dont_fire_CW_end } }
+		219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
 		is_subject = no
-		
-		is_main_former_russian_empire_country = yes
+		is_former_russian_empire_russian_country = yes
 		
 		NOT = {
 			any_other_country = {
 				is_main_former_russian_empire_country = yes
 				exists = yes
 				is_subject = no
-				has_capitulated = no
-				OR = {
-					NOT = { has_global_flag = RUS_civil_war_reds_n_Siberia_peace }
-					NOT = { tag = SIB }
-				}
 			}
 		}
 		has_war = no
 		OR = {
-			NOT = { tag = RUS }
+			NOT = { tag = RSR }
 			AND = {
-				tag = RUS
-				has_country_flag = RUS_Oktober_revolution_fired
 				NOT = { has_country_flag = RUS_has_czechoslovak_legion }
 				OR = {
-					has_country_flag = legitimized_bolsheviks
 					has_country_flag = RUS_karaul_ustal
+					has_global_flag = RUS_all_russian_constituent_assembly_ended
 				}
 			}
 		}
-		
-		NOT = { russian_country_can_call_national_assambly = yes }
+		OR = {
+			has_focus_tree = Russia_Bolsheviks_focus
+			NOT = {
+				any_other_country = {
+					is_any_former_russian_empire_country = yes
+					exists = yes
+					is_subject = no
+					ROOT = { NOT = { has_wargoal_against = PREV } }
+				}
+			}
+		}
 	}
 	
 	mean_time_to_happen = {

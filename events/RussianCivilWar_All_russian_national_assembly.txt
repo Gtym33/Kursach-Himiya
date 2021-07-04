@@ -26,14 +26,44 @@ country_event = {
 		name = rcw_all_rus_NA.1.a # Только себя
 		set_country_flag = RCW_Allrussian_national_assembly_leader
 		set_country_flag = RCW_Allrussian_national_assembly_member
-		add_political_power = -100
+		if = {
+			limit = { any_other_country = { OR = { is_subject_of = ROOT is_in_faction_with = ROOT } } }
+			add_political_power = -100
+			else = {
+				add_political_power = -50
+			}
+		}
 		set_variable = { global.all_rus_NA_members = 1 }
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
-		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		country_event = rcw_all_rus_NA.4
+		every_other_country = {
+			limit = {
+				is_main_former_russian_empire_country = yes
+				has_capitulated = no
+			}
+			country_event = { id = rcw_all_rus_NA.31 days = 14 }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = non_aggression_pact
+					active = no
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = PREV
+				}
+			}
+		}
 	}
 	option = {
+		trigger = { any_other_country = { OR = { is_subject_of = ROOT is_in_faction_with = ROOT } } }
 		name = rcw_all_rus_NA.1.b # Только марионеток
 		set_country_flag = RCW_Allrussian_national_assembly_leader
 		set_country_flag = RCW_Allrussian_national_assembly_member
@@ -42,9 +72,8 @@ country_event = {
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
-		every_country = {
+		every_other_country = {
 			limit = {
-				NOT = { tag = ROOT }
 				OR = {
 					is_subject_of = ROOT
 					is_in_faction_with = ROOT
@@ -53,18 +82,40 @@ country_event = {
 			country_event = rcw_all_rus_NA.2
 		}
 		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		every_other_country = {
+			limit = {
+				is_main_former_russian_empire_country = yes
+				NOT = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+				}
+				has_capitulated = no
+			}
+			country_event = { id = rcw_all_rus_NA.31 days = 14 }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = non_aggression_pact
+					active = no
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = PREV
+				}
+			}
+		}
 		ai_chance = {
 			factor = 0
 		}
 	}
 	option = {
 		trigger = {
-			NOT = {
-				has_government = radical_socialism
-				has_government = communism
-				has_government = social_democracy
-				has_government = social_liberalism
-			}
+			NOT = { is_left_country = yes }
 		}
 		name = rcw_all_rus_NA.1.c # Кроме социалистов
 		set_country_flag = RCW_Allrussian_national_assembly_leader
@@ -74,41 +125,62 @@ country_event = {
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
-		every_country = {
+		every_other_country = {
 			limit = {
-				NOT = { tag = ROOT }
 				OR = {
-					is_former_russian_empire_russian_settled_non_cossack_country = yes
-					former_russian_empire_cossack_country = yes
+					is_former_russian_empire_russian_country = yes
 					AND = {
 						is_subject = yes
-						OVERLORD = { OR = { tag = ROOT is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } }
+						OVERLORD = { is_former_russian_empire_russian_country = yes }
 					}
 				}
 				NOT = { has_war_with = ROOT }
-				NOT = {
-					has_government = radical_socialism
-					has_government = communism
-					has_government = social_democracy
-					has_government = social_liberalism
+				OR = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+					NOT = { is_left_country = yes }
 				}
+				has_capitulated = no
 				has_war = no
 			}
 			country_event = rcw_all_rus_NA.2
 		}
 		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		every_other_country = {
+			limit = {
+				is_main_former_russian_empire_country = yes
+				NOT = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+				}
+				is_left_country = yes
+				has_capitulated = no
+			}
+			country_event = { id = rcw_all_rus_NA.31 days = 14 }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = non_aggression_pact
+					active = no
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = PREV
+				}
+			}
+		}
 		ai_chance = {
 			factor = 0
 		}
 	}
 	option = {
 		trigger = {
-			OR = {
-				has_government = radical_socialism
-				has_government = communism
-				has_government = social_democracy
-				has_government = social_liberalism
-			}
+			is_left_country = yes
 		}
 		name = rcw_all_rus_NA.1.d # Кроме открытых реакционеров
 		set_country_flag = RCW_Allrussian_national_assembly_leader
@@ -118,28 +190,55 @@ country_event = {
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
-		every_country = {
+		every_other_country = {
 			limit = {
-				NOT = { tag = ROOT }
 				OR = {
-					is_former_russian_empire_russian_settled_non_cossack_country = yes
-					former_russian_empire_cossack_country = yes
+					is_former_russian_empire_russian_country = yes
 					AND = {
 						is_subject = yes
-						OVERLORD = { OR = { tag = ROOT is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } }
+						OVERLORD = { is_former_russian_empire_russian_country = yes }
 					}
 				}
 				NOT = { has_war_with = ROOT }
-				NOT = {
-					has_government = authoritarism
-					has_government = despotism
-					has_government = fascism
+				OR = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+					NOT = { is_reactionary_country = yes }
 				}
+				has_capitulated = no
 				has_war = no
 			}
 			country_event = rcw_all_rus_NA.2
 		}
 		country_event = { id = rcw_all_rus_NA.4 days = 14 }
+		every_other_country = {
+			limit = {
+				is_main_former_russian_empire_country = yes
+				NOT = {
+					is_subject_of = ROOT
+					is_in_faction_with = ROOT
+				}
+				is_reactionary_country = yes
+				has_capitulated = no
+			}
+			country_event = { id = rcw_all_rus_NA.31 days = 14 }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = non_aggression_pact
+					active = no
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = PREV
+				}
+			}
+		}
 		ai_chance = {
 			factor = 2
 		}
@@ -152,18 +251,17 @@ country_event = {
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
-		every_country = {
+		every_other_country = {
 			limit = {
-				NOT = { tag = ROOT }
 				OR = {
-					is_former_russian_empire_russian_settled_non_cossack_country = yes
-					former_russian_empire_cossack_country = yes
+					is_former_russian_empire_russian_country = yes
 					AND = {
 						is_subject = yes
-						OVERLORD = { OR = { tag = ROOT is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } }
+						OVERLORD = { is_former_russian_empire_russian_country = yes }
 					}
 				}
 				NOT = { has_war_with = ROOT }
+				has_capitulated = no
 				has_war = no
 			}
 			country_event = rcw_all_rus_NA.2
@@ -184,42 +282,27 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	trigger = {
+		has_capitulated = no
+	}
+	
 	option = {
-		name = rcw_all_rus_NA.2.a
-		FROM = { country_event = rcw_all_rus_NA.3 }
+		name = rcw_all_rus_NA.2.a # отказ
+		if = {
+			limit = { has_capitulated = no }
+			FROM = { country_event = rcw_all_rus_NA.3 }
+		}
 		ai_chance = {
 			factor = 1
 			modifier = {
 				factor = 0
-				FROM = {
-					NOT = {
-						has_government = authoritarism
-						has_government = despotism
-						has_government = fascism
-					}
-				}
-				OR = {
-					has_government = radical_socialism
-					has_government = communism
-					has_government = social_democracy
-					has_government = social_liberalism
-				}
+				FROM = { NOT = { is_reactionary_country = yes } }
+				is_left_country = yes
 			}
 			modifier = {
 				factor = 0
-				FROM = {
-					NOT = {
-						has_government = radical_socialism
-						has_government = communism
-						has_government = social_democracy
-						has_government = social_liberalism
-					}
-				}
-				OR = {
-					has_government = authoritarism
-					has_government = despotism
-					has_government = fascism
-				}
+				FROM = { NOT = { is_left_country = yes } }
+				is_reactionary_country = yes
 			}
 			modifier = {
 				factor = 0
@@ -228,43 +311,23 @@ country_event = {
 		}
 	}
 	option = {
-		name = rcw_all_rus_NA.2.b
-		set_country_flag = RCW_Allrussian_national_assembly_member
-		add_to_variable = { global.all_rus_NA_members = 1 }
+		name = rcw_all_rus_NA.2.b # согласие
+		if = {
+			limit = { has_capitulated = no }
+			set_country_flag = RCW_Allrussian_national_assembly_member
+			add_to_variable = { global.all_rus_NA_members = 1 }
+		}
 		ai_chance = {
 			factor = 1
 			modifier = {
 				factor = 0
-				FROM = {
-					NOT = {
-						has_government = radical_socialism
-						has_government = communism
-						has_government = social_democracy
-						has_government = social_liberalism
-						has_government = national_syndicalism
-					}
-				}
-				OR = {
-					has_government = radical_socialism
-					has_government = communism
-				}
+				FROM = { is_reactionary_country = yes }
+				is_socialist_country = yes
 			}
 			modifier = {
 				factor = 0.75
-				FROM = {
-					NOT = {
-						has_government = radical_socialism
-						has_government = communism
-						has_government = social_democracy
-						has_government = social_liberalism
-						has_government = national_syndicalism
-					}
-				}
-				OR = {
-					has_government = social_democracy
-					has_government = social_liberalism
-					has_government = national_syndicalism
-				}
+				FROM = { is_reactionary_country = yes }
+				is_socdem_country = yes
 			}
 		}
 	}
@@ -310,6 +373,10 @@ country_event = {
 	desc = rcw_all_rus_NA.5.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
+	trigger = {
+		has_capitulated = no
+	}
+	
 	is_triggered_only = yes
 	
 	option = {
@@ -326,9 +393,9 @@ country_event = {
 				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
 				if = {
 					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
-					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.7 days = 1 } }
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.7 days = 1 } }
 					else = {
-						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.6 days = 1 } }
+						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.6 days = 1 } }
 					}
 				}
 				clear_variable = global.all_rus_NA_votes
@@ -348,13 +415,7 @@ country_event = {
 	option = {
 		name = rcw_all_rus_NA.5.b # Монархия
 		trigger = {
-			NOT = {
-				has_government = radical_socialism
-				has_government = communism
-				has_government = social_democracy
-				has_government = social_liberalism
-				has_government = national_syndicalism
-			}
+			NOT = { is_left_country = yes }
 		}
 		set_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
 		hidden_effect = {
@@ -364,9 +425,9 @@ country_event = {
 				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
 				if = {
 					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
-					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.7 days = 1 } }
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.7 days = 1 } }
 					else = {
-						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_country_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.6 days = 1 } }
+						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.6 days = 1 } }
 					}
 				}
 				clear_variable = global.all_rus_NA_votes
@@ -378,14 +439,12 @@ country_event = {
 		ai_chance = {
 			factor = 3
 			modifier = {
+				factor = 0.2
+				is_democratic_country = yes
+			}
+			modifier = {
 				factor = 0
-				OR = {
-					has_government = radical_socialism
-					has_government = communism
-					has_government = social_democracy
-					has_government = social_liberalism
-					has_country_leader = { name = "Lavr Kornilov" ruling_only = yes }
-				}
+				has_country_leader = { name = "Lavr Kornilov" ruling_only = yes }
 			}
 		}
 	}
@@ -490,7 +549,7 @@ country_event = {
 			factor = 2
 			modifier = {
 				factor = 0
-				FROM = { has_country_flag = RCW_Allrussian_national_assembly_mon_wins }
+				FROM = { has_global_flag = RCW_Allrussian_national_assembly_mon_wins }
 			}
 			modifier = {
 				factor = 0
@@ -558,7 +617,7 @@ country_event = {
 country_event = {
 	id = rcw_all_rus_NA.21
 	title = rcw_all_rus_NA.21.t
-	desc = rcw_all_rus_NA.21.d
+	desc = rcw_all_rus_NA.21.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	is_triggered_only = yes
@@ -592,15 +651,14 @@ country_event = {
 		}
 		every_country = {
 			limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
-			declare_war_on = { target = FROM type = annex_everything }
 			diplomatic_relation = {
 				country = FROM
 				relation = non_aggression_pact
 				active = no
 			}
+			declare_war_on = { target = FROM type = annex_everything }
 			every_country = {
 				limit = { is_in_faction_with = FROM NOT = { has_war_with = PREV } }
-				PREV = { declare_war_on = { target = PREV type = annex_everything } }
 				PREV = {
 					diplomatic_relation = {
 						country = PREV
@@ -608,10 +666,16 @@ country_event = {
 						active = no
 					}
 				}
+				PREV = { declare_war_on = { target = PREV type = annex_everything } }
 			}
 		}
 		every_country = {
-			limit = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes russian_country_can_call_national_assambly = yes } NOT = { tag = ROOT } NOT = { has_war_with = ROOT } }
+			limit = { is_former_russian_empire_russian_country = yes NOT = { tag = ROOT } NOT = { has_war_with = ROOT } }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
 			ROOT = {
 				diplomatic_relation = {
 					country = PREV
@@ -631,7 +695,12 @@ country_event = {
 				limit = { has_country_flag = RCW_Allrussian_national_assembly_disloyal is_faction_leader = yes }
 				add_to_faction = FROM
 				every_country = {
-					limit = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } NOT = { tag = PREV } NOT = { has_war_with = PREV } }
+					limit = { is_former_russian_empire_russian_country = yes NOT = { tag = PREV } NOT = { has_war_with = PREV } }
+					diplomatic_relation = {
+						country = PREV
+						relation = non_aggression_pact
+						active = no
+					}
 					PREV = {
 						diplomatic_relation = {
 							country = PREV
@@ -653,7 +722,7 @@ country_event = {
 country_event = {
 	id = rcw_all_rus_NA.22
 	title = rcw_all_rus_NA.22.t
-	desc = rcw_all_rus_NA.22.d
+	desc = rcw_all_rus_NA.22.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	is_triggered_only = yes
@@ -687,15 +756,14 @@ country_event = {
 		}
 		every_country = {
 			limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
-			declare_war_on = { target = FROM type = annex_everything }
 			diplomatic_relation = {
 				country = FROM
 				relation = non_aggression_pact
 				active = no
 			}
+			declare_war_on = { target = FROM type = annex_everything }
 			every_country = {
 				limit = { is_in_faction_with = FROM NOT = { has_war_with = PREV } }
-				PREV = { declare_war_on = { target = PREV type = annex_everything } }
 				PREV = {
 					diplomatic_relation = {
 						country = PREV
@@ -703,10 +771,16 @@ country_event = {
 						active = no
 					}
 				}
+				PREV = { declare_war_on = { target = PREV type = annex_everything } }
 			}
 		}
 		every_country = {
-			limit = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes russian_country_can_call_national_assambly = yes } NOT = { tag = ROOT } NOT = { has_war_with = ROOT } }
+			limit = { is_former_russian_empire_russian_country = yes NOT = { tag = ROOT } NOT = { has_war_with = ROOT } }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
 			ROOT = {
 				diplomatic_relation = {
 					country = PREV
@@ -726,7 +800,12 @@ country_event = {
 				limit = { has_country_flag = RCW_Allrussian_national_assembly_disloyal is_faction_leader = yes }
 				add_to_faction = FROM
 				every_country = {
-					limit = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } NOT = { tag = PREV } NOT = { has_war_with = PREV } }
+					limit = { is_former_russian_empire_russian_country = yes NOT = { tag = PREV } NOT = { has_war_with = PREV } }
+					diplomatic_relation = {
+						country = PREV
+						relation = non_aggression_pact
+						active = no
+					}
 					PREV = {
 						diplomatic_relation = {
 							country = PREV
@@ -749,7 +828,7 @@ country_event = {
 country_event = {
 	id = rcw_all_rus_NA.23
 	title = rcw_all_rus_NA.23.t
-	desc = rcw_all_rus_NA.23.d
+	desc = rcw_all_rus_NA.23.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	trigger = {
@@ -759,28 +838,28 @@ country_event = {
 		OR = {
 			AND = {
 				has_country_flag = RCW_Allrussian_national_assembly_loyal
-				NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
+				NOT = { any_other_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
 			}
 			AND = {
 				has_country_flag = RCW_Allrussian_national_assembly_disloyal
-				NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
+				NOT = { any_other_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
 			}
 		}
+		NOT = { any_other_country = { is_main_former_russian_empire_country = yes exists = yes is_subject = no NOT = { is_in_faction_with = ROOT } NOT = { has_country_flag = RCW_Allrussian_national_assembly_member } } }
 	}
 	
-	fire_only_once = yes
-	
 	mean_time_to_happen = {
-		days = 1
+		days = 3
 	}
 	
 	hidden = yes
 	
+	immediate = { clr_global_flag = RCW_Allrussian_national_assembly }
+	
 	option = {
 		name = rcw_all_rus_NA.24.a
-		clr_global_flag = RCW_Allrussian_national_assembly
 		every_other_country = {
-			limit = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } is_in_faction_with = ROOT }
+			limit = { is_former_russian_empire_russian_country = yes is_in_faction_with = ROOT }
 			ROOT = { annex_country = { target = PREV transfer_troops = no } }
 		}
 		every_country = {
@@ -808,8 +887,13 @@ country_event = {
 		}
 		clr_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
 		clr_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
-		every_country = {
-			limit = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes russian_country_can_call_national_assambly = yes } NOT = { tag = ROOT } NOT = { has_war_with = ROOT } }
+		every_other_country = {
+			limit = { is_any_former_russian_empire_country = yes is_subject = no NOT = { has_war_with = ROOT } }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
 			ROOT = {
 				diplomatic_relation = {
 					country = PREV
@@ -823,95 +907,103 @@ country_event = {
 			}
 		}
 		
-		every_state = {
-			limit = {
-				OR = {
-					OR = {
-						is_core_of = RUS
-						is_core_of = RVA
-						is_core_of = CCA
-						AND = {
-							is_core_of = SIB
-							SIB = { NOT = { has_country_flag = SIB_want_to_be_autonomous } }
-						}
-						is_core_of = RSS
-						AND = {
-							is_core_of = NWA
-							SIB = { NOT = { has_country_flag = NWA_flag_Baltic_Principality } }
-							OR = {
-								country_exists = RUS
-								country_exists = RVA
-								country_exists = CCA
-								country_exists = RSS
-								NOT = { country_exists = RGR }
-							}
-						}
-						AND = {
-							is_core_of = NRR
-							OR = {
-								country_exists = RUS
-								country_exists = RVA
-								country_exists = CCA
-								country_exists = RSS
-								NOT = { country_exists = RGR }
-							}
-						}
-						is_core_of = RGR
+			every_state = {
+				limit = { is_core_of = RUS NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+			}
+			every_state = {
+				limit = { is_core_of = CCA NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { CCA = { exists = no } }
+					remove_core_of = CCA
+				}
+			}
+			if = {
+				limit = {
+					SIB = {
+						NOT = { has_country_flag = SIB_want_to_be_autonomous }
+						NOT = { has_global_flag = RUS_civil_war_reds_n_Siberia_peace }
 					}
 				}
-				NOT = { is_core_of = ROOT }
+				every_state = {
+					limit = { is_core_of = SIB NOT = { is_core_of = ROOT } }
+					add_core_of = ROOT
+					if = {
+						limit = { SIB = { exists = no } }
+						remove_core_of = SIB
+					}
+				}
 			}
-			add_core_of = ROOT
-		}
-		if = {
-			limit = { NOT = { original_tag = RVA country_exists = RVA } }
 			every_state = {
-				limit = { is_core_of = RVA }
-				remove_core_of = RVA
+				limit = { is_core_of = RVA NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { RVA = { exists = no } }
+					remove_core_of = RVA
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = CCA country_exists = CCA } }
 			every_state = {
-				limit = { is_core_of = CCA }
-				remove_core_of = CCA
+				limit = { is_core_of = PREV NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { PREV = { exists = no } }
+					remove_core_of = PREV
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = SIB country_exists = SIB } }
 			every_state = {
-				limit = { is_core_of = SIB }
-				remove_core_of = SIB
+				limit = { is_core_of = RSS NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { RSS = { exists = no } }
+					remove_core_of = RSS
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = RSS country_exists = RSS } }
+			if = {
+				limit = {
+					NWA = { NOT = { has_cosmetic_tag = NWA_BLT } }
+				}
+				every_state = {
+					limit = { is_core_of = NWA NOT = { is_core_of = ROOT } }
+					add_core_of = ROOT
+					if = {
+						limit = { NWA = { exists = no } }
+						remove_core_of = NWA
+					}
+				}
+			}
 			every_state = {
-				limit = { is_core_of = RSS }
-				remove_core_of = RSS
+				limit = { is_core_of = RGR NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { RGR = { exists = no } }
+					remove_core_of = RGR
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = NWA country_exists = NWA } }
 			every_state = {
-				limit = { is_core_of = NWA }
-				remove_core_of = NWA
+				limit = { is_core_of = MCW NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { MCW = { exists = no } }
+					remove_core_of = MCW
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = NRR country_exists = NRR } }
 			every_state = {
-				limit = { is_core_of = NRR }
-				remove_core_of = NRR
+				limit = { is_core_of = YAR NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { YAR = { exists = no } }
+					remove_core_of = YAR
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = RGR country_exists = RGR } }
 			every_state = {
-				limit = { is_core_of = RGR }
-				remove_core_of = RGR
+				limit = { is_core_of = NVA NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { NVA = { exists = no } }
+					remove_core_of = NVA
+				}
 			}
-		}
 			transfer_state = 219
 			add_state_core = 219
 			set_capital = 219
@@ -922,7 +1014,7 @@ country_event = {
 country_event = {
 	id = rcw_all_rus_NA.24
 	title = rcw_all_rus_NA.24.t
-	desc = rcw_all_rus_NA.24.d
+	desc = rcw_all_rus_NA.24.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	trigger = {
@@ -930,32 +1022,37 @@ country_event = {
 		has_country_flag = RCW_Allrussian_national_assembly_leader
 		NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_revolt } }
 		OR = {
-			has_country_flag = RCW_Allrussian_national_assembly_mon_wins
-			has_country_flag = RCW_Allrussian_national_assembly_rep_wins
+			has_global_flag = RCW_Allrussian_national_assembly_mon_wins
+			has_global_flag = RCW_Allrussian_national_assembly_rep_wins
 		}
 		has_war = no
 		NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
 		NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
+		NOT = { any_other_country = { is_main_former_russian_empire_country = yes exists = yes is_subject = no NOT = { is_in_faction_with = ROOT } NOT = { has_country_flag = RCW_Allrussian_national_assembly_member } } }
 	}
-	
-	fire_only_once = yes
 	
 	mean_time_to_happen = {
 		days = 30
+		modifier = {
+			factor = 0.01
+			NOT = { any_other_country = { is_main_former_russian_empire_country = yes exists = yes NOT = { has_country_flag = RCW_Allrussian_national_assembly_member } } }
+		}
 	}
 	
 	hidden = yes
 	
+	immediate = { clr_global_flag = RCW_Allrussian_national_assembly }
+	
 	option = {
 		name = rcw_all_rus_NA.24.a
 		clr_country_flag = RCW_Allrussian_national_assembly_member
-		clr_country_flag = RCW_Allrussian_national_assembly_rep_wins
-		clr_country_flag = RCW_Allrussian_national_assembly_mon_wins
-		clr_global_flag = RCW_Allrussian_national_assembly
+		clr_global_flag = RCW_Allrussian_national_assembly_rep_wins
+		clr_global_flag = RCW_Allrussian_national_assembly_mon_wins
 		every_other_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			clr_country_flag = RCW_Allrussian_national_assembly_member
 			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
+			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon
 			ROOT = { annex_country = { target = PREV transfer_troops = no } }
 		}
 		if = {
@@ -969,8 +1066,13 @@ country_event = {
 		}
 		clr_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
 		clr_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
-		every_country = {
-			limit = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes russian_country_can_call_national_assambly = yes } NOT = { tag = ROOT } NOT = { has_war_with = ROOT } }
+		every_other_country = {
+			limit = { is_any_former_russian_empire_country = yes is_subject = no NOT = { has_war_with = ROOT } }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
 			ROOT = {
 				diplomatic_relation = {
 					country = PREV
@@ -984,98 +1086,157 @@ country_event = {
 			}
 		}
 		
-		every_state = {
-			limit = {
-				OR = {
-					OR = {
-						is_core_of = RUS
-						is_core_of = RVA
-						is_core_of = CCA
-						AND = {
-							is_core_of = SIB
-							SIB = { NOT = { has_country_flag = SIB_want_to_be_autonomous } }
-						}
-						is_core_of = RSS
-						AND = {
-							is_core_of = NWA
-							SIB = { NOT = { has_country_flag = NWA_flag_Baltic_Principality } }
-							OR = {
-								country_exists = RUS
-								country_exists = RVA
-								country_exists = CCA
-								country_exists = RSS
-								NOT = { country_exists = RGR }
-							}
-						}
-						AND = {
-							is_core_of = NRR
-							OR = {
-								country_exists = RUS
-								country_exists = RVA
-								country_exists = CCA
-								country_exists = RSS
-								NOT = { country_exists = RGR }
-							}
-						}
-						is_core_of = RGR
+			every_state = {
+				limit = { is_core_of = RUS NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+			}
+			every_state = {
+				limit = { is_core_of = CCA NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { CCA = { exists = no } }
+					remove_core_of = CCA
+				}
+			}
+			if = {
+				limit = {
+					SIB = {
+						NOT = { has_country_flag = SIB_want_to_be_autonomous }
+						NOT = { has_global_flag = RUS_civil_war_reds_n_Siberia_peace }
 					}
 				}
-				NOT = { is_core_of = ROOT }
+				every_state = {
+					limit = { is_core_of = SIB NOT = { is_core_of = ROOT } }
+					add_core_of = ROOT
+					if = {
+						limit = { SIB = { exists = no } }
+						remove_core_of = SIB
+					}
+				}
 			}
-			add_core_of = ROOT
-		}
-		if = {
-			limit = { NOT = { original_tag = RVA country_exists = RVA } }
 			every_state = {
-				limit = { is_core_of = RVA }
-				remove_core_of = RVA
+				limit = { is_core_of = RVA NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { RVA = { exists = no } }
+					remove_core_of = RVA
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = CCA country_exists = CCA } }
 			every_state = {
-				limit = { is_core_of = CCA }
-				remove_core_of = CCA
+				limit = { is_core_of = PREV NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { PREV = { exists = no } }
+					remove_core_of = PREV
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = SIB country_exists = SIB } }
 			every_state = {
-				limit = { is_core_of = SIB }
-				remove_core_of = SIB
+				limit = { is_core_of = RSS NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { RSS = { exists = no } }
+					remove_core_of = RSS
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = RSS country_exists = RSS } }
+			if = {
+				limit = {
+					NWA = { NOT = { has_cosmetic_tag = NWA_BLT } }
+				}
+				every_state = {
+					limit = { is_core_of = NWA NOT = { is_core_of = ROOT } }
+					add_core_of = ROOT
+					if = {
+						limit = { NWA = { exists = no } }
+						remove_core_of = NWA
+					}
+				}
+			}
 			every_state = {
-				limit = { is_core_of = RSS }
-				remove_core_of = RSS
+				limit = { is_core_of = RGR NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { RGR = { exists = no } }
+					remove_core_of = RGR
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = NWA country_exists = NWA } }
 			every_state = {
-				limit = { is_core_of = NWA }
-				remove_core_of = NWA
+				limit = { is_core_of = MCW NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { MCW = { exists = no } }
+					remove_core_of = MCW
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = NRR country_exists = NRR } }
 			every_state = {
-				limit = { is_core_of = NRR }
-				remove_core_of = NRR
+				limit = { is_core_of = YAR NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { YAR = { exists = no } }
+					remove_core_of = YAR
+				}
 			}
-		}
-		if = {
-			limit = { NOT = { original_tag = RGR country_exists = RGR } }
 			every_state = {
-				limit = { is_core_of = RGR }
-				remove_core_of = RGR
+				limit = { is_core_of = NVA NOT = { is_core_of = ROOT } }
+				add_core_of = ROOT
+				if = {
+					limit = { NVA = { exists = no } }
+					remove_core_of = NVA
+				}
 			}
-		}
 			transfer_state = 219
 			add_state_core = 219
 			set_capital = 219
+	}
+}
+
+# Технический ивент на случай провала того, кто в одно рыло проводил собрание
+country_event = {
+	id = rcw_all_rus_NA.25
+	trigger = {
+		has_global_flag = RCW_Allrussian_national_assembly
+		219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+		is_subject = no
+		has_war = no
+		NOT = {
+			has_country_flag = RCW_Allrussian_national_assembly_leader
+			has_country_flag = RCW_Allrussian_national_assembly_member
+			has_country_flag = RCW_Allrussian_national_assembly_revolt
+			has_country_flag = RCW_Allrussian_national_assembly_disloyal
+			has_country_flag = RCW_Allrussian_national_assembly_loyal
+			has_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
+			has_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon
+			has_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
+			has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
+		}
+		NOT = { any_country = { exists = yes is_subject = no OR = { has_country_flag = RCW_Allrussian_national_assembly_revolt has_country_flag = RCW_Allrussian_national_assembly_disloyal has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_member has_country_flag = RCW_Allrussian_national_assembly_leader has_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep has_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon has_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins } } }
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	hidden = yes
+	
+	immediate = { clr_global_flag = RCW_Allrussian_national_assembly }
+	
+	option = {
+		clr_global_flag = RCW_Allrussian_national_assembly_rep_wins
+		clr_global_flag = RCW_Allrussian_national_assembly_mon_wins
+		every_country = {
+			limit = { OR = { has_country_flag = RCW_Allrussian_national_assembly_revolt has_country_flag = RCW_Allrussian_national_assembly_disloyal has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_member has_country_flag = RCW_Allrussian_national_assembly_leader has_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep has_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon has_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins } }
+			clr_country_flag = RCW_Allrussian_national_assembly_revolt
+			clr_country_flag = RCW_Allrussian_national_assembly_disloyal
+			clr_country_flag = RCW_Allrussian_national_assembly_loyal
+			clr_country_flag = RCW_Allrussian_national_assembly_member
+			clr_country_flag = RCW_Allrussian_national_assembly_leader
+			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
+			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon
+			clr_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
+			clr_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
+		}
+		transfer_state = 219
+		add_state_core = 219
+		set_capital = 219
 	}
 }
 
@@ -1083,7 +1244,7 @@ country_event = {
 country_event = {
 	id = rcw_all_rus_NA.30
 	title = rcw_all_rus_NA.30.t
-	desc = rcw_all_rus_NA.30.d
+	desc = rcw_all_rus_NA.30.desc
 	picture = GFX_report_event_sib_kolchak_arrived
 	
 	trigger = {
@@ -1319,5 +1480,88 @@ country_event = {
 		clear_global_event_target = Moscow_allience
 		clear_global_event_target = not_hostile_allience
 		clear_global_event_target = hostile_allience
+	}
+}
+
+# Собрание без нас
+country_event = {
+	id = rcw_all_rus_NA.31
+	title = rcw_all_rus_NA.31.t
+	desc = rcw_all_rus_NA.31.desc
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_capitulated = no
+	}
+	
+	option = {
+		name = rcw_all_rus_NA.31.a # Возмутительно! Нелегитимно!
+		every_other_country = {
+			limit = {
+				is_subject_of = ROOT
+				has_country_flag = RCW_Allrussian_national_assembly_member
+			}
+			ROOT = { end_puppet = PREV }
+		}
+		if = {
+			limit = {
+				is_faction_leader = yes
+			}
+			every_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+					has_country_flag = RCW_Allrussian_national_assembly_member
+				}
+				leave_faction = yes
+			}
+		}
+		if = {
+			limit = {
+				is_subject = yes
+				OVERLORD = {
+					OR = {
+						tag = FROM
+						is_in_faction_with = FROM
+						has_country_flag = RCW_Allrussian_national_assembly_member
+					}
+				}
+			}
+			OVERLORD = { end_puppet = ROOT }
+		}
+		if = {
+			limit = {
+				is_in_faction = yes
+				is_faction_leader = no
+				any_other_country = {
+					is_faction_leader = yes
+					any_country = {
+						is_in_faction_with = PREV
+						has_country_flag = RCW_Allrussian_national_assembly_member
+					}
+				}
+			}
+			leave_faction = yes
+		}
+		every_country = {
+			limit = { OR = { tag = FROM is_in_faction_with = FROM is_subject_of = FROM has_country_flag = RCW_Allrussian_national_assembly_member } }
+			diplomatic_relation = {
+				country = ROOT
+				relation = non_aggression_pact
+				active = no
+			}
+			ROOT = {
+				diplomatic_relation = {
+					country = PREV
+					relation = non_aggression_pact
+					active = no
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = PREV
+				}
+			}
+		}
 	}
 }
