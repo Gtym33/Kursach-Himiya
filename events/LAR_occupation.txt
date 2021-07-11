@@ -282,14 +282,14 @@ country_event = {
 							name = "Resistance"
 							is_locked = yes
 							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
+								militia = { x = 0 y = 0 }
+								militia = { x = 0 y = 1 }
 					
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
+								militia = { x = 1 y = 0 }
+								militia = { x = 1 y = 1 }
 								
-								infantry = { x = 2 y = 0 }
-								infantry = { x = 2 y = 1 }
+								militia = { x = 2 y = 0 }
+								militia = { x = 2 y = 1 }
 							}
 						}
 					}
@@ -299,7 +299,7 @@ country_event = {
 				clear_temp_array = checked_neighbours
 				every_controlled_state = {
 					limit = { 
-						occupied_country_tag = occupied_country 
+						occupied_country_tag = occupied_country
 						impassable = no
 					}
 					
@@ -316,11 +316,19 @@ country_event = {
 					
 					# transfer state
 					if = {
-						limit = { has_resistance = yes }
-						set_resistance = 0
-					}
-					var:new_occupied_country = {
-						transfer_state = PREV
+						limit = { NOT = { compliance > 60 } }
+						if = {
+							limit = { has_resistance = yes }
+							set_resistance = 0
+						}
+						var:new_occupied_country = {
+							transfer_state = PREV
+						}
+						else = {
+							var:new_occupied_country = {
+								set_state_owner = PREV
+							}
+						}
 					}
 					
 					if = {
