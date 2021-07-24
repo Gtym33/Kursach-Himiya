@@ -2971,7 +2971,7 @@ country_event = {
 		name = rcw_bolsheviks.71.a
 		random_list = {
 			50 = { country_event = { id = rcw_bolsheviks.72 days = 1 } }
-			50 = { country_event = { id = rcw_bolsheviks.73 days = 1 } }
+			50 = { country_event = { id = rcw_bolsheviks.73 days = 1 modifier = { factor = 0 VLG = { exists = yes } } } }
 		}
 	}
 }
@@ -3002,23 +3002,25 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			if = {
-				limit = { any_neighbor_country = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS } }
+				limit = { any_neighbor_country = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = ROOT } }
 				every_state = {
 					limit = {
-						is_owned_by = RUS
-						is_controlled_by = RUS
+						is_owned_by = ROOT
+						is_controlled_by = ROOT
 						is_in_home_area = yes
-						any_neighbor_state = { CONTROLLER = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS } }
+						any_neighbor_state = { CONTROLLER = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = ROOT } }
+						is_on_continent = europe
 					}
 					save_event_target_as = RUS_state_mutiny_VLG
 				}
 				else = {
 					every_state = {
 						limit = {
-							is_owned_by = RUS
-							is_controlled_by = RUS
+							is_owned_by = ROOT
+							is_controlled_by = ROOT
 							is_in_home_area = yes
-							any_neighbor_state = { NOT = { is_owned_by = RUS is_controlled_by = RUS } }
+							any_neighbor_state = { NOT = { is_owned_by = ROOT is_controlled_by = ROOT } }
+							is_on_continent = europe
 						}
 						save_event_target_as = RUS_state_mutiny_VLG
 					}
@@ -3034,224 +3036,140 @@ country_event = {
 			var = global.RCW_green_var_Russian_SFSR
 			value = 2
 		}
-		if = {
-			limit = { controls_state = 250 any_state = { region = 40 NOT = { is_controlled_by = RUS } CONTROLLER = { has_war_with = RUS } } }
-			every_state = {
-				limit = {
-					OR = {
-						state = 239
-						state = 250
-						state = 251
-						state = 1070
-						state = 1071
-						state = 1072
-						state = 401
-						state = 217
-						state = 813
-						state = 815
-						state = 237
-						state = 236
-						state = 407
-						state = 406
-						state = 402
-						state = 587
-						state = 652
-						state = 651
-						state = 1072
-						state = 1069
-						state = 1068
+		VLG = {
+			if = {
+				limit = { ROOT = { controls_state = 250 } any_state = { region = 40 CONTROLLER = { has_war_with = ROOT NOT = { tag = ROOT } } } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 239
+							state = 250
+							state = 251
+							state = 1070
+							state = 1071
+							state = 1072
+							state = 401
+							state = 217
+							state = 813
+							state = 815
+							state = 237
+							state = 236
+							state = 407
+							state = 406
+							state = 402
+							state = 587
+							state = 652
+							state = 651
+							state = 1072
+							state = 1069
+							state = 1068
+						}
+						is_core_of = ROOT
 					}
-					is_core_of = RUS
+					add_core_of = PREV
 				}
-				add_core_of = VLG
-			}
-			VLG = {
 				transfer_state = 250
-				create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { warmonger_old_general isolationist_revolutionary } }
-				set_politics = { ruling_party = radical_socialism elections_allowed = no }
-				load_focus_tree = Muravyov_mutiny_focus
-				add_ideas = neutral_foreign_policy_law
-				REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = VLG } }
-				add_ideas = military_dictatorship_gov_form
-				add_ideas = federal_gov_terr
-				add_ideas = local_assembly_decisions_b_law
-				add_ideas = allow_one_party_law
-				add_ideas = ideological_expansion_law
-				add_ideas = workers_control_law
-				add_ideas = low_economic_mobilisation
-				add_ideas = volunteer_only
-				add_ideas = RUS_new_red_army_idea
-				add_ideas = weak_centralization_idea
-				add_ideas = VLG_sympathy_of_the_peasants
-				add_ideas = VLG_not_quite_red
-				add_ideas = hyper_inflation_1
-				add_ideas = collapse_of_railway_system_1
-				inherit_technology = RUS
-				remove_all_foreing_locked_templates_from_liberated_country = yes
-				division_template = {
-					name = "Pekhotnaya brigada"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-					}
-				}
-				division_template = {
-					name = "Kavaleriyskaya brigada"
-					regiments = {
-						cavalry = { x = 0 y = 0 }
-						cavalry = { x = 0 y = 1 }
-					}
-				}
-				RUS = {
-					transfer_units_fraction= {
-						target = VLG
-						size = 0.1
-						stockpile_ratio = 0.1
-						army_ratio = 0.1
-						navy_ratio = 0.0
-						air_ratio = 0.0
-						keep_unit_leaders_trigger = {
-							always = yes
-						}
-					}
-				}
-				declare_war_on = {
-					target = RUS
-					type = annex_everything
-				}
-				every_country = {
-					limit = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS NOT = { original_tag = CCA has_government = social_liberalism } }
-					declare_war_on = {
-						target = VLG
-						type = annex_everything
-					}
-				}
-				#if = {
-					#limit = { CCA = { exists = yes OR = { has_government = radical_socialism has_government = social_liberalism } } }
-					#CCA = { country_event = { id = rcw_bolsheviks.74 days = 1 } }
-				#}
-				hidden_effect = {
-					every_country = {
-						limit = {
-							NOT = {
-								tag = PREV
-								is_any_former_russian_empire_country = yes
-								former_russian_empire_baltic_states_country = yes
-								has_war_with = PREV
-								is_in_faction_with = PREV
-							}
-						}
-						set_THIS_country_non_recognize_PREV = yes
-					}
-				}
-			}
-			else = {
-				VLG = {
+				else = {
 					transfer_state = event_target:RUS_state_mutiny_VLG
 					random_state = {
-						limit = {
-							OR = {
-								state = event_target:RUS_state_mutiny_VLG
-							}
-						}
-						add_core_of = VLG
+						limit = { state = event_target:RUS_state_mutiny_VLG }
+						add_core_of = PREV
 					}
 					every_state = {
 						limit = {
-							is_owned_by = RUS
-							is_controlled_by = VLG
+							is_owned_by = ROOT
+							is_controlled_by = PREV
 						}
-						add_core_of = VLG
+						add_core_of = PREV
 						every_neighbor_state = {
 							limit = {
-								is_core_of = RUS
+								is_core_of = ROOT
 							}
-							add_core_of = VLG
+							add_core_of = PREV.PREV
 							every_neighbor_state = {
-								limit = {
-									is_core_of = RUS
-								}
-								add_core_of = VLG
+								limit = { is_core_of = ROOT }
+								add_core_of = PREV.PREV.PREV
 							}
 						}
 					}
-					create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { warmonger_old_general isolationist_revolutionary } }
-					set_politics = { ruling_party = radical_socialism elections_allowed = no }
-					load_focus_tree = Muravyov_mutiny_focus
-					add_ideas = neutral_foreign_policy_law
-					REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = VLG } }
-					add_ideas = military_dictatorship_gov_form
-					add_ideas = federal_gov_terr
-					add_ideas = local_assembly_decisions_b_law
-					add_ideas = allow_one_party_law
-					add_ideas = ideological_expansion_law
-					add_ideas = workers_control_law
-					add_ideas = low_economic_mobilisation
-					add_ideas = volunteer_only
-					add_ideas = RUS_new_red_army_idea
-					add_ideas = weak_centralization_idea
-					add_ideas = VLG_sympathy_of_the_peasants
-					add_ideas = VLG_not_quite_red
-					add_ideas = hyper_inflation_1
-					add_ideas = collapse_of_railway_system_1
-					inherit_technology = RUS
-					remove_all_foreing_locked_templates_from_liberated_country = yes
-					division_template = {
-						name = "Pekhotnaya brigada"
-						regiments = {
-							militia = { x = 0 y = 0 }
-							militia = { x = 0 y = 1 }
+				}
+			}
+			create_country_leader = { name = "Mikhail Muravyov" desc = RUS_Mikhail_Muravyov_DESC picture = "gfx/leaders/SOV/Mikhail_Muravyov.dds" ideology = anarchist_communism traits = { isolationist_revolutionary } }
+			set_politics = { ruling_party = radical_socialism elections_allowed = no }
+			load_focus_tree = Muravyov_mutiny_focus
+			add_ideas = neutral_foreign_policy_law
+			REB = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = PREV.PREV } }
+			add_ideas = military_dictatorship_gov_form
+			add_ideas = federal_gov_terr
+			add_ideas = local_assembly_decisions_b_law
+			add_ideas = allow_one_party_law
+			add_ideas = ideological_expansion_law
+			add_ideas = workers_control_law
+			add_ideas = low_economic_mobilisation
+			add_ideas = volunteer_only
+			add_ideas = RUS_new_red_army_idea
+			add_ideas = weak_centralization_idea
+			add_ideas = VLG_sympathy_of_the_peasants
+			add_ideas = VLG_not_quite_red
+			add_ideas = hyper_inflation_1
+			add_ideas = collapse_of_railway_system_1
+			add_ideas = lack_of_officers_5
+			inherit_technology = ROOT
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			division_template = {
+				name = "Pekhotnaya brigada"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+				}
+			}
+			division_template = {
+				name = "Kavaleriyskaya brigada"
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+				}
+			}
+			ROOT = {
+				transfer_units_fraction= {
+					target = PREV
+					size = 0.1
+					stockpile_ratio = 0.1
+					army_ratio = 0.1
+					navy_ratio = 0.0
+					air_ratio = 0.0
+					keep_unit_leaders_trigger = {
+						always = yes
+					}
+				}
+			}
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			every_country = {
+				limit = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = ROOT NOT = { original_tag = CCA has_government = social_liberalism } }
+				declare_war_on = {
+					target = PREV
+					type = annex_everything
+				}
+			}
+			#if = {
+				#limit = { CCA = { exists = yes OR = { has_government = radical_socialism has_government = social_liberalism } } }
+				#CCA = { country_event = { id = rcw_bolsheviks.74 days = 1 } }
+			#}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							has_war_with = PREV
+							is_in_faction_with = PREV
 						}
 					}
-					division_template = {
-						name = "Kavaleriyskaya brigada"
-						regiments = {
-							cavalry = { x = 0 y = 0 }
-							cavalry = { x = 0 y = 1 }
-						}
-					}
-					RUS = {
-						transfer_units_fraction= {
-							target = VLG
-							size = 0.1
-							stockpile_ratio = 0.1
-							army_ratio = 0.1
-							navy_ratio = 0.0
-							air_ratio = 0.0
-							keep_unit_leaders_trigger = {
-								always = yes
-							}
-						}
-					}
-					declare_war_on = {
-						target = RUS
-						type = annex_everything
-					}
-					every_country = {
-						limit = { OR = { is_former_russian_empire_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } has_war_with = RUS NOT = { original_tag = CCA has_government = social_liberalism } }
-						declare_war_on = {
-							target = VLG
-							type = annex_everything
-						}
-					}
-					#if = {
-						#limit = { CCA = { exists = yes OR = { has_government = radical_socialism has_government = social_liberalism } } }
-						#CCA = { country_event = { id = rcw_bolsheviks.74 days = 1 } }
-					#}
-					hidden_effect = {
-						every_country = {
-							limit = {
-								NOT = {
-									tag = PREV
-									is_any_former_russian_empire_country = yes
-									former_russian_empire_baltic_states_country = yes
-									has_war_with = PREV
-									is_in_faction_with = PREV
-								}
-							}
-							set_THIS_country_non_recognize_PREV = yes
-						}
-					}
+					set_THIS_country_non_recognize_PREV = yes
 				}
 			}
 		}
@@ -3879,7 +3797,7 @@ country_event = {
 		}
 		name = rcw_bolsheviks.115.a
 		hidden_effect = {
-			country_event = { id = rcw_bolsheviks.116 days = 3 }
+			country_event = { id = rcw_bolsheviks.116 days = 1 }
 		}
 		if = {
 			limit = { has_idea = limited_conscription }
@@ -3973,7 +3891,7 @@ country_event = {
 			ideology = communism
 			popularity = -0.025
 		}
-		country_event = { id = rcw_bolsheviks.117 days = 4 }
+		country_event = { id = rcw_bolsheviks.117 days = 1 }
 	}
 	option = {
 		name = rcw_bolsheviks.116.b
@@ -3983,7 +3901,7 @@ country_event = {
 			popularity = 0.01
 		}
 		set_country_flag = RUS_demob_steal_arms
-		country_event = { id = rcw_bolsheviks.117 days = 4 }
+		country_event = { id = rcw_bolsheviks.117 days = 1 }
 	}
 }
 
@@ -4023,13 +3941,13 @@ country_event = {
 	option = {
 		name = rcw_bolsheviks.117.a
 		add_political_power = 10
-		country_event = { id = rcw_bolsheviks.121 days = 12 }
-		country_event = { id = rcw_bolsheviks.122 days = 18 }
-		country_event = { id = rcw_bolsheviks.123 days = 24 }
+		country_event = { id = rcw_bolsheviks.121 days = 3 }
+		country_event = { id = rcw_bolsheviks.122 days = 6 }
+		country_event = { id = rcw_bolsheviks.123 days = 12 }
 		if = {
 			limit = { NOT = { has_country_flag = RUS_not_full_demob } }
-			country_event = { id = rcw_bolsheviks.124 days = 36 }
-			country_event = { id = rcw_bolsheviks.125 days = 48 }
+			country_event = { id = rcw_bolsheviks.124 days = 18 }
+			country_event = { id = rcw_bolsheviks.125 days = 36 }
 		}
 		effect_tooltip = {
 			delete_unit_template_and_units = {
@@ -4073,10 +3991,10 @@ country_event = {
 			ideology = communism
 			popularity = -0.07
 		}
-		country_event = { id = rcw_bolsheviks.121 days = 12 }
-		country_event = { id = rcw_bolsheviks.122 days = 18 }
-		country_event = { id = rcw_bolsheviks.123 days = 24 }
-		#country_event = { id = rcw_bolsheviks.124 days = 36 }
+		country_event = { id = rcw_bolsheviks.121 days = 3 }
+		country_event = { id = rcw_bolsheviks.122 days = 6 }
+		country_event = { id = rcw_bolsheviks.123 days = 12 }
+		#country_event = { id = rcw_bolsheviks.124 days = 18 }
 		effect_tooltip = {
 			delete_unit_template_and_units = {
 				division_template = "Pekhotnaya Diviziya priziva 1902 goda"

@@ -321,6 +321,18 @@ country_event = {
 					elections_allowed = no
 				}
 				hidden_effect = {
+					if = {
+						limit = { DON = { has_idea = peasant_and_land_and_bread_question_0_25 } }
+						add_ideas = peasant_and_land_and_bread_question_0_25
+					}
+					else_if = {
+						limit = { DON = { has_idea = peasant_and_land_and_bread_question_0_5 } }
+						add_ideas = peasant_and_land_and_bread_question_0_5
+					}
+					else_if = {
+						limit = { DON = { has_idea = peasant_and_land_and_bread_question } }
+						add_ideas = peasant_and_land_and_bread_question
+					}
 					set_popularities = {
 						social_democracy = 50
 						communism = 50
@@ -364,13 +376,13 @@ country_event = {
 						is_locked = yes
 					}
 					declare_war_on = { target = ROOT type = annex_everything }
-					if = {
-						limit = { KUB = { exists = yes NOT = { has_government = radical_socialism has_government = communism } is_subject = no } }
-						declare_war_on = { target = KUB type = annex_everything }
-					}
 				}
 		}
 		hidden_effect = {
+			if = {
+				limit = { RSR = { has_war_with = ROOT } }
+				RSR = { event_target:DON_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
 			ROOT = { every_unit_leader = { limit = { OR = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = event_target:DON_CW } }
 			RUS = { every_unit_leader = { limit = { OR = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = event_target:DON_CW } }
 			event_target:DON_CW = { every_unit_leader = { limit = { NOT = { has_id = 28001 has_id = 28002 has_id = 28003 has_id = 28004 has_id = 28005 } } set_nationality = ROOT } }
@@ -405,6 +417,18 @@ country_event = {
 					elections_allowed = no
 				}
 				hidden_effect = {
+					if = {
+						limit = { DON = { has_idea = peasant_and_land_and_bread_question_0_25 } }
+						add_ideas = peasant_and_land_and_bread_question_0_25
+					}
+					else_if = {
+						limit = { DON = { has_idea = peasant_and_land_and_bread_question_0_5 } }
+						add_ideas = peasant_and_land_and_bread_question_0_5
+					}
+					else_if = {
+						limit = { DON = { has_idea = peasant_and_land_and_bread_question } }
+						add_ideas = peasant_and_land_and_bread_question
+					}
 					set_popularities = {
 						social_democracy = 50
 						communism = 50
@@ -657,7 +681,11 @@ country_event = {
 		RUS = { has_country_flag = DON_revolt }
 		has_country_leader = { name = "Alexey Kaledin" ruling_only = yes }
 		OR = {
-			surrender_progress > 0.4
+			AND = {
+				surrender_progress > 0.4
+				has_war_with = RSR
+			}
+			surrender_progress > 0.8
 			has_capitulated = yes
 		}
 		OR = {
@@ -1536,96 +1564,97 @@ country_event = {
 			ruling_party = market_liberalism
 			elections_allowed = no
 		}
-		hidden_effect = {
-			every_country = {
-				limit = { original_tag = KUB }
-				delete_unit_template_and_units = { division_template = "Kubanskiy strelkovyy polk opolcheniya" }
-				delete_unit_template_and_units = { division_template = "Kubanskiy konnyy polk" }
-			}
-		}
-		hidden_effect = {
-			RUS = {
-				every_owned_state = {
-					limit = {
-						is_core_of = KUB
-					}
-					KUB = { transfer_state = PREV }
+		create_dynamic_country = {
+				original_tag = KUB
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
 				}
-			}
-		}
-		start_civil_war = {
-			ideology = communism
-			size = 0
-			capital = 233
-			states = {
-				233 1173 902 1211 907
-			}
-			keep_unit_leaders_trigger = { NOT = { has_id = 19199 has_id = 19200 } }
+				hidden_effect = {
+					if = {
+						limit = { KUB = { has_idea = peasant_and_land_and_bread_question_0_25 } }
+						add_ideas = peasant_and_land_and_bread_question_0_25
+					}
+					else_if = {
+						limit = { KUB = { has_idea = peasant_and_land_and_bread_question_0_5 } }
+						add_ideas = peasant_and_land_and_bread_question_0_5
+					}
+					else_if = {
+						limit = { KUB = { has_idea = peasant_and_land_and_bread_question } }
+						add_ideas = peasant_and_land_and_bread_question
+					}
+					set_popularities = {
+						radical_socialism = 30
+						communism = 70
+					}
+					ROOT = {
+						every_owned_state = {
+							limit = { OR = { state = 233 state = 1173 state = 902 state = 1211 state = 907 } }
+							
+							var:red_KUB = {
+								transfer_state = PREV
+							}
+						}
+					}
+					set_capital = 218
+					add_random_ministers = yes
+					add_random_ministers = yes
+					create_country_leader = { name = "Alexey Avtonomov" desc = KUB_Alexey_Avtonomov_DESC picture = "gfx/leaders/KUB/Alexey_Avtonomov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = { political_dancer min_1_local_tyrant prince_of_terror } }
+					create_country_leader = { name = "Yan Poluyan" desc = KUB_Yan_Poluyan_DESC picture = "gfx/leaders/KUB/Yan_Poluyan.dds" expire = "1935.1.1" ideology = leninism traits = { min_1_totalist_chairman } }
+					set_temp_variable = { red_KUB = this }
+					save_global_event_target_as = KUB_CW
+					set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+					add_ideas = {
+						soviet_republic_gov_form
+						federal_gov_terr
+						local_assembly_decisions_b_law
+						two_party_system_law
+						neutral_foreign_policy_law
+					}
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+						is_locked = yes
+					}
+					division_template = {
+						name = "Kubanskiy revolutsyonniy polk"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+						}
+						priority = 1
+					}
+					division_template = {
+						name = "Kubanskay konnaya diviziya"		# Cavalry
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+						}
+					}
+					ROOT = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = PREV } }
+					declare_war_on = { target = ROOT type = annex_everything }
+					if = { limit = { DON = { exists = yes NOT = { has_war_with = PREV } is_socialist_country = no } } declare_war_on = { target = DON type = annex_everything } }
+					if = { limit = { RVA = { exists = yes NOT = { has_war_with = PREV } is_socialist_country = no } } declare_war_on = { target = RVA type = annex_everything } }
+				}
 		}
 		hidden_effect = {
 			if = {
-				limit = {
-					RUS = {
-						OR = {
-							has_government = radical_socialism
-							has_government = communism
-						}
-						NOT = { has_war_with = KUB }
-					}
-				}
-				RUS = { declare_war_on = { target = KUB type = annex_everything } }
+				limit = { RSR = { has_war_with = ROOT } }
+				RSR = { event_target:KUB_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
 			}
-		}
-		hidden_effect = {
-			random_other_country = {
-				limit = { original_tag = KUB has_government = communism }
-				save_global_event_target_as = KUB_CW
-				add_popularity = { ideology = radical_socialism popularity = 0.3 }
-				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
-				add_ideas = {
-					soviet_republic_gov_form
-					federal_gov_terr
-					local_assembly_decisions_b_law
-					two_party_system_law
-					neutral_foreign_policy_law
-				}
-				remove_ideas = cossaks_regionalism
-				division_template = {
-					name = "Krasnaya Gvardiya"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-				division_template = {
-					name = "Kubanskiy revolutsyonniy polk"
-					regiments = {
-						infantry = { x = 0 y = 0 }
-						infantry = { x = 0 y = 1 }
-					}
-					support = {
-						recon = { x = 0 y = 0 }
-						engineer = { x = 0 y = 1 }
-					}
-					priority = 1
-				}
-				division_template = {
-					name = "Kubanskay konnaya diviziya"		# Cavalry
-					regiments = {
-						cavalry = { x = 0 y = 0 }
-					}
-					support = {
-						recon = { x = 0 y = 0 }
-					}
-				}
-				if = { limit = { DON = { exists = yes NOT = { has_war_with = THIS has_government = radical_socialism has_government = communism has_government = social_democracy has_government = national_syndicalism } } } declare_war_on = { target = DON type = annex_everything } }
-				if = { limit = { RVA = { exists = yes NOT = { has_war_with = THIS has_government = radical_socialism has_government = communism has_government = social_democracy has_government = national_syndicalism } } } declare_war_on = { target = RVA type = annex_everything } }
-			}
-			hidden_effect = {
-				RUS = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = event_target:KUB_CW } }
+				RSR = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = event_target:KUB_CW } }
 				event_target:KUB_CW = {
 					every_country = {
 						limit = {
@@ -1639,17 +1668,16 @@ country_event = {
 				}
 				event_target:KUB_CW = {
 					diplomatic_relation = {
-						country = RUS
+						country = RSR
 						relation = military_access
 						active = yes
 					}
 					diplomatic_relation = {
-						country = RUS
+						country = RSR
 						relation = docking_rights
 						active = yes
 					}
 				}
-			}
 			233 = {
 				spawn_red_guard_in_state_CONTROLLER = yes
 				create_unit = {
@@ -1660,17 +1688,6 @@ country_event = {
 					division = "name = \"1-ya konnaya diviziya\" division_template = \"Kubanskay konnaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = CONTROLLER
 				}
-			}
-		}
-		hidden_effect = {
-			load_oob = KUB_1917
-			set_division_template_lock = {
-				division_template = "Kubanskiy strelkovyy polk opolcheniya"
-				is_locked = no
-			}
-			set_division_template_lock = {
-				division_template = "Kubanskiy konnyy polk"
-				is_locked = no
 			}
 		}
 		hidden_effect = { clear_global_event_target = KUB_CW }
@@ -1685,101 +1702,97 @@ country_event = {
 			ruling_party = market_liberalism
 			elections_allowed = no
 		}
-		hidden_effect = {
-			every_country = {
-				limit = { original_tag = KUB }
-				delete_unit_template_and_units = { division_template = "Kubanskiy strelkovyy polk opolcheniya" }
-				delete_unit_template_and_units = { division_template = "Kubanskiy konnyy polk" }
-			}
-		}
-		hidden_effect = {
-			RUS = {
-				every_owned_state = {
-					limit = {
-						is_core_of = KUB
-					}
-					KUB = { transfer_state = PREV }
+		create_dynamic_country = {
+				original_tag = KUB
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
 				}
-			}
-		}
-		start_civil_war = {
-			ideology = communism
-			size = 0
-			capital = 233
-			states = {
-				233 1173 902 1211 907
-			}
-			keep_unit_leaders_trigger = { NOT = { has_id = 19199 has_id = 19200 } }
-		}
-		if = {
-			limit = { has_country_flag = KUB_dont_spawned_troops }
-			load_oob = KUB_1917
-			clr_country_flag = KUB_dont_spawned_troops
+				hidden_effect = {
+					if = {
+						limit = { KUB = { has_idea = peasant_and_land_and_bread_question_0_25 } }
+						add_ideas = peasant_and_land_and_bread_question_0_25
+					}
+					else_if = {
+						limit = { KUB = { has_idea = peasant_and_land_and_bread_question_0_5 } }
+						add_ideas = peasant_and_land_and_bread_question_0_5
+					}
+					else_if = {
+						limit = { KUB = { has_idea = peasant_and_land_and_bread_question } }
+						add_ideas = peasant_and_land_and_bread_question
+					}
+					set_popularities = {
+						radical_socialism = 30
+						communism = 70
+					}
+					ROOT = {
+						every_owned_state = {
+							limit = { OR = { state = 233 state = 1173 state = 902 state = 1211 state = 907 } }
+							
+							var:red_KUB = {
+								transfer_state = PREV
+							}
+						}
+					}
+					set_capital = 218
+					add_random_ministers = yes
+					add_random_ministers = yes
+					create_country_leader = { name = "Alexey Avtonomov" desc = KUB_Alexey_Avtonomov_DESC picture = "gfx/leaders/KUB/Alexey_Avtonomov.dds" expire = "1935.1.1" ideology = democratic_socialism traits = { political_dancer min_1_local_tyrant prince_of_terror } }
+					create_country_leader = { name = "Yan Poluyan" desc = KUB_Yan_Poluyan_DESC picture = "gfx/leaders/KUB/Yan_Poluyan.dds" expire = "1935.1.1" ideology = leninism traits = { min_1_totalist_chairman } }
+					set_temp_variable = { red_KUB = this }
+					save_global_event_target_as = KUB_CW
+					set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+					add_ideas = {
+						soviet_republic_gov_form
+						federal_gov_terr
+						local_assembly_decisions_b_law
+						two_party_system_law
+						neutral_foreign_policy_law
+					}
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+						is_locked = yes
+					}
+					division_template = {
+						name = "Kubanskiy revolutsyonniy polk"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+							engineer = { x = 0 y = 1 }
+						}
+						priority = 1
+					}
+					division_template = {
+						name = "Kubanskay konnaya diviziya"		# Cavalry
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+						}
+						support = {
+							recon = { x = 0 y = 0 }
+						}
+					}
+					ROOT = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = PREV } }
+					declare_war_on = { target = ROOT type = annex_everything }
+					if = { limit = { DON = { exists = yes NOT = { has_war_with = PREV } is_socialist_country = no } } declare_war_on = { target = DON type = annex_everything } }
+					if = { limit = { RVA = { exists = yes NOT = { has_war_with = PREV } is_socialist_country = no } } declare_war_on = { target = RVA type = annex_everything } }
+				}
 		}
 		hidden_effect = {
 			if = {
-				limit = {
-					RUS = {
-						OR = {
-							has_government = radical_socialism
-							has_government = communism
-						}
-						NOT = { has_war_with = KUB }
-					}
-				}
-				RUS = { declare_war_on = { target = KUB type = annex_everything } }
+				limit = { RSR = { has_war_with = ROOT } }
+				RSR = { event_target:KUB_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
 			}
-		}
-		hidden_effect = {
-			random_other_country = {
-				limit = { original_tag = KUB has_government = communism }
-				save_global_event_target_as = KUB_CW
-				add_popularity = { ideology = radical_socialism popularity = 0.3 }
-				set_country_flag = dont_rise_party_pop_in_two_party_sys_law
-				add_ideas = {
-					soviet_republic_gov_form
-					federal_gov_terr
-					local_assembly_decisions_b_law
-					two_party_system_law
-					neutral_foreign_policy_law
-				}
-				remove_ideas = cossaks_regionalism
-				division_template = {
-					name = "Krasnaya Gvardiya"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-				division_template = {
-					name = "Kubanskiy revolutsyonniy polk"
-					regiments = {
-						infantry = { x = 0 y = 0 }
-						infantry = { x = 0 y = 1 }
-					}
-					support = {
-						recon = { x = 0 y = 0 }
-						engineer = { x = 0 y = 1 }
-					}
-					priority = 1
-				}
-				division_template = {
-					name = "Kubanskay konnaya diviziya"		# Cavalry
-					regiments = {
-						cavalry = { x = 0 y = 0 }
-					}
-					support = {
-						recon = { x = 0 y = 0 }
-					}
-				}
-				if = { limit = { DON = { exists = yes NOT = { has_war_with = THIS has_government = radical_socialism has_government = communism has_government = social_democracy has_government = national_syndicalism } } } declare_war_on = { target = DON type = annex_everything } }
-				if = { limit = { RVA = { exists = yes NOT = { has_war_with = THIS has_government = radical_socialism has_government = communism has_government = social_democracy has_government = national_syndicalism } } } declare_war_on = { target = RVA type = annex_everything } }
-			}
-			hidden_effect = {
-				RUS = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = event_target:KUB_CW } }
+				RSR = { every_unit_leader = { limit = { OR = { has_id = 19199 has_id = 19200 } } set_nationality = event_target:KUB_CW } }
 				event_target:KUB_CW = {
 					every_country = {
 						limit = {
@@ -1793,17 +1806,16 @@ country_event = {
 				}
 				event_target:KUB_CW = {
 					diplomatic_relation = {
-						country = RUS
+						country = RSR
 						relation = military_access
 						active = yes
 					}
 					diplomatic_relation = {
-						country = RUS
+						country = RSR
 						relation = docking_rights
 						active = yes
 					}
 				}
-			}
 			233 = {
 				spawn_red_guard_in_state_CONTROLLER = yes
 				create_unit = {
@@ -1814,17 +1826,6 @@ country_event = {
 					division = "name = \"1-ya konnaya diviziya\" division_template = \"Kubanskay konnaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = CONTROLLER
 				}
-			}
-		}
-		hidden_effect = {
-			load_oob = KUB_1917
-			set_division_template_lock = {
-				division_template = "Kubanskiy strelkovyy polk opolcheniya"
-				is_locked = no
-			}
-			set_division_template_lock = {
-				division_template = "Kubanskiy konnyy polk"
-				is_locked = no
 			}
 		}
 		hidden_effect = { clear_global_event_target = KUB_CW }

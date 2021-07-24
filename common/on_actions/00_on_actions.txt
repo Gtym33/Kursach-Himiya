@@ -439,6 +439,133 @@ on_actions = {
 					}
 				}
 			}
+			if = {
+				limit = {
+					NOT = { has_global_flag = RUS_civil_war_over }
+					has_global_flag = RUS_civil_war_intervention_start
+					ROOT = {
+						OR = {
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							former_russian_empire_polish_region_country = yes
+						}
+						FROM = {
+							OR = {
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								former_russian_empire_polish_region_country = yes
+								OVERLORD = {
+									OR = {
+										is_any_former_russian_empire_country = yes
+										former_russian_empire_baltic_states_country = yes
+										former_russian_empire_polish_region_country = yes
+									}
+								}
+							}
+						}
+						NOT = {
+							any_enemy_country = {
+								is_subject = no
+								is_any_former_russian_empire_country = no
+								former_russian_empire_baltic_states_country = no
+								former_russian_empire_polish_region_country = no
+							}
+						}
+					}
+				}
+				ROOT = {
+					leave_faction = yes
+					every_other_country = { limit = { is_subject_of = PREV } PREV = { end_puppet = PREV } }
+				}
+				if = {
+					limit = {
+						ROOT = { any_other_country = { original_tag = PREV has_war_with = PREV } }
+					}
+					ROOT = {
+						random_enemy_country = {
+							limit = { original_tag = ROOT }
+							ROOT = {
+								transfer_units_fraction= {
+									target = PREV
+									size = 1
+									stockpile_ratio = 1
+									army_ratio = 0
+									navy_ratio = 1
+									air_ratio = 0.5
+									keep_unit_leaders_trigger = { always = yes }
+								}
+							}
+							annex_country = {
+								target = ROOT
+								transfer_troops = no
+							}
+						}
+					}
+				}
+				ROOT = {
+					every_enemy_country = {
+						limit = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } }
+						every_state = {
+							limit = { is_controlled_by = PREV }
+							PREV = { transfer_state = PREV }
+						}
+					}
+				}
+				ROOT = {
+					every_enemy_country = {
+						limit = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } NOT = { is_main_former_russian_empire_country = yes } }
+						every_state = {
+							limit = {
+								is_core_of = PREV
+								CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } } }
+							}
+							PREV = { transfer_state = PREV }
+						}
+					}
+				}
+				every_enemy_country = { white_peace = ROOT }
+				if = {
+					limit = { FROM = { is_subject = no } }
+					ROOT = {
+						transfer_units_fraction= {
+							target = FROM
+							size = 1
+							stockpile_ratio = 1
+							army_ratio = 0
+							navy_ratio = 1
+							air_ratio = 0.5
+							keep_unit_leaders_trigger = { always = yes }
+						}
+					}
+					FROM = {
+						annex_country = {
+							target = ROOT
+							transfer_troops = no
+						}
+					}
+					else = {
+						FROM = {
+							OVERLORD = {
+								ROOT = {
+									transfer_units_fraction= {
+										target = PREV
+										size = 1
+										stockpile_ratio = 1
+										army_ratio = 0
+										navy_ratio = 1
+										air_ratio = 0.5
+										keep_unit_leaders_trigger = { always = yes }
+									}
+								}
+								annex_country = {
+									target = ROOT
+									transfer_troops = no
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
