@@ -759,25 +759,25 @@ country_event = {
 							states = { 190 867 12 1001 866 }
 							keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
 						}
-						else_if = {
-							limit = { controls_state = 1001 }
-							set_capital = 1001
-							start_civil_war = {
-								ruling_party = despotism
-								ideology = authoritarism
-								size = 0.1
-								capital = 12
-								states = { 190 867 12 866 }
-								keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
-							}
+					}
+					else_if = {
+						limit = { controls_state = 1001 }
+						set_capital = 1001
+						start_civil_war = {
+							ruling_party = despotism
+							ideology = authoritarism
+							size = 0.1
+							capital = 12
+							states = { 190 867 12 866 }
+							keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
 						}
-						else = {
-							start_civil_war = {
-								ruling_party = despotism
-								ideology = authoritarism
-								size = 0.1
-								keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
-							}
+					}
+					else = {
+						start_civil_war = {
+							ruling_party = despotism
+							ideology = authoritarism
+							size = 0.1
+							keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
 						}
 					}
 					set_country_flag = LAT_civil
@@ -818,6 +818,14 @@ country_event = {
 						}
 						set_country_flag = LAT_germanization
 						set_cosmetic_tag = LAT_landeswehr
+					}
+					every_country = {
+						limit = {
+							has_war_with = LAT
+							NOT = { has_war_with = event_target:LAT_CW }
+							NOT = { tag = GER tag = PRE tag = UBD is_subject_of = GER is_subject_of = PRE subject_of = UBD is_in_faction_with = GER is_in_faction_with = PRE is_in_faction_with = UBD }
+						}
+						declare_war_on = { target = event_target:LAT_CW type = annex_everything }
 					}
 					hidden_effect = { clear_global_event_target = LAT_CW }
 				}
@@ -890,6 +898,21 @@ country_event = {
 	}
 	
 	option = {
+		trigger = {
+			any_state = {
+				OR = {
+					state = 190
+					state = 867
+				}
+				CONTROLLER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
 		name = rcw_bfk.18.a
 		add_political_power = 50
 		add_opinion_modifier = { target = NWA modifier = white_no_accept_LAT }
@@ -898,8 +921,22 @@ country_event = {
 		hidden_effect = {
 			WVA = {
 				inherit_technology = LAT
-				transfer_state = 190
-				transfer_state = 867
+				every_state = {
+					limit = {
+						OR = {
+							state = 190
+							state = 867
+						}
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+								is_in_faction_with = ROOT
+							}
+						}
+					}
+					WVA = { transfer_state = PREV }
+				}
 				every_state = {
 					limit = {
 						OR = {
@@ -992,9 +1029,23 @@ country_event = {
 			65 = {
 				WVA = {
 					inherit_technology = LAT
-					transfer_state = 190
-					transfer_state = 867
-					transfer_state = 12
+					every_state = {
+						limit = {
+							OR = {
+								state = 190
+								state = 867
+								state = 12
+							}
+							CONTROLLER = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+						WVA = { transfer_state = PREV }
+					}
 					every_state = {
 						limit = {
 							OR = {
@@ -1055,6 +1106,25 @@ country_event = {
 						}
 					}
 				}
+				modifier = {
+					factor = 0
+					NOT = {
+						any_state = {
+							OR = {
+								state = 190
+								state = 867
+								state = 12
+							}
+							CONTROLLER = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+					}
+				}
 			}
 			35 = {
 				WVA = {
@@ -1099,6 +1169,18 @@ country_event = {
 	}
 	
 	option = {
+		trigger = {
+			any_state = {
+				state = 190
+				CONTROLLER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
 		name = rcw_bfk.19.b
 		WVA = {
 			inherit_technology = LAT
