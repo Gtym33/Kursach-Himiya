@@ -5,33 +5,1959 @@ focus_tree = {
 	}
 	default = no
 
-	continuous_focus_position = { x = 80 y = 30 }
+	continuous_focus_position = { x = 0 y = 15 }
 	
+	#Трудовая демократия
 	focus = {
-		id = RSS_national_assembly_left_directory
-		icon = GFX_goal_RSS_nathion_sobranie
-		cost = 1
+		id = RSS_labor_democracy
+		icon = GFX_workers_democracy
+		cost = 2
 		available = {
-			NOT = { has_global_flag = RUS_civil_war_over }
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 0
+		select_effect = {
+			country_event = { id = rcw_rss_esser.2  days = 4 }
+			country_event = { id = rcw_rss_esser.3 days = 6 }
+			country_event = { id = rcw_rss_esser.4 days = 8 }
+			country_event = { id = rcw_rss_esser.5 days = 10 }
+		}
+		completion_reward = {
+			add_stability = 0.04
+			country_event = { id = rcw_rss_esser.6 }
+		}
+	}
+	#Провозглашение республики
+	focus = {
+		id = RSS_declare_republic
+		icon = GFX_republic
+		cost = 0.43
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			NOT = { has_government = despotism }
 			NOT = { has_global_flag = RCW_Allrussian_national_assembly }
-			219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
-			is_subject = no
-			has_war = no
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 1
+		completion_reward = {
+			every_country = { 
+				limit = { 
+					is_major = yes
+					OR = {
+						has_idea = parliamentary_republic_gov_form
+						has_idea = presidential_republic_gov_form
+					}
+				}
+				add_opinion_modifier = { modifier = RSS_republic }
+			}
+			news_event = { id = rss_eser_news.1 }
+			every_country = {
+				limit = { 
+					is_any_former_russian_empire_country = yes
+					NOT = { has_government = communism }
+			        NOT = { has_government = radical_socialism }
+					NOT = { has_war_with = RSS }
+					NOT = { tag = RSS }
+				}
+				
+				country_event = { id = rcw_rss_eser_rep.1 }
+			}
+			add_ideas = federal_gov_terr
+		}
+	}
+	#Учредительное собрание
+	#focus = {
+	#	id = RSS_constituent_assembly
+	#	#icon = 
+	#	cost = 5
+	#	prerequisite = {
+	#		focus = RSS_labor_democracy
+	#	}
+	#	available = {
+	#		
+	#	}
+	#	ai_will_do = {
+	#		factor = 1
+	#	}
+	#	x = 17
+	#	y = 1
+	#	completion_reward = {
+	#		
+	#	}
+	#}
+	#Объединение милиций - ветка милиций
+	focus = {
+		id = RSS_uniting_police
+		icon = GFX_unification_militia
+		cost = 4
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		x = 8
-		y = 0
+		y = 2
 		completion_reward = {
-			if = {
-				limit = { 219 = { OWNER = { NOT = { tag = ROOT } check_variable = { num_owned_states < 2 } } } }
-				219 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = yes } } } }
-			}
-			else_if = { limit = { NOT = { owns_state = 219 } } transfer_state = 219 }
-			add_state_core = 219
-			set_capital = 219
-			country_event = rcw_all_rus_NA.1
+			add_stability = 0.05
+			add_manpower = 10000
 		}
 	}
+	#Военно-революционные суды - ветка милиций
+	focus = {
+		id = RSS_field_rev_courts
+		icon = GFX_military_courts
+		cost = 3
+		prerequisite = {
+			focus = RSS_uniting_police
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 3
+		completion_reward = {
+			add_ideas = RSS_mil_rev_courts
+		}
+	}
+	#Чрезвычайные полномочия МВД - ветка милиций
+	focus = {
+		id = RSS_emergency_powers_to_the_MIA
+		icon = GFX_MIA_emergency_power
+		cost = 2
+		prerequisite = {
+			focus = RSS_uniting_police
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 3
+		completion_reward = {
+			add_to_variable = {
+				var = RSS_police_power
+				value = 1
+			}
+			add_political_power = 30
+			add_ideas = emergency_laws_b_law
+		}
+	}
+	#Мобилизировать ветеранов боевых организаций  - ветка милиций
+	focus = {
+		id = RSS_mobilize_veterans
+		icon = GFX_mob_veterans
+		cost = 4
+		prerequisite = {
+			focus = RSS_uniting_police
+		}
+		available = {
+			OR = {
+				has_government = social_liberalism
+				has_government = radical_socialism
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 10
+		y = 3
+		completion_reward = {
+			add_war_support = 0.04
+			custom_effect_tooltip = RSS_terror_grops_veterans
+			add_dynamic_modifier = { modifier = RSS_agency_slot }
+		}
+	}
+	#Комиссия по хлебозаготовкам - ветка милиций - хлебозаготовки
+	focus = {
+		id = RSS_khlebozagotovki_comission
+		icon = GFX_grain_procurement_commission
+		cost = 4
+		prerequisite = {
+			focus = RSS_emergency_powers_to_the_MIA
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 4
+		completion_reward = {
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_state
+				value = 1
+			}
+			add_ideas = RSS_bread_comission
+		}
+	}
+	#Реквизиционные команды - ветка милиций - хлебозаготовки
+	focus = {
+		id = RSS_requisition_teams
+		icon = GFX_requisition_teams
+		cost = 4
+		prerequisite = {
+			focus = RSS_khlebozagotovki_comission
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 5
+		completion_reward = {
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_state
+				value = 2
+			}
+			add_ideas = RSS_requisition_groups
+		}
+	}
+	#Разгром банд на селе - ветка милиций - хлебозаготовки
+	focus = {
+		id = RSS_grain_comission
+		icon = GFX_rout_of_gangs
+		cost = 5
+		prerequisite = {
+			focus = RSS_requisition_teams
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 6
+		completion_reward = {
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_state
+				value = -1
+			}
+			add_stability = 0.05
+			country_event = { id = rcw_rss_eser_rep.3 }
+		}
+	}
+	#Организация государственной охраны - ветка милиций - госохрана
+	focus = {
+		id = RSS_organization_of_state_protection
+		icon = GFX_gos_ohrana
+		cost = 5
+		prerequisite = {
+			focus = RSS_emergency_powers_to_the_MIA
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 10
+		y = 4
+		completion_reward = {
+			add_ideas = RSS_gos_okhrana
+			add_to_variable = {
+				var = RSS_police_power
+				value = 1
+			}
+			create_intelligence_agency = { name = "Gos. Okhrana" icon = "GFX_agency_logo_RSS_gos_okhrana" }
+		}
+	}	
+	#Добить выживших заговорщиков - ветка милиций - госохрана
+	focus = {
+		id = RSS_dobeyte_vizhivshyh
+		icon = GFX_conspiracy
+		cost = 5
+		prerequisite = {
+			focus = RSS_organization_of_state_protection
+		}
+		available = {
+			NOT = { has_country_flag = RSS_eser_army_takes_power }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 10
+		y = 5
+		completion_reward = {
+			add_stability = 0.03
+			add_political_power = 15
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.03
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.03
+			}
+			set_variable = { RSS_killed_generals = 0 }
+			set_variable = { RSS_dismissed_generals = 0 }
+			set_variable = { RSS_officers_fear = 0 }
+			if = {
+				limit = { has_unit_leader = 88150 }
+				country_event = { id = rcw_rss_eser_rep.27 days = 1 }
+			}
+			if = {
+				limit = { has_unit_leader = 77400 }
+				country_event = { id = rcw_rss_eser_rep.28 days = 3 }
+			}
+			if = {
+				limit = { has_unit_leader = 88147 }
+				country_event = { id = rcw_rss_eser_rep.29 days = 5 }
+			}
+			if = {
+				limit = { has_unit_leader = 76649 }
+				country_event = { id = rcw_rss_eser_rep.30 days = 7 }
+			}
+			if = {
+				limit = { has_unit_leader = 92351 }
+				country_event = { id = rcw_rss_eser_rep.31 days = 9 }
+			}
+			if = {
+				limit = { has_unit_leader = 92354 NOT = { has_idea = Radola_Gaida_army_chief } }
+				country_event = { id = rcw_rss_eser_rep.32 days = 11 }
+			}
+		}
+	}
+	#Контроль гос.охраны над армией - ветка милиций - госохрана
+	focus = {
+		id = RSS_control_over_army
+		icon = GFX_control_over_army
+		cost = 3
+		prerequisite = {
+			focus = RSS_dobeyte_vizhivshyh
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RSS_no_coup
+				NOT = { has_country_flag = RSS_army_coup }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 10
+		y = 6
+		completion_reward = {
+			add_stability = 0.05
+			add_to_variable = {
+				var = RSS_police_power
+				value = 2
+			}
+			add_to_variable = {
+				var = RSS_army_independence
+				value = -3
+			}
+		}
+	}
+	#Милиционные гарнизоны - ветка милиций - милиция
+	focus = {
+		id = RSS_police_garrisons
+		icon = GFX_militia_garrisons
+		cost = 4
+		prerequisite = {
+			focus = RSS_emergency_powers_to_the_MIA
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 4
+		completion_reward = {
+			add_to_variable = {
+				var = RSS_police_power
+				value = 2
+			}
+			set_country_flag = RSS_flag_eser_police_garrison
+			custom_effect_tooltip = RSS_eser_police_garrison_open
+		}
+	}
+	#Милиционные тыловые батальоны - ветка милиций - милиция
+	focus = {
+		id = RSS_police_rear_battalions
+		icon = GFX_militia_rear_battalions
+		cost = 5
+		prerequisite = {
+			focus = RSS_police_garrisons
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 5
+		completion_reward = {
+			add_ideas = RSS_tylovie_batalyony
+			add_to_variable = {
+				var = RSS_police_power
+				value = 1
+			}
+		}
+	}
+	#Отправка милиции на фронт - ветка милиций - милиция
+	focus = {
+		id = RSS_sending_the_police_to_the_front
+		icon = GFX_sending_militia_to_the_front
+		cost = 8
+		prerequisite = {
+			focus = RSS_police_rear_battalions
+		}
+		available = {
+			
+		}
+		bypass = { 
+			has_country_flag = RSS_sending_the_police_to_the_front_bypass
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 6
+		
+		select_effect  = {
+			if = {
+				limit = { RSS = { has_war = no } }
+				set_country_flag = RSS_sending_the_police_to_the_front_bypass
+			}
+		}
+		completion_reward = {
+			remove_ideas = RSS_tylovie_batalyony
+			custom_effect_tooltip = RSS_send_the_police_to_the_front
+			hidden_effect = {
+				load_oob = RSS_tylovaya_milicia
+			}
+		}
+	}
+	#Иррегулярность вооруженных сил - ветка милиций - милиция
+	focus = {
+		id = RSS_irregular_army
+		icon = GFX_irregular_army
+		cost = 5
+		prerequisite = {
+			focus = RSS_sending_the_police_to_the_front
+		}
+		mutually_exclusive = { 
+			focus = RSS_unification_new_stormtroopers
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 7
+		continue_if_invalid = yes
+		select_effect = {
+			country_event = { id = rcw_rss_eser_rep.4 days = 20 }
+			if = {
+				limit = { has_army_manpower = { size < 50000 } }
+				set_variable  = { RSS_army_manpower = 50000 }
+			}
+			else_if = {
+				limit = { 
+					has_army_manpower = { size < 100000 }
+					has_army_manpower = { size > 49999 }
+				}
+				set_variable  = { RSS_army_manpower = 100000 }
+			}
+			else_if = {
+				limit = { 
+					has_army_manpower = { size > 99999 }
+					has_army_manpower = { size < 200000 }
+				}
+				set_variable  = { RSS_army_manpower = 200000 }
+			}
+			else_if = {
+				limit = { has_army_manpower = { size > 200000 } }
+				set_variable  = { RSS_army_manpower = 250000 }
+			}
+		}
+		completion_reward = {
+			add_to_variable = {
+				var = RSS_police_power
+				value = 4
+			}
+			add_to_variable = {
+				var = RSS_army_independence
+				value = -3
+			}
+			set_variable = { 
+				var = RSS_spawned_additional_div 
+				value = 0 
+			}
+			set_variable = { 
+				var = RSS_spawned_additional_cav 
+				value = 0 
+			}
+			set_variable = { 
+				var = RSS_spawned_additional_moto
+				value = 0 
+			}
+			set_variable = { 
+				var = RSS_spawned_additional_tank
+				value = 0 
+			}
+			if = {
+				limit = {
+					OR = {
+						has_idea = lack_of_officers_1
+						has_idea = lack_of_officers_2
+						has_idea = lack_of_officers_3
+						has_idea = lack_of_officers_4
+						has_idea = lack_of_officers_5
+						has_idea = lack_of_officers_6
+						has_idea = lack_of_officers_7
+						has_idea = lack_of_officers_8
+						has_idea = lack_of_officers_9
+						has_idea = lack_of_officers_10
+					}
+				}
+				hidden_effect = {
+					remove_ideas = lack_of_officers_1
+					remove_ideas = lack_of_officers_2
+					remove_ideas = lack_of_officers_3
+					remove_ideas = lack_of_officers_4
+					remove_ideas = lack_of_officers_5
+					remove_ideas = lack_of_officers_6
+					remove_ideas = lack_of_officers_7
+					remove_ideas = lack_of_officers_8
+					remove_ideas = lack_of_officers_9
+					remove_ideas = lack_of_officers_10 	
+				}
+				custom_effect_tooltip = RSS_no_lack_officers
+				
+			}
+			custom_effect_tooltip = RSS_full_demob
+			hidden_effect = {
+				REB = {
+					set_state_owner = 911
+				}
+				every_unit_leader = {
+					set_unit_leader_flag = RSS_irregular_army_generals
+				}
+				transfer_units_fraction ={
+					target = REB
+					size = 1
+					keep_unit_leaders_trigger = {
+						has_unit_leader_flag = RSS_irregular_army_generals
+					}
+				}
+				annex_country = {
+					target = REB
+					transfer_troops = no
+				}
+				every_unit_leader = {
+					clr_unit_leader_flag = RSS_irregular_army_generals
+				}
+				load_oob = RSS_tylovaya_milicia
+				if = {
+					limit= {
+						OR = {
+							has_idea = scraping_the_barrel
+							has_idea = all_adults_serve
+							has_idea = service_by_requirement
+							has_idea = extensive_conscription
+						}
+					}
+					add_ideas = limited_conscription
+				}
+				country_event = { id = rss_eser_tech.3 }
+			}
+			add_ideas = RSS_irregular_army_idea
+			set_country_flag = RSS_irregular_army_created
+			add_manpower = var:RSS_army_manpower
+			clear_variable = RSS_army_manpower
+		}
+	}
+	#Осведомительное бюро 
+	focus = {
+		id = RSS_inform_bureau
+		icon = GFX_inquiry_commission
+		cost = 4
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 2
+		completion_reward = {
+			add_ideas = RSS_inform_bureau
+		}
+	}
+	#Унификация вооруженных сил - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_army_unification_path
+		icon = GFX_RSS_army_unification_path
+		cost = 5
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		mutually_exclusive = { 
+			focus = RSS_army_democratization_path
+		}
+		available = {
+			NOT = { has_completed_focus = RSS_irregular_army }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 2
+		completion_reward = {
+			army_experience = 30
+			add_ideas = RSS_unificated_forces
+		}
+	}
+	#Мобилизация офицеров - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_mobilisation_of_officers
+		icon = GFX_RSS_army_unification_mobilization_of_officers
+		cost = 4
+		prerequisite = {
+			focus = RSS_army_unification_path
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 3
+		completion_reward = {
+			hidden_effect = {
+				lack_of_officers_fall = yes
+				lack_of_officers_fall = yes
+			}
+			custom_effect_tooltip = RSS_officer_fall_2
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.02
+			}
+			country_event = { id = rcw_rss_eser_rep.8 }
+		}
+	}
+	#Генерал-губернаторства - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_gen_gov
+		icon = GFX_RSS_unification_gen_gov
+		cost = 4
+		prerequisite = {
+			focus = RSS_unification_mobilisation_of_officers
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 4
+		completion_reward = {
+			add_to_variable = {
+				var = RSS_army_independence
+				value = 1
+			}
+			unlock_decision_category_tooltip = RSS_governor_general_decisions
+		}
+	}
+	#Приказ о мерах восстановления дисциплины - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_discipline_order
+		icon = GFX_RSS_unification_discipline_order
+		cost = 5
+		prerequisite = {
+			focus = RSS_unification_mobilisation_of_officers
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 4
+		completion_reward = {
+			add_political_power = -25
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_state
+				value = 1
+			}
+			add_ideas = RSS_discipline
+		}
+	}
+	#Инспекция по кавалерии - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_cavalry_inpection
+		icon = GFX_RSS_unification_cavalry_inpection
+		cost = 4
+		prerequisite = {
+			focus = RSS_unification_discipline_order
+		}
+		available = {
+			has_idea = RSS_atamanshina
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 5
+		completion_reward = {
+			add_political_power = 50
+			remove_ideas = RSS_atamanshina
+			hidden_effect = { country_event = rcw_usfev.146 }
+			every_unit_leader = { limit = { has_id = 92348 } set_nationality = REB }
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_state
+				value = -1
+			}
+		}
+	}
+	#Корпусная система - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_corpus_system
+		icon = GFX_RSS_unification_corpus_system
+		cost = 4
+		prerequisite = {
+			focus = RSS_unification_discipline_order
+			focus = RSS_democratization_redemocratization
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 5
+		completion_reward = {
+			army_experience = 40
+			add_command_power = 25
+		}
+	}
+	#Тыловые волонтеры - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_rear_volunteers
+		icon = GFX_RSS_unification_rear_volunteers
+		cost = 4
+		prerequisite = {
+			focus = RSS_unification_corpus_system
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 6
+		completion_reward = {
+			add_ideas = RSS_tyloviki
+			add_to_variable = {
+				var = RSS_army_independence
+				value = 1
+			}
+		}
+	}
+	#Борьба с дезертирством - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_combating_desertion
+		icon = GFX_RSS_unification_combating_desertion
+		cost = 5
+		prerequisite = {
+			focus = RSS_unification_rear_volunteers
+		}
+		mutually_exclusive = { 
+			focus = RSS_democratization_returning_sons
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 7
+		completion_reward = {
+			add_ideas = RSS_no_mercy_to_deserters_idea
+			RSS_spawn_shtrafbat = yes
+		}
+	}
+	#Новые ударники - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_new_stormtroopers
+		icon = GFX_RSS_unification_new_stormtroopers
+		cost = 5
+		prerequisite = {
+			focus =  RSS_unification_corpus_system
+		}	
+		mutually_exclusive = { 
+			focus = RSS_irregular_army
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 7
+		completion_reward = {
+			RSS_spawn_udarniki_script = yes
+			custom_effect_tooltip = RSS_officer_rise_1
+			hidden_effect = { lack_of_officers_rise = yes }
+			country_event = { id = rcw_rss_eser_rep.9 }
+			custom_effect_tooltip = RSS_udarniki
+		}
+	}
+	#Создание резервного фронта - ветка вооруженных сил - путь унификации 
+	focus = {
+		id = RSS_unification_reserve_front
+		icon = GFX_RSS_unification_reserve_front
+		cost = 8
+		prerequisite = {
+			focus =  RSS_unification_new_stormtroopers
+		}	
+		available = {
+			AND = {
+				num_of_military_factories > 2
+				num_of_civilian_factories > 2
+				NOT = { has_global_flag = RUS_civil_war_over  }
+			}			
+		}
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 8
+		select_effect = {
+			country_event = { id = rcw_rss_eser_rep.11 }
+		}
+		completion_reward = {
+			hidden_effect = { remove_dynamic_modifier = { modifier = RSS_reserve_front } }
+			unlock_decision_tooltip = drop_reverse_front
+		}
+	}
+	#Перегруппировка народной армии - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_army_democratization_path
+		icon = GFX_RSS_army_democratization_path
+		cost = 4
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		mutually_exclusive = { 
+			focus = RSS_army_unification_path
+		}
+		available = {
+			
+		}
+		bypass ={
+			AND = {
+				has_completed_focus = RSS_irregular_army
+				NOT = { has_completed_focus = RSS_army_unification_path }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 2
+		completion_reward = {
+			add_ideas = RSS_narodoarmeyskoe_yadro
+		}
+	}
+	#Школа народных командиров - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_democratization_people_commanders
+		icon = RSS_democratization_people_commanders
+		cost = 5
+		prerequisite = {
+			focus = RSS_army_democratization_path
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 3
+		completion_reward = {
+			hidden_effect = {
+				lack_of_officers_fall = yes	
+			}
+			custom_effect_tooltip = RSS_officer_fall_1
+		}
+	}
+	#Редемократизация армии - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_democratization_redemocratization
+		icon = GFX_RSS_democratization_redemocratization
+		cost = 4
+		prerequisite = {
+			focus = RSS_democratization_people_commanders
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 4
+		completion_reward = {
+			add_war_support = 0.05
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.05
+			}
+			hidden_effect = {
+				lack_of_officers_fall = yes
+			}
+			custom_effect_tooltip = RSS_officer_fall_1
+			if = {
+				limit = { 
+					OR = {
+						has_stability < 0.35
+						has_war_support < 0.35
+					}
+				}
+				hidden_effect = {
+					country_event = { id = rcw_rss_eser_rep.10 }
+				}
+			}
+		}
+	}
+	#Волновая мобилизация - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_democratization_wave_mobilization
+		icon = GFX_RSS_democratization_wave_mobilization
+		cost = 8
+		prerequisite = {
+			focus = RSS_democratization_redemocratization
+			focus = RSS_village_self_defence
+		}
+		available = {
+			has_completed_focus = RSS_army_democratization_path
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 5
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_mobilization_of_red_neirfront_militia_desisions
+			if = {
+				limit = { NOT = { has_template = "Krasnaya Gvardiya"  } }
+				division_template = {
+					name = "Krasnaya Gvardiya" 
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+			}
+		}
+	}
+	#Поддержка зеленоармейцев - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_democratization_green_rebel_support
+		icon = GFX_RSS_democratization_green_rebel_support
+		cost = 5
+		prerequisite = {
+			focus = RSS_democratization_wave_mobilization
+		}
+		available = {
+			RGR = { exists = no }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 6
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_green_rebels_support
+		}
+	}
+	#Возвращение блудных сынов - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_democratization_returning_sons
+		icon = GFX_RSS_democratization_returning_sons
+		cost = 4
+		prerequisite = {
+			focus = RSS_democratization_green_rebel_support
+		}
+		mutually_exclusive = { 
+			focus = RSS_unification_combating_desertion
+		}
+		available = {
+			RGR = { exists = yes }
+			RGR = { has_government = RSS }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 7
+		completion_reward = {
+			RGR = { country_event = { id = rcw_rss_eser_rep.16 } }
+		}
+	}
+	#Просачивание за линию фронта - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_democratization_infiltration_frontline
+		icon = GFX_RSS_democratization_infiltration_frontline
+		cost = 5
+		prerequisite = {
+			focus = RSS_democratization_wave_mobilization
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 6
+		completion_reward = {
+			add_ideas = RSS_infiltration
+		}
+	}
+	#Скоординированные восстания - ветка вооруженных сил - путь демократизации
+	focus = {
+		id = RSS_democratization_coordinated_uprisings
+		icon = GFX_RSS_democratization_coordinated_uprisings
+		cost = 8
+		prerequisite = {
+			focus = RSS_democratization_infiltration_frontline
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 7
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_coord_uprisings_decisions
+		}
+	}
+	#Славянские легионеры
+	focus = {
+		id = RSS_salvic_legionnaires
+		icon = GFX_RSS_slavic_legionnaires
+		cost = 5
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 2
+		completion_reward = {
+			hidden_effect = {
+				load_oob = RSS_slavic_legionnaries
+			}
+			custom_effect_tooltip = RSS_slav_leg
+			if = {
+				limit = { has_idea = Radola_Gaida_army_chief }
+				add_to_variable = {
+					var = RSS_army_independence
+					value = 1
+				}
+			}
+		}
+	}
+	#Обращение к крестьянсву - ветка села
+	focus = {
+		id = RSS_appeal_to_the_peasantry
+		icon = GFX_RSS_appeal_to_the_peasantry
+		cost = 4
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 2
+		completion_reward = {
+			country_event = { id = rcw_rss_eser_rep.5 }
+		}
+	}
+	#Аграрная реформа - ветка села
+	focus = {
+		id = RSS_agrarian_reform_esser
+		icon = GFX_RSS_agrarian_refom_esser
+		cost = 7
+		prerequisite = {
+			focus = RSS_appeal_to_the_peasantry
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 19
+		y = 3
+		completion_reward = {
+			country_event = { id = rcw_rss_eser_rep.6 }
+		}
+	}
+	#Создание Союзов Трудового крестьянства - ветка села
+	focus = {
+		id = RSS_unions_of_the_labor_peasantry
+		icon = GFX_RSS_unions_of_the_labor_peasantry
+		cost = 4
+		prerequisite = {
+			focus = RSS_appeal_to_the_peasantry
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 3
+		completion_reward = {
+			add_stability = 0.04
+			add_ideas = local_assembly_decisions_b_law
+		}
+	}
+	#Сельская самооборона - ветка села
+	focus = {
+		id = RSS_village_self_defence 
+		icon = GFX_RSS_village_self_defence
+		cost = 5
+		prerequisite = {
+			focus = RSS_agrarian_reform_esser
+		}
+		prerequisite = {
+			focus = RSS_unions_of_the_labor_peasantry
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 19
+		y = 4
+		completion_reward = {
+			add_ideas = RSS_peasant_self_defence
+		}
+	}
+	#Сельская кооперация - ветка села
+	focus = {
+		id = RSS_village_cooperation 
+		icon = GFX_RSS_village_cooperation
+		cost = 5
+		prerequisite = {
+			focus = RSS_agrarian_reform_esser
+		}
+		prerequisite = {
+			focus = RSS_unions_of_the_labor_peasantry
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 4
+		completion_reward = {
+			add_ideas = RSS_peasant_cooperation
+		}
+	}
+	#Механизмы прямого обмена - ветка села
+	focus = {
+		id = RSS_direct_exchange 
+		icon = GFX_RSS_direct_exchange
+		cost = 5
+		prerequisite = {
+			focus = RSS_village_cooperation
+		}
+		available = {
+			NOT = {
+				OR = {
+					has_idea = RSS_requisition_groups
+					has_idea = RSS_bread_comission
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 5
+		completion_reward = {
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.05
+			}
+			add_stability = 0.03
+			foodstuffs_supply_crisis_fall = yes
+		}
+	}
+	#Гарантировать права рабочих - ветка рабочих
+	focus = {
+		id = RSS_guarantee_the_rights_of_workers
+		icon = GFX_RSS_guarantee_the_rights_of_workers
+		cost = 3
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 2
+		completion_reward = {
+			rise_labor_legislation = yes
+		}
+	}
+	#Заводские батальоны - ветка рабочих
+	focus = {
+		id = RSS_factory_battalions
+		icon = GFX_RSS_factory_battalions
+		cost = 5
+		prerequisite = {
+			focus = RSS_guarantee_the_rights_of_workers
+		}
+		available = {
+			NOT = { has_idea = RSS_prohibition_of_strikes_idea }
+			NOT = { has_completed_focus = RSS_irregular_army }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 3
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_mobilization_factory_bat_desisions
+			hidden_effect = {
+				if = {
+					limit = { NOT = { has_template = "Krasnaya Gvardiya"  } }
+					division_template = {
+						name = "Krasnaya Gvardiya" 
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+						is_locked = yes
+					}
+				}
+				213 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				215 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				964 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				214 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				913 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				351 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				216 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				264 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				400 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				398 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				399 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				573 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				244 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				263 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				208 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				195 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1019 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1021 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1020 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1017 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				209 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				191 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				920 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				13 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				916 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1001 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				865 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1016 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				12 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				867 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				190 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				784 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				11 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				189 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				998 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				204 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				97 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				10 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				87 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				88 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				79 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				46 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				91 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				246 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				242 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				219 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				247 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				248 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				253 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				252 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				256 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				249 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				651 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				210 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				207 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				926 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				96 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				206 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				924 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				912 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				940 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				243 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				205 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				224 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				193 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				202 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				868 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				201 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				203 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1063 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				226 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				196 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				197 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				192 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				198 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				78 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				200 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				227 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				221 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				259 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				918 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				958 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1044 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				218 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				228 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				234 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1045 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				137 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				233 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				902 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				236 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				239 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				255 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				257 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				254 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				223 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				222 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				258 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				260 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				220 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				240 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				652 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				251 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				250 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				401 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				217 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				813 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				231 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				230 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				897 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				229 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				893 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				808 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				232 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				928 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				898 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				899 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				653 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				572 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				582 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				403 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				571 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				570 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				569 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				578 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				568 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				567 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				566 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				564 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				405 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				883 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				586 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				876 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				584 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				878 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				402 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				407 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				588 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				590 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				909 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				563 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				565 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				560 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				409 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				408 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				657 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1039 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				561 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				111 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1050 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1051 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1055 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1061 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1057 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1059 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				149 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				150 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				146 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1054 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1058 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1053 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+			}
+		}
+	}
+	#Рабочий контроль - ветка рабочих - рабочий контроль
+	focus = {
+		id = RSS_labor_control
+		icon = GFX_RSS_labor_control
+		cost = 3
+		prerequisite = {
+			focus = RSS_guarantee_the_rights_of_workers
+		}
+		mutually_exclusive = { 
+			focus = RSS_ministry_of_labor
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 3
+		completion_reward = {
+			add_ideas = workers_control_law
+		}
+	}
+	#Поощрение артельного производства - ветка рабочих - рабочий контроль
+	focus = {
+		id = RSS_artel_production
+		icon = GFX_RSS_artel_production
+		cost = 5
+		prerequisite = {
+			focus = RSS_labor_control
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 4
+		completion_reward = {
+			add_ideas = RSS_artels
+		}
+	}
+	#Съезд трудовых коллективов - ветка рабочих - рабочий контроль
+	focus = {
+		id = RSS_congress_of_labor_collectives
+		icon = GFX_RSS_congress_of_labor_collectives
+		cost = 5
+		prerequisite = {
+			focus = RSS_artel_production
+		}
+		available = {
+			has_completed_focus = RSS_unions_of_the_labor_peasantry
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 5
+		completion_reward = {
+			country_event = { id = rcw_rss_eser_rep.7 }
+		}
+	}
+	#Министерство труда - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_ministry_of_labor
+		icon = GFX_RSS_ministry_labor
+		cost = 5
+		prerequisite = {
+			focus = RSS_guarantee_the_rights_of_workers
+		}
+		mutually_exclusive = { 
+			focus =  RSS_labor_control
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 3
+		completion_reward = {
+			add_dynamic_modifier = { modifier = RSS_min_trud }
+			add_political_power = -30
+		}
+	}
+	#Трудовая мобилизация - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_labor_mobilization
+		icon = GFX_RSS_labor_mobilization
+		cost = 5
+		prerequisite = {
+			focus = RSS_ministry_of_labor
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 4
+		completion_reward = {
+			add_ideas = RSS_must_work
+		}
+	}
+	#Интенсификация труда - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_labor_intensification
+		icon = GFX_RSS_labor_intensification
+		cost = 5
+		prerequisite = {
+			focus = RSS_labor_mobilization
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 5
+		completion_reward = {
+			add_timed_idea = {
+				idea = RSS_intense_labor
+				days = 120
+			}
+		}
+	}
+	#Концентрация производства - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_production_concentration
+		icon = GFX_RSS_production_concentration
+		cost = 5
+		prerequisite = {
+			focus = RSS_labor_intensification
+		}
+		available = {
+			num_of_civilian_factories > 4
+			num_of_military_factories > 8
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 6
+		completion_reward = {
+			add_dynamic_modifier = { modifier = RSS_concentration }
+			random_state = {
+				limit = {
+					is_capital = no
+					arms_factory > 0 
+					is_core_of = RSS
+					is_owned_and_controlled_by = RSS
+				}
+				remove_building = {
+					type = arms_factory
+					level = 1
+				}
+				capital_scope = {
+					if = {
+						limit = {
+							free_building_slots = {
+								building = arms_factory
+								size < 0
+								include_locked = yes
+							} 	
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_state = {
+				limit = {
+					is_capital = no
+					arms_factory > 0 
+					is_core_of = RSS
+					is_owned_and_controlled_by = RSS
+				}
+				remove_building = {
+					type = arms_factory
+					level = 1
+				}
+				capital_scope = {
+					if = {
+						limit = {
+							free_building_slots = {
+								building = arms_factory
+								size < 0
+								include_locked = yes
+							} 	
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_state = {
+				limit = {
+					is_capital = no
+					arms_factory > 0 
+					is_core_of = RSS
+					is_owned_and_controlled_by = RSS
+				}
+				remove_building = {
+					type = arms_factory
+					level = 1
+				}
+				capital_scope = {
+					if = {
+						limit = {
+							free_building_slots = {
+								building = arms_factory
+								size < 0
+								include_locked = yes
+							} 	
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_state = {
+				limit = {
+					is_capital = no
+					arms_factory > 0 
+					is_core_of = RSS
+					is_owned_and_controlled_by = RSS
+				}
+				remove_building = {
+					type = arms_factory
+					level = 1
+				}
+				capital_scope = {
+					if = {
+						limit = {
+							free_building_slots = {
+								building = arms_factory
+								size < 0
+								include_locked = yes
+							} 	
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_state = {
+				limit = {
+					is_capital = no
+					industrial_complex > 0 
+					is_core_of = RSS
+					is_owned_and_controlled_by = RSS
+				}
+				remove_building = {
+					type = industrial_complex
+					level = 1
+				}
+				capital_scope = {
+					if = {
+						limit = {
+							free_building_slots = {
+								building = industrial_complex
+								size < 0
+								include_locked = yes
+							} 	
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_state = {
+				limit = {
+					is_capital = no
+					industrial_complex > 0 
+					is_core_of = RSS
+					is_owned_and_controlled_by = RSS
+				}
+				remove_building = {
+					type = industrial_complex
+					level = 1
+				}
+				capital_scope = {
+					if = {
+						limit = {
+							free_building_slots = {
+								building = industrial_complex
+								size < 0
+								include_locked = yes
+							} 	
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	#Страховые кассы - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_insurance_funds
+		icon = GFX_RSS_insurance_funds
+		cost = 5
+		prerequisite = {
+			focus = RSS_ministry_of_labor
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 4
+		completion_reward = {
+			add_ideas = RSS_insurance_funds_idea
+		}
+	}
+	#Согласительные комиссии - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_conciliation_commissions
+		icon = GFX_RSS_conciliation_commissions
+		cost = 7
+		prerequisite = {
+			focus = RSS_insurance_funds
+		}
+		mutually_exclusive = { 
+			focus =  RSS_state_unions
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 5
+		completion_reward = {
+			add_ideas = RSS_conciliation_commissions_idea
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.03
+			}
+		}
+	}
+	#Государственные профсоюзы - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_state_unions
+		icon = GFX_RSS_state_unions
+		cost = 7
+		prerequisite = {
+			focus = RSS_insurance_funds
+		}
+		mutually_exclusive = { 
+			focus =  RSS_conciliation_commissions
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 29
+		y = 5
+		completion_reward = {
+			add_ideas = RSS_state_unions_idea
+		}
+	}
+	#Запрет забастовок - ветка рабочих - Министерство труда
+	focus = {
+		id = RSS_prohibition_of_strikes
+		icon = GFX_RSS_prohibition_of_strikes
+		cost = 10
+		prerequisite = {
+			focus = RSS_state_unions
+			focus = RSS_conciliation_commissions
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 28
+		y = 6
+		completion_reward = {
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.04
+			}
+			add_ideas = RSS_prohibition_of_strikes_idea
+		}
+	}
+	#Собрания освобожденных земель
+	focus = {
+		id = RSS_assemblies_of_the_liberated_ands
+		icon = GFX_RSS_assemblies_of_the_liberated_ands
+		cost = 3
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 2
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_state_elections_decisions
+		}
+	}
+	#Рассылка правительственных комиссаров
+	focus = {
+		id = RSS_gov_com
+		icon = GFX_RSS_gov_com
+		cost = 3
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 2
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_gov_com_des_cat
+		}
+	}
+	#Гарантии инородцам
+	focus = {
+		id = RSS_inorodci
+		icon = GFX_RSS_inorodci
+		cost = 2
+		prerequisite = {
+			focus = RSS_labor_democracy
+		}
+		available = {
+			hidden_trigger = {
+				NOT = { has_country_flag = RSS_eser_army_takes_power }
+				NOT = { has_country_flag = RSS_eser_militia_takes_power }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 29
+		y = 2
+		completion_reward = {
+			country_event = { id = rcw_rss_eser_rep.26 }
+		}
+	}
+}
+focus_tree = {
+	id = Russian_state_eser_civil_war_focus
+	country = {
+		factor = 0
+	}
+	default = no
+
+	continuous_focus_position = { x = 0 y = 15 }
 }
