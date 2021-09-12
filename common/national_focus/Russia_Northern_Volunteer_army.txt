@@ -246,12 +246,11 @@ focus_tree = {
 			unlock_decision_category_tooltip = NVA_governor_general_decisions
 		}
 	}
-	
 	#Обращение к союзникам 
 	focus = {
 		id = NVA_appeal_allies
 		icon = GFX_goal_NVA_nrr
-		cost = 4
+		cost = 2
 		available = {
 			NRR = { exists = yes }
 		}
@@ -326,7 +325,6 @@ focus_tree = {
 			}
 		}
 	}
-	
 	#Мобилизация 
 	focus = {
 		id = NVA_mobilization
@@ -337,13 +335,14 @@ focus_tree = {
 		}
 		x = 11
 		y = 2
-		
+		ai_will_do = {
+			factor = 10
+		}
 		completion_reward = {
 			country_event = { id = rcw_nva.3 }
 			country_event = { id = rcw_nva.4 days = 7 }			
 		}
 	}
-
     #Закон о земле 
 	focus = {
 		id = NVA_law_of_land
@@ -359,8 +358,7 @@ focus_tree = {
 			peasant_and_land_and_bread_question_fall = yes
 			country_event = { id = rcw_nva.5 }
 		}
-	}
-	
+	}	
     #Выдача оружия населению
 	focus = {
 		id = NVA_give_weapons_to_people
@@ -431,8 +429,7 @@ focus_tree = {
 				country_event = { id = rcw_nva.10 days = 1 }
 			}		 
 		}
-	}
-	
+	}	
 	#Формирование осведомительных органов 
 	focus = {
 		id = NVA_form_informative_apparatus
@@ -447,7 +444,8 @@ focus_tree = {
 		
 		completion_reward = {
 			add_ideas = NVA_white_propaganda
-			country_event = { id = rcw_nva.7 days = 1 }			
+			country_event = { id = rcw_nva.7 days = 1 }		
+			custom_effect_tooltip = nva_agency_cet
 		}
 	}
     #Организация рабочего управления
@@ -480,8 +478,12 @@ focus_tree = {
 		x = 10
 		y = 4
 		available = {
-		   OR = { has_war = no has_full_control_of_state = 219 } 
-		}
+		   OR = { 
+				has_war = no 
+				controls_state = 219 
+				NOT = { has_idea = decentralization_of_goverment }
+			} 
+		}	
 		completion_reward = {
 			add_stability = 0.05
 			add_war_support = 0.05
@@ -500,7 +502,34 @@ focus_tree = {
 				limit = { has_idea = NVA_decentralization_of_army_b }
 				remove_ideas = NVA_decentralization_of_army_b
 				remove_ideas = decentralization_of_goverment
-			}           				
+			}  
+			if = {
+				limit = { 
+					has_country_leader = {
+						name = "Boris Savinkov"  
+						ruling_only = yes
+					} 
+				}
+				country_event = { id = rcw_nva.84 }
+			}
+			else_if = {
+				limit = { 
+					has_country_leader = {
+						name = "Alexander Dikgof-Derental"  
+						ruling_only = yes
+					} 
+				}
+				country_event = { id = rcw_nva.79 }
+			}
+			else_if = {
+				limit = { 
+					OR = {
+						has_government = fascism
+						has_government = despotism
+					}
+				}
+				country_event = { id = rcw_nva.80 }
+			}
 		}
 		
 	}
@@ -577,7 +606,11 @@ focus_tree = {
 				RSS = { end_puppet = NVA }
 			} 
 			country_event = { id = rcw_nva.21 hours = 5 } 
-			country_event = { id = rcw_nva.22 days = 1 } 
+			if = {
+				limit = { has_country_flag = monarcist_SZRiS }
+				country_event = { id = rcw_nva.81 } 
+			}
+			else = { country_event = { id = rcw_nva.22 } }
 			if = { limit = { NOT = { RVA = { has_completed_focus = RVA_creation_union_of_salvation } } }
 				hidden_effect = {
 					country_event = { id = rcw_nva_tech.16 }
@@ -594,6 +627,11 @@ focus_tree = {
 		available = {
 			
 		}
+		bypass = { 
+			hidden_trigger = {
+				has_country_flag = monarcist_SZRiS
+			}
+		}
 		prerequisite = {
 			focus = NVA_russian_vendee
 		}
@@ -601,7 +639,8 @@ focus_tree = {
 		y = 7
 
 		completion_reward = {
-			remove_ideas = { NVA_high_military_influence }
+			hidden_effect = { remove_ideas = { NVA_high_military_influence } }
+			add_ideas = presidential_republic_gov_form
 		    if = { limit = {has_country_flag = collaboration_with_the_left }
 	            country_event = { id = rcw_nva.23 hours = 5 }
 		    }
@@ -612,8 +651,7 @@ focus_tree = {
 				country_event = { id = rcw_nva.25 hours = 5 }
 			}
 		}
-	}
-	
+	}	
 	#Учреждение экономического комитета
 	focus = {
 		id = NVA_establishment_of_the_economic_committee
@@ -630,18 +668,9 @@ focus_tree = {
 
 		completion_reward = {
 			country_event = { id = rcw_nva.31 hours = 1 }
-			if = { limit = { OR = { has_government = social_democracy has_government = social_liberalism } }
 			country_event = { id = rcw_nva.32 days = 1 }
-			}
-			else_if = { limit = { has_government = market_liberalism }
-			country_event = { id = rcw_nva.33 days = 1 }
-			}
-			else_if = { limit = { has_government = national_syndicalism }
-			country_event = { id = rcw_nva.34 days = 1 }
-			}
 		}
-	}
-	
+	}	
 	#Возрождение местного самоуправления
 	focus = {
 		id = NVA_reviving_local_government
@@ -660,8 +689,7 @@ focus_tree = {
 			add_ideas = {local_assembly_decisions_b_law}
 			rise_labor_legislation = yes
 		}
-	}
-	
+	}	
 	#Белый центр
 	focus = {
 		id = NVA_white_center
@@ -681,14 +709,13 @@ focus_tree = {
 			unlock_decision_category_tooltip = NVA_uniting_country
 		}
 	}
-	
 	#Окончательное решение земельного вопроса
 	focus = {
 		id = NVA_final_solution_of_the_land_issue
 		icon = GFX_goal_NVA_end_peasant
 		cost = 4
 		available = {
-	     has_completed_focus = NVA_law_of_land
+			has_completed_focus = NVA_law_of_land
 		}
 		prerequisite = {
 			focus = NVA_constituent_assembly_of_central_russia
@@ -698,21 +725,20 @@ focus_tree = {
 
 		completion_reward = {
 			add_political_power = -200
-			if = { limit = { has_idea = peasant_and_land_and_bread_question }
-				remove_ideas = {peasant_and_land_and_bread_question}
+			add_timed_idea = {
+				idea = peasant_and_land_and_bread_question_reformation_period
+				days = 180
 			}
-			else_if = { limit = { has_idea = peasant_and_land_and_bread_question_0_5 }
-				remove_ideas = {peasant_and_land_and_bread_question_0_5}
+			hidden_effect = {
+				country_event = { id = rcw_nva_tech.18 days = 180 }
+				if = { limit = { has_idea = foodstuffs_supply_crisis_1 }  remove_ideas = foodstuffs_supply_crisis_1 } 
+				else_if = { limit = { has_idea = foodstuffs_supply_crisis_2 } remove_ideas = foodstuffs_supply_crisis_2 }
+				else_if = { limit = { has_idea = foodstuffs_supply_crisis_3 } remove_ideas = foodstuffs_supply_crisis_3 }
+				else_if = { limit = { has_idea = foodstuffs_supply_crisis_4 } remove_ideas = foodstuffs_supply_crisis_4 }
+				else_if = { limit = { has_idea = foodstuffs_supply_crisis_5 } remove_ideas = foodstuffs_supply_crisis_5 }
 			}
-			else_if = { limit = { has_idea = peasant_and_land_and_bread_question_0_25}
-				remove_ideas = {peasant_and_land_and_bread_question_0_25}
-			}
-			else_if = { limit = { has_idea = peasant_and_land_and_bread_question_reformation_period}
-				remove_ideas = {peasant_and_land_and_bread_question_reformation_period}
-			} 
 		}
-	}
-	
+	}	
 	#Переговоры с антантой
 	focus = {
 		id = NVA_negotiations_with_the_entente
@@ -751,7 +777,6 @@ focus_tree = {
 			}
 		}
 	}
-	
 	#Объединение страны
 	focus = {
 		id = NVA_country_unification
@@ -771,6 +796,10 @@ focus_tree = {
 				limit = {
 					is_subject = no
 				}
+				every_state = {
+					limit = { CONTROLLER = { is_subject_of = ROOT } is_core_of = CONTROLLER }
+					add_core_of = ROOT
+				}
 				every_country = {
 					limit = {
 						is_subject_of = ROOT
@@ -780,6 +809,7 @@ focus_tree = {
 							tag = LIT
 						}
 					}
+					
 					ROOT = {
 						annex_country = {
 							target = PREV
