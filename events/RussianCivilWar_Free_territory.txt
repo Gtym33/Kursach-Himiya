@@ -53,12 +53,7 @@ country_event = {
 			has_idea = FRT_red_specialists_2_idea
 			has_idea = FRT_integration_with_RUS_idea
 		}
-		RUS = {
-			OR = {
-				NOT = { has_government = communism }
-				exists = no
-			}
-		}
+		RSR = { exists = no }
 	}
 	
 	mean_time_to_happen = {
@@ -134,10 +129,10 @@ country_event = {
 	picture = GFX_report_event_rcw_czech_uprising
 	
 	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = FRT
 		has_country_leader = { name = "Nestor Machno" ruling_only = yes }
 		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
-		NOT = { has_global_flag = RUS_civil_war_over }
 		OR = {
 			has_idea = FRT_Makhno_low_authority_idea
 			has_idea = FRT_Makhno_very_low_authority_idea
@@ -636,14 +631,14 @@ country_event = {
 			every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = USR }
 			USR = { set_politics = { ruling_party = communism } create_country_leader = { name = "Nestor Machno" desc = FRT_Nestor_Machno_DESC picture = "gfx/leaders/FRT/Nestor_Machno_ancap.dds" ideology = leninism traits = { hedonist } } }
 			else = {
-				every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = RUS }
+				every_unit_leader = { limit = { OR = { has_id = 77418 } } set_nationality = RSR }
 			}
 		}
 		retire_ideology_leader = radical_socialism
 		retire_ideology_leader = despotism
 		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = agrarian_communism traits = { } }
 		create_country_leader = { name = "Fyodor Shus" desc = FRT_Fyodor_Shus_DESC picture = "gfx/leaders/FRT/Fyodor_Shus.dds" ideology = despotism_ideology traits = { } }
-		RUS = {
+		RSR = {
 			declare_war_on = {
 				target = FRT
 				type = annex_everything
@@ -751,7 +746,12 @@ country_event = {
 	picture = GFX_report_event_cca_esser
 	
 	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = FRT
+		OR = {
+			RSR = { exists = yes NOT = { has_war_with = ROOT } is_neighbor_of = ROOT }
+			USR = { exists = yes NOT = { has_war_with = ROOT } is_neighbor_of = ROOT }
+		}
 		any_other_country = {
 			has_country_flag = whites_FRT_neutrality
 		}
@@ -765,12 +765,15 @@ country_event = {
 	
 	option = {
 		name = rcw_free_territory.16.a
-		declare_war_on = {
-			target = RUS
-			type = annex_everything
+		if = {
+			limit = { RSR = { exists = yes } }
+			declare_war_on = {
+				target = RSR
+				type = annex_everything
+			}
 		}
 		if = {
-		limit = { USR = { exists = yes } }
+			limit = { USR = { exists = yes } }
 			declare_war_on = {
 				target = USR
 				type = annex_everything
@@ -781,7 +784,6 @@ country_event = {
 	option = {
 		name = rcw_free_territory.16.b
 		add_war_support = -0.1
-		add_stability = -0.1
 		add_popularity = { ideology = radical_socialism popularity = -0.1 }
 	}
 }
@@ -1010,8 +1012,8 @@ country_event = {
 	picture = GFX_report_event_cca_esser
 	
 	trigger = {
-		RUS = { has_government = communism  }
-		NOT = { has_war_with = RUS }
+		RSR = { has_government = communism  }
+		NOT = { has_war_with = RSR }
 	}
 	
 	is_triggered_only = yes
@@ -1021,13 +1023,13 @@ country_event = {
 	option = {
 		name = rcw_free_territory.23.a
 		set_country_flag = FRT_asc_part_of_RKKA
-		RUS = { country_event = { id = rcw_free_territory.24 days = 1 } }
+		RSR = { country_event = { id = rcw_free_territory.24 days = 1 } }
 	}
 	
 	option = {
 		name = rcw_free_territory.23.b
 		set_country_flag = FRT_asc_union
-		RUS = { country_event = { id = rcw_free_territory.24 days = 1 } }
+		RSR = { country_event = { id = rcw_free_territory.24 days = 1 } }
 	}
 }
 
@@ -1046,8 +1048,8 @@ country_event = {
 	picture = GFX_report_event_cca_esser
 	
 	trigger = {
-		RUS = { has_government = communism  }
-		FRT = { NOT = { has_war_with = RUS } }
+		RSR = { has_government = communism  }
+		FRT = { NOT = { has_war_with = RSR } }
 	}
 	
 	is_triggered_only = yes
@@ -1097,7 +1099,7 @@ country_event = {
 		clr_country_flag = FRT_asc_part_of_RKKA
 		clr_country_flag = FRT_asc_union
 		declare_war_on = {
-			target = RUS
+			target = RSR
 			type = annex_everything
 		}
 	}
@@ -1111,8 +1113,8 @@ country_event = {
 	picture = GFX_report_event_cca_esser
 	
 	trigger = {
-		RUS = { has_government = communism  }
-		NOT = { has_war_with = RUS }
+		RSR = { has_government = communism  }
+		NOT = { has_war_with = RSR }
 	}
 	
 	is_triggered_only = yes
@@ -1124,17 +1126,17 @@ country_event = {
 		if = {
 			limit = { has_country_flag = FRT_asc_union }
 			if = {
-				limit = { RUS = { is_faction_leader = yes } }
-				RUS = { add_to_faction = FRT }
+				limit = { RSR = { is_faction_leader = yes } }
+				RSR = { add_to_faction = FRT }
 			}
 			else = {
 				diplomatic_relation = {
-					country = RUS
+					country = RSR
 					relation = military_access
 					active = yes
 				}
-				give_guarantee = RUS
-				RUS = {
+				give_guarantee = RSR
+				RSR = {
 					diplomatic_relation = {
 						country = FRT
 						relation = military_access
@@ -1147,7 +1149,7 @@ country_event = {
 		else_if = {
 			limit = { has_country_flag = FRT_asc_part_of_RKKA }
 			set_country_flag = FRT_pressure_by_RKKA
-			RUS = { FRT = { subjecting_script_with_transfer_parties_dominion = yes } }
+			RSR = { FRT = { subjecting_script_with_transfer_parties_dominion = yes } }
 			add_ideas = FRT_red_specialists_idea
 			add_popularity = { ideology = communism popularity = 0.1 }
 		}
@@ -1155,7 +1157,7 @@ country_event = {
 			add_equipment_to_stockpile = {
 				type = infantry_equipment_great_war
 				amount = 5000
-				producer = RUS
+				producer = RSR
 			}
 		}
 	}
@@ -1171,8 +1173,8 @@ country_event = {
 	trigger = {
 		tag = FRT
 		has_country_flag = FRT_pressure_by_RKKA
-		is_puppet_of = RUS
-		RUS = { has_government = communism }
+		is_puppet_of = RSR
+		RSR = { has_government = communism }
 	}
 	
 	mean_time_to_happen = {
@@ -1206,8 +1208,8 @@ country_event = {
 	trigger = {
 		tag = FRT
 		has_country_flag = FRT_pressure_by_RKKA
-		is_puppet_of = RUS
-		RUS = { has_government = communism }
+		is_puppet_of = RSR
+		RSR = { has_government = communism }
 	}
 	
 	mean_time_to_happen = {
@@ -1238,8 +1240,8 @@ country_event = {
 	trigger = {
 		tag = FRT
 		has_country_flag = FRT_pressure_by_RKKA
-		is_puppet_of = RUS
-		RUS = { has_government = communism }
+		is_puppet_of = RSR
+		RSR = { has_government = communism }
 		OR = {
 			has_idea = FRT_red_specialists_2_idea
 			AND = {
@@ -1274,8 +1276,8 @@ country_event = {
 	trigger = {
 		tag = FRT
 		has_country_flag = FRT_pressure_by_RKKA
-		is_puppet_of = RUS
-		RUS = { has_government = communism }
+		is_puppet_of = RSR
+		RSR = { has_government = communism }
 	}
 	
 	mean_time_to_happen = {
@@ -1300,7 +1302,7 @@ country_event = {
 		name = rcw_free_territory.30.a
 		clr_country_flag = FRT_pressure_by_RKKA
 		effect_tooltip = {
-			RUS = {
+			RSR = {
 				annex_country = {
 					target = FRT
 					transfer_troops = yes
@@ -1321,13 +1323,13 @@ country_event = {
 					}
 				}
 				else = {
-					RUS = {
+					RSR = {
 						annex_country = {
 							target = FRT
 							transfer_troops = yes
 						}
 					}
-					FRT = { every_unit_leader = { set_nationality = RUS } }
+					FRT = { every_unit_leader = { set_nationality = RSR } }
 				}
 			}
 			country_event = { id = rcw_free_territory.13 hours = 1 }
@@ -1344,7 +1346,7 @@ country_event = {
 			FRT_red_specialists_idea
 			FRT_red_specialists_2_idea
 		}
-		RUS = { country_event = { id = rcw_free_territory.31 days = 1 } }
+		RSR = { country_event = { id = rcw_free_territory.31 days = 1 } }
 	}
 }
 
@@ -1356,7 +1358,7 @@ country_event = {
 	picture = GFX_report_event_cca_esser
 	
 	trigger = {
-		RUS = { has_government = communism }
+		RSR = { has_government = communism }
 	}
 	
 	is_triggered_only = yes
@@ -1388,14 +1390,14 @@ country_event = {
 		tag = FRT
 		has_completed_focus = FRT_create_counterintelligence
 		has_unit_leader = 77460
-		RUS = { exists = yes has_government = communism }
+		RSR = { exists = yes has_government = communism }
 	}
 	
 	mean_time_to_happen = {
 		days = 5
 		modifier = {
 			factor = 0.01
-			is_puppet_of = RUS
+			is_puppet_of = RSR
 		}
 	}
 	
@@ -1422,10 +1424,10 @@ country_event = {
 	
 	trigger = {
 		tag = FRT
-		is_subject_of = RUS
+		is_subject_of = RSR
 		has_unit_leader = 77460
 		check_variable = { party_popularity@communism > party_popularity@radical_socialism }
-		RUS = { exists = yes has_government = communism is_neighbor_of = ROOT }
+		RSR = { exists = yes has_government = communism is_neighbor_of = ROOT }
 	}
 	
 	mean_time_to_happen = {
@@ -1446,7 +1448,7 @@ country_event = {
 			USR = { country_event = { id = rcw_free_territory.34 days = 1 } }
 		}
 		else = {
-			RUS = { country_event = { id = rcw_free_territory.34 days = 1 } }
+			RSR = { country_event = { id = rcw_free_territory.34 days = 1 } }
 		}
 	}
 }
