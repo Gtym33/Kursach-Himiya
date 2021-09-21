@@ -502,17 +502,11 @@ country_event = {
 		name = rcw_usfev.13.a
 		load_oob = CCA_left_esser_rise
 		add_state_core = 398
-		set_state_owner = 398
 		add_state_core = 249
-		set_state_owner = 249
 		add_state_core = 239
-		set_state_owner = 239
 		add_state_core = 250
-		set_state_owner = 250
 		add_state_core = 252
-		set_state_owner = 252
 		add_state_core = 248
-		set_state_owner = 248
 		RUS = { every_unit_leader = { limit = { has_id = 19189 } set_nationality = CCA } }
 	}
 	
@@ -2025,7 +2019,7 @@ country_event = {
 	}
 }
 
-# Мир с Сибирью
+# Мир с Сибирью aka Мир с советами
 country_event = {
 	id = rcw_usfev.50
 	title = rcw_usfev.50.t
@@ -2038,172 +2032,125 @@ country_event = {
 	option = {
 		name = rcw_usfev.50.a
 		set_global_flag = RUS_civil_war_reds_n_Siberia_peace
+		if = {
+			limit = {
+				SIB = { is_in_faction = yes is_faction_leader = no }
+				every_country = {
+					limit = { OR = { tag = SIB is_subject_of = SIB } }
+					leave_faction = yes
+				}
+			}
+		}
 		every_country = {
+			limit = {
+				OR = {
+					is_in_faction_with = RSR
+					is_subject_of = RSR
+				}
+				capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } }
+			}
+			RSR = { end_puppet = PREV }
+			leave_faction = yes
+		}
+		RSR = {
+			every_enemy_country = {
+				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
+				every_state = {
+					limit = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } is_owned_by = ROOT is_controlled_by = PREV }
+					remove_core_of = RSR
+					PREV = { transfer_state = PREV }
+				}
+			}
+			every_enemy_country = {
+				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } NOT = { is_main_former_russian_empire_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
+				every_state = {
+					limit = {
+						OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 }
+						is_owned_by = ROOT
+						is_core_of = PREV
+						CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } } }
+					}
+					remove_core_of = RSR
+					PREV = { transfer_state = PREV }
+				}
+			}
+		}
+		
+		SIB = {
+			every_state = {
 				limit = {
-					has_war_with = RUS
+					is_owned_by = RSR
 					OR = {
-						tag = SIB
-						is_in_faction_with = SIB
+						region = 14
+						region = 87
+						region = 147
+						region = 148
+						region = 149
+						region = 151
+						region = 152
+						region = 154
+						region = 155
+						region = 186
+						region = 212
 					}
 				}
-				white_peace = RUS
+				remove_core_of = RSR
+				SIB = { transfer_state = PREV }
+			}
 		}
-		if = {
-				limit = { OCH = { exists = yes } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
-				every_state = {
-					limit = { OR = { is_core_of = OCH is_controlled_by = OCH } is_owned_by = RUS }
-					OCH = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-				every_country = {
-					limit = {
-						has_war_with = RUS
-						OR = {
-							tag = OCH
-							is_in_faction_with = OCH
-						}
-					}
-					white_peace = RUS
-				}
-		}
-		if = {
-				limit = { BKL = { exists = yes } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
-				every_state = {
-					limit = { OR = { OR = { is_core_of = BKL is_controlled_by = BKL } OR = { state = 950 state = 761 state = 714 state = 1209 state = 717 } } is_owned_by = RUS }
-					BKL = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-				every_country = {
-					limit = {
-						has_war_with = RUS
-						OR = {
-							tag = BKL
-							is_in_faction_with = BKL
-						}
-					}
-					white_peace = RUS
-				}
-		}
-		diplomatic_relation = { country = SIB relation = non_aggression_pact }
-		SIB = { diplomatic_relation = { country = RUS relation = non_aggression_pact } }
+		
 		if = {
 			limit = { SIB = { controls_state = 251 } }
 			SIB = {
 				add_political_power = -500
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						OR = {
-							state = 579
-							state = 580
-							state = 403
-							state = 398
-							state = 572
-							state = 1103
-							state = 644
-							state = 807
-							state = 562
-							state = 637
-							state = 655
-							state = 408
-							state = 409
-							state = 560
-							state = 1038
-							state = 657
-							state = 561
-							state = 566
-							state = 565
-							state = 575
-							state = 574
-							state = 564
-							state = 563
-							state = 653
-							state = 761
-							state = 714
-							state = 1209
-							state = 573
-							state = 1231
-							state = 582
-							state = 651
-							state = 652
-							state = 717
-							state = 40
-							state = 569
-							state = 570
-							state = 578
-							state = 654
-							state = 909
-							state = 581
-							state = 911
-						}
-					}
-					SIB = { transfer_state = PREV add_state_core = PREV }
-				}
 			}
-		
+			every_state = {
+				limit = {
+					is_owned_by = RSR
+					OR = {
+						region = 136
+						region = 138
+						region = 215
+						
+						state = 398
+						state = 651
+						state = 652
+						state = 1072
+						
+						state = 399
+						state = 1099
+						state = 249
+						state = 251
+						state = 1070
+					}
+				}
+				remove_core_of = RSR
+				SIB = { transfer_state = PREV }
+			}
+		}
 		else_if = {
 			limit = { SIB = { controls_state = 651 } }
 			SIB = {
-			add_political_power = -200
+				add_political_power = -200
+			}
 			every_state = {
 				limit = {
-					is_owned_by = RUS
+					is_owned_by = RSR
 					OR = {
-						state = 579
-						state = 580
-						state = 403
+						region = 136
+						region = 138
+						region = 215
+						
 						state = 398
-						state = 572
-						state = 1103
-						state = 644
-						state = 807
-						state = 562
-						state = 637
-						state = 655
-						state = 408
-						state = 409
-						state = 560
-						state = 1038
-						state = 657
-						state = 561
-						state = 566
-						state = 565
-						state = 575
-						state = 574
-						state = 564
-						state = 563
-						state = 653
-						state = 761
-						state = 714
-						state = 1209
-						state = 573
-						state = 1231
-						state = 582
 						state = 651
 						state = 652
-						state = 717
-						state = 40
-						state = 569
-						state = 570
-						state = 578
-						state = 654
-						state = 909
-						state = 581
-						state = 911
+						state = 1072
 					}
 				}
-				SIB = { transfer_state = PREV add_state_core = PREV }
+				remove_core_of = RSR
+				SIB = { transfer_state = PREV }
 			}
-			remove_state_core = 398
-			remove_state_core = 651
-			remove_state_core = 652
-			remove_state_core = 582
-			remove_state_core = 573
-			remove_state_core = 1231
-			remove_state_core = 581
 		}
-		}
-		
 		else_if = {
 			limit = { SIB = { controls_state = 572 } }
 			give_military_access = SIB
@@ -2214,108 +2161,54 @@ country_event = {
 					limit = { is_faction_leader = yes }
 					dismantle_faction = yes
 				}
+				every_country = { limit = { is_subject_of = SIB } OVERLORD = { end_puppet = PREV } }
 				add_ideas = neutral_foreign_policy_law
 				remove_ideas_with_trait = trade_laws
 				add_ideas = free_trade
 				add_ideas = SIB_hard_peace_idea
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						OR = {
-							state = 580
-							state = 579
-							state = 403
-							state = 644
-							state = 566
-							state = 575
-							state = 564
-							state = 565
-							state = 1041
-							state = 563
-							state = 572
-							state = 1103
-						}
-					}
-					SIB = { transfer_state = PREV add_state_core = PREV }
-				}
-				give_military_access = RUS
-				remove_state_core = 398
-				remove_state_core = 651
-				remove_state_core = 652
-				remove_state_core = 582
-				remove_state_core = 573
-				remove_state_core = 581
+				give_military_access = RSR
 			}
-			if = {
-				limit = { PRM = { is_subject_of = SIB } }
-				RUS = {
-					annex_country = { 
-						target = PRM 
-						transfer_troops = no 
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = SIB
+						is_subject_of = SIB
 					}
 				}
+				SIB = { end_puppet = PREV }
+				leave_faction = yes
 			}
-			if = {
-				limit = { OCH = { is_subject_of = SIB } }
-				RUS = {
-					annex_country = { 
-						target = OCH 
-						transfer_troops = no 
+			every_state = {
+				limit = {
+					is_owned_by = SIB
+					OR = {
+						region = 137
+						region = 214
+						region = 40
+						
+						state = 573
+						state = 581
+						state = 582
+						state = 1102
+						state = 1103
+						state = 1231
 					}
 				}
-			}
-			if = {
-				limit = { BKL = { is_subject_of = SIB } }
-				RUS = {
-					annex_country = { 
-						target = BKL 
-						transfer_troops = no 
-					}
-				}
-			}
-			if = {
-				limit = { CCA = { is_subject_of = SIB } }
-				RUS = {
-					annex_country = { 
-						target = CCA 
-						transfer_troops = no 
-					}
-				}
+				remove_core_of = SIB
+				RSR = { transfer_state = PREV }
 			}
 		}
-		}
-		every_state = { limit = { is_core_of = SIB is_owned_by = SIB } remove_core_of = RUS }
-		every_state = { limit = { is_owned_by = SIB is_core_of = RUS  } RUS = { transfer_state = PREV.PREV } }
-		every_state = { limit = { is_core_of = RUS } remove_core_of = SIB }
-		every_state = { limit = { is_core_of = RUS } remove_claim_by = SIB }
 		
-			if = {
-				limit = { KAZ = { exists = yes OR = { is_subject_of = SIB is_in_faction_with = SIB } } }
-				every_country = {
-					limit = {
-						has_war_with = KAZ
-						OR = {
-							tag = RUS
-							is_in_faction_with = RUS
-						}
-					}
-					white_peace = KAZ
-				}
-				every_state = {
-					limit = { is_core_of = KAZ }
-					KAZ = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-			}
-			
-			if = {
-				limit = { PRM = { exists = yes OR = { is_subject_of = SIB is_in_faction_with = SIB } } OR = { SIB = { controls_state = 651 } SIB = { controls_state = 251 } } }
-				every_state = {
-					limit = { is_core_of = PRM }
-					PRM = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-			}
+		RSR = {
+			every_enemy_country = { limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } } white_peace = RSR }
+		}
+		diplomatic_relation = { country = SIB relation = non_aggression_pact }
+		SIB = { diplomatic_relation = { country = RSR relation = non_aggression_pact } }
+		
+		
+		every_state = { limit = { is_owned_by = SIB } remove_core_of = RSR remove_claim_by = RSR }
+		every_state = { limit = { is_owned_by = RSR } remove_core_of = SIB remove_claim_by = SIB }
+		
 	}
 	option = {
 		name = rcw_usfev.50.b
@@ -6127,26 +6020,6 @@ country_event = {
 					}
 					clear_global_event_target = PRM_CW_Kalmykov
 					else = {
-						every_state = {
-							limit = {
-								OR = {
-									state = 561
-									state = 657
-									state = 560
-									state = 409
-									state = 408
-									state = 655
-									state = 1034
-									state = 1035
-									state = 1036
-									state = 1037
-									state = 1038
-									state = 1185
-									state = 1186
-								}
-							}
-							add_core_of = PRM
-						}
 						every_state = {
 							limit = {
 								OR = {
@@ -13556,7 +13429,7 @@ country_event = {
 	}
 }
 
-# Мир с советами – заменил теги с SIB на OCH
+# Мир с Оренбургом aka Мир с советами – заменил теги с SIB на OCH
 country_event = {
 	id = rcw_usfev.491
 	title = rcw_usfev.491.t
@@ -13569,172 +13442,125 @@ country_event = {
 	option = {
 		name = rcw_usfev.491.a
 		set_global_flag = RUS_civil_war_reds_n_Siberia_peace
+		if = {
+			limit = {
+				OCH = { is_in_faction = yes is_faction_leader = no }
+				every_country = {
+					limit = { OR = { tag = OCH is_subject_of = OCH } }
+					leave_faction = yes
+				}
+			}
+		}
 		every_country = {
+			limit = {
+				OR = {
+					is_in_faction_with = RSR
+					is_subject_of = RSR
+				}
+				capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } }
+			}
+			RSR = { end_puppet = PREV }
+			leave_faction = yes
+		}
+		RSR = {
+			every_enemy_country = {
+				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
+				every_state = {
+					limit = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } is_owned_by = ROOT is_controlled_by = PREV }
+					remove_core_of = RSR
+					PREV = { transfer_state = PREV }
+				}
+			}
+			every_enemy_country = {
+				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } NOT = { is_main_former_russian_empire_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
+				every_state = {
+					limit = {
+						OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 }
+						is_owned_by = ROOT
+						is_core_of = PREV
+						CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } } }
+					}
+					remove_core_of = RSR
+					PREV = { transfer_state = PREV }
+				}
+			}
+		}
+		
+		OCH = {
+			every_state = {
 				limit = {
-					has_war_with = RUS
+					is_owned_by = RSR
 					OR = {
-						tag = OCH
-						is_in_faction_with = OCH
+						region = 14
+						region = 87
+						region = 147
+						region = 148
+						region = 149
+						region = 151
+						region = 152
+						region = 154
+						region = 155
+						region = 186
+						region = 212
 					}
 				}
-				white_peace = OCH
+				remove_core_of = RSR
+				OCH = { transfer_state = PREV }
+			}
 		}
-		if = {
-				limit = { OCH = { exists = yes } OR = { OCH = { controls_state = 651 } OCH = { controls_state = 251 } } }
-				every_state = {
-					limit = { OR = { is_core_of = OCH is_controlled_by = OCH } is_owned_by = RUS }
-					OCH = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-				every_country = {
-					limit = {
-						has_war_with = RUS
-						OR = {
-							tag = OCH
-							is_in_faction_with = OCH
-						}
-					}
-					white_peace = RUS
-				}
-		}
-		if = {
-				limit = { BKL = { exists = yes } OR = { OCH = { controls_state = 651 } OCH = { controls_state = 251 } } }
-				every_state = {
-					limit = { OR = { OR = { is_core_of = BKL is_controlled_by = BKL } OR = { state = 950 state = 761 state = 714 state = 1209 state = 717 } } is_owned_by = RUS }
-					BKL = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-				every_country = {
-					limit = {
-						has_war_with = RUS
-						OR = {
-							tag = BKL
-							is_in_faction_with = BKL
-						}
-					}
-					white_peace = RUS
-				}
-		}
-		diplomatic_relation = { country = OCH relation = non_aggression_pact }
-		OCH = { diplomatic_relation = { country = RUS relation = non_aggression_pact } }
+		
 		if = {
 			limit = { OCH = { controls_state = 251 } }
 			OCH = {
 				add_political_power = -500
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						OR = {
-							state = 579
-							state = 580
-							state = 403
-							state = 398
-							state = 572
-							state = 1103
-							state = 644
-							state = 807
-							state = 562
-							state = 637
-							state = 655
-							state = 408
-							state = 409
-							state = 560
-							state = 1038
-							state = 657
-							state = 561
-							state = 566
-							state = 565
-							state = 575
-							state = 574
-							state = 564
-							state = 563
-							state = 653
-							state = 761
-							state = 714
-							state = 1209
-							state = 573
-							state = 1231
-							state = 582
-							state = 651
-							state = 652
-							state = 717
-							state = 40
-							state = 569
-							state = 570
-							state = 578
-							state = 654
-							state = 909
-							state = 581
-							state = 911
-						}
-					}
-					OCH = { transfer_state = PREV add_state_core = PREV }
-				}
 			}
-		
+			every_state = {
+				limit = {
+					is_owned_by = RSR
+					OR = {
+						region = 136
+						region = 138
+						region = 215
+						
+						state = 398
+						state = 651
+						state = 652
+						state = 1072
+						
+						state = 399
+						state = 1099
+						state = 249
+						state = 251
+						state = 1070
+					}
+				}
+				remove_core_of = RSR
+				OCH = { transfer_state = PREV }
+			}
+		}
 		else_if = {
 			limit = { OCH = { controls_state = 651 } }
 			OCH = {
-			add_political_power = -200
+				add_political_power = -200
+			}
 			every_state = {
 				limit = {
-					is_owned_by = RUS
+					is_owned_by = RSR
 					OR = {
-						state = 579
-						state = 580
-						state = 403
+						region = 136
+						region = 138
+						region = 215
+						
 						state = 398
-						state = 572
-						state = 1103
-						state = 644
-						state = 807
-						state = 562
-						state = 637
-						state = 655
-						state = 408
-						state = 409
-						state = 560
-						state = 1038
-						state = 657
-						state = 561
-						state = 566
-						state = 565
-						state = 575
-						state = 574
-						state = 564
-						state = 563
-						state = 653
-						state = 761
-						state = 714
-						state = 1209
-						state = 573
-						state = 1231
-						state = 582
 						state = 651
 						state = 652
-						state = 717
-						state = 40
-						state = 569
-						state = 570
-						state = 578
-						state = 654
-						state = 909
-						state = 581
-						state = 911
+						state = 1072
 					}
 				}
-				OCH = { transfer_state = PREV add_state_core = PREV }
+				remove_core_of = RSR
+				OCH = { transfer_state = PREV }
 			}
-			remove_state_core = 398
-			remove_state_core = 651
-			remove_state_core = 652
-			remove_state_core = 582
-			remove_state_core = 573
-			remove_state_core = 1231
-			remove_state_core = 581
 		}
-		}
-		
 		else_if = {
 			limit = { OCH = { controls_state = 572 } }
 			give_military_access = OCH
@@ -13745,123 +13571,67 @@ country_event = {
 					limit = { is_faction_leader = yes }
 					dismantle_faction = yes
 				}
+				every_country = { limit = { is_subject_of = OCH } OVERLORD = { end_puppet = PREV } }
 				add_ideas = neutral_foreign_policy_law
 				remove_ideas_with_trait = trade_laws
 				add_ideas = free_trade
 				add_ideas = SIB_hard_peace_idea
-				every_state = {
-					limit = {
-						is_owned_by = RUS
-						OR = {
-							state = 580
-							state = 579
-							state = 403
-							state = 644
-							state = 566
-							state = 575
-							state = 564
-							state = 565
-							state = 1041
-							state = 563
-							state = 572
-							state = 1103
-						}
-					}
-					OCH = { transfer_state = PREV add_state_core = PREV }
-				}
-				give_military_access = RUS
-				remove_state_core = 398
-				remove_state_core = 651
-				remove_state_core = 652
-				remove_state_core = 582
-				remove_state_core = 573
-				remove_state_core = 581
+				give_military_access = RSR
 			}
-			# Как-то странно, что советы аннексируют всё, что дальше комуча, кроме самого Оренбурга
-			# Даже Сибирь и Забайкалье. Мб это не нужно?
-			if = {
-				limit = { PRM = { is_subject_of = OCH } }
-				RUS = {
-					annex_country = { 
-						target = PRM 
-						transfer_troops = no 
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = OCH
+						is_subject_of = OCH
 					}
 				}
+				OCH = { end_puppet = PREV }
+				leave_faction = yes
 			}
-			if = {
-				limit = { OCH = { is_subject_of = OCH } }
-				RUS = {
-					annex_country = { 
-						target = OCH
-						transfer_troops = no 
+			every_state = {
+				limit = {
+					is_owned_by = OCH
+					OR = {
+						region = 137
+						region = 214
+						region = 40
+						
+						state = 573
+						state = 581
+						state = 582
+						state = 1102
+						state = 1103
+						state = 1231
 					}
 				}
-			}
-			if = {
-				limit = { BKL = { is_subject_of = OCH } }
-				RUS = {
-					annex_country = { 
-						target = BKL 
-						transfer_troops = no 
-					}
-				}
-			}
-			if = {
-				limit = { CCA = { is_subject_of = OCH } }
-				RUS = {
-					annex_country = { 
-						target = CCA 
-						transfer_troops = no 
-					}
-				}
+				remove_core_of = OCH
+				RSR = { transfer_state = PREV }
 			}
 		}
-		}
-		every_state = { limit = { is_core_of = OCH is_owned_by = OCH } remove_core_of = RUS }
-		every_state = { limit = { is_owned_by = OCH is_core_of = RUS  } RUS = { transfer_state = PREV.PREV } }
-		every_state = { limit = { is_core_of = RUS } remove_core_of = OCH }
-		every_state = { limit = { is_core_of = RUS } remove_claim_by = OCH }
 		
-			if = {
-				limit = { KAZ = { exists = yes OR = { is_subject_of = OCH is_in_faction_with = OCH } } }
-				every_country = {
-					limit = {
-						has_war_with = KAZ
-						OR = {
-							tag = RUS
-							is_in_faction_with = RUS
-						}
-					}
-					white_peace = KAZ
-				}
-				every_state = {
-					limit = { is_core_of = KAZ }
-					KAZ = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-			}
-			
-			if = {
-				limit = { PRM = { exists = yes OR = { is_subject_of = OCH is_in_faction_with = OCH } } OR = { OCH = { controls_state = 651 } OCH = { controls_state = 251 } } }
-				every_state = {
-					limit = { is_core_of = OCH }
-					PRM = { transfer_state = PREV }
-					remove_core_of = RUS
-				}
-			}
+		RSR = {
+			every_enemy_country = { limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 212 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } } white_peace = RSR }
+		}
+		diplomatic_relation = { country = OCH relation = non_aggression_pact }
+		OCH = { diplomatic_relation = { country = RSR relation = non_aggression_pact } }
+		
+		
+		every_state = { limit = { is_owned_by = OCH } remove_core_of = RSR remove_claim_by = RSR }
+		every_state = { limit = { is_owned_by = RSR } remove_core_of = OCH remove_claim_by = OCH }
+		
 	}
 	option = {
-		name = rcw_usfev.491
+		name = rcw_usfev.491.b
 		if = {
 			limit = { OCH = { controls_state = 251 } }
 			add_war_support = -0.15
 			add_political_power = -100
-					else_if = {
-						limit = { OCH = { controls_state = 651 } }
-						add_war_support = -0.05
-						add_political_power = -50
-						}
-			}
+		}
+		else_if = {
+			limit = { OCH = { controls_state = 651 } }
+			add_war_support = -0.05
+			add_political_power = -50
+		}
 	}
 }
 
