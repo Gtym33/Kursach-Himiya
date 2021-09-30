@@ -13533,6 +13533,17 @@ country_event = {
 				remove_core_of = RSR
 				OCH = { transfer_state = PREV }
 			}
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = RSR
+						is_subject_of = RSR
+					}
+					capital_scope = { OR = { region = 136 region = 138 region = 215 state = 398 state = 651 state = 652 state = 1072  state = 399 state = 1099 state = 249 state = 251 state = 1070 } }
+				}
+				RSR = { end_puppet = PREV }
+				leave_faction = yes
+			}
 		}
 		else_if = {
 			limit = { OCH = { controls_state = 651 } }
@@ -13555,6 +13566,17 @@ country_event = {
 				}
 				remove_core_of = RSR
 				OCH = { transfer_state = PREV }
+			}
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = RSR
+						is_subject_of = RSR
+					}
+					capital_scope = { OR = { region = 136 region = 138 region = 215 state = 398 state = 651 state = 652 state = 1072 } }
+				}
+				RSR = { end_puppet = PREV }
+				leave_faction = yes
 			}
 		}
 		else_if = {
@@ -14883,6 +14905,7 @@ country_event = {
 		create_dynamic_country = {
 			original_tag = ACH
 			set_politics = { ruling_party = communism elections_allowed = no }
+			set_country_flag = ACH_reds_CW
 			transfer_state = 236
 			set_capital = 236
 			ACH = { declare_war_on = { target = PREV type = annex_everything } declare_war_on = { target = RUS type = annex_everything } }
@@ -14998,6 +15021,7 @@ country_event = {
 		create_dynamic_country = {
 			original_tag = ACH
 			set_politics = { ruling_party = communism elections_allowed = no }
+			set_country_flag = ACH_reds_CW
 			transfer_state = 236
 			set_capital = 236
 			ACH = { declare_war_on = { target = PREV type = annex_everything } declare_war_on = { target = RUS type = annex_everything } }
@@ -15108,26 +15132,63 @@ country_event = {
 	title = rcw_usfev.1950.t
 	desc = rcw_usfev.1950.desc
 
-	is_triggered_only = yes
-
 	picture = GFX_report_event_och_perevorot_v_orenburge
 
-	option = {
-		name = rcw_usfev.1950.a
-
-		every_country_with_original_tag = {
-			original_tag_to_check = ACH
-			limit = {
-				has_government = communism
+	trigger = {
+		OR = {
+			AND = {
+				original_tag = ACH
+				has_country_flag = ACH_reds_CW
+				NOT = { any_other_country = { original_tag = ROOT exists = yes } }
+				OR = { has_government = communism has_government = radical_socialism }
+				RSR = { has_country_flag = RUS_Oktober_revolution_fired OR = { has_government = communism has_government = radical_socialism } exists = yes }
 			}
-			PREV = {
-				annex_country = {
-					target = PREV
-					transfer_troops = no
+			has_country_flag = ACH_reds_victory_notation
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	immediate = { clr_country_flag = ACH_reds_victory_notation }
+	
+	option = {
+		trigger = { NOT = { has_country_flag = KUB_reds_victory_notation } }
+		name = rcw_usfev.1950.a
+		clr_country_flag = KUB_reds_CW
+		if = {
+			limit = { RSR = { has_country_flag = reds_want_to_create_more_republics } }
+			every_state = {
+				limit = { is_core_of = ACH }
+				remove_core_of = RUS
+				remove_core_of = RSS
+				remove_core_of = CCA
+			}
+			every_state = {
+				limit = { is_core_of = ROOT is_owned_by = RSR }
+				ROOT = { transfer_state = PREV }
+			}
+			every_country = {
+				limit = { has_war_with = RSR is_any_former_russian_empire_country = yes is_subject = no NOT = { has_war_with = ACH } }
+				ACH = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
 				}
 			}
+			else = {
+				RSR = { annex_country = { target = ACH transfer_troops = yes } }
+			}
 		}
-		hidden_effect = { ACH = { every_unit_leader = { limit = { has_id = 92351 } set_nationality = SIB } } }
+		RSR = { set_country_flag = ACH_reds_victory_notation country_event = rcw_usfev.1950 }
+	}
+	option = {
+		trigger = { has_country_flag = ACH_reds_victory_notation }
+		name = rcw_usfev.1950.b
 	}
 }
 
@@ -15160,7 +15221,6 @@ country_event = {
 		}
 		add_stability = 0.1
 		add_war_support = 0.15
-		set_country_flag = ACH_civil_war_over
 	}
 }
 

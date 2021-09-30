@@ -1577,6 +1577,7 @@ country_event = {
 					election_frequency = 36
 					elections_allowed = no
 				}
+				set_country_flag = KUB_reds_CW
 				hidden_effect = {
 					if = {
 						limit = { KUB = { has_idea = peasant_and_land_and_bread_question_0_25 } }
@@ -1717,6 +1718,7 @@ country_event = {
 					election_frequency = 36
 					elections_allowed = no
 				}
+				set_country_flag = KUB_reds_CW
 				hidden_effect = {
 					if = {
 						limit = { KUB = { has_idea = peasant_and_land_and_bread_question_0_25 } }
@@ -4402,19 +4404,26 @@ country_event = {
 	}
 }
 
+
 # Победа советской власти на Кубани
 country_event = {
-	id = rcw_dku.122
-	title = rcw_dku.122.t
-	desc = rcw_dku.122.desc
+	id = rcw_dku.120
+	title = rcw_dku.120.t
+	desc = rcw_dku.120.desc
 	picture = GFX_report_event_rcw_rva
 	
 	trigger = {
-		original_tag = KUB
-		has_civil_war = no
-		OR = { has_government = communism has_government = radical_socialism }
-		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
-		RUS = { OR = { has_government = communism has_government = radical_socialism } }
+		OR = {
+			AND = {
+				original_tag = KUB
+				has_country_flag = KUB_reds_CW
+				NOT = { any_other_country = { original_tag = ROOT exists = yes } }
+				OR = { has_government = communism has_government = radical_socialism }
+				RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+				RSR = { OR = { has_government = communism has_government = radical_socialism } exists = yes }
+			}
+			has_country_flag = KUB_reds_victory_notation
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -4423,36 +4432,26 @@ country_event = {
 	
 	fire_only_once = yes
 	
+	immediate = { clr_country_flag = KUB_reds_victory_notation }
+	
 	option = {
+		trigger = { NOT = { has_country_flag = KUB_reds_victory_notation } }
 		name = rcw_dku.120.a
+		clr_country_flag = KUB_reds_CW
 		if = {
-		limit = { NOT = { is_neighbor_of = RUS } }
-		every_state = {
-			limit = { is_core_of = KUB }
-			remove_core_of = RUS
-			remove_core_of = RSS
-			remove_core_of = CCA
-		}
-		every_state = {
-			limit = { is_core_of = ROOT is_owned_by = RUS }
-			ROOT = { transfer_state = PREV }
-		}
-		KUB = {
-			if = {
-				limit = { has_idea = neutral_foreign_policy_law }
-				add_ideas = realpolitic_policy_law
+			limit = { RSR = { has_country_flag = reds_want_to_create_more_republics } }
+			every_state = {
+				limit = { is_core_of = KUB }
+				remove_core_of = RUS
+				remove_core_of = RSS
+				remove_core_of = CCA
 			}
-			if = {
-				limit = { controls_state = 234 }
-				set_capital = 234
+			every_state = {
+				limit = { is_core_of = ROOT is_owned_by = RSR }
+				ROOT = { transfer_state = PREV }
 			}
-		}
-		if = {
-			limit = { RUS = { has_country_flag = RUS_Oktober_revolution_fired is_faction_leader = yes } }
-			RUS = { add_to_faction = KUB }
-		}
-		every_country = {
-				limit = { has_war_with = RUS is_any_former_russian_empire_country = yes is_subject = no NOT = { has_war_with = KUB } }
+			every_country = {
+				limit = { has_war_with = RSR is_any_former_russian_empire_country = yes is_subject = no NOT = { has_war_with = KUB } }
 				KUB = {
 					declare_war_on = {
 						target = PREV
@@ -4460,14 +4459,15 @@ country_event = {
 					}
 				}
 			}
-		else = {
-			RUS = { annex_country = { target = KUB transfer_troops = yes } }
-			#every_state = {
-				#limit = { is_core_of = KUB }
-				#remove_core_of = KUB
-			#}
+			else = {
+				RSR = { annex_country = { target = KUB transfer_troops = yes } }
+			}
 		}
-		}
+		RSR = { set_country_flag = KUB_reds_victory_notation country_event = rcw_dku.120 }
+	}
+	option = {
+		trigger = { has_country_flag = KUB_reds_victory_notation }
+		name = rcw_dku.120.b
 	}
 }
 
