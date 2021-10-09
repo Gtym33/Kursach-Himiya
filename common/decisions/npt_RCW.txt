@@ -66,6 +66,119 @@ russian_reunification_desisions = {
 			country_event = rcw_all_rus_NA.1
 		}
 	}
+	second_civil_war_unify_russia_desision = {
+		icon = generic_ignite_civil_war
+		available = {
+			219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			is_subject = no
+			has_war = no
+			NOT = { any_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_revolt } }
+			OR = {
+				is_faction_leader = yes
+				is_in_faction = no
+			}
+			OR = {
+				has_global_flag = RCW_Allrussian_national_assembly_mon_wins
+				has_global_flag = RCW_Allrussian_national_assembly_rep_wins
+			}
+			OR = {
+				has_country_flag = RCW_Allrussian_national_assembly_leader
+				NOT = { any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_leader exists = yes } }
+			}
+			OR = {
+				AND = {
+					has_country_flag = RCW_Allrussian_national_assembly_loyal
+					NOT = { any_other_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
+				}
+				AND = {
+					has_country_flag = RCW_Allrussian_national_assembly_disloyal
+					NOT = { any_other_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
+				}
+			}
+			NOT = { any_other_country = { is_former_russian_empire_russian_country = yes exists = yes is_subject = no NOT = { is_in_faction_with = ROOT } NOT = { has_country_flag = RCW_Allrussian_national_assembly_member has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal } NOT = { has_country_flag = RCW_Allrussian_national_assembly_peace_deal } } }
+		}
+		
+		visible = {
+			NOT = { has_focus_tree = Russia_Bolsheviks_focus }
+			has_global_flag = RCW_Allrussian_national_assembly
+		}
+		
+		cost = 0
+		
+		ai_will_do = {
+			factor = 100
+		}
+		
+		complete_effect = {
+			if = {
+				limit = { 219 = { OWNER = { NOT = { tag = ROOT } check_variable = { num_owned_states < 2 } } } }
+				219 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = yes } } } }
+			}
+			else_if = { limit = { NOT = { owns_state = 219 } } transfer_state = 219 }
+			add_state_core = 219
+			set_capital = 219
+			country_event = rcw_all_rus_NA.23
+		}
+	}
+	second_civil_war_separatist_leave_war_desision = {
+		icon = generic_ignite_civil_war
+		available = {
+			is_subject = no
+			OR = {
+				is_in_faction = no
+				is_faction_leader = yes
+			}
+			any_other_country = {
+				is_main_former_russian_empire_country = yes
+				has_war_with = ROOT
+				has_idea = russia_in_ruins_idea
+			}
+			surrender_progress > 0.5
+		}
+		
+		visible = {
+			NOT = { has_focus_tree = Russia_Bolsheviks_focus }
+			has_global_flag = RCW_Allrussian_national_assembly
+			NOT = { is_main_former_russian_empire_country = yes }
+			any_other_country = { is_main_former_russian_empire_country = yes has_war_with = ROOT }
+		}
+		
+		cost = 50
+		
+		days_remove = 60
+		
+		ai_will_do = {
+			factor = 100
+		}
+		
+		complete_effect = {
+			every_other_country = {
+				limit = {
+					is_main_former_russian_empire_country = yes
+					has_war_with = ROOT
+				}
+				country_event = rcw_all_rus_NA.25
+			}
+		}
+		
+		remove_effect = {
+			every_other_country = {
+				limit = {
+					is_main_former_russian_empire_country = yes
+					has_war_with = ROOT
+				}
+				country_event = rcw_all_rus_NA.26
+			}
+			country_event = rcw_all_rus_NA.27
+			hidden_effect = {
+				add_to_variable = { global.count_RUS_separatists = 1 }
+				if = {
+					limit = { check_variable = { global.count_RUS_separatists = 3 } }
+					news_event = { id = news_n.28 days = 7 }
+				}
+			}
+		}
+	}
 }
 rcw_intervention_help_white_desisions = {
 	white_ask_foreing_support = {
