@@ -836,10 +836,36 @@ country_event = {
 		has_global_flag = WWI_is_now
 		OR = {
 			GEO = {
+				NOT = { is_in_faction_with = ARM }
+				exists = yes
+				has_war_with = TUR
 				surrender_progress > 0.3
+				has_capitulated = yes
+				is_subject = no
 			}
-			ARM = {
-				surrender_progress > 0.3
+			AND = {
+				GEO = {
+					is_in_faction_with = ARM
+					exists = yes
+					has_war_with = TUR
+				}
+				ARM = {
+					is_in_faction_with = GEO
+					exists = yes
+					has_war_with = TUR
+				}
+				OR = {
+					GEO = {
+						surrender_progress > 0.3
+						has_capitulated = yes
+						is_subject = no
+					}
+					ARM = {
+						surrender_progress > 0.3
+						has_capitulated = yes
+						is_subject = no
+					}
+				}
 			}
 		}
 	}
@@ -847,36 +873,32 @@ country_event = {
 	fire_only_once = yes
 	
 	mean_time_to_happen = {
-		days = 1
+		days = 15
 	}
 	
 	option = {
 		name = rcw_tc.12.a
-		GEO = { dismantle_faction = yes leave_faction = yes }
-		ARM = { leave_faction = yes }
-		AZR = { leave_faction = yes }
-		every_country = {
-			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
-			white_peace = GEO
-			white_peace = AZR
-			white_peace = BAK
+		if = {
+			limit = { is_in_faction_with = GER }
+			GER = { country_event = rcw_tc.17 }
 		}
-		every_state = {
-			limit = {
-				OR = {
-					is_owned_by = GEO
-					is_owned_by = ARM
-					is_owned_by = AZR
-					is_owned_by = BAK
-				}
-				OR = {
-					state = 863
-					state = 898
-					state = 864
-					state = 863
-				}
+		else = {
+			if = {
+				limit = { GEO = { is_faction_leader = yes } }
+				GEO = { country_event = rcw_tc.18 }
 			}
-			TUR = { transfer_state = PREV }
+			else_if = {
+				limit = { ARM = { is_faction_leader = yes } }
+				ARM = { country_event = rcw_tc.18 }
+			}
+			else_if = {
+				limit = { AZR = { is_faction_leader = yes } }
+				AZR = { country_event = rcw_tc.18 }
+			}
+			else = {
+				limit = { GEO = { is_faction_leader = yes } }
+				GEO = { country_event = rcw_tc.18 }
+			}
 		}
 	}
 }
@@ -936,6 +958,7 @@ country_event = {
 		ARM = {
 			dismantle_faction = yes
 			leave_faction = yes
+			country_event = rcw_tc.28
 		}
 		AZR = {
 			dismantle_faction = yes
@@ -946,7 +969,33 @@ country_event = {
 			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
 			white_peace = GEO
 		}
+		if = {
+			limit = { AZR = { is_subject_of = TUR } }
+			every_state = {
+				limit = {
+					is_owned_by = GEO
+					OR = {
+						is_claimed_by = AZR
+						is_core_of = AZR
+					}
+				}
+				AZR = { transfer_state = PREV }
+			}
+		}
+		else = {
+			every_state = {
+				limit = {
+					is_owned_by = GEO
+					OR = {
+						is_claimed_by = AZR
+						is_core_of = AZR
+					}
+				}
+				TUR = { transfer_state = PREV }
+			}
+		}
 		GER = {
+			country_event = rcw_tc.25
 			white_peace = GEO
 			set_truce = {
 				target = GEO
@@ -971,6 +1020,7 @@ country_event = {
 	}
 }
 
+#Азербайджан переходит под проекторат Турции
 country_event = {
 	id = rcw_tc.16
 	title = rcw_tc.16.t
@@ -981,36 +1031,48 @@ country_event = {
 	
 	option = {
 		name = rcw_tc.16.a
+		AZR = {
+			if = {
+				limit = { is_faction_leader = yes }
+				dismantle_faction = yes
+			}
+			leave_faction = yes
+		}
 		every_country = {
 			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
 			white_peace = AZR
-			white_peace = BAK
+			#white_peace = BAK
 		}
 		TUR = {
+			country_event = rcw_tc.27
 			white_peace = AZR
-			white_peace = BAK
+			#white_peace = BAK
+			if = {
+				limit = { NOT = { has_war_with = BAK } }
+				declare_war_on = {
+    				target = BAK
+    				type = annex_everything
+				}
+			}
 			set_truce = {
 				target = AZR
 				days = 90
 			}
-			diplomatic_relation = {
-				country = AZR
-				relation = non_aggression_pact
-				active = yes
-			}
-			diplomatic_relation = {
-				country = AZR
-				relation = military_access
-				active = yes
-			}
-			diplomatic_relation = {
-				country = AZR
-				relation = guarantee
-				active = yes
-			}
+			AZR = { subjecting_script_with_transfer_parties_semi_independent = yes }
 		}
 		AZR = {
 			load_oob = AZR_1918
+		}
+		every_state = {
+			limit = {
+				is_owned_by = TUR
+				OR = {
+					is_claimed_by = AZR
+					is_core_of = AZR
+				}
+				NOT = { is_core_of = TUR }
+			}
+			AZR = { transfer_state = PREV }
 		}
 		ai_chance = {
 			factor = 1
@@ -1024,6 +1086,491 @@ country_event = {
 	}
 }
 
+# Мирные переговоры с Закавказьем (Разрешение Германии)
+country_event = {
+	id = rcw_tc.17
+	title = rcw_tc.17.t
+	desc = rcw_tc.17.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_global_flag = WWI_is_now
+		is_in_faction_with = TUR
+		GEO = {
+			exists = yes
+			has_war_with = TUR
+		}
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_tc.17.a
+		if = {
+			limit = { GEO = { is_faction_leader = yes } }
+			GEO = { country_event = rcw_tc.18 }
+		}
+		else_if = {
+			limit = { ARM = { is_faction_leader = yes } }
+			ARM = { country_event = rcw_tc.18 }
+		}
+		else_if = {
+			limit = { AZR = { is_faction_leader = yes } }
+			AZR = { country_event = rcw_tc.18 }
+		}
+		else = {
+			GEO = { country_event = rcw_tc.18 }
+		}
+	}
+	
+	option = {
+		name = rcw_tc.17.b
+		trigger = { is_ai = no }
+		TUR = { country_event = rcw_tc.19 }
+	}
+}
+
+# Мирные переговоры с Закавказьем
+country_event = {
+	id = rcw_tc.18
+	title = rcw_tc.18.t
+	desc = rcw_tc.18.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_global_flag = WWI_is_now
+		has_war_with = TUR
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_tc.18.a
+		GEO = { dismantle_faction = yes leave_faction = yes country_event = rcw_tc.20 }
+		ARM = { leave_faction = yes country_event = rcw_tc.28 }
+		AZR = { leave_faction = yes country_event = rcw_tc.16 }
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			white_peace = GEO
+			white_peace = AZR
+			#white_peace = BAK
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = GEO
+					is_owned_by = ARM
+					is_owned_by = AZR
+					#is_owned_by = BAK
+				}
+				OR = {
+					state = 863
+					state = 898
+					state = 864
+					state = 863
+				}
+			}
+			TUR = { transfer_state = PREV }
+		}
+		if = {
+			limit = { AZR = { is_subject_of = TUR } }
+			every_state = {
+				limit = {
+					is_owned_by = GEO
+					OR = {
+						is_claimed_by = AZR
+						is_core_of = AZR
+					}
+				}
+				AZR = { transfer_state = PREV }
+			}
+		}
+		else = {
+			every_state = {
+				limit = {
+					is_owned_by = GEO
+					OR = {
+						is_claimed_by = AZR
+						is_core_of = AZR
+					}
+				}
+				TUR = { transfer_state = PREV }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_tc.18.b
+		trigger = { is_ai = no }
+		TUR = { country_event = rcw_tc.24 }
+		GER = { country_event = rcw_tc.24 }
+	}
+}
+
+# Германия отказала в мирных переговорах
+country_event = {
+	id = rcw_tc.19
+	title = rcw_tc.19.t
+	desc = rcw_tc.19.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_global_flag = WWI_is_now
+		is_in_faction_with = GER
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_tc.19.a
+		add_stability = -0.01
+		add_political_power = -10
+	}
+}
+
+# Попросить Германского покровительства (без альтернативы)
+country_event = {
+	id = rcw_tc.20
+	title = rcw_tc.20.t
+	desc = rcw_tc.20.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.20.a
+		GER = { country_event = { id = rcw_tc.21 days = 3 } }
+	}
+}
+
+# Германское покровительство для Грузии
+country_event = {
+	id = rcw_tc.21
+	title = rcw_tc.21.t
+	desc = rcw_tc.21.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.21.a
+		add_war_support = -0.01
+		set_truce = {
+			target = GEO
+			days = 90
+		}
+		diplomatic_relation = {
+			country = GEO
+			relation = non_aggression_pact
+			active = yes
+		}
+		diplomatic_relation = {
+			country = GEO
+			relation = military_access
+			active = yes
+		}
+		diplomatic_relation = {
+			country = GEO
+			relation = guarantee
+			active = yes
+		}
+		GEO = { country_event = rcw_tc.22 }
+	}
+	
+	option = {
+		name = rcw_tc.21.b
+		trigger = { is_ai = no }
+		GEO = { country_event = rcw_tc.23 }
+	}
+}
+
+# Германское покровительство для Грузии (положительный ответ)
+country_event = {
+	id = rcw_tc.22
+	title = rcw_tc.22.t
+	desc = rcw_tc.22.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.22.a
+		add_stability = 0.01
+		add_political_power = 10
+	}
+}
+
+# Германское покровительство для Грузии (отрицательный ответ)
+country_event = {
+	id = rcw_tc.23
+	title = rcw_tc.23.t
+	desc = rcw_tc.23.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.23.a
+		add_stability = -0.01
+		add_political_power = -10
+	}
+}
+
+# Закавказье отказалось от мира
+country_event = {
+	id = rcw_tc.24
+	title = rcw_tc.24.t
+	desc = rcw_tc.24.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.24.a
+		add_stability = -0.01
+		add_political_power = -10
+	}
+}
+
+# Германское покровительство (оповещалка)
+country_event = {
+	id = rcw_tc.25
+	title = rcw_tc.25.t
+	desc = rcw_tc.25.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.25.a
+		add_stability = 0.01
+		add_political_power = 10
+	}
+}
+
+# Азербайджан может перейти под проекторат Турции, если война ещё не окончилась
+country_event = {
+	id = rcw_tc.26
+	title = rcw_tc.26.t
+	desc = rcw_tc.26.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	trigger = {
+		tag = AZR
+		has_global_flag = WWI_is_now
+		has_war_with = TUR
+		OR = {
+			is_neighbor_of = TUR
+			any_state = {
+				is_owned_by = AZR
+				is_controlled_by = TUR
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_tc.26.a
+		country_event = rcw_tc.16
+	}
+	
+	option = {
+		name = rcw_tc.26.b
+		trigger = { is_ai = no }
+	}
+}
+
+# Турецкий протекторат (оповещалка)
+country_event = {
+	id = rcw_tc.27
+	title = rcw_tc.27.t
+	desc = rcw_tc.27.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.27.a
+		add_stability = 0.01
+		add_political_power = 10
+	}
+}
+
+# Мирный договор с Арменией
+country_event = {
+	id = rcw_tc.28
+	title = rcw_tc.28.t
+	desc = rcw_tc.28.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	trigger = {
+		tag = ARM
+		has_global_flag = WWI_is_now
+		has_war_with = TUR
+		OR = {
+			surrender_progress > 0.5
+			has_capitulated = yes
+			is_in_faction = no
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_tc.28.a
+		TUR = { country_event = rcw_tc.29 }
+	}
+	
+	option = {
+		name = rcw_tc.28.b
+		trigger = { has_capitulated = no is_ai = no }
+	}
+}
+
+# Мирный договор с Арменией (Турция)
+country_event = {
+	id = rcw_tc.29
+	title = rcw_tc.29.t
+	desc = rcw_tc.29.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.29.a
+		ARM = {
+			if = {
+				limit = { is_faction_leader = yes }
+				dismantle_faction = yes
+			}
+			leave_faction = yes
+			add_ideas = {
+				ARM_critical_supply_shortage
+				ARM_turkish_watchful_eye
+				disarmed_nation
+				civilian_economy
+			}
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			white_peace = ARM
+		}
+		white_peace = ARM
+		set_truce = {
+			target = ARM
+			days = 90
+		}
+		diplomatic_relation = {
+			country = ARM
+			relation = military_access
+			active = yes
+		}
+		diplomatic_relation = {
+			country = ARM
+			relation = guarantee
+			active = yes
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ARM
+				is_core_of = TUR
+			}
+			TUR = { transfer_state = PREV }
+		}
+		if = {
+			limit = { GEO = { exists = yes has_capitulated = no } }
+			every_state = {
+				limit = {
+					is_owned_by = ARM
+					OR = {
+						is_claimed_by = GEO
+						is_core_of = GEO
+					}
+				}
+				GEO = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { AZR = { is_subject_of = TUR } }
+			every_state = {
+				limit = {
+					is_owned_by = ARM
+					OR = {
+						is_claimed_by = AZR
+						is_core_of = AZR
+					}
+				}
+				AZR = { transfer_state = PREV }
+			}
+		}
+		else = {
+			every_state = {
+				limit = {
+					is_owned_by = ARM
+					OR = {
+						is_claimed_by = AZR
+						is_core_of = AZR
+					}
+				}
+				TUR = { transfer_state = PREV }
+			}
+		}
+		#ARM = {
+			#country_event
+		#}
+	}
+	
+	option = {
+		name = rcw_tc.29.b
+		trigger = { has_completed_focus = TUR_uncompromising_policy }
+		if = {
+			limit = { GEO = { exists = yes has_capitulated = no } }
+			every_state = {
+				limit = {
+					is_owned_by = ARM
+					OR = {
+						is_claimed_by = GEO
+						is_core_of = GEO
+					}
+				}
+				GEO = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { AZR = { is_subject_of = TUR } }
+			every_state = {
+				limit = {
+					is_owned_by = ARM
+					OR = {
+						is_claimed_by = AZR
+						is_core_of = AZR
+					}
+				}
+				AZR = { transfer_state = PREV }
+			}
+		}
+		annex_country = {
+			target = ARM
+			transfer_troops = no
+		}
+	}
+}
+
 # Мир с Турцией в случае если вы долго держитесь
 country_event = {
 	id = rcw_tc.30
@@ -1033,50 +1580,31 @@ country_event = {
 	
 	trigger = {
 		has_global_flag = WWI_is_now
-		tag = GEO
-		is_neighbor_of = TUR
-		is_puppet = no
-		has_war_with = TUR
-		GEO = {
-			OR = {
-				NOT = { has_war_with = TUR }
-				NOT = { surrender_progress > 0 }
-			}
+		OR = {
+			original_tag = GER
+			original_tag = AUH
+			original_tag = BUL
 		}
-		ARM = {
-			OR = {
-				NOT = { has_war_with = TUR }
-				NOT = { surrender_progress > 0 }
+		is_faction_leader = yes
+		OR = {
+			has_war_with = GEO
+			has_war_with = ARM
+			has_war_with = AZR
+			has_war_with = BAK
+		}
+		TUR = {
+			NOT = {
+				is_in_faction_with = ROOT
 			}
 		}
 	}
 	
-	fire_only_once = yes
-	
 	mean_time_to_happen = {
-		days = 180
+		days = 0
 	}
 	
 	option = {
 		name = rcw_tc.30.a
-		every_state = {
-			limit = {
-				is_owned_by = TUR
-				CONTROLLER = {
-					OR = {
-						tag = GEO
-						tag = ARM
-						tag = AZR
-						tag = BAK
-					}
-				}
-				OR = {
-					state = 352
-					state = 353
-					state = 354
-				}
-			}
-		}
 		every_country = {
 			limit = {
 				is_in_faction_with = GEO
@@ -1085,9 +1613,6 @@ country_event = {
 				limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
 				white_peace = PREV
 			}
-		}
-		ai_chance = {
-			factor = 1
 		}
 	}
 }
@@ -1350,6 +1875,120 @@ country_event = {
 	}
 }
 
+# Предложение белого мира
+country_event = {
+	id = rcw_tc.38
+	title = rcw_tc.38.t
+	desc = rcw_tc.38.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		has_global_flag = WWI_is_now
+		tag = GEO
+		is_puppet = no
+		has_war_with = TUR
+	}
+	
+	option = {
+		name = rcw_tc.38.a
+		every_country = {
+			limit = {
+				is_in_faction_with = GEO
+			}
+			every_country = {
+				limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+				white_peace = PREV
+				PREV = { country_event = rcw_tc.39 }
+			}
+		}
+		if = {
+			limit = {
+				GEO = {
+					is_faction_leader = yes
+					ARM = { is_in_faction_with = GEO }
+				}
+			}
+			country_event = { id = rcw_tc.41 days = 1 }
+		}
+	}
+	
+	option = {
+		name = rcw_tc.38.b
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+			PREV = { country_event = rcw_tc.40 }
+		}
+	}
+}
+
+# Предложение белого мира (оповещалка)
+country_event = {
+	id = rcw_tc.39
+	title = rcw_tc.39.t
+	desc = rcw_tc.39.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.39.a
+	}
+}
+
+# Предложение белого мира (оповещалка)
+country_event = {
+	id = rcw_tc.40
+	title = rcw_tc.40.t
+	desc = rcw_tc.40.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.40.a
+	}
+}
+
+# Создание закавказской федерации как государства
+country_event = {
+	id = rcw_tc.41
+	title = rcw_tc.41.t
+	desc = rcw_tc.41.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_tc.41.a
+		news_event = news_n.154
+		hidden_effect = {
+			GEO = { save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR initiate_verification_of_the_popularity_of_coalitions = yes capital_scope = { set_state_flag = new_capital } }
+			ARM = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR initiate_verification_of_the_popularity_of_coalitions = yes }
+			TRC = { save_global_event_target_as = UNITED_COUNTRY transfer_state = 997 }
+			TRC = {
+				inherit_technology = GEO
+				inherit_technology = ARM
+			}
+			party_populatiry_addition_script_1 = yes
+			set_ruling_party_for_uniting_country_script_reverse = yes
+			country_event = { id = rcw_tc.1917 hours = 1 }
+			every_state = {
+				limit = { OR = { is_core_of = GEO is_core_of = ARM } }
+				add_core_of = TRC
+			}
+			every_state = {
+				limit = { OR = { is_claimed_by = GEO is_claimed_by = ARM } NOT = { is_core_of = TRC } }
+				add_claim_by = TRC
+			}
+			if = {
+				limit = { AZR = { is_in_faction_with = GEO } }
+				TRC = { country_event = { id = rcw_tc.1918 hours = 1 } }
+			}
+		}
+	}
+}
 
 # Бакинская Коммуна марионетится Россией
 country_event = {
@@ -1448,5 +2087,118 @@ country_event = {
 				}
 			}
 		}
+	}
+}
+
+# Создание закавказской федерации как государства (аннексия)
+country_event = {
+	id = rcw_tc.1917
+	title = rcw_tc.1917.t
+	desc = rcw_tc.1917.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = rcw_tc.1917.a
+		event_target:UNITED_COUNTRY = {
+			set_popularities = {
+					radical_socialism = var:radical_socialism_party
+					communism = var:communism_party
+					social_democracy = var:social_democracy_party
+					social_liberalism = var:social_liberalism_party
+					market_liberalism = var:market_liberalism_party
+					social_conservatism = var:social_conservatism_party
+					authoritarism = var:authoritarism_party
+					despotism = var:despotism_party
+					fascism = var:fascism_party
+					national_syndicalism = var:national_syndicalism_party
+			}
+		}
+		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
+		random_state = {
+			limit = { has_state_flag = new_capital }
+			event_target:UNITED_COUNTRY = { set_capital = PREV }
+			clr_state_flag = new_capital
+		}
+		clear_global_event_target = INTEGRATING_COUNTRY_MAJOR
+		clear_global_event_target = INTEGRATING_COUNTRY_MINOR
+		clear_global_event_target = UNITED_COUNTRY
+	}
+}
+
+# Азербайджан входит в федерацию
+country_event = {
+	id = rcw_tc.1918
+	title = rcw_tc.1918.t
+	desc = rcw_tc.1918.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = rcw_tc.1918.a
+		AZR = { save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR initiate_verification_of_the_popularity_of_coalitions = yes }
+		TRC = { save_global_event_target_as = INTEGRATING_COUNTRY_MINOR initiate_verification_of_the_popularity_of_coalitions = yes }
+		TRC = { save_global_event_target_as = UNITED_COUNTRY }
+		TRC = {
+			inherit_technology = AZR
+			if = {
+				limit = { BAK = { exists = yes } }
+				declare_war_on = {
+					target = BAK
+					type = annex_everything
+				}
+			}
+		}
+		party_populatiry_addition_script_1 = yes
+		set_ruling_party_for_uniting_country_script_reverse = yes
+		country_event = { id = rcw_tc.1919 hours = 1 }
+		every_state = {
+			limit = { is_core_of = AZR }
+			add_core_of = TRC
+		}
+		every_state = {
+			limit = { is_claimed_by = AZR NOT = { is_core_of = TRC } }
+			add_claim_by = TRC
+		}
+	}
+}
+
+# Азербайджан входит в федерацию (аннексия)
+country_event = {
+	id = rcw_tc.1919
+	title = rcw_tc.1919.t
+	desc = rcw_tc.1919.desc
+	picture = GFX_report_event_sov_redarmy
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = rcw_tc.1919.a
+		event_target:UNITED_COUNTRY = {
+			set_popularities = {
+					radical_socialism = var:radical_socialism_party
+					communism = var:communism_party
+					social_democracy = var:social_democracy_party
+					social_liberalism = var:social_liberalism_party
+					market_liberalism = var:market_liberalism_party
+					social_conservatism = var:social_conservatism_party
+					authoritarism = var:authoritarism_party
+					despotism = var:despotism_party
+					fascism = var:fascism_party
+					national_syndicalism = var:national_syndicalism_party
+			}
+		}
+		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
+		clear_global_event_target = INTEGRATING_COUNTRY_MAJOR
+		clear_global_event_target = INTEGRATING_COUNTRY_MINOR
+		clear_global_event_target = UNITED_COUNTRY
 	}
 }
