@@ -1,4 +1,4 @@
-focus_tree = {
+﻿focus_tree = {
 	id = Turkey_WWI_focus
 	
 	country = {
@@ -34,8 +34,8 @@ focus_tree = {
 			}
 		}
 		cost = 3
-		x = 8
-		y = -1
+		x = 0
+		y = 0
 
 		completion_reward = {
 			add_timed_idea = { idea = TUR_strengthening_the_front days = 54 }
@@ -59,448 +59,96 @@ focus_tree = {
 			}
 		}
 	}
-
+	
+	
 	focus = {
-		id = TUR_strengthen_Palestine
-		icon = GFX_goal_generic_fortify_city
+		id = TUR_do_not_investigate
+		icon = GFX_goal_generic_national_unity
 		available = {
 			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			has_global_flag = WWI_is_now
-			has_full_control_of_state = 1138
-			has_full_control_of_state = 1142
-			has_full_control_of_state = 1139
 		}
 		ai_will_do = {
 			factor = 1
 		}
-		prerequisite = {
-			focus = TUR_railways_in_Palestine
+		mutually_exclusive = {
+			focus = TUR_hold_an_investigation
 		}
-		bypass = {
-			NOT = {
-				OR = {
-					has_full_control_of_state = 1138
-					has_full_control_of_state = 1142
-					has_full_control_of_state = 1139
-				}
-			}
-		}
-		cost = 10
-		x = 8
+		cost = 1
+		x = 2
 		y = 0
 
 		completion_reward = {
-			1138 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 4088
-					instant_build = yes
-				}
-			}
-			1142 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 11970
-					instant_build = yes
-				}
-			}
-			1139 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 1015
-					instant_build = yes
-				}
-			}
+			add_stability = 0.07
 		}
 	}
 	
 	focus = {
-		id = TUR_strengthen_Syria_south
-		icon = GFX_goal_generic_fortify_city
+		id = TUR_hold_an_investigation
+		icon = GFX_goal_National_Security_Act
 		available = {
+			always = no
 			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			has_global_flag = WWI_is_now
-			has_full_control_of_state = 553
-			has_full_control_of_state = 554
+			is_ai = no
 		}
 		ai_will_do = {
 			factor = 1
 		}
-		cost = 10
-		x = 8
+		mutually_exclusive = {
+			focus = TUR_do_not_investigate
+		}
+		cost = 1
+		relative_position_id = TUR_do_not_investigate
+		x = 2
+		y = 0
+
+		completion_reward = {
+			add_stability = -0.03
+			set_country_flag = TUR_triumvirate_investigation_now
+			custom_effect_tooltip = work_in_progress
+		}
+	}
+	
+	
+	focus = {
+		id = TUR_separate_negotiations_with_the_Entente
+		icon = GFX_goal_generic_dangerous_deal
+		available = {
+			has_global_flag = WWI_is_now
+			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+			OR = {
+				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+				NOT = { is_in_faction_with = BUL }
+				surrender_progress > 0.19
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 4
+		x = 3
 		y = 1
 
-		completion_reward = {
+		select_effect = {
+			add_war_support = -0.07
 			if = {
-				limit = {
-					553 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-					554 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-				}
-				if = {
-					limit = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
-						has_variable = enver_power
-					}
-					subtract_from_variable = { var = enver_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_enver
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
-						has_variable = cemal_power
-					}
-					subtract_from_variable = { var = cemal_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_cemal
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
-						has_variable = talaat_power
-					}
-					subtract_from_variable = { var = talaat_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_talaat
-				}
+				limit = { has_country_flag = TUR_is_under_control_GER }
+				GER = { country_event = { id = turkey.99 days = 14 }  }
 			}
-			553 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 792
-					instant_build = yes
-				}
+			else = {
+				country_event = { id = turkey.60 days = 14 }
 			}
-			554 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 4111
-					instant_build = yes
-				}
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 7184
-					instant_build = yes
+		}
+		completion_reward = {
+			effect_tooltip = {
+				add_war_support = -0.07
+				every_country = {
+					limit = { has_country_flag = WWI_Entente_member is_subject = no }
+					country_event = { id = bulgaria.61 days = 2 }
 				}
 			}
 		}
 	}
 	
-	focus = {
-		id = TUR_strengthen_Syria_east
-		icon = GFX_goal_generic_fortify_city
-		available = {
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			has_global_flag = WWI_is_now
-			has_full_control_of_state = 680
-			has_full_control_of_state = 1148
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		cost = 10
-		x = 8
-		y = 2
-
-		completion_reward = {
-			if = {
-				limit = {
-					680 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-					1148 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-				}
-				if = {
-					limit = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
-						has_variable = enver_power
-					}
-					subtract_from_variable = { var = enver_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_enver
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
-						has_variable = cemal_power
-					}
-					subtract_from_variable = { var = cemal_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_cemal
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
-						has_variable = talaat_power
-					}
-					subtract_from_variable = { var = talaat_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_talaat
-				}
-			}
-			680 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 3942
-					instant_build = yes
-				}
-			}
-			1148 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 1606
-					instant_build = yes
-				}
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 6883
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = TUR_strengthen_Syria_north
-		icon = GFX_goal_generic_fortify_city
-		available = {
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			has_global_flag = WWI_is_now
-			has_full_control_of_state = 799
-			has_full_control_of_state = 677
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		cost = 10
-		x = 8
-		y = 3
-
-		completion_reward = {
-			if = {
-				limit = {
-					799 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-					677 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-				}
-				if = {
-					limit = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
-						has_variable = enver_power
-					}
-					subtract_from_variable = { var = enver_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_enver
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
-						has_variable = cemal_power
-					}
-					subtract_from_variable = { var = cemal_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_cemal
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
-						has_variable = talaat_power
-					}
-					subtract_from_variable = { var = talaat_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_talaat
-				}
-			}
-			799 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 12029
-					instant_build = yes
-				}
-			}
-			677 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 12473
-					instant_build = yes
-				}
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 13612
-					instant_build = yes
-				}
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 7671
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = TUR_strengthen_Anatolia
-		icon = GFX_goal_generic_fortify_city
-		available = {
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			has_global_flag = WWI_is_now
-			has_full_control_of_state = 350
-			has_full_control_of_state = 349
-			has_full_control_of_state = 355
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		cost = 10
-		x = 8
-		y = 5
-
-		completion_reward = {
-			if = {
-				limit = {
-					350 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-					355 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-					349 = {
-						NOT = {
-							any_neighbor_state = {
-								CONTROLLER = { OR = { has_war_with = ROOT AND = { tag = ROOT NOT = { has_full_control_of_state = PREV } } } }
-							}
-						}
-					}
-				}
-				if = {
-					limit = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
-						has_variable = enver_power
-					}
-					subtract_from_variable = { var = enver_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_enver
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
-						has_variable = cemal_power
-					}
-					subtract_from_variable = { var = cemal_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_cemal
-				}
-				else_if = {
-					limit = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
-						has_variable = talaat_power
-					}
-					subtract_from_variable = { var = talaat_power value = 1 }
-					custom_effect_tooltip = TUR_remove_infl_talaat
-				}
-			}
-			350 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 9912
-					instant_build = yes
-				}
-			}
-			349 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 3903
-					instant_build = yes
-				}
-			}
-			355 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 3935
-					instant_build = yes
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = TUR_strengthen_Constantinople
-		icon = GFX_goal_generic_fortify_city
-		available = {
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			has_global_flag = WWI_is_now
-			has_full_control_of_state = 797
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		cost = 10
-		x = 8
-		y = 4
-
-		completion_reward = {
-			797 = {
-				add_building_construction = {
-					type = bunker
-					level = 2
-					province = 9833
-					instant_build = yes
-				}
-				add_building_construction = {
-					type = coastal_bunker
-					level = 2
-					province = 9833
-					instant_build = yes
-				}
-			}
-		}
-	}
 	
 	focus = {
 		id = TUR_re-establishing_control_in_the_Hijaz
@@ -521,7 +169,7 @@ focus_tree = {
 			HJZ = { is_subject_of = TUR }
 		}
 		cost = 5
-		x = 10
+		x = 6
 		y = 0
 
 		completion_reward = {
@@ -544,7 +192,8 @@ focus_tree = {
 			factor = 1
 		}
 		cost = 5
-		x = 12
+		relative_position_id = TUR_re-establishing_control_in_the_Hijaz
+		x = 2
 		y = 0
 
 		completion_reward = {
@@ -578,7 +227,8 @@ focus_tree = {
 			focus = TUR_common_mobilization
 		}
 		cost = 5
-		x = 10
+		relative_position_id = TUR_re-establishing_control_in_the_Hijaz
+		x = 0
 		y = 1
 
 		completion_reward = {
@@ -655,7 +305,8 @@ focus_tree = {
 			focus = TUR_gather_tribal_militias
 		}
 		cost = 5
-		x = 12
+		relative_position_id = TUR_re-establishing_control_in_the_Hijaz
+		x = 2
 		y = 1
 
 		completion_reward = {
@@ -688,8 +339,9 @@ focus_tree = {
 			focus = TUR_common_mobilization
 		}
 		cost = 5
-		x = 12
-		y = 2
+		relative_position_id = TUR_gather_tribal_militias
+		x = 2
+		y = 1
 
 		completion_reward = {
 			swap_ideas = {
@@ -730,8 +382,9 @@ focus_tree = {
 			}
 		}
 		cost = 5
-		x = 14
-		y = 2
+		relative_position_id = TUR_gather_tribal_militias
+		x = 4
+		y = 1
 
 		completion_reward = {
 			JBS = {
@@ -772,8 +425,9 @@ focus_tree = {
 			focus = TUR_common_mobilization
 		}
 		cost = 5
-		x = 10
-		y = 2
+		relative_position_id = TUR_gather_tribal_militias
+		x = 0
+		y = 1
 
 		completion_reward = {
 			every_state = {
@@ -892,8 +546,9 @@ focus_tree = {
 			focus = TUR_offer_vassalage_to_YEM
 		}
 		cost = 5
-		x = 10
-		y = 3
+		relative_position_id = TUR_clean_up_order_in_Yemen
+		x = 0
+		y = 1
 
 		completion_reward = {
 			if = {
@@ -967,8 +622,9 @@ focus_tree = {
 			}
 		}
 		cost = 5
-		x = 12
-		y = 3
+		relative_position_id = TUR_clean_up_order_in_Yemen
+		x = 2
+		y = 1
 
 		completion_reward = {
 			YEM = {
@@ -988,8 +644,8 @@ focus_tree = {
 			factor = 1
 		}
 		cost = 10
-		x = 16
-		y = -1
+		x = 12
+		y = 0
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_national_society_of_artisans_open
@@ -1011,8 +667,9 @@ focus_tree = {
 			focus = TUR_national_society_of_artisans
 		}
 		cost = 10
-		x = 16
-		y = 0
+		relative_position_id = TUR_national_society_of_artisans
+		x = 0
+		y = 1
 
 		completion_reward = {
 			peasant_and_land_and_bread_question_fall = yes
@@ -1030,8 +687,9 @@ focus_tree = {
 			factor = 1
 		}
 		cost = 10
-		x = 18
-		y = -1
+		relative_position_id = TUR_national_society_of_artisans
+		x = 2
+		y = 0
 
 		completion_reward = {
 			add_stability = 0.05
@@ -1052,52 +710,13 @@ focus_tree = {
 			focus = TUR_introduction_of_the_card_system
 		}
 		cost = 10
-		x = 18
-		y = 0
+		relative_position_id = TUR_introduction_of_the_card_system
+		x = 0
+		y = 1
 
 		completion_reward = {
 			add_stability = -0.05
 			fall_foodstuffs_supply_crisis = yes
-		}
-	}
-	
-	focus = {
-		id = TUR_separate_negotiations_with_the_Entente
-		icon = GFX_goal_generic_dangerous_deal
-		available = {
-			has_global_flag = WWI_is_now
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			OR = {
-				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
-				NOT = { is_in_faction_with = BUL }
-				surrender_progress > 0.19
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		cost = 4
-		x = 15
-		y = 1
-
-		select_effect = {
-			add_war_support = -0.07
-			if = {
-				limit = { has_country_flag = TUR_is_under_control_GER }
-				GER = { country_event = { id = turkey.99 days = 14 }  }
-			}
-			else = {
-				country_event = { id = turkey.60 days = 14 }
-			}
-		}
-		completion_reward = {
-			effect_tooltip = {
-				add_war_support = -0.07
-				every_country = {
-					limit = { has_country_flag = WWI_Entente_member is_subject = no }
-					country_event = { id = bulgaria.61 days = 2 }
-				}
-			}
 		}
 	}
 	
@@ -1117,7 +736,8 @@ focus_tree = {
 		}
 		bypass = { OR = { NOT = { is_in_faction_with = GER } is_faction_leader = yes } }
 		cost = 10
-		x = 17
+		relative_position_id = TUR_support_of_large_peasant_farms
+		x = 1
 		y = 1
 
 		completion_reward = {
@@ -1146,8 +766,9 @@ focus_tree = {
 			focus = TUR_financing_of_coal_production
 		}
 		cost = 10
-		x = 16
-		y = 2
+		relative_position_id = TUR_apply_for_a_german_loan
+		x = -1
+		y = 1
 
 		completion_reward = {
 			add_political_power = 120
@@ -1172,65 +793,13 @@ focus_tree = {
 			focus = TUR_another_embezzlement
 		}
 		cost = 10
-		x = 18
-		y = 2
+		relative_position_id = TUR_apply_for_a_german_loan
+		x = 1
+		y = 1
 
 		completion_reward = {
 			add_stability = 0.07
 			fall_collapse_of_railway_system = yes
-		}
-	}
-	
-	focus = {
-		id = TUR_national_industry_organization
-		icon = GFX_goal_generic_forceful_treaty
-		available = {
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			has_country_flag = TUR_have_loan_WWI
-			has_completed_focus = TUR_national_society_of_artisans
-			OR = {
-				has_country_leader = { name = "Mehmed Talat Paşa" ruling_only = yes }
-				NOT = {
-					has_idea = TUR_young_turkish_triumvirate
-					has_idea = TUR_young_turkish_way_to_civil_war
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = TUR_apply_for_a_german_loan
-		}
-		cost = 10
-		x = 20
-		y = 2
-
-		completion_reward = {
-			add_political_power = -25
-			add_ideas = state_capitalism_law
-		}
-	}
-	
-	focus = {
-		id = TUR_strengthening_government_regulation
-		icon = GFX_goal_generic_construct_mil_factory
-		available = {
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = TUR_national_industry_organization
-		}
-		cost = 10
-		x = 20
-		y = 3
-
-		completion_reward = {
-			add_political_power = -25
-			rise_mobilization_economy_law_war = yes
 		}
 	}
 	
@@ -1249,8 +818,9 @@ focus_tree = {
 			focus = TUR_financing_of_coal_production
 		}
 		cost = 10
-		x = 18
-		y = 3
+		relative_position_id = TUR_financing_of_coal_production
+		x = 0
+		y = 1
 
 		completion_reward = {
 			add_stability = 0.07
@@ -1277,11 +847,67 @@ focus_tree = {
 			NOT = { is_in_faction_with = GER }
 		}
 		cost = 10
-		x = 17
-		y = 4
+		relative_position_id = TUR_increasing_rolling_stock_of_railways
+		x = -1
+		y = 1
 
 		completion_reward = {
 			GER = { country_event = turkey.12 }
+		}
+	}
+	
+	focus = {
+		id = TUR_national_industry_organization
+		icon = GFX_goal_generic_forceful_treaty
+		available = {
+			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+			has_country_flag = TUR_have_loan_WWI
+			has_completed_focus = TUR_national_society_of_artisans
+			OR = {
+				has_country_leader = { name = "Mehmed Talat Paşa" ruling_only = yes }
+				NOT = {
+					has_idea = TUR_young_turkish_triumvirate
+					has_idea = TUR_young_turkish_way_to_civil_war
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = TUR_apply_for_a_german_loan
+		}
+		cost = 10
+		relative_position_id = TUR_apply_for_a_german_loan
+		x = 3
+		y = 1
+
+		completion_reward = {
+			add_political_power = -25
+			add_ideas = state_capitalism_law
+		}
+	}
+	
+	focus = {
+		id = TUR_strengthening_government_regulation
+		icon = GFX_goal_generic_construct_mil_factory
+		available = {
+			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = TUR_national_industry_organization
+		}
+		cost = 10
+		relative_position_id = TUR_national_industry_organization
+		x = 0
+		y = 1
+
+		completion_reward = {
+			add_political_power = -25
+			rise_mobilization_economy_law_war = yes
 		}
 	}
 	
@@ -1295,8 +921,8 @@ focus_tree = {
 			factor = 1
 		}
 		cost = 10
-		x = 20
-		y = -1
+		x = 16
+		y = 0
 
 		completion_reward = {
 			add_stability = 0.07
@@ -1316,8 +942,9 @@ focus_tree = {
 			factor = 1
 		}
 		cost = 10
-		x = 22
-		y = -1
+		relative_position_id = TUR_gregorian_calendar
+		x = 2
+		y = 0
 
 		completion_reward = {
 			add_stability = 0.07
@@ -1344,8 +971,9 @@ focus_tree = {
 			focus = TUR_secular_state
 		}
 		cost = 10
-		x = 20
-		y = 0
+		relative_position_id = TUR_gregorian_calendar
+		x = 0
+		y = 1
 
 		completion_reward = {
 			add_stability = 0.07
@@ -1371,8 +999,9 @@ focus_tree = {
 			focus = TUR_legislative_protection_of_sharia
 		}
 		cost = 10
-		x = 22
-		y = 0
+		relative_position_id = TUR_gregorian_calendar
+		x = 2
+		y = 1
 
 		completion_reward = {
 			add_stability = -0.03
@@ -1463,7 +1092,8 @@ focus_tree = {
 			focus = TUR_raise_taxes
 		}
 		cost = 10
-		x = 20
+		relative_position_id = TUR_tightening_agricultural_policy
+		x = 1
 		y = 1
 
 		completion_reward = {
@@ -1517,59 +1147,14 @@ focus_tree = {
 			focus = TUR_revise_the_military_budget
 		}
 		cost = 10
-		x = 22
+		relative_position_id = TUR_tightening_agricultural_policy
+		x = 3
 		y = 1
 
 		completion_reward = {
 			add_political_power = -10
 			fall_hyper_inflation = yes
 			add_ideas = TUR_raised_taxes
-		}
-	}
-	
-	focus = {
-		id = TUR_do_not_investigate
-		icon = GFX_goal_generic_national_unity
-		available = {
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		mutually_exclusive = {
-			focus = TUR_hold_an_investigation
-		}
-		cost = 1
-		x = 12
-		y = -1
-
-		completion_reward = {
-			add_stability = 0.07
-		}
-	}
-	
-	focus = {
-		id = TUR_hold_an_investigation
-		icon = GFX_goal_National_Security_Act
-		available = {
-			always = no
-			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			is_ai = no
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		mutually_exclusive = {
-			focus = TUR_do_not_investigate
-		}
-		cost = 1
-		x = 14
-		y = -1
-
-		completion_reward = {
-			add_stability = -0.03
-			set_country_flag = TUR_triumvirate_investigation_now
-			custom_effect_tooltip = work_in_progress
 		}
 	}
 	
@@ -1584,10 +1169,10 @@ focus_tree = {
 		}
 		cost = 1
 		x = 26
-		y = -2
+		y = 0
 
 		completion_reward = {
-			add_stability = 0.05
+			add_stability = 2.05
 			set_country_flag = TUR_pan_islamic_propaganda_enable
 			custom_effect_tooltip = TUR_pan_islamic_propaganda_enable_tooltip
 		}
@@ -1604,7 +1189,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 29
-		y = -2
+		y = 0
 
 		completion_reward = {
 			add_war_support = 0.05
@@ -1631,10 +1216,10 @@ focus_tree = {
 		}
 		cost = 10
 		x = 26
-		y = -1
+		y = 1
 
 		completion_reward = {
-			add_stability = 0.07
+			add_stability = 2.07
 			if = {
 				limit = { has_variable = civil_power }
 				add_to_variable = { var = civil_power value = 1 }
@@ -1669,7 +1254,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 29
-		y = -1
+		y = 1
 
 		completion_reward = {
 			add_war_support = 0.1
@@ -1713,7 +1298,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 24
-		y = 0
+		y = 2
 
 		completion_reward = {
 			every_state = {
@@ -1758,7 +1343,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 26
-		y = 0
+		y = 2
 
 		completion_reward = {
 			hidden_effect = {
@@ -1847,7 +1432,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 28
-		y = 0
+		y = 2
 
 		completion_reward = {
 			if = {
@@ -1936,7 +1521,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 25
-		y = 1
+		y = 3
 
 		completion_reward = {
 			every_state = {
@@ -1978,7 +1563,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 23
-		y = 2
+		y = 4
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_direct_rule_Libya_dislike
@@ -2060,7 +1645,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 25
-		y = 2
+		y = 4
 
 		completion_reward = {
 			hidden_effect = {
@@ -2175,7 +1760,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 23
-		y = 3
+		y = 5
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_direct_rule_Libya_dislike
@@ -2244,7 +1829,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 25
-		y = 3
+		y = 5
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_direct_rule_militia
@@ -2303,7 +1888,7 @@ focus_tree = {
 		bypass = { ALG = { is_subject_of = TUR } }
 		cost = 10
 		x = 23
-		y = 4
+		y = 6
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_direct_rule_Libya_dislike
@@ -2372,7 +1957,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 25
-		y = 4
+		y = 6
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_direct_rule_militia
@@ -2430,7 +2015,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 23
-		y = 5
+		y = 7
 
 		completion_reward = {
 			if = {
@@ -2498,7 +2083,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 25
-		y = 5
+		y = 7
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_direct_rule_militia
@@ -2564,7 +2149,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 32
-		y = 0
+		y = 2
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_Central_Asia_puppets
@@ -2731,7 +2316,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 30
-		y = 0
+		y = 2
 
 		completion_reward = {
 			hidden_effect = {
@@ -2828,7 +2413,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 31
-		y = 1
+		y = 3
 
 		completion_reward = {
 			AFG = { country_event = turkey.42 }
@@ -2873,7 +2458,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 33
-		y = 1
+		y = 3
 
 		completion_reward = {
 			AFG = { country_event = turkey.39 }
@@ -2910,7 +2495,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 29
-		y = 1
+		y = 3
 
 		completion_reward = {
 			custom_effect_tooltip = TUR_direct_administration_of_Iran_choice
@@ -2950,7 +2535,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 27
-		y = 1
+		y = 3
 
 		completion_reward = {
 			hidden_effect = {
@@ -3031,7 +2616,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 29
-		y = 2
+		y = 4
 
 		completion_reward = {
 			if = {
@@ -3106,7 +2691,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 27
-		y = 2
+		y = 4
 
 		completion_reward = {
 			hidden_effect = {
@@ -3216,7 +2801,7 @@ focus_tree = {
 		}
 		cost = 10
 		x = 32
-		y = 2
+		y = 4
 
 		completion_reward = {
 			if = {
