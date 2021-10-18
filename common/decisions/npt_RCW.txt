@@ -9,6 +9,13 @@ russian_reunification_desisions = {
 		}
 		
 		visible = {
+			OR = {
+				this_country_has_some_russian_cosmetic = yes
+				AND = {
+					NOT = { former_russian_empire_ukraine_country = yes }
+					NOT = { is_former_russian_empire_non_slavic_country = yes }
+				}
+			}
 			NOT = { has_focus_tree = Russia_Bolsheviks_focus }
 			NOT = { has_country_flag = RCW_national_assembly_already_did_it }
 			NOT = { is_left_country = yes }
@@ -42,6 +49,13 @@ russian_reunification_desisions = {
 		}
 		
 		visible = {
+			OR = {
+				this_country_has_some_russian_cosmetic = yes
+				AND = {
+					NOT = { former_russian_empire_ukraine_country = yes }
+					NOT = { is_former_russian_empire_non_slavic_country = yes }
+				}
+			}
 			NOT = { has_focus_tree = Russia_Bolsheviks_focus }
 			NOT = { has_country_flag = RCW_national_assembly_already_did_it }
 			is_left_country = yes
@@ -94,11 +108,22 @@ russian_reunification_desisions = {
 					has_country_flag = RCW_Allrussian_national_assembly_disloyal
 					NOT = { any_other_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
 				}
+				AND = {
+					NOT = { any_other_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
+					NOT = { any_other_country = { exists = yes has_country_flag = RCW_Allrussian_national_assembly_loyal } }
+				}
 			}
 			NOT = { any_other_country = { is_former_russian_empire_russian_country = yes exists = yes is_subject = no NOT = { is_in_faction_with = ROOT } NOT = { has_country_flag = RCW_Allrussian_national_assembly_member has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal } NOT = { has_country_flag = RCW_Allrussian_national_assembly_peace_deal } } }
 		}
 		
 		visible = {
+			OR = {
+				this_country_has_some_russian_cosmetic = yes
+				AND = {
+					NOT = { former_russian_empire_ukraine_country = yes }
+					NOT = { is_former_russian_empire_non_slavic_country = yes }
+				}
+			}
 			NOT = { has_focus_tree = Russia_Bolsheviks_focus }
 			has_global_flag = RCW_Allrussian_national_assembly
 		}
@@ -135,7 +160,7 @@ russian_reunification_desisions = {
 				}
 				has_idea = russia_in_ruins_idea
 			}
-			surrender_progress > 0.5
+			surrender_progress < 0.5
 		}
 		
 		visible = {
@@ -159,7 +184,7 @@ russian_reunification_desisions = {
 					is_main_former_russian_empire_country = yes
 					has_war_with = ROOT
 				}
-				country_event = rcw_all_rus_NA.25
+				country_event = { id = rcw_all_rus_NA.25 hours = 1 }
 			}
 		}
 		
@@ -169,15 +194,62 @@ russian_reunification_desisions = {
 					is_main_former_russian_empire_country = yes
 					has_war_with = ROOT
 				}
-				country_event = rcw_all_rus_NA.26
+				country_event = { id = rcw_all_rus_NA.26 hours = 1 }
 			}
-			country_event = rcw_all_rus_NA.27
+			country_event = { id = rcw_all_rus_NA.27 hours = 1 }
 			hidden_effect = {
-				add_to_variable = { global.count_RUS_separatists = 1 }
 				if = {
-					limit = { check_variable = { global.count_RUS_separatists = 3 } }
+					limit = {
+						OR = {
+							AND = {
+								any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_peace_deal }
+								num_of_controlled_states > 10
+							}
+							any_other_country = {
+								has_country_flag = RCW_Allrussian_national_assembly_peace_deal
+								OR = {
+									any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_peace_deal }
+									num_of_controlled_states > 10
+								}
+							}
+							num_of_controlled_states > 20
+						}
+					}
 					news_event = { id = news_n.28 days = 7 }
 				}
+				add_to_variable = { global.count_RUS_separatists = 1 }
+				if = {
+					limit = { num_of_controlled_states > 10 }
+					add_to_variable = { global.count_RUS_separatists = 1 }
+				}
+			}
+		}
+	}
+	RCW_AMR_russian_far_east = {
+		visible = {
+			original_tag = AMR
+			has_government = social_liberalism
+		}
+		available = {
+			controls_state = 561
+			controls_state = 1039
+			controls_state = 409
+			controls_state = 408
+		}
+	
+		fire_only_once = yes
+		icon = generic_army_support
+	
+		cost = 100
+	
+		complete_effect = {
+			every_state = {
+				limit = {
+					OR = { region = 212 region = 87 region = 90 region = 154 region = 148 region = 155 region = 186 }
+					is_core_of = RUS
+					NOT = { is_core_of = ROOT }
+				}
+				add_core_of = ROOT
 			}
 		}
 	}
