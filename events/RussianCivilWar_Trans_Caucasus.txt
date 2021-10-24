@@ -12,11 +12,10 @@ country_event = {
 	picture = GFX_report_event_sov_redarmy
 	
 	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = RUS
 		has_country_flag = RUS_Oktober_revolution_fired
-		GEO = { exists = no }
-		ARM = { exists = no }
-		AZR = { exists = no }
+		GEO = { OR = { exists = no is_subject_of = ROOT } }
 	}
 	
 	mean_time_to_happen = {
@@ -25,33 +24,26 @@ country_event = {
 	
 	fire_only_once = yes
 	
-	immediate = {
-		hidden_effect = {
-			every_state = {
-				limit = {
-					region = 134
-					is_core_of = RUS
-					OR = {
-						is_core_of = GEO
-						is_core_of = ARM
-						is_core_of = AZR
-					}
-				}
-				remove_core_of = RUS
-				remove_core_of = RUS
-				remove_core_of = RSS
-				remove_core_of = CCA
-			}
-			GEO = {
-				set_country_flag = georgian_russian_socdems_is_here
-				add_ideas = neutral_foreign_policy_law
-				add_ideas = guarantee_neutrality
-			}
-		}
-	}
-	
 	option = {
 		name = rcw_tc.1.a
+		every_state = {
+			limit = {
+				OR = {
+					region = 116
+					region = 129
+					region = 134
+				}
+				is_core_of = RUS
+				OR = {
+					is_core_of = GEO
+					is_core_of = ARM
+					is_core_of = AZR
+				}
+			}
+			remove_core_of = RUS
+			remove_core_of = RSS
+			remove_core_of = CCA
+		}
 		every_state = {
 			limit = {
 				OR = {
@@ -71,6 +63,8 @@ country_event = {
 		}
 		hidden_effect = {
 			GEO = {
+				set_country_flag = georgian_russian_socdems_is_here
+				add_ideas = neutral_foreign_policy_law
 				add_to_war = { targeted_alliance = RUS enemy = TUR }
 				inherit_technology = RUS
 				create_faction = transcaucasian_commissariat
@@ -80,66 +74,60 @@ country_event = {
 				country_event = { id = rcw_tc.31 days = 7 }
 				remove_all_foreing_locked_templates_from_liberated_country = yes
 			}
-		RUS = {
-			if = {
-				limit = { NOT = { has_war_with = TUR } }
-				random_country = {
-					limit = { original_tag = TUR exists = yes }
-					every_state = {
-						limit = { is_owned_by = RUS is_core_of = PREV NOT = { state = 341 state = 949 state = 797 state = 863 state = 864 state = 898 } }
-						PREV = {
-							transfer_state = PREV
-						}
-					}
-				}
+			RUS = {
 				if = {
-					limit = { has_country_flag = RUS_occupated_PER_WWI }
+					limit = { NOT = { has_war_with = TUR } }
 					random_country = {
-						limit = { original_tag = PER exists = yes }
+						limit = { original_tag = TUR exists = yes }
 						every_state = {
-							limit = { is_owned_by = RUS is_core_of = PREV }
+							limit = { is_owned_by = RUS is_core_of = PREV NOT = { state = 341 state = 949 state = 797 state = 863 state = 864 state = 898 } }
 							PREV = {
 								transfer_state = PREV
 							}
 						}
 					}
-					clr_country_flag = RUS_occupated_PER_WWI
 				}
-				else = {
+				if = {
+					limit = { has_country_flag = RUS_occupated_PER_WWI }
+					clr_country_flag = RUS_occupated_PER_WWI
 					if = {
-						limit = { has_country_flag = RUS_occupated_PER_WWI }
-						ENG = {
+						limit = { ENG = { any_owned_state = { is_core_of = PER } } }
+						every_state = {
+							limit = { is_owned_by = RUS is_core_of = PER }
+							ENG = { transfer_state = PREV }
+						}
+						else = {
 							every_state = {
-								limit = { is_owned_by = RUS is_core_of = PREV }
-								PREV = {
-									transfer_state = PREV
-								}
+								limit = { is_owned_by = RUS is_core_of = PER }
+								PER = { transfer_state = PREV }
 							}
 						}
-						clr_country_flag = RUS_occupated_PER_WWI
+					}
+				}
+				every_state = {
+					limit = {
+						OR = {
+							region = 28
+							region = 116
+						}
+					}
+					set_state_province_controller = {
+						controller = ENG
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
 					}
 				}
 			}
-		}
-			if = {
-				limit = { controls_state = 676 }
-				ENG = { set_state_controller = 676 }
-			}
-			if = {
-				limit = { controls_state = 350 }
-				ENG = { set_state_controller = 350 }
-			}
-			if = {
-				limit = { controls_state = 680 }
-				ENG = { set_state_controller = 680 }
-			}
-			if = {
-				limit = { controls_state = 349 }
-				ENG = { set_state_controller = 349 }
-			}
-			if = {
-				limit = { controls_state = 355 }
-				ENG = { set_state_controller = 355 }
+			every_state = {
+				limit = {
+					OR = {
+						region = 28
+						region = 116
+					}
+				}
+				set_state_province_controller = {
+					controller = ENG
+					limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				}
 			}
 			hidden_effect = {
 				GEO = {
@@ -166,6 +154,24 @@ country_event = {
 		every_state = {
 			limit = {
 				OR = {
+					region = 116
+					region = 129
+					region = 134
+				}
+				is_core_of = RUS
+				OR = {
+					is_core_of = GEO
+					is_core_of = ARM
+					is_core_of = AZR
+				}
+			}
+			remove_core_of = RUS
+			remove_core_of = RSS
+			remove_core_of = CCA
+		}
+		every_state = {
+			limit = {
+				OR = {
 					state = 231
 					state = 863
 					state = 895
@@ -182,6 +188,8 @@ country_event = {
 		}
 		hidden_effect = {
 			GEO = {
+				set_country_flag = georgian_russian_socdems_is_here
+				add_ideas = neutral_foreign_policy_law
 				add_to_war = { targeted_alliance = RUS enemy = TUR }
 				inherit_technology = RUS
 				create_faction = transcaucasian_commissariat
@@ -189,67 +197,62 @@ country_event = {
 				country_event = { id = rcw_tc.2 hours = 3 }
 				country_event = { id = rcw_tc.4 days = 22 }
 				country_event = { id = rcw_tc.31 days = 7 }
+				remove_all_foreing_locked_templates_from_liberated_country = yes
 			}
-		RUS = {
-			if = {
-				limit = { NOT = { has_war_with = TUR } }
-				random_country = {
-					limit = { original_tag = TUR exists = yes }
-					every_state = {
-						limit = { is_owned_by = RUS is_core_of = PREV NOT = { state = 341 state = 949 state = 797 state = 863 state = 864 state = 898 } }
-						PREV = {
-							transfer_state = PREV
-						}
-					}
-				}
+			RUS = {
 				if = {
-					limit = { has_country_flag = RUS_occupated_PER_WWI }
+					limit = { NOT = { has_war_with = TUR } }
 					random_country = {
-						limit = { original_tag = PER exists = yes }
+						limit = { original_tag = TUR exists = yes }
 						every_state = {
-							limit = { is_owned_by = RUS is_core_of = PREV }
+							limit = { is_owned_by = RUS is_core_of = PREV NOT = { state = 341 state = 949 state = 797 state = 863 state = 864 state = 898 } }
 							PREV = {
 								transfer_state = PREV
 							}
 						}
 					}
-					clr_country_flag = RUS_occupated_PER_WWI
 				}
-				else = {
+				if = {
+					limit = { has_country_flag = RUS_occupated_PER_WWI }
+					clr_country_flag = RUS_occupated_PER_WWI
 					if = {
-						limit = { has_country_flag = RUS_occupated_PER_WWI }
-						ENG = {
+						limit = { ENG = { any_owned_state = { is_core_of = PER } } }
+						every_state = {
+							limit = { is_owned_by = RUS is_core_of = PER }
+							ENG = { transfer_state = PREV }
+						}
+						else = {
 							every_state = {
-								limit = { is_owned_by = RUS is_core_of = PREV }
-								PREV = {
-									transfer_state = PREV
-								}
+								limit = { is_owned_by = RUS is_core_of = PER }
+								PER = { transfer_state = PREV }
 							}
 						}
-						clr_country_flag = RUS_occupated_PER_WWI
+					}
+				}
+				every_state = {
+					limit = {
+						OR = {
+							region = 28
+							region = 116
+						}
+					}
+					set_state_province_controller = {
+						controller = ENG
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
 					}
 				}
 			}
-		}
-			if = {
-				limit = { controls_state = 676 }
-				ENG = { set_state_controller = 676 }
-			}
-			if = {
-				limit = { controls_state = 350 }
-				ENG = { set_state_controller = 350 }
-			}
-			if = {
-				limit = { controls_state = 680 }
-				ENG = { set_state_controller = 680 }
-			}
-			if = {
-				limit = { controls_state = 349 }
-				ENG = { set_state_controller = 349 }
-			}
-			if = {
-				limit = { controls_state = 355 }
-				ENG = { set_state_controller = 355 }
+			every_state = {
+				limit = {
+					OR = {
+						region = 28
+						region = 116
+					}
+				}
+				set_state_province_controller = {
+					controller = ENG
+					limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+				}
 			}
 			hidden_effect = {
 				GEO = {
@@ -281,22 +284,37 @@ country_event = {
 	
 	option = {
 		name = rcw_tc.2.a
-		AZR = {
-			transfer_state = 890
-			transfer_state = 893
-			transfer_state = 894
-			transfer_state = 896
-			transfer_state = 897
+		every_state = {
+			limit = {
+				OR = {
+					state = 890
+					state = 893
+					state = 894
+					state = 896
+					state = 897
+				}
+				is_owned_by = RUS
+			}
+			AZR = { transfer_state = PREV }
 		}
-		ARM = {
-			transfer_state = 230
-			transfer_state = 864
-			transfer_state = 887
-			transfer_state = 888
-			transfer_state = 889
-			transfer_state = 931
-			transfer_state = 891
-			transfer_state = 892
+		every_state = {
+			limit = {
+				OR = {
+					state = 230
+					state = 864
+					state = 887
+					state = 888
+					state = 889
+					state = 931
+					state = 891
+					state = 892
+					state = 352
+					state = 353
+					state = 354
+				}
+				is_owned_by = RUS
+			}
+			ARM = { transfer_state = PREV }
 		}
 		hidden_effect = {
 			AZR = {
@@ -318,21 +336,19 @@ country_event = {
 				add_to_faction = ARM
 				add_to_faction = AZR
 			}
-			if = {
-				limit = { owns_state = 352 }
-				ARM = { transfer_state = 352 transfer_state = 353 transfer_state = 354 }
-			}
-			if = {
-				limit = { controls_state = 352 }
-				ARM = { set_state_controller = 352 }
-			}
-			if = {
-				limit = { controls_state = 353 }
-				ARM = { set_state_controller = 353 }
-			}
-			if = {
-				limit = { controls_state = 354 }
-				ARM = { set_state_controller = 354 }
+			every_state = {
+				limit = {
+					OR = {
+						region = 28
+						region = 116
+						region = 129
+					}
+					is_owned_by = TUR
+				}
+				set_state_province_controller = {
+					controller = ARM
+					limit = { OR = { tag = RUS is_subject_of = RUS is_in_faction_with = RUS } }
+				}
 			}
 			hidden_effect = {
 				every_country = {
@@ -355,22 +371,37 @@ country_event = {
 	}
 	option = {
 		name = rcw_tc.2.b
-		AZR = {
-			transfer_state = 890
-			transfer_state = 893
-			transfer_state = 894
-			transfer_state = 896
-			transfer_state = 897
+		every_state = {
+			limit = {
+				OR = {
+					state = 890
+					state = 893
+					state = 894
+					state = 896
+					state = 897
+				}
+				is_owned_by = RUS
+			}
+			AZR = { transfer_state = PREV }
 		}
-		ARM = {
-			transfer_state = 230
-			transfer_state = 864
-			transfer_state = 887
-			transfer_state = 888
-			transfer_state = 889
-			transfer_state = 931
-			transfer_state = 891
-			transfer_state = 892
+		every_state = {
+			limit = {
+				OR = {
+					state = 230
+					state = 864
+					state = 887
+					state = 888
+					state = 889
+					state = 931
+					state = 891
+					state = 892
+					state = 352
+					state = 353
+					state = 354
+				}
+				is_owned_by = RUS
+			}
+			ARM = { transfer_state = PREV }
 		}
 		hidden_effect = {
 			AZR = {
@@ -389,24 +420,22 @@ country_event = {
 			}
 			
 			GEO = {
-					add_to_faction = ARM
-					add_to_faction = AZR
+				add_to_faction = ARM
+				add_to_faction = AZR
 			}
-			if = {
-				limit = { owns_state = 352 }
-				ARM = { transfer_state = 352 transfer_state = 353 transfer_state = 354 }
-			}
-			if = {
-				limit = { controls_state = 352 }
-				ARM = { set_state_controller = 352 }
-			}
-			if = {
-				limit = { controls_state = 353 }
-				ARM = { set_state_controller = 353 }
-			}
-			if = {
-				limit = { controls_state = 354 }
-				ARM = { set_state_controller = 354 }
+			every_state = {
+				limit = {
+					OR = {
+						region = 28
+						region = 116
+						region = 129
+					}
+					is_owned_by = TUR
+				}
+				set_state_province_controller = {
+					controller = ARM
+					limit = { OR = { tag = RUS is_subject_of = RUS is_in_faction_with = RUS } }
+				}
 			}
 			hidden_effect = {
 				every_country = {
@@ -430,22 +459,37 @@ country_event = {
 	}
 	option = {
 		name = rcw_tc.2.c
-		AZR = {
-			transfer_state = 890
-			transfer_state = 893
-			transfer_state = 894
-			transfer_state = 896
-			transfer_state = 897
+		every_state = {
+			limit = {
+				OR = {
+					state = 890
+					state = 893
+					state = 894
+					state = 896
+					state = 897
+				}
+				is_owned_by = RUS
+			}
+			AZR = { transfer_state = PREV }
 		}
-		ARM = {
-			transfer_state = 230
-			transfer_state = 864
-			transfer_state = 887
-			transfer_state = 888
-			transfer_state = 889
-			transfer_state = 931
-			transfer_state = 891
-			transfer_state = 892
+		every_state = {
+			limit = {
+				OR = {
+					state = 230
+					state = 864
+					state = 887
+					state = 888
+					state = 889
+					state = 931
+					state = 891
+					state = 892
+					state = 352
+					state = 353
+					state = 354
+				}
+				is_owned_by = RUS
+			}
+			ARM = { transfer_state = PREV }
 		}
 		hidden_effect = {
 			AZR = {
@@ -464,24 +508,22 @@ country_event = {
 			}
 			
 			GEO = {
-					add_to_faction = ARM
-					add_to_faction = AZR
+				add_to_faction = ARM
+				add_to_faction = AZR
 			}
-			if = {
-				limit = { owns_state = 352 }
-				ARM = { transfer_state = 352 transfer_state = 353 transfer_state = 354 }
-			}
-			if = {
-				limit = { controls_state = 352 }
-				ARM = { set_state_controller = 352 }
-			}
-			if = {
-				limit = { controls_state = 353 }
-				ARM = { set_state_controller = 353 }
-			}
-			if = {
-				limit = { controls_state = 354 }
-				ARM = { set_state_controller = 354 }
+			every_state = {
+				limit = {
+					OR = {
+						region = 28
+						region = 116
+						region = 129
+					}
+					is_owned_by = TUR
+				}
+				set_state_province_controller = {
+					controller = ARM
+					limit = { OR = { tag = RUS is_subject_of = RUS is_in_faction_with = RUS } }
+				}
 			}
 			hidden_effect = {
 				every_country = {
