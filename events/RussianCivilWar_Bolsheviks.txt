@@ -761,7 +761,7 @@ country_event = {
 	
 	trigger = {
 		tag = RUS
-		has_completed_focus = RUS_combeds
+		has_country_flag = flag_RUS_combeds
 		has_government = communism
 		has_idea = allow_one_party_law
 	}
@@ -4977,6 +4977,7 @@ country_event = {
 			has_completed_focus = RUS_soviet_power
 			has_completed_focus = RUS_left_eser_focus
 		}
+		NOT = { has_country_flag = RUS_RKP_b_VIII_fired }
 	}
 	
 	mean_time_to_happen = {
@@ -5029,11 +5030,22 @@ country_event = {
 	picture = GFX_report_event_sov_felix_VCHK
 	
 	trigger = {
+		has_government = communism
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_country_flag = RUS_flag_soviet_power
+		NOT = { has_country_flag = RUS_RKP_b_VIII_fired }
 	}
 	
 	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			set_country_flag = RUS_RKP_b_VIII_fired
+			set_seats_in_CC_simular_to_faction_power = yes
+		}
+	}
 	
 	# Ничего не делать
 	option = {
@@ -5378,6 +5390,27 @@ country_event = {
 	}
 }
 
+# Март 1920, IX съезд РКП (б)
+country_event = {
+	id = rcw_bolsheviks.217
+	title = rcw_bolsheviks.217.t
+	desc = rcw_bolsheviks.217.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	immediate = {
+		set_country_flag = RUS_RKP_b_IX_fired
+		set_seats_in_CC_simular_to_faction_power = yes
+	}
+	
+	option = {
+		name = rcw_bolsheviks.217.a
+	}
+}
+
 # Июнь 1919 года или февраль 1920 года, примерно, дезорганизация управления
 country_event = {
 	id = rcw_bolsheviks.221
@@ -5434,11 +5467,12 @@ country_event = {
 		tag = RUS
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
+		has_country_flag = RUS_RKP_b_IX_fired
 		controls_state = 223
 	}
 	
 	mean_time_to_happen = {
-		days = 190
+		days = 60 #от IX съезда два месяца, а было 190
 	}
 	
 	fire_only_once = yes
@@ -5510,6 +5544,7 @@ country_event = {
 		has_country_flag = RUS_Oktober_revolution_fired
 		has_government = communism
 		has_country_flag = RUS_flag_soviet_power
+		has_country_flag = RUS_RKP_b_IX_fired
 		OR = {
 			has_country_flag = RUS_RKP_b_VIII_decist_war_plan
 			has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
@@ -5517,7 +5552,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 490
+		days = 180 #от IX съезда полгода, а было 490
 	}
 	
 	immediate = {
@@ -6047,6 +6082,117 @@ country_event = {
 	}
 }
 
+# Март 1921, X съезд РКП (б)
+country_event = {
+	id = rcw_bolsheviks.235
+	title = rcw_bolsheviks.235.t
+	desc = rcw_bolsheviks.235.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = RUS_RKP_b_X_fired }
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bolsheviks.235.a
+		country_event = { id = rcw_bolsheviks.237 days = 1 }
+	}
+}
+
+# Доклад и прения по партстроительству
+country_event = {
+	id = rcw_bolsheviks.237
+	title = rcw_bolsheviks.237.t
+	desc = rcw_bolsheviks.237.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.237.a
+		add_to_variable = { left_faction_party_compositon = 5 }
+		check_overlap_of_party_composition = yes
+		custom_effect_tooltip = left_fact_party_comp_plus_5
+		
+		if = {
+			limit = { NOT = { has_country_flag = Alexandr_Shlyapnikov_arrested } }
+			country_event = { id = rcw_bolsheviks.238 days = 1 }
+			else = { country_event = { id = rcw_bolsheviks.239 days = 1 } }
+		}
+	}
+	option = {
+		name = rcw_bolsheviks.237.b
+		add_to_variable = { decist_faction_party_compositon = 5 }
+		check_overlap_of_party_composition = yes
+		custom_effect_tooltip = decist_fact_party_comp_plus_5
+		
+		if = {
+			limit = { NOT = { has_country_flag = Alexandr_Shlyapnikov_arrested } }
+			country_event = { id = rcw_bolsheviks.238 days = 1 }
+			else = { country_event = { id = rcw_bolsheviks.239 days = 1 } }
+		}
+	}
+}
+
+# Доклад и прения по профсоюзам Шляпникова
+country_event = {
+	id = rcw_bolsheviks.238
+	title = rcw_bolsheviks.238.t
+	desc = rcw_bolsheviks.238.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.238.a
+		add_political_power = -30
+		
+		country_event = { id = rcw_bolsheviks.239 days = 1 }
+	}
+	option = {
+		name = rcw_bolsheviks.238.b
+		add_to_variable = { decist_faction_party_compositon = 5 }
+		check_overlap_of_party_composition = yes
+		custom_effect_tooltip = decist_fact_party_comp_plus_5
+		
+		country_event = { id = rcw_bolsheviks.239 days = 1 }
+	}
+}
+
+# Про концессии
+country_event = {
+	id = rcw_bolsheviks.239
+	title = rcw_bolsheviks.239.t
+	desc = rcw_bolsheviks.239.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bolsheviks.239.a
+		add_to_variable = { moderate_faction_party_compositon = 10 }
+		add_to_variable = { right_faction_party_compositon = 5 }
+		check_overlap_of_party_composition = yes
+		custom_effect_tooltip = moderate_fact_party_comp_plus_10
+		custom_effect_tooltip = right_fact_party_comp_plus_5
+		
+		country_event = { id = rcw_bolsheviks.250 days = 4 }
+	}
+	option = {
+		name = rcw_bolsheviks.239.b
+		add_to_variable = { left_faction_party_compositon = 10 }
+		check_overlap_of_party_composition = yes
+		custom_effect_tooltip = left_fact_party_comp_plus_10
+		
+		country_event = { id = rcw_bolsheviks.250 days = 4 }
+	}
+}
+
+
 # Штурм или осада
 country_event = {
 	id = rcw_bolsheviks.241
@@ -6169,116 +6315,12 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		name = rcw_bolsheviks.235.a
+		name = rcw_bolsheviks.245.a
 	}
 	option = {
 		trigger = { tag = RUS }
 		name = rcw_bolsheviks.245.b
 		declare_war_on = { target = KRN type = annex_everything }
-	}
-}
-
-# Март 1921, X съезд РКП (б)
-country_event = {
-	id = rcw_bolsheviks.235
-	title = rcw_bolsheviks.235.t
-	desc = rcw_bolsheviks.235.desc
-	picture = GFX_report_event_sov_felix_VCHK
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_bolsheviks.235.a
-		country_event = { id = rcw_bolsheviks.237 days = 1 }
-	}
-}
-
-# Доклад и прения по партстроительству
-country_event = {
-	id = rcw_bolsheviks.237
-	title = rcw_bolsheviks.237.t
-	desc = rcw_bolsheviks.237.desc
-	picture = GFX_report_event_sov_felix_VCHK
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_bolsheviks.237.a
-		add_to_variable = { left_faction_party_compositon = 5 }
-		check_overlap_of_party_composition = yes
-		custom_effect_tooltip = left_fact_party_comp_plus_5
-		
-		if = {
-			limit = { NOT = { has_country_flag = Alexandr_Shlyapnikov_arrested } }
-			country_event = { id = rcw_bolsheviks.238 days = 1 }
-			else = { country_event = { id = rcw_bolsheviks.239 days = 1 } }
-		}
-	}
-	option = {
-		name = rcw_bolsheviks.237.b
-		add_to_variable = { decist_faction_party_compositon = 5 }
-		check_overlap_of_party_composition = yes
-		custom_effect_tooltip = decist_fact_party_comp_plus_5
-		
-		if = {
-			limit = { NOT = { has_country_flag = Alexandr_Shlyapnikov_arrested } }
-			country_event = { id = rcw_bolsheviks.238 days = 1 }
-			else = { country_event = { id = rcw_bolsheviks.239 days = 1 } }
-		}
-	}
-}
-
-# Доклад и прения по профсоюзам Шляпникова
-country_event = {
-	id = rcw_bolsheviks.238
-	title = rcw_bolsheviks.238.t
-	desc = rcw_bolsheviks.238.desc
-	picture = GFX_report_event_sov_felix_VCHK
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_bolsheviks.238.a
-		add_political_power = -30
-		
-		country_event = { id = rcw_bolsheviks.239 days = 1 }
-	}
-	option = {
-		name = rcw_bolsheviks.238.b
-		add_to_variable = { decist_faction_party_compositon = 5 }
-		check_overlap_of_party_composition = yes
-		custom_effect_tooltip = decist_fact_party_comp_plus_5
-		
-		country_event = { id = rcw_bolsheviks.239 days = 1 }
-	}
-}
-
-# Про концессии
-country_event = {
-	id = rcw_bolsheviks.239
-	title = rcw_bolsheviks.239.t
-	desc = rcw_bolsheviks.239.desc
-	picture = GFX_report_event_sov_felix_VCHK
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_bolsheviks.239.a
-		add_to_variable = { moderate_faction_party_compositon = 10 }
-		add_to_variable = { right_faction_party_compositon = 5 }
-		check_overlap_of_party_composition = yes
-		custom_effect_tooltip = moderate_fact_party_comp_plus_10
-		custom_effect_tooltip = right_fact_party_comp_plus_5
-		
-		country_event = { id = rcw_bolsheviks.250 days = 4 }
-	}
-	option = {
-		name = rcw_bolsheviks.239.b
-		add_to_variable = { left_faction_party_compositon = 10 }
-		check_overlap_of_party_composition = yes
-		custom_effect_tooltip = left_fact_party_comp_plus_10
-		
-		country_event = { id = rcw_bolsheviks.250 days = 4 }
 	}
 }
 
@@ -6290,6 +6332,13 @@ country_event = {
 	picture = GFX_report_event_sov_felix_VCHK
 	
 	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			set_country_flag = RUS_RKP_b_X_fired
+			set_seats_in_CC_simular_to_faction_power = yes
+		}
+	}
 	
 	option = {
 		name = rcw_bolsheviks.250.a

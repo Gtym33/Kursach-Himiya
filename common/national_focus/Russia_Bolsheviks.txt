@@ -117,10 +117,6 @@ focus_tree = {
 				factor = 0
 				NOT = { controls_state = 219 }
 			}
-			modifier = {
-				factor = 0
-				surrender_progress > 0.2
-			}
 		}
 		will_lead_to_war_with = NWA
 		will_lead_to_war_with = WVA
@@ -172,8 +168,8 @@ focus_tree = {
 							has_start_date < 1918.11.11
 							OR = { has_country_flag = GER_monarchy_fall has_global_flag = WWI_GER_HAS_CAPITULATED }
 							owns_state = 209
-							RUS = { has_country_flag = RUS_brest_peace_fired }
-							NOT = { has_war_with = RUS }
+							ROOT = { has_country_flag = RUS_brest_peace_fired }
+							NOT = { has_war_with = ROOT }
 							NOT = { has_war_with = UBD }
 						}
 					}
@@ -183,7 +179,7 @@ focus_tree = {
 						region = 132
 						is_owned_by = GER
 					}
-					RUS = { transfer_state = PREV }
+					ROOT = { transfer_state = PREV }
 				}
 			}
 			every_country = {
@@ -208,7 +204,17 @@ focus_tree = {
 						original_tag = CRI
 					}
 				}
-				RUS = {
+				diplomatic_relation = {
+					country = ROOT
+					relation = non_aggression_pact
+					active = no
+				}
+				ROOT = {
+					diplomatic_relation = {
+						country = PREV
+						relation = non_aggression_pact
+						active = no
+					}
 					declare_war_on = {
 						target = PREV
 						type = annex_everything
@@ -239,7 +245,7 @@ focus_tree = {
 					surrender_progress > 0.05
 				}
 				any_country = {
-					has_war_with = RUS
+					has_war_with = ROOT
 					OR = {
 						controls_state = 15
 						controls_state = 16
@@ -300,7 +306,9 @@ focus_tree = {
 				DON = { exists = yes }
 				RVA = { exists = yes }
 				OCH = { exists = yes }
+				ACH = { exists = yes }
 				BKL = { exists = yes }
+				AMR = { exists = yes }
 				UDM = { exists = yes }
 				RGR = { exists = yes }
 			}
@@ -313,7 +321,9 @@ focus_tree = {
 		will_lead_to_war_with = DON
 		will_lead_to_war_with = RVA
 		will_lead_to_war_with = OCH
+		will_lead_to_war_with = ACH
 		will_lead_to_war_with = BKL
+		will_lead_to_war_with = AMR
 		will_lead_to_war_with = UDM
 		will_lead_to_war_with = RGR
 		prerequisite = {
@@ -330,7 +340,9 @@ focus_tree = {
 					NOT = { country_exists = DON }
 					NOT = { country_exists = RVA }
 					NOT = { country_exists = OCH }
+					NOT = { country_exists = ACH }
 					NOT = { country_exists = BKL }
+					NOT = { country_exists = AMR }
 					NOT = { country_exists = UDM }
 					NOT = { country_exists = RGR }
 				}
@@ -352,8 +364,10 @@ focus_tree = {
 						tag = KUB
 						tag = DON
 						tag = OCH
+						tag = ACH
 						tag = RVA
 						tag = BKL
+						tag = AMR
 					}
 					NOT = { has_government = communism has_government = radical_socialism }
 					exists = yes
@@ -372,6 +386,14 @@ focus_tree = {
 			}
 			random_other_country = {
 				limit = { original_tag = KUB is_socialist_country = yes NOT = { has_war_with = ROOT } }
+				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			random_other_country = {
+				limit = { original_tag = ACH is_socialist_country = yes NOT = { has_war_with = ROOT } }
+				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			random_other_country = {
+				limit = { original_tag = AMR is_socialist_country = yes NOT = { has_war_with = ROOT } }
 				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
 			}
 		}
@@ -441,6 +463,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_struggle_against_counterrevolution
 		completion_reward = {
+			set_country_flag = flag_RUS_combeds
 			remove_ideas = RUS_bolsheviks_vs_left_esser
 			add_political_power = 50
 			add_to_variable = {
@@ -969,41 +992,45 @@ focus_tree = {
 	focus = {
 		id = RUS_extraordinary_party_congress
 		icon = GFX_goal_RUS_extraordinary_party_congress
-		cost = 5
+		cost = 1
 		available = {
 			has_government = communism
 			decist_fact_party_is_ruling = no
+			OR = {
+				has_active_mission = RUS_RKP_b_VIII_party_congress_timer
+				has_active_mission = RUS_RKP_b_IX_party_congress_timer
+			}
 		}
 		ai_will_do = {
-			factor = 1
+			factor = 0
 		}
 		prerequisite = {
 			focus = RUS_comintern
-		}
-		bypass = {
-			has_global_flag = RUS_civil_war_over
 		}
 		x = -2
 		y = 3
 		relative_position_id = RUS_vchk
 		completion_reward = {
-			add_political_power = 150
-			if = {
-				limit = { has_idea = RUS_weak_state_suppression_apparatus_1 }
-				remove_ideas = RUS_weak_state_suppression_apparatus_1
-			}
-			else_if = {
-				limit = { has_idea = RUS_weak_state_suppression_apparatus }
-				swap_ideas = {
-					remove_idea = RUS_weak_state_suppression_apparatus
-					add_idea = RUS_weak_state_suppression_apparatus_1
-				}
-			}
-			add_to_variable = { left_faction_party_compositon = 0.05 }
-			custom_effect_tooltip = left_fact_party_comp_plus_5
+			add_political_power = -75
+			add_to_variable = { left_faction_party_compositon = 0.1 }
+			custom_effect_tooltip = left_fact_party_comp_plus_10
 			add_to_variable = { decist_faction_party_compositon = 0.05 }
 			custom_effect_tooltip = decist_fact_party_comp_plus_5
 			check_overlap_of_party_composition = yes
+			if = {
+				limit = { has_active_mission = RUS_RKP_b_VIII_party_congress_timer }
+				add_days_mission_timeout = {
+					mission = RUS_RKP_b_VIII_party_congress_timer
+					days = -365
+				}
+			}
+			if = {
+				limit = { has_active_mission = RUS_RKP_b_IX_party_congress_timer }
+				add_days_mission_timeout = {
+					mission = RUS_RKP_b_IX_party_congress_timer
+					days = -365
+				}
+			}
 		}
 	}
 
@@ -1885,8 +1912,8 @@ focus_tree = {
 				limit = {
 					has_opinion_modifier = expropriation_of_capital
 				}
-				remove_opinion_modifier = { target = RUS modifier = expropriation_of_capital }
-				RUS = { remove_opinion_modifier = { target = PREV modifier = expropriation_of_capital } }
+				remove_opinion_modifier = { target = ROOT modifier = expropriation_of_capital }
+				ROOT = { remove_opinion_modifier = { target = PREV modifier = expropriation_of_capital } }
 			}
 		}
 
@@ -2395,51 +2422,51 @@ focus_tree = {
 			capital_scope = {
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Vengerskiy kavaleriyskiy polk\" division_template = \"Vengerskiy kavaleriyskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"Vengerskiy kavaleriyskiy polk\" division_template = \"Vengerskiy kavaleriyskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 			}
 		}
@@ -3313,15 +3340,15 @@ focus_tree = {
 			capital_scope = {
 				create_unit = {
 					division = "name = \"4-ya Konarmeyskaya Diviziya\" division_template = \"Konarmeyskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"6-ya Konarmeyskaya Diviziya\" division_template = \"Konarmeyskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 				create_unit = {
 					division = "name = \"11-ya Konarmeyskaya Diviziya\" division_template = \"Konarmeyskaya Diviziya\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = RUS
+					owner = ROOT
 				}
 			}
 		}

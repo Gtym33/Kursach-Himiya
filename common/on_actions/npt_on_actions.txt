@@ -693,19 +693,51 @@ on_actions = {
 				}
 				ROOT = {
 					every_enemy_country = {
-						limit = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } NOT = { tag = FROM } }
+						limit = { original_tag = ROOT }
 						every_state = {
-							limit = { is_owned_by = ROOT is_controlled_by = PREV }
+							limit = { is_owned_by = ROOT is_core_of = PREV CONTROLLER = { OR = { tag = PREV.PREV is_subject_of = PREV.PREV is_in_faction_with = PREV.PREV OVERLORD = { controls_state = PREV.PREV } } } }
 							PREV = { transfer_state = PREV }
 						}
 					}
 				}
 				ROOT = {
 					every_enemy_country = {
-						limit = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } tag = FROM }
+						limit = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } NOT = { tag = FROM } }
 						every_state = {
-							limit = { is_owned_by = ROOT is_controlled_by = PREV CONTROLLER = { divisions_in_state = { size > 0 state = PREV } } }
+							limit = { is_owned_by = ROOT is_controlled_by = PREV  }
 							PREV = { transfer_state = PREV }
+						}
+					}
+				}
+				ROOT = {
+					if = {
+						limit = {
+							NOT = { any_country = { original_tag = ROOT has_war_with = ROOT OR = { is_subject_of = FROM is_in_faction_with = FROM FROM = { is_subject_of = PREV } } } }
+						}
+						every_enemy_country = {
+							limit = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } tag = FROM }
+							every_state = {
+								limit = {
+									is_owned_by = ROOT
+									is_controlled_by = PREV
+									CONTROLLER = { divisions_in_state = { size > 0 state = PREV } }
+								}
+								PREV = { transfer_state = PREV }
+							}
+						}
+						else = {
+							every_enemy_country = {
+								limit = { OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } tag = FROM }
+								every_state = {
+									limit = {
+										is_owned_by = ROOT
+										NOT = { is_core_of = ROOT }
+										is_controlled_by = PREV
+										CONTROLLER = { divisions_in_state = { size > 0 state = PREV } }
+									}
+									PREV = { transfer_state = PREV }
+								}
+							}
 						}
 					}
 				}

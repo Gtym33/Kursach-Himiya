@@ -11287,6 +11287,12 @@ country_event = {
 		name = rcw_usfev.403.a
 		add_timed_idea = { idea = strikes_2 days = 20 }
 		set_country_flag = rcw_usfev_403_opt_a
+		hidden_effect = {
+			add_days_mission_timeout = {
+				mission = OCH_bolsheviks_coup
+				days = -10
+			}
+		}
 		ai_chance = {
 			factor = 1
 			modifier = {
@@ -11301,6 +11307,12 @@ country_event = {
 		add_political_power = -10
 		add_stability = -0.01
 		set_country_flag = rcw_usfev_403_opt_b
+		hidden_effect = {
+			add_days_mission_timeout = {
+				mission = OCH_bolsheviks_coup
+				days = 20
+			}
+		}
 		ai_chance = {
 			factor = 2
 		}
@@ -11407,39 +11419,41 @@ country_event = {
 	title = rcw_usfev.409.t
 	desc = rcw_usfev.409.desc
 	picture = GFX_report_event_och_perevorot_v_orenburge
-	trigger = {
-		tag = RUS
-		has_focus_tree = Russia_Bolsheviks_focus
-		has_country_flag = OCH_revolt
-		OCH = {
-			exists = yes
-			controls_state = 652
-			communism > 0.3
-			has_focus_tree = Orenburg_white_cossaks_focus
-			has_completed_focus = OCH_martial_law
-			NOT = { has_completed_focus = OCH_ban_military_revolutionary_commitette }
-			NOT = { has_completed_focus = OCH_rising_of_Orenburg_cossacks }
-		}
-		OR = {
-			has_start_date < 1917.11.7
-			AND = {
-				NOT = { has_start_date < 1917.11.7 }
-				date > 1917.11.10
-			}
-		}
-	}
+	#trigger = {
+	#	tag = RUS
+	#	has_focus_tree = Russia_Bolsheviks_focus
+	#	has_country_flag = OCH_revolt
+	#	OCH = {
+	#		exists = yes
+	#		controls_state = 652
+	#		communism > 0.3
+	#		has_focus_tree = Orenburg_white_cossaks_focus
+	#		has_completed_focus = OCH_martial_law
+	#		NOT = { has_completed_focus = OCH_ban_military_revolutionary_commitette }
+	#		NOT = { has_completed_focus = OCH_rising_of_Orenburg_cossacks }
+	#	}
+	#	OR = {
+	#		has_start_date < 1917.11.7
+	#		AND = {
+	#			NOT = { has_start_date < 1917.11.7 }
+	#			date > 1917.11.10
+	#		}
+	#	}
+	#}
 	
-	mean_time_to_happen = {
-		days = 30
-		modifier = {
-			factor = 0.66
-			OCH = { has_country_flag = rcw_usfev_403_opt_a }
-		}
-		modifier = {
-			factor = 1.66
-			OCH = { has_country_flag = rcw_usfev_403_opt_b }
-		}
-	}
+	#mean_time_to_happen = {
+	#	days = 30
+	#	modifier = {
+	#		factor = 0.66
+	#		OCH = { has_country_flag = rcw_usfev_403_opt_a }
+	#	}
+	#	modifier = {
+	#		factor = 1.66
+	#		OCH = { has_country_flag = rcw_usfev_403_opt_b }
+	#	}
+	#}
+	
+	is_triggered_only = yes # В связи с вводом миссии с таймером
 	
 	fire_only_once = yes
 	
@@ -14502,7 +14516,7 @@ country_event = {
 	desc = rcw_usfev.1930.desc
 	is_triggered_only = yes
 	trigger = {
-		has_country_flag = UCH_revolt
+		RSR = { has_country_flag = UCH_revolt }
 		NOT = { has_country_flag = UCH_second_revolt }
 	}
 	option = {
@@ -14541,7 +14555,7 @@ country_event = {
 	fire_only_once = yes
 	is_triggered_only = yes
 	trigger = {
-		has_country_flag = UCH_revolt
+		RSR = { has_country_flag = UCH_revolt }
 		NOT = { has_country_flag = UCH_second_revolt }
 	}
 	option = {
@@ -14589,7 +14603,7 @@ country_event = {
 	desc = rcw_usfev.1934.desc
 	is_triggered_only = yes
 	trigger = {
-		has_country_flag = UCH_revolt
+		RSR = { has_country_flag = UCH_revolt }
 		NOT = { has_country_flag = UCH_second_revolt }
 	}
 	option = {
@@ -15011,83 +15025,104 @@ country_event = {
 			original_tag = ACH
 			set_politics = { ruling_party = communism elections_allowed = no }
 			set_country_flag = ACH_reds_CW
+			save_global_event_target_as = ACH_CW
 			transfer_state = 236
-			set_capital = 236
-			ACH = { declare_war_on = { target = PREV type = annex_everything } declare_war_on = { target = RUS type = annex_everything } }
-			add_ideas = {
-				soviet_republic_gov_form
-				local_assembly_decisions_b_law
-				neutral_foreign_policy_law
-				steel_agricultural_tools
-				landlordism
-				cities_averange_literacy
-			}
-			division_template = {
-				name = "Astrakhanskaya krasnaya gvardiya"
-				regiments = {
-					militia = { x = 0 y = 0 }
-					militia = { x = 0 y = 1}
+			hidden_effect = {
+				set_capital = 236
+				ACH = { declare_war_on = { target = event_target:ACH_CW type = annex_everything } }
+				add_ideas = {
+					soviet_republic_gov_form
+					local_assembly_decisions_b_law
+					neutral_foreign_policy_law
+					steel_agricultural_tools
+					landlordism
+					cities_averange_literacy
 				}
-			}
-			division_template = {
-				name = "Zapasnoy pekhotniy polk"
-				regiments = {
-					infantry = { x = 0 y = 0 }
-					infantry = { x = 1 y = 0 }
-					infantry = { x = 0 y = 1 }
-					infantry = { x = 1 y = 1 }
+				division_template = {
+					name = "Astrakhanskaya krasnaya gvardiya"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1}
+					}
 				}
-			}
-			division_template = {
-				name = "Partizanskiy otriad"
-				regiments = {
-					militia = { x = 0 y = 0 }
-					militia = { x = 0 y = 1}
+				division_template = {
+					name = "Zapasnoy pekhotniy polk"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 1 }
+					}
 				}
-			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"Astrakhanskaya krasnaya gvardiya\" division_template = \"Astrakhanskaya krasnaya gvardiya\" start_experience_factor = 1 	start_equipment_factor = 1"
-					owner = PREV
+				division_template = {
+					name = "Partizanskiy otriad"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1}
+					}
 				}
-				create_unit = {
-					division = "name = \"Zapasnoy pekhotniy polk\" division_template = \"Zapasnoy pekhotniy polk\" start_experience_factor = 1 start_equipment_factor = 1"
-					owner = PREV
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Astrakhanskaya krasnaya gvardiya\" division_template = \"Astrakhanskaya krasnaya gvardiya\" start_experience_factor = 1 	start_equipment_factor = 1"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Zapasnoy pekhotniy polk\" division_template = \"Zapasnoy pekhotniy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
 				}
-				create_unit = {
-					division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
-					owner = PREV
+				add_ideas = { lack_of_officers_4 }
+				create_corps_commander = {
+					name = "Mina Armistov"
+					picture = "Portrait_Mina_Armistov.dds"
+					traits = { }
+					skill = 1
+					attack_skill = 1
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 1
 				}
-				create_unit = {
-					division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
-					owner = PREV
+				set_popularities = {
+					communism = 100
 				}
+				create_country_leader = { name = "Sergei Burov" desc = ACH_Sergei_Burov_desc picture = "gfx/leaders/ACH/Sergei_Burov.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { } }
+				create_country_leader = { name = "Mina Aristov" desc = ACH_Mina_Aristov_desc picture = "gfx/leaders/ACH/Mina_Aristov.dds" expire = "1935.1.1" ideology = leninism traits = { } }
+				create_country_leader = { name = "Soviet rabochikh i soldatskikh deputatov" desc = ACH_Soviet_rabochikh_i_soldatskikh_deputatov_desc picture = "gfx/leaders/ACH/			Soviet_rabochikh_i_soldatskikh_deputatov.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
+				create_country_leader = { name = "Gubispolkom" desc = ACH_Gubispolkom_desc picture = "gfx/leaders/ACH/Gubispolkom.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = { } }
+				create_country_leader = { name = "Nikolai Liakhov" desc = ACH_Nikolai_Liakhov_desc picture = "gfx/leaders/ACH/Nikolai_Liakhov.dds" expire = "1935.1.1" ideology = market_liberalism_ideology traits = { } }
+				create_country_leader = { name = "Ivan Biriukov" desc = ACH_Ivan_Biriukov_desc picture = "gfx/leaders/ACH/Ivan_Biriukov.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+				create_country_leader = { name = "Danzan Tundutov" desc = ACH_Danzan_Tundutov_desc picture = "gfx/leaders/ACH/Danzan_Tundutov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
+				create_country_leader = { name = "Konstantin Sakharov" desc = ACH_Konstantin_Sakharov_desc picture = "gfx/leaders/ACH/Konstantin_Sakharov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { } }
+				create_country_leader = { name = "Boris Samsonov" desc = ACH_Boris_Samsonov_desc picture = "gfx/leaders/ACH/Boris_Samsonov.dds" expire = "1935.1.1" ideology = fascism_ideology traits = { } }
+				create_country_leader = { name = "Nikolai Tierpugov" desc = ACH_Nikolai_Tierpugov_desc picture = "gfx/leaders/ACH/Nikolai_Tierpugov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { } }
 			}
-			add_ideas = { lack_of_officers_4 }
-			create_corps_commander = {
-				name = "Mina Armistov"
-				picture = "Portrait_Mina_Armistov.dds"
-				traits = { }
-				skill = 1
-				attack_skill = 1
-				defense_skill = 2
-				planning_skill = 2
-				logistics_skill = 1
-			}
-			set_popularities = {
-				communism = 100
-			}
-			create_country_leader = { name = "Sergei Burov" desc = ACH_Sergei_Burov_desc picture = "gfx/leaders/ACH/Sergei_Burov.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { } }
-			create_country_leader = { name = "Mina Aristov" desc = ACH_Mina_Aristov_desc picture = "gfx/leaders/ACH/Mina_Aristov.dds" expire = "1935.1.1" ideology = leninism traits = { } }
-			create_country_leader = { name = "Soviet rabochikh i soldatskikh deputatov" desc = ACH_Soviet_rabochikh_i_soldatskikh_deputatov_desc picture = "gfx/leaders/ACH/			Soviet_rabochikh_i_soldatskikh_deputatov.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-			create_country_leader = { name = "Gubispolkom" desc = ACH_Gubispolkom_desc picture = "gfx/leaders/ACH/Gubispolkom.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = { } }
-			create_country_leader = { name = "Nikolai Liakhov" desc = ACH_Nikolai_Liakhov_desc picture = "gfx/leaders/ACH/Nikolai_Liakhov.dds" expire = "1935.1.1" ideology = market_liberalism_ideology traits = { } }
-			create_country_leader = { name = "Ivan Biriukov" desc = ACH_Ivan_Biriukov_desc picture = "gfx/leaders/ACH/Ivan_Biriukov.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
-			create_country_leader = { name = "Danzan Tundutov" desc = ACH_Danzan_Tundutov_desc picture = "gfx/leaders/ACH/Danzan_Tundutov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
-			create_country_leader = { name = "Konstantin Sakharov" desc = ACH_Konstantin_Sakharov_desc picture = "gfx/leaders/ACH/Konstantin_Sakharov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { } }
-			create_country_leader = { name = "Boris Samsonov" desc = ACH_Boris_Samsonov_desc picture = "gfx/leaders/ACH/Boris_Samsonov.dds" expire = "1935.1.1" ideology = fascism_ideology traits = { } }
-			create_country_leader = { name = "Nikolai Tierpugov" desc = ACH_Nikolai_Tierpugov_desc picture = "gfx/leaders/ACH/Nikolai_Tierpugov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { } }
 		}
+		hidden_effect = {
+			if = {
+				limit = { RSR = { has_war_with = ROOT } }
+				RSR = { event_target:ACH_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			event_target:ACH_CW = {
+				every_country = {
+					limit = {
+						is_in_array = {
+							array = unrecognized_states
+							value = ROOT.id
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		hidden_effect = { clear_global_event_target = ACH_CW }
 
 		ACH = {
 			set_politics = { ruling_party = social_conservatism elections_allowed = no}
@@ -15134,84 +15169,104 @@ country_event = {
 			original_tag = ACH
 			set_politics = { ruling_party = communism elections_allowed = no }
 			set_country_flag = ACH_reds_CW
+			save_global_event_target_as = ACH_CW
 			transfer_state = 236
-			set_capital = 236
-			ACH = { declare_war_on = { target = PREV type = annex_everything } declare_war_on = { target = RUS type = annex_everything } }
-			add_ideas = {
-				soviet_republic_gov_form
-				local_assembly_decisions_b_law
-				neutral_foreign_policy_law
-				steel_agricultural_tools
-				landlordism
-				cities_averange_literacy
-			}
-			division_template = {
-				name = "Astrakhanskaya krasnaya gvardiya"
-				regiments = {
-					militia = { x = 0 y = 0 }
-					militia = { x = 0 y = 1}
+			hidden_effect = {
+				set_capital = 236
+				ACH = { declare_war_on = { target = event_target:ACH_CW type = annex_everything } }
+				add_ideas = {
+					soviet_republic_gov_form
+					local_assembly_decisions_b_law
+					neutral_foreign_policy_law
+					steel_agricultural_tools
+					landlordism
+					cities_averange_literacy
 				}
-			}
-			division_template = {
-				name = "Zapasnoy pekhotniy polk"
-				regiments = {
-					infantry = { x = 0 y = 0 }
-					infantry = { x = 1 y = 0 }
-					infantry = { x = 0 y = 1 }
-					infantry = { x = 1 y = 1 }
+				division_template = {
+					name = "Astrakhanskaya krasnaya gvardiya"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1}
+					}
 				}
-			}
-			division_template = {
-				name = "Partizanskiy otriad"
-				regiments = {
-					militia = { x = 0 y = 0 }
-					militia = { x = 0 y = 1}
+				division_template = {
+					name = "Zapasnoy pekhotniy polk"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 1 }
+					}
 				}
-			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"Astrakhanskaya krasnaya gvardiya\" division_template = \"Astrakhanskaya krasnaya gvardiya\" start_experience_factor = 1 	start_equipment_factor = 1"
-					owner = PREV
+				division_template = {
+					name = "Partizanskiy otriad"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1}
+					}
 				}
-				create_unit = {
-					division = "name = \"Zapasnoy pekhotniy polk\" division_template = \"Zapasnoy pekhotniy polk\" start_experience_factor = 1 start_equipment_factor = 1"
-					owner = PREV
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Astrakhanskaya krasnaya gvardiya\" division_template = \"Astrakhanskaya krasnaya gvardiya\" start_experience_factor = 1 	start_equipment_factor = 1"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Zapasnoy pekhotniy polk\" division_template = \"Zapasnoy pekhotniy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
 				}
-				create_unit = {
-					division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
-					owner = PREV
+				add_ideas = { lack_of_officers_4 }
+				create_corps_commander = {
+					name = "Mina Armistov"
+					picture = "Portrait_Mina_Armistov.dds"
+					traits = { }
+					skill = 1
+					attack_skill = 1
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 1
 				}
-				create_unit = {
-					division = "name = \"Partizanskiy otriad\" division_template = \"Partizanskiy otriad\" start_experience_factor = 1 start_equipment_factor = 1"
-					owner = PREV
+				set_popularities = {
+					communism = 100
 				}
+				create_country_leader = { name = "Sergei Burov" desc = ACH_Sergei_Burov_desc picture = "gfx/leaders/ACH/Sergei_Burov.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { } }
+				create_country_leader = { name = "Mina Aristov" desc = ACH_Mina_Aristov_desc picture = "gfx/leaders/ACH/Mina_Aristov.dds" expire = "1935.1.1" ideology = leninism traits = { } }
+				create_country_leader = { name = "Soviet rabochikh i soldatskikh deputatov" desc = ACH_Soviet_rabochikh_i_soldatskikh_deputatov_desc picture = "gfx/leaders/ACH/			Soviet_rabochikh_i_soldatskikh_deputatov.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
+				create_country_leader = { name = "Gubispolkom" desc = ACH_Gubispolkom_desc picture = "gfx/leaders/ACH/Gubispolkom.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = { } }
+				create_country_leader = { name = "Nikolai Liakhov" desc = ACH_Nikolai_Liakhov_desc picture = "gfx/leaders/ACH/Nikolai_Liakhov.dds" expire = "1935.1.1" ideology = market_liberalism_ideology traits = { } }
+				create_country_leader = { name = "Ivan Biriukov" desc = ACH_Ivan_Biriukov_desc picture = "gfx/leaders/ACH/Ivan_Biriukov.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
+				create_country_leader = { name = "Danzan Tundutov" desc = ACH_Danzan_Tundutov_desc picture = "gfx/leaders/ACH/Danzan_Tundutov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
+				create_country_leader = { name = "Konstantin Sakharov" desc = ACH_Konstantin_Sakharov_desc picture = "gfx/leaders/ACH/Konstantin_Sakharov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { } }
+				create_country_leader = { name = "Boris Samsonov" desc = ACH_Boris_Samsonov_desc picture = "gfx/leaders/ACH/Boris_Samsonov.dds" expire = "1935.1.1" ideology = fascism_ideology traits = { } }
+				create_country_leader = { name = "Nikolai Tierpugov" desc = ACH_Nikolai_Tierpugov_desc picture = "gfx/leaders/ACH/Nikolai_Tierpugov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { } }
 			}
-			add_ideas = { lack_of_officers_4 }
-			create_corps_commander = {
-				name = "Mina Armistov"
-				picture = "Portrait_Mina_Armistov.dds"
-				traits = { }
-				skill = 1
-				attack_skill = 1
-				defense_skill = 2
-				planning_skill = 2
-				logistics_skill = 1
-			}
-			set_popularities = {
-				communism = 100
-			}
-			create_country_leader = { name = "Sergei Burov" desc = ACH_Sergei_Burov_desc picture = "gfx/leaders/ACH/Sergei_Burov.dds" expire = "1935.1.1" ideology = anarchist_communism traits = { } }
-			create_country_leader = { name = "Mina Aristov" desc = ACH_Mina_Aristov_desc picture = "gfx/leaders/ACH/Mina_Aristov.dds" expire = "1935.1.1" ideology = leninism traits = { } }
-			create_country_leader = { name = "Soviet rabochikh i soldatskikh deputatov" desc = ACH_Soviet_rabochikh_i_soldatskikh_deputatov_desc picture = "gfx/leaders/ACH/			Soviet_rabochikh_i_soldatskikh_deputatov.dds" expire = "1935.1.1" ideology = social_democracy_ideology traits = { } }
-			create_country_leader = { name = "Gubispolkom" desc = ACH_Gubispolkom_desc picture = "gfx/leaders/ACH/Gubispolkom.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = { } }
-			create_country_leader = { name = "Nikolai Liakhov" desc = ACH_Nikolai_Liakhov_desc picture = "gfx/leaders/ACH/Nikolai_Liakhov.dds" expire = "1935.1.1" ideology = market_liberalism_ideology traits = { } 			}
-			create_country_leader = { name = "Ivan Biriukov" desc = ACH_Ivan_Biriukov_desc picture = "gfx/leaders/ACH/Ivan_Biriukov.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } }
-			create_country_leader = { name = "Danzan Tundutov" desc = ACH_Danzan_Tundutov_desc picture = "gfx/leaders/ACH/Danzan_Tundutov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { } }
-			create_country_leader = { name = "Konstantin Sakharov" desc = ACH_Konstantin_Sakharov_desc picture = "gfx/leaders/ACH/Konstantin_Sakharov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = 			{ } }
-			create_country_leader = { name = "Boris Samsonov" desc = ACH_Boris_Samsonov_desc picture = "gfx/leaders/ACH/Boris_Samsonov.dds" expire = "1935.1.1" ideology = fascism_ideology traits = { } }
-			create_country_leader = { name = "Nikolai Tierpugov" desc = ACH_Nikolai_Tierpugov_desc picture = "gfx/leaders/ACH/Nikolai_Tierpugov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { } }
-			change_tag_from = ACH
 		}
+		hidden_effect = {
+			if = {
+				limit = { RSR = { has_war_with = ROOT } }
+				RSR = { event_target:ACH_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			event_target:ACH_CW = {
+				every_country = {
+					limit = {
+						is_in_array = {
+							array = unrecognized_states
+							value = ROOT.id
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		hidden_effect = { clear_global_event_target = ACH_CW }
 
 		ACH = {
 			set_politics = { ruling_party = social_conservatism elections_allowed = no}
@@ -15238,10 +15293,14 @@ country_event = {
 					owner = PREV
 				}
 			}
-			add_ideas = { cossaks_regionalism }
+			add_ideas = cossaks_regionalism
 			add_timed_idea = { idea = OCH_wide_offensive_idea days = 20 }
 			create_corps_commander = { name = "Ivan Biriukov" id = 11001 portrait_path = "gfx/leaders/ACH/Ivan_Biriukov.dds" traits = { politically_connected cavalry_officer } skill = 2 attack_skill = 3 defense_skill = 2 planning_skill = 3 logistics_skill = 3 }
 			SIB = { every_unit_leader = { limit = { has_id = 92351 } set_nationality = PREV.PREV } }
+		}
+		random_other_country = {
+			limit = { original_tag = ROOT has_government = communism }
+			change_tag_from = ROOT
 		}
 	}
 }
