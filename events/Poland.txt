@@ -1,5 +1,42 @@
 ﻿add_namespace = poland
 
+# Объявление войны Белоруссии
+country_event = {
+	id = poland.0
+	title = poland.0.t
+	desc = poland.0.desc
+	picture = GFX_report_event_greece_civil_war_soldiers
+	
+	trigger = {
+		has_start_date < 1919.01.01
+		tag = POL
+		is_subject = no
+		NOT = { has_war_with = BLR }
+		is_neighbor_of = BLR
+	}
+
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.0.a
+		declare_war_on = {
+			target = BLR
+			type = annex_everything
+		}
+		if = {
+			limit = { BLR = { has_war_with = RSR } }
+			declare_war_on = {
+				target = RSR
+				type = annex_everything
+			}
+		}
+	}
+}
+
 # Независимость Польши после поражения Германии в ПМВ
 country_event = {
 	id = poland.1
@@ -149,14 +186,12 @@ country_event = {
 	picture = GFX_report_event_greece_civil_war_soldiers
 	
 	trigger = {
+		has_start_date < 1919.01.01
 		tag = POL
-		OR = {
-			has_global_flag = WWI_GER_HAS_CAPITULATED
-			GER = { has_country_flag = GER_monarchy_fall }
-		}
+		is_subject = no
+		NOT = { has_war_with = LIT }
 		owns_state = 822
 		LIT = { owns_state = 97 }
-		has_war = no
 	}
 
 	mean_time_to_happen = {
@@ -223,7 +258,7 @@ country_event = {
 	option = {
 		name = poland.6.a
 		if = {
-			limit = { tag = POL country_exists = BLR }
+			limit = { tag = POL }
 			start_border_war = {
 				change_state_after_war = yes
 				attacker = {
@@ -259,20 +294,6 @@ country_event = {
 		if = {
 			limit = { tag = POL }
 			hidden_effect = { transfer_state = 97 transfer_state = 956 }
-			if = {
-				limit = { BLR = { owns_state = 927 } }
-				declare_war_on = {
-					target = BLR
-					type = annex_everything
-				}
-				if = {
-					limit = { BLR = { has_war_with = RUS } }
-					declare_war_on = {
-						target = RUS
-						type = annex_everything
-					}
-				}
-			}
 		}
 	}
 }
@@ -452,7 +473,14 @@ country_event = {
 	
 	option = {
 		name = poland.11.a
-		set_global_flag = POL_communist_peace_fired
+		FROM = { country_event = poland.17 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = poland.11.b
+		set_global_flag = POL_RUS_peace_fired
 		every_country = {
 			limit = {
 				OVERLORD = { OR = { tag = RUS tag = POL } }
@@ -500,104 +528,6 @@ country_event = {
 				}
 			}
 		}
-		every_state = {
-			limit = {
-				is_owned_by = RUS
-				OR = {
-					is_core_of = POL
-					is_claimed_by = POL
-				}
-			}
-			POL = { transfer_state = PREV }
-		}
-		if = {
-			limit = { BLR = { exists = yes is_subject_of = RUS } }
-			every_state = {
-				limit = {
-					is_owned_by = BLR
-					OR = {
-						is_core_of = POL
-						is_claimed_by = POL
-					}
-				}
-				POL = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { OR = { UKR = { exists = yes is_subject_of = RUS } USR = { exists = yes is_subject_of = RUS } } }
-			every_state = {
-				limit = {
-					OR = {
-						is_owned_by = UKR
-						is_owned_by = USR
-					}
-					OR = {
-						is_core_of = POL
-						is_claimed_by = POL
-					}
-				}
-				POL = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { LIT = { exists = yes is_subject_of = RUS } }
-			every_state = {
-				limit = {
-					is_owned_by = LIT
-					OR = {
-						is_core_of = POL
-						is_claimed_by = POL
-					}
-				}
-				POL = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { LAT = { has_war_with = RUS } }
-			every_country = {
-				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
-				LAT = { white_peace = PREV }
-			}
-			every_state = {
-				limit = {
-					is_owned_by = RUS
-					is_core_of = LAT
-				}
-				LAT = { transfer_state = PREV }
-			}
-		}
-		if = {
-			limit = { EST = { has_war_with = RUS } }
-			every_country = {
-				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
-				EST = { white_peace = PREV }
-			}
-			every_state = {
-				limit = {
-					is_owned_by = RUS
-					is_core_of = EST
-				}
-				EST = { transfer_state = PREV }
-			}
-		}
-		every_country = {
-			limit = { OR = { tag = RUS is_in_faction_with = RUS } }
-			POL = { white_peace = PREV }
-		}
-	}
-	option = {
-		ai_chance = {
-			factor = 1
-		}
-		name = poland.11.b
-		FROM = { country_event = poland.17 }
-		ai_chance = {
-			factor = 2
-		}
-	}
-	option = {
-		name = poland.11.b
-		set_global_flag = POL_RUS_peace_fired
 		every_country = {
 			limit = {
 				is_subject_of = POL
@@ -695,6 +625,20 @@ country_event = {
 			}
 		}
 		if = {
+			limit = { LIT = { has_war_with = RUS } }
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				LIT = { white_peace = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
 			limit = { LAT = { has_war_with = RUS } }
 			every_country = {
 				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
@@ -703,10 +647,7 @@ country_event = {
 			every_state = {
 				limit = {
 					is_owned_by = RUS
-					OR = {
-						is_core_of = LAT
-						is_claimed_by = LAT
-					}
+					is_core_of = LAT
 				}
 				LAT = { transfer_state = PREV }
 			}
@@ -720,10 +661,7 @@ country_event = {
 			every_state = {
 				limit = {
 					is_owned_by = RUS
-					OR = {
-						is_core_of = EST
-						is_claimed_by = EST
-					}
+					is_core_of = EST
 				}
 				EST = { transfer_state = PREV }
 			}
@@ -849,6 +787,48 @@ country_event = {
 		every_country = {
 			limit = { OR = { tag = RUS is_in_faction_with = RUS } }
 			POL = { white_peace = PREV }
+		}
+		if = {
+			limit = { LIT = { has_war_with = RUS } }
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				LIT = { white_peace = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LAT = { has_war_with = RUS } }
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				LAT = { white_peace = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LAT
+				}
+				LAT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { EST = { has_war_with = RUS } }
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				EST = { white_peace = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = EST
+				}
+				EST = { transfer_state = PREV }
+			}
 		}
 		ai_chance = {
 			factor = 4
@@ -1296,7 +1276,48 @@ country_event = {
 			limit = { OR = { tag = RUS is_in_faction_with = RUS } }
 			POL = { white_peace = PREV }
 		}
-		
+		if = {
+			limit = { LIT = { has_war_with = RUS } }
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				LIT = { white_peace = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LAT = { has_war_with = RUS } }
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				LAT = { white_peace = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = LAT
+				}
+				LAT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { EST = { has_war_with = RUS } }
+			every_country = {
+				limit = { OR = { tag = RUS is_in_faction_with = RUS } }
+				EST = { white_peace = PREV }
+			}
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					is_core_of = EST
+				}
+				EST = { transfer_state = PREV }
+			}
+		}
 	}
 }
 
