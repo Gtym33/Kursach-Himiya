@@ -782,19 +782,83 @@ country_event = {
 	}
 }
 
+# Германский ультиматум (Германия)
 country_event = {
 	id = treaty_of_brest.12
-	title = treaty_of_brest.12.t
+	title = {
+		text = treaty_of_brest.12.t
+		trigger = {
+			NOT = {
+				has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+				any_country = {
+					is_in_faction_with = GER
+					controls_state = 202
+				}
+			}
+		}
+	}
+	title = {
+		text = treaty_of_brest.12.t_UKR
+		trigger = {
+			OR = {
+				has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+				any_country = {
+					is_in_faction_with = GER
+					controls_state = 202
+				}
+			}
+		}
+	}
 	desc = {
 		text = treaty_of_brest.12.d
 		trigger = {
 			RUS = { OR = { has_government = communism has_government = radical_socialism } }
+			NOT = {
+				has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+				any_country = {
+					is_in_faction_with = GER
+					controls_state = 202
+				}
+			}
 		}
 	}
 	desc = {
 		text = treaty_of_brest.12.d_1
 		trigger = {
 			RUS = { NOT = { has_government = communism has_government = radical_socialism } }
+			NOT = {
+				has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+				any_country = {
+					is_in_faction_with = GER
+					controls_state = 202
+				}
+			}
+		}
+	}
+	desc = {
+		text = treaty_of_brest.12.d_UKR
+		trigger = {
+			RUS = { OR = { has_government = communism has_government = radical_socialism } }
+			OR = {
+				has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+				any_country = {
+					is_in_faction_with = GER
+					controls_state = 202
+				}
+			}
+		}
+	}
+	desc = {
+		text = treaty_of_brest.12.d_UKR_1
+		trigger = {
+			RUS = { NOT = { has_government = communism has_government = radical_socialism } }
+			OR = {
+				has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+				any_country = {
+					is_in_faction_with = GER
+					controls_state = 202
+				}
+			}
 		}
 	}
 	picture = GFX_report_event_februrary_revolution
@@ -806,31 +870,26 @@ country_event = {
 		OR = {
 			UKR = { OR = { exists = no has_government = communism has_government = radical_socialism } }
 			has_global_flag = brest_litovsk_GER_UKR_negotiations_refused
-		}
-		NOT = { has_global_flag = brest_litovsk_negotiations_GER_UKR_peace }
-		NOT = {
+			has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
 			any_country = {
 				is_in_faction_with = GER
 				controls_state = 202
 			}
 		}
-		RUS = { surrender_progress > 0.1 }
-		OR = {
-			NOT = { owns_state = 763 }
-			controls_state = 763
-		}
-		OR = {
-			NOT = { owns_state = 85 }
-			controls_state = 85
-		}
-		OR = {
-			NOT = { owns_state = 66 }
-			controls_state = 66
-		}
 	}
 	
 	mean_time_to_happen = {
 		days = 82
+		modifier = {
+			factor = 0
+			OR = {
+				has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+				any_country = {
+					is_in_faction_with = GER
+					controls_state = 202
+				}
+			}
+		}
 	}
 	
 	fire_only_once = yes
@@ -838,7 +897,21 @@ country_event = {
 	option = {
 		name = treaty_of_brest.12.a #надавить на Россию
 		add_war_support = -0.05
-		RUS = { country_event = { id = treaty_of_brest.13 days = 1 } }
+		if = {
+			limit = {
+				OR = {
+					has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
+					any_country = {
+						is_in_faction_with = GER
+						controls_state = 202
+					}
+				}
+			}
+			RUS = { country_event = { id = treaty_of_brest.15 days = 1 } }
+			else = {
+				RUS = { country_event = { id = treaty_of_brest.13 days = 1 } }
+			}
+		}
 	}
 }
 
@@ -913,49 +986,6 @@ country_event = {
 				}
 			}
 		}
-	}
-}
-
-country_event = {
-	id = treaty_of_brest.14
-	title = treaty_of_brest.14.t
-	desc = {
-		text = treaty_of_brest.14.d
-		trigger = {
-			RUS = { OR = { has_government = communism has_government = radical_socialism } }
-		}
-	}
-	desc = {
-		text = treaty_of_brest.14.d_1
-		trigger = {
-			RUS = { NOT = { has_government = communism has_government = radical_socialism } }
-		}
-	}
-	picture = GFX_report_event_februrary_revolution
-	
-	trigger = {
-		tag = GER
-		has_global_flag = brest_litovsk_negotiations
-		has_war_with = RUS
-		OR = {
-			has_global_flag = brest_litovsk_negotiations_GER_UKR_peace
-			any_country = {
-				is_in_faction_with = GER
-				controls_state = 202
-			}
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 0
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		name = treaty_of_brest.14.a #надавить на Россию
-		add_war_support = -0.05
-		RUS = { country_event = { id = treaty_of_brest.15 days = 1 } }
 	}
 }
 
@@ -1477,7 +1507,7 @@ country_event = {
 			white_peace = UKR
 		}
 		set_global_flag = brest_litovsk_negotiations_GER_UKR_peace
-		GER = { country_event = treaty_of_brest.14 }
+		GER = { country_event = treaty_of_brest.12 }
 		ai_chance = {
 			factor = 999
 			modifier = {
