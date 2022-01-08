@@ -9,6 +9,6 @@ tags={
 	"Technologies"
 }
 picture="thumbnail.png"
-version="1.10.*"
-supported_version="1.10.*"
+version="1.11.*"
+supported_version="1.11.*"
 remote_file_id="1285457891"

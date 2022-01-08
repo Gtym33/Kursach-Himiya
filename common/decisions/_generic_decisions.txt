@@ -5,7 +5,7 @@ political_actions = {
 		icon = generic_research
 
 		allowed = {
-			always = no
+			always = yes
 		}
 
 		available = {
@@ -13,6 +13,12 @@ political_actions = {
 			has_tech = atomic_research
 			NOT = { has_global_flag = first_nuke_dropped }
 			NOT = { has_idea = race_for_the_bomb }
+		}
+
+		target_root_trigger = {
+            has_tech = atomic_research
+            NOT = { has_global_flag = first_nuke_dropped }
+            NOT = { has_idea = race_for_the_bomb }
 		}
 
 		#If this trigger matches a country.
@@ -60,7 +66,15 @@ political_actions = {
 		icon = generic_industry
 
 		available = {
-			
+			has_stability < 1.0
+			if = {
+				limit = {
+					tag = SPR
+				}
+				NOT = {
+					has_idea = SPR_political_violence
+				}
+			}
 		}
 
 		visible = {
@@ -89,6 +103,7 @@ political_actions = {
 			modifier = {
 				add = 1
 				has_stability < 0.6
+				has_political_power > 155 #Spend on other things first
 			}
 		}
 	}
@@ -100,6 +115,15 @@ political_actions = {
 		available = {
 			has_war = no
 			has_war_support > 0.2
+			has_stability < 1.0
+			if = {
+				limit = {
+					tag = SPR
+				}
+				NOT = {
+					has_idea = SPR_political_violence
+				}
+			}
 		}
 
 		visible = {
@@ -134,6 +158,11 @@ political_actions = {
 				add = 1
 				has_stability < 0.4
 			}
+			modifier = {
+				factor = 0
+				original_tag = SPR
+				NOT = { has_global_flag = spanish_civil_war }
+			}
 		}
 	}
 }
@@ -165,9 +194,10 @@ economy_decisions = {
 		}
 
 		visible = {
-			any_state = {
-				is_owned_by = FRA
-				is_controlled_by = ROOT
+			FRA = {
+				any_owned_state = {
+					is_controlled_by = ROOT
+				}
 			}
 			NOT = { is_in_faction_with = FRA }
 			has_global_flag = maginot_line_builded
@@ -213,8 +243,82 @@ economy_decisions = {
 					}
 				}
 			}
+			if = {
+				limit = {
+					has_idea = FRA_protected_by_the_maginot_line
+				}
+				remove_ideas = FRA_protected_by_the_maginot_line
+			}
 		}
-	}		
+	}
+
+	restructure_supply_system = { #one time boost to get a few cheap supply hubs
+
+
+		visible = { 
+			OR = {
+				is_major = no
+				AND = {
+					is_faction_leader = yes
+					num_of_factories < 51 #would be a minor if it wasn't for faction leader status
+				}
+			}
+		}
+		fire_only_once = yes
+
+		days_remove = 120
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				num_of_factories < 30
+				factor = 0
+			}
+		}
+
+		modifier = {
+			production_speed_supply_node_factor = 3
+		}
+
+		complete_effect = {
+			set_variable = { node_goal = num_of_supply_nodes }
+			add_to_variable = { node_goal = 3 } #maximum 3 additional nodes
+		}
+
+		cancel_trigger = {
+			
+			 check_variable = { node_goal < num_of_supply_nodes } #if the number of supply nodes exceeds the old number by +3, immediately cancel
+		}
+	}
+	seize_some_trains_woo = { #repeating train seize
+
+		visible = { 
+			num_of_factories < 60
+		}
+		
+		available = {
+			has_equipment = { train_equipment < 101 }
+			has_tech = basic_train
+		}
+		
+		days_remove = 180
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				has_stability < 0.56
+				factor = 0
+			}
+		}
+
+		complete_effect = {
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = 15
+			}
+			add_stability = -0.05
+		}
+	}			
 }
 
 propaganda_efforts = {
@@ -271,127 +375,106 @@ propaganda_efforts = {
 			NOT = { has_country_flag = war_propaganda_campaign_running }
 			FROM = {
 				OR = {
+					is_justifying_wargoal_against = ROOT
+					AND = {
+						has_war_with = ROOT
+						is_neighbor_of = ROOT
+					}
 					has_offensive_war = yes
-					is_justifying_wargoal_against = ROOT
+				}
+			}
+			
+			# lower the cost for neighbors
+			if = {
+				limit = {
+					FROM = {
+						is_neighbor_of = ROOT
+					}
+					set_temp_variable = { war_propaganda_cost = 50 }
 				}
 			}
 		}
 
 		visible = {
-			FROM = { NOT = { has_government = ROOT } }
 			FROM = {
-				NOT = { is_neighbor_of = ROOT }
+				NOT = { is_in_faction_with = ROOT }
 				OR = {
-					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
-						has_added_tension_amount > 30
-					}
 					is_justifying_wargoal_against = ROOT
-					has_offensive_war_with = ROOT
+					AND = {
+						is_neighbor_of = ROOT
+						OR = {
+							has_war_with = ROOT
+							AND = {
+								NOT = { has_government = ROOT }
+								has_offensive_war = yes
+								has_added_tension_amount > 5
+							}
+						}
+					}
+					AND = {
+						NOT = { is_neighbor_of = ROOT }
+						OR = {
+							has_offensive_war_with = ROOT
+							AND = {
+								NOT = { has_government = ROOT }
+								has_offensive_war = yes
+								has_added_tension_amount > 30
+							}
+						}
+					}
 				}
 			}
 		}
 
 		target_trigger = {
 			FROM = {
-				NOT = { is_neighbor_of = ROOT }
+				NOT = { is_in_faction_with = ROOT }
 				OR = {
+					is_justifying_wargoal_against = ROOT
 					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
-						has_added_tension_amount > 30
+						is_neighbor_of = ROOT
+						OR = {
+							has_war_with = ROOT
+							AND = {
+								NOT = { has_government = ROOT }
+								has_offensive_war = yes
+								has_added_tension_amount > 5
+							}
+						}
 					}
-					is_justifying_wargoal_against = ROOT
-					has_offensive_war_with = ROOT
-				}
-			}
-		}
-
-		days_remove = 90
-
-		fire_only_once = yes
-
-		cost = 75
-
-		modifier = {
-			war_support_weekly = 0.01
-		}
-
-		complete_effect = {
-			set_country_flag = war_propaganda_campaign_running
-		}
-		remove_effect = {
-			clr_country_flag = war_propaganda_campaign_running
-		}
-
-		ai_will_do = {
-			factor = 0
-		}
-	}
-
-	#Propaganda campaign against a neighbor
-	war_propaganda_against_warmonger_neighbor = {
-
-		icon = generic_prepare_civil_war
-
-		available = {
-			NOT = { has_country_flag = war_propaganda_campaign_running }
-			FROM = {
-				OR = {
-					has_offensive_war = yes 
-					is_justifying_wargoal_against = ROOT
-					has_war_with = ROOT
-				}
-			}
-		}
-
-		visible = {
-			FROM = { NOT = { has_government = ROOT } }
-			FROM = {
-				is_neighbor_of = ROOT
-				OR = {
 					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
+						NOT = { is_neighbor_of = ROOT }
+						OR = {
+							has_offensive_war_with = ROOT
+							AND = {
+								NOT = { has_government = ROOT }
+								has_offensive_war = yes
+								has_added_tension_amount > 30
+							}
+						}
 					}
-					is_justifying_wargoal_against = ROOT
-					has_war_with = ROOT
 				}
-				has_added_tension_amount > 5
-			}
-		}
-
-		target_trigger = {
-			FROM = {
-				is_neighbor_of = ROOT
-				OR = {
-					AND = {
-						NOT = { has_government = ROOT }
-						has_offensive_war = yes
-					}
-					is_justifying_wargoal_against = ROOT
-					has_war_with = ROOT
-				}
-				has_added_tension_amount > 5
 			}
 		}
 
 		days_remove = 90
 		days_re_enable = 180
 
-		cost = 50
+		fire_only_once = yes
+
+		cost = var:war_propaganda_cost?75
 
 		modifier = {
 			war_support_weekly = 0.01
 		}
 
 		complete_effect = {
-			set_country_flag = war_propaganda_campaign_running
+			set_country_flag = { flag = war_propaganda_campaign_running value = 1 days = 90 } #TODO_Manu: This is a nasty fix so that the flag gets eventually removed if the target is annexed. days = days_remove
 		}
 		remove_effect = {
 			clr_country_flag = war_propaganda_campaign_running
 		}
+
 		ai_will_do = {
 			factor = 1
 			modifier = {
@@ -403,22 +486,525 @@ propaganda_efforts = {
 }
 
 operations = {
-	
+	#MTG_TEST_NAVAL_MIXED_VS_MIXED_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+	#	name = "TEST: Mix vs Mix"
+	#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_MIXED_VS_MIXED_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_MIXED_VS_MIXED_EARLY_RED"
+	#			add_fuel = 10000000
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#			set_stability = 1
+	#			set_war_support = 1
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+	#MTG_TEST_NAVAL_MIXED_VS_CV_MIXED_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+	#	name = "TEST: Mix vs Mix (with CVs)"
+	#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_MIXED_VS_MIXED_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_CV_MIXED_VS_CV_MIXED_EARLY_RED"
+	#			add_fuel = 10000000
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#			set_stability = 1
+	#			set_war_support = 1
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+	#MTG_TEST_NAVAL_MIXED_VS_MIXED_SUBS_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+	#	name = "TEST: Mix vs Mix (with subs)"
+#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	modifier = {
+	#		navy_fuel_consumption_factor = -1
+	#	}
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_MIXED_VS_MIXED_SUBS_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_MIXED_VS_MIXED_SUBS_EARLY_RED"
+	#			add_fuel = 10000000
+	#			set_stability = 1
+	#			set_war_support = 1
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+	#MTG_TEST_NAVAL_SCREENS_VS_MIXED_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+	#	name = "TEST: Screens vs Mix"
+#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_battlecruiser = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_SCREENS_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_battlecruiser = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_MIXED_VS_MIXED_EARLY_RED"
+	#			add_fuel = 10000000
+	#			set_stability = 1
+	#			set_war_support = 1
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+	#MTG_TEST_NAVAL_SCREENS_VS_CV_MIXED_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+	#	name = "TEST: Screens vs Mix (with CV)"
+#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_battlecruiser = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_SCREENS_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_battlecruiser = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_CV_MIXED_VS_CV_MIXED_EARLY_RED"
+	#			add_fuel = 10000000
+	#			set_stability = 1
+	#			set_war_support = 1
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+	#MTG_TEST_NAVAL_SCREENS_VS_CAPITALS_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+	#	name = "TEST: Screens vs Capitals"
+#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_battlecruiser = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_SCREENS_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_battlecruiser = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_CAPITAL_EARLY_RED"
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#			add_fuel = 10000000
+	#			set_stability = 1
+	#			set_war_support = 1
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+	#MTG_TEST_NAVAL_CAPITALS_VS_MIXED_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+	#	name = "TEST: Capitals vs Mix"
+	#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_battlecruiser = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_CAPITAL_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_battlecruiser = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_MIXED_VS_MIXED_EARLY_RED"
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#			add_fuel = 10000000
+	#			set_stability = 1
+	#			set_war_support = 1
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+	#MTG_TEST_NAVAL_CAPITALS_VS_CV_MIXED_EARLY = { #MTG_TODO_GABRIEL: remove before launch (no seriously do not ship with this (hehe get it don't SHIP with it)) 
+#
+	#	icon = generic
+#
+	#	name = "TEST: Capitals vs Mix (with CV)"
+	#
+	#	allowed = {
+	#		tag = CUB
+	#	}
+#
+	#	available = {
+	#	
+	#	}
+	#
+	#	cost = 0
+	#	
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	days_remove = -1
+	#	complete_effect = {
+	#		set_technology = {
+	#			early_battleship = 1
+	#			early_battlecruiser = 1
+	#			early_heavy_cruiser = 1
+	#			early_light_cruiser = 1
+	#			early_destroyer = 1
+	#			early_carrier = 1
+	#			early_submarine = 1
+	#			cv_fighter1 = 1
+	#			cv_CAS1 = 1
+	#			cv_naval_bomber1 = 1
+	#		}
+	#		load_oob = "MTG_NAVAL_TEST_OOB_CAPITAL_EARLY_BLUE"
+	#		add_ideas = {
+	#			MTG_TEST_NAVAL_IDEA
+	#		}
+	#		add_fuel = 10000000
+	#		DOM = {
+	#			set_technology = {
+	#				early_battleship = 1
+	#				early_battlecruiser = 1
+	#				early_heavy_cruiser = 1
+	#				early_light_cruiser = 1
+	#				early_destroyer = 1
+	#				early_carrier = 1
+	#				early_submarine = 1
+	#				cv_fighter1 = 1
+	#				cv_CAS1 = 1
+	#				cv_naval_bomber1 = 1
+	#			}
+	#			load_oob = "MTG_NAVAL_TEST_OOB_CV_MIXED_VS_CV_MIXED_EARLY_RED"
+	#			add_ideas = {
+	#				MTG_TEST_NAVAL_IDEA
+	#			}
+	#			add_fuel = 10000000
+	#			set_stability = 1
+	#			set_war_support = 1
+	#		}
+	#		declare_war_on = { target = DOM type = annex_everything }
+	#		set_stability = 1
+	#		set_war_support = 1
+	#	}
+	#}
+
 	blow_suez_canal = {
 
 		icon = GFX_decision_generic_ignite_civil_war
 
 		available = {
-			OR = {
-				has_full_control_of_state = 917
-			}
+			has_full_control_of_state = 917
 			OR = {
 				NOT = {
 					owns_state = 446
 					owns_state = 453
 				}
-				any_country = {
-					has_war_with = ROOT
+				any_enemy_country = {
 					OR = {
 						controls_state = 452
 						controls_state = 447
@@ -437,8 +1023,7 @@ operations = {
 		visible = {
 			has_war = yes
 			NOT = { has_global_flag = SUEZ_CANAL_BLOCKED }
-			any_state = {
-				is_controlled_by = ROOT
+			any_controlled_state = {
 				OR = {
 					region = 28
 					region = 128
@@ -501,15 +1086,35 @@ operations = {
 			factor = 1
 			modifier = {
 				factor = 0
-				any_country = {
-					is_in_faction_with = ROOT
+				NOT = {
+					any_enemy_country = {
+						OR = {
+							controls_state = 452
+							controls_state = 447
+							controls_state = 456
+							controls_state = 457
+							controls_state = 454
+							controls_state = 455
+							OR = {
+								divisions_in_state = { state = 454 size > 2 }
+								divisions_in_state = { state = 447 size > 2 }
+								divisions_in_state = { state = 457 size > 2 }
+								divisions_in_state = { state = 456 size > 2 }
+							}
+						}
+					}
+				}
+			}
+			modifier = {
+				factor = 0 # Don't blow the canal when you've got troops needing supplies in the Horn of Africa, and no land route has been established there
+				any_allied_country = {
 					NOT = {
 						OR = {
 							has_full_control_of_state = 457
 							has_full_control_of_state = 456
 						}
-						has_full_control_of_state = 551
 					}
+					NOT = { has_full_control_of_state = 551 }
 					OR = {
 						divisions_in_state = { state = 550 size > 0 }
 						divisions_in_state = { state = 268 size > 0 }
@@ -519,11 +1124,10 @@ operations = {
 				}
 			}
 			modifier = {
-				factor = 200
+				factor = 200 # Try to cut the enemy off from the mediterranean if you also occupy Gibraltar
 				OR = {
 					has_full_control_of_state = 118
-					any_other_country = {
-						is_in_faction_with = ROOT
+					any_allied_country = {
 						has_full_control_of_state = 118
 					}
 				}
@@ -553,8 +1157,7 @@ operations = {
 		visible = {
 			has_war = yes
 			NOT = { has_global_flag = PANAMA_CANAL_BLOCKED }
-			any_state = {
-				is_controlled_by = ROOT
+			any_controlled_state = {
 				OR = {
 					region = 34
 					region = 124
@@ -614,6 +1217,31 @@ operations = {
 		}
 		ai_will_do = {
 			factor = 1
+			modifier = {
+				factor = 0 # Don't blow up the canal as USA. Ever.
+				tag = USA
+			}
+			modifier = {
+				factor = 0 # Don't blow up the canal if enemies have weak navies but you are a strong naval power
+				has_navy_size = {
+					size > 50
+				}
+				NOT = {
+					any_enemy_country = {
+						has_navy_size = {
+							size > 50
+						}
+					}
+				}
+			}
+			modifier = {
+				factor = 200 # Always blow up the canal as JAP or GER when at war with USA (priority)
+				OR = {
+					is_in_faction_with = JAP
+					is_in_faction_with = GER
+				}
+				has_war_with = USA
+			}
 		}
 	}
 }
@@ -626,7 +1254,7 @@ special_projects = {
 
 		available = {
 			has_full_control_of_state = 917
-			num_of_civilian_factories > 50
+			num_of_civilian_factories > 15
 		}
 	
 		visible = {
@@ -637,10 +1265,10 @@ special_projects = {
 	
 		days_remove = 365
 	
-		cost = 250
+		cost = 120
 	
 		modifier = {
-			civilian_factory_use = 50
+			civilian_factory_use = 15
 		}
 	
 		remove_effect = {
@@ -657,24 +1285,22 @@ special_projects = {
 		ai_will_do = {
 			factor = 1
 			modifier = {
-				factor = 0
+				factor = 0 # Don't bother if your navy is weak AND not ENG
 				has_navy_size = { size < 100 }
+				NOT = { tag = ENG }
 			}
 			modifier = {
-				factor = 200
+				factor = 200 # Prioritize if Italy is being invaded and you can't get to the battlefront (no control of Gibraltar strait)
 				NOT = {
 					OR = {
 						has_full_control_of_state = 118
-						any_other_country = {
-							is_in_faction_with = ROOT
+						any_allied_country = {
 							has_full_control_of_state = 118
 						}
 					}
 				}
-				OR = {
-					ITA = { surrender_progress < 0.1 }
-					NOT = { tag = ENG }
-				}
+				has_war_with = ITA
+				ITA = { surrender_progress > 0.1 }
 				has_full_control_of_state = 447
 				has_full_control_of_state = 454
 				has_full_control_of_state = 452
@@ -682,6 +1308,14 @@ special_projects = {
 				has_full_control_of_state = 457
 				has_full_control_of_state = 917
 				NOT = { has_country_flag = blew_up_suez }
+			}
+			modifier = {
+				factor = 200 # Prioritize if UK
+				tag = ENG
+			}
+			modifier = {
+				factor = 10 # Prioritize if not at war
+				has_war = no
 			}
 		}
 	}
@@ -693,12 +1327,11 @@ special_projects = {
 		available = {
 			has_full_control_of_state = 685
 			NOT = {
-				any_country = {
-					has_war_with = ROOT
+				any_enemy_country = {
 					controls_state = 304
 				}
 			}
-			num_of_civilian_factories > 80
+			num_of_civilian_factories > 25
 		}
 	
 		visible = {
@@ -707,12 +1340,12 @@ special_projects = {
 	
 		fire_only_once = no
 	
-		days_remove = 550
+		days_remove = 180
 	
 		cost = 400
 	
 		modifier = {
-			civilian_factory_use = 80
+			civilian_factory_use = 25
 		}
 	
 		remove_effect = {
@@ -720,26 +1353,37 @@ special_projects = {
 				limit = {
 					has_full_control_of_state = 685
 					NOT = {
-						any_country = {
-							has_war_with = ROOT
+						any_enemy_country = {
 							controls_state = 304
 						}
 					}
 				}
 				set_country_flag = rebuilt_panama
 				clr_global_flag = PANAMA_CANAL_BLOCKED
-				country_event = { id = wtt_news.43 hours = 6}
+				country_event = { id = wtt_news.43 hours = 6 }
 			}
 		}
 		ai_will_do = {
 			factor = 1
 			modifier = {
-				factor = 0
-				has_navy_size = { size < 100 }
+				factor = 0 # Don't bother if your navy is weak AND not USA
+				has_navy_size = { size < 50 }
+				NOT = { tag = USA }
+				has_war = yes
 			}
 			modifier = {
-				factor = 0
-				has_country_flag = blew_up_panama
+				factor = 200 # Prioritize if you decisively beat USA's navy
+				has_war_with = USA
+				USA = { has_navy_size = { size < 50 } }
+				has_navy_size = { size > 100 }
+			}
+			modifier = {
+				factor = 200 # Prioritize if USA
+				tag = USA
+			}
+			modifier = {
+				factor = 10 # Prioritize if not at war
+				has_war = no
 			}
 		}
 	}
@@ -879,7 +1523,10 @@ war_measures = {
         cost = 100
         days_remove = -1
         remove_trigger = {
-            has_war = no
+        	OR = {
+            	has_war = no
+            	not = { has_idea = tot_economic_mobilisation }
+            }
         }
         modifier = {
             conscription = 0.03
@@ -887,6 +1534,11 @@ war_measures = {
         }
         ai_will_do = {
 			factor = 1
+
+			modifier = {
+				factor = 3
+				has_manpower < 100000
+			}
 		}
 		complete_effect = {
 			if = {
@@ -948,8 +1600,14 @@ war_measures = {
 		ai_will_do = {
 			factor = 1
 			modifier = {
-				has_political_power < 150
+				has_political_power < 100
 				factor = 0 #use as pp dump
+			}
+
+			modifier = {
+				factor = 0
+				original_tag = SOV
+				SOV_save_pp_for_manpower_trouble = yes
 			}
 		}
 
@@ -960,12 +1618,10 @@ war_measures = {
 		complete_effect = {
 			if = {
 				limit = {
-					NOT = {
-						check_variable = {
-							var = GER_war_bonds_var
-							value = 100
-							compare = greater_than_or_equals
-						}
+					check_variable = {
+						var = GER_war_bonds_var
+						value = 50
+						compare = less_than
 					}
 				}
 				set_variable = {
@@ -984,36 +1640,28 @@ war_measures = {
 						value = 100
 						compare = greater_than_or_equals
 					}
-					NOT = {
-						check_variable = {
-							var = GER_war_bonds_war_support_var
-							value = 5
-							compare = greater_than_or_equals
-						}
+					check_variable = {
+						var = GER_war_bonds_war_support_var
+						value = -0.025
+						compare = greater_than
 					}
 				}
 				set_variable = {
 					var = GER_war_bonds_war_support_var
-					value = -5
+					value = -0.025
 				}
-				add_war_support = GER_war_bonds_war_support_var
 			}
 			if = {
 				limit = {
 					check_variable = {
-						var = GER_war_bonds_var
-						value = 100
-						compare = greater_than_or_equals
-					}
-					check_variable = {
 						var = GER_war_bonds_war_support_var
-						value = 5
-						compare = greater_than_or_equals
+						value = -0.025
+						compare = less_than_or_equals
 					}
 				}
 				add_to_variable = {
 					var = GER_war_bonds_war_support_var
-					value = -2.5
+					value = -0.025
 				}
 				add_war_support = GER_war_bonds_war_support_var
 			}
@@ -1050,6 +1698,11 @@ foreign_politics = {
 			}
 		}
 
+		target_root_trigger = {
+			has_war = yes
+			has_capitulated = no
+		}
+
 		target_trigger = {
 			NOT = { has_war_with = FROM }
 			#FROM = { has_sent_attache = yes } # Make such trigger to optimize if it becomes a performance problem again.
@@ -1084,35 +1737,32 @@ economy_decisions = {
 
         days_re_enable = 30
 
-        available = {
-            any_state = {
-            	NOT = { has_state_flag = infrastructure_building_slot_flag }
-            	is_fully_controlled_by = ROOT
-            	is_owned_by = ROOT
-				free_building_slots = {
-					building = infrastructure
-					size < 1
-				}
-            }
-        }
-
-        visible = {
-			any_state = {
-            	NOT = { has_state_flag = infrastructure_building_slot_flag }
-            	is_fully_controlled_by = ROOT
-            	is_owned_by = ROOT
-				free_building_slots = {
-					building = infrastructure
-					size < 1
-				}
-            }
+	available = {
+		any_owned_state = {
+			NOT = { has_state_flag = infrastructure_building_slot_flag }
+			is_fully_controlled_by = ROOT
+			free_building_slots = {
+				building = infrastructure
+				size < 1
+			}
 		}
+	}
+
+	visible = {
+		any_owned_state = {
+			NOT = { has_state_flag = infrastructure_building_slot_flag }
+			is_fully_controlled_by = ROOT
+			free_building_slots = {
+				building = infrastructure
+				size < 1
+			}
+		}
+	}
 
         complete_effect = {
 			random_owned_state = {
 				limit = {
 					is_fully_controlled_by = ROOT
-					is_owned_by = ROOT
             		free_building_slots = {
 						building = industrial_complex
 						size > 1
@@ -1149,46 +1799,109 @@ economy_decisions = {
         fire_only_once = no
 
         available = {
-            any_state = {
+            has_war = yes
+            any_owned_state = {
             	NOT = { has_state_flag = war_building_slot_flag }
             	is_fully_controlled_by = ROOT
-            	is_owned_by = ROOT
             }
-            has_war = yes
         }
 
         visible = {
-        	any_state = {
-            	NOT = { has_state_flag = war_building_slot_flag }
-            	is_fully_controlled_by = ROOT
-            	is_owned_by = ROOT
-            }
-            has_war = yes
+			has_war = yes
+			any_owned_state = {
+				NOT = { has_state_flag = war_building_slot_flag }
+				is_fully_controlled_by = ROOT
+			}
 		}
 
         complete_effect = {
         	add_war_support = -0.025
 			add_stability = -0.025
-			random_owned_state = {
+			if = {
 				limit = {
-					is_fully_controlled_by = ROOT
-					is_owned_by = ROOT
-            		free_building_slots = {
-						building = industrial_complex
-						size > 1
-						include_locked = yes
+					any_owned_state = {
+						is_fully_controlled_by = ROOT
+            			free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+						NOT = { has_state_flag = war_building_slot_flag }
+						infrastructure > 4
 					}
-					NOT = { has_state_flag = war_building_slot_flag }
 				}
-				add_extra_state_shared_building_slots = 1
-				set_state_flag = war_building_slot_flag
+				random_owned_state = {
+					limit = {
+						is_fully_controlled_by = ROOT
+            			free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+						NOT = { has_state_flag = war_building_slot_flag }
+						infrastructure > 4
+					}
+					add_extra_state_shared_building_slots = 1
+					set_state_flag = war_building_slot_flag
+				}
+			}
+			else_if = {
+				limit = {
+					any_owned_state = {
+						is_fully_controlled_by = ROOT
+            			free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+						NOT = { has_state_flag = war_building_slot_flag }
+						infrastructure > 2
+					}
+				}
+				random_owned_state = {
+					limit = {
+						is_fully_controlled_by = ROOT
+            			free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+						NOT = { has_state_flag = war_building_slot_flag }
+						infrastructure > 2
+					}
+					add_extra_state_shared_building_slots = 1
+					set_state_flag = war_building_slot_flag
+				}
+			}
+			else = {
+				random_owned_state = {
+					limit = {
+						is_fully_controlled_by = ROOT
+            			free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+						NOT = { has_state_flag = war_building_slot_flag }
+						infrastructure > 4
+					}
+					add_extra_state_shared_building_slots = 1
+					set_state_flag = war_building_slot_flag
+				}
 			}
 		}
 		ai_will_do = {
 			factor = 1
 			modifier = {
 				factor = 10
-				any_owned_state = { free_building_slots = { building = industrial_complex size < 1 include_locked = no } }
+				all_owned_state = { free_building_slots = { building = industrial_complex size < 1 include_locked = no } }
+			}
+			modifier = {
+				any_owned_state = {
+					infrastructure > 3
+					free_building_slots = { building = industrial_complex size > 0 include_locked = no }
+				}
+				factor = 0
 			}
 		}
     }
@@ -1215,28 +1928,71 @@ foreign_support = {
 		}
 
 		available = {
-			any_state = {
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
+			OR = {
+				AND = {
+					288 = { #Burma
+						has_state_flag = CHI_needed_for_burma_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
 				}
-				has_state_flag = CHI_needed_for_burma_road
-			}			
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_needed_for_burma_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_needed_for_burma_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
 		}
 
 		visible = {
 			is_subject = no
-			any_country = {
+			OR = {
+				AND = {
+					288 = { #Burma
+						has_state_flag = CHI_needed_for_burma_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_needed_for_burma_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_needed_for_burma_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
+			any_other_country = {
 				check_variable = { CHI_burma_road_current_level > 0 }
 				NOT = { is_in_faction_with = ROOT }
-				NOT = { tag = ROOT }
-			}
-			any_state = {
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
-				}
-				has_state_flag = CHI_needed_for_burma_road
 			}
 		}
 
@@ -1322,32 +2078,92 @@ foreign_support = {
 		}
 
 		available = {
-			any_state = {
-				has_state_flag = CHI_burma_road_closed_state
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
+			OR = {
+				AND = {
+					288 = { #Burma
+						has_state_flag = CHI_burma_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								is_subject_of = ROOT
+							}
+						}
+					}
+				}
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_burma_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								is_subject_of = ROOT
+							}
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_burma_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								is_subject_of = ROOT
+							}
+						}
+					}
 				}
 			}
 		}
 
 		visible = {
 			is_subject = no
-			any_country = {
-				check_variable = { CHI_burma_road_closed_level > 0 }
-				NOT = { has_war_with = ROOT }
-			}
-			any_state = {
-				has_state_flag = CHI_burma_road_closed_state
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = {
+			OR = {
+				AND = {
+					288 = { #Burma
+						has_state_flag = CHI_burma_road_closed_state
 						OR = {
-							is_subject_of = ROOT
-							check_variable = { CHI_burma_road_closed_level > 0 }
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_burma_road_closed_level > 0 }
+								}
+							}
 						}
 					}
 				}
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_burma_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_burma_road_closed_level > 0 }
+								}
+							}
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_burma_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_burma_road_closed_level > 0 }
+								}
+							}
+						}
+					}
+				}
+			}
+			any_country = {
+				check_variable = { CHI_burma_road_closed_level > 0 }
+				NOT = { has_war_with = ROOT }
 			}
 		}
 
@@ -1459,28 +2275,71 @@ foreign_support = {
 		}
 
 		available = {
-			any_state = {
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
+			OR = {
+				AND = {
+					432 = { #Assam
+						has_state_flag = CHI_needed_for_ledo_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
 				}
-				has_state_flag = CHI_needed_for_ledo_road
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_needed_for_ledo_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_needed_for_ledo_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
 			}			
 		}
 
 		visible = {
 			is_subject = no
-			any_country = {
+			OR = {
+				AND = {
+					432 = { #Assam
+						has_state_flag = CHI_needed_for_ledo_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_needed_for_ledo_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_needed_for_ledo_road
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
+			any_other_country = {
 				check_variable = { CHI_ledo_road_current_level > 0 }
 				NOT = { is_in_faction_with = ROOT }
-				NOT = { tag = ROOT }
-			}
-			any_state = {
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
-				}
-				has_state_flag = CHI_needed_for_ledo_road
 			}
 		}
 
@@ -1566,17 +2425,89 @@ foreign_support = {
 		}
 
 		available = {
-			any_state = {
-				has_state_flag = CHI_ledo_road_closed_state
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
+			OR = {
+				AND = {
+					432 = { #Assam
+						has_state_flag = CHI_ledo_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								is_subject_of = ROOT
+							}
+						}
+					}
+				}
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_ledo_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								is_subject_of = ROOT
+							}
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_ledo_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								is_subject_of = ROOT
+							}
+						}
+					}
 				}
 			}
 		}
 
 		visible = {
 			is_subject = no
+			OR = {
+				AND = {
+					432 = { #Assam
+						has_state_flag = CHI_ledo_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_ledo_road_closed_level > 0 }
+								}
+							}
+						}
+					}
+				}
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_ledo_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_ledo_road_closed_level > 0 }
+								}
+							}
+						}
+					}
+				}
+				AND = {
+					640 = { #Mandalay
+						has_state_flag = CHI_ledo_road_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_ledo_road_closed_level > 0 }
+								}
+							}
+						}
+					}
+				}
+			}
 			any_country = {
 				check_variable = { CHI_ledo_road_closed_level > 0 }
 				NOT = { has_war_with = ROOT }
@@ -1701,28 +2632,53 @@ foreign_support = {
  		}
 
  		available = {
- 			any_state = {
- 				OR = {
- 					is_controlled_by = ROOT
- 					CONTROLLER = { is_subject_of = ROOT }
- 				}
- 				has_state_flag = CHI_needed_for_the_hump
- 			}			
+			OR = {
+				AND = {
+					434 = { #Arunachal Pradesh
+						has_state_flag = CHI_needed_for_the_hump
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					601 = { #Xikang
+						has_state_flag = CHI_needed_for_the_hump
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
  		}
 
  		visible = {
  			is_subject = no
- 			any_country = {
+			OR = {
+				AND = {
+					434 = { #Arunachal Pradesh
+						has_state_flag = CHI_needed_for_the_hump
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					601 = { #Xikang
+						has_state_flag = CHI_needed_for_the_hump
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
+ 			any_other_country = {
  				check_variable = { CHI_the_hump_current_level > 0 }
  				NOT = { is_in_faction_with = ROOT }
- 				NOT = { tag = ROOT }
- 			}
- 			any_state = {
- 				OR = {
- 					is_controlled_by = ROOT
- 					CONTROLLER = { is_subject_of = ROOT }
- 				}
- 				has_state_flag = CHI_needed_for_the_hump
  			}
  		}
 
@@ -1808,32 +2764,63 @@ foreign_support = {
  		}
 
  		available = {
- 			any_state = {
- 				has_state_flag = CHI_the_hump_closed_state
- 				OR = {
- 					is_controlled_by = ROOT
- 					CONTROLLER = { is_subject_of = ROOT }
- 				}
- 			}
+			OR = {
+				AND = {
+					434 = { #Arunachal Pradesh
+						has_state_flag = CHI_the_hump_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					601 = { #Xikang
+						has_state_flag = CHI_the_hump_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
  		}
 
  		visible = {
  			is_subject = no
+			OR = {
+				AND = {
+					434 = { #Arunachal Pradesh
+						has_state_flag = CHI_the_hump_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_the_hump_closed_level > 0 }
+								}
+							}
+						}
+					}
+				}
+				AND = {
+					601 = { #Xikang
+						has_state_flag = CHI_the_hump_closed_state
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = {
+								OR = {
+									is_subject_of = ROOT
+									check_variable = { CHI_the_hump_closed_level > 0 }
+								}
+							}
+						}
+					}
+				}
+			}
  			any_country = {
  				check_variable = { CHI_the_hump_closed_level > 0 }
  				NOT = { has_war_with = ROOT }
- 			}
- 			any_state = {
- 				has_state_flag = CHI_the_hump_closed_state
- 				OR = {
- 					is_controlled_by = ROOT
- 					CONTROLLER = {
- 						OR = {
- 							is_subject_of = ROOT
- 							check_variable = { CHI_the_hump_closed_level > 0 }
- 						}
- 					}
- 				}
  			}
  		}
 
@@ -1945,28 +2932,53 @@ foreign_support = {
 		}
 
 		available = {
-			any_state = {
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
+			OR = {
+				AND = {
+					671 = { #Tonkin
+						has_state_flag = CHI_needed_for_hanoi_route
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
 				}
-				has_state_flag = CHI_needed_for_hanoi_route
-			}			
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_needed_for_hanoi_route
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
 		}
 
 		visible = {
 			is_subject = no
-			any_country = {
+			OR = {
+				AND = {
+					671 = { #Tonkin
+						has_state_flag = CHI_needed_for_hanoi_route
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+				AND = {
+					325 = { #Yunnan
+						has_state_flag = CHI_needed_for_hanoi_route
+						OR = {
+							is_controlled_by = ROOT
+							CONTROLLER = { is_subject_of = ROOT }
+						}
+					}
+				}
+			}
+			any_other_country = {
 				check_variable = { CHI_hanoi_route_current_level > 0 }
 				NOT = { is_in_faction_with = ROOT }
-				NOT = { tag = ROOT }
-			}
-			any_state = {
-				OR = {
-					is_controlled_by = ROOT
-					CONTROLLER = { is_subject_of = ROOT }
-				}
-				has_state_flag = CHI_needed_for_hanoi_route
 			}
 		}
 
