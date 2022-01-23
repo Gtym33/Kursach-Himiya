@@ -2056,7 +2056,24 @@ country_event = {
 			every_enemy_country = {
 				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
 				every_state = {
-					limit = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } is_owned_by = ROOT is_controlled_by = PREV }
+					limit = {
+						OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 }
+						OWNER = {
+							OR = {
+								tag = RSR
+								AND = {
+									is_subject_of = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+								AND = {
+									is_in_faction_with = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+							}
+						}
+						is_controlled_by = PREV
+					}
+					remove_core_of = OWNER
 					remove_core_of = RSR
 					PREV = { transfer_state = PREV }
 				}
@@ -2066,20 +2083,44 @@ country_event = {
 				every_state = {
 					limit = {
 						OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 }
-						is_owned_by = ROOT
+						OWNER = {
+							OR = {
+								tag = RSR
+								AND = {
+									is_subject_of = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+								AND = {
+									is_in_faction_with = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+							}
+						}
 						is_core_of = PREV
-						CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } } }
+						CONTROLLER = { OR = { tag = RSR NOT = { has_war_with = PREV.PREV } } }
 					}
+					remove_core_of = OWNER
 					remove_core_of = RSR
 					PREV = { transfer_state = PREV }
 				}
 			}
 		}
-		
 		SIB = {
 			every_state = {
 				limit = {
-					is_owned_by = RSR
+					OWNER = {
+						OR = {
+							tag = RSR
+							AND = {
+								is_subject_of = RSR
+								NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+							}
+							AND = {
+								is_in_faction_with = RSR
+								NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+							}
+						}
+					}
 					OR = {
 						region = 14
 						region = 87
@@ -2094,8 +2135,41 @@ country_event = {
 						region = 229
 					}
 				}
+				remove_core_of = OWNER
 				remove_core_of = RSR
 				SIB = { transfer_state = PREV }
+			}
+		}
+		
+		RSR = {
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = SIB
+							is_subject_of = SIB
+							is_in_faction_with = SIB
+							AND = {
+								has_war_with = RSR
+								capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } }
+							}
+						}
+					}
+					is_on_continent = europe
+					NOT = {
+						region = 137
+						state = 398
+						state = 651
+						state = 399
+						state = 1099
+						state = 249
+						state = 251
+						state = 401
+					}
+				}
+				remove_core_of = OWNER
+				remove_core_of = SIB
+				RSR = { transfer_state = PREV }
 			}
 		}
 		
@@ -2106,30 +2180,45 @@ country_event = {
 			}
 			every_state = {
 				limit = {
-					is_owned_by = RSR
+					OWNER = {
+						OR = {
+							tag = RSR
+							is_subject_of = RSR
+							is_in_faction_with = RSR
+						}
+					}
 					OR = {
 						region = 136
+						region = 137
 						region = 138
 						region = 232
-						
 						state = 398
 						state = 651
-						state = 652
-						state = 1072
-						
 						state = 399
 						state = 1099
 						state = 249
 						state = 251
-						state = 1070
+						state = 401
 					}
 				}
+				remove_core_of = OWNER
 				remove_core_of = RSR
 				SIB = { transfer_state = PREV }
 			}
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = RSR
+						is_subject_of = RSR
+					}
+					capital_scope = { OR = { region = 136 region = 137 region = 138 region = 232 state = 398 state = 651 state = 399 state = 1099 state = 249 state = 251 state = 401 } }
+				}
+				RSR = { end_puppet = PREV }
+				leave_faction = yes
+			}
 		}
 		else_if = {
-			limit = { SIB = { controls_state = 651 } }
+			limit = { SIB = { controls_state = 651 controls_state = 652 } }
 			SIB = {
 				add_political_power = -200
 			}
@@ -2150,9 +2239,116 @@ country_event = {
 				remove_core_of = RSR
 				SIB = { transfer_state = PREV }
 			}
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = RSR
+						is_subject_of = RSR
+					}
+					capital_scope = { OR = { region = 136 region = 138 region = 232 state = 398 state = 651 state = 652 state = 1072 } }
+				}
+				RSR = { end_puppet = PREV }
+				leave_faction = yes
+			}
+			RSR = {
+				every_state = {
+					limit = {
+						OWNER = {
+							OR = {
+								tag = SIB
+								is_subject_of = SIB
+								is_in_faction_with = SIB
+								AND = {
+									has_war_with = RSR
+									capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 region = 136 region = 138 region = 232 state = 398 state = 651 state = 652 state = 1072 } }
+								}
+							}
+						}
+						OR = {
+							region = 40
+							region = 137
+							region = 231
+						}
+						NOT = {
+							state = 398
+							state = 651
+							state = 652
+							state = 1072
+						}
+					}
+					remove_core_of = OWNER
+					remove_core_of = SIB
+					RSR = { transfer_state = PREV }
+				}
+			}
 		}
 		else_if = {
-			limit = { SIB = { controls_state = 572 } }
+			limit = { SIB = { controls_state = 572 controls_state = 653 } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = RSR
+							is_subject_of = RSR
+							is_in_faction_with = RSR
+						}
+					}
+					OR = {
+						state = 1025
+						state = 653
+						state = 1067
+						state = 572
+					}
+				}
+				remove_core_of = OWNER
+				remove_core_of = RSR
+				SIB = { transfer_state = PREV }
+			}
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = RSR
+						is_subject_of = RSR
+					}
+					capital_scope = { OR = { state = 1025 state = 653 state = 1067 state = 572 } }
+				}
+				RSR = { end_puppet = PREV }
+				leave_faction = yes
+			}
+			RSR = {
+				every_state = {
+					limit = {
+						OWNER = {
+							OR = {
+								tag = SIB
+								is_subject_of = SIB
+								is_in_faction_with = SIB
+								AND = {
+									has_war_with = RSR
+									capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 region = 136 state = 1025 state = 653 state = 1067 state = 572 state = 589 } NOT = { state = 402 } }
+								}
+							}
+						}
+						OR = {
+							region = 40
+							region = 137
+							region = 231
+							region = 232
+							state = 402
+						}
+						NOT = {
+							state = 1025
+							state = 653
+							state = 1067
+							state = 572
+							state = 589
+						}
+					}
+					remove_core_of = OWNER
+					remove_core_of = SIB
+					RSR = { transfer_state = PREV }
+				}
+			}
 			give_military_access = SIB
 			give_guarantee = SIB
 			SIB = {
@@ -2178,24 +2374,60 @@ country_event = {
 				SIB = { end_puppet = PREV }
 				leave_faction = yes
 			}
-			every_state = {
+		}
+		else = {
+			give_military_access = SIB
+			give_guarantee = SIB
+			SIB = {
+				add_political_power = -50
+				if = {
+					limit = { is_faction_leader = yes }
+					dismantle_faction = yes
+				}
+				every_country = { limit = { is_subject_of = SIB } OVERLORD = { end_puppet = PREV } }
+				add_ideas = neutral_foreign_policy_law
+				remove_ideas_with_trait = trade_laws
+				add_ideas = free_trade
+				add_ideas = SIB_hard_peace_idea
+				give_military_access = RSR
+			}
+			every_country = {
 				limit = {
-					is_owned_by = SIB
 					OR = {
-						region = 137
-						region = 231
-						region = 40
-						
-						state = 573
-						state = 581
-						state = 582
-						state = 1102
-						state = 1103
-						state = 1231
+						is_in_faction_with = SIB
+						is_subject_of = SIB
 					}
 				}
-				remove_core_of = SIB
-				RSR = { transfer_state = PREV }
+				SIB = { end_puppet = PREV }
+				leave_faction = yes
+			}
+			RSR = {
+				every_state = {
+					limit = {
+						OWNER = {
+							OR = {
+								tag = SIB
+								is_subject_of = SIB
+								is_in_faction_with = SIB
+								AND = {
+									has_war_with = RSR
+									capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } }
+								}
+							}
+						}
+						OR = {
+							region = 40
+							region = 136
+							region = 137
+							region = 138
+							region = 231
+							region = 232
+						}
+					}
+					remove_core_of = OWNER
+					remove_core_of = SIB
+					RSR = { transfer_state = PREV }
+				}
 			}
 		}
 		
@@ -6665,7 +6897,7 @@ country_event = {
 		}
 	}
 	desc = {
-		text = rcw_usfev.58.desc_2
+		text = rcw_usfev.158.desc_2
 		trigger = {
 			tag = CCA
 		}
@@ -13551,7 +13783,24 @@ country_event = {
 			every_enemy_country = {
 				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = OCH is_subject_of = OCH is_in_faction_with = OCH } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
 				every_state = {
-					limit = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } is_owned_by = ROOT is_controlled_by = PREV }
+					limit = {
+						OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 }
+						OWNER = {
+							OR = {
+								tag = RSR
+								AND = {
+									is_subject_of = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+								AND = {
+									is_in_faction_with = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+							}
+						}
+						is_controlled_by = PREV
+					}
+					remove_core_of = OWNER
 					remove_core_of = RSR
 					PREV = { transfer_state = PREV }
 				}
@@ -13561,20 +13810,44 @@ country_event = {
 				every_state = {
 					limit = {
 						OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 }
-						is_owned_by = ROOT
+						OWNER = {
+							OR = {
+								tag = RSR
+								AND = {
+									is_subject_of = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+								AND = {
+									is_in_faction_with = RSR
+									NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+								}
+							}
+						}
 						is_core_of = PREV
-						CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } } }
+						CONTROLLER = { OR = { tag = RSR NOT = { has_war_with = PREV.PREV } } }
 					}
+					remove_core_of = OWNER
 					remove_core_of = RSR
 					PREV = { transfer_state = PREV }
 				}
 			}
 		}
-		
 		OCH = {
 			every_state = {
 				limit = {
-					is_owned_by = RSR
+					OWNER = {
+						OR = {
+							tag = RSR
+							AND = {
+								is_subject_of = RSR
+								NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+							}
+							AND = {
+								is_in_faction_with = RSR
+								NOT = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } }
+							}
+						}
+					}
 					OR = {
 						region = 14
 						region = 87
@@ -13589,8 +13862,41 @@ country_event = {
 						region = 229
 					}
 				}
+				remove_core_of = OWNER
 				remove_core_of = RSR
 				OCH = { transfer_state = PREV }
+			}
+		}
+		
+		RSR = {
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = OCH
+							is_subject_of = OCH
+							is_in_faction_with = OCH
+							AND = {
+								has_war_with = RSR
+								capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } }
+							}
+						}
+					}
+					is_on_continent = europe
+					NOT = {
+						region = 137
+						state = 398
+						state = 651
+						state = 399
+						state = 1099
+						state = 249
+						state = 251
+						state = 401
+					}
+				}
+				remove_core_of = OWNER
+				remove_core_of = OCH
+				RSR = { transfer_state = PREV }
 			}
 		}
 		
@@ -13601,24 +13907,28 @@ country_event = {
 			}
 			every_state = {
 				limit = {
-					is_owned_by = RSR
+					OWNER = {
+						OR = {
+							tag = RSR
+							is_subject_of = RSR
+							is_in_faction_with = RSR
+						}
+					}
 					OR = {
 						region = 136
+						region = 137
 						region = 138
 						region = 232
-						
 						state = 398
 						state = 651
-						state = 652
-						state = 1072
-						
 						state = 399
 						state = 1099
 						state = 249
 						state = 251
-						state = 1070
+						state = 401
 					}
 				}
+				remove_core_of = OWNER
 				remove_core_of = RSR
 				OCH = { transfer_state = PREV }
 			}
@@ -13628,14 +13938,14 @@ country_event = {
 						is_in_faction_with = RSR
 						is_subject_of = RSR
 					}
-					capital_scope = { OR = { region = 136 region = 138 region = 232 state = 398 state = 651 state = 652 state = 1072  state = 399 state = 1099 state = 249 state = 251 state = 1070 } }
+					capital_scope = { OR = { region = 136 region = 137 region = 138 region = 232 state = 398 state = 651 state = 399 state = 1099 state = 249 state = 251 state = 401 } }
 				}
 				RSR = { end_puppet = PREV }
 				leave_faction = yes
 			}
 		}
 		else_if = {
-			limit = { OCH = { controls_state = 651 } }
+			limit = { OCH = { controls_state = 651 controls_state = 652 } }
 			OCH = {
 				add_political_power = -200
 			}
@@ -13667,9 +13977,105 @@ country_event = {
 				RSR = { end_puppet = PREV }
 				leave_faction = yes
 			}
+			RSR = {
+				every_state = {
+					limit = {
+						OWNER = {
+							OR = {
+								tag = OCH
+								is_subject_of = OCH
+								is_in_faction_with = OCH
+								AND = {
+									has_war_with = RSR
+									capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 region = 136 region = 138 region = 232 state = 398 state = 651 state = 652 state = 1072 } }
+								}
+							}
+						}
+						OR = {
+							region = 40
+							region = 137
+							region = 231
+						}
+						NOT = {
+							state = 398
+							state = 651
+							state = 652
+							state = 1072
+						}
+					}
+					remove_core_of = OWNER
+					remove_core_of = OCH
+					RSR = { transfer_state = PREV }
+				}
+			}
 		}
 		else_if = {
-			limit = { OCH = { controls_state = 572 } }
+			limit = { OCH = { controls_state = 572 controls_state = 653 } }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = RSR
+							is_subject_of = RSR
+							is_in_faction_with = RSR
+						}
+					}
+					OR = {
+						state = 1025
+						state = 653
+						state = 1067
+						state = 572
+					}
+				}
+				remove_core_of = OWNER
+				remove_core_of = RSR
+				OCH = { transfer_state = PREV }
+			}
+			every_country = {
+				limit = {
+					OR = {
+						is_in_faction_with = RSR
+						is_subject_of = RSR
+					}
+					capital_scope = { OR = { state = 1025 state = 653 state = 1067 state = 572 } }
+				}
+				RSR = { end_puppet = PREV }
+				leave_faction = yes
+			}
+			RSR = {
+				every_state = {
+					limit = {
+						OWNER = {
+							OR = {
+								tag = OCH
+								is_subject_of = OCH
+								is_in_faction_with = OCH
+								AND = {
+									has_war_with = RSR
+									capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 region = 136 state = 1025 state = 653 state = 1067 state = 572 state = 589 } NOT = { state = 402 } }
+								}
+							}
+						}
+						OR = {
+							region = 40
+							region = 137
+							region = 231
+							region = 232
+							state = 402
+						}
+						NOT = {
+							state = 1025
+							state = 653
+							state = 1067
+							state = 572
+							state = 589
+						}
+					}
+					remove_core_of = OWNER
+					remove_core_of = OCH
+					RSR = { transfer_state = PREV }
+				}
+			}
 			give_military_access = OCH
 			give_guarantee = OCH
 			OCH = {
@@ -13695,24 +14101,60 @@ country_event = {
 				OCH = { end_puppet = PREV }
 				leave_faction = yes
 			}
-			every_state = {
+		}
+		else = {
+			give_military_access = OCH
+			give_guarantee = OCH
+			OCH = {
+				add_political_power = -50
+				if = {
+					limit = { is_faction_leader = yes }
+					dismantle_faction = yes
+				}
+				every_country = { limit = { is_subject_of = OCH } OVERLORD = { end_puppet = PREV } }
+				add_ideas = neutral_foreign_policy_law
+				remove_ideas_with_trait = trade_laws
+				add_ideas = free_trade
+				add_ideas = SIB_hard_peace_idea
+				give_military_access = RSR
+			}
+			every_country = {
 				limit = {
-					is_owned_by = OCH
 					OR = {
-						region = 137
-						region = 231
-						region = 40
-						
-						state = 573
-						state = 581
-						state = 582
-						state = 1102
-						state = 1103
-						state = 1231
+						is_in_faction_with = OCH
+						is_subject_of = OCH
 					}
 				}
-				remove_core_of = OCH
-				RSR = { transfer_state = PREV }
+				OCH = { end_puppet = PREV }
+				leave_faction = yes
+			}
+			RSR = {
+				every_state = {
+					limit = {
+						OWNER = {
+							OR = {
+								tag = OCH
+								is_subject_of = OCH
+								is_in_faction_with = OCH
+								AND = {
+									has_war_with = RSR
+									capital_scope = { OR = { region = 14 region = 87 region = 147 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } }
+								}
+							}
+						}
+						OR = {
+							region = 40
+							region = 136
+							region = 137
+							region = 138
+							region = 231
+							region = 232
+						}
+					}
+					remove_core_of = OWNER
+					remove_core_of = OCH
+					RSR = { transfer_state = PREV }
+				}
 			}
 		}
 		
@@ -14913,7 +15355,7 @@ country_event = {
 		create_country_leader = {
 			name = "Aleksandr Perfilyev"
 			desc = ACH_Aleksandr_Perfilyev_desc
-			picture = "gfx/leaders/ACH/Aleksandr_Perfilyev.dds"
+			picture = "gfx/leaders/Russia/Portrait_Russia_Generic_3.dds"
 			expire = "1935.1.1"
 			ideology = social_liberalism_ideology
 			traits = {}
@@ -15667,19 +16109,19 @@ country_event = {
 				REB = {
 					every_unit_leader = {
 						limit = { OR = { has_id = 88155 has_id = 65458 has_id = 35652 } }
-						set_nationality = ROOT
+						set_nationality = UCH
 					}
 				}
 				REB = {
 					every_unit_leader = {
 						limit = { OR = { has_id = 42344 has_id = 24567 } }
-						set_nationality = ROOT
+						set_nationality = UCH
 					}
 				}
 				CCA = {
 					every_unit_leader = {
 						limit = { has_id = 88155 }
-						set_nationality = ROOT
+						set_nationality = UCH
 					}
 				}
 			}
@@ -15739,19 +16181,19 @@ country_event = {
 				REB = {
 					every_unit_leader = {
 						limit = { OR = { has_id = 88155 has_id = 65458 has_id = 35652 } }
-						set_nationality = ROOT
+						set_nationality = UCH
 					}
 				}
 				REB = {
 					every_unit_leader = {
 						limit = { OR = { has_id = 42344 has_id = 24567 } }
-						set_nationality = ROOT
+						set_nationality = UCH
 					}
 				}
 				CCA = {
 					every_unit_leader = {
 						limit = { has_id = 88155 }
-						set_nationality = ROOT
+						set_nationality = UCH
 					}
 				}
 			}
