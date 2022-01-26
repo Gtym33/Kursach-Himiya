@@ -22,7 +22,6 @@ THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = {
 		
 		event_target:INTEGRATING_COUNTRY_MAJOR = {
 			every_unit_leader = { set_nationality = event_target:UNITED_COUNTRY }
-			#event_target:UNITED_COUNTRY = { transfer_technology = yes }
 			set_variable = {
 				var = curnet_stability
 				value = has_stability
@@ -30,11 +29,14 @@ THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = {
 			set_variable = {
 				var = curnet_war_support
 				value = has_war_support
+			}
+			set_variable = {
+				var = curnet_political_power
+				value = has_political_power
 			}
 		}
 		event_target:INTEGRATING_COUNTRY_MINOR = {
 			every_unit_leader = { set_nationality = event_target:UNITED_COUNTRY }
-			#event_target:UNITED_COUNTRY = { transfer_technology = yes }
 			set_variable = {
 				var = curnet_stability
 				value = has_stability
@@ -42,6 +44,10 @@ THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = {
 			set_variable = {
 				var = curnet_war_support
 				value = has_war_support
+			}
+			set_variable = {
+				var = curnet_political_power
+				value = has_political_power
 			}
 		}
 		every_country = {
@@ -165,6 +171,18 @@ THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = {
 			}
 		}
 		event_target:UNITED_COUNTRY = {
+			if = {
+				limit = { event_target:UNITED_COUNTRY = { NOT = { tag = event_target:INTEGRATING_COUNTRY_MAJOR } } }
+				army_experience = event_target:INTEGRATING_COUNTRY_MAJOR.army_experience
+				navy_experience = event_target:INTEGRATING_COUNTRY_MAJOR.navy_experience
+				air_experience = event_target:INTEGRATING_COUNTRY_MAJOR.air_experience
+			}
+			if = {
+				limit = { event_target:INTEGRATING_COUNTRY_MAJOR = { NOT = { tag = event_target:INTEGRATING_COUNTRY_MINOR } } }
+				army_experience = event_target:INTEGRATING_COUNTRY_MINOR.army_experience
+				navy_experience = event_target:INTEGRATING_COUNTRY_MINOR.navy_experience
+				air_experience = event_target:INTEGRATING_COUNTRY_MINOR.air_experience
+			}
 			annex_country = {
 				target = event_target:INTEGRATING_COUNTRY_MAJOR
 				transfer_troops = yes
@@ -181,6 +199,10 @@ THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = {
 				var = curnet_war_support
 				value = event_target:INTEGRATING_COUNTRY_MAJOR.curnet_war_support
 			}
+			set_variable = {
+				var = curnet_political_power
+				value = event_target:INTEGRATING_COUNTRY_MAJOR.curnet_political_power
+			}
 			add_to_variable = {
 				var = curnet_stability
 				value = event_target:INTEGRATING_COUNTRY_MINOR.curnet_stability
@@ -189,12 +211,20 @@ THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = {
 				var = curnet_war_support
 				value = event_target:INTEGRATING_COUNTRY_MINOR.curnet_war_support
 			}
+			add_to_variable = {
+				var = curnet_political_power
+				value = event_target:INTEGRATING_COUNTRY_MINOR.curnet_political_power
+			}
 			multiply_variable = {
 				var = curnet_stability
 				value = 0.45
 			}
 			multiply_variable = {
 				var = curnet_war_support
+				value = 0.5
+			}
+			multiply_variable = {
+				var = curnet_political_power
 				value = 0.5
 			}
 			set_temp_variable = { global.threat = temp_threat }
@@ -207,6 +237,7 @@ THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = {
 			}
 			set_stability = var:curnet_stability
 			set_war_support = var:curnet_war_support
+			add_political_power = var:curnet_political_power
 			
 			party_populatiry_addition_script_clear = yes
 			
