@@ -1,409 +1,1845 @@
 focus_tree = {
-	id = Committee_of_Members_of_the_Constituent_Assembly_Don_focus
+	id = DON_CCA_focus_tree
 	country = {
 		factor = 0
-		#modifier = {
-		#	add = 10
-		#	tag = NOR
-		#}
 	}
 	default = no
+	continuous_focus_position = { x = 0 y = 15 }
+	
+	#Мобилизация в народную армию
 	focus = {
-		id = CCA_focus_mobilazitontopeoplesarmy
-		icon = GFX_goal_generic_allies_build_infantry
+		id = DON_CCA_mobilization
+		icon = GFX_DON_CCA_mobilization
 		cost = 2
-		x = 7
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 20
 		y = 0
-
+		select_effect = { country_event = { id = rcw_don_cca.92 days = 7 } }
+		completion_reward = { 
+			remove_ideas = DON_Peoples_army_presence_idea
+			if = {
+				limit = { NOT = { has_template = "Dobrovolcheskaya Brigada" } }
+				division_template = {
+					name = "Dobrovolcheskaya Brigada" 
+					is_locked = yes
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+						engineer = { x = 0 y = 1 }
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { has_template = "Kavaleriyskaya Brigada" } }
+				division_template = {
+					name = "Kavaleriyskaya Brigada"		
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+					}
+					is_locked = yes
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Dobrovolcheskaya Brigada\" division_template = \"Dobrovolcheskaya Brigada\" start_experience_factor = 0.5 start_equipment_factor = 1" count = 3 owner = ROOT 
+				}
+				create_unit = {
+					division = "name = \"Kavaleriyskaya Brigada\" division_template = \"Kavaleriyskaya Brigada\" start_experience_factor = 0.5 start_equipment_factor = 1" count = 1 owner = ROOT 
+				}
+			}
+			unlock_decision_category_tooltip = DON_CCA_mob_desisions
+			
+		}
 	}
+	#Боевые землячества
 	focus = {
-		id = CCA_focus_meetingofsoutheastunion
-		icon = GFX_meeting
+		id = DON_CCA_zemlyachestva
+		icon = GFX_DON_CCA_zemlyachestva
 		cost = 3
 		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
+			focus = DON_CCA_mobilization
 		}
-		x = 2
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 11
 		y = 1
-
-	}
-	focus = {
-		id = CCA_focus_southnationalmeeting
-		icon = GFX_goal_CCA_rus_federation
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_meetingofsoutheastunion
+		completion_reward = { 
+			add_ideas = DON_CCA_zemlyachestva
 		}
-		x = 2
+	}
+	#Пополнение пленными
+	focus = {
+		id = DON_CCA_recruit_prisoners
+		icon = GFX_DON_CCA_recruit_prisoners
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_zemlyachestva
+		}
+		available = { 
+			has_war = yes
+			NOT = { has_global_flag = RUS_civil_war_over }
+			NOT = { has_idea = DON_CCA_prisoners_labor }
+		}
+		bypass = { RUS = { exists = no } }  
+		ai_will_do = {
+			factor = 1
+		}
+		x = 9
 		y = 2
-
-	}
-	focus = {
-		id = CCA_focus_terrorofmilitarygroups
-		icon = GFX_goal_CCA_terror
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
+		completion_reward = { 
+			add_ideas = DON_CCA_prisoners_recruit
+			add_popularity = { ideology = national_syndicalism popularity = 0.03 }
 		}
-		x = 4
-		y = 1
-
 	}
+	#Добровольные помощники армии
 	focus = {
-		id = CCA_focus_networkofspiesinunionsofsoldiers
-		icon = GFX_goal_spy
-		cost = 0
+		id = DON_CCA_army_helpers
+		icon = GFX_DON_CCA_army_helpers
+		cost = 3
 		prerequisite = {
-			focus = CCA_focus_terrorofmilitarygroups
+			focus = DON_CCA_zemlyachestva
 		}
-		x = 4
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 11
 		y = 2
-
-	}
-	focus = {
-		id = CCA_focus_northflare
-		icon = GFX_goal_CCA_DIE_ALL_ENEMY
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_networkofspiesinunionsofsoldiers
+		completion_reward = { 
+			add_stability = 0.04
+			add_war_support = 0.04
+			add_political_power = 25
 		}
-		x = 3
+	}
+	#Третьеразрядные части
+	focus = {
+		id = DON_CCA_third_div
+		icon = GFX_DON_CCA_third_div
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_recruit_prisoners
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 9
 		y = 3
-
-	}
-	focus = {
-		id = CCA_focus_volgarebellion
-		icon = GFX_goal_CCA_death_to_uzurpators
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_networkofspiesinunionsofsoldiers
+		completion_reward = { 
+			add_ideas = DON_CCA_third_div
 		}
-		x = 5
+	}
+	#"Служба до ворот дома"
+	focus = {
+		id = DON_CCA_homestead
+		icon = GFX_DON_CCA_homestead
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_army_helpers
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 11
 		y = 3
-
+		completion_reward = { 
+			add_ideas = DON_CCA_homestead
+		}
 	}
+	#Бонапартизм
 	focus = {
-		id = CCA_focus_avalanche
-		icon = GFX_resistance_purged
-		cost = 0
+		id = DON_CCA_bonapartism
+		icon = GFX_DON_CCA_bonapartism
+		cost = 3
 		prerequisite = {
-			focus = CCA_focus_northflare
+			focus = DON_CCA_homestead
+			focus = DON_CCA_third_div
 		}
-		prerequisite = {
-			focus = CCA_focus_volgarebellion
+		available = { 
+			has_country_leader = { name = "Victor Manakin" ruling_only = no }
 		}
-		x = 4
-		y = 4
-
-	}
-	focus = {
-		id = CCA_focus_integrationofalexeevs
-		icon = GFX_goal_DON_help_from_Alexeyevs_organisation
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
-		}
-		x = 6
-		y = 1
-
-	}
-	focus = {
-		id = CCA_focus_inclusionofcossackstocommittee
-		icon = GFX_goal_RUS_cossacks
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
-		}
-		x = 8
-		y = 1
-
-	}
-	focus = {
-		id = CCA_focus_compromisewithcossackofficers
-		icon = GFX_goal_DON_cossack_government
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_integrationofalexeevs
-		}
-		prerequisite = {
-			focus = CCA_focus_inclusionofcossackstocommittee
-		}
-		mutually_exclusive = {
-			focus = CCA_focus_relianceondemocraticcossacks
-		}
-		x = 7
-		y = 2
-
-	}
-	focus = {
-		id = CCA_focus_allunionelections
-		icon = GFX_goal_support_democracy
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
+		ai_will_do = {
+			factor = 1
 		}
 		x = 10
-		y = 1
-
-	}
-	focus = {
-		id = CCA_focus_relianceondemocraticcossacks
-		icon = GFX_goal_RSS_republican_cossacks
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_inclusionofcossackstocommittee
-			focus = CCA_focus_allunionelections
-		}
-		mutually_exclusive = {
-			focus = CCA_focus_compromisewithcossackofficers
-		}
-		x = 9
-		y = 2
-
-	}
-	focus = {
-		id = CCA_focus_propagandaofallrussianprogramme
-		icon = GFX_goal_CCA_russian_federation
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_compromisewithcossackofficers
-			focus = CCA_focus_relianceondemocraticcossacks
-		}
-		x = 8
-		y = 3
-
-	}
-	focus = {
-		id = CCA_focus_mobilizationofofficers
-		icon = GFX_goal_RGR_recruitment_officers
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_propagandaofallrussianprogramme
-		}
-		x = 7
 		y = 4
-
+		completion_reward = { 
+			unlock_decision_category_tooltip = DON_CCA_Bonaparte
+		}
 	}
+	#Защита православия
 	focus = {
-		id = CCA_focus_independentdonarmy
-		icon = GFX_agrarian_soldiers
-		cost = 0
+		id = DON_CCA_protection_of_ortodoxy
+		icon = GFX_RSS_VDA_crusader
+		cost = 3
 		prerequisite = {
-			focus = CCA_focus_mobilizationofofficers
+			focus = DON_CCA_bonapartism
 		}
-		mutually_exclusive = {
-			focus = CCA_focus_permissiontoselforganizationofcossackunits
+		available = {  }
+		ai_will_do = {
+			factor = 1
 		}
-		x = 5
+		x = 10
 		y = 5
-
-	}
-	focus = {
-		id = CCA_focus_repressionofoppositioninmilitarycircle
-		icon = GFX_goal_BUL_secret_police
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_propagandaofallrussianprogramme
+		completion_reward = { 
+			add_stability = 0.04
+			add_popularity = { ideology = national_syndicalism popularity = 0.05 }
 		}
-		x = 9
-		y = 4
-
 	}
+	#Ударные дивизии
 	focus = {
-		id = CCA_focus_defeatofreaction
-		icon = GFX_imprison_the_opposition
-		cost = 0
+		id = DON_CCA_sturm_div
+		icon = GFX_RSS_unification_new_stormtroopers
+		cost = 4
 		prerequisite = {
-			focus = CCA_focus_repressionofoppositioninmilitarycircle
+			focus = DON_CCA_bonapartism
 		}
-		x = 9
-		y = 5
-
-	}
-	focus = {
-		id = CCA_focus_agitationintheindustrializedsouth
-		icon = GFX_focus_generic_industry
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_allunionelections
+		available = { 
+			has_template = "Narodnoarmeyskiy polk" 
+		}
+		bypass = { NOT = { has_template = "Narodnoarmeyskiy polk" } }
+		ai_will_do = {
+			factor = 1
 		}
 		x = 12
-		y = 2
-
-	}
-	focus = {
-		id = CCA_focus_finalsolutionofagrarianquestion
-		icon = GFX_agrarian_reform
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_agitationintheindustrializedsouth
+		y = 5
+		completion_reward = { 
+			delete_unit_template_and_units = {
+				division_template = "Narodnoarmeyskiy polk" 
+				disband = yes 
+			}
+			if = {
+				limit = { NOT = { has_tech = stormtroopers } }
+				set_technology = {
+					stormtroopers = 1
+					popup = no
+				}
+			}
+			division_template = {
+				name = "Udarnaya Brigada"		
+				regiments = {
+					stormtroopers = { x = 0 y = 0 }
+					stormtroopers = { x = 0 y = 1 }
+					stormtroopers = { x = 1 y = 1 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+				}
+				is_locked = no
+			}
+			division_template = {
+				name = "Dobrovolcheskaya Brigada"		
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+				}
+				is_locked = no
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Udarniki\" division_template = \"Udarnaya Brigada\" start_experience_factor = 1 start_equipment_factor = 1" count = 1 owner = ROOT 
+				}
+				create_unit = {
+					division = "name = \"Dobrovolcheskaya Brigada\" division_template = \"Dobrovolcheskaya Brigada\" start_experience_factor = 1 start_equipment_factor = 1" count = 3 owner = ROOT 
+				}
+			}
+			add_popularity = { ideology = national_syndicalism popularity = 0.05 }
+			custom_effect_tooltip = manakin_min_allowed
 		}
-		x = 11
-		y = 3
-
 	}
+	#Обеспечение правопорядка в тылу 
 	focus = {
-		id = CCA_focus_organizationofvillagepolice
-		icon = GFX_militia
-		cost = 0
+		id = DON_CCA_rear_order
+		icon = GFX_MIA_emergency_power
+		cost = 3
 		prerequisite = {
-			focus = CCA_focus_finalsolutionofagrarianquestion
+			focus = DON_CCA_mobilization
 		}
-		x = 11
-		y = 4
-
-	}
-	focus = {
-		id = CCA_focus_newconstituentassembly
-		icon = GFX_goal_generic_national_unity
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
+		available = {  }
+		ai_will_do = {
+			factor = 1
 		}
-		x = 12
+		x = 13
 		y = 1
-
+		completion_reward = { 
+			add_stability = 0.04
+			add_political_power = 30
+		}
 	}
+	#Организация гарнизонов 
 	focus = {
-		id = CCA_focus_labourlegislation
-		icon = GFX_soldiers_for_workers
-		cost = 0
+		id = DON_CCA_garrisons
+		icon = GFX_militia_garrisons
+		cost = 4
 		prerequisite = {
-			focus = CCA_focus_agitationintheindustrializedsouth
+			focus = DON_CCA_rear_order
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 13
+		y = 2
+		completion_reward = { 
+			set_country_flag = RSS_flag_eser_police_garrison
+			custom_effect_tooltip = RSS_eser_police_garrison_open
+		}
+	}
+	#Государственная охрана 
+	focus = {
+		id = DON_CCA_gos_okhrana
+		icon = GFX_gos_ohrana
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_garrisons
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
 		}
 		x = 13
 		y = 3
-
+		completion_reward = { 
+			add_ideas = RSS_gos_okhrana
+			add_political_power = 30
+			create_intelligence_agency = { name = "Gos. Okhrana" icon = "GFX_agency_logo_RSS_gos_okhrana" }
+		}
 	}
+	#Военно-революционные суды
 	focus = {
-		id = CCA_focus_workerssquadsofdonandnovorossiya
-		icon = GFX_workers_for_business
-		cost = 0
+		id = DON_CCA_rev_courts
+		icon = GFX_military_courts
+		cost = 3
 		prerequisite = {
-			focus = CCA_focus_labourlegislation
+			focus = DON_CCA_gos_okhrana
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
 		}
 		x = 13
 		y = 4
-
+		completion_reward = { 
+			add_ideas = RSS_mil_rev_courts
+		}
 	}
+	#Разгром реакции
 	focus = {
-		id = CCA_focus_thoroughprogrammeofsyndicalism
-		icon = GFX_goal_CCA_communist_changelings
-		cost = 0
+		id = DON_CCA_reaction_defeat
+		icon = GFX_conspiracy
+		cost = 4
 		prerequisite = {
-			focus = CCA_focus_organizationofvillagepolice
-		}
-		prerequisite = {
-			focus = CCA_focus_workerssquadsofdonandnovorossiya
-		}
-		x = 12
-		y = 5
-
-	}
-	focus = {
-		id = CCA_focus_newzemstvos
-		icon = GFX_goal_CCA_zemstvos
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_allunionelections
-		}
-		x = 14
-		y = 2
-
-	}
-	focus = {
-		id = CCA_focus_negotiationwithreds
-		icon = GFX_focus_chi_mission_to_the_soviet_union
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
-		}
-		x = 15
-		y = 1
-
-	}
-	focus = {
-		id = CCA_focus_sovietquestion
-		icon = GFX_goal_CCA_communist_loyalty
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_newzemstvos
-			focus = CCA_focus_negotiationwithreds
-		}
-		x = 15
-		y = 3
-
-	}
-	focus = {
-		id = CCA_focus_involvementofanarchiststocommittee
-		icon = GFX_anarcho_communism
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_sovietquestion
+			focus = DON_CCA_rev_courts
 		}
 		prerequisite = {
-			focus = CCA_focus_workerssquadsofdonandnovorossiya
+			focus = DON_CCA_beat_opposition
 		}
-		x = 15
-		y = 5
-
-	}
-	focus = {
-		id = CCA_focus_permissiontoselforganizationofcossackunits
-		icon = GFX_goal_RGR_peasant_army
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilizationofofficers
+		available = { 
+			NOT = {
+				has_government = despotism
+				has_government = authoritarism
+				has_government = fascism
+				has_completed_focus = DON_CCA_lib_dem_coalition
+			}
 		}
-		mutually_exclusive = {
-			focus = CCA_focus_independentdonarmy
+		ai_will_do = {
+			factor = 1
 		}
-		x = 7
-		y = 5
-
-	}
-	focus = {
-		id = CCA_focus_peacewithcommi
-		icon = GFX_goal_communist_pride
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_sovietquestion
-		}
-		x = 17
-		y = 4
-
-	}
-	focus = {
-		id = CCA_focus_proententcourse
-		icon = GFX_goal_CCA_the_entente
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_mobilazitontopeoplesarmy
-		}
-		x = 17
-		y = 1
-
-	}
-	focus = {
-		id = CCA_focus_liberaldemocraticcoalition
-		icon = GFX_goal_DON_south_russian_confederation_of_Constitutional_Democrats
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_newzemstvos
-		}
-		x = 17
-		y = 3
-
-	}
-	focus = {
-		id = CCA_focus_appealtogulyaipolyecouncil
-		icon = GFX_goal_RSS_comissars_psr
-		cost = 0
-		prerequisite = {
-			focus = CCA_focus_involvementofanarchiststocommittee
-		}
-		x = 15
+		x = 13
 		y = 6
-
+		completion_reward = { 
+			add_timed_idea = {
+				idea = DON_CCA_rev_justice
+				days = 35
+			}
+			if = {
+				limit = { has_idea = DON_right_oficers }
+				remove_ideas = DON_right_oficers
+			}
+			if = {
+				limit = { has_idea = DON_CCA_sec_groups }
+				remove_ideas = DON_CCA_sec_groups
+			}
+		}
 	}
+	#Совещание Юго-восточного союза
+	focus = {
+		id = DON_CCA_south_west_union
+		icon = GFX_DON_CCA_south_west_union
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 1
+		completion_reward = { 
+			country_event = rcw_don_cca.4
+		}
+	}
+	#Южное государственное совещание
+	focus = {
+		id = DON_CCA_south_state_meeting
+		icon = GFX_DON_CCA_south_state_meeting
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_south_west_union
+		}
+		available = {  
+			OR = {
+				is_faction_leader = yes
+				KUB = { is_subject_of = CCA }
+				MRC = { is_subject_of = CCA }
+				CRI = { is_subject_of = CCA }
+				UKR = { is_subject_of = CCA }
+			}
+		}
+		bypass = {
+			NOT = {
+				is_faction_leader = yes
+				KUB = { is_subject_of = CCA }
+				MRC = { is_subject_of = CCA }
+				CRI = { is_subject_of = CCA }
+				UKR = { is_subject_of = CCA }
+			}
+			has_country_flag = {
+				flag = DON_CCA_send
+				days > 7 
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 2
+		select_effect = {
+			set_variable = { var = electors_num value = 1 }
+			set_variable = { var = electors_decided_on_1 value = 0 }
+			set_variable = { var = electors_decided_on_2 value = 0 }
+			set_variable = { var = electors_decided_on_3 value = 0 }
+			set_variable = { var = good_choices value = 0 }
+			set_variable = { var = middle_choices value = 0 }
+			set_variable = { var = bad_choices value = 0 }
+			set_variable = { var = votes_yeah value = 0 }
+			set_variable = { var = votes_uhh value = 0 }
+			set_variable = { var = votes_nay value = 0 }
+			set_variable = { var = votes_yeah_1 value = 0 }
+			set_variable = { var = votes_uhh_1 value = 0 }
+			set_variable = { var = votes_nay_1 value = 0 }
+			set_variable = { var = votes_yeah_2 value = 0 }
+			set_variable = { var = votes_uhh_2 value = 0 }
+			set_variable = { var = votes_nay_2 value = 0 }
+			country_event =  rcw_don_cca.24
+		}
+		completion_reward = { 
+			custom_effect_tooltip = south_state_meeting
+		}
+	}
+	#Всероссийские амбиции
+	focus = {
+		id = DON_CCA_all_russia_ambitions
+		icon = GFX_RSS_gov_com
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_south_state_meeting
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 5
+		completion_reward = { 
+			unlock_decision_category_tooltip = RSS_gov_com_des_cat
+		}
+	}
+	#Террор боевых групп
+	focus = {
+		id = DON_CCA_terror
+		icon = GFX_mob_veterans
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = { 
+			OR = {
+				has_government = social_liberalism
+				has_government = radical_socialism
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 17
+		y = 1
+		completion_reward = { 
+			add_war_support = 0.04
+			custom_effect_tooltip = RSS_terror_grops_veterans
+			add_dynamic_modifier = { modifier = RSS_agency_slot }
+		}
+	}
+	#Сеть агентов в союзах фронтовиков
+	focus = {
+		id = DON_CCA_agents
+		icon = GFX_DON_CCA_agents
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_terror
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 17
+		y = 2
+		completion_reward = { 
+			add_ideas = DON_CCA_frontoviki
+		}
+	}
+	#Северный "всполох"
+	focus = {
+		id = DON_CCA_north_fire
+		icon = GFX_DON_CCA_north_fire
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_agents
+		}
+		cancel_if_invalid = yes
+		bypass = { NOT = { RUS = { controls_state = 265 } } }
+		available = { AND = { DON = { exists = no } RUS = { controls_state = 265 } } }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 3
+		completion_reward = { 
+			hidden_effect = {
+				every_unit_leader = { limit = { has_id = 18709 } set_nationality = DON } 
+				DON = {
+					division_template = {
+						name = "Vekhedontskie Kazaki"		
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+						}
+						is_locked = no
+					}
+					division_template = {
+						name = "Vekhedontskiy Konniy otryad"		
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+						}
+						is_locked = no
+					}
+					division_template = {
+						name = "Vekhedontskiy Peshiy otryad"		
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+						is_locked = no
+					}
+					division_template = {
+						name = "Vekhedontskaya Diviziya"		
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+						}
+						is_locked = no
+					}
+					create_country_leader = { name = "Pavel Kudinov" desc = DON_Pavel_Kudinov_DESC picture = "gfx/leaders/DON/Pavel_Kudinov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { batska min_4_man_of_the_people adventurous_daredevil goal_in_politics } }
+					set_politics = { ruling_party = national_syndicalism }
+					add_popularity = {
+						ideology = national_syndicalism
+						popularity = 0.56
+					}
+					add_ideas = DON_verkhnedon
+					set_cosmetic_tag = DON_verkhnedonsoe_vosstanie
+					set_state_owner = 265
+					set_province_controller = 11555
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+					load_focus_tree = DON_Verkhnedon
+					265 = {
+						create_unit = { division = "name = \"1-ya Konnaya Diviziya\" division_template = \"Vekhedontskie Kazaki\" start_experience_factor = 0.5 start_equipment_factor = 1" owner = DON prioritize_location = 11555 } 
+						create_unit = { division = "name = \"2-ya Konno-Peshaya Diviziya\" division_template = \"Vekhedontskie Kazaki\" start_experience_factor = 0.5 start_equipment_factor = 1" owner = DON prioritize_location = 11555 } 
+						create_unit = { division = "name = \"3-ya Konno-Peshaya Diviziya\" division_template = \"Vekhedontskiy Konniy otryad\" start_experience_factor = 0.5 start_equipment_factor = 1" owner = DON prioritize_location = 11555 } 
+						create_unit = { division = "name = \"Otdelnaya Brigada\" division_template = \"Vekhedontskiy Konniy otryad\" start_experience_factor = 0.5 start_equipment_factor = 1" owner = DON prioritize_location = 11555 } 
+						create_unit = { division = "name = \"4-ya Konno-Peshaya Diviziya\" division_template = \"Vekhedontskiy Peshiy otryad\" start_experience_factor = 0.5 start_equipment_factor = 1" owner = DON prioritize_location = 11555 } 
+						create_unit = { division = "name = \"Otdelnaya Brigada\" division_template = \"Vekhedontskiy Peshiy otryad\" start_experience_factor = 0.5 start_equipment_factor = 1" owner = DON prioritize_location = 11555 } 
+						create_unit = { division = "name = \"5-ya Konno-Peshaya Diviziya\" division_template = \"Vekhedontskaya Diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1" owner = DON prioritize_location = 11555 } 
+					}
+				}
+				CCA = { DON = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+			}
+			custom_effect_tooltip = verkhnedonsk_reb_tt
+		}
+	}
+	#Поволжский мятеж
+	focus = {
+		id = DON_CCA_volga_rebelion
+		icon = GFX_DON_CCA_volga_rebelion
+		cost = 8
+		prerequisite = {
+			focus = DON_CCA_agents
+		}
+		available = { 
+			OR = {
+				RUS = { controls_state = 249 } #Казань
+				RUS = { controls_state = 251 } #Самара
+				RUS = { controls_state = 239 } #Саратов
+				RUS = { controls_state = 920 } #Царицын
+				RUS = { controls_state = 236 } #Астрахань
+				RUS = { controls_state = 250 } #Симбирск
+			}
+		}
+		bypass = {
+			AND = {
+				NOT = {
+					RUS = { controls_state = 249 } #Казань
+					RUS = { controls_state = 251 } #Самара
+					RUS = { controls_state = 239 } #Саратов
+					RUS = { controls_state = 920 } #Царицын
+					RUS = { controls_state = 236 } #Астрахань
+					RUS = { controls_state = 250 } #Симбирск
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 3
+		select_effect = {
+			activate_mission = volga_officers
+			activate_mission_tooltip = volga_officers
+		}
+		completion_reward = { 
+			custom_effect_tooltip = volga_reb_tt
+		}
+	}
+	#Лавина
+	focus = {
+		id = DON_CCA_avalanche
+		icon = GFX_RSS_democratization_coordinated_uprisings
+		cost = 7
+		prerequisite = {
+			focus = DON_CCA_volga_rebelion
+		}
+		prerequisite = {
+			focus = DON_CCA_north_fire
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 17
+		y = 4
+		completion_reward = { 
+			unlock_decision_category_tooltip = RSS_coord_uprisings_decisions
+		}
+	}
+	#Интеграция "Алексеевцев"
+	focus = {
+		id = DON_CCA_alexeev
+		icon = GFX_DON_CCA_alexeev
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = { RVA = { exists = no } KUB = { NOT = { has_idea = DON_Volunteer_army_presence_idea } } }
+		bypass = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 19
+		y = 1
+		completion_reward = { 
+			country_event = rcw_don_cca.37
+		}
+	}
+	#Включение казаков в комитет
+	focus = {
+		id = DON_CCA_cossack_comitee
+		icon = GFX_DON_CCA_cossack_comitee
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 1
+		completion_reward = { 
+			add_political_power = 25
+			low_cossack_unrest = yes
+		}
+	}
+	#Всесословные выборы
+	focus = {
+		id = DON_CCA_elections
+		icon = GFX_DON_CCA_elections
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 1
+		completion_reward = { 
+			add_timed_idea = {
+				idea = DON_democratic_reforms
+				days = 70
+			}
+			if = {
+				limit = { has_stability < 0.5 }
+				hidden_effect = { country_event = { id = rcw_don_cca_tech.1 days = 7 } }
+			}
+		}
+	}
+	#Компромисс с казацкими старшинами
+	focus = {
+		id = DON_CCA_compromise_with_cossacks
+		icon = GFX_DON_CCA_compromise_with_cossacks
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_cossack_comitee
+		}
+		prerequisite = {
+			focus = DON_CCA_alexeev
+		}
+		mutually_exclusive = {
+			focus = DON_CCA_democratic_cossacks
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 20
+		y = 2
+		completion_reward = { 
+			country_event =  rcw_don_cca.41
+		}
+	}
+	#Ставка на демократическое казачество
+	focus = {
+		id = DON_CCA_democratic_cossacks
+		icon = GFX_DON_CCA_democratic_cossacks
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_cossack_comitee
+			focus = DON_CCA_elections
+		}
+		mutually_exclusive = {
+			focus = DON_CCA_compromise_with_cossacks
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 22
+		y = 2
+		completion_reward = { 
+			if = {
+				limit = { has_idea = DON_cossack_unrest_1 }
+				swap_ideas = {
+					remove_idea = DON_cossack_unrest_1
+					add_idea = DON_CCA_cossack_raskol
+				}
+			}
+			if = {
+				limit = { has_idea = DON_cossack_unrest_2 }
+				swap_ideas = {
+					remove_idea = DON_cossack_unrest_2
+					add_idea = DON_CCA_cossack_raskol
+				}
+			}
+			if = {
+				limit = { has_idea = DON_cossack_unrest_3 }
+				swap_ideas = {
+					remove_idea = DON_cossack_unrest_3
+					add_idea = DON_CCA_cossack_raskol
+				}
+			}
+			if = {
+				limit = { has_idea = DON_cossack_unrest_4 }
+				swap_ideas = {
+					remove_idea = DON_cossack_unrest_4
+					add_idea = DON_CCA_cossack_raskol
+				}
+			}
+			if = {
+				limit = { has_idea = DON_cossack_unrest_5 }
+				swap_ideas = {
+					remove_idea = DON_cossack_unrest_5
+					add_idea = DON_CCA_cossack_raskol
+				}
+			}
+		}
+	}
+	#Пропаганда всероссийской программы
+	focus = {
+		id = DON_CCA_all_russia_programm
+		icon = GFX_DON_CCA_all_russia_programm
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_democratic_cossacks
+			focus = DON_CCA_compromise_with_cossacks
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 3
+		completion_reward = { 
+			country_event =  rcw_don_cca.44
+		}
+	}
+	#Мобилизация офицеров
+	focus = {
+		id = DON_CCA_officers_mobilization
+		icon = GFX_RSS_army_unification_mobilization_of_officers
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_all_russia_programm
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 19
+		y = 4
+		completion_reward = { 
+			lack_of_officers_fall = yes
+		}
+	}
+	#Подавление оппозиции в войсковом круге
+	focus = {
+		id = DON_CCA_beat_opposition
+		icon = GFX_DON_CCA_beat_opposition
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_all_russia_programm
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 5
+		completion_reward = { 
+			country_event = rcw_don_cca.49
+		}
+	}
+	#Отдельная Донская армия
+	focus = {
+		id = DON_CCA_don_army
+		icon = GFX_DON_CCA_don_army
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_officers_mobilization
+		}
+		mutually_exclusive = {
+			focus = DON_CCA_cossack_self_org
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 17
+		y = 5
+		completion_reward = { 
+			if = {
+				limit = {
+					OR = {
+						has_idea = DON_cossack_unrest_1
+						has_idea = DON_cossack_unrest_2
+						has_idea = DON_cossack_unrest_3
+						has_idea = DON_cossack_unrest_4
+						has_idea = DON_cossack_unrest_5
+					}
+				}
+				low_cossack_unrest = yes
+			}
+			if = {
+				limit = {
+					has_idea = DON_CCA_cossack_raskol
+				}
+				add_popularity = { ideology = authoritarism popularity = 0.06 }
+			}
+			add_manpower = 8000
+			every_unit_leader = { limit = { OR = { has_id = 18701  has_id = 18702  has_id = 18703  has_id = 18704  has_id = 18705  has_id = 18706  has_id = 18707  has_id = 18708  has_id = 18709  has_id = 18710  has_id = 18711  has_id = 18712  has_id = 18713  has_id = 18714  has_id = 18715  has_id = 77489  } } add_unit_leader_trait = DON_army_general }
+		}
+	}
+	#Добро на самоорганизацию казачих частей
+	focus = {
+		id = DON_CCA_cossack_self_org
+		icon = GFX_DON_CCA_cossack_self_org
+		cost = 8
+		prerequisite = {
+			focus = DON_CCA_officers_mobilization
+		}
+		mutually_exclusive = {
+			focus = DON_CCA_don_army
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 19
+		y = 5
+		select_effect = { country_event = { id = rcw_don_cca.45 days = 14 } }
+		completion_reward = { 
+			custom_effect_tooltip = cossack_self_org_tt
+		}
+	}
+	#Агитпрограмма по промышленному Югу
+	focus = {
+		id = DON_CCA_agitation_on_south
+		icon = GFX_DON_CCA_agitation_on_south
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_elections
+		}
+		available = { 
+			#controls_state = 227 # Юзовка
+			#controls_state = 918 # Луганск
+			controls_state = 953 # Авмросиевка
+			controls_state = 228 # Таганрог
+			controls_state = 218 # Ростов
+			NOT = { has_government = market_liberalism } 
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 24
+		y = 2
+		completion_reward = { 
+			add_timed_idea = {
+				idea = DON_CCA_agitation
+				days = 180
+			}
+			if = {
+				limit = { 
+					UKR = { 
+						controls_state = 227
+						controls_state = 918
+					}
+				}
+				country_event = rcw_don_cca.79
+			}
+		}
+	}
+	#Окончательное решение аграрного вопроса
+	focus = {
+		id = DON_CCA_final_solution
+		icon = GFX_RSS_agrarian_refom_esser
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_agitation_on_south
+		}
+		available = { 
+			NOT = { has_country_flag = Cossack_counterreform } 
+			NOT = {
+				OR = {
+					has_idea = DON_cossack_unrest_3
+					has_idea = DON_cossack_unrest_4
+					has_idea = DON_cossack_unrest_5
+				}
+			}
+			NOT = {
+				OR = {
+					has_government = authoritarism
+					has_government = despotism
+					has_government = fascism
+					has_government = social_conservatism
+				}
+			}
+			NOT = { has_completed_focus = DON_CCA_right_reform }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 3
+		completion_reward = { 
+			country_event = rcw_don_cca.51
+		}
+	}
+	#Организация сельской милиции
+	focus = {
+		id = DON_CCA_village_militia
+		icon = GFX_RSS_village_self_defence
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_final_solution
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 4
+		completion_reward = { 
+			add_ideas = RSS_peasant_self_defence
+		}
+	}
+	#Сельская кооперация
+	focus = {
+		id = DON_CCA_village_coop
+		icon = GFX_RSS_village_cooperation
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_village_militia
+		}
+		prerequisite = {
+			focus = DON_CCA_druzhina_Don_Novorossiya
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 5
+		completion_reward = { 
+			add_ideas = RSS_peasant_cooperation
+		}
+	}
+	#Трудовое законодательство
+	focus = {
+		id = DON_CCA_labor_laws
+		icon = GFX_RSS_guarantee_the_rights_of_workers
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_agitation_on_south
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 3
+		completion_reward = { 
+			rise_labor_legislation = yes
+		}
+	}
+	#Рабочие дружины Дона и Новороссии
+	focus = {
+		id = DON_CCA_druzhina_Don_Novorossiya
+		icon = GFX_DON_CCA_druzhina_Don_Novorossiya
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_labor_laws
+		}
+		available = { 
+			custom_trigger_tooltip = {
+				tooltip = DON_CCA_party_pop_30
+				OR = {
+					AND = {
+						has_government = radical_socialism
+						NOT = { check_variable = { party_popularity_100@radical_socialism < 30 } }
+					}
+					AND = {
+						has_government = social_liberalism
+						NOT = { check_variable = { party_popularity_100@social_liberalism < 30 } }
+					}
+					AND = {
+						has_government = social_conservatism
+						NOT = { check_variable = { party_popularity_100@social_conservatism < 30 } }
+					}
+					AND = {
+						has_government = despotism
+						NOT = { check_variable = { party_popularity_100@despotism < 30 } }
+					}
+					AND = {
+						has_government = authoritarism
+						NOT = { check_variable = { party_popularity_100@authoritarism < 30 } }
+					}
+					AND = {
+						has_government = national_syndicalism
+						NOT = { check_variable = { party_popularity_100@national_syndicalism < 30 } }
+					}
+					AND = {
+						has_government = fascism
+						NOT = { check_variable = { party_popularity_100@fascism < 30 } }
+					}
+					AND = {
+						has_government = social_democracy
+						NOT = { check_variable = { party_popularity_100@social_democracy < 30 } }
+					}
+				}
+			}
+			OR = {
+				controls_state = 227 # Юзовка
+				controls_state = 918 # Луганск
+				controls_state = 953 # Авмросиевка
+				controls_state = 228 # Таганрог
+				controls_state = 218 # Ростов
+				controls_state = 920 # Царицын
+				controls_state = 815 # Нижнее-чирская область
+				controls_state = 852 # Гуляй-поле
+				controls_state = 196 # Херсон
+				controls_state = 919 # Северная Таврия
+				controls_state = 1044 # Новочеркасск
+				controls_state = 245 # Миллерово
+				controls_state = 995 # Азов
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 4
+		completion_reward = { 
+			division_template = {
+				name = "Rabocheye Opolchenie" 
+				is_locked = no
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+				}
+			}
+			if = {
+				limit = { controls_state = 227 }
+				227 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 918 }
+				918 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 953 }
+				953 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 228 }
+				228 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 218 }
+				218 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 920 }
+				920 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 815 }
+				815 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 852 }
+				852 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 196 }
+				196 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 919 }
+				919 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 1044 }
+				1044 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 245 }
+				245 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+			if = {
+				limit = { controls_state = 995 }
+				995 = {
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:arms_factory_level owner = CCA }
+					create_unit = { division = "name = \"Rabocheye Opolchenie\" division_template = \"Rabocheye Opolchenie\" start_experience_factor = 0.5 start_equipment_factor = 1" count = var:industrial_complex_level owner = CCA }
+				}
+			}
+		}
+	}
+	#Укрепление южнорусской индустрии
+	focus = {
+		id = DON_CCA_strengthen_south_russsia_industry
+		icon = GFX_DON_CCA_strengthen_south_russia_industry
+		cost = 5
+		prerequisite = {
+			focus = DON_CCA_druzhina_Don_Novorossiya
+		}
+		prerequisite = {
+			focus = DON_CCA_village_militia
+		}
+		prerequisite = {
+			focus = DON_CCA_soviet_question
+		}
+		available = { 
+			controls_state = 227 # Юзовка
+			controls_state = 918 # Луганск
+			controls_state = 953 # Авмросиевка
+			controls_state = 228 # Таганрог
+			controls_state = 218 # Ростов
+			num_of_civilian_factories_available_for_projects > 4
+		}
+		continue_if_invalid = yes
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 5
+		select_effect = { add_ideas = DON_CCA_novorossiya_proj }
+		completion_reward = { 
+			country_event = rcw_don_cca.53
+		}
+	}
+	#Новые земства
+	focus = {
+		id = DON_CCA_new_zemstva
+		icon = GFX_goal_CCA_zemstvos
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_elections
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 26
+		y = 2
+		completion_reward = { 
+			add_ideas = DON_CCA_democratic_zemsta
+		}
+	}
+	#Переговоры с красными
+	focus = {
+		id = DON_CCA_negotiations
+		icon = GFX_DON_CCA_negotiations
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = { 
+			RUS = { exists = yes }
+			OR = {
+				RUS = { has_government = communism }
+				RUS = { has_government = radical_socialism }
+			}
+			has_war_with = RUS
+			NOT = { has_completed_focus = DON_CCA_alexeev }
+			RUS = { NOT = { has_completed_focus = RUS_compromise_with_the_right } }
+		}
+		bypass = { 
+			OR = {
+				has_completed_focus = DON_CCA_alexeev
+				RUS = { exists = no }
+				NOT = { has_war_with = RUS }
+				RUS = { has_completed_focus = RUS_compromise_with_the_right }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 1
+		completion_reward = { 
+			RUS = { country_event = rcw_don_cca.55 }
+			if = {
+				limit = { has_idea = DON_right_oficers }
+				remove_ideas = DON_right_oficers
+			}
+		}
+	}
+	#Проантантовский курс 
+	focus = {
+		id = DON_CCA_antente
+		icon = GFX_DON_CCA_antente
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 1
+		completion_reward = { 
+			FRA = { country_event = rcw.204 }
+			ENG = { country_event = rcw.204 }
+		}
+	}
+	#"Советский" вопрос
+	focus = {
+		id = DON_CCA_soviet_question
+		icon = GFX_goal_RVA_broad_powers_local_authorities
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_negotiations
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 3
+		completion_reward = { 
+			country_event = rcw_don_cca.61
+		}
+	}
+	#Мир с коммунарами
+	focus = {
+		id = DON_CCA_peace
+		icon = GFX_DON_CCA_peace
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_soviet_question
+		}
+		mutually_exclusive = {
+			focus = DON_CCA_lib_dem_coalition
+		}
+		available = { 
+			OR = {
+				has_government = social_liberalism
+				has_government = radical_socialism
+			}
+			RUS = { has_government = radical_socialism }
+			radical_socialism > 0.05
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 28
+		y = 4
+		completion_reward = { 
+			RUS = { country_event = rcw_don_cca.62 }
+		}
+	}
+	#Либерально-демократическая коалиция
+	focus = {
+		id = DON_CCA_lib_dem_coalition
+		icon = GFX_DON_CCA_lib_dem_coalition
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_new_zemstva
+		}
+		mutually_exclusive = {
+			focus = DON_CCA_peace
+		}
+		available = { 
+			has_government = social_liberalism
+			NOT = {
+				has_country_leader = {
+					name = "Victor Chernov" 
+					ruling_only = yes
+				}
+			}
+			NOT = { has_completed_focus = DON_CCA_anarchist_in_com }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 30
+		y = 4
+		completion_reward = { 
+			add_stability = 0.04
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.1
+			}
+			add_ideas = two_party_system_law
+		}
+	}
+	#Привлечение анархистов
+	focus = {
+		id = DON_CCA_anarchist_in_com
+		icon = GFX_DON_CCA_anarchist_in_com
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_soviet_question
+		}
+		#prerequisite = {
+		#	focus = DON_CCA_druzhina_Don_Novorossiya
+		#}
+		#prerequisite = {
+		#	focus = DON_CCA_village_militia
+		#}
+		available = { 
+			OR = {
+				has_government = social_democracy
+				has_government = social_liberalism
+				has_government = radical_socialism
+				has_government = national_syndicalism
+			}
+			NOT = { has_completed_focus = DON_CCA_lib_dem_coalition } 
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 5
+		completion_reward = { 
+			add_timed_idea = {
+				idea = DON_CCA_Anarchist
+				days = 70
+			}
+		}
+	}
+	#Обращение к Гуляй-польскому совету
+	focus = {
+		id = DON_CCA_gulyai_pole
+		icon = GFX_DON_CCA_gulyai_pole
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_anarchist_in_com
+		}
+		available = { 
+			OR = {
+				has_government = social_democracy
+				has_government = social_liberalism
+				has_government = radical_socialism
+				has_government = national_syndicalism
+			}
+			FRT = { exists = yes }
+			is_neighbor_of = FRT
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 27
+		y = 6
+		completion_reward = { 
+			FRT = { country_event = rcw_don_cca.71 }
+		}
+	}
+	#Вооружить анархистскую колону
+	focus = {
+		id = DON_CCA_anarchist_column
+		icon = GFX_DON_CCA_anarchist_column
+		cost = 4
+		prerequisite = {
+			focus = DON_CCA_anarchist_in_com
+		}
+		available = {
+			OR = {
+				has_government = social_democracy
+				has_government = social_liberalism
+				has_government = radical_socialism
+				has_government = national_syndicalism
+			}
+			has_equipment = { infantry_equipment > 499 }
+			NOT = { has_war_with = FRT }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 29
+		y = 6
+		completion_reward = { 
+			division_template = {
+				name = "Anarhicheskiy Polk" 
+				is_locked = yes
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+				}
+			}
+			capital_scope = {
+				create_unit = {division = "name = \"1-y Anarhicheskiy Polk\" division_template = \"Anarhicheskiy Polk\" start_experience_factor = 0.5 start_equipment_factor = 1" count = 1 owner = CCA }
+				create_unit = {division = "name = \"2-y Anarhicheskiy Polk\" division_template = \"Anarhicheskiy Polk\" start_experience_factor = 0.5 start_equipment_factor = 1" count = 1 owner = CCA }
+				create_unit = {division = "name = \"3-y Anarhicheskiy Polk\" division_template = \"Anarhicheskiy Polk\" start_experience_factor = 0.5 start_equipment_factor = 1" count = 1 owner = CCA }
+				create_unit = {division = "name = \"4-y Anarhicheskiy Polk\" division_template = \"Anarhicheskiy Polk\" start_experience_factor = 0.5 start_equipment_factor = 1" count = 1 owner = CCA }
+				create_unit = {division = "name = \"5-y Anarhicheskiy Polk\" division_template = \"Anarhicheskiy Polk\" start_experience_factor = 0.5 start_equipment_factor = 1" count = 1 owner = CCA }
+			}
+			add_popularity = { ideology = radical_socialism popularity = 0.04 }
+			hidden_effect = { country_event = { id = rcw_don_cca.63 days = 7 } }
+		}
+	}
+	#Собрания освобожденных земель
+	focus = {
+		id = DON_CCA_election_on_liberated_terr
+		icon = GFX_RSS_assemblies_of_the_liberated_ands
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = { has_completed_focus = DON_CCA_all_russia_programm }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 29
+		y = 1
+		completion_reward = { 
+			unlock_decision_category_tooltip = RSS_state_elections_decisions
+		}
+	}
+	#Правый вариант земельной реформы
+	focus = {
+		id = DON_CCA_right_reform
+		icon = GFX_goal_RVA_agricultural_solution
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_lib_dem_coalition
+		}
+		available = { NOT = { has_completed_focus = DON_CCA_final_solution } }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 30
+		y = 5
+		completion_reward = { 
+			country_event = { id = rcw_dku.125 days = 1 }
+		}
+	}
+	#Обращение к торгово-промышленикам
+	focus = {
+		id = DON_CCA_appeal_to_trade_prom
+		icon = GFX_DON_CCA_appeal_to_trade_prom
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_lib_dem_coalition
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 32
+		y = 5
+		completion_reward = { 
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.04
+			}
+			add_ideas = DON_CCA_torg_prom_com
+		}
+	}
+	#Поддержка либеральной прессы
+	focus = {
+		id = DON_CCA_liberal_press
+		icon = GFX_DON_CCA_liberal_press
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_lib_dem_coalition
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 34
+		y = 5
+		completion_reward = { 
+			add_timed_idea = {
+				idea = DON_CCA_liberal_press_idea
+				days = 180
+			}
+		}
+	}
+	#Возрождение Земгора
+	focus = {
+		id = DON_CCA_revive_zemgor
+		icon = GFX_DON_CCA_revive_zemgor
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_appeal_to_trade_prom
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 32
+		y = 6
+		completion_reward = { 
+			add_ideas = DON_CCA_zemgor
+		}
+	}
+	#Согласительные комиссии
+	focus = {
+		id = DON_CCA_conciliation_commissions
+		icon = GFX_RSS_conciliation_commissions
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_appeal_to_trade_prom
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 30
+		y = 7
+		completion_reward = { 
+			add_ideas = RSS_conciliation_commissions_idea
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.03
+			}
+		}
+	}
+	#Обновление Комитета
+	focus = {
+		id = DON_CCA_new_com
+		icon = GFX_DON_CCA_new_com
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_lib_dem_coalition
+		}
+		available = { 
+			OR = {
+				has_government = social_liberalism
+				has_government = market_liberalism
+			}
+			custom_trigger_tooltip = {
+				tooltip = DON_CCA_ml_sl
+				check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
+			}
+			NOT = { has_global_flag = RUS_civil_war_over }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 33
+		y = 7
+		completion_reward = { 
+			country_event = rcw_don_cca.91
+		}
+	}
+	#Свободная торговля
+	focus = {
+		id = DON_CCA_free_trade
+		icon = GFX_goal_RVA_free_trade
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_new_com
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 30
+		y = 8
+		completion_reward = { 
+			remove_ideas_with_trait = trade_laws
+			add_ideas = free_trade
+			add_popularity = { ideology = market_liberalism popularity = 0.05 }
+			hidden_effect = { country_event = { id = rcw_dku.124 days = 1 } }
+		}
+	}
+	#Реституция
+	focus = {
+		id = DON_CCA_restitution
+		icon = GFX_goal_RVA_restitution
+		cost = 3
+		prerequisite = {
+			focus = DON_CCA_new_com
+		}
+		available = { 
+			any_state = {
+				is_controlled_by = ROOT
+				is_core_of = ROOT
+				OR = {
+					industrial_complex > 0
+					arms_factory > 0
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 32
+		y = 8
+		completion_reward = { 
+			custom_effect_tooltip = RVA_restitution_tt
+			add_stability = -0.07
+			random_state = {
+				limit = {
+					is_controlled_by = ROOT
+					is_core_of = ROOT
+					OR = {
+						industrial_complex > 0
+						arms_factory > 0
+					}
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_state = {
+				limit = {
+					is_controlled_by = ROOT
+					is_core_of = ROOT
+					OR = {
+						industrial_complex > 0
+						arms_factory > 0
+					}
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		}
+	}
+	#Внутренний кредит
+	focus = {
+		id = DON_CCA_internal_credit
+		icon = GFX_DON_CCA_internal_credit
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_new_com
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 34
+		y = 8
+		completion_reward = { 
+			add_political_power = 70
+			add_offsite_building = { type = industrial_complex  level = 1 }
+		}
+	}
+	#Союз с генералами
+	focus = {
+		id = DON_CCA_pact_with_generals
+		icon = GFX_DON_CCA_alliance_with_generals
+		cost = 1
+		prerequisite = {
+			focus = DON_CCA_new_com
+		}
+		available = { 
+			NOT = { has_war_with = RVA }
+			is_neighbor_of = RVA
+			is_subject = no
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 36
+		y = 8
+		completion_reward = { 
+			RVA = {
+				add_opinion_modifier = { target = CCA modifier = CCA_RVA_friendship }
+				country_event = { id = rcw_usfev.191 days = 1 }
+			}
+			add_popularity = { ideology = despotism popularity = 0.15 }
+			add_to_variable = {
+				var = global.RCW_green_var_CoMotCA
+				value = 2
+			}
+			if = {
+				limit = { has_idea = DON_CCA_sec_groups }
+				remove_ideas = DON_CCA_sec_groups
+			}
+			lack_of_officers_fall = yes
+		}
+	}
+	#Гарантии инородцам
+	focus = {
+		id = DON_CCA_inorodci
+		icon = GFX_RSS_inorodci
+		cost = 2
+		prerequisite = {
+			focus = DON_CCA_mobilization
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 28
+		y = 2
+		completion_reward = {
+			country_event = { id = rcw_don_cca.93 }
+		}
+	}
+}
+focus_tree = {
+	id = DON_Verkhnedon
+	country = {
+		factor = 0
+	}
+	default = no
+	continuous_focus_position = { x = 0 y = 15 }
 }
