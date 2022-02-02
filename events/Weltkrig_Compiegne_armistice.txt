@@ -166,6 +166,11 @@ country_event = {
 	}
 	option = {
 		name = compiegne_armistice.1.a
+		set_global_flag = WWI_TUR_HAS_CAPITULATED
+		every_unit_leader = {
+			limit = { OR = { has_id = 90001 has_id = 90004 } }
+			set_nationality = REB
+		}
 		hidden_effect = {
 			every_state = {
 				limit = {
@@ -370,7 +375,29 @@ country_event = {
 			}
 			leave_faction = yes
 			add_ideas = neutral_foreign_policy_law
+			add_ideas = civilian_economy
 			add_ideas = disarmed_nation
+			add_ideas = TUR_permanent_political_crisis
+			clr_country_flag = TUR_triumvirate_enver_cemal_talaat
+			clr_country_flag = TUR_duumvirate_enver_cemal
+			clr_country_flag = TUR_duumvirate_cemal_talaat
+			clr_country_flag = TUR_duumvirate_enver_talaat
+			clr_country_flag = TUR_cemal_is_egyptian_owner
+			clr_country_flag = TUR_cemal_is_syrian_owner
+			clr_country_flag = TUR_cemal_is_syrian_owner
+			clr_country_flag = TUR_young_turk_secular
+			clr_country_flag = TUR_pan_islamic_propaganda_enable
+			clr_country_flag = TUR_pan_turanist_propaganda_enable
+			retire_ideology_leader = despotism
+			add_popularity = { ideology = despotism popularity = -0.3 }
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+			remove_ideas = {
+				TUR_Mehmed_V_idea
+				TUR_Mehmed_VI_idea
+			}
 			every_country = {
 				limit = {
 					has_war_with = ROOT
@@ -386,6 +413,9 @@ country_event = {
 			every_country = {
 				limit = { OR = { tag = ENG tag = FRA tag = ITA } NOT = { is_in_faction_with = GER } }
 				PREV = { give_military_access = PREV }
+			}
+			hidden_effect = {
+				country_event = { id = compiegne_armistice.-1 hours = 1 }
 			}
 			hidden_effect = {
 				if = {
@@ -408,6 +438,25 @@ country_event = {
 					}
 				}
 			}
+		}
+		add_threat = -5
+		if = {
+			limit = { has_idea = TUR_dependent_turkish_economy }
+			remove_ideas = TUR_dependent_turkish_economy
+		}
+		GER = {
+			if = {
+				limit = { has_idea = GER_dependent_turkish_economy }
+				remove_ideas = GER_dependent_turkish_economy
+			}
+		}
+		every_state = {
+			limit = { has_dynamic_modifier = { modifier = pan_turanist_agitation } }
+			remove_dynamic_modifier = { modifier = pan_turanist_agitation }
+		}
+		every_state = {
+			limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
+			remove_dynamic_modifier = { modifier = pan_islamic_agitation }
 		}
 		RUS = {
 			if = {
@@ -612,6 +661,14 @@ country_event = {
 				limit = { has_war_with = GRR }
 				every_state = {
 					limit = { is_owned_by = BUL OR = { is_core_of = GRR is_claimed_by = GRR } }
+					#GRR = { transfer_state = PREV }
+					ENG = { transfer_state = PREV }
+				}
+			}
+			if = {
+				limit = { 797 = { is_owned_by = BUL } }
+				every_state = {
+					limit = { is_owned_by = BUL is_core_of = TUR }
 					#GRR = { transfer_state = PREV }
 					ENG = { transfer_state = PREV }
 				}

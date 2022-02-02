@@ -786,3 +786,75 @@ BUL_bulgarization_dec_cat = {
 		}
 	}
 }
+
+foreign_politics = {
+
+	BUL_captured_797 = {
+
+		icon = generic_prepare_civil_war
+
+		allowed = {
+			original_tag = BUL
+		}
+		available = {
+			341 = { is_controlled_by = ROOT }
+			has_army_size = { size > 1 }
+		}
+		visible = {
+			NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+			NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+			has_global_flag = WWI_TUR_HAS_CAPITULATED
+			has_global_flag = WWI_is_now
+			is_in_faction_with = GER
+			TUR = { exists = yes }
+			797 = { is_owned_and_controlled_by = TUR }
+			any_enemy_country = {
+				341 = { is_owned_by = PREV }
+			}
+		}
+		
+		fire_only_once = yes
+		
+		cost = 25
+		ai_will_do = {
+			factor = 500
+			modifier = {
+				factor = 0
+				surrender_progress > 0.4
+			}
+		}
+		days_remove = 14
+		
+		highlight_states = { highlight_state_targets = { state = 797 } }
+
+		remove_effect = {
+			transfer_state = 341
+			if = {
+				limit = {
+					TUR = { has_army_size = { size < 1 } }
+				}
+				transfer_state = 797
+				news_event = news_c.12
+			}
+			else = {
+				start_border_war = {
+					change_state_after_war = yes
+					attacker = {
+						state = 341
+						num_provinces = 2
+						on_win = bulgaria.46
+						on_lose = bulgaria.47
+						on_cancel = bulgaria.47
+					}
+					defender = {
+						state = 797
+						num_provinces = 1
+						on_win = bulgaria.47
+						on_lose = bulgaria.46
+						on_cancel = bulgaria.47
+					}
+				}
+			}
+		}
+	}
+}
