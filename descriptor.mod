@@ -1,4 +1,4 @@
-name="Rise of Russia"
+name="Revolution or Reaction: Rise of Russia"
 tags={
 	"Events"
 	"Gameplay"
