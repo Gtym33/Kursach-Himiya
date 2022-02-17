@@ -2399,13 +2399,21 @@ country_event = {
 				DON = { NOT = { has_idea = DON_Volunteer_army_presence_idea } }
 				country_exists = RVA
 			}
+			AND = {
+				tag = DON
+				DON = { has_idea = DON_Peoples_army_presence_idea }
+				NOT = { country_exists = CCA }
+			}
+			AND = {
+				tag = CCA
+				has_country_flag = DON_CCA_fired
+			}
 		}	
 	}
 	
 	mean_time_to_happen = { days = 1 }
 	
 	option = {
-	    trigger = { DON = { has_idea = DON_Volunteer_army_presence_idea } NOT = { country_exists = RVA } }
 		name = rcw_nva.44.a
 		ai_chance = {
 			factor = 1
@@ -2420,25 +2428,6 @@ country_event = {
 				40 = { }
 			}
 		}	  	
-	}
-	option = {
-	    trigger = { DON = { NOT = { has_idea = DON_Volunteer_army_presence_idea } } country_exists = RVA }
-		name = rcw_nva.44.b
-		ai_chance = {
-			factor = 1
-		}
-		custom_effect_tooltip = patriots_savinkov
-		if = {
-			limit = { has_global_flag = WWI_is_now }
-			set_global_flag = NVA_patriots
-		}
-		else_if = {
-			limit = { NOT = { has_global_flag = WWI_is_now } }
-			random_list = {
-				60 = { set_global_flag = NVA_patriots }
-				40 = { }
-			}
-		}	 			
 	}
 }
 #Патриоты в тылу врага
@@ -2464,6 +2453,17 @@ country_event = {
 				has_global_flag = NVA_patriots
 				country_exists = RVA
 			}
+			AND = {
+				tag = DON
+				DON = { has_idea = DON_Peoples_army_presence_idea }
+				has_global_flag = NVA_patriots
+				NOT = { country_exists = CCA }
+			}
+			AND = {
+				tag = CCA
+				has_country_flag = DON_CCA_fired
+				has_global_flag = NVA_patriots
+			}
 		}	
 	}
 	
@@ -2481,10 +2481,12 @@ country_event = {
 		else_if = { limit = { tag = RVA }
 			activate_mission = moment_of_truth_RVA
 		}
+		else_if = { limit = { tag = CCA }
+			activate_mission = moment_of_truth_CCA
+		}
 		hidden_effect = {
 			set_global_flag = SZRiS_mission_is_on
-		    DON = {unlock_decision_category_tooltip = RVA_DON_SZRiS_missions}
-		    RVA = {unlock_decision_category_tooltip = RVA_DON_SZRiS_missions}
+			unlock_decision_category_tooltip = RVA_DON_SZRiS_missions
 			set_variable = { var = global.success_reb_count value = 0 } 
 			set_variable = { var = global.op_count value = 0 } 
 			set_variable = { var = cell_org_count value = 0 }
@@ -5506,16 +5508,14 @@ country_event = {
 		has_global_flag = SZRiS_mission_is_on
 	}
 	
-	mean_time_to_happen = { days = 5 }
+	mean_time_to_happen = { days = 3 }
 	
 	option = {
 		name = rcw_nva_tech.14.a
-		if = { limit = { has_idea = DON_Volunteer_army_presence_idea }
-			set_variable = {
-				var = global.moment_days
-				value = days_mission_timeout@moment_of_truth
-			}
-		}	
+		set_variable = {
+			var = global.moment_days
+			value = days_mission_timeout@moment_of_truth
+		}
 	}	
 }
 #Генерал Стогов на вандею

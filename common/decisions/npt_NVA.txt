@@ -1711,11 +1711,23 @@ RVA_DON_SZRiS_missions = {
 			always = no
 		}
 		remove_effect = {	
-			set_global_flag = RVA_transfer
 		}
 		cancel_trigger = {
 			hidden_trigger = {
-				country_exists = NVA
+				OR = {
+					any_country = {
+						OR = {
+							has_active_mission = moment_of_truth_RVA
+							has_active_mission = moment_of_truth_CCA
+						}
+					}
+					country_exists = RVA
+					country_exists = NVA
+					AND = {
+						country_exists = CCA
+						CCA = { has_country_flag = DON_CCA_fired }
+					}
+				}
 			}
 		}
 	    timeout_effect = {
@@ -1740,6 +1752,34 @@ RVA_DON_SZRiS_missions = {
 		}
 		visible = {				
 			tag = RVA
+		}
+		cancel_trigger = {
+			hidden_trigger = {
+				country_exists = NVA
+			}
+		}
+	    timeout_effect = {
+			clr_global_flag = SZRiS_mission_is_on
+			clr_global_flag = SZRiS_revealed
+			set_global_flag = moment_of_truth_happened
+			custom_effect_tooltip = nva_rebellion_tooltip
+			hidden_effect = {
+				country_event = { id = rcw_nva_tech.1 }																										
+			}			
+	    }
+	}
+	moment_of_truth_CCA = {
+	    days_mission_timeout = 160
+	    fire_only_once = yes
+		is_good = yes
+	    available = {
+	        NOT = {has_global_flag = SZRiS_mission_is_on}		    
+	    }
+		activation = {
+			always = no
+		}
+		visible = {				
+			tag = CCA
 		}
 		cancel_trigger = {
 			hidden_trigger = {
@@ -1781,6 +1821,36 @@ RVA_DON_SZRiS_missions = {
 			}
 			remove_mission = moment_of_truth
 			clr_global_flag = RVA_transfer
+			DON = { set_country_flag = SZRiS_leave }
+		}
+	}
+	continue_preparing_for_the_uprising_CCA = {
+		available = { 
+			has_global_flag = SZRiS_mission_is_on 
+		}
+		fire_only_once = yes
+		visible = {
+			tag = CCA 
+			has_country_flag = DON_CCA_fired
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		complete_effect = {
+			activate_mission = moment_of_truth_CCA
+			if = { limit = { check_variable = { global.moment_days > 0  } }
+				add_days_mission_timeout = {
+					mission  = moment_of_truth_CCA
+					days = global.moment_days
+				}
+				add_days_mission_timeout = {
+					mission  = moment_of_truth_CCA
+					days = -160
+				}
+			}
+			remove_mission = moment_of_truth
+			clr_global_flag = CCA_transfer
+			DON = { set_country_flag = SZRiS_leave }
 		}
 	}
 	moment_of_truth_slower = {
@@ -1788,19 +1858,36 @@ RVA_DON_SZRiS_missions = {
 		available = {
 			AND = {
 				has_global_flag = SZRiS_mission_is_on 
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 				NOT = { has_global_flag = NVA_changed_plan }
 			} 
 		}
 		complete_effect = {
-		    add_days_mission_timeout = {
-		        mission  = moment_of_truth
-		        days = 40
-		    }
-			add_days_mission_timeout = {
-		        mission  = moment_of_truth_RVA
-		        days = 40
-		    }
+			if = {
+				limit = { has_active_mission = moment_of_truth }
+				add_days_mission_timeout = {
+					mission = moment_of_truth
+					days = 40
+				}
+			}
+		    if = {
+				limit = { has_active_mission = moment_of_truth_RVA }
+				add_days_mission_timeout = {
+					mission  = moment_of_truth_RVA
+					days = 40
+				}
+			}
+			if = {
+				limit = { has_active_mission = moment_of_truth_CCA}
+				add_days_mission_timeout = {
+					mission  = moment_of_truth_CCA
+					days = 40
+				}
+			}
 			add_to_variable = { var = global.plus_count value = 1 }
 		}
 	}
@@ -1809,19 +1896,36 @@ RVA_DON_SZRiS_missions = {
 		available = {
 			AND = {
 				has_global_flag = SZRiS_mission_is_on 
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 				NOT = { has_global_flag = NVA_changed_plan }
 			}
 		}
 		complete_effect = {
-		    add_days_mission_timeout = {
-		        mission = moment_of_truth
-		        days = -40
-		    }
-			add_days_mission_timeout = {
-		        mission  = moment_of_truth_RVA
-		        days = -40
-		    }
+			if = {
+				limit = { has_active_mission = moment_of_truth }
+				add_days_mission_timeout = {
+					mission = moment_of_truth
+					days = -40
+				}
+			}
+		    if = {
+				limit = { has_active_mission = moment_of_truth_RVA }
+				add_days_mission_timeout = {
+					mission  = moment_of_truth_RVA
+					days = -40
+				}
+			}
+			if = {
+				limit = { has_active_mission = moment_of_truth_CCA}
+				add_days_mission_timeout = {
+					mission  = moment_of_truth_CCA
+					days = -40
+				}
+			}
 			add_to_variable = { var = global.minus_count value = 1 }
 		}
 	}
@@ -1836,7 +1940,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 219 = { has_state_flag = moscow_cell_destroyed } }
 				RUS = {controls_province = 6380}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}		    
 		}
 		visible = {
@@ -1891,7 +1999,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 248 = { has_state_flag = yaroslavl_cell_destroyed } }
 				RUS = {controls_province = 121}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}		    
 		}
 		visible = {
@@ -1946,7 +2058,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 1219 = { has_state_flag = murom_cell_destroyed } }
 				RUS = {controls_province = 6362}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}	    
 		}
 		visible = {
@@ -2001,7 +2117,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 248 = { has_state_flag = rybinsk_cell_destroyed } }
 				RUS = {controls_province = 6167}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}     		
 		}
 		visible = {
@@ -2056,7 +2176,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 249 = { has_state_flag = kazan_cell_destroyed } }
 				RUS = {controls_province = 6338}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}     		
 		}
 		visible = {
@@ -2111,7 +2235,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 252 = { has_state_flag = nizhniy_novgorod_cell_destroyed } }
 				RUS = {controls_province = 11375}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}     		
 		}
 		visible = {
@@ -2166,7 +2294,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 1234 = { has_state_flag = kostroma_cell_destroyed } }
 				RUS = {controls_province = 3190}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}     		
 		}
 		visible = {
@@ -2221,7 +2353,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 1219 = { has_state_flag = vladimir_cell_destroyed } }
 				RUS = {controls_province = 9311}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}     		
 		}
 		visible = {
@@ -2276,7 +2412,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 248 = { has_state_flag = rostov_cell_destroyed } }
 				RUS = {controls_province = 6356}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}		    
 		}
 		visible = {
@@ -2331,7 +2471,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 351 = { has_state_flag = vologda_cell_destroyed } }
 				RUS = {controls_province = 9131}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}		    
 		}
 		visible = {
@@ -2386,7 +2530,11 @@ RVA_DON_SZRiS_missions = {
 				NOT = { 253 = { has_state_flag = ivanovo_voznesenskoe_cell_destroyed } }
 				RUS = {controls_province = 6269}
 				check_variable = { cell_org_count < 3 }
-				NOT = { has_global_flag = RVA_transfer }
+				OR = {
+					has_active_mission = moment_of_truth_RVA
+					has_active_mission = moment_of_truth_CCA
+					has_active_mission = moment_of_truth
+				}
 			}		    
 		}
 		visible = {
