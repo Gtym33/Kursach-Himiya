@@ -15,6 +15,7 @@ country_event = {
 	picture = GFX_report_event_rus_kaledin_uprising
 	
 	trigger = {
+		has_start_date < 1917.11.7
 		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = RUS
 		OR = {
@@ -1900,6 +1901,8 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	trigger = { has_country_flag = crisis_in_progress }
+	
 	option = {
 		set_country_flag = crisis_in_progress
 		add_ideas = mutiny_3
@@ -2365,6 +2368,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	trigger = {
+		RUS = { has_country_flag = DON_revolt }
 		original_tag = DON
 		owns_state = 1044
 		OR = {
@@ -3623,7 +3627,7 @@ country_event = {
 		#news_event
 		every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 77455 } } set_nationality = REB }
 		remove_despotism_leader = yes
-		create_country_leader = { name = "Yakov Slashchev" desc = RUS_Yakov_Slashchev_DESC picture = "gfx/leaders/RUS/Yakov_Slashchev.dds" ideology = despotism_ideology traits = { warmonger_old_general } }
+		create_country_leader = { name = "Yakov Slashchov" desc = RUS_Yakov_Slashchov_DESC picture = "gfx/leaders/RUS/Yakov_Slashchov.dds" ideology = despotism_ideology traits = { warmonger_old_general } }
 		drop_cosmetic_tag = yes
 		set_cosmetic_tag = RVA_rus_army
 	}
@@ -6453,14 +6457,20 @@ country_event = {
 			create_unit = { division = "name = \"2-ya Divisiya Moskovskogo Rayona\" division_template = \"Moskovskie Dobrovoltsy\" start_experience_factor = 0.5 start_equipment_factor = 0.5" owner = RVA allow_spawning_on_enemy_provs = yes prioritize_location = 6380  }
 		}
 		if = {
-			limit = { 
+			limit = {
 				AND = {
 					RUS = { has_completed_focus = RUS_combeds }
 					RUS = { has_completed_focus = RUS_prodrazverstka }
 					RUS = { has_completed_focus = RUS_war_communism }
 				}
 			}
-			RUS = { add_ideas = mutiny_1}
+			RUS = {
+				if = {
+					limit = { NOT = { has_country_flag = crisis_in_progress } }
+					set_country_flag = crisis_in_progress
+					add_ideas = mutiny_1
+				}
+			}
 			division_template = {
 				name = "Krestyanskiy Otryad"
 				is_locked = yes
