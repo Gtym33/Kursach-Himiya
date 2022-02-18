@@ -14,6 +14,9 @@ focus_tree = {
 		cost = 1
 		x = 9
 		y = 0
+		available = {
+			controls_state = 195
+		}
 		select_effect = {
 			country_event = petrograd_commune.10
 		}
@@ -401,16 +404,22 @@ focus_tree = {
 		y = 3
 		completion_reward = {
 			hidden_effect = {
-				CPG = {
-					inherit_technology = RUS
-					set_politics = { ruling_party = social_liberalism }
-					add_ideas = neutral_foreign_policy_law
-					set_cosmetic_tag = cosmetic_red_flag
+				if = {
+					limit = { NOT = { country_exists = CPG } }
+					CPG = {
+						inherit_technology = RUS
+						set_politics = { ruling_party = social_liberalism }
+						add_ideas = neutral_foreign_policy_law
+						set_cosmetic_tag = cosmetic_red_flag
+					}
 				}
-				PRM = {
-					inherit_technology = RUS
-					set_politics = { ruling_party = radical_socialism }
-					add_ideas = neutral_foreign_policy_law
+				if = {
+					limit = { NOT = { country_exists = PRM } }
+					PRM = {
+						inherit_technology = RUS
+						set_politics = { ruling_party = radical_socialism }
+						add_ideas = neutral_foreign_policy_law
+					}
 				}
 				if = {
 					limit = { NOT = { country_exists = TRK } }
@@ -421,18 +430,21 @@ focus_tree = {
 						add_ideas = neutral_foreign_policy_law
 					}
 				}
-				SIB = {
-					inherit_technology = RUS
-					set_politics = { ruling_party = radical_socialism }
-					create_country_leader = { name = "Maria Spiridonova" desc = RUS_Maria_Spiridonova_DESC picture = "gfx/leaders/SOV/Maria_Spiridonova.dds" ideology = anarchist_communism traits = {  } }
-					add_popularity = { ideology = radical_socialism popularity = 0.3 }
-					add_popularity = { ideology = communism popularity = 0.1 }
-					load_focus_tree = Siberia_radsoc_focus
-					add_ideas = neutral_foreign_policy_law
-					hidden_effect = {
-						every_unit_leader = { set_nationality = REB }
-						create_corps_commander = { name = "Nestor Kalandarishvili" id = 77425 portrait_path = "gfx/leaders/SIB/Nestor_Kalandarishvili.dds" traits = { harsh_leader guerilla_fighter trait_reckless } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
-						RGR = { every_unit_leader = { limit = { OR = { has_id = 19315 } } set_nationality = SIB } }
+				if = {
+					limit = { NOT = { country_exists = SIB } }
+					SIB = {
+						inherit_technology = RUS
+						set_politics = { ruling_party = radical_socialism }
+						create_country_leader = { name = "Maria Spiridonova" desc = RUS_Maria_Spiridonova_DESC picture = "gfx/leaders/SOV/Maria_Spiridonova.dds" ideology = anarchist_communism traits = {  } }
+						add_popularity = { ideology = radical_socialism popularity = 0.3 }
+						add_popularity = { ideology = communism popularity = 0.1 }
+						load_focus_tree = Siberia_radsoc_focus
+						add_ideas = neutral_foreign_policy_law
+						hidden_effect = {
+							every_unit_leader = { set_nationality = REB }
+							create_corps_commander = { name = "Nestor Kalandarishvili" id = 77425 portrait_path = "gfx/leaders/SIB/Nestor_Kalandarishvili.dds" traits = { harsh_leader guerilla_fighter trait_reckless } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+							RGR = { every_unit_leader = { limit = { OR = { has_id = 19315 } } set_nationality = SIB } }
+						}
 					}
 				}
 			}
@@ -504,29 +516,79 @@ focus_tree = {
 								add_core_of = CPG
 							}
 						}
-			every_state = {
-				limit = {
-					OR = {
-						state = 876
-						state = 877
-						state = 584
-						state = 878
+			if = {
+				limit = { CPG = { OR = { exists = no has_war_with = RUS } } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 876
+							state = 877
+							state = 584
+							state = 878
+						}
+						is_controlled_by = RUS
 					}
-					is_controlled_by = RUS
+					CPG = { transfer_state = PREV }
 				}
-				CPG = { transfer_state = PREV }
+				CPG = {
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+					hidden_effect = {
+						every_country = {
+							limit = {
+								NOT = {
+									tag = ROOT
+									has_government = communism
+									has_government = radical_socialism
+									has_government = social_democracy
+									has_war_with = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+							set_THIS_country_non_recognize_PREV = yes
+						}
+						country_event = petrograd_commune.24
+					}
+				}
 			}
-			every_state = {
-				limit = {
-					OR = {
-						state = 408
-						state = 560
-						state = 1034
-						state = 1035
+			if = {
+				limit = { PRM = { OR = { exists = no has_war_with = RUS } } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 408
+							state = 560
+							state = 1034
+							state = 1035
+						}
+						is_controlled_by = RUS
 					}
-					is_controlled_by = RUS
+					PRM = { transfer_state = PREV }
 				}
-				PRM = { transfer_state = PREV }
+				PRM = {
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+					hidden_effect = {
+						every_country = {
+							limit = {
+								NOT = {
+									tag = ROOT
+									has_government = communism
+									has_government = radical_socialism
+									has_government = social_democracy
+									has_war_with = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+							set_THIS_country_non_recognize_PREV = yes
+						}
+						country_event = petrograd_commune.24
+					}
+				}
 			}
 			if = {
 				limit = { TRK = { OR = { exists = no has_war_with = RUS } } }
@@ -565,59 +627,17 @@ focus_tree = {
 					}
 				}
 			}
-			every_state = {
-				limit = {
-					OR = {
-						state = 405
-						state = 568
-					}
-					is_controlled_by = RUS
-				}
-				SIB = { transfer_state = PREV }
-			}
-				CPG = {
-					declare_war_on = {
-						target = RUS
-						type = annex_everything
-					}
-					hidden_effect = {
-						every_country = {
-							limit = {
-								NOT = {
-									tag = ROOT
-									has_government = communism
-									has_government = radical_socialism
-									has_government = social_democracy
-									has_war_with = ROOT
-									is_in_faction_with = ROOT
-								}
-							}
-							set_THIS_country_non_recognize_PREV = yes
+			if = {
+				limit = { SIB = { OR = { exists = no has_war_with = RUS } } }
+				every_state = {
+					limit = {
+						OR = {
+							state = 405
+							state = 568
 						}
-						country_event = petrograd_commune.24
+						is_controlled_by = RUS
 					}
-				}
-				PRM = {
-					declare_war_on = {
-						target = RUS
-						type = annex_everything
-					}
-					hidden_effect = {
-						every_country = {
-							limit = {
-								NOT = {
-									tag = ROOT
-									has_government = communism
-									has_government = radical_socialism
-									has_government = social_democracy
-									has_war_with = ROOT
-									is_in_faction_with = ROOT
-								}
-							}
-							set_THIS_country_non_recognize_PREV = yes
-						}
-						country_event = petrograd_commune.24
-					}
+					SIB = { transfer_state = PREV }
 				}
 				SIB = {
 					declare_war_on = {
@@ -641,6 +661,7 @@ focus_tree = {
 						country_event = petrograd_commune.24
 					}
 				}
+			}
 		}
 
 	}
