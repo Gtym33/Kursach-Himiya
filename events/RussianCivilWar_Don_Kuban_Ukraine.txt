@@ -5730,16 +5730,16 @@ country_event = {
 		name = rcw_dku.134.a
 		trigger = {
 			NOT = { has_country_flag = RVA_authoritarism_coup_fired }
-			OR = {
-				AND = {
-					has_government = despotism
-					despotism < 50
-				}
-				AND = {
-					has_government = authoritarism
-					authoritarism < 50
-				}
-			}
+			#OR = {
+				#AND = {
+					#has_government = despotism
+					#despotism < 50
+				#}
+				#AND = {
+					#has_government = authoritarism
+					#authoritarism < 50
+				#}
+			#}
 		}
 		if = {
 			limit = { is_subject = yes }
@@ -5752,7 +5752,8 @@ country_event = {
 			set_temp_variable = { temp_soclib = party_popularity@social_liberalism }
 			set_temp_variable = { temp_marketlib = party_popularity@market_liberalism }
 			set_temp_variable = { temp_soccon = party_popularity@social_conservatism }
-			set_temp_variable = { temp_auth = party_popularity@authoritarism }		
+			set_temp_variable = { temp_auth = party_popularity@authoritarism }
+			set_temp_variable = { temp_desp = party_popularity@despotism }
 			set_temp_variable = { temp_fascism = party_popularity@fascism }
 			set_temp_variable = { temp_natsynd = party_popularity@national_syndicalism }
 			if = {
@@ -5770,6 +5771,10 @@ country_event = {
 			if = {
 				limit = { check_variable = { temp_auth > temp_0 } }
 				set_temp_variable = { temp_0 = temp_auth }
+			}
+			if = {
+				limit = { check_variable = { temp_desp > temp_0 } }
+				set_temp_variable = { temp_0 = temp_desp }
 			}
 			if = {
 				limit = { check_variable = { temp_fascism > temp_0 } }
@@ -5797,8 +5802,25 @@ country_event = {
 			}
 			else_if = {
 				limit = { check_variable = { temp_auth = temp_0 } }
-				set_politics = { ruling_party = authoritarism elections_allowed = no }
-				create_country_leader = { name = "Vasiliy Shulgin" desc = RUS_Vasiliy_Shulgin_DESC picture = "gfx/leaders/RUS/Vasiliy_Shulgin.dds" ideology = authoritarism_ideology traits = {  } }
+				if = {
+					limit = { NOT = { has_government = authoritarism } }
+					set_politics = { ruling_party = authoritarism elections_allowed = no }
+					create_country_leader = { name = "Vasiliy Shulgin" desc = RUS_Vasiliy_Shulgin_DESC picture = "gfx/leaders/RUS/Vasiliy_Shulgin.dds" ideology = authoritarism_ideology traits = {  } }
+				}
+				else = {
+					country_event = rcw_dku.142
+				}
+			}
+			else_if = {
+				limit = { check_variable = { temp_desp = temp_0 } }
+				if = {
+					limit = { NOT = { has_government = despotism } }
+					set_politics = { ruling_party = despotism elections_allowed = no }
+					country_event = rcw_dku.143
+				}
+				else = {
+					country_event = rcw_dku.142
+				}
 			}
 			else_if = {
 				limit = { check_variable = { temp_fascism = temp_0 } }
@@ -5815,6 +5837,7 @@ country_event = {
 			set_temp_variable = { temp_soclib = party_popularity@social_liberalism }
 			set_temp_variable = { temp_marketlib = party_popularity@market_liberalism }
 			set_temp_variable = { temp_soccon = party_popularity@social_conservatism }
+			set_temp_variable = { temp_desp = party_popularity@despotism }
 			set_temp_variable = { temp_fascism = party_popularity@fascism }
 			set_temp_variable = { temp_natsynd = party_popularity@national_syndicalism }
 			if = {
@@ -5828,6 +5851,10 @@ country_event = {
 			if = {
 				limit = { check_variable = { temp_soccon > temp_0 } }
 				set_temp_variable = { temp_0 = temp_soccon }
+			}
+			if = {
+				limit = { check_variable = { temp_desp > temp_0 } }
+				set_temp_variable = { temp_0 = temp_desp }
 			}
 			if = {
 				limit = { check_variable = { temp_fascism > temp_0 } }
@@ -5852,6 +5879,17 @@ country_event = {
 			else_if = {
 				limit = { check_variable = { temp_soccon = temp_0 } }
 				set_politics = { ruling_party = social_conservatism elections_allowed = no }
+			}
+			else_if = {
+				limit = { check_variable = { temp_desp = temp_0 } }
+				if = {
+					limit = { NOT = { has_government = despotism } }
+					set_politics = { ruling_party = despotism elections_allowed = no }
+					country_event = rcw_dku.143
+				}
+				else = {
+					country_event = rcw_dku.142
+				}
 			}
 			else_if = {
 				limit = { check_variable = { temp_fascism = temp_0 } }
@@ -6179,6 +6217,47 @@ country_event = {
 				add_to_faction = PREV
 			}
 		}
+	}
+}
+
+# Неудачное формирование правительства
+country_event = {
+	id = rcw_dku.142
+	title = rcw_dku.142.t
+	desc = rcw_dku.142.desc
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_dku.142.a
+		add_political_power = -15
+		add_stability = -0.01
+		hidden_effect = {
+			if = {
+				limit = { has_country_leader = { name = "Anton Denikin" ruling_only = yes } }
+				kill_country_leader = yes
+				create_country_leader = { name = "Anton Denikin" desc = RUS_Anton_Denikin_DESC picture = "gfx/leaders/RUS/Anton_Denikin_civil.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero warmonger_old_general silent_workhorse dislikes_germany } }
+			}
+		}
+		#Ждём гражданские платья для других генералов
+	}
+}
+
+# Мирное смещение монархистов в рамках армии
+country_event = {
+	id = rcw_dku.143
+	title = rcw_dku.143.t
+	desc = rcw_dku.143.desc
+	picture = GFX_report_event_rcw_rva
+	
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_dku.143.a
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		add_political_power = -15
+		add_stability = -0.01
 	}
 }
 
