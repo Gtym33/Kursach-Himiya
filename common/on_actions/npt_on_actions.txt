@@ -444,7 +444,7 @@ on_actions = {
 	}
 	
 	# ROOT is capitulated country, FROM is winner
-	on_capitualtion_immediate = {
+	on_capitulation_immediate = {
 		effect = {
 			if = {
 				limit = { has_variable = RVA_unification_var FROM = { NOT = { tag = RVA } } }
@@ -639,7 +639,8 @@ on_actions = {
 				}
 				retire_country_leader = yes
 			}
-			
+		}
+		effect = {
 			# Скрипт, отвечающий за разделение капитулирующей страны
 			if = {
 				limit = {
@@ -651,13 +652,8 @@ on_actions = {
 							former_russian_empire_baltic_states_country = yes
 							former_russian_empire_polish_region_country = yes
 							original_tag = FIN
-						}
-						FROM = {
-							OR = {
-								is_any_former_russian_empire_country = yes
-								former_russian_empire_baltic_states_country = yes
-								former_russian_empire_polish_region_country = yes
-								original_tag = FIN
+							AND = {
+								is_subject = yes
 								OVERLORD = {
 									OR = {
 										is_any_former_russian_empire_country = yes
@@ -668,15 +664,46 @@ on_actions = {
 								}
 							}
 						}
+						FROM = {
+							OR = {
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								former_russian_empire_polish_region_country = yes
+								original_tag = FIN
+								AND = {
+									is_subject = yes
+									OVERLORD = {
+										OR = {
+											is_any_former_russian_empire_country = yes
+											former_russian_empire_baltic_states_country = yes
+											former_russian_empire_polish_region_country = yes
+											original_tag = FIN
+										}
+									}
+								}
+							}
+						}
 						NOT = {
 							any_owned_state = {
 								CONTROLLER = {
 									has_war_with = ROOT
-									is_subject = no
-									is_any_former_russian_empire_country = no
-									former_russian_empire_baltic_states_country = no
-									former_russian_empire_polish_region_country = no
-									NOT = { original_tag = FIN }
+									NOT = {
+										is_any_former_russian_empire_country = yes
+										former_russian_empire_baltic_states_country = yes
+										former_russian_empire_polish_region_country = yes
+										original_tag = FIN
+										AND = {
+											is_subject = yes
+											OVERLORD = {
+												OR = {
+													is_any_former_russian_empire_country = yes
+													former_russian_empire_baltic_states_country = yes
+													former_russian_empire_polish_region_country = yes
+													original_tag = FIN
+												}
+											}
+										}
+									}
 								}
 							}
 						}
