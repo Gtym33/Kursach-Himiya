@@ -202,33 +202,33 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
+		name = poland.2.a
+		start_border_war = {
+			change_state_after_war = yes
+			attacker = {
+				state = 1001
+				num_provinces = 2
+				on_win = poland.6
+				on_lose = poland.5
+				on_cancel = poland.5
+			}
+			defender = {
+				state = 97
+				num_provinces = 3
+				on_win = poland.5
+				on_lose = poland.6
+				on_cancel = poland.5
+			}
+		}
 		ai_chance = {
 			factor = 100
 		}
-		name = poland.2.a
-			start_border_war = {
-				change_state_after_war = yes
-				attacker = {
-					state = 1001
-					num_provinces = 2
-					on_win = poland.6
-					on_lose = poland.5
-					on_cancel = poland.5
-				}
-				defender = {
-					state = 97
-					num_provinces = 3
-					on_win = poland.5
-					on_lose = poland.6
-					on_cancel = poland.5
-				}
-			}
 	}
 	option = {
+		name = poland.2.b
 		ai_chance = {
 			factor = 0
 		}
-		name = poland.2.b
 	}
 }
 
@@ -243,7 +243,24 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
+		trigger = {
+			tag = POL
+			LIT = { is_neighbor_of = ROOT }
+		}
 		name = poland.5.a
+		declare_war_on = {
+			target = LIT
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	option = {
+		name = poland.5.b
+		ai_chance = {
+			factor = 0
+		}
 	}
 }
 # Промежуточная победа
@@ -291,10 +308,23 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
+		trigger = {
+			tag = POL
+			BLR = { is_neighbor_of = ROOT }
+		}
 		name = poland.7.a
-		if = {
-			limit = { tag = POL }
-			hidden_effect = { transfer_state = 97 transfer_state = 956 }
+		declare_war_on = {
+			target = BLR
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	option = {
+		name = poland.7.b
+		ai_chance = {
+			factor = 0
 		}
 	}
 }
@@ -317,10 +347,12 @@ country_event = {
 		GAL = { exists = no }
 		any_country = {
 			original_tag = UKR
+			is_neighbor_of = POL
+			any_other_country = { NOT = { former_russian_empire_ukraine_country = yes } has_war_with = PREV }
 			surrender_progress > 0.5
+			owns_state = 904
+			owns_state = 1165
 		}
-		904 = { OWNER = { original_tag = UKR } }
-		1165 = { OWNER = { original_tag = UKR } }
 	}
 	
 	mean_time_to_happen = { days = 0 }
@@ -336,6 +368,10 @@ country_event = {
 			limit = {
 				original_tag = UKR
 				is_neighbor_of = POL
+				any_other_country = { NOT = { former_russian_empire_ukraine_country = yes } has_war_with = PREV }
+				surrender_progress > 0.5
+				owns_state = 904
+				owns_state = 1165
 			}
 			country_event = { id = poland.9 hours = 2 }
 		}
@@ -347,7 +383,8 @@ country_event = {
 			factor = 0
 		}
 		name = poland.8.b
-		
+		transfer_state = 904
+		transfer_state = 1165
 	}
 }
 # Ответ Польше (Украина)
