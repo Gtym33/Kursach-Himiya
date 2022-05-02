@@ -134,7 +134,7 @@ country_event = {
 	option = {
 		name = romania.4.a
 		every_country = {
-			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS is_in_faction_with = TGR is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } }
+			limit = { OR = { is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS tag = SNS is_in_faction_with = TRG tag = TRG is_in_faction_with = OAF tag = OAF is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } }
 			white_peace = ROM
 		}
 		leave_faction = yes
@@ -178,22 +178,13 @@ country_event = {
 	
 	option = {
 		name = romania.5.a
-		delete_unit_template_and_units = {
-			division_template = "Mobilized Infantry Division"
-		}
 		give_resource_rights = { receiver = GER state = 46 }
 		give_resource_rights = { receiver = GER state = 81 }
 		every_owned_state = {
 			limit = {
 				OR = {
-					state = 81
-					state = 46
-					state = 855
-					state = 77
-					state = 856
+					region = 26
 					state = 972
-					state = 1047
-					state = 1264
 				}
 			}
 			set_demilitarized_zone = yes
@@ -213,11 +204,23 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			if = {
-				limit = { owns_state = 79 78 = { OWNER = { has_war_with = ROOT any_owned_state = { NOT = { state = 78 } } } } }
+				limit = { owns_state = 79 78 = { OR = { CONTROLLER = { NOT = { owns_state = PREV } } OWNER = { has_war_with = ROOT any_owned_state = { NOT = { state = PREV.PREV } } } } } }
 				set_state_owner = 78
 				if = {
-					limit = { 766 = { OWNER = { has_war_with = ROOT any_owned_state = { NOT = { state = 766 } } } } }
-					set_state_owner = 766
+					limit = { 1307 = { OR = { CONTROLLER = { NOT = { owns_state = PREV } } OWNER = { has_war_with = ROOT any_owned_state = { NOT = { state = PREV.PREV } } } } } }
+					set_state_owner = 1307
+					if = {
+						limit = { 1294 = { OR = { CONTROLLER = { NOT = { owns_state = PREV } } OWNER = { has_war_with = ROOT any_owned_state = { NOT = { state = PREV.PREV } } } } } }
+						set_state_owner = 1294
+						if = {
+							limit = { 1292 = { OR = { CONTROLLER = { NOT = { owns_state = PREV } } OWNER = { has_war_with = ROOT any_owned_state = { NOT = { state = PREV.PREV } } } } } }
+							set_state_owner = 1292
+							if = {
+								limit = { 766 = { OR = { CONTROLLER = { NOT = { owns_state = PREV } } OWNER = { has_war_with = ROOT any_owned_state = { NOT = { state = PREV.PREV } } } } } }
+								set_state_owner = 766
+							}
+						}
+					}
 				}
 			}
 		}
@@ -237,17 +240,6 @@ country_event = {
 		}
 	}
 	option = {
-		trigger = { owns_state = 79 owns_state = 78 NOT = { owns_state = 1284 owns_state = 1292 owns_state = 766 } }
-		name = romania.6.a
-		delete_unit_template_and_units = {
-			division_template = "Mobilized Infantry Division"
-		}
-		add_war_support = -0.05
-		ai_chance = {
-			factor = 0
-		}
-	}
-	option = {
 		trigger = { NOT = { owns_state = 79 } }
 		name = romania.6.b
 		delete_unit_template_and_units = {
@@ -257,7 +249,7 @@ country_event = {
 		add_stability = -0.1
 	}
 	option = {
-		trigger = { owns_state = 79 owns_state = 78 owns_state = 1292 owns_state = 1294 owns_state = 766 }
+		trigger = { owns_state = 79 owns_state = 78 owns_state = 1307 owns_state = 1292 owns_state = 1294 owns_state = 766 }
 		name = romania.6.c
 		delete_unit_template_and_units = {
 			division_template = "Mobilized Infantry Division"
@@ -265,22 +257,16 @@ country_event = {
 		add_war_support = 0.1
 	}
 	option = {
-		trigger = { owns_state = 79 NOT = { owns_state = 78 } 78 = { CONTROLLER = { NOT = { former_russian_empire_ukraine_country = yes } } } }
-		name = romania.6.d
-		transfer_state = 78
-		country_event = romania.6
-	}
-	option = {
-		trigger = { owns_state = 79 NOT = { owns_state = 78 } 78 = { CONTROLLER = { former_russian_empire_ukraine_country = yes } } }
+		trigger = { owns_state = 79 NOT = { owns_state = 78 } NOT = { owns_state = 1307 } }
 		name = romania.6.e
 		start_border_war = {
 			change_state_after_war = yes
 			attacker = {
 				state = 79
 				num_provinces = 6
-				on_win = romania.6
-				on_lose = romania.6
-				on_cancel = romania.6
+				on_win = romania.10
+				on_lose = romania.10
+				on_cancel = romania.10
 			}
 			defender = {
 				state = 78
@@ -292,70 +278,40 @@ country_event = {
 		}
 	}
 	option = {
-		trigger = { owns_state = 79 owns_state = 78 owns_state = 1292 owns_state = 1294 NOT = { owns_state = 766 } 766 = { CONTROLLER = { NOT = { former_russian_empire_ukraine_country = yes } } } }
-		name = romania.6.c
-		transfer_state = 766
-		delete_unit_template_and_units = {
-			division_template = "Mobilized Infantry Division"
-		}
-		add_war_support = 0.1
-	}
-	option = {
-		trigger = { owns_state = 79 owns_state = 78 NOT = { owns_state = 1294 } 1294 = { CONTROLLER = { former_russian_empire_ukraine_country = yes } } }
+		trigger = { owns_state = 79 NOT = { owns_state = 78 } owns_state = 1307 }
 		name = romania.6.e
 		start_border_war = {
 			change_state_after_war = yes
 			attacker = {
-				state = 78
-				num_provinces = 2
-				on_win = romania.6
-				on_lose = romania.6
-				on_cancel = romania.6
-			}
-			defender = {
-				state = 1294
-				num_provinces = 2
-				on_win = romania.8
-				on_lose = romania.7
-				on_cancel = romania.9
-			}
-		}
-	}
-	option = {
-		trigger = { owns_state = 79 owns_state = 78 owns_state = 1294 NOT = { owns_state = 1292 } 1292 = { CONTROLLER = { former_russian_empire_ukraine_country = yes } } }
-		name = romania.6.e
-		start_border_war = {
-			change_state_after_war = yes
-			attacker = {
-				state = 78
-				num_provinces = 2
-				on_win = romania.6
-				on_lose = romania.6
-				on_cancel = romania.6
-			}
-			defender = {
-				state = 1292
-				num_provinces = 2
-				on_win = romania.8
-				on_lose = romania.7
-				on_cancel = romania.9
-			}
-		}
-	}
-	option = {
-		trigger = { owns_state = 79 owns_state = 78 owns_state = 1294 NOT = { owns_state = 1292 } 1292 = { CONTROLLER = { former_russian_empire_ukraine_country = yes } } }
-		name = romania.6.e
-		start_border_war = {
-			change_state_after_war = yes
-			attacker = {
-				state = 1294
+				state = 1307
 				num_provinces = 1
-				on_win = romania.6
-				on_lose = romania.6
-				on_cancel = romania.6
+				on_win = romania.10
+				on_lose = romania.10
+				on_cancel = romania.10
 			}
 			defender = {
-				state = 1292
+				state = 78
+				num_provinces = 2
+				on_win = romania.8
+				on_lose = romania.7
+				on_cancel = romania.9
+			}
+		}
+	}
+	option = {
+		trigger = { owns_state = 79 owns_state = 78 NOT = { owns_state = 1307 } }
+		name = romania.6.e
+		start_border_war = {
+			change_state_after_war = yes
+			attacker = {
+				state = 78
+				num_provinces = 2
+				on_win = romania.10
+				on_lose = romania.10
+				on_cancel = romania.10
+			}
+			defender = {
+				state = 1307
 				num_provinces = 1
 				on_win = romania.8
 				on_lose = romania.7
@@ -364,19 +320,19 @@ country_event = {
 		}
 	}
 	option = {
-		trigger = { owns_state = 79 owns_state = 1292 owns_state = 1294 NOT = { owns_state = 766 } 766 = { CONTROLLER = { former_russian_empire_ukraine_country = yes } } }
+		trigger = { owns_state = 79 owns_state = 78 owns_state = 1307 NOT = { owns_state = 1294 } }
 		name = romania.6.e
 		start_border_war = {
 			change_state_after_war = yes
 			attacker = {
-				state = 1292
-				num_provinces = 2
-				on_win = romania.6
-				on_lose = romania.6
-				on_cancel = romania.6
+				state = 78
+				num_provinces = 3
+				on_win = romania.10
+				on_lose = romania.10
+				on_cancel = romania.10
 			}
 			defender = {
-				state = 766
+				state = 1294
 				num_provinces = 2
 				on_win = romania.8
 				on_lose = romania.7
@@ -385,20 +341,41 @@ country_event = {
 		}
 	}
 	option = {
-		trigger = { owns_state = 79 owns_state = 1292 owns_state = 1294 NOT = { owns_state = 766 } 766 = { CONTROLLER = { former_russian_empire_ukraine_country = yes } } }
+		trigger = { owns_state = 79 owns_state = 78 owns_state = 1307 owns_state = 1294 NOT = { owns_state = 1292 } }
 		name = romania.6.e
 		start_border_war = {
 			change_state_after_war = yes
 			attacker = {
 				state = 1294
+				num_provinces = 1
+				on_win = romania.10
+				on_lose = romania.10
+				on_cancel = romania.10
+			}
+			defender = {
+				state = 1292
+				num_provinces = 1
+				on_win = romania.8
+				on_lose = romania.7
+				on_cancel = romania.9
+			}
+		}
+	}
+	option = {
+		trigger = { owns_state = 79 owns_state = 1292 owns_state = 1307 owns_state = 1294 owns_state = 1292 NOT = { owns_state = 766 } }
+		name = romania.6.e
+		start_border_war = {
+			change_state_after_war = yes
+			attacker = {
+				state = 1292
 				num_provinces = 2
-				on_win = romania.6
-				on_lose = romania.6
-				on_cancel = romania.6
+				on_win = romania.10
+				on_lose = romania.10
+				on_cancel = romania.10
 			}
 			defender = {
 				state = 766
-				num_provinces = 2
+				num_provinces = 3
 				on_win = romania.8
 				on_lose = romania.7
 				on_cancel = romania.9
@@ -419,7 +396,7 @@ country_event = {
 	
 	option = {
 		name = romania.7.a
-		add_war_support = -0.05
+		add_war_support = -0.02
 	}
 }
 # Поражение Румынии в Бессарабии
@@ -435,7 +412,7 @@ country_event = {
 	
 	option = {
 		name = romania.8.a
-		add_war_support = 0.05
+		add_war_support = 0.02
 	}
 }
 # Статус-кво
@@ -451,5 +428,17 @@ country_event = {
 	
 	option = {
 		name = romania.9.a
+	}
+}
+# Цикл
+country_event = {
+	id = romania.10
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		country_event = { id = romania.6 hours = 2 }
 	}
 }
