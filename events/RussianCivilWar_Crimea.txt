@@ -41,7 +41,7 @@ country_event = {
 				add_ideas = neutral_foreign_policy_law
 				remove_all_foreing_locked_templates_from_liberated_country = yes
 				load_oob = CRI_1918
-				country_event = { id = rcw_crimea.2 hours = 1 }
+				set_cosmetic_tag = CRI_Tavrida
 			}
 			else = {
 				CRI = {
@@ -71,7 +71,17 @@ country_event = {
 							type = annex_everything
 						}
 					}
-					load_oob = CRI_1918
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+					}
+					1073 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
+					set_cosmetic_tag = CRI_Tavrida
 				}
 			}
 		}
@@ -90,7 +100,7 @@ country_event = {
 				add_ideas = neutral_foreign_policy_law
 				remove_all_foreing_locked_templates_from_liberated_country = yes
 				load_oob = CRI_1918
-				country_event = { id = rcw_crimea.2 hours = 1 }
+				set_cosmetic_tag = CRI_Tavrida
 			}
 			else = {
 				CRI = {
@@ -120,7 +130,17 @@ country_event = {
 							type = annex_everything
 						}
 					}
-					load_oob = CRI_1918
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+					}
+					1073 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
+					set_cosmetic_tag = CRI_Tavrida
 				}
 			}
 		}
@@ -132,84 +152,210 @@ country_event = {
 	title = rcw_crimea.2.t
 	desc = rcw_crimea.2.desc
 	
-	is_triggered_only = yes
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = CRI
+		has_cosmetic_tag = CRI_Tavrida
+		NOT = { has_government = radical_socialism }
+		NOT = { has_government = communism }
+	}
+	
+	mean_time_to_happen = {
+		days = 17
+	}
+	
+	fire_only_once = yes
 	
 	option = {
 		name = rcw_crimea.2.a
-		start_civil_war = {
-			ideology = communism
-			size = 0.75
-			states = {
-				1073
-			}
+		drop_cosmetic_tag = yes
+		add_ideas = {
+			parliamentary_republic_gov_form
+			unitary_gov_terr
+			constitution_b_law
+			poliparty_system_law
+			neutral_foreign_policy_law
 		}
-		random_country = {
-			limit = { original_tag = CRI has_government = communism }
-			add_ideas = {
-				soviet_republic_gov_form
-				federal_gov_terr
-				local_assembly_decisions_b_law
-				two_party_system_law
-				neutral_foreign_policy_law
-			}
+		add_popularity = { ideology = communism popularity = -0.2 }
+		create_dynamic_country = {
+				original_tag = CRI
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				hidden_effect = {
+					if = {
+						limit = { CRI = { has_idea = peasant_and_land_and_bread_question_0_25 } }
+						add_ideas = peasant_and_land_and_bread_question_0_25
+					}
+					else_if = {
+						limit = { CRI = { has_idea = peasant_and_land_and_bread_question_0_5 } }
+						add_ideas = peasant_and_land_and_bread_question_0_5
+					}
+					else_if = {
+						limit = { CRI = { has_idea = peasant_and_land_and_bread_question } }
+						add_ideas = peasant_and_land_and_bread_question
+					}
+					set_popularities = {
+						social_democracy = 50
+						communism = 50
+					}
+					set_cosmetic_tag = CRI_Tavrida
+					add_popularity = { ideology = radical_socialism popularity = 0.4 }
+					set_temp_variable = { red_CRI = this }
+					ROOT = {
+						every_owned_state = {
+							limit = { OR = { state = 1073 } }
+							
+							var:red_CRI = {
+								transfer_state = PREV
+							}
+						}
+					}
+					set_capital = { state = 1073 }
+					add_random_ministers = yes
+					add_random_ministers = yes
+					
+					save_global_event_target_as = CRI_CW
+					set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+					add_ideas = {
+						soviet_republic_gov_form
+						federal_gov_terr
+						local_assembly_decisions_b_law
+						two_party_system_law
+						neutral_foreign_policy_law
+					}
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+						is_locked = yes
+					}
+					declare_war_on = { target = ROOT type = annex_everything }
+					add_civil_war_target = ROOT
+				}
+		}
+		hidden_effect = {
 			if = {
-				limit = { any_other_country = { original_tag = CRI has_cosmetic_tag = CRI_Tavrida } }
-				set_cosmetic_tag = CRI_Tavrida
+				limit = { RSR = { has_war_with = ROOT } }
+				RSR = { event_target:CRI_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			event_target:CRI_CW = { every_unit_leader = { set_nationality = ROOT } }
+			event_target:CRI_CW = {
+				every_country = {
+					limit = {
+						is_in_array = {
+							array = unrecognized_states
+							value = ROOT.id
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
 			}
 		}
-		random_country = {
-			limit = { original_tag = CRI NOT = { has_government = communism } }
-			add_ideas = {
-				parliamentary_republic_gov_form
-				unitary_gov_terr
-				constitution_b_law
-				poliparty_system_law
-				neutral_foreign_policy_law
-			}
-			if = {
-				limit = { any_other_country = { original_tag = CRI has_cosmetic_tag = CRI_Tavrida } }
-				drop_cosmetic_tag = yes
-			}
-		}
+		1073 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
+		hidden_effect = { clear_global_event_target = CRI_CW }
 	}
 	option = {
 		trigger = { is_ai = no }
 		name = rcw_crimea.2.b
-		start_civil_war = {
-			ideology = communism
-			size = 0.75
-			states = {
-				1073
-			}
+		drop_cosmetic_tag = yes
+		add_ideas = {
+			parliamentary_republic_gov_form
+			unitary_gov_terr
+			constitution_b_law
+			poliparty_system_law
+			neutral_foreign_policy_law
 		}
-		random_country = {
-			limit = { original_tag = CRI has_government = communism }
-			add_ideas = {
-				soviet_republic_gov_form
-				federal_gov_terr
-				local_assembly_decisions_b_law
-				two_party_system_law
-				neutral_foreign_policy_law
-			}
+		add_popularity = { ideology = communism popularity = -0.2 }
+		create_dynamic_country = {
+				original_tag = CRI
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				hidden_effect = {
+					if = {
+						limit = { CRI = { has_idea = peasant_and_land_and_bread_question_0_25 } }
+						add_ideas = peasant_and_land_and_bread_question_0_25
+					}
+					else_if = {
+						limit = { CRI = { has_idea = peasant_and_land_and_bread_question_0_5 } }
+						add_ideas = peasant_and_land_and_bread_question_0_5
+					}
+					else_if = {
+						limit = { CRI = { has_idea = peasant_and_land_and_bread_question } }
+						add_ideas = peasant_and_land_and_bread_question
+					}
+					set_popularities = {
+						social_democracy = 50
+						communism = 50
+					}
+					set_cosmetic_tag = CRI_Tavrida
+					add_popularity = { ideology = radical_socialism popularity = 0.4 }
+					set_temp_variable = { red_CRI = this }
+					ROOT = {
+						every_owned_state = {
+							limit = { OR = { state = 1073 } }
+							
+							var:red_CRI = {
+								transfer_state = PREV
+							}
+						}
+					}
+					set_capital = { state = 1073 }
+					add_random_ministers = yes
+					add_random_ministers = yes
+					
+					save_global_event_target_as = CRI_CW
+					set_country_flag = dont_rise_party_pop_in_two_party_sys_law
+					add_ideas = {
+						soviet_republic_gov_form
+						federal_gov_terr
+						local_assembly_decisions_b_law
+						two_party_system_law
+						neutral_foreign_policy_law
+					}
+					division_template = {
+						name = "Krasnaya Gvardiya"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+							militia = { x = 1 y = 0 }
+						}
+						priority = 0
+						is_locked = yes
+					}
+					declare_war_on = { target = ROOT type = annex_everything }
+					add_civil_war_target = ROOT
+				}
+		}
+		hidden_effect = {
 			if = {
-				limit = { any_other_country = { original_tag = CRI has_cosmetic_tag = CRI_Tavrida } }
-				set_cosmetic_tag = CRI_Tavrida
+				limit = { RSR = { has_war_with = ROOT } }
+				RSR = { event_target:CRI_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			event_target:CRI_CW = { every_unit_leader = { set_nationality = ROOT } }
+			event_target:CRI_CW = {
+				every_country = {
+					limit = {
+						is_in_array = {
+							array = unrecognized_states
+							value = ROOT.id
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
 			}
 		}
-		random_country = {
-			limit = { original_tag = CRI NOT = { has_government = communism } }
-			add_ideas = {
-				parliamentary_republic_gov_form
-				unitary_gov_terr
-				constitution_b_law
-				poliparty_system_law
-				neutral_foreign_policy_law
-			}
-			if = {
-				limit = { any_other_country = { original_tag = CRI has_cosmetic_tag = CRI_Tavrida } }
-				drop_cosmetic_tag = yes
-			}
-		}
+		1073 = { spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes spawn_red_guard_in_state_CONTROLLER = yes }
+		hidden_effect = { clear_global_event_target = CRI_CW }
 		random_country = {
 			limit = { original_tag = CRI has_government = communism }
 			change_tag_from = ROOT
