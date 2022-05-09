@@ -1597,20 +1597,41 @@ country_event = {
 			}
 			leave_faction = yes
 		}
-		every_country = {
-			limit = { OR = { tag = FROM is_in_faction_with = FROM is_subject_of = FROM has_country_flag = RCW_Allrussian_national_assembly_member is_main_former_russian_empire_country = yes } }
-			diplomatic_relation = {
-				country = ROOT
-				relation = non_aggression_pact
-				active = no
-			}
-			ROOT = {
+		if = {
+			limit = { is_main_former_russian_empire_country = yes }
+			every_country = {
+				limit = { OR = { tag = FROM is_in_faction_with = FROM is_subject_of = FROM has_country_flag = RCW_Allrussian_national_assembly_member NOT = { is_subject_of = ROOT is_in_faction_with = ROOT } is_main_former_russian_empire_country = yes } }
 				diplomatic_relation = {
-					country = PREV
+					country = ROOT
 					relation = non_aggression_pact
 					active = no
 				}
-				declare_war_on = { target = PREV type = annex_everything }
+				ROOT = {
+					diplomatic_relation = {
+						country = PREV
+						relation = non_aggression_pact
+						active = no
+					}
+					declare_war_on = { target = PREV type = annex_everything }
+				}
+			}
+			else = {
+				every_country = {
+					limit = { OR = { tag = FROM is_in_faction_with = FROM is_subject_of = FROM has_country_flag = RCW_Allrussian_national_assembly_member NOT = { is_subject_of = ROOT is_in_faction_with = ROOT } } }
+					diplomatic_relation = {
+						country = ROOT
+						relation = non_aggression_pact
+						active = no
+					}
+					ROOT = {
+						diplomatic_relation = {
+							country = PREV
+							relation = non_aggression_pact
+							active = no
+						}
+						declare_war_on = { target = PREV type = annex_everything }
+					}
+				}
 			}
 		}
 	}
