@@ -5609,7 +5609,7 @@ country_event = {
 	}
 }
 
-# Зрада
+# Зрада (Крым побеждает интервентов)
 country_event = {
 	id = ukraine.52
 	title = ukraine.52.t
@@ -5617,21 +5617,80 @@ country_event = {
 	picture = GFX_report_event_februrary_revolution
 	
 	trigger = {
-		CRI = { exists = yes has_capitulated = no }
+		OR = {
+			original_tag = UKR
+			original_tag = GER
+		}
+		is_subject = no
+		has_war_with = CRI
+		CRI = { has_capitulated = no NOT = { surrender_progress > 0.02 } }
+		NOT = { has_global_flag = RUS_civil_war_over }
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		NOT = { has_government = radical_socialism has_government = communism }
+		OR = {
+			is_in_faction = no
+			is_faction_leader = yes
+		}
 	}
 	
-	is_triggered_only = yes
+	mean_time_to_happen = {
+		days = 90
+	}
+	
+	fire_only_once = yes
 	
 	option = {
 		name = ukraine.52.a
 		add_political_power = -50
 		add_stability = -0.05
 		add_war_support = -0.05
+		every_state = {
+			limit = {
+				region = 230
+				OWNER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+			CRI = { transfer_state = PREV }
+		}
 		if = {
-			limit = { CRI = { has_government = communism } }
-			add_popularity = {
-				ideology = communism
-				popularity = 0.05
+			limit = {
+				919 = {
+					OWNER = {
+						OR = {
+							tag = ROOT
+							is_subject_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+					CONTROLLER = {
+						original_tag = CRI
+						has_war_with = ROOT
+					}
+				}
+			}
+			919 = { CONTROLLER = { transfer_state = PREV } }
+			if = {
+				limit = {
+					1259 = {
+						OWNER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+								is_in_faction_with = ROOT
+							}
+						}
+						CONTROLLER = {
+							original_tag = CRI
+							has_war_with = ROOT
+						}
+					}
+				}
+				1259 = { CONTROLLER = { transfer_state = PREV } }
 			}
 		}
 		CRI = { leave_faction = yes }
@@ -5639,6 +5698,10 @@ country_event = {
 		every_country = {
 			limit = { is_in_faction_with = ROOT }
 			white_peace = CRI
+		}
+		if = {
+			limit = { CRI = { OR = { has_government = radical_socialism has_government = communism } } RSR = { NOT = { has_war_with = CRI } exists = yes } }
+			RSR = { CRI = { subjecting_script_with_transfer_parties_dominion = yes } }
 		}
 	}
 }
@@ -5801,7 +5864,7 @@ country_event = {
 					change_state_after_war = yes
 					attacker = {
 						state = 227
-						num_provinces = 4
+						num_provinces = 1
 						on_win = ukraine.57
 						on_lose = ukraine.56
 						on_cancel = ukraine.58
@@ -5838,7 +5901,7 @@ country_event = {
 					}
 					defender = {
 						state = 953
-						num_provinces = 2
+						num_provinces = 3
 						on_win = ukraine.56
 						on_lose = ukraine.57
 						on_cancel = ukraine.58
@@ -5868,7 +5931,7 @@ country_event = {
 					}
 					defender = {
 						state = 918
-						num_provinces = 3
+						num_provinces = 2
 						on_win = ukraine.56
 						on_lose = ukraine.57
 						on_cancel = ukraine.58
@@ -5891,14 +5954,14 @@ country_event = {
 					change_state_after_war = yes
 					attacker = {
 						state = 953
-						num_provinces = 2
+						num_provinces = 1
 						on_win = ukraine.57
 						on_lose = ukraine.56
 						on_cancel = ukraine.58
 					}
 					defender = {
 						state = 1284
-						num_provinces = 3
+						num_provinces = 1
 						on_win = ukraine.56
 						on_lose = ukraine.57
 						on_cancel = ukraine.58
@@ -5981,7 +6044,7 @@ country_event = {
 					change_state_after_war = yes
 					attacker = {
 						state = 953
-						num_provinces = 4
+						num_provinces = 3
 						on_win = ukraine.57
 						on_lose = ukraine.56
 						on_cancel = ukraine.58
