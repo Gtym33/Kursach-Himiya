@@ -760,9 +760,9 @@ country_event = {
 			military_dictatorship_gov_form
 		}
 		if = {
-			limit = { NOT = { has_idea = mixed_economy_law } }
+			limit = { NOT = { has_idea = state_capitalism_law } }
 			rise_mobilization_economy_law = yes
-			add_ideas = mixed_economy_law
+			add_ideas = state_capitalism_law
 			low_labor_legislation = yes
 		}
 		hidden_effect = {
@@ -814,6 +814,7 @@ country_event = {
 				}
 			}
 		}
+		hidden_effect = { create_country_leader = { name = "Simon Petlura" desc = UKR_Simon_Petlura_DESC picture = "gfx/leaders/UKR/Portrait_Simon_Petlura.dds" expire = "1935.1.1" ideology = despotism_ideology traits = {  } } }
 		random_other_country = {
 			limit = {
 				original_tag = UKR
@@ -847,9 +848,9 @@ country_event = {
 		set_party_name = { ideology = authoritarism long_name = RVA_despotism_party_long name = RVA_despotism_party }
 		if = {
 			limit = { has_idea = Pyotr_Wrangel_army_chief }
-			create_country_leader = { name = "Pyotr Wrangel" desc = RUS_Pyotr_Wrangel_DESC picture = "gfx/leaders/RUS/Portrait_Pyotr_Wrangel.dds" ideology = authoritarism_ideology traits = { warmonger_old_general min_1_the_black_baron min_1_old_general political_dancer min_1_power_hungry_demagogue } }
+			create_country_leader = { name = "Pyotr Wrangel" desc = RUS_Pyotr_Wrangel_DESC picture = "gfx/leaders/RUS/Portrait_Pyotr_Wrangel.dds" ideology = authoritarism_ideology traits = { min_1_the_black_baron warmonger_old_general political_dancer min_1_power_hungry_demagogue } }
+			else = { create_country_leader = { name = "Fyodor Keller" desc = "" picture = "gfx/leaders/RUS/Portrait_Fyodor_Keller.dds" ideology = authoritarism_ideology traits = { warmonger_old_general } } }
 		}
-		else = { create_country_leader = { name = "Fyodor Keller" desc = "" picture = "gfx/leaders/RUS/Portrait_Fyodor_Keller.dds" ideology = authoritarism_ideology traits = { warmonger_old_general } } }
 		load_focus_tree = UKR_Keller
 		set_cosmetic_tag = UKR_white
 		set_country_flag = UKR_white
@@ -912,6 +913,7 @@ country_event = {
 				}
 			}
 		}
+		hidden_effect = { create_country_leader = { name = "Simon Petlura" desc = UKR_Simon_Petlura_DESC picture = "gfx/leaders/UKR/Portrait_Simon_Petlura.dds" expire = "1935.1.1" ideology = despotism_ideology traits = {  } } }
 		random_other_country = {
 			limit = {
 				original_tag = UKR
@@ -4647,8 +4649,12 @@ country_event = {
 			emergency_laws_b_law
 			military_dictatorship_gov_form
 			#private_military_campaign
+			minimum_legislation
+			interventionalism_law
 		}
-		every_unit_leader = { limit = { has_id = 91035 } set_nationality = REB }
+		hidden_effect = {
+			every_unit_leader = { limit = { has_id = 91035 } set_nationality = REB }
+		}
 		load_focus_tree = Ukraine_after_german_occupation_focus
 		set_variable = {
 			var = UKR_is_UKR
@@ -4662,25 +4668,20 @@ country_event = {
 		add_ideas = RUS_prodrazverstka_idea
 		add_ideas = UKR_zerno_in
 		remove_ideas = UKR_lack_of_a_clear_social_program
-		#country_event = { id = rcw_muscovy.9 days = 1 }
-		GER = { end_puppet = UKR }
-		every_state = {
-			limit = {
-				is_claimed_by = UKR
-			}
-			set_state_flag = subject_save_claim
-		}
+		#GER = { end_puppet = UKR }
+		#every_state = {
+		#	limit = {
+		#		is_claimed_by = UKR
+		#	}
+		#	set_state_flag = subject_save_claim
+		#}
 		GER = { UKR = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
-		every_state = {
-			limit = {
-				has_state_flag = subject_save_claim
-			}
-			add_claim_by = UKR
-			clr_state_flag = subject_save_claim
-		}
-		#every_country = {
-			#limit = { has_war_with = UKR }
-			#white_peace = UKR
+		#every_state = {
+		#	limit = {
+		#		has_state_flag = subject_save_claim
+		#	}
+		#	add_claim_by = UKR
+		#	clr_state_flag = subject_save_claim
 		#}
 		GER = {
 			add_ideas = UKR_zerno_out
@@ -4950,7 +4951,11 @@ country_event = {
 		hidden_effect = {
 			set_party_name = { ideology = authoritarism long_name = UKR_authoritarism_party_long name = UKR_authoritarism_party }
 			remove_ideas = UKR_russian_exiles
-			REB = { every_unit_leader = { limit = { has_id = 91035 } set_nationality = UKR } }
+			if = {
+				limit = { NOT = { any_unit_leader = { has_id = 91035 } } }
+				REB = { every_unit_leader = { limit = { has_id = 91035 } set_nationality = UKR } }
+				create_country_leader = { name = "Simon Petlura" desc = UKR_Simon_Petlura_DESC picture = "gfx/leaders/UKR/Portrait_Simon_Petlura.dds" expire = "1935.1.1" ideology = despotism_ideology traits = {  } }
+			}
 		}
 	}
 	
@@ -5091,12 +5096,11 @@ country_event = {
 		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = UKR
 		has_country_flag = UKR_directory_win
+		has_government = despotism
 		has_war = yes
 		has_idea = UKR_cruel_atamanshina
 		surrender_progress > 0.3
 		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
-		NOT = { has_government = national_syndicalism }
-		NOT = { has_government = fascism }
 		has_unit_leader = 91017
 	}
 	
@@ -5109,19 +5113,15 @@ country_event = {
 	option = {
 		name = ukraine.34.a
 		add_political_power = -50
+		every_unit_leader = { limit = { has_id = 91017 } set_nationality = REB }
+	}
+	option = {
+		name = ukraine.34.a
 		add_stability = -0.05
-		add_war_support = -0.05
-		random_list = {
-			50 = {
-				set_politics = { ruling_party = national_syndicalism elections_allowed = no }
-				country_event = ukraine.35
-				every_unit_leader = { limit = { has_id = 91035 } remove_unit_leader = yes }
-				kill_ideology_leader = despotism
-			}
-			50 = {
-				every_unit_leader = { limit = { has_id = 91017 } set_nationality = REB }
-			}
-		}
+		set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+		country_event = ukraine.35
+		every_unit_leader = { limit = { has_id = 91035 } remove_unit_leader = yes }
+		kill_ideology_leader = despotism
 	}
 }
 
@@ -5144,24 +5144,20 @@ country_event = {
 	option = {
 		name = ukraine.35.a
 		add_political_power = -50
+		every_unit_leader = { limit = { has_id = 91034 } set_nationality = REB }
+	}
+	option = {
+		name = ukraine.35.b
 		add_stability = -0.05
-		add_war_support = -0.05
-		random_list = {
-			50 = {
-				if = {
-					limit = { has_government = national_syndicalism }
-					every_unit_leader = { limit = { has_id = 91017 } set_nationality = REB }
-				}
-				else_if = {
-					limit = { has_government = authoritarism }
-					every_unit_leader = { limit = { has_id = 91032 } set_nationality = REB }
-				}
-				set_politics = { ruling_party = fascism elections_allowed = no }
-			}
-			50 = {
-				every_unit_leader = { limit = { has_id = 91034 } set_nationality = REB }
-			}
+		if = {
+			limit = { has_government = national_syndicalism }
+			every_unit_leader = { limit = { has_id = 91017 } set_nationality = REB }
 		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			every_unit_leader = { limit = { has_id = 91032 } set_nationality = REB }
+		}
+		set_politics = { ruling_party = fascism elections_allowed = no }
 	}
 }
 
@@ -5177,12 +5173,11 @@ country_event = {
 		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = UKR
 		has_country_flag = UKR_directory_win
+		has_government = despotism
 		has_war = yes
 		has_idea = UKR_cruel_atamanshina
 		surrender_progress > 0.3
 		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
-		NOT = { has_government = authoritarism }
-		NOT = { has_government = fascism }
 		has_unit_leader = 91032
 	}
 	
@@ -5195,20 +5190,16 @@ country_event = {
 	option = {
 		name = ukraine.36.a
 		add_political_power = -50
+		every_unit_leader = { limit = { has_id = 91032 } set_nationality = REB }
+	}
+	option = {
+		name = ukraine.36.b
 		add_stability = -0.05
-		add_war_support = -0.05
-		random_list = {
-			50 = {
-				set_politics = { ruling_party = authoritarism elections_allowed = no }
-				country_event = ukraine.35
-				every_unit_leader = { limit = { has_id = 91035 } remove_unit_leader = yes }
-				kill_ideology_leader = despotism
-				create_country_leader = { name = "Pyotr Bolbochan" desc = UKR_Pyotr_Bolbochan_DESC picture = "gfx/leaders/UKR/Portrait_Pyotr_Bolbochan.dds" ideology = authoritarism_ideology traits = {  } }
-			}
-			50 = {
-				every_unit_leader = { limit = { has_id = 91032 } set_nationality = REB }
-			}
-		}
+		set_politics = { ruling_party = authoritarism elections_allowed = no }
+		country_event = ukraine.35
+		every_unit_leader = { limit = { has_id = 91035 } remove_unit_leader = yes }
+		kill_ideology_leader = despotism
+		create_country_leader = { name = "Pyotr Bolbochan" desc = UKR_Pyotr_Bolbochan_DESC picture = "gfx/leaders/UKR/Portrait_Pyotr_Bolbochan.dds" ideology = authoritarism_ideology traits = {  } }
 	}
 }
 
