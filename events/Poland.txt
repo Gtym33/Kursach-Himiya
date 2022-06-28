@@ -403,11 +403,8 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		ai_chance = {
-			factor = 100
-		}
-		name = poland.9.a
 		trigger = { NOT = { has_country_flag = UKR_white has_government = communism has_government = radical_socialism } }
+		name = poland.9.a
 		add_stability = -0.01
 		every_state = {
 			limit = {
@@ -419,29 +416,41 @@ country_event = {
 			}
 			FROM = { set_state_owner = PREV }
 		}
-		FROM = {
-			every_country = {
-				limit = { has_war_with = ROOT NOT = { has_war_with = PREV } }
-				PREV = { add_to_war = { targeted_alliance = ROOT enemy = PREV } }
-				if = {
-					limit = { OR = { is_faction_leader = yes AND = { is_in_faction = no is_subject = no } } }
-					country_event = poland.21 # уведомление о том, что Польша взяла Украину
-				}
+		every_country = {
+			limit = { has_war_with = ROOT NOT = { has_war_with = FROM } }
+			FROM = { declare_war_on = { target = PREV type = annex_everything } }
+			if = {
+				limit = { OR = { is_faction_leader = yes AND = { is_in_faction = no is_subject = no } } }
+				country_event = poland.21 # уведомление о том, что Польша взяла Украину
 			}
 		}
-		FROM = { UKR = { subjecting_script_with_transfer_parties_colony = yes } }
+		hidden_effect = {
+			every_owned_state = {
+				limit = { is_capital = no }
+				set_state_flag = transfered_state
+				set_state_owner_to = FROM
+			}
+		}
+		FROM = { ROOT = { subjecting_script_with_transfer_parties_colony = yes } }
+		hidden_effect = {
+			every_state = {
+				limit = { has_state_flag = transfered_state }
+				clr_state_flag = transfered_state
+				set_state_owner_to = ROOT
+			}
+		}
+		ai_chance = {
+			factor = 100
+		}
 	}
 	option = {
-		ai_chance = {
-			factor = 0
-		}
 		name = poland.9.b
 		FROM = { country_event = { id = poland.10 days = 1 } }
-	}
-	option = {
 		ai_chance = {
 			factor = 0
 		}
+	}
+	option = {
 		name = poland.9.c
 		every_country = {
 			limit = {
@@ -452,6 +461,9 @@ country_event = {
 				target = FROM
 				type = annex_everything
 			}
+		}
+		ai_chance = {
+			factor = 0
 		}
 	}
 }

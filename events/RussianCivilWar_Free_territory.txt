@@ -397,12 +397,12 @@ country_event = {
 		low_labor_legislation = yes
 		add_to_variable = { var = angry_workers value = 1 }
 		custom_effect_tooltip = FRT_angry_workers_plus_1_tt
+		add_political_power = 25
 	}
 	
 	option = {
 		name = rcw_free_territory.5.b
 		trigger = { has_country_leader = { name = "Nestor Machno" ruling_only = yes } }
-		add_political_power = -25
 		add_war_support = -0.05
 		add_stability = -0.05
 		down_Makhno_authority = yes
@@ -438,12 +438,12 @@ country_event = {
 		low_labor_legislation = yes
 		add_to_variable = { var = angry_workers value = 1 }
 		custom_effect_tooltip = FRT_angry_workers_plus_1_tt
+		add_political_power = 25
 	}
 	
 	option = {
 		name = rcw_free_territory.6.b
 		trigger = { has_country_leader = { name = "Nestor Machno" ruling_only = yes } }
-		add_political_power = -25
 		add_war_support = -0.05
 		add_stability = -0.05
 		down_Makhno_authority = yes
@@ -1028,12 +1028,18 @@ country_event = {
 		name = rcw_free_territory.23.a
 		set_country_flag = FRT_asc_part_of_RKKA
 		RSR = { country_event = { id = rcw_free_territory.24 days = 1 } }
+		ai_chance = {
+			factor = 3
+		}
 	}
 	
 	option = {
 		name = rcw_free_territory.23.b
 		set_country_flag = FRT_asc_union
 		RSR = { country_event = { id = rcw_free_territory.24 days = 1 } }
+		ai_chance = {
+			factor = 1
+		}
 	}
 }
 
@@ -1128,32 +1134,84 @@ country_event = {
 	option = {
 		name = rcw_free_territory.26.a
 		if = {
-			limit = { has_country_flag = FRT_asc_union }
-			if = {
-				limit = { RSR = { is_faction_leader = yes } }
-				RSR = { add_to_faction = FRT }
+			limit = { has_country_flag = FRT_asc_union RSR = { is_faction_leader = yes } }
+			RSR = { add_to_faction = FRT }
+		}
+		if = {
+			limit = { has_country_flag = FRT_asc_union RSR = { is_faction_leader = no } }
+			diplomatic_relation = {
+				country = RSR
+				relation = military_access
+				active = yes
 			}
-			else = {
+			give_guarantee = RSR
+			RSR = {
 				diplomatic_relation = {
-					country = RSR
+					country = FRT
 					relation = military_access
 					active = yes
 				}
-				give_guarantee = RSR
-				RSR = {
-					diplomatic_relation = {
-						country = FRT
-						relation = military_access
-						active = yes
-					}
-					give_guarantee = FRT
-				}
+				give_guarantee = FRT
 			}
 		}
-		else_if = {
+		if = {
 			limit = { has_country_flag = FRT_asc_part_of_RKKA }
 			set_country_flag = FRT_pressure_by_RKKA
+			hidden_effect = {
+				FRT = {
+					every_owned_state = {
+						limit = { is_capital = no }
+						set_state_flag = transfered_state
+						set_state_owner_to = RSR
+					}
+				}
+				if = {
+					limit = { USR = { OR = { is_subject_of = RSR is_in_faction_with = RSR } } }
+					every_state = {
+						limit = { is_core_of = USR RSR = { has_full_control_of_state = PREV } }
+						set_state_controller_to = USR
+					}
+					every_state = {
+						limit = { is_core_of = USR }
+						set_state_province_controller = {
+							controller = USR
+							limit = {
+								tag = RSR
+							}
+						}
+					}
+				}
+				every_state = {
+					limit = { is_core_of = UKR }
+					set_state_province_controller = {
+						controller = RSR
+						limit = {
+							tag = FRT
+						}
+					}
+				}
+			}
 			RSR = { FRT = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = { has_state_flag = transfered_state }
+					clr_state_flag = transfered_state
+					set_state_owner_to = FRT
+				}
+				every_state = {
+					limit = { is_core_of = UKR }
+					set_state_province_controller = {
+						controller = FRT
+						limit = {
+							tag = RSR
+						}
+					}
+				}
+				every_state = {
+					limit = { is_core_of = UKR RSR = { has_full_control_of_state = PREV } }
+					set_state_controller_to = FRT
+				}
+			}
 			add_ideas = FRT_red_specialists_idea
 			add_popularity = { ideology = communism popularity = 0.1 }
 		}
