@@ -6660,96 +6660,151 @@ country_event = {
 		name = rcw_bolsheviks.250.a
 		hidden_effect = {
 			if = {
-				limit = { decist_fact_party_is_ruling = yes check_variable = { decist_faction_party_compositon > left_faction_party_compositon } check_variable = { decist_faction_party_compositon > center_faction_party_compositon } check_variable = { decist_faction_party_compositon > moderate_faction_party_compositon } check_variable = { decist_faction_party_compositon > right_faction_party_compositon } }
+				limit = {
+					decist_fact_party_is_ruling = yes
+					check_variable = { decist_faction_party_compositon > left_faction_party_compositon }
+					check_variable = { decist_faction_party_compositon > center_faction_party_compositon }
+					check_variable = { decist_faction_party_compositon > moderate_faction_party_compositon }
+					check_variable = { decist_faction_party_compositon > right_faction_party_compositon }
+				}
 				country_event = rcw_bolsheviks.256 #Закрепление линии децистов
 				else = {
-					uncomplete_national_focus = {
-						focus = RUS_power_of_elected_committees
-						uncomplete_children = no
-						refund_political_power = no
-					}
-					clr_country_flag = RUS_RKP_b_VIII_decist_war_plan
-					set_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
 					if = {
-						limit = { NOT = { left_fact_party_is_ruling = yes } OR = { AND = { check_variable = { left_faction_party_compositon > center_faction_party_compositon } check_variable = { left_faction_party_compositon > moderate_faction_party_compositon } } check_variable = { Trotskiy_power > 4 } } NOT = { has_country_flag = demands_of_Kronstadt_sailors_accepted } NOT = { check_variable = { decist_faction_party_compositon > 0.45 } } }
-						country_event = rcw_bolsheviks.253 #Троцкий
-						if = {
-							limit = { KRN = { exists = yes NOT = { has_war_with = ROOT } } }
-							declare_war_on = { target = KRN type = annex_everything }
+						limit = { has_completed_focus = RUS_power_of_elected_committees }
+						uncomplete_national_focus = {
+							focus = RUS_power_of_elected_committees
+							uncomplete_children = no
+							refund_political_power = no
 						}
+					}
+					if = {
+						limit = { has_country_flag = RUS_RKP_b_VIII_decist_war_plan }
+						clr_country_flag = RUS_RKP_b_VIII_decist_war_plan
+						set_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
+					}
+
+					if = {
+						limit = {
+							OR = {
+								has_country_flag = demands_of_Kronstadt_sailors_accepted
+								KRN = { controls_state = 195 }
+								KRN = { exists = yes }
+							}
+						}
+						if = {
+							limit = { RUS = { is_ai = yes } KRN = { is_ai = no } }
+							RUS = { change_tag_from = KRN }
+						}
+						annex_country = {
+							target = KRN
+							transfer_troops = no
+						}
+					}
+					if = {
+						limit = {
+							OR = {
+								has_country_flag = demands_of_Kronstadt_sailors_accepted
+								KRN = { controls_state = 195 }
+							}
+						}
+						country_event = rcw_bolsheviks.255 #Победа требований Кронштадта
 						else = {
 							if = {
-								limit = { OR = { has_country_flag = demands_of_Kronstadt_sailors_accepted KRN = { controls_state = 195 } } }
+								limit = { left_fact_party_is_ruling = yes }
+								set_temp_variable = { decists_block = 0 }
+								add_to_temp_variable = { decists_block = decist_faction_party_compositon }
+								add_to_temp_variable = { decists_block = right_faction_party_compositon }
 								if = {
-									limit = { KRN = { exists = yes } }
-									if = {
-										limit = { RUS = { is_ai = yes } KRN = { is_ai = no } }
-										RUS = { change_tag_from = KRN }
+									limit = {
+										check_variable = { decists_block > 0.5 }
 									}
-									annex_country = {
-										target = KRN
-										transfer_troops = no
+									if = {
+										limit = { has_country_flag = Alexandr_Shlyapnikov_arrested }
+										if = {
+											limit = { RUS = { is_ai = yes } KRN = { is_ai = no } }
+											RUS = { change_tag_from = KRN }
+										}
+										annex_country = {
+											target = KRN
+											transfer_troops = no
+										}
+									}
+									if = {
+										limit = { check_variable = { right_faction_party_compositon > decist_faction_party_compositon } }
+										country_event = rcw_bolsheviks.257 #Правый уклон
+										else = {
+											country_event = rcw_bolsheviks.254 #Шляпа/Коллонтай
+										}
 									}
 								}
-								country_event = rcw_bolsheviks.255 #Победа требований Кронштадта
-								else = {
-									if = {
-										limit = { left_fact_party_is_ruling = yes }
+								if = {
+									limit = { KRN = { exists = yes NOT = { has_war_with = ROOT } } }
+									set_country_flag = { flag = Kronshtadt_exists days = 1 }
+								}
+								if = {
+									limit = {
+										NOT = { check_variable = { decists_block > 0.5 } }
+										OR = {
+											KRN = { exists = yes NOT = { has_war_with = ROOT } }
+											check_variable = { moderate_faction_party_compositon > left_faction_party_compositon }
+										}
+										check_variable = { moderate_faction_party_compositon > center_faction_party_compositon }
+									}
+									country_event = rcw_bolsheviks.252 #Зиновьев
+								}
+								if = {
+									limit = {
+										NOT = { check_variable = { decists_block > 0.5 } }
+										OR = {
+											KRN = { exists = yes NOT = { has_war_with = ROOT } }
+											check_variable = { center_faction_party_compositon > left_faction_party_compositon }
+										}
+										NOT = { check_variable = { moderate_faction_party_compositon > center_faction_party_compositon } }
+									}
+									country_event = rcw_bolsheviks.251 #Ленинская линия
+								}
+							}
+							
+							if = {
+								limit = { NOT = { left_fact_party_is_ruling = yes } }
+								if = {
+									limit = {
+										check_variable = { decist_faction_party_compositon > 0.5 }
+									}
+									country_event = rcw_bolsheviks.254 #Шляпа/Коллонтай
+									else = {
 										if = {
 											limit = {
-												set_temp_variable = { decists_block = decist_faction_party_compositon }
-												add_to_temp_variable = { decists_block = moderate_faction_party_compositon }
-												add_to_temp_variable = { decists_block = right_faction_party_compositon }
-												check_variable = { decists_block > 0.45 }
+												check_variable = { left_faction_party_compositon > center_faction_party_compositon }
+												check_variable = { left_faction_party_compositon > moderate_faction_party_compositon }
+												check_variable = { left_faction_party_compositon > right_faction_party_compositon }
 											}
-											if = {
-												limit = { has_country_flag = Alexandr_Shlyapnikov_arrested }
-												if = {
-													limit = { RUS = { is_ai = yes } KRN = { is_ai = no } }
-													RUS = { change_tag_from = KRN }
-												}
-												annex_country = {
-													target = KRN
-													transfer_troops = no
-												}
+											country_event = rcw_bolsheviks.253 #Троцкий
+										}
+										if = {
+											limit = {
+												check_variable = { right_faction_party_compositon > center_faction_party_compositon }
+												check_variable = { right_faction_party_compositon > moderate_faction_party_compositon }
+												NOT = { check_variable = { left_faction_party_compositon > right_faction_party_compositon } }
 											}
-											country_event = rcw_bolsheviks.254 #Шляпа/Коллонтай
-											else = {
-												if = {
-													limit = {
-														KRN = { exists = yes NOT = { has_war_with = ROOT } }
-													}
-													country_event = rcw_bolsheviks.252 #Зиня
-													else = {
-														if = {
-															limit = { NOT = { check_variable = { center_faction_party_compositon > left_faction_party_compositon } } }
-															country_event = rcw_bolsheviks.253 #Троцкий
-															else = {
-																country_event = rcw_bolsheviks.251 #Историчный исход
-															}
-														}
-													}
-												}
+											country_event = rcw_bolsheviks.257 #Правый уклон
+										}
+										if = {
+											limit = {
+												check_variable = { moderate_faction_party_compositon > center_faction_party_compositon }
+												NOT = { check_variable = { left_faction_party_compositon > moderate_faction_party_compositon } }
+												NOT = { check_variable = { right_faction_party_compositon > moderate_faction_party_compositon } }
 											}
+											country_event = rcw_bolsheviks.252 #Зиновьев
 										}
-									}
-									if = {
-										limit = {
-											NOT = { left_fact_party_is_ruling = yes }
-											check_variable = { decist_faction_party_compositon > 0.45 }
+										if = {
+											limit = {
+												NOT = { check_variable = { left_faction_party_compositon > center_faction_party_compositon } }
+												NOT = { check_variable = { moderate_faction_party_compositon > center_faction_party_compositon } }
+												NOT = { check_variable = { right_faction_party_compositon > center_faction_party_compositon } }
+											}
+											country_event = rcw_bolsheviks.251 #Ленинская линия
 										}
-										country_event = rcw_bolsheviks.254 #Шляпа/Коллонтай
-									}
-									if = {
-										limit = {
-											NOT = { left_fact_party_is_ruling = yes }
-											NOT = { check_variable = { decist_faction_party_compositon > 0.45 } }
-										}
-										country_event = rcw_bolsheviks.251 #Историчный исход
-									}
-									if = {
-										limit = { KRN = { exists = yes NOT = { has_war_with = ROOT } } }
-										declare_war_on = { target = KRN type = annex_everything }
 									}
 								}
 							}
@@ -6757,23 +6812,44 @@ country_event = {
 					}
 				}
 			}
+			
+			
+			
+			if = {
+				limit = {
+					KRN = { exists = yes NOT = { has_war_with = ROOT } }
+				}
+				declare_war_on = { target = KRN type = annex_everything }
+			}
 		}
 		hidden_effect = { set_seats_in_CC_simular_to_faction_power = yes }
 		custom_effect_tooltip = set_seats_in_CC_simular_to_faction_power_tt
 	}
 }
 
-# Историчный исход съезда
+
+# Ленинская линия
 country_event = {
 	id = rcw_bolsheviks.251
-	title = rcw_bolsheviks.251.t
+	title = {
+		text = rcw_bolsheviks.251.t
+		trigger = { center_fact_party_is_ruling = yes }
+	}
+	title = {
+		text = rcw_bolsheviks.251.t_others
+		trigger = { NOT = { center_fact_party_is_ruling = yes } }
+	}
 	desc = {
 		text = rcw_bolsheviks.251.desc
 		trigger = { NOT = { left_fact_party_is_ruling = yes } }
 	}
 	desc = {
 		text = rcw_bolsheviks.251.desc_lefts
-		trigger = { left_fact_party_is_ruling = yes }
+		trigger = { left_fact_party_is_ruling = yes NOT = { has_country_flag = Kronshtadt_exists } }
+	}
+	desc = {
+		text = rcw_bolsheviks.251.desc_lefts_Kronshtadt
+		trigger = { left_fact_party_is_ruling = yes has_country_flag = Kronshtadt_exists }
 	}
 	picture = GFX_report_event_sov_felix_VCHK
 	
@@ -6807,8 +6883,26 @@ country_event = {
 # Зиновьев
 country_event = {
 	id = rcw_bolsheviks.252
-	title = rcw_bolsheviks.252.t
-	desc = rcw_bolsheviks.252.desc
+	title = {
+		text = rcw_bolsheviks.252.t
+		trigger = { NOT = { left_fact_party_is_ruling = yes } }
+	}
+	title = {
+		text = rcw_bolsheviks.252.t_lefts
+		trigger = { left_fact_party_is_ruling = yes }
+	}
+	desc = {
+		text = rcw_bolsheviks.252.desc
+		trigger = { NOT = { left_fact_party_is_ruling = yes } }
+	}
+	desc = {
+		text = rcw_bolsheviks.252.desc_lefts
+		trigger = { left_fact_party_is_ruling = yes NOT = { has_country_flag = Kronshtadt_exists } }
+	}
+	desc = {
+		text = rcw_bolsheviks.252.desc_lefts_Kronshtadt
+		trigger = { left_fact_party_is_ruling = yes has_country_flag = Kronshtadt_exists }
+	}
 	picture = GFX_report_event_sov_felix_VCHK
 	
 	is_triggered_only = yes
@@ -7018,6 +7112,38 @@ country_event = {
 			create_country_leader = { name = "N. Osinskiy" desc = SOV_Valerian_Obolensky-Osinskiy_DESC picture = "gfx/leaders/SOV/Portrait_Valerian_Obolensky-Osinskiy.dds" expire = "1935.1.1" ideology = democratic_socialism traits = {  } }
 		}
 		set_politics = { ruling_party = radical_socialism elections_allowed = no }
+	}
+}
+# Правый уклон
+country_event = {
+	id = rcw_bolsheviks.257
+	title = rcw_bolsheviks.257.t
+	desc = rcw_bolsheviks.257.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		if = {
+			limit = { has_country_flag = war_communism }
+			custom_effect_tooltip = rcw_bolsheviks_250_NEP
+		}
+	}
+	
+	option = {
+		name = rcw_bolsheviks.257.a
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = war_communism }
+				clr_country_flag = war_communism
+				set_country_flag = war_communism_abolished
+			}
+		}
+		create_country_leader = { name = "David Ryazanov" desc = RUS_David_Ryazanov_DESC picture="gfx/leaders/SOV/Portrait_David_Ryazanov.dds" expire="1935.1.1" ideology = marxism traits={ } }
+		add_ideas = soviet_republic_gov_form
+		add_ideas = local_assembly_decisions_b_law
+		add_ideas = poliparty_system_law
+		add_ideas = workers_control_law
 	}
 }
 
