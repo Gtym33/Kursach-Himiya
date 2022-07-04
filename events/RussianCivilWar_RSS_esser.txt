@@ -1148,7 +1148,7 @@ country_event = {
 	
 	
 	option = {
-		name = rcw_rss_esser.22.a 
+		name = rcw_rss_esser.23.a 
 		trigger = { has_country_flag = rad_soc_arrest_gov }
 		set_politics = {
 			ruling_party = radical_socialism
@@ -1162,7 +1162,7 @@ country_event = {
 		add_stability = -0.04
 	}
 	option = {
-		name = rcw_rss_esser.22.b 
+		name = rcw_rss_esser.23.b 
 		trigger = { has_country_flag = market_lib_arrest_gov }
 		set_politics = {
 			ruling_party = market_liberalism
@@ -2819,6 +2819,122 @@ country_event = {
 	}
 
 } 
+#Демократия прямого действия
+country_event = {
+	id = rcw_rss_esser.57
+	title = rcw_rss_esser.57.t	
+	desc = {
+		text = rcw_rss_esser.57.desc_sl
+		trigger = {
+			has_idea = moderate_faction_assassinations
+			check_variable = { party_popularity_100@social_liberalism < 1 }
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.57.desc_rs
+		trigger = {
+			has_idea = maximalist_faction_assassinations
+			check_variable = { party_popularity_100@radical_socialism < 1 }
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.57.desc_ml
+		trigger = {
+			has_idea = right_faction_assassinations
+			check_variable = { party_popularity_100@market_liberalism < 1 }
+		}
+	}
+	
+	trigger = {
+		has_country_flag = RSS_esser_party_struggle_is_on
+		OR = {
+			AND = {
+				has_idea = moderate_faction_assassinations
+				check_variable = { party_popularity_100@social_liberalism < 1 }
+			}
+			AND = {
+				has_idea = maximalist_faction_assassinations
+				check_variable = { party_popularity_100@radical_socialism < 1 }
+			}
+			AND = {
+				has_idea = right_faction_assassinations
+				check_variable = { party_popularity_100@market_liberalism < 1 }
+			}
+		}
+	}	
+	
+	picture = GFX_report_event_RSS_paper		
+	mean_time_to_happen = { days = 7 }
+	fire_only_once = no
+	option = {
+		name = rcw_rss_esser.57.a
+		add_timed_idea = {
+			idea = left_esser_terror_idea
+			days = 270
+		}
+		if = {
+			limit = {
+				has_idea = moderate_faction_assassinations
+				check_variable = { party_popularity_100@social_liberalism < 1 }
+			}
+			clr_country_flag = RSS_esser_party_struggle_is_on
+			if = {
+				limit = { check_variable = { party_popularity_100@radical_socialism > party_popularity_100@market_liberalism } }
+				set_politics = { ruling_party = radical_socialism }
+				set_party_name = {
+					ideology = social_liberalism
+					long_name = RSS_esser_social_liberalism_party_lose_long
+					name = RSS_esser_social_liberalism_party_lose
+				}
+			}
+			if = {
+				limit = { check_variable = { party_popularity_100@market_liberalism > party_popularity_100@radical_socialism } }
+				set_politics = { ruling_party = market_liberalism }
+				set_party_name = {
+					ideology = social_liberalism
+					long_name = RSS_esser_social_liberalism_party_lose_long
+					name = RSS_esser_social_liberalism_party_lose
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_idea = maximalist_faction_assassinations
+				check_variable = { party_popularity_100@radical_socialism < 1 }
+			}
+			set_country_flag = rad_soc_banned
+			remove_ideas = maximalist_faction_assassinations
+		}
+		else_if = {
+			limit = {
+				has_idea = right_faction_assassinations
+				check_variable = { party_popularity_100@market_liberalism < 1 }
+			}
+			set_country_flag = market_lib_banned
+			remove_ideas = right_faction_assassinations
+		}
+	}
+
+} 
+#Запрет фракционной борьбы
+country_event = {
+	id = rcw_rss_esser.58
+	title = rcw_rss_esser.58.t	
+	desc = rcw_rss_esser.58.desc
+	
+	picture = GFX_report_event_RSS_paper		
+	is_triggered_only = yes
+	immediate = { set_country_flag = soc_lib_won }
+	option = {
+		name = rcw_rss_esser.58.a
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+		clr_country_flag = RSS_esser_party_struggle_is_on
+	}
+
+} 
 #Debug
 country_event = {
 	id = rcw_rss_esser.120
@@ -3638,6 +3754,7 @@ country_event = {
 		NOT = { has_government = despotism }
 		NOT = { has_government = authoritarism }
 		NOT = { has_government = fascism }
+		NOT = { has_country_flag = RSS_from_OCH }
 		check_variable = { party_popularity_100@authoritarism > 14.99 }
 	}
 	
@@ -3648,6 +3765,10 @@ country_event = {
 		hidden_effect = {
 			remove_ideas = RSS_atamanshina
 			remove_ideas = RSS_white_underground_work
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.15
+			}
 		}
 	}
 	
@@ -4004,7 +4125,7 @@ country_event = {
 				picture = "gfx/leaders/RUS/Portrait_Roman_Fyodorovich_von_Ungern-Sternberg.dds" 
 				expire = "1965.1.1" 
 				ideology = despotism_ideology
-				traits = { spirit_of_genghis warmonger_old_general }
+				traits = { spirit_of_genghis warmonger }
 			}
 			set_party_name = { 
 				ideology = despotism 
@@ -5291,7 +5412,7 @@ country_event = {
 			ideology = despotism
 			popularity = 0.1
 		}
-		create_country_leader = { name = "Sergey Wojciechowski" desc = "" picture = "gfx/leaders/CZE/Portrait_Sergey_Wojciechowski.dds" expire = "1948.4.15" ideology = despotism_ideology traits = { warmonger_old_general min_1_pokrovsky dislikes_germany } }
+		create_country_leader = { name = "Sergey Wojciechowski" desc = "" picture = "gfx/leaders/CZE/Portrait_Sergey_Wojciechowski.dds" expire = "1948.4.15" ideology = despotism_ideology traits = { warmonger min_1_pokrovsky dislikes_germany } }
 		if = { 
 			limit = { has_template = "Russian-Czeh Brigada" }
 			delete_unit_template_and_units = { division_template = "Russian-Czeh Brigada" }

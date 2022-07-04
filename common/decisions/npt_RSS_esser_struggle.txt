@@ -216,8 +216,11 @@ RSS_esser_party_struggle_decisions = {
 		icon = eng_trade_unions_demand
 		available = { 
 			AND = {
-				check_variable = { party_popularity_100@radical_socialism > party_popularity_100@social_liberalism }
-				check_variable = { party_popularity_100@radical_socialism > party_popularity_100@market_liberalism }
+				custom_trigger_tooltip = {
+					tooltip = party_pop_most_rs
+					check_variable = { party_popularity_100@radical_socialism > party_popularity_100@social_liberalism }
+					check_variable = { party_popularity_100@radical_socialism > party_popularity_100@market_liberalism }
+				}
 				custom_trigger_tooltip = {
 					tooltip = party_pop_45_tt
 					check_variable = { party_popularity_100@radical_socialism > 45 }
@@ -1292,6 +1295,7 @@ RSS_esser_party_struggle_decisions = {
 				var = RSS_patry_activity_count
 				value = -1
 			}	
+			set_country_flag = released_maximalist_paper
 		}
 	}
 	release_maximalist_paper_ai_mission = {
@@ -2718,6 +2722,608 @@ RSS_esser_party_struggle_decisions = {
 			}
 		}
 	}
+	# Усилить антибольшевситскую пропаганду
+	moderate_antibolshevik_propaganda = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			has_completed_focus = RSS_inform_bureau
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			NOT = { has_country_flag = antibolshevik_propaganda }
+		}
+		cost = 20
+		days_remove = 20
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			set_country_flag = antibolshevik_propaganda
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			add_war_support = 0.02
+		}
+	}
+	moderate_antibolshevik_propaganda_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 20
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_war_support = 0.02
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Усилить пропаганду против "белой" реакции
+	moderate_antiwhite_propaganda = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			has_completed_focus = RSS_inform_bureau
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			NOT = { has_country_flag = antiwhite_propaganda }
+		}
+		cost = 20
+		days_remove = 20
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			set_country_flag = antiwhite_propaganda
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			add_war_support = 0.02
+		}
+	}
+	moderate_antiwhite_propaganda_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 20
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				set_country_flag = antiwhite_propaganda
+				add_war_support = 0.02
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Разоблачить союз большевиков и черносотенцев 
+	moderate_uncover_black_red_union = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = antiwhite_propaganda
+			has_country_flag = antibolshevik_propaganda
+		}
+		cost = 20
+		days_remove = 20
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_uncover_black_red_union
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.02
+			}
+		}
+	}
+	moderate_uncover_black_red_union_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 20
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.02
+				}
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Обсудить "статьи" платформ на Съезде 
+	moderate_discuss_fraction_articales = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = rad_soc_choose_program
+			has_country_flag = market_lib_choose_program
+		}
+		cost = 10
+		days_remove = 30
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_discuss_fraction_articales
+			add_stability = 0.01
+		}
+	}
+	moderate_discuss_fraction_articales_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 30
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_stability = 0.01
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Провести дискуссию по аграрной реформе
+	moderate_discuss_agrarian_reform = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = did_discuss_fraction_articales
+		}
+		cost = 10
+		days_remove = 30
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_discuss_agrarian_reform
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.01
+			}
+		}
+	}
+	moderate_discuss_agrarian_reform_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 30
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.01
+				}
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Провести дискуссию по национальному вопросу 
+	moderate_discuss_minorities = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = did_discuss_fraction_articales
+		}
+		cost = 10
+		days_remove = 30
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_discuss_minorities
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.01
+			}
+		}
+	}
+	moderate_discuss_minorities_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 30
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.01
+				}
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Провести дискуссию по рабочему вопросу 
+	moderate_discuss_workers = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = did_discuss_fraction_articales
+		}
+		cost = 10
+		days_remove = 30
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_discuss_workers
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.01
+			}
+		}
+	}
+	moderate_discuss_workers_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 30
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.01
+				}
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Устранить радикалов из Съезда 
+	moderate_kill_radicals = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			NOT = { has_country_flag = did_faction_peace }
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = did_discuss_minorities
+			has_country_flag = did_discuss_agrarian_reform
+			has_country_flag = did_discuss_workers
+		}
+		cost = 25
+		days_remove = 25
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_kill_radicals
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.03
+			}
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.03
+			}
+			add_to_variable = {
+				var = RSS_party_antagonism
+				value = 1
+			}
+			RSS_update_party_antagonism = yes
+		}
+	}
+	moderate_kill_radicals_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 25
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -0.03
+				}
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = -0.03
+				}
+				add_to_variable = {
+					var = RSS_party_antagonism
+					value = 1
+				}
+				RSS_update_party_antagonism = yes
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Инициировать примирение платформ 
+	moderate_faction_peace = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			NOT = { has_country_flag = did_kill_radicals }
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = did_discuss_minorities
+			has_country_flag = did_discuss_agrarian_reform
+			has_country_flag = did_discuss_workers
+		}
+		cost = 40
+		days_remove = 35
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_faction_peace
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.03
+			}
+			add_to_variable = {
+				var = RSS_party_antagonism
+				value = -1
+			}
+			RSS_update_party_antagonism = yes
+		}
+	}
+	moderate_faction_peace_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 35
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.03
+				}
+				add_to_variable = {
+					var = RSS_party_antagonism
+					value = -1
+				}
+				RSS_update_party_antagonism = yes
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Подтвердить авторитет ЦК 
+	moderate_central_comm_authority = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			OR = {
+				has_country_flag = did_kill_radicals
+				has_country_flag = did_faction_peace
+			}
+		}
+		cost = 30
+		days_remove = 20
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_central_comm_authority
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.03
+			}
+			add_stability = 0.03
+		}
+	}
+	moderate_central_comm_authority_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 20
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.03
+				}
+				add_stability = 0.03
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Официально распустить платформы 
+	moderate_dismiss_platforms = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = did_central_comm_authority
+		}
+		cost = 30
+		days_remove = 15
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			set_country_flag = did_dismiss_platforms
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.03
+			}
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.03
+			}
+		}
+	}
+	moderate_dismiss_platforms_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 20
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -0.03
+				}
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = -0.03
+				}
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
+	# Запретить фракционную борьбу 
+	moderate_abolish_fractionism = {
+		icon = eng_trade_unions_support
+		available = { 
+			check_variable = { RSS_patry_activity_count < 1 }
+			custom_trigger_tooltip = {
+				tooltip = party_pop_most_sl
+				check_variable = { party_popularity_100@social_liberalism > party_popularity_100@radical_socialism }
+				check_variable = { party_popularity_100@social_liberalism > party_popularity_100@market_liberalism }
+			}
+		}
+		visible = { 
+			has_country_flag = RSS_esser_choose_soc_lib_side
+			has_country_flag = did_dismiss_platforms
+			has_country_flag = did_uncover_black_red_union
+		}
+		cost = 100
+		days_remove = 56
+		fire_only_once = yes
+		complete_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = 1
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = RSS_patry_activity_count
+				value = -1
+			}
+			country_event = rcw_rss_esser.58
+		}
+	}
+	moderate_abolish_fractionism_ai_mission = {
+		activation = { hidden_trigger = { always = no } }
+		available = { hidden_trigger = { always = no } }
+		visible = { hidden_trigger = { always = no } }
+		days_mission_timeout = 56
+		cancel_trigger = { hidden_trigger = { NOT = { has_country_flag = RSS_esser_party_struggle_is_on } } }
+		timeout_effect = {
+			hidden_effect = {
+				country_event = rcw_rss_esser.58
+				moderate_makes_move_ai = yes
+			}
+		}
+	}
 	###############
 	# Блок Правых #
 	###############
@@ -2934,8 +3540,11 @@ RSS_esser_party_struggle_decisions = {
 		icon = eng_trade_unions_demand
 		available = { 
 			AND = {
-				check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
-				check_variable = { party_popularity_100@market_liberalism > party_popularity_100@radical_socialism }
+				custom_trigger_tooltip = {
+					tooltip = party_pop_most_ml
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@radical_socialism }
+				}
 				custom_trigger_tooltip = {
 					tooltip = party_pop_45_tt
 					check_variable = { party_popularity_100@market_liberalism > 45 }
@@ -4237,6 +4846,7 @@ RSS_esser_party_struggle_decisions = {
 				var = RSS_patry_activity_count
 				value = -1
 			}	
+			set_country_flag = declared_maximalist_german_agents
 		}
 	}
 	declare_maximalist_german_agents_ai_mission = {
