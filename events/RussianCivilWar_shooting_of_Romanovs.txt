@@ -31,6 +31,7 @@ country_event = {
 	
 	option = {
 		name = rcw_sor.3.a
+		news_event = { id = news_n.34 days = 3 }
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
 		set_country_flag = Nikolay_Alexandrovich_Romanov_is_here
@@ -115,6 +116,7 @@ country_event = {
 	
 	option = {
 		name = rcw_sor.12.a
+		news_event = { id = news_n.34 days = 3 }
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
 		set_country_flag = Nikolay_Alexandrovich_Romanov_is_here
@@ -149,6 +151,7 @@ country_event = {
 	
 	option = {
 		name = rcw_sor.14.a
+		news_event = { id = news_n.33 days = 3 }
 		set_country_flag = Mikhail_Alexandrovich_Romanov_is_here
 	}
 }
@@ -163,7 +166,7 @@ country_event = {
 	
 	option = {
 		name = rcw_sor.15.a
-		RUS = { set_country_flag = Mikhail_Alexandrovich_Romanov_dead }
+		RUS = { set_country_flag = Mikhail_Alexandrovich_Romanov_dead clr_country_flag = Mikhail_Alexandrovich_Romanov_Perm }
 	}
 }
 # Царскую семью украли/Кража царской семьи (РСФСР)
@@ -220,7 +223,7 @@ country_event = {
 	}
 }
 
-# Расстрел Николая II нормальный
+# Расстрел Николая II (неисторический)
 country_event = {
 	id = rcw_sor.24
 	title = rcw_sor.24.t
@@ -231,8 +234,22 @@ country_event = {
 	trigger = {
 		tag = RUS
 		has_country_flag = RUS_Oktober_revolution_fired
-		controls_state = 653
-		has_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
+		OR = {
+			AND = {
+				has_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
+				controls_state = 653
+				653 = {
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } }
+				}
+			}
+			AND = {
+				has_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk
+				controls_state = 403
+				403 = {
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } }
+				}
+			}
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -256,14 +273,16 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_sor.200.b
+		name = rcw_sor.24.b
 		trigger = { NOT = { has_government = radical_socialism } }
-		country_event = { id = rcw_sor.25 days = 20 }
+		#country_event = { id = rcw_sor.25 days = 20 }
+		custom_effect_tooltip = work_in_progress
 		ai_chance = {
-			factor = 0
+			factor = 3
 		}
 	}
 }
+
 # Прибытие царя в Москву (РСФСР)
 country_event = {
 	id = rcw_sor.25
@@ -282,6 +301,201 @@ country_event = {
 		name = rcw_sor.25.a
 		clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk
 		clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
+	}
+}
+
+# Расстрел Николая II (исторический)
+country_event = {
+	id = rcw_sor.26
+	title = rcw_sor.26.t
+	desc = rcw_sor.26.desc
+
+	picture = GFX_report_event_KILL_ALL_ROMANOV
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		OR = {
+			AND = {
+				has_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
+				controls_state = 653
+				653 = {
+					NOT = { is_fully_controlled_by = ROOT }
+				}
+			}
+			AND = {
+				has_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk
+				controls_state = 403
+				403 = {
+					NOT = { is_fully_controlled_by = ROOT }
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_sor.26.a
+		news_event = { id = news_n.25 days = 3 }
+		clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat
+		
+		set_country_flag = Nikolay_Alexandrovich_Romanov_dead
+		set_country_flag = Alexandra_Fyodorovna_Romanova_dead
+		set_country_flag = Alexey_Nikolayevich_Romanov_dead
+		add_popularity = { ideology = communism popularity = 0.01 }
+	}
+}
+
+# Высылка Михаила Александровича в Пермь
+country_event = {
+	id = rcw_sor.27
+	title = rcw_sor.27.t
+	desc = rcw_sor.27.desc
+	picture = GFX_report_event_och_zaristi_uspeh
+
+	trigger = {
+		has_country_flag = RUS_Oktober_revolution_fired
+		controls_state = 398
+		OR = {
+			has_government = communism
+			has_government = radical_socialism
+		}
+		NOT = { any_country = { has_country_flag = Mikhail_Alexandrovich_Romanov_dead has_country_flag = Mikhail_Alexandrovich_Romanov_is_here } }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_sor.27.a
+		set_country_flag = Mikhail_Alexandrovich_Romanov_Perm
+	}
+}
+
+# Расстрел Михаила Александровича (неисторический)
+country_event = {
+	id = rcw_sor.28
+	title = rcw_sor.28.t
+	desc = rcw_sor.28.desc
+
+	picture = GFX_report_event_KILL_ALL_ROMANOV
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_completed_focus = RUS_vchk
+		has_country_flag = Mikhail_Alexandrovich_Romanov_Perm
+		controls_state = 398
+		398 = {
+			any_neighbor_state = { NOT = { is_controlled_by = ROOT } }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 90
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_sor.28.a
+		news_event = { id = news_n.32 days = 3 }
+		clr_country_flag = Mikhail_Alexandrovich_Romanov_Perm
+		set_country_flag = Mikhail_Alexandrovich_Romanov_dead
+		add_popularity = { ideology = communism popularity = 0.01 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = rcw_sor.28.b
+		trigger = { NOT = { has_government = radical_socialism } }
+		ai_chance = {
+			factor = 3
+		}
+	}
+}
+
+# Расстрел Михаила Александровича (исторический)
+country_event = {
+	id = rcw_sor.29
+	title = rcw_sor.29.t
+	desc = rcw_sor.29.desc
+
+	picture = GFX_report_event_KILL_ALL_ROMANOV
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_completed_focus = RUS_vchk
+		has_country_flag = Mikhail_Alexandrovich_Romanov_Perm
+		controls_state = 398
+		398 = {
+			NOT = { is_fully_controlled_by = ROOT }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_sor.29.a
+		news_event = { id = news_n.32 days = 3 }
+		clr_country_flag = Mikhail_Alexandrovich_Romanov_Perm
+		set_country_flag = Mikhail_Alexandrovich_Romanov_dead
+		add_popularity = { ideology = communism popularity = 0.01 }
+	}
+}
+
+# Спасение Михаила Александровича
+country_event = {
+	id = rcw_sor.30
+	title = rcw_sor.30.t
+	desc = rcw_sor.30.desc
+
+	picture = GFX_report_event_KILL_ALL_ROMANOV
+	
+	trigger = {
+		OR = {
+			tag = MCW
+			tag = RVA
+			tag = CCA
+			tag = SIB
+			tag = RSS
+			tag = OCH
+		}
+		RUS = { has_country_flag = Mikhail_Alexandrovich_Romanov_Perm }
+		controls_state = 398
+		398 = {
+			is_controlled_by = ROOT
+		}
+		RUS = { NOT = { has_country_flag = Mikhail_Alexandrovich_Romanov_dead } }
+		NOT = { any_country = { has_country_flag = Mikhail_Alexandrovich_Romanov_rescue } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_sor.30.a
+		news_event = { id = news_n.33 days = 3 }
+		RUS = { clr_country_flag = Mikhail_Alexandrovich_Romanov_Perm }
+		set_country_flag = Mikhail_Alexandrovich_Romanov_rescue
+		set_country_flag = Mikhail_Alexandrovich_Romanov_is_here
+		add_popularity = { ideology = authoritarism popularity = 0.05 }
 	}
 }
 
@@ -369,6 +583,7 @@ country_event = {
 			factor = 1
 		}
 		#trigger = { NOT = { OR = { has_government = radical_socialism has_country_flag = main_left_essers_is_here } } }
+		news_event = { id = news_n.34 days = 3 }
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
 		set_country_flag = Nikolay_Alexandrovich_Romanov_is_here
@@ -388,6 +603,7 @@ country_event = {
 			factor = 1
 		}
 		#trigger = { NOT = { OR = { has_government = radical_socialism has_country_flag = main_left_essers_is_here } } }
+		news_event = { id = news_n.34 days = 3 }
 		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
 		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
 		set_country_flag = Nikolay_Alexandrovich_Romanov_is_here
