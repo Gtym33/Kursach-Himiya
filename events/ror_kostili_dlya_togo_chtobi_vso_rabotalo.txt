@@ -711,6 +711,76 @@ country_event = {
 		set_seats_in_CC_simular_to_faction_power = yes
 	}
 	option = {
-		retire_country_leader = yes
+				every_country = {
+					limit = { is_subject = yes }
+					OVERLORD = {
+						every_core_state = {
+							limit = {
+								#has_state_flag = cap_transfered_state
+							}
+							set_state_flag = cap_transfered_state_core_OVERLORD
+						}
+					}
+					every_core_state = {
+						limit = {
+							#has_state_flag = cap_transfered_state
+						}
+						set_state_flag = cap_transfered_state_core
+					}
+					every_owned_state = {
+						limit = {
+							#has_state_flag = cap_transfered_state
+							has_state_flag = cap_transfered_state_core_OVERLORD
+							NOT = { has_state_flag = cap_transfered_state_core }
+						}
+						PREV = { OVERLORD = { transfer_state = PREV.PREV } }
+					}
+				}
+				for_each_scope_loop = {
+					array = global.countries
+					for_each_scope_loop = {
+						array = subjects
+						every_core_state = {
+							set_state_flag = cap_transfered_state_core_not_exchange
+						}
+						every_owned_state = {
+							limit = {
+								#has_state_flag = cap_transfered_state
+								has_state_flag = cap_transfered_state_core
+								NOT = { has_state_flag = cap_transfered_state_core_not_exchange }
+							}
+							transfer_state_to = PREV.OVERLORD
+						}
+						every_core_state = {
+							clr_state_flag = cap_transfered_state_core_not_exchange
+						}
+					}
+				}
+				every_country = {
+					limit = { is_subject = yes }
+					OVERLORD = {
+						every_owned_state = {
+							limit = {
+								#has_state_flag = cap_transfered_state
+								NOT = { has_state_flag = cap_transfered_state_core_OVERLORD }
+								has_state_flag = cap_transfered_state_core
+							}
+							set_state_flag = cap_transfered_state_core_transfer_to_subject
+						}
+					}
+					OVERLORD = {
+						every_owned_state = {
+							limit = { has_state_flag = cap_transfered_state_core_transfer_to_subject }
+							set_state_flag = cap_transfered_state_core_transfer_to_subject_temp
+						}
+						PREV = {
+							every_core_state = {
+								limit = { has_state_flag = cap_transfered_state_core_transfer_to_subject_temp }
+								clr_state_flag = cap_transfered_state_core_transfer_to_subject_temp
+								transfer_state_to = PREV
+							}
+						}
+					}
+				}
 	}
 }
