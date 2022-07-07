@@ -1668,6 +1668,12 @@ country_event = {
 #			party_populatiry_addition_script_1 = yes
 #			set_ruling_party_for_uniting_country_script = yes
 #			country_event = { id = rcw_usfev.1918 hours = 1 }
+#			hidden_effect = {
+#				if = {
+#					limit = { has_idea = SIB_CCA_border }
+#					RSS = { country_event = { id = hours rcw_usfev.35 = 12 } }
+#				}
+#			}
 #			every_state = {
 #				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 #				add_core_of = RSS
@@ -1689,6 +1695,12 @@ country_event = {
 			party_populatiry_addition_script_1 = yes
 			set_ruling_party_for_uniting_country_script_reverse = yes
 			country_event = { id = rcw_usfev.1918 hours = 1 }
+			hidden_effect = {
+				if = {
+					limit = { has_idea = SIB_CCA_border }
+					RSS = { country_event = { id = hours rcw_usfev.35 = 12 } }
+				}
+			}
 			if = {
 				limit = { URL = { OR = { is_subject_of = SIB is_subject_of = CCA } } }
 				RSS = {
@@ -1777,6 +1789,139 @@ country_event = {
 		add_command_power = 30
 		army_experience = 15
 		create_corps_commander = { name = "Avenir Efimov" id = 11006 portrait_path = "gfx/leaders/UDM/Portrait_Avenir_Efimov.dds" traits = { infantry_officer } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+	}
+}
+
+# Последствия разногласий
+country_event = {
+	id = rcw_usfev.35
+	title = rcw_usfev.35.t
+	desc = rcw_usfev.35.desc
+
+	picture = GFX_event_kazan_academy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.35.a
+		if = {
+			limit = { has_idea = collapse_of_railway_system_4 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_4
+				add_idea = collapse_of_railway_system_5
+			}
+		}
+		if = {
+			limit = { has_idea = collapse_of_railway_system_3 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_3
+				add_idea = collapse_of_railway_system_4
+			}
+		}
+		if = {
+			limit = { has_idea = collapse_of_railway_system_2 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_2
+				add_idea = collapse_of_railway_system_3
+			}
+		}
+		if = {
+			limit = { has_idea = collapse_of_railway_system_1 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_1
+				add_idea = collapse_of_railway_system_2
+			}
+		}
+		if = {
+			limit = { NOT = { has_idea = collapse_of_railway_system_1 has_idea = collapse_of_railway_system_2 has_idea = collapse_of_railway_system_3 has_idea = collapse_of_railway_system_4 has_idea = collapse_of_railway_system_5 } }
+			add_ideas = collapse_of_railway_system_1
+		}
+	}
+}
+
+# Потеря дорогостоящего снаряжения
+country_event = {
+	id = rcw_usfev.36
+	title = rcw_usfev.36.t
+	desc = rcw_usfev.36.desc
+
+	picture = GFX_event_kazan_academy
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = RSS
+		has_civil_war = no
+		has_war = yes
+		NOT = { controls_state = 219 }
+		any_other_country = {
+			is_in_array = {
+				array = THIS.rcw_supported_states
+				value = ROOT.id
+			}
+			any_other_country = {
+				is_in_array = {
+					array = THIS.rcw_supported_states
+					value = ROOT.id
+				}
+				any_other_country = {
+					NOT = { tag = PREV.PREV }
+					is_in_array = {
+						array = THIS.rcw_supported_states
+						value = ROOT.id
+					}
+					any_other_country = {
+						NOT = { tag = PREV.PREV }
+						NOT = { tag = PREV.PREV.PREV }
+						is_in_array = {
+							array = THIS.rcw_supported_states
+							value = ROOT.id
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_usfev.36.a
+		if = {
+			limit = { has_idea = collapse_of_railway_system_4 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_4
+				add_idea = collapse_of_railway_system_5
+			}
+		}
+		if = {
+			limit = { has_idea = collapse_of_railway_system_3 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_3
+				add_idea = collapse_of_railway_system_4
+			}
+		}
+		if = {
+			limit = { has_idea = collapse_of_railway_system_2 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_2
+				add_idea = collapse_of_railway_system_3
+			}
+		}
+		if = {
+			limit = { has_idea = collapse_of_railway_system_1 }
+			swap_ideas = {
+				remove_idea = collapse_of_railway_system_1
+				add_idea = collapse_of_railway_system_2
+			}
+		}
+		if = {
+			limit = { NOT = { has_idea = collapse_of_railway_system_1 has_idea = collapse_of_railway_system_2 has_idea = collapse_of_railway_system_3 has_idea = collapse_of_railway_system_4 has_idea = collapse_of_railway_system_5 } }
+			add_ideas = collapse_of_railway_system_1
+		}
 	}
 }
 
@@ -4855,7 +5000,7 @@ country_event = {
 			limit = { FROM = { has_country_flag = MON_offer_to_puppet } }
 			hidden_effect = {
 				every_owned_state = {
-					limit = { is_capital = no }
+					limit = { is_capital = no NOT = { is_fully_controlled_by = OWNER } }
 					set_state_flag = transfered_state
 					set_state_owner_to = FROM
 				}
@@ -6234,7 +6379,7 @@ country_event = {
 		}
 		hidden_effect = {
 			every_owned_state = {
-				limit = { is_capital = no }
+				limit = { is_capital = no NOT = { is_fully_controlled_by = OWNER } }
 				set_state_flag = transfered_state
 				set_state_owner_to = FROM
 			}
@@ -10538,7 +10683,7 @@ country_event = {
 			}
 			hidden_effect = {
 				every_owned_state = {
-					limit = { is_capital = no }
+					limit = { is_capital = no NOT = { is_fully_controlled_by = OWNER } }
 					set_state_flag = transfered_state
 					set_state_owner_to = FROM
 				}
