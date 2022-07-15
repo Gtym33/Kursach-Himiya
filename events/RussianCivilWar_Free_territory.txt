@@ -26,7 +26,7 @@ country_event = {
 	}
 	
 	option = {
-		name = rcw_free_territory.-2.a
+		name = rcw_free_territory.-3.a
 		every_country = {
 			limit = { has_war_with = FRT }
 			white_peace = FRT
@@ -62,7 +62,6 @@ country_event = {
 	
 	option = {
 		name = rcw_free_territory.-2.a
-		OVERLORD = { end_puppet = FRT }
 		remove_ideas = {
 			FRT_red_specialists_idea
 			FRT_red_specialists_2_idea
@@ -1158,6 +1157,20 @@ country_event = {
 			limit = { has_country_flag = FRT_asc_part_of_RKKA }
 			set_country_flag = FRT_pressure_by_RKKA
 			hidden_effect = {
+				if = {
+					limit = { USR = { OR = { is_subject_of = RSR is_in_faction_with = RSR } } }
+					every_state = {
+						limit = { OWNER = { former_russian_empire_ukraine_country = yes } RSR = { has_full_control_of_state = PREV } }
+						set_state_controller_to = USR
+					}
+					every_state = {
+						limit = { OWNER = { former_russian_empire_ukraine_country = yes } }
+						set_state_province_controller = {
+							limit = { tag = RSR }
+							controller = USR
+						}
+					}
+				}
 				FRT = {
 					every_owned_state = {
 						limit = { is_capital = no NOT = { is_fully_controlled_by = FRT } }
@@ -1165,33 +1178,15 @@ country_event = {
 						set_state_owner_to = RSR
 					}
 				}
-				if = {
-					limit = { USR = { OR = { is_subject_of = RSR is_in_faction_with = RSR } } }
-					every_state = {
-						limit = { is_core_of = USR RSR = { has_full_control_of_state = PREV } }
-						set_state_controller_to = USR
-					}
-					every_state = {
-						limit = { is_core_of = USR }
-						set_state_province_controller = {
-							controller = USR
-							limit = {
-								tag = RSR
-							}
-						}
-					}
-				}
 				every_state = {
-					limit = { is_core_of = UKR }
+					limit = { OWNER = { former_russian_empire_ukraine_country = yes } }
 					set_state_province_controller = {
+						limit = { tag = FRT }
 						controller = RSR
-						limit = {
-							tag = FRT
-						}
 					}
 				}
 			}
-			RSR = { FRT = { subjecting_script_with_transfer_parties_dominion = yes } }
+			RSR = { FRT = { subjecting_script_with_transfer_parties_dominion_wthout_contrld_provs_transfer = yes } }
 			hidden_effect = {
 				every_state = {
 					limit = { has_state_flag = transfered_state }
@@ -1199,16 +1194,14 @@ country_event = {
 					set_state_owner_to = FRT
 				}
 				every_state = {
-					limit = { is_core_of = UKR }
+					limit = { OWNER = { former_russian_empire_ukraine_country = yes } }
 					set_state_province_controller = {
+						limit = { tag = RSR }
 						controller = FRT
-						limit = {
-							tag = RSR
-						}
 					}
 				}
 				every_state = {
-					limit = { is_core_of = UKR RSR = { has_full_control_of_state = PREV } }
+					limit = { OWNER = { former_russian_empire_ukraine_country = yes } RSR = { has_full_control_of_state = PREV } }
 					set_state_controller_to = FRT
 				}
 			}
