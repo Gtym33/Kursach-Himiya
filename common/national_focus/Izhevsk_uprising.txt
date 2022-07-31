@@ -240,15 +240,21 @@
 		icon = GFX_goal_IZH_branch_KOMUCH
 		available = {
 			has_government = social_liberalism
-			NOT = { has_war_with = CCA }
-			CCA = {
-				exists = yes
-				OR = { 
+			any_other_country = {
+				NOT = { has_war_with = ROOT }
+				is_neighbor_of = ROOT
+				OR = {
+					has_government = radical_socialism
+					has_government = social_democracy
 					has_government = social_liberalism
 					has_government = national_syndicalism
 				}
+				OR = {
+					tag = CCA
+					tag = RSS
+				}
 			}
-			is_neighbor_of = CCA
+			
 			NOT = {
 				has_completed_focus = IZH_third_way
 				has_completed_focus = IZH_Povolzhskoye_pravitelstvo
@@ -272,21 +278,37 @@
 				set_division_template_lock = { division_template = "Votkinskiy Povstancheskiy Otryad" is_locked = no }
 				set_division_template_lock = { division_template = "Votkinskaya Povstancheskaya Brigada" is_locked = no }
 				set_division_template_lock = { division_template = "Kambarskiy Povstancheskiy Otryad" is_locked = no }
-				every_state = {
-					limit = { is_core_of = ROOT }
-					add_core_of = CCA
-				}
 			}
-			every_unit_leader = { set_nationality = CCA }
-			CCA = {
+			random_other_country = {
+				limit = {
+					NOT = { has_war_with = ROOT }
+					is_neighbor_of = ROOT
+					OR = {
+						has_government = radical_socialism
+						has_government = social_democracy
+						has_government = social_liberalism
+						has_government = national_syndicalism
+					}
+					OR = {
+						tag = CCA
+						tag = RSS
+					}
+				}
+				hidden_effect = {
+					every_state = {
+						limit = { is_core_of = ROOT }
+						add_core_of = PREV
+					}
+				}
+				ROOT = { every_unit_leader = { set_nationality = PREV.PREV } }
 				annex_country = {
 					target = ROOT
 					transfer_troops = yes
 				}
-			}
-			if = {
-				limit = { is_ai = no CCA = { is_ai = yes } }
-				CCA = { change_tag_from = ROOT }
+				if = {
+					limit = { is_ai = yes ROOT = { is_ai = no } }
+					change_tag_from = ROOT
+				}
 			}
 		}
 	}
