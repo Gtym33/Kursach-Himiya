@@ -170,8 +170,35 @@ country_event = {
 		if = { limit = { TUR = { has_war_with = ENG NOT = { surrender_progress > 0.1 } } } TUR = { country_event = { id = compiegne_armistice.5 days = 1 } } } # белый мир с Османией
 		else_if = { limit = { TUR = { has_war_with = ENG surrender_progress > 0.1 } } TUR = { country_event = { id = compiegne_armistice.6 days = 1 } } } # мир с Османией
 		else = { TUR = { leave_faction = yes add_ideas = neutral_foreign_policy_law } } # слив Османии
-		SER = { country_event = { id = weltkrieg_frankfurt.18 hours = 1 } } # не слив
-		ROM = { country_event = { id = weltkrieg_frankfurt.20 hours = 1 } } # не слив
+		if = {
+			limit = { NOT = { GRR = { controls_state = 731 } GRE = { controls_state = 731 } } }
+			SER = { country_event = { id = weltkrieg_frankfurt.17 hours = 1 } } # слив
+			ROM = { country_event = { id = weltkrieg_frankfurt.19 hours = 1 } } # слив
+			else = {
+				if = {
+					limit = { ROM = { NOT = { controls_state = 46 } } }
+					ROM = { country_event = { id = weltkrieg_frankfurt.19 hours = 1 } } # слив
+					else = {
+						ROM = { country_event = { id = weltkrieg_frankfurt.20 hours = 1 } } # не слив
+					}
+				}
+				if = {
+					limit = { SER = { NOT = { controls_state = 107 controls_state = 928 controls_state = 106 controls_state = 993 } } }
+					if = {
+						limit = { AUH = { NOT = { controls_state = 44 } } BUL = { NOT = { controls_state = 44 } } }
+						BUL = {
+							clr_country_flag = BUL_claim_on_ALB_1
+							clr_country_flag = BUL_claim_on_ALB_2
+							clr_country_flag = BUL_claim_on_ALB_3
+						}
+					}
+					SER = { country_event = { id = weltkrieg_frankfurt.17 hours = 1 } } # слив
+					else = {
+						SER = { country_event = { id = weltkrieg_frankfurt.18 hours = 1 } } # не слив
+					}
+				}
+			}
+		}
 		every_country = {
 			limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG tag = TUR is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS tag = SNS is_in_faction_with = TRG tag = TRG is_in_faction_with = OAF tag = OAF is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } }
 			USA = { white_peace = PREV }
