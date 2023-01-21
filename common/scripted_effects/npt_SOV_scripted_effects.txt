@@ -702,24 +702,6 @@ SOV_czechs_corps_uprising_srr_effect = {
 						limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
 						load_oob = FER_czechoslovak_corps
 					}
-					if = {
-						limit = { FER = { exists = yes } }
-						FER = { set_province_controller = 12559 load_oob = RUS_PRM_red_guard }
-						else = { RUS = { set_province_controller = 12559 load_oob = RUS_PRM_red_guard } }
-					}
-					if = {
-						limit = { SIB = { exists = yes has_government = social_liberalism } }
-						SIB = { PRM = { subjecting_script_with_transfer_parties_dominion = yes } }
-						else = {
-							PRM = {
-								create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Portrait_Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { leftist_freemason min_2_sovereignty_supporter propaganda_bungler goal } }
-							}
-							SIB = {
-								retire_ideology_leader = social_liberalism
-								create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Portrait_Florian_Fyodorovich.dds" ideology = social_liberalism_ideology traits = { } }
-							}
-						}
-					}
 					every_country = {
 						limit = {
 							NOT = {
@@ -733,15 +715,80 @@ SOV_czechs_corps_uprising_srr_effect = {
 						set_THIS_country_non_recognize_PREV = yes
 					}
 				}
+				if = {
+					limit = { SIB = { exists = yes has_government = social_liberalism } }
+					SIB = { PRM = { subjecting_script_with_transfer_parties_dominion = yes } }
+					else = {
+						PRM = {
+							create_country_leader = { name = "Pyotr Derber" desc = "" picture = "gfx/leaders/SIB/Portrait_Pyotr_Derber.dds" expire = "1938.4.19" ideology = social_liberalism_ideology traits = { leftist_freemason min_2_sovereignty_supporter propaganda_bungler goal } }
+						}
+						SIB = {
+							retire_ideology_leader = social_liberalism
+							create_country_leader = { name = "Florian Fyodorovich" desc = "RUS_Florian_Fyodorovich_DESC" picture = "gfx/leaders/RUS/Portrait_Florian_Fyodorovich.dds" ideology = social_liberalism_ideology traits = { } }
+						}
+					}
+				}
 			}
 			PRM = {
-				declare_war_on = {
-					target = ROOT
-					type = annex_everything
+				if = {
+					limit = { NOT = { has_war_with = ROOT } }
+					declare_war_on = {
+						target = ROOT
+						type = annex_everything
+					}
 				}
-				declare_war_on = {
-					target = FER
-					type = annex_everything
+				if = {
+					limit = { NOT = { has_war_with = FER } FER = { NOT = { has_war_with = ROOT } } }
+					declare_war_on = {
+						target = FER
+						type = annex_everything
+					}
+				}
+			}
+			hidden_effect = {
+				PRM = {
+					every_country = {
+						limit = {
+							OR = {
+								tag = FRT
+								tag = RGR
+								AND = {
+									tag = IZH
+									OR = {
+										has_government = radical_socialism
+										has_government = national_syndicalism
+									}
+									OR = {
+										has_cosmetic_tag = IZH
+										has_cosmetic_tag = IZH_soldatov_army
+									}
+								}
+							}
+							NOT = { has_war_with = PREV }
+							is_subject = no
+						}
+						declare_war_on = { target = PREV type = annex_everything }
+					}
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { FER = { exists = yes is_subject_of = RSR } }
+					FER = {
+						division_template = {
+							name = "Krasnaya Gvardiya"
+							regiments = {
+								militia = { x = 0 y = 0 }
+								militia = { x = 0 y = 1 }
+								militia = { x = 1 y = 0 }
+							}
+							priority = 0
+							is_locked = yes
+						}
+						set_province_controller = 12559
+						load_oob = RUS_PRM_red_guard
+					}
+					else = { RUS = { set_province_controller = 12559 load_oob = RUS_PRM_red_guard } }
 				}
 			}
 		}
