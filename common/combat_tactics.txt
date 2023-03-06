@@ -265,22 +265,26 @@ tactic_infiltration = {
 		is_attacker = yes
 		phase = no
 		NOT = { hardness > 0.5 }
-		skill_advantage > 1
 		OR = {
+			skill_advantage > 1
+			recon_advantage > 0
+		}
+		OR = {
+			is_fighting_in_terrain = forest
 			is_fighting_in_terrain = forest_hills
 			is_fighting_in_terrain = mountain
 		}
 	}
 	
-	active = yes
+	active = no
 	
 	base =  { factor = 8 }
 	picture = infiltration
 	countered_by = tactic_strong_fire_system
 	
 	attacker_movement_speed = -0.15
-	attacker = 0.5
-	defender = -0.25
+	attacker = 0.05
+	defender = -0.5
 }
 
 tactic_strong_fire_system = { #counters infiltration
@@ -289,20 +293,28 @@ tactic_strong_fire_system = { #counters infiltration
 		is_attacker = no
 		phase = no
 		frontage_full = yes
-		OR = {
-			is_fighting_in_terrain = forest_hills
-			is_fighting_in_terrain = mountain
-		}
+		dig_in > 0.2
 	}
 	
-	active = yes
+	active = no
 	
-	base =  { factor = 8 }
+	base =  {
+		factor = 4
+		modifier = {
+			add = 4
+			OR = {
+				is_fighting_in_terrain = forest
+				is_fighting_in_terrain = forest_hills
+				is_fighting_in_terrain = mountain
+			}
+		}
+	}
 	picture = strong_fire_system
+	countered_by = tactic_barrage
 	
 	attacker_movement_speed = -0.25
-	attacker = -0.5
-	defender = 0.05
+	attacker = -0.15
+	defender = 0.3
 }
 
 tactic_tactical_withdrawal = { #counters encirclement
@@ -434,15 +446,18 @@ tactic_breakthrough = { #counters ambush
 	defender = -0.15
 }
 
-tactic_ambush = { #counters shock
+tactic_ambush = { #counters shock and infantry_charge
 	is_attacker = no
 	trigger = {
 		is_attacker = no
 		phase = no
 		OR = {
-			skill_advantage > 1
 			skill > 2
 			has_trait = trickster
+		}
+		OR = {
+			skill_advantage > 1
+			recon_advantage > 0
 		}
 	}
 	
@@ -831,8 +846,9 @@ tactic_infantry_charge = { #GBP -> Infantry attacker tactic
 		factor = 4
 	}
 	picture = tactic_infantry_charge
+	countered_by = tactic_ambush
 	
-	attacker = 0.1 
+	attacker = 0.15
 	defender = -0.05
 }
 
@@ -841,6 +857,7 @@ tactic_planned_attack = { #GBP -> Armor attacker tactic
 	trigger = {
 		is_attacker = yes
 		phase = no
+		min_planning > 0.2
 	}
 	
 	active = no
@@ -850,7 +867,8 @@ tactic_planned_attack = { #GBP -> Armor attacker tactic
 	}
 	picture = tactic_planned_attack
 	
-	attacker = 0.15 
+	attacker = 0.25
+	defender = -0.05
 }
 
 tactic_relentless_assault = { #Deep battle attacker tactic
@@ -913,6 +931,7 @@ tactic_barrage = { #Superior firepower attacker tactic
 	trigger = {
 		is_attacker = yes
 		phase = no
+		min_planning > 0.2
 	}
 	
 	active = no
@@ -922,8 +941,9 @@ tactic_barrage = { #Superior firepower attacker tactic
 	}
 	picture = tactic_barrage
 	
+	attacker_movement_speed = -0.15
 	attacker = 0.1
-	defender = -0.2	
+	defender = -0.15
 }
 
 tactic_masterful_blitz = { #Improved version of Blitz for Soviets
