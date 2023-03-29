@@ -26,6 +26,10 @@ focus_tree = {
 			add_political_power = 100
 			country_event = { id = rcw_nva.1 days = 1 }
 			country_event = { id = rcw_nva.90 days = 3 }
+			if = {
+				limit = { has_global_flag = NVA_chech_uprising }
+				country_event = { id = rcw_nva.91 days = 5 }
+			}
 			set_variable = {
 				var = nastroenie_krestyan
 				value = 0
@@ -228,6 +232,24 @@ focus_tree = {
 						producer = NVA
 					}
 				}
+				if = {
+					limit = {
+						OR = {
+							controls_province = 9402 
+							controls_province = 9259 
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment_0
+						amount = 350
+						producer = NVA
+					}
+					add_equipment_to_stockpile = {
+						type = support_equipment_1
+						amount = 50
+						producer = NVA
+					}
+				}
 			}
 
 		}
@@ -266,7 +288,10 @@ focus_tree = {
 			ENG = { country_event = { id = rcw.156 } }
 			FRA = { country_event = { id = rcw.156 } }
 			USA = { country_event = { id = rcw.156 } }
-			NRR = { country_event = { id = rcw_nva.13 } }
+			if = {
+				limit = { NRR = { exists = yes is_neighbor_of = NVA } }
+				NRR = { country_event = { id = rcw_nva.13 } }
+			}		
 		}
 	}
 	#Взаимодействие с белыми на востоке
@@ -275,7 +300,6 @@ focus_tree = {
 		icon = GFX_goal_NVA_east_ally
 		cost = 0.80
 		available = {
-			RVA = { exists = yes }
 			OR = {
 				is_neighbor_of = RSS
 				is_neighbor_of = SIB
@@ -289,13 +313,17 @@ focus_tree = {
 		y = 3
 		completion_reward = {
 			if = { limit = { is_neighbor_of = CCA }
-				CCA = {country_event = { id = rcw_nva.17 } }
+				CCA = { country_event = { id = rcw_nva.17 } }
 			}
 			else_if = { limit = { is_neighbor_of = SIB }
-				SIB = {country_event = { id = rcw_nva.17 } }
+				SIB = { country_event = { id = rcw_nva.17 } }
 			}
 			else_if = { limit = { is_neighbor_of = RSS }
-				RSS = {country_event = { id = rcw_nva.17 } }
+				RSS = { country_event = { id = rcw_nva.17 } }
+			}
+			if = {
+				limit = { has_country_flag = NVA_kazan_rev } 
+				country_event = { id = rcw_nva.120 days = 1 }
 			}
 		}
 	}
@@ -458,7 +486,10 @@ focus_tree = {
 		icon = GFX_goal_NVA_worker
 		cost = 1
 		available = {
-			NOT = { has_country_flag = NVA_byvshyye }
+			OR = {
+				has_idea = workers_control_law
+				has_idea = state_capitalism_law
+			}
 		}
 		prerequisite = {
 			focus = NVA_mobilization
@@ -470,7 +501,10 @@ focus_tree = {
 		completion_reward = {
 			fall_collapse_of_railway_system = yes
 			add_popularity = { ideology = social_democracy popularity = 0.1 }
-			hidden_effect = { country_event = { id = rcw_nva.89 days = 20 } }
+			if = {
+				limit = { has_idea = workers_control_law }
+				hidden_effect = { country_event = { id = rcw_nva.89 days = 20 } }
+			}
 		}
 	}
     #Централизация
@@ -513,7 +547,7 @@ focus_tree = {
 			if = {
 				limit = {
 					has_country_leader = {
-						name = "Boris Savinkov"
+						name = "Boris Savinkov" 
 						ruling_only = yes
 					}
 				}
@@ -522,7 +556,7 @@ focus_tree = {
 			else_if = {
 				limit = {
 					has_country_leader = {
-						name = "Alexander Dikgof-Derental"
+						name = "Alexander Dikgof-Derental" 
 						ruling_only = yes
 					}
 				}
@@ -618,36 +652,32 @@ focus_tree = {
 				country_event = { id = rcw_nva.81 }
 			}
 			else = { country_event = { id = rcw_nva.22 } }
-			if = { limit = { NOT = { RVA = { has_completed_focus = RVA_creation_union_of_salvation } } }
-				hidden_effect = {
-					country_event = { id = rcw_nva_tech.16 }
-				}
-				custom_effect_tooltip = general_stogov_arrives
+			if = {
+				limit = { check_variable = { nastroenie_krestyan < 3 } }
+				country_event = { id = rcw_nva.94 days = 7 }
 			}
 		}
 	}
-	#Учредительное собрание центральной России
+	#Местное Учредительное собрание
 	focus = {
 		id = NVA_constituent_assembly_of_central_russia
 		icon = GFX_goal_NVA_uchred
 		cost = 4
 		available = {
-
-		}
-		bypass = {
-			hidden_trigger = {
+			NOT = { 
+				has_country_flag = rnp_created
 				has_country_flag = monarcist_SZRiS
 			}
 		}
 		prerequisite = {
 			focus = NVA_russian_vendee
 		}
-		x = 10
+		x = 8
 		y = 7
 
 		completion_reward = {
 			hidden_effect = { remove_ideas = { NVA_high_military_influence } }
-			add_ideas = presidential_republic_gov_form
+			add_ideas = parliamentary_republic_gov_form
 			if = { limit = {has_country_flag = collaboration_with_the_left }
 	            country_event = { id = rcw_nva.23 hours = 5 }
 			}
@@ -657,44 +687,228 @@ focus_tree = {
 			else_if = { limit = {has_country_flag = collaboration_with_both }
 				country_event = { id = rcw_nva.25 hours = 5 }
 			}
+			set_country_flag = nva_okraina_neg
+		}
+	}
+	#Первый партийный съезд
+	focus = {
+		id = NVA_first_party_assembly
+		icon = GFX_goal_NVA_first_party_assembly
+		cost = 5
+		available = {
+			has_country_flag = rnp_created
+		}
+		prerequisite = {
+			focus = NVA_russian_vendee
+		}
+		x = 10
+		y = 6
+		select_effect = {
+			country_event = { id = rcw_nva.95 days = 20 }
+		}
+		completion_reward = {
+			custom_effect_tooltip = nva_party_resheniya
+		}
+	}	
+	#Новая идеологическая волна
+	focus = {
+		id = NVA_new_ideology
+		icon = GFX_goal_NVA_new_ideology
+		cost = 2
+		available = {
+
+		}
+		bypass = {
+			NOT = {
+				has_government = fascism
+				has_government = national_syndicalism
+			}
+		}
+		prerequisite = {
+			focus = NVA_first_party_assembly
+		}
+		x = 10
+		y = 7
+
+		completion_reward = {
+			news_event = nva_news.3
+			set_country_flag = NVA_new_ideology_flag
+		}
+	}
+	#Общевоинский союз
+	focus = {
+		id = NVA_allmil_union
+		icon = GFX_goal_NVA_allmil_union
+		cost = 5
+		available = {
+			has_country_flag = monarcist_SZRiS
+		}
+		prerequisite = {
+			focus = NVA_russian_vendee
+		}
+		x = 12
+		y = 7
+
+		completion_reward = {
+			country_event = { id = rcw_nva.82 }
+			add_ideas = NVA_allmil_union_idea
+			set_country_flag = nva_okraina_ultimatum
+		}
+	}
+	#Разгром подполья
+	focus = {
+		id = NVA_crush_rebels
+		icon = GFX_goal_NVA_crush_rebels
+		cost = 6
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NVA_new_ideology
+			focus = NVA_allmil_union
+			focus = NVA_constituent_assembly_of_central_russia
+		}
+		x = 12
+		y = 9
+		select_effect = {
+			add_ideas =  white_terror_idea
+		}
+		completion_reward = {
+			if = {
+				limit = { has_idea = NVA_red_podpolie }
+				remove_ideas = NVA_red_podpolie
+			}
+			remove_ideas = white_terror_idea
+		}
+	}
+	#Окраинная дипломатия
+	focus = {
+		id = NVA_okraine_diplomacy
+		icon = GFX_goal_NVA_okraine_diplomacy
+		cost = 5
+		available = {
+
+		}
+		prerequisite = {
+			focus = NVA_new_ideology
+			focus = NVA_allmil_union
+			focus = NVA_constituent_assembly_of_central_russia
+		}
+		x = 14
+		y = 9
+
+		completion_reward = {
+			unlock_decision_category_tooltip = NVA_okraine_diplomacy_des_category
+		}
+	}
+	#Новая гвардия
+	focus = {
+		id = NVA_new_guard
+		icon = GFX_goal_NVA_new_guard
+		cost = 5
+		available = {
+
+		}
+		prerequisite = {
+			focus = NVA_new_ideology
+			focus = NVA_allmil_union
+			focus = NVA_constituent_assembly_of_central_russia
+		}
+		x = 13
+		y = 8
+
+		completion_reward = {
+			if = {
+				limit = { NOT = { has_tech = stormtroopers } }
+				set_technology = {
+					stormtroopers = 1
+					popup = no
+				}
+			}
+			country_event = { id = rcw_nva.105 }
 		}
 	}
 	#Учреждение экономического комитета
 	focus = {
 		id = NVA_establishment_of_the_economic_committee
 		icon = GFX_goal_NVA_economic_comittee
-		cost = 2
+		cost = 5
 		available = {
 
 		}
 		prerequisite = {
-			focus = NVA_constituent_assembly_of_central_russia
-		}
-		x = 6
-		y = 8
-
-		completion_reward = {
-			country_event = { id = rcw_nva.31 hours = 1 }
-			country_event = { id = rcw_nva.32 days = 1 }
-		}
-	}
-	#Возрождение местного самоуправления
-	focus = {
-		id = NVA_reviving_local_government
-		icon = GFX_goal_NVA_selfgovernment
-		cost = 2
-		available = {
-
-		}
-		prerequisite = {
+			focus = NVA_new_ideology
+			focus = NVA_allmil_union
 			focus = NVA_constituent_assembly_of_central_russia
 		}
 		x = 8
 		y = 8
 
 		completion_reward = {
-			add_ideas = {local_assembly_decisions_b_law}
-			rise_labor_legislation = yes
+			if = {
+				limit = { NOT = { has_country_flag = NVA_new_ideology_flag } }
+				country_event = { id = rcw_nva.32 days = 1 }
+			}
+			else = {
+				country_event = { id = rcw_nva.112 days = 1 }
+			}
+			country_event = { id = rcw_nva.110 }
+		}
+	}
+	#Укрепление местного самоуправления
+	focus = {
+		id = NVA_reviving_local_government
+		icon = GFX_goal_NVA_selfgovernment
+		cost = 5
+		available = {
+
+		}
+		prerequisite = {
+			focus = NVA_establishment_of_the_economic_committee
+		}
+		x = 8
+		y = 9
+
+		completion_reward = {
+			#add_ideas = local_assembly_decisions_b_law 
+			#rise_labor_legislation = yes
+			add_ideas = NVA_zemstva
+		}
+	}
+	#Единое транспортное управление
+	focus = {
+		id = NVA_transport_com
+		icon = GFX_goal_NVA_transport_com
+		cost = 5
+		available = {
+
+		}
+		prerequisite = {
+			focus = NVA_establishment_of_the_economic_committee
+		}
+		x = 6
+		y = 9
+
+		completion_reward = {
+			fall_collapse_of_railway_system_2 = yes
+		}
+	}
+	#Национальный рывок
+	focus = {
+		id = NVA_national_leap
+		icon = GFX_goal_NVA_national_leap
+		cost = 5
+		available = {
+			has_country_flag = NVA_new_ideology_flag
+		}
+		prerequisite = {
+			focus = NVA_reviving_local_government
+		}
+		x = 6
+		y = 10
+
+		completion_reward = {
+			literacy_law_rise = yes
 		}
 	}
 	#Белый центр
@@ -706,6 +920,8 @@ focus_tree = {
 			RSS = { exists = no }
 		}
 		prerequisite = {
+			focus = NVA_new_ideology
+			focus = NVA_allmil_union
 			focus = NVA_constituent_assembly_of_central_russia
 		}
 		x = 10
@@ -720,30 +936,18 @@ focus_tree = {
 	focus = {
 		id = NVA_final_solution_of_the_land_issue
 		icon = GFX_goal_NVA_end_peasant
-		cost = 4
+		cost = 5
 		available = {
 			has_completed_focus = NVA_law_of_land
 		}
 		prerequisite = {
-			focus = NVA_constituent_assembly_of_central_russia
+			focus = NVA_reviving_local_government
 		}
-		x = 12
-		y = 8
+		x = 8
+		y = 10
 
 		completion_reward = {
-			add_political_power = -200
-			add_timed_idea = {
-				idea = peasant_and_land_and_bread_question_reformation_period
-				days = 180
-			}
-			hidden_effect = {
-				country_event = { id = rcw_nva_tech.18 days = 180 }
-				if = { limit = { has_idea = foodstuffs_supply_crisis_1 }  remove_ideas = foodstuffs_supply_crisis_1 }
-				else_if = { limit = { has_idea = foodstuffs_supply_crisis_2 } remove_ideas = foodstuffs_supply_crisis_2 }
-				else_if = { limit = { has_idea = foodstuffs_supply_crisis_3 } remove_ideas = foodstuffs_supply_crisis_3 }
-				else_if = { limit = { has_idea = foodstuffs_supply_crisis_4 } remove_ideas = foodstuffs_supply_crisis_4 }
-				else_if = { limit = { has_idea = foodstuffs_supply_crisis_5 } remove_ideas = foodstuffs_supply_crisis_5 }
-			}
+			country_event = { id = rcw_nrr.46 }
 		}
 	}
 	#Переговоры с антантой
@@ -758,9 +962,11 @@ focus_tree = {
 			}
 		}
 		prerequisite = {
+			focus = NVA_new_ideology
+			focus = NVA_allmil_union
 			focus = NVA_constituent_assembly_of_central_russia
 		}
-		x = 14
+		x = 15
 		y = 8
 
 		completion_reward = {
