@@ -36,6 +36,8 @@ country_event = {
 		set_variable = { global.all_rus_NA_members = 1 }
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_gov_form_rep_compromise = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon_compromise = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
 		hidden_effect = { country_event = rcw_all_rus_NA.4 }
 		every_other_country = {
@@ -82,6 +84,8 @@ country_event = {
 		set_variable = { global.all_rus_NA_members = 1 }
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_gov_form_rep_compromise = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon_compromise = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
 		every_other_country = {
 			limit = {
@@ -154,6 +158,8 @@ country_event = {
 		set_variable = { global.all_rus_NA_members = 1 }
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_gov_form_rep_compromise = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon_compromise = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
 		every_other_country = {
 			limit = {
@@ -231,6 +237,8 @@ country_event = {
 		set_variable = { global.all_rus_NA_members = 1 }
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_gov_form_rep_compromise = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon_compromise = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
 		every_other_country = {
 			limit = {
@@ -304,6 +312,8 @@ country_event = {
 		set_variable = { global.all_rus_NA_members = 1 }
 		set_variable = { global.all_rus_NA_gov_form_rep = 0 }
 		set_variable = { global.all_rus_NA_gov_form_mon = 0 }
+		set_variable = { global.all_rus_NA_gov_form_rep_compromise = 0 }
+		set_variable = { global.all_rus_NA_gov_form_mon_compromise = 0 }
 		set_variable = { global.all_rus_NA_votes = 0 }
 		every_other_country = {
 			limit = {
@@ -421,7 +431,7 @@ country_event = {
 	}
 }
 
-# Голосование по главному вопросу
+# Голосование по главному вопросу ("Центральный вопрос")
 country_event = {
 	id = rcw_all_rus_NA.5
 	title = rcw_all_rus_NA.5.t
@@ -498,29 +508,28 @@ country_event = {
 			add_to_variable = { global.all_rus_NA_votes = 1 }
 			add_to_variable = { global.all_rus_NA_gov_form_rep = 1 }
 			if = {
-				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
-				if = {
-					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
-					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.10 days = 1 } }
-					else = {
-						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.9 days = 1 } }
-					}
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
 				}
-				clear_variable = global.all_rus_NA_votes
-				clear_variable = global.all_rus_NA_members
-				clear_variable = global.all_rus_NA_gov_form_mon
-				clear_variable = global.all_rus_NA_gov_form_rep
+				set_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon }
+				set_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep }
 			}
-		}
-		ai_chance = {
-			factor = 1
-		}
-	}
-	option = {
-		name = rcw_all_rus_NA.6.b
-		hidden_effect = {
-			add_to_variable = { global.all_rus_NA_votes = 1 }
-			add_to_variable = { global.all_rus_NA_gov_form_rep = 1 }
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_mon_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_mon_compromise
+			}
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_rep_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_rep_compromise
+			}
 			if = {
 				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
 				if = {
@@ -534,6 +543,59 @@ country_event = {
 				clear_variable = global.all_rus_NA_members
 				clear_variable = global.all_rus_NA_gov_form_mon
 				clear_variable = global.all_rus_NA_gov_form_rep
+				clear_variable = global.all_rus_NA_gov_form_mon_compromise
+				clear_variable = global.all_rus_NA_gov_form_rep_compromise
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_all_rus_NA.6.b
+		hidden_effect = {
+			add_to_variable = { global.all_rus_NA_votes = 1 }
+			add_to_variable = { global.all_rus_NA_gov_form_rep = 1 }
+			add_to_variable = { global.all_rus_NA_gov_form_rep_compromise = 1 }
+			set_country_flag = RCW_Allrussian_national_assembly_vote_for_rep_compromise
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+				}
+				set_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon }
+				set_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep }
+			}
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_mon_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_mon_compromise
+			}
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_rep_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_rep_compromise
+			}
+			if = {
+				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
+				if = {
+					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.10 days = 1 } }
+					else = {
+						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.9 days = 1 } }
+					}
+				}
+				clear_variable = global.all_rus_NA_votes
+				clear_variable = global.all_rus_NA_members
+				clear_variable = global.all_rus_NA_gov_form_mon
+				clear_variable = global.all_rus_NA_gov_form_rep
+				clear_variable = global.all_rus_NA_gov_form_mon_compromise
+				clear_variable = global.all_rus_NA_gov_form_rep_compromise
 			}
 		}
 		ai_chance = {
@@ -556,29 +618,28 @@ country_event = {
 			add_to_variable = { global.all_rus_NA_votes = 1 }
 			add_to_variable = { global.all_rus_NA_gov_form_mon = 1 }
 			if = {
-				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
-				if = {
-					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
-					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.10 days = 1 } }
-					else = {
-						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.9 days = 1 } }
-					}
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
 				}
-				clear_variable = global.all_rus_NA_votes
-				clear_variable = global.all_rus_NA_members
-				clear_variable = global.all_rus_NA_gov_form_mon
-				clear_variable = global.all_rus_NA_gov_form_rep
+				set_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon }
+				set_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep }
 			}
-		}
-		ai_chance = {
-			factor = 1
-		}
-	}
-	option = {
-		name = rcw_all_rus_NA.6.b
-		hidden_effect = {
-			add_to_variable = { global.all_rus_NA_votes = 1 }
-			add_to_variable = { global.all_rus_NA_gov_form_mon = 1 }
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_mon_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_mon_compromise
+			}
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_rep_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_rep_compromise
+			}
 			if = {
 				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
 				if = {
@@ -592,6 +653,59 @@ country_event = {
 				clear_variable = global.all_rus_NA_members
 				clear_variable = global.all_rus_NA_gov_form_mon
 				clear_variable = global.all_rus_NA_gov_form_rep
+				clear_variable = global.all_rus_NA_gov_form_mon_compromise
+				clear_variable = global.all_rus_NA_gov_form_rep_compromise
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_all_rus_NA.6.b
+		hidden_effect = {
+			add_to_variable = { global.all_rus_NA_votes = 1 }
+			add_to_variable = { global.all_rus_NA_gov_form_mon = 1 }
+			add_to_variable = { global.all_rus_NA_gov_form_mon_compromise = 1 }
+			set_country_flag = RCW_Allrussian_national_assembly_vote_for_mon_compromise
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+				}
+				set_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_mon_compromise = global.all_rus_NA_gov_form_mon }
+				set_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep_compromise }
+				divide_temp_variable = { temp_all_rus_NA_gov_form_rep_compromise = global.all_rus_NA_gov_form_rep }
+			}
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_mon_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_mon_compromise
+			}
+			if = {
+				limit = {
+					check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members }
+					check_variable = { temp_all_rus_NA_gov_form_rep_compromise > 0.5 }
+				}
+				set_global_flag = RCW_Allrussian_national_assembly_rep_compromise
+			}
+			if = {
+				limit = { check_variable = { global.all_rus_NA_votes = global.all_rus_NA_members } }
+				if = {
+					limit = { check_variable = { global.all_rus_NA_gov_form_mon > global.all_rus_NA_gov_form_rep } }
+					random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_mon_wins country_event = { id = rcw_all_rus_NA.10 days = 1 } }
+					else = {
+						random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } set_global_flag = RCW_Allrussian_national_assembly_rep_wins country_event = { id = rcw_all_rus_NA.9 days = 1 } }
+					}
+				}
+				clear_variable = global.all_rus_NA_votes
+				clear_variable = global.all_rus_NA_members
+				clear_variable = global.all_rus_NA_gov_form_mon
+				clear_variable = global.all_rus_NA_gov_form_rep
+				clear_variable = global.all_rus_NA_gov_form_mon_compromise
+				clear_variable = global.all_rus_NA_gov_form_rep_compromise
 			}
 		}
 		ai_chance = {
@@ -618,8 +732,8 @@ country_event = {
 	
 	option = { # Такова воля народа!
 		name = rcw_all_rus_NA.9.a
-		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
-		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		#clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		#clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
 		every_other_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			country_event = { id = rcw_all_rus_NA.11 days = 7 random = 48 }
@@ -632,8 +746,8 @@ country_event = {
 			NOT = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep }
 		}
 		name = rcw_all_rus_NA.9.b
-		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
-		clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+		#clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+		#clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
 		every_other_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			country_event = { id = rcw_all_rus_NA.12 days = 7 random = 48 }
@@ -726,7 +840,7 @@ country_event = {
 			limit = { NOT = { any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_revolt } } }
 			#random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } country_event = { id = rcw_all_rus_NA.21 days = 14 } } # начало гражданки против монархистов
 			every_other_country = {
-				limit = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep }
+				limit = { OR = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep AND = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon set_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins } } }
 				country_event = { id = rcw_all_rus_NA.13 days = 14 }
 				add_to_variable = { global.all_rus_NA_protest = 1 }
 			}
@@ -775,7 +889,7 @@ country_event = {
 			limit = { NOT = { any_other_country = { has_country_flag = RCW_Allrussian_national_assembly_revolt } } }
 			#random_country = { limit = { has_country_flag = RCW_Allrussian_national_assembly_leader } country_event = { id = rcw_all_rus_NA.22 days = 14 } } # начало гражданки против республиканцев
 			every_other_country = {
-				limit = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon }
+				limit = { OR = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon AND = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep set_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins } } }
 				country_event = { id = rcw_all_rus_NA.14 days = 14 }
 				add_to_variable = { global.all_rus_NA_protest = 1 }
 			}
@@ -868,6 +982,10 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+			}
 		}
 	}
 }
@@ -954,6 +1072,10 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+			}
 		}
 	}
 }
@@ -1003,7 +1125,7 @@ country_event = {
 }
 
 
-# Гражданка против монархистов
+# Гражданка против монархистов ("Провал совещания")
 country_event = {
 	id = rcw_all_rus_NA.21
 	title = rcw_all_rus_NA.21.t
@@ -1014,6 +1136,10 @@ country_event = {
 	
 	option = {
 		name = rcw_all_rus_NA.21.a
+		hidden_effect = {
+			clr_global_flag = RCW_Allrussian_national_assembly_rep_compromise
+			#clr_global_flag = RCW_Allrussian_national_assembly_mon_compromise
+		}
 		every_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			leave_faction = yes
@@ -1113,7 +1239,7 @@ country_event = {
 		hidden_effect = { news_event = { id = news_n.27 hours = 48 } }
 	}
 }
-# Гражданка против республиканцев
+# Гражданка против республиканцев ("Провал совещания")
 country_event = {
 	id = rcw_all_rus_NA.22
 	title = rcw_all_rus_NA.21.t
@@ -1124,6 +1250,10 @@ country_event = {
 	
 	option = {
 		name = rcw_all_rus_NA.21.a
+		hidden_effect = {
+			clr_global_flag = RCW_Allrussian_national_assembly_rep_compromise
+			#clr_global_flag = RCW_Allrussian_national_assembly_mon_compromise
+		}
 		every_country = {
 			limit = { has_country_flag = RCW_Allrussian_national_assembly_member }
 			leave_faction = yes
@@ -1241,12 +1371,15 @@ country_event = {
 	
 	hidden = yes
 	
-	immediate = { clr_global_flag = RCW_Allrussian_national_assembly }
+	#immediate = { clr_global_flag = RCW_Allrussian_national_assembly }
 	
 	option = {
 		name = rcw_all_rus_NA.24.a
 		every_other_country = {
-			limit = { is_former_russian_empire_russian_country = yes OR = { is_in_faction_with = ROOT is_subject_of = ROOT } OR = { has_country_flag = RCW_Allrussian_national_assembly_member has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal } }
+			limit = {
+				is_former_russian_empire_russian_country = yes
+				OR = { has_country_flag = RCW_Allrussian_national_assembly_member has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+			}
 			every_unit_leader = { set_nationality = ROOT }
 			ROOT = { annex_country = { target = PREV transfer_troops = yes } }
 		}
@@ -1265,23 +1398,40 @@ country_event = {
 			clr_country_flag = RCW_Allrussian_national_assembly_member
 			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
 			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon
+			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep_compromise
+			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon_compromise
 		}
 		clr_country_flag = RCW_Allrussian_national_assembly_member
 		clr_global_flag = RCW_Allrussian_national_assembly_rep_wins
 		clr_global_flag = RCW_Allrussian_national_assembly_mon_wins
 		dismantle_faction = yes
 		if = {
-			limit = { has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins }
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins has_global_flag = RCW_Allrussian_national_assembly_rep_compromise has_global_flag = RCW_Allrussian_national_assembly_mon_compromise }
 			set_cosmetic_tag = RUS_MONARCHY
 			add_ideas = limited_monarchy_gov_form
-			country_event = { id = rcw_all_rus_NA.24 days = 1 }
-			else = {
-				set_cosmetic_tag = CCA_russian_federation
-				add_ideas = presidential_republic_gov_form
-			}
+			country_event = { id = rcw_all_rus_NA.33 days = 1 }
+			news_event = { id = news_n.36 days = 1 }
+		}
+		else_if = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins has_global_flag = RCW_Allrussian_national_assembly_mon_compromise }
+			country_event = { id = rcw_all_rus_NA.32 days = 1 }
+			news_event = { id = news_n.36 days = 1 }
+		}
+		else_if = {
+			limit = { has_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins }
+			set_cosmetic_tag = RUS_MONARCHY
+			country_event = { id = rcw_all_rus_NA.34 days = 1 }
+			news_event = { id = news_n.36 days = 1 }
+		}
+		else = {
+			set_cosmetic_tag = CCA_russian_federation
+			add_ideas = presidential_republic_gov_form
+			news_event = { id = news_n.35 days = 1 }
 		}
 		clr_country_flag = RCW_Allrussian_national_assembly_rep_formaly_wins
 		clr_country_flag = RCW_Allrussian_national_assembly_mon_formaly_wins
+		clr_global_flag = RCW_Allrussian_national_assembly_rep_compromise
+		clr_global_flag = RCW_Allrussian_national_assembly_mon_compromise
 		every_other_country = {
 			limit = { is_any_former_russian_empire_country = yes is_subject = no NOT = { has_war_with = ROOT } }
 			diplomatic_relation = {
@@ -1421,13 +1571,19 @@ country_event = {
 		ai_chance = {
 			factor = 4
 		}
-		set_politics = { ruling_party = authoritarism elections_allowed = no }
-		add_popularity = { ideology = authoritarism popularity = 0.05 }
 		if = {
-			limit = { NOT = { has_country_leader = { name = "Nikolay II Romanov" ruling_only = yes } } }
+			limit = { has_idea = absolute_monarchy_gov_form }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
+		}
+		if = {
+			limit = { has_idea = absolute_monarchy_gov_form NOT = { has_country_leader = { name = "Nikolay II Romanov" ruling_only = yes } } }
 			create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Portrait_Nikolay_II_Romanov.dds" expire = "1935.1.1" ideology = monarchism traits = { inexperienced_imperialist weak_character } }
 		}
-		add_ideas = limited_monarchy_gov_form
+		if = {
+			limit = { NOT = { has_idea = absolute_monarchy_gov_form } NOT = { has_country_leader = { name = "Nikolay II Romanov" ruling_only = yes } } }
+			add_ideas = RUS_Nikolay_II_idea
+		}
 		add_ideas = decrees_of_ruler_b_law
 	}
 	
@@ -1437,13 +1593,16 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
-		set_politics = { ruling_party = authoritarism elections_allowed = no }
-		add_popularity = { ideology = authoritarism popularity = 0.05 }
 		if = {
-			limit = { NOT = { has_country_leader = { name = "Mikhail II Romanov" ruling_only = yes } has_country_leader = { name = "Mikhail Alexandrovich Romanov" ruling_only = yes } } }
-			create_country_leader = { name = "Mikhail II Romanov" desc = RUS_Mikhail_Romanov_DESC picture = "gfx/leaders/RUS/Portrait_Mikhail_Romanov.dds" ideology = monarchism traits = { inexperienced_imperialist } }
+			limit = { has_idea = absolute_monarchy_gov_form }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
 		}
-		add_ideas = limited_monarchy_gov_form
+		if = {
+			limit = { has_idea = absolute_monarchy_gov_form NOT = { has_country_leader = { name = "Mikhail II Romanov" ruling_only = yes } has_country_leader = { name = "Mikhail Alexandrovich Romanov" ruling_only = yes } } }
+			create_country_leader = { name = "Mikhail II Romanov" desc = RUS_Mikhail_Romanov_DESC picture = "gfx/leaders/RUS/Portrait_Mikhail_Romanov.dds" ideology = monarchism traits = { inexperienced_imperialist } }
+			else = { add_ideas = RUS_Mikhail_II_idea }
+		}
 		add_ideas = decrees_of_ruler_b_law
 	}
 	option = {
@@ -1452,11 +1611,13 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
-		set_politics = { ruling_party = authoritarism elections_allowed = no }
-		add_popularity = { ideology = authoritarism popularity = 0.05 }
 		if = {
-			limit = { NOT = { has_country_leader = { name = "Nikolay III Romanov" ruling_only = yes } } }
-			retire_country_leader = yes
+			limit = { has_idea = absolute_monarchy_gov_form }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
+		}
+		if = {
+			limit = { has_idea = absolute_monarchy_gov_form NOT = { has_country_leader = { name = "Nikolay III Romanov" ruling_only = yes } } }
 			create_country_leader = {
 				name = "Nikolay III Romanov"
 				desc = RUS_Nikolay_Nikolaevich_Romanov_DESC
@@ -1465,7 +1626,10 @@ country_event = {
 				traits = { inexperienced_imperialist great_war_hero }
 			}
 		}
-		add_ideas = limited_monarchy_gov_form
+		if = {
+			limit = { NOT = { has_idea = absolute_monarchy_gov_form } NOT = { has_country_leader = { name = "Nikolay III Romanov" ruling_only = yes } } }
+			add_ideas = RUS_Nikolay_III_idea
+		}
 		add_ideas = decrees_of_ruler_b_law
 	}
 	option = {
@@ -1474,13 +1638,19 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
-		set_politics = { ruling_party = authoritarism elections_allowed = no }
-		add_popularity = { ideology = authoritarism popularity = 0.05 }
 		if = {
-			limit = { NOT = { has_country_leader = { name = "Kirill I Romanov" ruling_only = yes } has_country_leader = { name = "Kirill Vladimirovich Romanov" ruling_only = yes } } }
+			limit = { has_idea = absolute_monarchy_gov_form }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
+		}
+		if = {
+			limit = { has_idea = absolute_monarchy_gov_form NOT = { has_country_leader = { name = "Kirill I Romanov" ruling_only = yes } has_country_leader = { name = "Kirill Vladimirovich Romanov" ruling_only = yes } } }
 			create_country_leader = { name = "Kirill I Romanov" desc = RUS_Kirill_Vladimirovich_Romanov_DESC picture = "gfx/leaders/RUS/Portrait_Kirill_Vladimirovich.dds" ideology = monarchism traits = { rouge_pretender inexperienced_imperialist } }
 		}
-		add_ideas = limited_monarchy_gov_form
+		if = {
+			limit = { NOT = { has_idea = absolute_monarchy_gov_form } NOT = { has_country_leader = { name = "Kirill I Romanov" ruling_only = yes } has_country_leader = { name = "Kirill Vladimirovich Romanov" ruling_only = yes } } }
+			add_ideas = RUS_Kirill_I_idea
+		}
 		add_ideas = decrees_of_ruler_b_law
 	}
 	option = {
@@ -1489,13 +1659,19 @@ country_event = {
 		ai_chance = {
 			factor = 1
 		}
-		set_politics = { ruling_party = authoritarism elections_allowed = no }
-		add_popularity = { ideology = authoritarism popularity = 0.05 }
 		if = {
-			limit = { NOT = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } } }
+			limit = { has_idea = absolute_monarchy_gov_form }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
+		}
+		if = {
+			limit = { has_idea = absolute_monarchy_gov_form NOT = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } } }
 			create_country_leader = { name = "Dmitriy II Romanov" desc = "RUS_Dmitriy_Pavlovich_Romanov_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Pavlovich_Romanov.dds" expire = "1941.3.5" ideology = monarchism traits = { inexperienced_monarch anti_democrat murder_of_Rasputin olympian_rider } }
 		}
-		add_ideas = limited_monarchy_gov_form
+		if = {
+			limit = { NOT = { has_idea = absolute_monarchy_gov_form } NOT = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } } }
+			add_ideas = RUS_Dmitriy_II_idea
+		}
 		add_ideas = decrees_of_ruler_b_law
 	}
 }
@@ -2011,5 +2187,62 @@ country_event = {
 				}
 			}
 		}
+	}
+}
+
+# Конституционный компромисс ("Тяжесть короны")
+country_event = {
+	id = rcw_all_rus_NA.32
+	title = rcw_all_rus_NA.32.t
+	desc = rcw_all_rus_NA.32.desc
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.32.a
+		set_cosmetic_tag = RUS_MONARCHY
+		add_ideas = limited_monarchy_gov_form
+		country_event = { id = rcw_all_rus_NA.24 days = 0 }
+	}
+	option = {
+		name = rcw_all_rus_NA.32.b
+		set_cosmetic_tag = RUS_MONARCHY
+		add_ideas = absolute_monarchy_gov_form
+		country_event = { id = rcw_all_rus_NA.24 days = 0 }
+	}
+}
+
+# Конституционный компромисс ("Конституционный компромисс")
+country_event = {
+	id = rcw_all_rus_NA.33
+	title = rcw_all_rus_NA.33.t
+	desc = rcw_all_rus_NA.33.desc
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.33.a
+		set_cosmetic_tag = RUS_MONARCHY
+		add_ideas = limited_monarchy_gov_form
+		country_event = { id = rcw_all_rus_NA.24 days = 0 }
+	}
+}
+
+# Конституционный компромисс ("Абсолютная власть")
+country_event = {
+	id = rcw_all_rus_NA.34
+	title = rcw_all_rus_NA.34.t
+	desc = rcw_all_rus_NA.34.desc
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_all_rus_NA.34.a
+		set_cosmetic_tag = RUS_MONARCHY
+		add_ideas = absolute_monarchy_gov_form
+		country_event = { id = rcw_all_rus_NA.24 days = 0 }
 	}
 }
