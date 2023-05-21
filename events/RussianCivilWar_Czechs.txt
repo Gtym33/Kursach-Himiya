@@ -3546,3 +3546,1049 @@ country_event = {
 		every_state = { limit = { has_state_flag = czechs_legion_point } clr_state_flag = czechs_legion_point }
 	}
 }
+
+#Положение чешского легиона
+country_event = {
+	id = rcw_czechs.42
+	title =  rcw_czechs.42.t	
+	desc = rcw_czechs.42.desc
+	picture = GFX_Czech_corps_position
+	fire_only_once = no 
+	trigger = {
+		OR = {
+			has_template = "Russian-Czeh Brigada" 
+			has_template = "Brigada Chekhoslovatskogo legiona" 
+			has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+			has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+		}
+		any_unit_leader = { has_id = 92354 }
+		NOT = { has_country_flag = czechs_mission_start }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	option = {
+		name = rcw_czechs.42.a	
+		ai_chance = {
+			factor = 1
+		}
+		activate_mission = czechs_white_desisions_avangarde
+		set_country_flag = czechs_mission_start
+	}
+}
+#Уход легиона в тыл
+country_event = {
+	id = rcw_czechs.43
+	title =  rcw_czechs.43.t	
+	desc = rcw_czechs.43.desc
+	picture = GFX_Czech_corps_retreat_behind
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.43.a	
+		ai_chance = {
+			factor = 1
+		}
+		if = { limit = { has_template = "Russian-Czeh Brigada" }
+			delete_unit_template_and_units = { division_template = "Russian-Czeh Brigada" }
+			set_global_flag = russian_czeh_brigada
+		}
+		if = { limit = { has_template = "Brigada Chekhoslovatskogo legiona" }
+			delete_unit_template_and_units = { division_template = "Brigada Chekhoslovatskogo legiona" }
+			set_global_flag = brigada_chekhoslovatskogo_legiona
+		}
+		if = { limit = { has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" }
+			delete_unit_template_and_units = { division_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" }
+			set_global_flag = brigada_chekhoslovatskogo_legiona_DV
+		}
+		if = { limit = { has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" }
+			delete_unit_template_and_units = { division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" }
+			set_global_flag = brigada_chekhoslovatskogo_legiona_pov
+		}
+		every_unit_leader = { limit = { has_id = 92355 } set_nationality = REB }
+		every_unit_leader = { limit = { has_id = 88153 } set_nationality = REB }	
+		add_ideas = czesch_white_gar
+		if = {
+			limit = { NOT = { OR = { tag = NRR tag = NVA } } } 
+			activate_mission = czechs_white_des_out
+		}
+		hidden_effect = { country_event = { id = rcw_czechs.44 days = 30 } }
+	}
+}
+#Проблемы в тылу
+country_event = {
+	id = rcw_czechs.44
+	title =  rcw_czechs.44.t	
+	desc = rcw_czechs.44.desc
+	picture = GFX_Czech_corps_problems_behind
+	fire_only_once = no 
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_czechs.44.a	
+		ai_chance = {
+			factor = 1
+		}
+		swap_ideas = {
+			remove_idea = czesch_white_gar
+			add_idea = czesch_white_gar_2
+		}
+		hidden_effect = {
+			set_variable = {
+				var = czech_razlozhenie
+				value = 1
+			}
+			random_list = {
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.56 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = s_czech_event_was
+					}
+					country_event = { id = rcw_czechs.57 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = th_czech_event_was
+					}
+					country_event = { id = rcw_czechs.58 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.59 days = 25 }
+				}
+			}
+		}
+	}
+}
+#Окончание мытарств чехословаков
+country_event = {
+	id = rcw_czechs.45
+	title =  rcw_czechs.45.t	
+	desc = rcw_czechs.45.desc
+	picture = GFX_Czech_corps_ordeals
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.45.a	
+		ai_chance = {
+			factor = 1
+		}
+		every_country = {
+			limit = { 
+				has_country_flag = czechs_are_here
+			}
+			add_stability = 0.1
+			add_war_support = 0.1
+			if = {
+				limit = { 
+					OR = {
+						has_template = "Russian-Czeh Brigada" 
+						has_template = "Brigada Chekhoslovatskogo legiona" 
+						has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+						has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "Russian-Czeh Brigada" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					disband = no
+				}
+			}
+			every_unit_leader = { limit = { has_id = 92354 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 92355 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88153 } set_nationality = REB }
+			if = {
+				limit = { has_idea = czesch_white_gar }
+				remove_ideas = czesch_white_gar
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_2 }
+				remove_ideas = czesch_white_gar_2
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_3 }
+				remove_ideas = czesch_white_gar_3
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_4 }
+				remove_ideas = czesch_white_gar_4
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_0
+				amount = 500
+				producer = ROOT
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1
+				amount = 50
+				producer = ROOT
+			}
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = 8
+				producer = ROOT
+			}
+			set_country_flag = czech_gone
+			clr_country_flag = czechs_mission_start
+		}
+	}
+}
+#Схема возвращения
+country_event = {
+	id = rcw_czechs.46
+	title =  rcw_czechs.46.t	
+	desc = rcw_czechs.46.desc
+	picture = GFX_Czech_corps_scheme_to_return
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.46.a	
+		ai_chance = {
+			factor = 1
+		}
+		ENG = { country_event = rcw_czechs.47 }
+		FRA = { country_event = rcw_czechs.47 }
+		USA = { country_event = rcw_czechs.47 }
+		hidden_effect = { country_event = { id = rcw_czechs.49 days = 4 } }
+		activate_mission = czechs_returning
+		set_country_flag = czechs_returned_back
+		set_country_flag = czech_returning_in_process
+	}
+	option = {
+		name = rcw_czechs.46.b	
+		ai_chance = {
+			factor = 1
+		}
+		add_political_power = 150
+	}
+}
+#Наглость!
+country_event = {
+	id = rcw_czechs.47
+	title =  rcw_czechs.47.t	
+	desc = rcw_czechs.47.desc
+	picture = GFX_Czech_corps_scheme_to_return
+	fire_only_once = no 
+	is_triggered_only = yes
+	timeout_days = 1
+	option = {
+		name = rcw_czechs.47.a	
+		ai_chance = {
+			factor = 1
+		}
+		add_to_variable = {
+			var = global.czech_answer_count
+			value = 1
+		}
+	}
+	option = {
+		name = rcw_czechs.47.b	
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Возвращение легиона
+country_event = {
+	id = rcw_czechs.48
+	title =  rcw_czechs.48.t	
+	desc = rcw_czechs.48.desc
+	picture = GFX_Czech_corps_scheme_to_return
+	fire_only_once = yes 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.48.a	
+		ai_chance = {
+			factor = 1
+		}
+		REB = { every_unit_leader = { limit = { has_id = 88153 } set_nationality = ROOT } }
+		every_country = {
+			limit = { has_country_flag = czechs_are_here }
+			if = {
+				limit = { has_idea = czesch_white_gar }
+				remove_ideas = czesch_white_gar
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_2 }
+				remove_ideas = czesch_white_gar_2
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_3 }
+				remove_ideas = czesch_white_gar_3
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_4 }
+				remove_ideas = czesch_white_gar_4
+			}
+			if = {
+				limit = { OR = { tag = CCA tag = RSS } }
+				load_oob = CCA_czechoslovak_corps
+			}
+			if = {
+				limit = { OR = { tag = SIB tag = RSS } }
+				load_oob = SIB_czechoslovak_corps
+			}
+			if = {
+				limit = { OR = { tag = NVA } }
+				load_oob = NZH_czechoslovak_corps
+			}
+			if = {
+				limit = { OR = { tag = NRR } }
+				load_oob = NRR_czechoslovak_corps
+			}
+			if = {
+				limit = { tag = NVA has_country_flag = NVA_NRR_united }
+				load_oob = NZH_czechoslovak_corps
+				load_oob = NRR_czechoslovak_corps
+			}
+			if = {
+				limit = { OR = { tag = PRM } }
+				load_oob = FER_czechoslovak_corps
+			}
+			if = {
+				limit = { OR = { tag = RVA } }
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising has_country_flag = SOV_czechs_uprising_position_3_2 } }
+					load_oob = KUB_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising OR = { has_country_flag = SOV_czechs_uprising_position_3_3 has_country_flag = SOV_czechs_uprising_position_3_4 } } }
+					load_oob = RVA_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising has_country_flag = SOV_czechs_uprising_position_3_4 } }
+					load_oob = GEO_czechoslovak_corps
+				}
+			}
+			if = {
+				limit = { OR = { tag = DON } }
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising NOT = { has_country_flag = SOV_czechs_uprising_position_3_3 } } }
+					load_oob = DON_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising has_country_flag = SOV_czechs_uprising_position_3_1 } }
+					load_oob = AZV_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising has_country_flag = SOV_czechs_uprising_position_3_3 } }
+					load_oob = USR_czechoslovak_corps
+				}
+			}
+			if = {
+				limit = { OR = { tag = KUB } }
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising has_country_flag = SOV_czechs_uprising_position_3_2 } }
+					load_oob = KUB_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising OR = { has_country_flag = SOV_czechs_uprising_position_3_3 has_country_flag = SOV_czechs_uprising_position_3_4 } } }
+					load_oob = RVA_czechoslovak_corps
+				}
+				if = {
+					limit = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising has_country_flag = SOV_czechs_uprising_position_3_4 } }
+					load_oob = GEO_czechoslovak_corps
+				}
+			}
+		}
+	}
+
+}
+#Технический на проверку ответов антантовцев в наглость
+country_event = {
+	id = rcw_czechs.49
+	
+	hidden = yes
+	fire_only_once = no 
+	is_triggered_only = yes
+	immediate = {
+		if = {
+			limit = { check_variable = { global.czech_answer_count > 1 } }
+			country_event = rcw_czechs.50
+		}
+		else = { country_event = rcw_czechs.51 }
+		clear_variable = global.czech_answer_count
+	}
+}
+#Отрезание
+country_event = {
+	id = rcw_czechs.50
+	title =  rcw_czechs.50.t	
+	desc = rcw_czechs.50.desc
+	picture = GFX_Czech_corps_scheme_to_return
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.50.a	
+		ai_chance = {
+			factor = 1
+		}
+		clr_country_flag = rcw_country_asks_foreing_help
+	}
+
+}
+#Буря формальностей
+country_event = {
+	id = rcw_czechs.51
+	title =  rcw_czechs.51.t	
+	desc = rcw_czechs.51.desc
+	picture = GFX_Czech_corps_scheme_to_return
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.51.a	
+		ai_chance = {
+			factor = 1
+		}
+		
+	}
+
+}
+#Запрос переподчинения
+country_event = {
+	id = rcw_czechs.52
+	title =  rcw_czechs.52.t	
+	desc = rcw_czechs.52.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	fire_only_once = no 
+	is_triggered_only = yes
+	timeout_days = 1
+	option = {
+		name = rcw_czechs.52.a	
+		ai_chance = {
+			factor = 1
+		}
+		add_to_variable = {
+			var = global.czech_answer_count
+			value = 1
+		}
+	}
+	option = {
+		name = rcw_czechs.52.b	
+		ai_chance = {
+			factor = 1
+		}
+		
+	}
+}
+#Технический на проверку ответов антантовцев на запрос
+country_event = {
+	id = rcw_czechs.53
+	
+	hidden = yes
+	fire_only_once = no 
+	is_triggered_only = yes
+	immediate = {
+		if = {
+			limit = { check_variable = { global.czech_answer_count > 1 } }
+			country_event = rcw_czechs.54
+		}
+		else = { country_event = rcw_czechs.55 }
+		clear_variable = global.czech_answer_count
+	}
+}
+#Отказ
+country_event = {
+	id = rcw_czechs.54
+	title =  rcw_czechs.54.t	
+	desc = rcw_czechs.54.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.54.a	
+		ai_chance = {
+			factor = 1
+		}
+		
+	}
+
+}
+#Передача
+country_event = {
+	id = rcw_czechs.55
+	title =  rcw_czechs.55.t	
+	desc = rcw_czechs.55.desc
+	picture = GFX_report_event_rcw_czech_uprising
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.55.a	
+		ai_chance = {
+			factor = 1
+		}
+		set_country_flag = czech_returning_in_process
+		activate_mission = czechs_returning
+		set_country_flag = czechs_returned_back
+	}
+
+}
+#Торговля снаряжением
+country_event = {
+	id = rcw_czechs.56
+	title =  rcw_czechs.56.t	
+	desc = rcw_czechs.56.desc
+	picture = GFX_Czech_corps_decomposition
+	fire_only_once = yes 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.56.a	
+		ai_chance = {
+			factor = 1
+		}
+		add_equipment_to_stockpile = {
+			type = support_equipment_1
+			amount = -50
+		}
+		swap_ideas = {
+			remove_idea = czesch_white_gar_2
+			add_idea = czesch_white_gar_3
+		}
+		add_to_variable = {
+			var = czech_razlozhenie
+			value = 1
+		}
+		set_country_flag = f_czech_event_was
+		hidden_effect = {
+			random_list = {
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.56 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = s_czech_event_was
+					}
+					country_event = { id = rcw_czechs.57 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = th_czech_event_was
+					}
+					country_event = { id = rcw_czechs.58 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.59 days = 25 }
+				}
+			}
+			if = {
+				limit = { check_variable = { czech_razlozhenie > 3 } NOT = { has_country_flag = czech_returning_in_process } }
+				country_event = { id = rcw_czechs.60 days = 10 }
+			}
+		}
+	}
+
+}
+#Воровство еды
+country_event = {
+	id = rcw_czechs.57
+	title =  rcw_czechs.57.t	
+	desc = rcw_czechs.57.desc
+	picture = GFX_Czech_corps_decomposition
+	fire_only_once = yes 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.57.a	
+		ai_chance = {
+			factor = 1
+		}
+		add_stability = -0.12
+		add_to_variable = {
+			var = czech_razlozhenie
+			value = 1
+		}
+		set_country_flag = s_czech_event_was
+		hidden_effect = {
+			random_list = {
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.56 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = s_czech_event_was
+					}
+					country_event = { id = rcw_czechs.57 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = th_czech_event_was
+					}
+					country_event = { id = rcw_czechs.58 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.59 days = 25 }
+				}
+			}
+			if = {
+				limit = { check_variable = { czech_razlozhenie > 3 } NOT = { has_country_flag = czech_returning_in_process } }
+				country_event = { id = rcw_czechs.60 days = 10 }
+			}
+		}
+	}
+
+}
+#Изъятие поездов
+country_event = {
+	id = rcw_czechs.58
+	title =  rcw_czechs.58.t	
+	desc = rcw_czechs.58.desc
+	picture = GFX_Czech_corps_train
+	fire_only_once = yes 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.58.a	
+		ai_chance = {
+			factor = 1
+		}
+		add_to_variable = {
+			var = czech_razlozhenie
+			value = 1
+		}
+		add_equipment_to_stockpile = {
+			type = train_equipment
+			amount = -6
+		}
+		set_country_flag = th_czech_event_was
+		hidden_effect = {
+			random_list = {
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.56 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = s_czech_event_was
+					}
+					country_event = { id = rcw_czechs.57 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = th_czech_event_was
+					}
+					country_event = { id = rcw_czechs.58 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.59 days = 25 }
+				}
+			}
+			if = {
+				limit = { check_variable = { czech_razlozhenie > 3 } NOT = { has_country_flag = czech_returning_in_process } }
+				country_event = { id = rcw_czechs.60 days = 10 }
+			}
+		}
+	}
+
+}
+#Жестокий рейд
+country_event = {
+	id = rcw_czechs.59
+	title =  rcw_czechs.59.t	
+	desc = rcw_czechs.59.desc
+	picture = GFX_Czech_corps_brutal_raids
+	fire_only_once = yes 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.59.a	
+		ai_chance = {
+			factor = 1
+		}
+		add_stability = -0.07
+		add_war_support = -0.13
+		add_to_variable = {
+			var = czech_razlozhenie
+			value = 1
+		}
+		set_country_flag = f_czech_event_was
+		hidden_effect = {
+			random_list = {
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.56 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = s_czech_event_was
+					}
+					country_event = { id = rcw_czechs.57 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = th_czech_event_was
+					}
+					country_event = { id = rcw_czechs.58 days = 25 }
+				}
+				25 = {
+					modifier = {
+						factor = 0
+						has_country_flag = f_czech_event_was
+					}
+					country_event = { id = rcw_czechs.59 days = 25 }
+				}
+			}
+			if = {
+				limit = { check_variable = { czech_razlozhenie > 3 } NOT = { has_country_flag = czech_returning_in_process } }
+				country_event = { id = rcw_czechs.60 days = 10 }
+			}
+		}
+	}
+
+}
+#Разложение чехословаков
+country_event = {
+	id = rcw_czechs.60
+	title =  rcw_czechs.60.t	
+	desc = rcw_czechs.60.desc
+	picture = GFX_Czech_corps_decomposition
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.60.a	
+		ai_chance = {
+			factor = 1
+		}
+		swap_ideas = {
+			remove_idea = czesch_white_gar_3
+			add_idea = czesch_white_gar_4
+		}
+		set_country_flag = czechs_razlozhenie
+	}
+
+}
+#Разоружение легиона
+country_event = {
+	id = rcw_czechs.61
+	title =  rcw_czechs.61.t	
+	desc = rcw_czechs.61.desc
+	picture = GFX_Czech_corps_disarmament
+	fire_only_once = no 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.61.a	
+		ai_chance = {
+			factor = 1
+		}
+		every_country = {
+			limit = { 
+				has_country_flag = czechs_are_here
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar }
+				remove_ideas = czesch_white_gar
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_2 }
+				remove_ideas = czesch_white_gar_2
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_3 }
+				remove_ideas = czesch_white_gar_3
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_4 }
+				remove_ideas = czesch_white_gar_4
+			}
+			if = {
+				limit = { 
+					OR = {
+						has_template = "Russian-Czeh Brigada" 
+						has_template = "Brigada Chekhoslovatskogo legiona" 
+						has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+						has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "Russian-Czeh Brigada" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					disband = no
+				}
+			}
+			every_unit_leader = { limit = { has_id = 92354 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 92355 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88151 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88153 } set_nationality = REB }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_0
+				amount = 1500
+				producer = ROOT
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1
+				amount = 200
+				producer = ROOT
+			}
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = 10
+				producer = ROOT
+			}
+			add_stability = 0.2
+			add_war_support = 0.1
+			set_country_flag = czech_gone
+			clr_country_flag = czechs_mission_start
+		} 
+	}
+
+}
+#Новая родина легиона
+country_event = {
+	id = rcw_czechs.62
+	title =  rcw_czechs.62.t	
+	desc = rcw_czechs.62.desc
+	picture = GFX_Czech_corps_scheme_to_return
+	fire_only_once = yes 
+	trigger = {
+		OR = {
+			has_template = "Brigada Chekhoslovatskogo legiona" 
+			has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+			has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+			has_active_mission = czechs_white_des_out
+		}
+		any_unit_leader = { has_id = 92354 }
+		has_country_flag = czechs_are_here
+		has_global_flag = WWI_GER_sieg_im_Weltkrieg
+		CZE = { exists = no }
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	option = {
+		name = rcw_czechs.62.a	
+		ai_chance = {
+			factor = 1
+		}
+		country_event = { id = rcw_czechs.48 days = 30 }
+		if = {
+			limit = { has_active_mission = czechs_white_des_out }
+			remove_mission = czechs_white_des_out
+		}
+	}
+}
+#Срочная эвакуация
+country_event = {
+	id = rcw_czechs.63
+	title =  rcw_czechs.63.t	
+	desc = rcw_czechs.63.desc
+	picture = GFX_Czech_corps_train
+	fire_only_once = no 
+	trigger = {
+		surrender_progress > 0.49
+		has_active_mission = czechs_white_des_out
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	option = {
+		name = rcw_czechs.63.a	
+		ai_chance = {
+			factor = 1
+		}
+		every_country = {
+			limit = { has_country_flag = czechs_are_here }
+			hidden_effect = { country_event = { id = rcw_czechs.64.t days = 90 } }
+			if = {
+				limit = { has_active_mission = czechs_white_des_out }
+				remove_mission = czechs_white_des_out
+			}
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = -10
+			}
+			rise_collapse_of_railway_system_3 = yes
+			if = {
+				limit = { 
+					OR = {
+						has_template = "Brigada Chekhoslovatskogo legiona" 
+						has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+						has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					disband = no
+				}
+			}
+			every_unit_leader = { limit = { has_id = 92354 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 92355 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88153 } set_nationality = REB }
+			if = {
+				limit = { has_idea = czesch_white_gar }
+				remove_ideas = czesch_white_gar
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_2 }
+				remove_ideas = czesch_white_gar_2
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_3 }
+				remove_ideas = czesch_white_gar_3
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_4 }
+				remove_ideas = czesch_white_gar_4
+			}
+			set_country_flag = czech_gone
+			clr_country_flag = czechs_mission_start
+		}
+	}
+}
+#Технический на стабу
+country_event = {
+	id = rcw_czechs.64
+	
+	hidden = yes
+	fire_only_once = no 
+	is_triggered_only = yes
+	immediate = {
+		add_stability = 0.1
+	}
+}
+#Выдача «имя лидера RSS/SIB»
+country_event = {
+	id = rcw_czechs.65
+	title =  rcw_czechs.65.t	
+	desc = rcw_czechs.65.desc
+	picture = GFX_Czech_corps_train
+	fire_only_once = yes 
+	trigger = {
+		OR = {
+			AND = {
+				tag = RSS
+				has_civil_war = yes
+				has_country_flag = czechs_mission_start
+				
+			}
+			AND = {
+				tag = SIB
+				has_civil_war = yes
+				has_country_flag = czechs_mission_start
+				
+			}
+		}
+	}
+	mean_time_to_happen = {
+		days = 10
+	}
+	option = {
+		name = rcw_czechs.65.a	
+		ai_chance = {
+			factor = 1
+		}
+		kill_country_leader = yes
+		every_country = { 
+			limit = { 
+				OR = { 
+					original_tag = RSS 
+					original_tag = SIB 
+				} 
+			} 
+			country_event = rcw_czechs.66
+		}
+	}	
+}
+#Смерть тирана
+country_event = {
+	id = rcw_czechs.66
+	title =  rcw_czechs.66.t	
+	desc = rcw_czechs.66.desc
+	picture = GFX_Czech_corps_decomposition
+	fire_only_once = yes 
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_czechs.66.a	
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
