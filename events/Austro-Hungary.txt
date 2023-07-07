@@ -837,19 +837,11 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = austro-hungarian.100.a
+		name = austro-hungarian.99.a
 		if = {
 			limit = { has_global_flag = WWI_is_now NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED } }
-			every_state = {
-				limit = {
-					is_controlled_by = ROOT
-					NOT = { is_owned_by = ROOT }
-				}
-				GER = { set_state_controller = PREV }
-			}
 			every_owned_state = {
 				limit = {
-					is_controlled_by = ROOT
 					NOT = { is_core_of = ROOT }
 					NOT = { is_core_of = AUS }
 					NOT = { is_core_of = CRO }
@@ -858,6 +850,35 @@ country_event = {
 					is_core_of = ITA
 				}
 				GER = { set_state_owner = PREV }
+				if = {
+					limit = { CONTROLLER = { has_full_control_of_state = PREV } }
+					GER = { set_state_controller = PREV }
+				}
+				set_state_province_controller = {
+					controller = GER
+					limit = { tag = ROOT }
+				}
+			}
+			every_state = {
+				limit = {
+					is_controlled_by = ROOT
+					OWNER = { NOT = { tag = ROOT } has_war_with = GER }
+				}
+				if = {
+					limit = { CONTROLLER = { has_full_control_of_state = PREV } }
+					GER = { set_state_controller = PREV }
+				}
+				set_state_province_controller = {
+					controller = GER
+					limit = { tag = ROOT }
+				}
+				every_neighbor_state = {
+					limit = { OWNER = { NOT = { tag = ROOT } has_war_with = GER controls_state = PREV NOT = { has_full_control_of_state = PREV } } }
+					set_state_province_controller = {
+						controller = GER
+						limit = { tag = ROOT }
+					}
+				}
 			}
 		}
 		add_timed_idea = {
@@ -894,6 +915,7 @@ country_event = {
 		hidden_effect = { country_event = { id = austro-hungarian.102 days = 11 } }
 		hidden_effect = { country_event = { id = austro-hungarian.103 days = 12 } }
 		hidden_effect = { country_event = { id = austro-hungarian.104 days = 13 } }
+		hidden_effect = { country_event = { id = austro-hungarian.111 days = 17 } }
 	}
 }
 
@@ -935,7 +957,6 @@ country_event = {
 				POL = { transfer_state = 1166 }
 			}
 		}
-		country_event = { id = austro-hungarian.111 days = 7 }
 	}
 }
 
@@ -1134,31 +1155,7 @@ country_event = {
 	
 	option = {
 		name = austro-hungarian.111.a
-		if = {
-			limit = { is_faction_leader = yes }
-			dismantle_faction = yes
-			else = {
-				leave_faction = yes
-			}
-		}
-		if = {
-		limit = { has_global_flag = WWI_is_now OR = { GER = { controls_state = 16 } ITA = { OR = { has_capitulated = yes has_global_flag = WWI_ITA_HAS_CAPITULATED } } } }
-			every_country = {
-				limit = { has_war_with = AUH }
-				white_peace = AUH
-			}
-		#else_if = {
-			#limit = { has_war = yes NOT = { has_global_flag = WWI_is_now } }
-			#every_country = {
-				#limit = { has_war_with = AUH }
-				#white_peace = AUH
-			#}
-		#}
-		else_if = {
-			limit = { has_global_flag = WWI_is_now NOT = { OR = { GER = { controls_state = 16 } ITA = { OR = { has_capitulated = yes has_global_flag = WWI_ITA_HAS_CAPITULATED } } } } }
-			country_event = compiegne_armistice.998
-			}
-		}
+		country_event = compiegne_armistice.998
 	}
 }
 
