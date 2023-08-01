@@ -207,52 +207,6 @@ on_actions = {
 	on_peaceconference_ended = {
 		effect = {
 			if = {
-				limit = { FROM = { tag = RGR } }
-				if = {
-					limit = { has_global_flag = RCW_green_Russian_SFSR_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_Russian_state value = -2 }
-				}
-				if = {
-					limit = { has_global_flag = RCW_green_Russian_state_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_Russian_state value = -2 }
-				}
-				if = {
-					limit = { has_global_flag = RCW_green_CoMotCA_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_CoMotCA value = -2 }
-				}
-				if = {
-					limit = { has_global_flag = RCW_green_Siberia_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_Siberia value = -2 }
-				}
-				if = {
-					limit = { has_global_flag = RCW_green_Eastern_Union_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_Eastern_Union value = -2 }
-				}
-				if = {
-					limit = { has_global_flag = RCW_green_Romanovs_restoration_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_Romanovs_restoration value = -2 }
-				}
-				if = {
-					limit = { has_global_flag = RCW_green_Russian_volunteer_army_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_Russian_volunteer_army value = -2 }
-				}
-				if = {
-					limit = { has_global_flag = RCW_green_Muscovy_revolt_b }
-					add_to_variable = { var = global.RCW_green_var_Muscovy value = -2 }
-				}
-			}
-			if = {
-				limit = { FROM = { tag = RGR } }
-				clr_global_flag = RCW_green_Russian_SFSR_revolt_b
-				clr_global_flag = RCW_green_Russian_state_revolt_b
-				clr_global_flag = RCW_green_CoMotCA_revolt_b
-				clr_global_flag = RCW_green_Siberia_revolt_b
-				clr_global_flag = RCW_green_Eastern_Union_revolt_b
-				clr_global_flag = RCW_green_Romanovs_restoration_revolt_b
-				clr_global_flag = RCW_green_Russian_volunteer_army_revolt_b
-				clr_global_flag = RCW_green_Muscovy_revolt_b
-			}
-			if = {
 				limit = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war FROM = { tag = KRN } }
 				RUS = { country_event = petrograd_commune.101 }
 			}
@@ -724,22 +678,22 @@ on_actions = {
 			if = {
 				limit = {
 					ROOT = { original_tag = ACH NOT = { has_government = radical_socialism has_government = communism } }
-					any_enemy_country = { original_tag = ACH OR = { has_government = radical_socialism has_government = communism } } #победитель - наши, красные, хорошие
+					any_enemy_country = { original_tag = ACH OR = { has_government = radical_socialism has_government = communism } } #РїРѕР±РµРґРёС‚РµР»СЊ - РЅР°С€Рё, РєСЂР°СЃРЅС‹Рµ, С…РѕСЂРѕС€РёРµ
 				}
 				ROOT = { every_unit_leader = { limit = { has_id = 92351 } set_nationality = SIB } }
 			}
 			if = {
 				limit = {
 					ROOT = { original_tag = ACH OR = { has_government = radical_socialism has_government = communism } }
-					any_enemy_country = { original_tag = ACH NOT = { has_government = radical_socialism has_government = communism } } #победитель - контра
+					any_enemy_country = { original_tag = ACH NOT = { has_government = radical_socialism has_government = communism } } #РїРѕР±РµРґРёС‚РµР»СЊ - РєРѕРЅС‚СЂР°
 				}
 				ROOT = { clr_country_flag = ACH_reds_CW every_unit_leader = { limit = { has_id = 92351 } set_nationality = SIB } }
-				random_enemy_country = { limit = { original_tag = ACH NOT = { has_government = radical_socialism has_government = communism } } country_event = rcw_usfev.1951 } # победа контры
+				random_enemy_country = { limit = { original_tag = ACH NOT = { has_government = radical_socialism has_government = communism } } country_event = rcw_usfev.1951 } # РїРѕР±РµРґР° РєРѕРЅС‚СЂС‹
 			}
 			if = {
 				limit = {
 					ROOT = { original_tag = KUB OR = { has_government = radical_socialism has_government = communism } }
-					any_enemy_country = { original_tag = KUB NOT = { has_government = radical_socialism has_government = communism } } #победитель - контра
+					any_enemy_country = { original_tag = KUB NOT = { has_government = radical_socialism has_government = communism } } #РїРѕР±РµРґРёС‚РµР»СЊ - РєРѕРЅС‚СЂР°
 				}
 				ROOT = { clr_country_flag = KUB_reds_CW every_unit_leader = { set_nationality = RSR } }
 			}
@@ -803,14 +757,15 @@ on_actions = {
 				}
 				retire_country_leader = yes
 			}
-		}
-		effect = {
-			# Скрипт, отвечающий за разделение капитулирующей страны
+			
+	# ROOT is capitulated country, FROM is winner
+			
+			# РЎРєСЂРёРїС‚, РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° СЂР°Р·РґРµР»РµРЅРёРµ РєР°РїРёС‚СѓР»РёСЂСѓСЋС‰РµР№ СЃС‚СЂР°РЅС‹
 			if = {
 				limit = {
 					NOT = { has_global_flag = RUS_civil_war_over }
 					has_global_flag = RUS_civil_war_intervention_start
-					ROOT = {
+					FROM = {
 						OR = {
 							is_any_former_russian_empire_country = yes
 							former_russian_empire_baltic_states_country = yes
@@ -828,21 +783,21 @@ on_actions = {
 								}
 							}
 						}
-						FROM = {
-							OR = {
-								is_any_former_russian_empire_country = yes
-								former_russian_empire_baltic_states_country = yes
-								former_russian_empire_polish_region_country = yes
-								original_tag = FIN
-								AND = {
-									is_subject = yes
-									OVERLORD = {
-										OR = {
-											is_any_former_russian_empire_country = yes
-											former_russian_empire_baltic_states_country = yes
-											former_russian_empire_polish_region_country = yes
-											original_tag = FIN
-										}
+					}
+					ROOT = {
+						OR = {
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes
+							former_russian_empire_polish_region_country = yes
+							original_tag = FIN
+							AND = {
+								is_subject = yes
+								OVERLORD = {
+									OR = {
+										is_any_former_russian_empire_country = yes
+										former_russian_empire_baltic_states_country = yes
+										former_russian_empire_polish_region_country = yes
+										original_tag = FIN
 									}
 								}
 							}
@@ -872,6 +827,53 @@ on_actions = {
 							}
 						}
 					}
+				}
+				if = {
+					limit = { ROOT = { tag = RGR } }
+					every_state = {
+						limit = { is_core_of = RGR }
+						remove_core_of = RGR
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_Russian_SFSR_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_Russian_state value = -2 }
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_Russian_state_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_Russian_state value = -2 }
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_CoMotCA_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_CoMotCA value = -2 }
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_Siberia_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_Siberia value = -2 }
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_Eastern_Union_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_Eastern_Union value = -2 }
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_Romanovs_restoration_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_Romanovs_restoration value = -2 }
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_Russian_volunteer_army_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_Russian_volunteer_army value = -2 }
+					}
+					if = {
+						limit = { has_global_flag = RCW_green_Muscovy_revolt_b }
+						add_to_variable = { var = global.RCW_green_var_Muscovy value = -2 }
+					}
+					clr_global_flag = RCW_green_Russian_SFSR_revolt_b
+					clr_global_flag = RCW_green_Russian_state_revolt_b
+					clr_global_flag = RCW_green_CoMotCA_revolt_b
+					clr_global_flag = RCW_green_Siberia_revolt_b
+					clr_global_flag = RCW_green_Eastern_Union_revolt_b
+					clr_global_flag = RCW_green_Romanovs_restoration_revolt_b
+					clr_global_flag = RCW_green_Russian_volunteer_army_revolt_b
+					clr_global_flag = RCW_green_Muscovy_revolt_b
 				}
 				ROOT = {
 					every_other_country = { limit = { is_subject_of = PREV } PREV = { end_puppet = PREV } }
@@ -903,14 +905,16 @@ on_actions = {
 						}
 					}
 				}
+				ROOT = {
+					remove_all_Brigada_Chekhoslovatskogo_legiona = yes
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+					delete_unit = {
+						disband = yes
+					}
+				}
 				if = {
 					limit = { FROM = { is_subject = no } }
 					ROOT = {
-						remove_all_Brigada_Chekhoslovatskogo_legiona = yes
-						remove_all_foreing_locked_templates_from_liberated_country = yes
-						delete_unit = {
-							disband = yes
-						}
 						transfer_units_fraction = {
 							target = FROM
 							size = 0
@@ -925,11 +929,6 @@ on_actions = {
 						FROM = {
 							OVERLORD = {
 								ROOT = {
-									delete_unit = {
-										disband = yes
-									}
-									remove_all_Brigada_Chekhoslovatskogo_legiona = yes
-									remove_all_foreing_locked_templates_from_liberated_country = yes
 									transfer_units_fraction = {
 										target = PREV
 										size = 0
