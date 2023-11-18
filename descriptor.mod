@@ -1,4 +1,4 @@
-name="Revolution or Reaction: Rise of Russia"
+name="Revolution or Reaction: Rise of Russia dev build"
 tags={
 	"Events"
 	"Gameplay"
@@ -9,6 +9,6 @@ tags={
 	"Technologies"
 }
 picture="thumbnail.png"
-version="1.12.*"
-supported_version="1.12.*"
+version="1.13.*"
+supported_version="1.13.*"
 remote_file_id="1285457891"
