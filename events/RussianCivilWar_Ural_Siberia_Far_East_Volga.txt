@@ -6517,11 +6517,18 @@ country_event = {
 	}
 }
 
-# Реакция Казахстана на аннексию РСС
+# Реакция Казахстана, Татарстана и Башкирии на аннексию РСС
 country_event = {
 	id = rcw_usfev.145
 	title = rcw_usfev.145.t
-	desc = rcw_usfev.145.desc
+	desc = {
+		text = rcw_usfev.145.desc
+		trigger = { is_former_russian_empire_non_slavic_country = yes NOT = { this_country_has_some_russian_cosmetic = yes } }
+	}
+	desc = {
+		text = rcw_usfev.145.desc_1
+		trigger = { OR = { NOT = { is_former_russian_empire_non_slavic_country = yes } this_country_has_some_russian_cosmetic = yes } }
+	}
 
 	picture = GFX_report_event_kaz_kaput
 	
@@ -6529,11 +6536,15 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.145.a
-		RSS = {
+		FROM = {
 			annex_country = {
 				target = ROOT
 				transfer_troops = yes
 			}
+		}
+		if = {
+			limit = { OR = { NOT = { is_former_russian_empire_non_slavic_country = yes } this_country_has_some_russian_cosmetic = yes } }
+			every_unit_leader = { set_nationality = FROM }
 		}
 		ai_chance = {
 			factor = 1
@@ -6541,17 +6552,11 @@ country_event = {
 	}
 	
 	option = {
+		trigger = { is_former_russian_empire_non_slavic_country = yes NOT = { this_country_has_some_russian_cosmetic = yes } }
 		name = rcw_usfev.145.b
 		add_popularity = { ideology = communism popularity = 0.3 }
 		OVERLORD = {
 			end_puppet = ROOT
-			if = {
-				limit = { NOT = { has_war_with = ROOT } }
-				declare_war_on = {
-					target = ROOT
-					type = annex_everything
-				}
-			}
 		}
 		leave_faction = yes
 		if = {
@@ -6567,8 +6572,38 @@ country_event = {
 				white_peace = ROOT
 			}
 		}
+		FROM = {
+			if = {
+				limit = { NOT = { has_war_with = ROOT } }
+				declare_war_on = {
+					target = ROOT
+					type = annex_everything
+				}
+			}
+		}
 		ai_chance = {
 			factor = 1
+		}
+	}
+	
+	option = {
+		trigger = { OR = { NOT = { is_former_russian_empire_non_slavic_country = yes } this_country_has_some_russian_cosmetic = yes } }
+		name = rcw_usfev.145.c
+		OVERLORD = {
+			end_puppet = ROOT
+		}
+		leave_faction = yes
+		FROM = {
+			if = {
+				limit = { NOT = { has_war_with = ROOT } }
+				create_wargoal = {
+					type = annex_everything
+					target = ROOT
+				}
+			}
+		}
+		ai_chance = {
+			factor = 0
 		}
 	}
 }
