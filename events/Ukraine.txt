@@ -3620,7 +3620,11 @@ country_event = {
 		end_puppet = UKR
 		every_owned_state = {
 			limit = { OR = { is_core_of = UKR is_core_of = ROM } NOT = { region = 133 region = 135 region = 137 state = 953 state = 1284 state = 227 state = 918 state = 1290 state = 958 state = 1286 state = 1367 state = 221 state = 1285 state = 225 } }
-			UKR = { transfer_state = PREV }
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
+			}
 		}
 		remove_from_faction = UKR
 		diplomatic_relation = {
@@ -3694,7 +3698,11 @@ country_event = {
 		end_puppet = UKR
 		every_owned_state = {
 			limit = { OR = { is_core_of = UKR is_core_of = ROM } NOT = { region = 133 region = 135 region = 137 state = 953 state = 1284 state = 227 state = 918 state = 1290 state = 958 state = 1286 state = 1367 state = 221 state = 1285 state = 225 } }
-			UKR = { transfer_state = PREV }
+			UKR = { set_state_owner = PREV }
+			if = {
+				limit = { is_fully_controlled_by = RUS }
+				UKR = { set_state_controller = PREV }
+			}
 		}
 		remove_from_faction = UKR
 		diplomatic_relation = {
@@ -4292,10 +4300,18 @@ country_event = {
 		if = {
 			limit = { NOT = { country_exists = ODS } }
 			hidden_effect = {
-				192 = { add_core_of = ODS }
-				766 = { add_core_of = ODS }
-				1292 = { add_core_of = ODS }
-				1294 = { add_core_of = ODS }
+				every_state = {
+					limit = {
+						OR = {
+							state = 192
+							state = 766
+							state = 1292
+							state = 1293
+							state = 1294
+						}
+					}
+					add_core_of = ODS
+				}
 			}
 			every_owned_state = {
 				limit = { is_core_of = ODS }
@@ -4464,10 +4480,18 @@ country_event = {
 		if = {
 			limit = { NOT = { country_exists = ODS } }
 			hidden_effect = {
-				192 = { add_core_of = ODS }
-				766 = { add_core_of = ODS }
-				1292 = { add_core_of = ODS }
-				1294 = { add_core_of = ODS }
+				every_state = {
+					limit = {
+						OR = {
+							state = 192
+							state = 766
+							state = 1292
+							state = 1293
+							state = 1294
+						}
+					}
+					add_core_of = ODS
+				}
 			}
 			every_owned_state = {
 				limit = { is_core_of = ODS }
@@ -6431,6 +6455,57 @@ country_event = {
 		
 	}
 }
+# Наступление на Ростов
+country_event = {
+	id = ukraine.61
+	title = ukraine.61.t
+	desc = ukraine.61.d
+	picture = GFX_report_event_februrary_revolution
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = ukraine.61.a
+			if = {
+				limit = {
+					owns_state = 221
+					controls_state = 221
+					NOT = {
+						owns_state = 240
+						controls_state = 240
+					}
+					240 = { OWNER = { NOT = { has_war_with = ROOT } any_owned_state = { NOT = { state = 240 } } } }
+					240 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } } }
+				}
+				240 = { CONTROLLER = { transfer_state = PREV } }
+				start_border_war = {
+					change_state_after_war = yes
+					attacker = {
+						state = 221
+						num_provinces = 2
+						on_win = ukraine.58
+						on_lose = ukraine.56
+						on_cancel = ukraine.58
+					}
+					defender = {
+						state = 240
+						num_provinces = 2
+						on_win = ukraine.56
+						on_lose = ukraine.58
+						on_cancel = ukraine.58
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					240 = { OWNER = { NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } NOT = { any_owned_state = { NOT = { state = 240 } } } } }
+				}
+				240 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = no } } } }
+			}
+	}
+}
 
 # Передача Киева и левобережья в пользу УНРС во владение
 country_event = {
@@ -6508,15 +6583,15 @@ country_event = {
 	option = {
 		name = ukraine.101.a
 		every_state = {
-			limit = { OR = { is_owned_by = UKR AND = { OR = { is_owned_by = GER is_owned_by = AUH is_owned_by = BUL is_owned_by = TUR } is_core_of = USR } } is_controlled_by = FRT }
+			limit = { OR = { is_owned_by = UKR AND = { OR = { is_owned_by = GER is_owned_by = AUH is_owned_by = BUL is_owned_by = TUR } OR = { is_core_of = USR is_core_of = RUS } } } is_controlled_by = FRT }
 			FRT = { transfer_state = PREV }
 		}
 		every_state = {
-			limit = { OR = { is_owned_by = UKR AND = { OR = { is_owned_by = GER is_owned_by = AUH is_owned_by = BUL is_owned_by = TUR } is_core_of = USR } } is_controlled_by = ODS }
+			limit = { OR = { is_owned_by = UKR AND = { OR = { is_owned_by = GER is_owned_by = AUH is_owned_by = BUL is_owned_by = TUR } OR = { is_core_of = USR is_core_of = RUS } } } is_controlled_by = ODS }
 			ODS = { transfer_state = PREV }
 		}
 		every_state = {
-			limit = { OR = { is_owned_by = UKR is_owned_by = GER is_owned_by = AUH is_owned_by = BUL is_owned_by = TUR } is_core_of = USR CONTROLLER = { NOT = { tag = OWNER } OR = { original_tag = POL original_tag = LIT original_tag = BLR original_tag = CRI original_tag = RUS original_tag = DON original_tag = GAL original_tag = ROM original_tag = MOL original_tag = HUN } } }
+			limit = { OR = { is_owned_by = UKR is_owned_by = GER is_owned_by = AUH is_owned_by = BUL is_owned_by = TUR } OR = { is_core_of = USR is_core_of = RUS } CONTROLLER = { NOT = { tag = OWNER } OR = { original_tag = POL original_tag = LIT original_tag = BLR original_tag = CRI original_tag = RUS original_tag = DON original_tag = GAL original_tag = ROM original_tag = MOL original_tag = HUN } } }
 			CONTROLLER = { transfer_state = PREV }
 		}
 		USR = { annex_country = { target = UKR transfer_troops = no } }
