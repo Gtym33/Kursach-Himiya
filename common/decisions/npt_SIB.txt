@@ -260,3 +260,261 @@ foreign_politics = {
 	}
 
 }
+#Разгром Учредиловцев
+SIB_fight_CCA_influence_cat = {
+	#Разгромить эсеровскую оппозицию в Сибири 
+	SIB_destroy_opposition = {
+		icon = generic_army_support
+		available = {
+			
+		}
+		visible = {
+			
+		}
+		cost = 30
+		days_remove = 30
+		fire_only_once = yes
+		
+		remove_effect = {
+			if = {
+				limit = { has_idea = SIB_eser_opposition }
+				remove_ideas = SIB_eser_opposition
+			}
+			add_stability = -0.05
+			set_country_flag = SIB_destroy_opposition_flag
+		}
+	}
+	#Связаться с офицерами в Народной армии
+	SIB_contact_peoples_army = {
+		icon = generic_army_support
+		available = {
+			
+		}
+		visible = {
+			
+		}
+		cost = 30
+		days_remove = 15
+		fire_only_once = yes
+		
+		remove_effect = {
+			if = {
+				limit = {	CCA = { has_variable = CCA_officers_unrest } }
+				add_to_variable = {
+					var = CCA_officers_unrest
+					value = 1
+					tooltip = add_1_unrest
+				}
+			}
+			set_country_flag = SIB_contact_peoples_army_flag
+		}
+	}
+	#Агитировать против эсеров
+	SIB_anti_eser_agitation = {
+		icon = generic_army_support
+		available = {
+			
+		}
+		visible = {
+			
+		}
+		cost = 15
+		days_remove = 30
+		fire_only_once = yes
+		
+		remove_effect = {
+			CCA = {
+				add_political_power = -10
+				if = {
+					limit = { has_government = social_liberalism }
+					add_popularity = { ideology = social_liberalism popularity = 0.04 }
+				}
+				if = {
+					limit = { has_government = national_syndicalism }
+					add_popularity = { ideology = national_syndicalism popularity = 0.04 }
+				}
+				if = {
+					limit = { has_government = social_democracy }
+					add_popularity = { ideology = social_democracy popularity = 0.04 }
+				}
+				if = {
+					limit = { has_government = despotism }
+					add_popularity = { ideology = despotism popularity = 0.04 }
+				}
+				if = {
+					limit = { has_government = authoritarism }
+					add_popularity = { ideology = authoritarism popularity = 0.04 }
+				}
+				if = {
+					limit = { has_government = radical_socialism }
+					add_popularity = { ideology = radical_socialism popularity = 0.04 }
+				}
+				if = {
+					limit = { has_government = social_conservatism }
+					add_popularity = { ideology = social_conservatism popularity = 0.04 }
+				}
+				if = {
+					limit = { has_government = market_liberalism }
+					add_popularity = { ideology = market_liberalism popularity = 0.04 }
+				}
+			}
+			set_country_flag = SIB_anti_eser_agitation_flag
+		}
+	}
+	#Внедриться в гарнизоны пограничных городов
+	SIB_invade_garisons = {
+		icon = generic_army_support
+		available = {
+			
+		}
+		visible = {
+			
+		}
+		cost = 50
+		days_remove = 15
+		fire_only_once = yes
+		
+		remove_effect = {
+			CCA = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -500
+				}
+				add_popularity = { ideology = despotism popularity = 0.03 }
+			}
+			set_country_flag = SIB_invade_garisons_flag
+		}
+	}
+	#Сфабриковать пограничный конфликт
+	SIB_border_conflict = {
+		icon = generic_army_support
+		available = {
+			OR = { controls_state = 573 controls_state = 582  }
+			CCA = { controls_state = 651 controls_state = 1299 }
+		}
+		visible = {
+			
+		}
+		cost = 30
+		days_remove = 15
+		fire_only_once = yes
+		
+		remove_effect = {
+			if = {
+				limit = {  SIB = { OR = { controls_state = 573 controls_state = 582 } } }
+				if = {
+					limit = { controls_state = 573 NOT = { controls_state = 582 } }
+					start_border_war = {
+						change_state_after_war = no
+						attacker = {
+							state = 573
+							num_provinces = 3
+							on_win = wtt_border_conflict_won_attacker.1
+						}	
+						defender = {
+							state = 651
+							num_provinces = 3
+						}
+					}
+				}
+				if = {
+					limit = { controls_state = 582 NOT = { controls_state = 573 } }
+					start_border_war = {
+						change_state_after_war = no
+						attacker = {
+							state = 582
+							num_provinces = 3
+							on_win = wtt_border_conflict_won_attacker.1
+						}	
+						defender = {
+							state = 1299
+							num_provinces = 3
+						}
+					}
+				}
+				if = {
+					limit = { controls_state = 582 controls_state = 573 }
+					random_list = {
+						50 = {
+							start_border_war = {
+								change_state_after_war = no
+								attacker = {
+									state = 582
+									num_provinces = 3
+									on_win = wtt_border_conflict_won_attacker.1
+								}	
+								defender = {
+									state = 1299
+									num_provinces = 3
+								}
+							}
+						}
+						50 = {
+							start_border_war = {
+								change_state_after_war = no
+								attacker = {
+									state = 573
+									num_provinces = 3
+									on_win = wtt_border_conflict_won_attacker.1
+								}	
+								defender = {
+									state = 651
+									num_provinces = 3
+								}
+							}
+						}
+					}
+				}
+			}
+			set_country_flag = SIB_border_conflict_flag
+		}
+	}
+	#Заручиться нейтралитетом казаков
+	SIB_cossack_neutrality = {
+		icon = generic_army_support
+		available = {
+			NOT = { has_war_with = CCA }
+		}
+		visible = {
+			OR = {
+				UCH = { is_subject_of = CCA }
+				OCH = { is_subject_of = CCA }
+			}
+		}
+		cost = 70
+		days_remove = 7
+		fire_only_once = yes
+		
+		remove_effect = {
+			if = {
+				limit = { OCH = { is_subject_of = CCA } }
+				OCH = { country_event = rcw_cca.101 }
+			}
+			if = {
+				limit = { UCH = { is_subject_of = CCA } }
+				UCH = { country_event = rcw_cca.101 }
+			}
+		}
+	}
+	#Разгромить Комитет
+	SIB_crush_CCA = {
+		icon = generic_army_support
+		available = {
+			has_country_flag = SIB_border_conflict_flag
+			has_country_flag = SIB_invade_garisons_flag
+			has_country_flag = SIB_anti_eser_agitation_flag
+			has_country_flag = SIB_contact_peoples_army_flag
+			has_country_flag = SIB_destroy_opposition_flag
+		}
+		visible = {
+			
+		}
+		cost = 10
+		days_remove = 10
+		fire_only_once = yes
+		
+		remove_effect = {
+			country_event = rcw_cca.102
+		}
+	}
+}

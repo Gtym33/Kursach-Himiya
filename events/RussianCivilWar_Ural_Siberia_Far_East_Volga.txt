@@ -574,16 +574,16 @@ country_event = {
 
 ###Боевые дружины левых эсеров поднимают восстание, если они в составе КОМУЧ###
 country_event = {
-	id = rcw_usfev.13
-	title = rcw_usfev.13.t
-	desc = rcw_usfev.13.desc
+	id = rcw_usfev.12
+	title = rcw_usfev.12.t
+	desc = rcw_usfev.12.desc
 
 	picture = GFX_report_event_rcw_czech_uprising
 	
 	trigger = {
 		tag = CCA
 		has_war_with = RUS
-		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired NOT = { has_government = radical_socialism } }
 		NOT = { has_global_flag = RUS_civil_war_over }
 		has_country_flag = main_left_essers_is_here
 	}
@@ -595,7 +595,7 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = rcw_usfev.13.a
+		name = rcw_usfev.12.a
 		load_oob = CCA_left_esser_rise
 		add_state_core = 398
 		add_state_core = 249
@@ -604,8 +604,22 @@ country_event = {
 		add_state_core = 252
 		add_state_core = 248
 		RUS = { every_unit_leader = { limit = { has_id = 19189 } set_nationality = CCA } }
+		RUS = { country_event = rcw_usfev.13 }
 	}
+}
+###Боевые дружины левых эсеров поднимают восстание, если они в составе КОМУЧ###
+country_event = {
+	id = rcw_usfev.13
+	title = rcw_usfev.13.t
+	desc = rcw_usfev.13.desc
+
+	picture = GFX_report_event_rcw_czech_uprising
 	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.13.a
+	}
 }
 
 country_event = {
@@ -1077,28 +1091,6 @@ country_event = {
 		OCH = { country_event = { id = rcw_usfev.14 hours = 1 } }
 		
 		CCA = { change_tag_from = RUS }
-	}
-}
-
-#########Продовольственная политика КОМУЧ######
-country_event = {
-	id = rcw_usfev.17
-	title = rcw_usfev.17.t
-	desc = rcw_usfev.17.desc
-
-	picture = GFX_report_event_cca_bread
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = rcw_usfev.17.a
-		add_ideas = CCA_bread_free
-		add_stability = 0.1
-	}
-	option = {
-		name = rcw_usfev.17.b
-		add_ideas = CCA_bread_state
-		add_stability = -0.1
 	}
 }
 
@@ -1886,6 +1878,14 @@ country_event = {
 		add_command_power = 30
 		army_experience = 15
 		create_corps_commander = { name = "Avenir Efimov" id = 11006 portrait_path = "gfx/leaders/UDM/Portrait_Avenir_Efimov.dds" traits = { infantry_officer } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+		if = {
+			limit = { tag = CCA has_variable = CCA_officers_unrest }
+			add_to_variable = {
+				var = CCA_officers_unrest
+				value = 1
+				tooltip = add_1_unrest
+			}
+		}
 	}
 }
 
@@ -2154,62 +2154,73 @@ country_event = {
 	option = {
 		name = rcw_usfev.44.a
 		if = {
-			limit = { check_variable = { SIB_pressure_CCA = 1 } }
-			add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
-			SIB = {
-				add_opinion_modifier = { target = CCA modifier = SIB_accept }
-				country_event = rcw_usfev.46
-			}
-			if = {
-				limit = { URL = { exists = yes is_subject_of = SIB } }
-				URL = { transfer_state = 572 }
-				else = {
-					SIB = { transfer_state = 572 }
-				}
-			}
-			every_state = {
-				limit = {
-					OR = {
-						state = 1103
-						state = 653
-						state = 1025
-						state = 1392
-					}
+			limit = { NOT = { has_global_flag = CCA_SIB_GOS_SOV_FLAG } }
+				if = {
+				limit = { check_variable = { SIB_pressure_CCA = 1 } }
+				add_opinion_modifier = { target = SIB modifier = SIB_accept_CCA }
+				SIB = {
+					add_opinion_modifier = { target = CCA modifier = SIB_accept }
+					country_event = rcw_usfev.46
 				}
 				if = {
-					limit = { PREV = { is_controlled_by = CCA } }
-					set_state_controller_to = SIB
-				}
-				if = {
-					limit = { PREV = { is_owned_by = CCA } }
-					SIB = { transfer_state = PREV }
-				}
-			}
-		}
-		if = {
-			limit = { check_variable = { SIB_pressure_CCA = 2 } }
-			SIB = {
-				URL = { subjecting_script_with_transfer_parties_integrated_puppet = yes }
-				country_event = rcw_usfev.46
-			}
-		}
-		if = {
-			limit = { check_variable = { SIB_pressure_CCA = 3 } }
-			CCA = {
-				every_unit_leader = {
-						set_nationality = SIB
+					limit = { URL = { exists = yes is_subject_of = SIB } }
+					URL = { transfer_state = 572 }
+					else = {
+						SIB = { transfer_state = 572 }
 					}
-			}
-			SIB = {
-				annex_country = {
-					target = CCA
-					transfer_troops = yes
 				}
 				every_state = {
-					limit = { is_core_of = CCA }
-					add_core_of = SIB
+					limit = {
+						OR = {
+							state = 1103
+							state = 653
+							state = 1025
+							state = 1392
+						}
+					}
+					if = {
+						limit = { PREV = { is_controlled_by = CCA } }
+						set_state_controller_to = SIB
+					}
+					if = {
+						limit = { PREV = { is_owned_by = CCA } }
+						SIB = { transfer_state = PREV }
+					}
 				}
-				country_event = rcw_usfev.46
+			}
+			if = {
+				limit = { check_variable = { SIB_pressure_CCA = 2 } }
+				SIB = {
+					URL = { subjecting_script_with_transfer_parties_integrated_puppet = yes }
+					country_event = rcw_usfev.46
+				}
+			}
+			if = {
+				limit = { check_variable = { SIB_pressure_CCA = 3 } }
+				CCA = {
+					every_unit_leader = {
+							set_nationality = SIB
+						}
+				}
+				SIB = {
+					annex_country = {
+						target = CCA
+						transfer_troops = yes
+					}
+					every_state = {
+						limit = { is_core_of = CCA }
+						add_core_of = SIB
+					}
+					country_event = rcw_usfev.46
+				}
+			}
+		}
+		if = {
+			limit = { has_global_flag = CCA_SIB_GOS_SOV_FLAG }
+			add_to_variable = {
+				var = global.CCA_SIB_gos_sov_var
+				value = -1
+				tooltip = sub_1_gos_var
 			}
 		}
 		ai_chance = {
@@ -2218,6 +2229,7 @@ country_event = {
 	}
 	option = {
 		name = rcw_usfev.44.b
+		trigger = { NOT = { has_global_flag = CCA_SIB_GOS_SOV_FLAG } }
 		SIB = { country_event = rcw_usfev.45 }
 		ai_chance = {
 			factor = 2
@@ -2861,16 +2873,16 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	trigger = {
-		NOT = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes } }
-	}
+	#trigger = {
+	#	NOT = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes } }
+	#}
 	
-	option = {
-		name = rcw_usfev.54.a
-		add_popularity = { ideology = authoritarism popularity = 0.02 }
-		add_popularity = { ideology = despotism popularity = 0.07 }
-		add_popularity = { ideology = social_conservatism popularity = 0.07 }
-	}
+	#option = {
+	#	name = rcw_usfev.54.a
+	#	add_popularity = { ideology = authoritarism popularity = 0.02 }
+	#	add_popularity = { ideology = despotism popularity = 0.07 }
+	#	add_popularity = { ideology = social_conservatism popularity = 0.07 }
+	#}
 	
 	option = {
 		name = rcw_usfev.54.b
@@ -2888,6 +2900,7 @@ country_event = {
 			add_ideas = Pavel_Rinov_army_chief
 		}
 		every_unit_leader = { limit = { has_id = 92353 is_field_marshal = no } promote_leader = yes }
+		country_event = { id = rcw_cca.82 days = 5 }
 	}
 }
 
@@ -3050,7 +3063,7 @@ country_event = {
 			set_country_flag = Alexander_Novosyolov_dead
 		}
 	}
-	
+	fire_only_once = yes
 	option = {
 		name = rcw_usfev.56.a
 		add_popularity = { ideology = social_liberalism popularity = 0.1 }
@@ -6557,6 +6570,13 @@ country_event = {
 		add_popularity = { ideology = communism popularity = 0.3 }
 		OVERLORD = {
 			end_puppet = ROOT
+			if = {
+				limit = { NOT = { has_war_with = ROOT } }
+				declare_war_on = {
+					target = ROOT
+					type = annex_everything
+				}
+			}
 		}
 		leave_faction = yes
 		if = {
@@ -6585,7 +6605,6 @@ country_event = {
 			factor = 1
 		}
 	}
-	
 	option = {
 		trigger = { OR = { NOT = { is_former_russian_empire_non_slavic_country = yes } this_country_has_some_russian_cosmetic = yes } }
 		name = rcw_usfev.145.c
@@ -7343,23 +7362,16 @@ country_event = {
 	
 	trigger = {
 		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		OR = {
+			tag = CCA
+			tag = SIB
+		}
 		SIB = { exists = yes }
 		CCA = { exists = yes }
+		NOT = { has_country_flag = CCA_SIB_event_was }
 		OR = {
-			AND = {
-				tag = CCA
-				controls_state = 653
-				653 = {
-					any_neighbor_state = { is_controlled_by = SIB }
-				}
-			}
-			AND = {
-				tag = SIB
-				controls_state = 653
-				653 = {
-					any_neighbor_state = { is_controlled_by = CCA }
-				}
-			}
+			CCA = { is_neighbor_of = SIB }
+			SIB = { is_neighbor_of = CCA }
 		}
 		NOT = {
 			SIB = { has_war_with = CCA }
@@ -7376,6 +7388,7 @@ country_event = {
 						has_government = communism
 						has_government = social_democracy
 						has_government = social_liberalism
+						has_government = national_syndicalism
 					}
 				}
 				SIB = {
@@ -7406,6 +7419,7 @@ country_event = {
 						has_government = communism
 						has_government = social_democracy
 						has_government = social_liberalism
+						has_government = national_syndicalism
 					}
 				}
 			}
@@ -7416,17 +7430,21 @@ country_event = {
 		days = 0
 	}
 	
-	fire_only_once = yes
+	fire_only_once = no
 	
 	option = {
 		name = rcw_usfev.158.a
 		if = {
 			limit = { tag = CCA }
-			SIB = { country_event = { id = rcw_usfev.159 days = 1 } }
+			#SIB = { country_event = { id = rcw_usfev.159 days = 1 } }
+			country_event = { id = rcw_cca.68 days = 10 }
+			country_event = { id = rcw_cca.69 days = 25 }
+			set_country_flag = CCA_SIB_event_was
 		}
 		if = {
 			limit = { tag = SIB }
-			CCA = { country_event = { id = rcw_usfev.159 days = 1 } }
+			#CCA = { country_event = { id = rcw_usfev.159 days = 1 } }
+			set_country_flag = CCA_SIB_event_was
 		}
 	}
 	
