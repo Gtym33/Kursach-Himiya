@@ -2064,6 +2064,79 @@ country_event = {
 ##Уфимская интермедия##
 #######################
 
+
+# Напряжение на линии соприкосновения Сибири и КОМУЧ (Соединение с Самарой/Соединение с Омском)
+country_event = {
+	id = rcw_cca.73
+	
+	title = {
+		text = rcw_cca.73.t_1
+		trigger = { tag = SIB }
+	}
+	title = {
+		text = rcw_cca.73.t_2
+		trigger = { tag = CCA }
+	}
+	
+	desc = {
+		text = rcw_cca.73.desc_1
+		trigger = { tag = SIB }
+	}
+	desc = {
+		text = rcw_cca.73.desc_2
+		trigger = { tag = CCA }
+	}
+
+	picture = GFX_report_event_sib_czechoslovakians
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		OR = {
+			AND = {
+				tag = CCA
+				is_subject = no
+				is_neighbor_of = SIB
+				has_war_with = SIB
+				SIB = { is_subject = no }
+				URL = { exists = no }
+				NOT = { has_government = radical_socialism has_government = communism }
+				SIB = { NOT = { has_government = radical_socialism has_government = communism } }
+			}
+			FROM = { has_country_flag = CCA_SIB_event_was }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { tag = CCA }
+				set_country_flag = CCA_SIB_event_was
+				SIB = { country_event = { id = rcw_cca.73 hours = 2 } }
+				else = {
+					FROM = { clr_country_flag = CCA_SIB_event_was }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_cca.73.a
+		if = {
+			limit = { tag = CCA }
+			country_event = { id = rcw_cca.68 days = 10 }
+			country_event = { id = rcw_cca.69 days = 25 }
+		}
+	}
+	
+}
+
 # Прибытие «возрожденцев»
 country_event = {
 	id = rcw_cca.68
@@ -2105,19 +2178,29 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = rcw_cca.69.a
-		SIB = { 
-			country_event = { id = rcw_cca.70 days = 1 } 
-			country_event = { id = rcw_cca.71 days = 35 } 		
+		SIB = {
+			country_event = { id = rcw_cca.70 days = 1 }
+			country_event = { id = rcw_cca.71 days = 35 }
 		}
-		country_event = { id = rcw_cca.71 days = 35 } 	
+		country_event = { id = rcw_cca.71 days = 35 }
+		ai_chance = {
+			factor = 2
+		}
 	}
 	option = {
 		name = rcw_cca.69.b
 		add_political_power = -10
 		country_event = { id = rcw_cca.72 days = 1 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
 	}
 }
-# Тяжелая встреча
+# Тяжёлая встреча
 country_event = {
 	id = rcw_cca.70
 	title = rcw_cca.70.t
@@ -2129,11 +2212,11 @@ country_event = {
 	is_triggered_only = yes
 	option = {
 		name = rcw_cca.70.a
-		hidden_effect = { country_event = { id = rcw_cca.73 days = 15 } }	
+		hidden_effect = { country_event = { id = rcw_cca.74 days = 15 } }
 		custom_effect_tooltip = CCA_SIB_next_step
 	}
 }
-# Второе предварительно совещание
+# Второе предварительное совещание
 country_event = {
 	id = rcw_cca.71
 	title = rcw_cca.71.t
@@ -2159,14 +2242,13 @@ country_event = {
 			limit = { tag = SIB }
 			country_event = { id = rcw_cca.78 days = 14 }
 			if = {
-				limit = { 
+				limit = {
 					OR = {
 						any_unit_leader = { has_id = 92345 }
-						has_country_leader = {  name = "Alexey Grishin-Almazov" ruling_only = yes } 
+						has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes }
 					}
-					OR = {  
-						has_template = "Brigada Chekhoslovatskogo legiona"  
-						has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					OR = {
+						has_any_of_Brigada_Chekhoslovatskogo_legiona = yes
 						has_idea = czesch_white_gar
 						has_idea = czesch_white_gar_2
 						has_idea = czesch_white_gar_3
@@ -2207,28 +2289,8 @@ country_event = {
 			}
 			set_country_flag = CCA_scandal
 		}
-		hidden_effect = { country_event = { id = rcw_cca.73 days = 15 } }	
+		hidden_effect = { country_event = { id = rcw_cca.74 days = 15 } }
 		custom_effect_tooltip = CCA_SIB_next_step
-	}
-}
-# Скрытый на проверку существования комуча
-country_event = {
-	id = rcw_cca.73
-	title = rcw_cca.73.t
-	desc = rcw_cca.73.desc
-	
-	picture = GFX_report_event_RSS_government
-	timeout_days = 1
-	fire_only_once = yes
-	is_triggered_only = yes
-	hidden = yes
-	immediate = {
-		if = {
-			limit = { 
-				CCA = { exists = yes }
-			}
-			country_event = rcw_cca.74
-		}
 	}
 }
 # «Международная» торговля
@@ -2238,6 +2300,8 @@ country_event = {
 	desc = rcw_cca.74.desc
 	
 	picture = GFX_report_event_RSS_government
+	
+	trigger = { CCA = { exists = yes } }
 	
 	fire_only_once = yes
 	is_triggered_only = yes
@@ -2562,10 +2626,10 @@ country_event = {
 			factor = 1
 		}
 		hidden_effect = { 
-			country_event = { id = rcw_usfev.56 days = 1 }
+			country_event = { id = rcw_usfev.56 days = 10 } #Убийство Новосёлова
 			if = {
 				limit = { has_variable = global.CCA_SIB_gos_sov_var }
-				CCA = { country_event = { id = rcw_cca.85 days = 1 } }
+				CCA = { country_event = { id = rcw_cca.85 days = 10 } }
 			}
 		}
 	}
