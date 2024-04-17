@@ -1,3 +1,239 @@
+russia_in_ruins_category = {
+	war_fatigue_growth = {
+		icon = GFX_decision_generic_naval
+		activation = {
+			has_idea = russia_in_ruins_idea
+		}
+		available = {
+			hidden_trigger = {
+				NOT = {
+					has_idea = war_fatigue_1
+					has_idea = war_fatigue_2
+					has_idea = war_fatigue_3
+					has_idea = war_fatigue_4
+					has_idea = war_fatigue_5
+				}
+			}
+		}
+		is_good = no
+		days_mission_timeout = 140
+		timeout_effect = {
+			activate_mission = war_fatigue_growth
+			if = {
+				limit = {
+					has_idea = war_fatigue_1
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_1
+					add_idea = war_fatigue_2
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = war_fatigue_2
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_2
+					add_idea = war_fatigue_3
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = war_fatigue_3
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_3
+					add_idea = war_fatigue_4
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = war_fatigue_4
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_4
+					add_idea = war_fatigue_5
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = war_fatigue_5
+				}
+				remove_ideas = war_fatigue_5
+				country_event = rcw.103
+			}
+		}
+	}
+	devastation_consequences = {
+		icon = GFX_decision_generic_naval
+		activation = {
+			has_idea = russia_in_ruins_idea
+		}
+		available = {
+			hidden_trigger = {
+				always = no
+			}
+		}
+		is_good = no
+		days_mission_timeout = 56
+		fixed_random_seed = no
+		timeout_effect = {
+			activate_mission = devastation_consequences
+			random_list = {
+				1 = {
+					country_event = rcw.104
+				}
+				1 = {
+					country_event = rcw.105
+				}
+				1 = {
+					country_event = rcw.106
+				}
+				1 = {
+					country_event = rcw.107
+				}
+				1 = {
+					country_event = rcw.108
+				}
+				1 = {
+					country_event = rcw.109
+				}
+			}
+		}
+	}
+    move_to_peace = {
+        fire_only_once = yes
+        days_remove = 35
+		cost = 10
+        remove_effect = {
+            add_stability = 0.01
+			set_country_flag = move_to_peace_completed
+        }
+    }
+    secret_negotiations = {
+        fire_only_once = yes
+        days_remove = 56
+		cost = 25
+		visible = {
+			has_country_flag = move_to_peace_completed
+		}
+        remove_effect = {
+            add_stability = 0.03
+			set_country_flag = secret_negotiations_completed
+        }
+    }
+    prisoner_exchange = {
+        fire_only_once = yes
+        days_remove = 14
+		cost = 10
+		visible = {
+			has_country_flag = secret_negotiations_completed
+		}
+        remove_effect = {
+			add_manpower = 200
+			add_war_support = 0.02
+			set_country_flag = prisoner_exchange_completed
+        }
+    }
+    cease_fire = {
+        fire_only_once = yes
+        days_remove = 35
+		cost = 25
+		visible = {
+			has_country_flag = prisoner_exchange_completed
+		}
+        remove_effect = {
+			add_stability = 0.02
+			add_war_support = 0.02
+			set_country_flag = cease_fire_completed
+        }
+    }
+    delimitation = {
+        fire_only_once = yes
+        days_remove = 56
+		cost = 25
+		visible = {
+			has_country_flag = cease_fire_completed
+		}
+        remove_effect = {
+			set_country_flag = delimitation_completed
+        }
+    }
+    stop_fighting = {
+        fire_only_once = yes
+        days_remove = 35
+		cost = 25
+		visible = {
+			has_country_flag = delimitation_completed
+		}
+		complete_effect = {
+			every_other_country = {
+				limit = {
+					is_former_russian_empire_russian_country = yes
+					has_war_with = ROOT
+				}
+				country_event = { id = rcw_all_rus_NA.25 hours = 1 }
+			}
+		}
+        remove_effect = {
+			country_event = rcw.103
+        }
+    }
+    continue_fighting = {
+        days_remove = 70
+		cost = 300
+		visible = {
+			OR = {
+				has_idea = war_fatigue_2
+				has_idea = war_fatigue_3
+				has_idea = war_fatigue_4
+				has_idea = war_fatigue_5				
+			}
+			check_variable = {
+				ROOT.continue_fighting_var < 3
+			}
+		}
+        remove_effect = {
+			add_to_variable = { ROOT.continue_fighting_var = 1 }
+			if = {
+				limit = {
+					has_idea = war_fatigue_5
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_5
+					add_idea = war_fatigue_4
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = war_fatigue_4
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_4
+					add_idea = war_fatigue_3
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = war_fatigue_3
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_3
+					add_idea = war_fatigue_2
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = war_fatigue_2
+				}
+				swap_ideas = {
+					remove_idea = war_fatigue_2
+					add_idea = war_fatigue_1
+				}
+			}
+        }
+    }
+}
 operations = {
 	repair_baltic_fleet_desision = {
 		icon = GFX_decision_generic_naval
