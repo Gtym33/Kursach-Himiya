@@ -325,20 +325,43 @@ country_event = {
 			NOT = { has_completed_focus = BKL_provisional_regional_government controls_state = 566 controls_state = 564 controls_state = 561 controls_state = 574 }
 		}
 		name = rcw_kolchak.9.a #И всё-таки, действовать вместе будет разумней
-		every_owned_state = {
-			limit = { is_core_of = FROM }
-			FROM = { transfer_state = PREV }
-		}
-		FROM = { ROOT = { subjecting_script_with_transfer_parties_semi_independent_with_puppets_wars = yes } }
-		FROM = {
-			send_equipment = {
-				equipment = infantry_equipment
-				amount = 100
-				target = ROOT
+		if = {
+			limit = { OR = { 563 = { OR = { OWNER = { tag = BKL } OWNER = { tag = RSR controls_state = PREV NOT = { has_full_control_of_state = PREV } } } } 1187 = { OR = { OWNER = { tag = BKL } OWNER = { tag = RSR controls_state = PREV NOT = { has_full_control_of_state = PREV } } } } } }
+			set_state_owner = 563
+			set_state_owner = 1187
+			every_owned_state = {
+				limit = { is_core_of = FROM }
+				FROM = { transfer_state = PREV }
+			}
+			FROM = { ROOT = { subjecting_script_with_transfer_parties_semi_independent_with_puppets_wars = yes } }
+			FROM = {
+				send_equipment = {
+					equipment = infantry_equipment
+					amount = 100
+					target = ROOT
+				}
+			}
+			add_ideas = BKL_subsidies_from_HRB_idea
+			FROM = { add_ideas = HRB_subsidies_for_BKL_idea }
+			else = {
+				every_unit_leader = { set_nationality = FROM }
+				transfer_units_fraction = {
+					target = FROM
+					size = 1
+					stockpile_ratio = 1
+					army_ratio = 1
+					navy_ratio = 1
+					air_ratio = 1
+					keep_unit_leaders_trigger = { always = yes }
+				}
+				FROM = {
+					annex_country = {
+						target = ROOT
+						transfer_troops = yes
+					}
+				}
 			}
 		}
-		add_ideas = BKL_subsidies_from_HRB_idea
-		FROM = { add_ideas = HRB_subsidies_for_BKL_idea }
 		FROM = { country_event = rcw_kolchak.10 }
 		ai_chance = {
 			factor = 3
@@ -382,6 +405,21 @@ country_event = {
 				traits = { naval_invader }
 			}
 		}
+	}
+}
+
+# Отступление ОМО (КВЖД)
+country_event = {
+	id = rcw_kolchak.11
+	title = rcw_kolchak.11.t
+	desc = rcw_kolchak.11.desc
+	picture = GFX_report_event_RSS_kolchak_subjugated_semyonov
+
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_kolchak.11.a #Адмирал проявил себя великолепно
+		add_war_support = -0.05
 	}
 }
 
