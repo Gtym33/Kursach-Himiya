@@ -1,3 +1,336 @@
+economy_decisions = {
+	refill_gold_reserve = {
+		visible = {
+			OR = {
+				has_idea = no_gold_1
+				has_idea = no_gold_2
+				has_idea = no_gold_3
+			}
+		}
+		cost = 250
+		days_remove = 56
+        remove_effect = {
+			if = {
+				limit = {
+					has_idea = no_gold_1
+				}
+				remove_ideas = no_gold_1
+			}
+			if = {
+				limit = {
+					has_idea = no_gold_2
+				}
+				swap_ideas = {
+					remove_idea = no_gold_2
+					add_idea = no_gold_1
+				}
+			}
+			if = {
+				limit = {
+					has_idea = no_gold_3
+				}
+				swap_ideas = {
+					remove_idea = no_gold_3
+					add_idea = no_gold_2
+				}
+			}
+        }
+	}
+}
+russian_gold_category = {
+	evacuation_of_gold = {
+		icon = GFX_decision_generic_naval
+		activation = {
+			always = no
+		}
+		available = {
+			hidden_trigger = {
+				always = no
+			}
+		}
+		is_good = yes
+		cancel_trigger = {
+			NOT = {
+				252 = {
+					is_controlled_by = RUS
+				}
+				249 = {
+					is_controlled_by = RUS
+				}
+			}
+		}
+		days_mission_timeout = 60
+		timeout_effect = {
+			country_event = rcwgold.2
+		}
+	}
+    unpack_gold_reserve = {
+        visible = {
+			check_variable = {
+				ROOT.gold_reserve_var > 0
+			}
+			NOT = {
+				original_tag = RUS
+			}
+        }
+        icon = GFX_decision_generic_naval
+        fire_only_once = yes
+        days_remove = 14
+		cost = 25
+        remove_effect = {
+			set_country_flag = gold_reserve_unpacked
+        }
+    }
+    stabilize_finiancial_system = {
+        visible = {
+			check_variable = {
+				ROOT.gold_reserve_var > 0
+				ROOT.stabilize_finiancial_system_var < 2
+			}
+			has_country_flag = gold_reserve_unpacked
+        }
+        icon = GFX_decision_generic_naval
+        days_remove = 56
+        remove_effect = {
+			if = {
+				limit = {
+					has_idea = hyper_inflation_5
+				}
+				swap_ideas = {
+					remove_idea = hyper_inflation_5
+					add_idea = hyper_inflation_3
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = hyper_inflation_4
+				}
+				swap_ideas = {
+					remove_idea = hyper_inflation_4
+					add_idea = hyper_inflation_2
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = hyper_inflation_3
+				}
+				swap_ideas = {
+					remove_idea = hyper_inflation_3
+					add_idea = hyper_inflation_1
+				}
+			}
+			else_if = {
+				limit = {
+					has_idea = hyper_inflation_2
+				}
+				remove_ideas = hyper_inflation_2
+			}
+			else_if = {
+				limit = {
+					has_idea = hyper_inflation_1
+				}
+				remove_ideas = hyper_inflation_1
+				add_political_power = 75
+			}
+			else_if = {
+				limit = {
+					has_idea = CCA_no_money
+				}
+				remove_ideas = CCA_no_money
+			}
+			else = {
+				add_political_power = 150
+			}
+			if = {
+				limit = {
+					has_stability < 0.3
+				}
+				country_event = rcwgold.5
+			}
+			subtract_from_variable = {
+				var = ROOT.gold_reserve_var
+				value = 1
+			}
+			add_to_variable = {
+				var = ROOT.stabilize_finiancial_system_var
+				value = 1
+			}
+			russian_cw_set_gold_reserve_idea = yes
+        }
+    }
+    buy_weapons = {
+        visible = {
+			check_variable = {
+				ROOT.gold_reserve_var > 0
+			}
+			has_country_flag = gold_reserve_unpacked
+        }
+        available = {
+			any_neighbor_country = {
+				NOT = {
+					has_war_with = ROOT
+				}
+			}
+        }
+        icon = GFX_decision_generic_naval
+        days_remove = 180
+        complete_effect = {
+			subtract_from_variable = {
+				var = ROOT.gold_reserve_var
+				value = 1
+			}
+			russian_cw_set_gold_reserve_idea = yes
+        }
+		remove_effect = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 4000
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment
+				amount = 1000
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment
+				amount = 300
+			}
+			add_equipment_to_stockpile = {
+				type = biplane_plane_airframe
+				amount = 50
+			}
+			add_equipment_to_stockpile = {
+				type = light_tank_chassis
+				amount = 50
+			}
+		}
+    }
+    foreign_loans = {
+        visible = {
+			check_variable = {
+				ROOT.gold_reserve_var > 0
+			}
+			has_country_flag = gold_reserve_unpacked
+        }
+        available = {
+			any_other_country = {
+				limit = {
+					is_in_array = {
+						array = ROOT.rcw_supported_states
+						value = THIS.id
+					}
+				}
+			}
+        }
+        icon = GFX_decision_generic_naval
+        days_remove = 90
+        complete_effect = {
+			subtract_from_variable = {
+				var = ROOT.gold_reserve_var
+				value = 1
+			}
+			russian_cw_set_gold_reserve_idea = yes
+        }
+		remove_effect = {
+			ROOT = {
+				save_global_event_target_as = gold_loan_country
+			}
+			random_other_country = {
+				limit = {
+					is_in_array = {
+						array = THIS.rcw_supported_states
+						value = ROOT.id
+					}
+				}
+				country_event = rcwgold.6
+			}
+			random_other_country = {
+				limit = {
+					is_in_array = {
+						array = THIS.rcw_supported_states
+						value = ROOT.id
+					}
+				}
+				country_event = rcwgold.6
+			}
+			random_other_country = {
+				limit = {
+					is_in_array = {
+						array = THIS.rcw_supported_states
+						value = ROOT.id
+					}
+				}
+				country_event = rcwgold.6
+			}
+			random_other_country = {
+				limit = {
+					is_in_array = {
+						array = THIS.rcw_supported_states
+						value = ROOT.id
+					}
+				}
+				country_event = rcwgold.6
+			}
+			random_other_country = {
+				limit = {
+					is_in_array = {
+						array = THIS.rcw_supported_states
+						value = ROOT.id
+					}
+				}
+				country_event = rcwgold.6
+			}
+		}
+    }
+    evacuate_gold = {
+        visible = {
+			check_variable = {
+				ROOT.gold_reserve_var > 0
+			}
+        }
+        available = {
+			any_neighbor_country = {
+				is_former_russian_empire_russian_country = yes
+			}
+        }
+        icon = GFX_decision_generic_naval
+        days_remove = 5
+		remove_effect = {
+			country_event = rcwgold.7
+		}
+    }
+	evacuation_of_gold_to_other_country = {
+		icon = GFX_decision_generic_naval
+		activation = {
+			always = no
+		}
+		available = {
+			hidden_trigger = {
+				always = no
+			}
+		}
+		is_good = yes
+		cancel_trigger = {
+			NOT = {
+				is_neighbor_of = event_target:chosen_country_to_send_gold
+			}
+		}
+		days_mission_timeout = 35
+		timeout_effect = {
+			event_target:chosen_country_to_send_gold = {
+				country_event = rcwgold.8
+			}
+			add_to_variable = {
+				var = event_target:chosen_country_to_send_gold.gold_reserve_var
+				value = var:ROOT.gold_reserve_var
+			}
+			subtract_from_variable = {
+				var = ROOT.gold_reserve_var
+				value = var:ROOT.gold_reserve_var
+			}
+			russian_cw_set_gold_reserve_idea = yes
+		}
+	}
+}
 russia_in_ruins_category = {
 	war_fatigue_growth = {
 		icon = GFX_decision_generic_naval
