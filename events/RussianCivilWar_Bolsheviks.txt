@@ -1658,9 +1658,14 @@ country_event = {
 		}
 		if = {
 			limit = {
-				has_idea = two_party_system_law
-				check_variable = { communism_coalition = 1 }
-				check_variable = { radical_socialism_coalition = 1 }
+				OR = {
+					has_idea = poliparty_system_law
+					AND = {
+						has_idea = two_party_system_law
+						check_variable = { communism_coalition = 1 }
+						check_variable = { radical_socialism_coalition = 1 }
+					}
+				}
 			}
 			country_event = rcw_bolsheviks.51
 		}
@@ -1699,28 +1704,47 @@ country_event = {
 country_event = {
 	id = rcw_bolsheviks.48
 	title = rcw_bolsheviks.48.t
-	desc = rcw_bolsheviks.48.desc
-	picture = GFX_report_event_sov_felix_VCHK
-	
-	is_triggered_only = yes
-	
-	option = {
+	desc = {
+		text = rcw_bolsheviks.48.desc
 		trigger = {
 			NOT = {
+				has_idea = poliparty_system_law
 				has_idea = two_party_system_law
 				check_variable = { communism_coalition = 1 }
 				check_variable = { radical_socialism_coalition = 1 }
 			}
 		}
+	}
+	desc = {
+		text = rcw_bolsheviks.48.desc_1
+		trigger = {
+			OR = {
+				has_idea = poliparty_system_law
+				AND = {
+					has_idea = two_party_system_law
+					check_variable = { communism_coalition = 1 }
+					check_variable = { radical_socialism_coalition = 1 }
+				}
+			}
+		}
+	}
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
 		name = rcw_bolsheviks.48.a
 		if = {
 			limit = { has_idea = RUS_exchange_in_kind_idea }
-			remove_ideas = RUS_exchange_in_kind_idea
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 2
 			}
-			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 50 }
+			swap_ideas = {
+				remove_idea = RUS_exchange_in_kind_idea
+				add_idea = RUS_prodrazverstka_idea
+			}
+			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 100 }
 		}
 		if = {
 			limit = { has_idea = RUS_prodnalog_idea }
@@ -1729,21 +1753,46 @@ country_event = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 1
 			}
+			swap_ideas = {
+				remove_idea = RUS_prodnalog_idea
+				add_idea = RUS_prodrazverstka_idea
+			}
+			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 50 }
 		}
-		add_ideas = RUS_prodrazverstka_idea
+		if = {
+			limit = {
+				OR = {
+					has_idea = poliparty_system_law
+					AND = {
+						has_idea = two_party_system_law
+						check_variable = { communism_coalition = 1 }
+						check_variable = { radical_socialism_coalition = 1 }
+					}
+				}
+			}
+			country_event = rcw_bolsheviks.51
+		}
+	}
+	option = {
+		trigger = { has_idea = RUS_prodnalog_idea }
+		name = rcw_bolsheviks.48.b
+		add_stability = -0.01
 	}
 	option = {
 		trigger = { has_idea = RUS_exchange_in_kind_idea }
-		name = rcw_bolsheviks.48.b
+		name = rcw_bolsheviks.48.c
 		if = {
 			limit = { has_idea = RUS_exchange_in_kind_idea }
-			remove_ideas = RUS_exchange_in_kind_idea
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 1
 			}
+			swap_ideas = {
+				remove_idea = RUS_exchange_in_kind_idea
+				add_idea = RUS_prodnalog_idea
+			}
 		}
-		add_ideas = RUS_prodnalog_idea
+		add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 50 }
 	}
 }
 # Гражданская война на селе
@@ -3279,7 +3328,7 @@ country_event = {
 		any_unit_leader = { has_id = 77426 }
 		OR = {
 			has_country_flag = RUS_left_SR_revolt_suppose
-			CCA = { has_country_flag = main_left_essers_is_here }
+			CCA = { exists = yes has_country_flag = main_left_essers_is_here }
 		}
 		#CCA = {
 			#exists = yes
@@ -3612,6 +3661,7 @@ country_event = {
 			subtract_from_variable = { var = moderate_faction_CC value = 3 }
 			check_overlap_of_CC_n_CEC_deputies_add = yes
 			set_frame_of_CC_n_CEC = yes
+			CCA = { set_country_flag = main_left_essers_is_here }
 		}
 	}
 }
