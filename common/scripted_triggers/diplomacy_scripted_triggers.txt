@@ -773,68 +773,90 @@ DIPLOMACY_LEAVE_FACTION_ENABLE_TRIGGER = {
 }
 DIPLOMACY_JOIN_FACTION_ENABLE_TRIGGER = {
 	if = {
-		limit = {
-			ROOT = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
-			FROM = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
+		limit = { NOT = { is_subject_of = FROM } }
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						NOT = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
+						FROM = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
+					}
+					AND = {
+						OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes }
+						NOT = { FROM = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } } }
+					}
+				}
+			}
+			OR = {
+				has_global_flag = RUS_civil_war_over
+				NOT = { has_global_flag = RUS_civil_war_intervention_start }
+			}
 		}
-		OR = {
-			has_global_flag = RUS_civil_war_over
-			NOT = { has_global_flag = RUS_civil_war_intervention_start }
+		
+		if = {
+			limit = { FROM = { is_left_country = yes } }
+			is_left_country = yes
 		}
-	}
-	
-	if = {
-		limit = { FROM = { is_left_country = yes } }
-		is_left_country = yes
-	}
-	if = {
-		limit = { FROM = { is_liberal_country = yes } }
-		is_centrist_country = yes
-	}
-	if = {
-		limit = { FROM = { is_authoritarian_country = yes } }
-		OR = {
-			is_liberal_country = yes
-			is_reactionary_country = yes
+		if = {
+			limit = { FROM = { is_liberal_country = yes } }
+			is_centrist_country = yes
 		}
-	}
-	if = {
-		limit = { FROM = { is_fascist_country = yes } }
-		is_reactionary_country = yes
-	}
-}
-DIPLOMACY_OFFER_JOIN_FACTION_ENABLE_TRIGGER = {
-	if = {
-		limit = {
-			ROOT = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
-			FROM = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
-		}
-		OR = {
-			has_global_flag = RUS_civil_war_over
-			NOT = { has_global_flag = RUS_civil_war_intervention_start }
-		}
-	}
-	
-	if = {
-		limit = { is_left_country = yes }
-		FROM = { is_left_country = yes }
-	}
-	if = {
-		limit = { is_liberal_country = yes }
-		FROM = { is_centrist_country = yes }
-	}
-	if = {
-		limit = { is_authoritarian_country = yes }
-		FROM = {
+		if = {
+			limit = { FROM = { is_authoritarian_country = yes } }
 			OR = {
 				is_liberal_country = yes
 				is_reactionary_country = yes
 			}
 		}
+		if = {
+			limit = { FROM = { is_fascist_country = yes } }
+			is_reactionary_country = yes
+		}
 	}
+}
+DIPLOMACY_OFFER_JOIN_FACTION_ENABLE_TRIGGER = {
 	if = {
-		limit = { is_fascist_country = yes }
-		FROM = { is_reactionary_country = yes }
+		limit = { FROM = { NOT = { is_subject_of = ROOT } } }
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						NOT = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
+						FROM = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } }
+					}
+					AND = {
+						OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes }
+						NOT = { FROM = { OR = { original_tag = FIN is_any_former_russian_empire_country = yes former_russian_empire_polish_region_country = yes former_russian_empire_baltic_states_country = yes } } }
+					}
+				}
+			}
+			OR = {
+				has_global_flag = RUS_civil_war_over
+				NOT = { has_global_flag = RUS_civil_war_intervention_start }
+			}
+		}
+		
+		if = {
+			limit = { is_left_country = yes }
+			FROM = { is_left_country = yes }
+		}
+		if = {
+			limit = { is_liberal_country = yes }
+			FROM = { is_centrist_country = yes }
+		}
+		if = {
+			limit = { is_authoritarian_country = yes }
+			FROM = {
+				OR = {
+					is_liberal_country = yes
+					is_reactionary_country = yes
+				}
+			}
+		}
+		if = {
+			limit = { is_fascist_country = yes }
+			FROM = { is_reactionary_country = yes }
+		}
 	}
 }
 DIPLOMACY_CREATE_FACTION_ENABLE_TRIGGER = {
@@ -871,7 +893,7 @@ DIPLOMACY_CREATE_FACTION_ENABLE_TRIGGER = {
 		FROM = { is_reactionary_country = yes }
 	}
 }
- DIPLOMACY_ASSUME_FACTION_LEADERSHIP_ENABLE_TRIGGER = {
+DIPLOMACY_ASSUME_FACTION_LEADERSHIP_ENABLE_TRIGGER = {
 	if = {
 		limit = {
 			has_game_rule = {
