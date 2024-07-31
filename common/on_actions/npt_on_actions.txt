@@ -1149,7 +1149,7 @@ on_actions = {
 						every_state = {
 							limit = { is_owned_by = ROOT is_core_of = PREV CONTROLLER = { OR = { tag = PREV.PREV is_subject_of = PREV.PREV is_in_faction_with = PREV.PREV OVERLORD = { controls_state = PREV.PREV } } } }
 							set_state_flag = cap_transfered_state
-							PREV = { transfer_state = PREV }
+							transfer_state_to = PREV
 						}
 					}
 				}
@@ -1162,7 +1162,7 @@ on_actions = {
 								is_controlled_by = PREV
 							}
 							set_state_flag = cap_transfered_state
-							PREV = { transfer_state = PREV }
+							transfer_state_to = PREV
 						}
 					}
 				}
@@ -1176,7 +1176,7 @@ on_actions = {
 								CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } PREV = { is_subject_of = PREV } } }
 							}
 							set_state_flag = cap_transfered_state
-							PREV = { transfer_state = PREV }
+							transfer_state_to = PREV
 						}
 					}
 				}
@@ -1187,11 +1187,11 @@ on_actions = {
 							limit = {
 								is_owned_by = ROOT
 								NOT = { is_core_of = PREV }
-								PREV = { OVERLORD = { PREV.PREV = { is_core_of = PREV } } }
+								is_core_of = PREV.OVERLORD
 								CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } PREV = { is_subject_of = PREV } } }
 							}
 							set_state_flag = cap_transfered_state
-							OVERLORD = { transfer_state = PREV }
+							transfer_state_to = PREV.OVERLORD
 						}
 					}
 				}
@@ -1205,7 +1205,7 @@ on_actions = {
 								CONTROLLER = { OR = { tag = ROOT NOT = { has_war_with = PREV.PREV } } }
 							}
 							set_state_flag = cap_transfered_state
-							PREV = { transfer_state = PREV }
+							transfer_state_to = PREV
 						}
 					}
 				}
@@ -1218,7 +1218,7 @@ on_actions = {
 								is_controlled_by = PREV
 							}
 							set_state_flag = cap_transfered_state
-							PREV = { transfer_state = PREV }
+							transfer_state_to = PREV
 						}
 					}
 				}
@@ -1247,103 +1247,11 @@ on_actions = {
 					}
 				}
 				
-				
-				every_country = {
-					limit = { is_subject = yes }
-					OVERLORD = {
-						every_core_state = {
-							limit = {
-								has_state_flag = cap_transfered_state
-							}
-							#set_state_flag = cap_transfered_state_core_OVERLORD
-						}
-					}
-					every_core_state = {
-						limit = {
-							has_state_flag = cap_transfered_state
-						}
-						set_state_flag = cap_transfered_state_core
-					}
-					every_owned_state = {
-						limit = {
-							has_state_flag = cap_transfered_state
-							#has_state_flag = cap_transfered_state_core_OVERLORD
-							NOT = { has_state_flag = cap_transfered_state_core }
-						}
-						PREV = { OVERLORD = { transfer_state = PREV.PREV } }
-					}
-				}
-				for_each_scope_loop = {
-					array = global.countries
-					for_each_scope_loop = {
-						array = subjects
-						every_core_state = {
-							set_state_flag = cap_transfered_state_core_not_exchange
-						}
-						every_owned_state = {
-							limit = {
-								has_state_flag = cap_transfered_state
-								has_state_flag = cap_transfered_state_core
-								NOT = { has_state_flag = cap_transfered_state_core_not_exchange }
-							}
-							transfer_state_to = PREV.OVERLORD
-						}
-						every_core_state = {
-							clr_state_flag = cap_transfered_state_core_not_exchange
-						}
-					}
-				}
-				every_country = {
-					limit = { is_subject = yes }
-					OVERLORD = {
-						every_owned_state = {
-							limit = {
-								has_state_flag = cap_transfered_state
-								#NOT = { has_state_flag = cap_transfered_state_core_OVERLORD }
-								has_state_flag = cap_transfered_state_core
-							}
-							set_state_flag = cap_transfered_state_core_transfer_to_subject
-						}
-					}
-					OVERLORD = {
-						every_owned_state = {
-							limit = { has_state_flag = cap_transfered_state_core_transfer_to_subject }
-							set_state_flag = cap_transfered_state_core_transfer_to_subject_temp
-						}
-						PREV = {
-							every_core_state = {
-								limit = { has_state_flag = cap_transfered_state_core_transfer_to_subject_temp }
-								clr_state_flag = cap_transfered_state_core_transfer_to_subject_temp
-								transfer_state_to = PREV
-							}
-						}
-					}
-				}
-				
-				
 				every_state = {
 					limit = {
 						has_state_flag = cap_transfered_state
 					}
 					clr_state_flag = cap_transfered_state
-				}
-				every_state = {
-					limit = {
-						has_state_flag = cap_transfered_state_core
-					}
-					clr_state_flag = cap_transfered_state_core
-				}
-				every_state = {
-					limit = {
-						has_state_flag = cap_transfered_state_core_OVERLORD
-					}
-					clr_state_flag = cap_transfered_state_core_OVERLORD
-				}
-				every_state = {
-					limit = {
-						has_state_flag = cap_transfered_state_core_transfer_to_subject
-					}
-					clr_state_flag = cap_transfered_state_core_transfer_to_subject
 				}
 				every_enemy_country = { white_peace = ROOT }
 				if = {
