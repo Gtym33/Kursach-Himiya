@@ -45,7 +45,7 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = RSS_complete_dictatorship
 		}
-		x = 9
+		x = 10
 		y = 1
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -64,7 +64,7 @@ focus_tree = {
 			focus = RSS_nepredreshenie
 			focus = RSS_complete_dictatorship
 		}
-		x = 9
+		x = 10
 		y = 2
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -181,7 +181,7 @@ focus_tree = {
 				NOT = { has_global_flag = RSS_civil_war_eser_coup }
 			}
 		}
-		x = 11
+		x = 12
 		y = 1
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -193,6 +193,40 @@ focus_tree = {
 			add_ideas = {
 				military_dictatorship_gov_form
 				decrees_of_ruler_b_law
+			}
+		}
+	}
+	
+	focus = {
+		id = RSS_full_centralization
+		icon = GFX_goal_RSS_implosion
+		cost = 3
+		prerequisite = {
+			focus = RSS_complete_dictatorship
+		}
+		x = 12
+		y = 2
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		completion_reward = {
+			if = {
+				limit = {
+					is_subject = no
+				}
+				every_country = {
+					limit = { is_subject_of = ROOT is_any_former_russian_empire_country = yes }
+					country_event = rcw_usfev.145
+				}
+				else = {
+					OVERLORD = {
+						every_country = {
+							limit = { is_subject_of = PREV is_any_former_russian_empire_country = yes }
+							country_event = rcw_usfev.145
+						}
+					}
+				}
 			}
 		}
 	}
@@ -503,40 +537,78 @@ focus_tree = {
 			}
 		}
 	}
-	
 	focus = {
-		id = RSS_full_centralization
-		icon = GFX_goal_RSS_implosion
-		cost = 3
-		prerequisite = {
-			focus = RSS_complete_dictatorship
-		}
-		x = 13
-		y = 2
-		cancel_if_invalid = yes
+		id = RSS_antibolshevik_crusade
+		icon = GFX_goal_SIB_antibolshevik_crusade
+		cost = 10
 		ai_will_do = {
-			factor = 10
+			factor = 1
 		}
+		bypass = {
+			has_war = no
+		}
+		prerequisite = {
+			focus = RSS_holy_cross_and_green_banner
+		}
+		x = 0
+		y = 1
+		relative_position_id = RSS_holy_cross_and_green_banner
 		completion_reward = {
-			if = {
-				limit = {
-					is_subject = no
-				}
-				every_country = {
-					limit = { is_subject_of = ROOT is_any_former_russian_empire_country = yes }
-					country_event = rcw_usfev.145
-				}
-				else = {
-					OVERLORD = {
-						every_country = {
-							limit = { is_subject_of = PREV is_any_former_russian_empire_country = yes }
-							country_event = rcw_usfev.145
-						}
-					}
-				}
+			add_popularity = { ideology = communism popularity = -0.1 }
+			add_popularity = { ideology = radical_socialism popularity = -0.1 }
+			add_popularity = { ideology = authoritarism popularity = 0.1 }
+			add_popularity = { ideology = despotism popularity = 0.15 }
+			add_popularity = { ideology = fascism popularity = 0.1 }
+			add_timed_idea = {
+				idea = SIB_antibolshevik_crusade_idea
+				days = 93
 			}
 		}
 	}
+	
+	
+	focus = {
+		id = RSS_russian_politburo
+		icon = GFX_goal_SIB_conference
+		cost = 4
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+		}
+		prerequisite = {
+			focus = RSS_complete_dictatorship
+		}
+		relative_position_id = RSS_complete_dictatorship
+		x = 2
+		y = 1
+		completion_reward = {
+			add_ideas = SIB_russian_politburo_idea
+		}
+	}
+	
+	#focus = {
+	#	id = RSS_proclaim_regency
+	#	icon = GFX_goal_RSS_south_staff
+	#	cost = 3
+	#	prerequisite = {
+	#		focus = RSS_complete_dictatorship
+	#	}
+	#	available = {
+	#	}
+	#	
+	#	x = 3
+	#	y = 2
+	#	relative_position_id = RSS_complete_dictatorship
+	#	cancel_if_invalid = yes
+	#	ai_will_do = {
+	#		factor = 0
+	#	}
+	#	completion_reward = {
+	#	}
+	#}
 	
 	focus = {
 		id = RSS_move_south
@@ -550,8 +622,8 @@ focus_tree = {
 			RVA = { is_subject_of = ROOT }
 		}
 		
-		x = 15
-		y = 2
+		x = 13
+		y = 3
 		cancel_if_invalid = yes
 		ai_will_do = {
 			factor = 0
@@ -634,25 +706,36 @@ focus_tree = {
 		icon = GFX_goal_RSS_zemskiy
 		cost = 3
 		prerequisite = {
-			focus = RSS_cleaning_cabinet
-			focus = RSS_move_south
+			focus = RSS_approval_general_governorships
 		}
-		x = 15
+		available = {
+			surrender_progress < 0.4
+		}
+		x = 7
 		y = 3
 		cancel_if_invalid = yes
 		ai_will_do = {
 			factor = 10
 		}
 		completion_reward = {
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.02
+			}
 			add_stability = 0.05
 			add_political_power = 140 #75
 			elections_allowed_60 = yes
 			if = {
 				limit = { is_subject = yes }
 				OVERLORD = {
-					add_stability = 0.05
-					add_political_power = 140 #75
-					elections_allowed_60 = yes
 					every_state = {
 						limit = { is_core_of = RUS OR = { is_on_continent = europe is_on_continent = middle_east } }
 						add_core_of = PREV
@@ -718,6 +801,9 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = RSS_cleaning_cabinet
+		}
+		available = {
+			NOT = { has_idea = PRC_government_corruption }
 		}
 		x = 19
 		y = 3
@@ -1000,6 +1086,7 @@ focus_tree = {
 				is_subject = no
 				NOT = { has_war_with = ROOT }
 				NOT = { has_government = communism has_government = radical_socialism }
+				NOT = { this_country_has_some_russian_cosmetic = yes }
 			}
 		}
 		x = 14
