@@ -39,7 +39,7 @@ economy_decisions = {
 }
 russian_gold_category = {
 	evacuation_of_gold = {
-		icon = GFX_decision_generic_naval
+		icon = GFX_decision_steel
 		activation = {
 			always = no
 		}
@@ -71,9 +71,13 @@ russian_gold_category = {
 			}
 			NOT = {
 				original_tag = RUS
+				has_active_mission = evacuation_of_gold_to_other_country
 			}
         }
-        icon = GFX_decision_generic_naval
+		cancel_trigger = {
+			has_active_mission = evacuation_of_gold_to_other_country
+		}
+        icon = GFX_decision_steel
         fire_only_once = yes
         days_remove = 14
 		cost = 25
@@ -88,8 +92,9 @@ russian_gold_category = {
 				ROOT.stabilize_finiancial_system_var < 2
 			}
 			has_country_flag = gold_reserve_unpacked
+			NOT = { has_active_mission = evacuation_of_gold_to_other_country }
         }
-        icon = GFX_decision_generic_naval
+        icon = GFX_decision_generic_industry
         days_remove = 56
         remove_effect = {
 			if = {
@@ -164,6 +169,7 @@ russian_gold_category = {
 				ROOT.gold_reserve_var > 0
 			}
 			has_country_flag = gold_reserve_unpacked
+			NOT = { has_active_mission = evacuation_of_gold_to_other_country }
         }
         available = {
 			any_neighbor_country = {
@@ -172,7 +178,7 @@ russian_gold_category = {
 				}
 			}
         }
-        icon = GFX_decision_generic_naval
+        icon = generic_prepare_civil_war
         days_remove = 180
         complete_effect = {
 			subtract_from_variable = {
@@ -210,6 +216,7 @@ russian_gold_category = {
 				ROOT.gold_reserve_var > 0
 			}
 			has_country_flag = gold_reserve_unpacked
+			NOT = { has_active_mission = evacuation_of_gold_to_other_country }
         }
         available = {
 			any_other_country = {
@@ -219,7 +226,7 @@ russian_gold_category = {
 				}
 			}
         }
-        icon = GFX_decision_generic_naval
+        icon = GFX_decision_ger_mefo_bills
         days_remove = 90
         complete_effect = {
 			subtract_from_variable = {
@@ -284,20 +291,27 @@ russian_gold_category = {
 			check_variable = {
 				ROOT.gold_reserve_var > 0
 			}
+			has_war_with = RUS
+			surrender_progress > 0.4
+			NOT = {
+				has_active_mission = evacuation_of_gold_to_other_country
+				has_country_flag = gold_evacuation_country_choose
+			}
         }
         available = {
 			any_neighbor_country = {
 				is_former_russian_empire_russian_country = yes
 			}
         }
-        icon = GFX_decision_generic_naval
+        icon = GFX_decision_steel
         days_remove = 5
 		remove_effect = {
 			country_event = rcwgold.7
+			set_country_flag = gold_evacuation_country_choose
 		}
     }
 	evacuation_of_gold_to_other_country = {
-		icon = GFX_decision_generic_naval
+		icon = GFX_decision_steel
 		activation = {
 			always = no
 		}
@@ -334,15 +348,16 @@ russia_in_ruins_category = {
 		icon = GFX_decision_generic_naval
 		activation = {
 			has_idea = russia_in_ruins_idea
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 		}
 		available = {
 			hidden_trigger = {
 				NOT = {
-					has_idea = war_fatigue_1
-					has_idea = war_fatigue_2
-					has_idea = war_fatigue_3
-					has_idea = war_fatigue_4
-					has_idea = war_fatigue_5
+					any_enemy_country = {
+						is_any_former_russian_empire_country = yes
+					}
 				}
 			}
 		}
@@ -399,10 +414,17 @@ russia_in_ruins_category = {
 		icon = GFX_decision_generic_naval
 		activation = {
 			has_idea = russia_in_ruins_idea
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 		}
 		available = {
 			hidden_trigger = {
-				always = no
+				NOT = {
+					any_enemy_country = {
+						is_any_former_russian_empire_country = yes
+					}
+				}
 			}
 		}
 		is_good = no
@@ -436,6 +458,11 @@ russia_in_ruins_category = {
         fire_only_once = yes
         days_remove = 35
 		cost = 10
+		visible = {
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
+		}
         remove_effect = {
             add_stability = 0.01
 			set_country_flag = move_to_peace_completed
@@ -447,6 +474,9 @@ russia_in_ruins_category = {
 		cost = 25
 		visible = {
 			has_country_flag = move_to_peace_completed
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 		}
         remove_effect = {
             add_stability = 0.03
@@ -459,6 +489,9 @@ russia_in_ruins_category = {
 		cost = 10
 		visible = {
 			has_country_flag = secret_negotiations_completed
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 		}
         remove_effect = {
 			add_manpower = 200
@@ -472,6 +505,9 @@ russia_in_ruins_category = {
 		cost = 25
 		visible = {
 			has_country_flag = prisoner_exchange_completed
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 		}
         remove_effect = {
 			add_stability = 0.02
@@ -485,6 +521,9 @@ russia_in_ruins_category = {
 		cost = 25
 		visible = {
 			has_country_flag = cease_fire_completed
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 		}
         remove_effect = {
 			set_country_flag = delimitation_completed
@@ -496,6 +535,9 @@ russia_in_ruins_category = {
 		cost = 25
 		visible = {
 			has_country_flag = delimitation_completed
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 		}
 		complete_effect = {
 			every_other_country = {
@@ -514,6 +556,9 @@ russia_in_ruins_category = {
 		days_remove = 70
 		cost = 300
 		visible = {
+			any_enemy_country = {
+				is_any_former_russian_empire_country = yes
+			}
 			OR = {
 				has_idea = war_fatigue_2
 				has_idea = war_fatigue_3
