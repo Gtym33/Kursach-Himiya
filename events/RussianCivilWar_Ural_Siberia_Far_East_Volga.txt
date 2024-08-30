@@ -1776,6 +1776,17 @@ country_event = {
 #				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 #				add_core_of = RSS
 #			}
+#			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+#			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+#			RSS = {
+#				if = {
+#					limit = { any_character = { has_id = 92353 } }
+#					add_ideas = {
+#						Pavel_Rinov_6
+#						Pavel_Rinov_army_chief
+#					}
+#				}
+#			}
 #		}
 #	}
 	
@@ -1843,6 +1854,17 @@ country_event = {
 			every_state = {
 				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 				add_core_of = RSS
+			}
+			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			RSS = {
+				if = {
+					limit = { any_character = { has_id = 92353 } }
+					add_ideas = {
+						Pavel_Rinov_6
+						Pavel_Rinov_army_chief
+					}
+				}
 			}
 		}
 	}
@@ -5226,6 +5248,134 @@ country_event = {
 	}
 }
 
+# Военный министр посетил фронт
+country_event = {
+	id = rcw_usfev.115
+	title = rcw_usfev.115.t
+	desc = {
+		text = rcw_usfev.115.desc
+		trigger = { has_idea = Alexandr_Kolchak_6 }
+	}
+	desc = {
+		text = rcw_usfev.115.desc_1
+		trigger = { has_idea = Alexey_Almazov_6 }
+	}
+
+	picture = GFX_report_event_rss_new_government
+	
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_usfev.115.a
+		add_war_support = 0.03
+		add_popularity = { ideology = despotism popularity = 0.03 }
+	}
+}
+
+# Главное министерство
+country_event = {
+	id = rcw_usfev.116
+	title = rcw_usfev.116.t
+	desc = rcw_usfev.116.desc
+
+	picture = GFX_report_event_rss_new_government
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			remove_ideas_with_trait = military_minister_trait
+			remove_ideas_with_trait = army_chief
+		}
+	}
+	
+	option = {
+		trigger = { any_character = { has_id = 92345 } }
+		name = rcw_usfev.116.a # Гришин-Алмазов возглавит министерство как прежде
+		add_ideas = {
+			Alexey_Almazov_6
+			Alexey_Almazov_army_chief
+		}
+		add_political_power = -40
+		add_stability = -0.05
+		add_popularity = { ideology = despotism popularity = 0.07 }
+		add_to_variable = {
+			var = directory_balance
+			value = 2
+		}
+		country_event = { id = rcw_usfev.115 days = 5 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { OR = { any_character = { has_id = 92353 } has_idea = Pavel_Rinov_6 } }
+		name = rcw_usfev.116.b # Иванов-Ринов временно сохранит пост
+		add_ideas = {
+			Pavel_Rinov_6
+			Pavel_Rinov_army_chief
+		}
+		add_political_power = -25
+		add_war_support = -0.04
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { has_character = RUS_Alexandr_Kolchak }
+		name = rcw_usfev.116.c # Колчак – компромиссная фигура
+		add_ideas = {
+			Alexandr_Kolchak_6
+			Vasiliy_Boldyrev_army_chief
+		}
+		add_to_variable = {
+			var = directory_balance
+			value = 1
+		}
+		add_stability = 0.02
+		add_popularity = { ideology = despotism popularity = 0.03 }
+		RUS_Alexandr_Kolchak = {
+			clr_character_flag = dismissed_flag
+			promote_character = yes
+		}
+		country_event = { id = rcw_usfev.115 days = 5 }
+		ai_chance = {
+			factor = 16
+			modifier = {
+				factor = 999
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { any_character = { has_id = 77414 } }
+		name = rcw_usfev.116.d # Эсер Лебедев справится с этой миссией 
+		add_ideas = {
+			Vladimir_Lebedev_6
+			Nikolay_Galkin_army_chief
+		}
+		add_political_power = -40
+		add_stability = -0.03
+		add_popularity = { ideology = social_liberalism popularity = 0.03 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+
 # Временная столица Директории
 country_event = {
 	id = rcw_usfev.117
@@ -5345,8 +5495,6 @@ country_event = {
 			remove_ideas_with_trait = economy_minister_trait
 			remove_ideas_with_trait = security_minister_trait
 			remove_ideas_with_trait = head_of_intel_trait
-			remove_ideas_with_trait = military_minister_trait
-			remove_ideas_with_trait = army_chief
 		}
 	}
 	
@@ -5364,8 +5512,6 @@ country_event = {
 			Ivan_Mikhailov_3
 			Vladimir_Krutovsky_4
 			Grigoriy_Patushinsky_5
-			Pavel_Rinov_6
-			Pavel_Rinov_army_chief
 		}
 		ai_chance = {
 			factor = 1
@@ -5390,8 +5536,6 @@ country_event = {
 			Dmitriy_Rakov_3
 			Prokopiy_Klimushkin_4
 			Evgeny_Rogovsky_5
-			Nikolay_Galkin_6
-			Nikolay_Galkin_army_chief
 		}
 		set_country_flag = government_esser
 		ai_chance = {
@@ -5405,7 +5549,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.118.c
-		add_stability = -0.05
+		add_stability = -0.03
 		add_popularity = { ideology = social_liberalism popularity = 0.05 }
 		add_ideas = {
 			Vladimir_Vinogradov_1
@@ -5413,8 +5557,6 @@ country_event = {
 			Ivan_Mikhailov_3
 			Alexander_Gattenberger_4
 			Sergey_Starynkevich_5
-			Vasiliy_Boldyrev_6
-			Vasiliy_Boldyrev_army_chief
 		}
 		ai_chance = {
 			factor = 1
@@ -7998,6 +8140,17 @@ country_event = {
 				party_populatiry_addition_script_1 = yes
 				set_ruling_party_for_uniting_country_script = yes
 				country_event = { id = rcw_usfev.1918 hours = 1 }
+				SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				RSS = {
+					if = {
+						limit = { any_character = { has_id = 92353 } }
+						add_ideas = {
+							Pavel_Rinov_6
+							Pavel_Rinov_army_chief
+						}
+					}
+				}
 			}
 		}
 		if = {
@@ -8115,6 +8268,17 @@ country_event = {
 				party_populatiry_addition_script_1 = yes
 				set_ruling_party_for_uniting_country_script = yes
 				country_event = { id = rcw_usfev.1918 hours = 1 }
+				SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				RSS = {
+					if = {
+						limit = { any_character = { has_id = 92353 } }
+						add_ideas = {
+							Pavel_Rinov_6
+							Pavel_Rinov_army_chief
+						}
+					}
+				}
 			}
 		ai_chance = {
 			factor = 1
@@ -13092,6 +13256,17 @@ country_event = {
 				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 				add_core_of = RSS
 			}
+			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			RSS = {
+				if = {
+					limit = { any_character = { has_id = 92353 } }
+					add_ideas = {
+						Pavel_Rinov_6
+						Pavel_Rinov_army_chief
+					}
+				}
+			}
 		}
 	}
 	option = {
@@ -13224,6 +13399,17 @@ country_event = {
 					}
 					add_core_of = RSS
 				}	
+			}
+			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			RSS = {
+				if = {
+					limit = { any_character = { has_id = 92353 } }
+					add_ideas = {
+						Pavel_Rinov_6
+						Pavel_Rinov_army_chief
+					}
+				}
 			}
 		}
 	}
