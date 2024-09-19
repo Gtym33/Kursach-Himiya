@@ -1,3 +1,575 @@
+#Turkish rev des
+TUR_rebels_unrest_des_cat = {
+	TUR_rebels_human_decision = { # FROM - state
+		icon = generic_assassination
+		state_target = yes
+		target_root_trigger = {
+			OR = {
+				has_completed_focus = TUR_fight_rebels_focus
+				has_completed_focus = TRR_rebels_unrest_focus
+			}
+		}
+
+		target_trigger = {
+		}
+
+		available = {
+			#ROOT = { NOT = { has_country_flag = NRR_sabotage_behind_enemy_lines_flag } }
+			army_manpower_in_state = {
+				amount > 14999
+				state = FROM 
+			}
+		}
+		ai_will_do = {
+			base = 1 # This is generally a good thing to do
+			#modifier = {
+			#	add = FROM.state_strategic_value # Prioritize important states
+			#	always = yes
+			#}
+			#modifier = {
+			#	factor = 2
+			#	always = yes
+			#}
+		}
+
+		visible = {
+			FROM = {
+				has_dynamic_modifier = {  modifier = TUR_state_rebellion_dynamic_modifier }
+				region = 129
+			}
+			is_ai = no
+		}
+		on_map_mode = map_only
+		fire_only_once = no
+		days_re_enable = 30
+		cost = 10
+		days_remove = 60
+		cancel_trigger = { 
+			army_manpower_in_state = {
+				amount < 15000
+				state = FROM 
+			}
+		}
+		complete_effect = {
+
+		}
+		remove_effect = {
+			FROM = { remove_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } }
+			country_event = turkey_rev.36
+		}
+		cancel_effect = { 
+			country_event = turkey_rev.37
+		}
+	}
+	TUR_rebels_ai_decision = { # FROM - state
+		icon = generic_assassination
+		state_target = yes
+		target_root_trigger = {
+			OR = {
+				has_completed_focus = TUR_fight_rebels_focus
+				has_completed_focus = TRR_rebels_unrest_focus
+			}
+		}
+
+		target_trigger = {
+		}
+
+		available = {
+			#ROOT = { NOT = { has_country_flag = NRR_sabotage_behind_enemy_lines_flag } }
+			NOT = { has_country_flag = TUR_rebel_des_active }
+		}
+		ai_will_do = {
+			base = 1000 # This is generally a good thing to do
+			factor = 100
+			#modifier = {
+			#	add = FROM.state_strategic_value # Prioritize important states
+			#	always = yes
+			#}
+			#modifier = {
+			#	factor = 2
+			#	always = yes
+			#}
+		}
+
+		visible = {
+			FROM = {
+				has_dynamic_modifier = {  modifier = TUR_state_rebellion_dynamic_modifier }
+				region = 129
+			}
+			is_ai = yes
+		}
+		on_map_mode = map_only
+		fire_only_once = no
+		days_re_enable = 30
+		cost = 0
+		days_remove = 30
+		cancel_trigger = { 
+			FROM = { NOT = { is_fully_controlled_by = ROOT } }
+		}
+		complete_effect = {
+			set_country_flag = TUR_rebel_des_active
+			add_manpower = -15000
+			add_equipment_to_stockpile = {
+			type = infantry_equipment
+				amount = -300
+			}
+		}
+		remove_effect = {
+			FROM = { remove_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } }
+			country_event = turkey_rev.36
+			add_manpower = 12000
+			clr_country_flag = TUR_rebel_des_active
+		}
+		cancel_effect = { 
+			country_event = turkey_rev.37
+			clr_country_flag = TUR_rebel_des_active
+		}
+	}
+}
+
+TUR_caliph_army_des_cat = {
+	TUR_call_for_volunteers_decision = {
+		#target = {}
+		state_target = yes
+		target_root_trigger = { always = yes }
+		target_trigger = { FROM = { region = 129 } }
+		available = { FROM = { is_controlled_by = TUR } }
+		visible = { 
+			tag = TUR 
+			FROM = { is_controlled_by = TUR }
+			#has_war_with = TRR
+		}
+		ai_will_do = {
+			factor = 100
+		}
+		icon = faction_tur_traditionalist
+		highlight_states = { highlight_state_targets = { state = FROM } }
+		on_map_mode = map_only
+        cost = 0
+		days_remove = 7
+        fire_only_once = yes
+        remove_effect = {
+			FROM = { create_unit = { division = "name = \"Kuva-i Inzibatiyye\" division_template = \"Kuva-i Inzibatiyye\" start_experience_factor = 0.1 start_equipment_factor = 1" count = 2 owner = TUR } }
+		}
+	}
+}
+TUR_partisans_des_cat = {
+	TRR_sabotage_behind_enemy_lines_decision = { # FROM - state
+		icon = generic_assassination
+		state_target = yes
+		target_root_trigger = {
+			OR = {
+				has_completed_focus = TRR_partisans_focus
+			}
+		}
+
+		target_trigger = {
+		}
+
+		available = {
+			ROOT = { NOT = { has_country_flag = TRR_sabotage_behind_enemy_lines_flag } }
+		}
+		ai_will_do = {
+			base = 100 # This is generally a good thing to do
+			modifier = {
+				add = FROM.state_strategic_value # Prioritize important states
+				always = yes
+			}
+			modifier = {
+				factor = 2
+				always = yes
+			}
+		}
+
+		visible = {
+			FROM = {
+				OR = {
+					CONTROLLER = { has_war_with = ROOT NOT = { has_full_control_of_state = PREV } }
+					AND = {
+						is_controlled_by = ROOT
+						NOT = { is_fully_controlled_by = ROOT }
+					}
+				}
+				AND = {
+					ROOT = { has_completed_focus = TRR_partisans_focus }
+					region = 129
+				}
+				any_neighbor_state = { is_controlled_by = ROOT }
+			}
+		}
+
+		on_map_mode = map_only
+		fire_only_once = no
+		days_re_enable = 90
+		custom_cost_trigger = {
+			command_power > 14
+		}
+		custom_cost_text = decision_cost_CP_15
+		days_remove = 14
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -15
+				set_country_flag = TRR_sabotage_behind_enemy_lines_flag
+			}
+		}
+		remove_effect = {
+			damage_units = {
+				state = FROM
+				limit = { NOT = { tag = ROOT } }
+				org_damage = 0.25
+				str_damage = 0.05
+				ratio = yes
+				army = yes
+				navy = yes
+			}
+			custom_effect_tooltip = SOV_sabotage_behind_enemy_lines_decision_tt
+			clr_country_flag = TRR_sabotage_behind_enemy_lines_flag
+		}
+	}
+}
+TRR_warehouses_des_cat = { 
+	TRR_open_warehouse_decision = {
+		#target = {}
+		state_target = yes
+		target_root_trigger = { always = yes }
+		target_trigger = { FROM = { region = 129 } }
+		available = { FROM = { is_controlled_by = ROOT } }
+		visible = { 
+			always = yes
+			FROM = { has_state_flag = TRR_has_warehouse }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		icon = generic_reorganize_irregulars
+		highlight_states = { highlight_state_targets = { state = FROM } }
+		#on_map_mode = map_only
+        cost = 15
+		days_remove = 7
+        fire_only_once = yes
+        remove_effect = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 500
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment
+				amount = 20
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment
+				amount = 20
+			}
+		}
+	}
+}
+TRR_syr_border_des_cat = { 
+	TRR_345_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			348 = { is_fully_controlled_by = TRR }
+			345 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 348
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.58
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 345
+					num_provinces = 1
+				}
+			}
+		}
+	}
+	TRR_1151_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			348 = { is_fully_controlled_by = TRR }
+			1151 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 348
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.581
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 1151
+					num_provinces = 1
+				}
+			}
+			
+		}
+	}
+	TRR_350_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			349 = { is_fully_controlled_by = TRR }
+			350 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 349
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.582
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 350
+					num_provinces = 1
+				}
+			}
+		}
+	}
+	TRR_344_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			348 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 348
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.583
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 344
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_345_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			345 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 344
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.581
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 345
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_1151_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			1151 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 344
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.582
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 1151
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_350_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			350 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 344
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.583
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 350
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_350_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			344 = { is_fully_controlled_by = TRR }
+			677 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 677
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.584
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 344
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+}
+#WWI des
+
 TUR_building_bunkers_WWI_decisions = {
 	TUR_strengthen_Palestine = {
 		icon = generic_army_support
@@ -24261,7 +24833,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					check_variable = {
 						var = enver_power
@@ -24282,7 +24854,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 					check_variable = {
 						var = cemal_power
@@ -24298,7 +24870,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					check_variable = {
 						var = talaat_power
@@ -24384,7 +24956,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = talaat_power
 					check_variable = {
@@ -24394,7 +24966,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 					has_variable = talaat_power
 					check_variable = {
@@ -24417,7 +24989,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		complete_effect = {
 			if = {
 				limit = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				subtract_from_variable = { var = enver_power value = 1 }
@@ -24427,7 +24999,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 				}
 				subtract_from_variable = { var = cemal_power value = 1 }
@@ -24457,7 +25029,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = cemal_power
 					check_variable = {
@@ -24467,7 +25039,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					has_variable = cemal_power
 					check_variable = {
@@ -24490,7 +25062,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		complete_effect = {
 			if = {
 				limit = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				subtract_from_variable = { var = enver_power value = 1 }
@@ -24500,7 +25072,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 				}
 				subtract_from_variable = { var = talaat_power value = 1 }
@@ -24530,15 +25102,15 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 				}
 			}
@@ -24555,7 +25127,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		complete_effect = {
 			if = {
 				limit = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				add_to_variable = { var = enver_power value = 1 }
@@ -24563,7 +25135,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 				}
 				add_to_variable = { var = cemal_power value = 1 }
@@ -24571,7 +25143,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 				}
 				add_to_variable = { var = talaat_power value = 1 }
@@ -24594,12 +25166,12 @@ TUR_young_turkish_triumvirate_decisions = {
 			original_tag = TUR
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = talaat_power
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 					has_variable = talaat_power
 				}
@@ -24634,12 +25206,12 @@ TUR_young_turkish_triumvirate_decisions = {
 			original_tag = TUR
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = cemal_power
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					has_variable = cemal_power
 				}
@@ -24670,17 +25242,17 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 				NOT = { has_variable = cemal_power }
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 		}
 		
@@ -24737,18 +25309,18 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 				NOT = { has_variable = cemal_power }
 				has_country_flag = TUR_cemal_talaat_is_ally
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 			NOT = { has_country_flag = TUR_cemal_talaat_is_ally }
 			OR = {
@@ -24771,7 +25343,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					has_variable = talaat_power
 					OR = {
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_enver_power = enver_power }
 							subtract_from_temp_variable = { temp_enver_power = 3 }
@@ -24782,7 +25354,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -24793,7 +25365,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_talaat_power = talaat_power }
 							subtract_from_temp_variable = { temp_talaat_power = 3 }
@@ -24804,7 +25376,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -24818,7 +25390,7 @@ TUR_young_turkish_triumvirate_decisions = {
 				}
 				OR = {
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_enver_power = enver_power }
 						subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -24829,7 +25401,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -24840,7 +25412,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_talaat_power = talaat_power }
 						subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -24851,7 +25423,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -24884,17 +25456,17 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 				NOT = { has_variable = talaat_power }
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+			has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
 			has_variable = talaat_power
 		}
 		
@@ -24941,18 +25513,18 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 				NOT = { has_variable = talaat_power }
 				has_country_flag = TUR_cemal_talaat_is_ally
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+			has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
 			has_variable = talaat_power
 			NOT = { has_country_flag = TUR_cemal_talaat_is_ally }
 			OR = {
@@ -24975,7 +25547,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					has_variable = talaat_power
 					OR = {
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_enver_power = enver_power }
 							subtract_from_temp_variable = { temp_enver_power = 3 }
@@ -24986,7 +25558,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -24997,7 +25569,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_talaat_power = talaat_power }
 							subtract_from_temp_variable = { temp_talaat_power = 3 }
@@ -25008,7 +25580,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -25022,7 +25594,7 @@ TUR_young_turkish_triumvirate_decisions = {
 				}
 				OR = {
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_enver_power = enver_power }
 						subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25033,7 +25605,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25044,7 +25616,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_talaat_power = talaat_power }
 						subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -25055,7 +25627,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25088,16 +25660,16 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
-				has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
+				has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 				NOT = { has_variable = enver_power }
 				NOT = { has_country_flag = TUR_cemal_talaat_is_ally }
-				NOT = { has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes } }
+				NOT = { has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes } }
 			}
 		}
 		
 		available = {
-			NOT = { has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes } }
 		}
 		
 		activation = {
@@ -25107,7 +25679,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			has_variable = talaat_power
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					set_temp_variable = { temp_duumvirate_power = cemal_power }
 					add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25119,7 +25691,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					set_temp_variable = { temp_duumvirate_power = cemal_power }
 					add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25153,7 +25725,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mustafa Kemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mustafa Kemal Pasa" ruling_only = yes }
 				OR = {
 					NOT = { has_country_flag = TUR_weak_control_WWI }
 					#NOT = { has_country_leader = { name = "Otto Liman von Sanders" ruling_only = yes } }
@@ -25165,13 +25737,13 @@ TUR_young_turkish_triumvirate_decisions = {
 		}
 		
 		available = {
-			has_country_leader = { name = "Mustafa Kemal Paşa" ruling_only = yes }
+			has_country_leader = { name = "Mustafa Kemal Pasa" ruling_only = yes }
 		}
 		
 		activation = {
 			has_global_flag = WWI_is_now
 			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			NOT = { has_country_leader = { name = "Mustafa Kemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mustafa Kemal Pasa" ruling_only = yes } }
 			OR = {
 				has_country_flag = TUR_weak_control_WWI
 				#has_country_leader = { name = "Otto Liman von Sanders" ruling_only = yes }
@@ -25200,7 +25772,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			has_government = despotism
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					check_variable = {
 						var = enver_power
@@ -25209,7 +25781,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					check_variable = {
 						var = talaat_power
@@ -25222,7 +25794,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		visible = {
 			original_tag = TUR
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 		}
 	
@@ -25243,7 +25815,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = cemal_power
@@ -25252,7 +25824,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									check_variable = {
 										var = cemal_power
@@ -25268,7 +25840,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25279,7 +25851,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									set_temp_variable = { temp_talaat_power = talaat_power }
 									subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -25300,7 +25872,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25316,7 +25888,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									set_temp_variable = { temp_talaat_power = talaat_power }
 									subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -25342,7 +25914,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = cemal_power
@@ -25351,7 +25923,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									check_variable = {
 										var = cemal_power
@@ -25384,7 +25956,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		visible = {
 			original_tag = TUR
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
 			has_variable = talaat_power
 		}
 	
@@ -25405,7 +25977,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = talaat_power
@@ -25414,7 +25986,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									check_variable = {
 										var = talaat_power
@@ -25430,7 +26002,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25441,7 +26013,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									set_temp_variable = { temp_cemal_power = cemal_power }
 									subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25462,7 +26034,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25478,7 +26050,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									set_temp_variable = { temp_cemal_power = cemal_power }
 									subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25504,7 +26076,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = talaat_power
@@ -25513,7 +26085,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									check_variable = {
 										var = talaat_power
@@ -25542,16 +26114,16 @@ TUR_young_turkish_triumvirate_decisions = {
 	
 		available = {
 			has_government = despotism
-			has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 			has_variable = enver_power
 		}
 		
 		visible = {
 			original_tag = TUR
-			has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 			has_variable = enver_power
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 			has_variable = talaat_power
 		}
@@ -25571,7 +26143,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					limit = { has_country_flag = TUR_cemal_talaat_is_ally }
 					if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25585,7 +26157,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25604,7 +26176,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25629,7 +26201,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25647,7 +26219,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					limit = { NOT = { has_country_flag = TUR_cemal_talaat_is_ally } }
 					if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							check_variable = {
 								var = cemal_power
@@ -25664,7 +26236,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							OR = {
 								AND = {
@@ -25705,7 +26277,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25731,7 +26303,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25765,7 +26337,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 2 }

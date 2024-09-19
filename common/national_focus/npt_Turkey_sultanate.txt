@@ -1,0 +1,274 @@
+﻿focus_tree = {
+	id = Turkey_sultanate_focus
+	
+	country = {
+		factor = 0
+	}
+	
+	default = no
+	#Демобилизация армии
+	focus = {
+		id = TUR_army_demobilisation_focus
+		icon = GFX_TUR_army_demobilization
+		cost = 4
+		mutually_exclusive = { 
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 5
+		y = 0
+		select_effect = {  
+			country_event = turkey_rev.13
+		}
+		completion_reward = { 
+			country_event = turkey_rev.14
+		}
+	}
+	#Система военных инструкторов
+	focus = {
+		id = TUR_military_instructors_focus
+		icon = GFX_TUR_military_instructor_system
+		cost = 3
+		prerequisite = {
+			focus = TUR_army_demobilisation_focus
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			
+		}
+		x = 5
+		y = 1
+
+		completion_reward = {
+			country_event = turkey_rev.17
+		}
+	}	
+	#Роспуск парламента
+	focus = {
+		id = TUR_dissolution_of_parlament_focus
+		icon = GFX_TUR_dissolution_parliament
+		cost = 2
+		prerequisite = {
+			focus = TUR_military_instructors_focus
+		}
+		mutually_exclusive = { 
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 5
+		y = 2
+		completion_reward = { 
+			country_event = turkey_rev.18
+		}
+	}
+	#Суд над бывшими членами Единения и Прогресса
+	focus = {
+		id = TUR_unionists_courts_focus
+		icon = GFX_TUR_trial_young_turks
+		cost = 3
+		prerequisite = {
+			focus = TUR_dissolution_of_parlament_focus
+		}
+		mutually_exclusive = { 
+			focus = TUR_no_courts_focus
+		}
+		available = { has_idea = Mehmet_Ferit_Pasha_1 NOT = { has_idea = TUR_permanent_political_crisis } }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 4
+		y = 3
+		completion_reward = { 
+			country_event = turkey_rev.21
+		}
+	}
+	#Затягивание судебных процессов
+	focus = {
+		id = TUR_no_courts_focus
+		icon = GFX_TUR_postpone_courts
+		cost = 10
+		prerequisite = {
+			focus = TUR_dissolution_of_parlament_focus
+		}
+		mutually_exclusive = { 
+			focus = TUR_unionists_courts_focus
+		}
+		available = { NOT = { has_idea = Mehmet_Ferit_Pasha_1 } has_country_flag = TUR_crisis_prolongues }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 3
+		completion_reward = { 
+			country_event = { id = turkey_rev.22 }
+		}
+	}
+	#Борьба с восстаниями
+	focus = {
+		id = TUR_fight_rebels_focus
+		icon = GFX_TUR_riot_control
+		cost = 7
+		prerequisite = {
+			focus = TUR_no_courts_focus
+			focus = TUR_unionists_courts_focus
+		}
+		mutually_exclusive = { 
+			
+		}
+		available = {  }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 3
+		y = 4
+		completion_reward = { 
+			unlock_decision_category_tooltip = TUR_rebels_unrest_des_cat
+		}
+	}
+	#Восстановление гражданских администраций
+	focus = {
+		id = TUR_administrations_focus
+		icon = GFX_TUR_restoration_civi_administrations
+		cost = 8
+		prerequisite = {
+			focus = TUR_fight_rebels_focus
+		}
+		mutually_exclusive = { 
+			
+		}
+		available = { 
+			354 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			1218 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			347 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			346 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			798 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			1150 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			1406 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			355 = { NOT = { has_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } } }
+			has_idea = TUR_weak_state_suppression_apparatus
+			49 = { is_controlled_by = TUR }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 3
+		y = 5
+		completion_reward = { 
+			remove_ideas = TUR_weak_state_suppression_apparatus
+		}
+	}
+	#Восстановление легитимности
+	focus = {
+		id = TUR_legitimacy_focus
+		icon = GFX_TUR_restoration_legitimacy
+		cost = 10
+		prerequisite = {
+			focus = TUR_no_courts_focus
+			focus = TUR_unionists_courts_focus
+		}
+		mutually_exclusive = { 
+			
+		}
+		available = { 
+			#NOT = { has_idea = TUR_weak_state_suppression_apparatus }
+			49 = { is_controlled_by = TUR }
+			#TRR = { exists = no }
+			has_war = no
+			#has_idea = TUR_low_legitymacy
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 1
+		}
+		x = 5
+		y = 4
+		completion_reward = {
+			add_political_power = 100
+			add_stability = 0.1
+			if = {
+				limit = { has_idea = TUR_low_legitymacy }
+				remove_ideas = TUR_low_legitymacy
+			}
+			if = {
+				limit = { has_country_flag = TUR_revolution_start }
+				country_event = turkey_rev.45
+			}
+		}
+	}
+	#Ратификация мирного договора
+	focus = {
+		id = TUR_ratification_focus
+		icon = GFX_TUR_ratification_peace_treaty
+		cost = 8
+		prerequisite = {
+			focus = TUR_legitimacy_focus
+		}
+		mutually_exclusive = { 
+			
+		}
+		available = { has_country_flag = TUR_peace_allowed NOT = { has_idea = TUR_weak_state_suppression_apparatus } }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 5
+		y = 5
+		completion_reward = { 
+			country_event = turkey_rev.46
+		}
+	}
+	#Переговоры с националистами
+	focus = {
+		id = TUR_nationalists_negotiations_focus
+		icon = GFX_TUR_negotiations_nationalists
+		cost = 5
+		prerequisite = {
+			focus = TUR_no_courts_focus
+			focus = TUR_unionists_courts_focus
+		}
+		mutually_exclusive = { 
+			
+		}
+		available = { has_country_flag = TUR_revolution_start TRR = { has_completed_focus = TRR_sivas_congress_focus } }
+		ai_will_do = {
+			factor = 1
+		}
+		x = 7
+		y = 4
+		completion_reward = { 
+			country_event = turkey_rev.26
+		}
+	}
+	#Создание Армии Халифата
+	focus = {
+		id = TUR_khalif_army_focus
+		icon = GFX_TUR_army_caliphate
+		cost = 8
+		prerequisite = {
+			focus = TUR_nationalists_negotiations_focus 
+		}
+		mutually_exclusive = { 
+			
+		}
+		available = { has_country_flag = TUR_revolution_start NOT = { 49 = { is_controlled_by = TUR } } TRR = { has_completed_focus = TRR_great_nat_accembly_focus } } 
+		ai_will_do = {
+			factor = 1
+		}
+		x = 7
+		y = 5
+		select_effect = {  
+			country_event = { id = turkey_rev.38 days = 18 }
+		}
+		completion_reward = { 
+			country_event = turkey_rev.39 
+		}
+	}
+}
