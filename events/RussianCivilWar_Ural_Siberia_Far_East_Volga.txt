@@ -2822,7 +2822,20 @@ country_event = {
 		}
 		
 		RSR = {
-			every_enemy_country = { limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } } white_peace = RSR }
+			every_enemy_country = {
+				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
+				remove_wargoal = {
+					type = all
+					target = RSR
+				}
+				RSR = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+					white_peace = PREV
+				}
+			}
 		}
 		diplomatic_relation = { country = SIB relation = non_aggression_pact }
 		SIB = { diplomatic_relation = { country = RSR relation = non_aggression_pact } }
@@ -2831,21 +2844,83 @@ country_event = {
 		every_state = { limit = { is_owned_by = SIB } remove_core_of = RSR remove_claim_by = RSR }
 		every_state = { limit = { is_owned_by = RSR } remove_core_of = SIB remove_claim_by = SIB }
 		
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = {
+					has_idea = russia_in_ruins_idea
+					SIB = {
+						controls_state = 251
+						controls_state = 651
+						controls_state = 652
+						controls_state = 653
+						controls_state = 572
+					}
+				}
+			}
+		}
 	}
 	option = {
 		name = rcw_usfev.50.b
-		if = {
-			limit = { SIB = { controls_state = 251 } }
-			add_war_support = -0.15
-			add_political_power = -100
-					else_if = {
-						limit = { SIB = { controls_state = 651 } }
-						add_war_support = -0.05
-						add_political_power = -50
-						}
+		
+		SIB = { country_event = { id = rcw_usfev.51 days = 1 } }
+		
+		ai_chance = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				has_idea = russia_in_ruins_idea
+				SIB = {
+					controls_state = 651
+					controls_state = 652
+					controls_state = 653
+					controls_state = 572
+				}
 			}
+			modifier = {
+				factor = 0.5
+				SIB = {
+					controls_state = 251
+					controls_state = 651
+					controls_state = 652
+					controls_state = 653
+					controls_state = 572
+				}
+			}
+			modifier = {
+				factor = 0
+				has_idea = russia_in_ruins_idea
+				SIB = {
+					controls_state = 251
+					controls_state = 651
+					controls_state = 652
+					controls_state = 653
+					controls_state = 572
+				}
+			}
+		}
 	}
 }
+
+# Отказ РСФСР
+country_event = {
+	id = rcw_usfev.51
+	title = rcw_usfev.51.t
+	desc = rcw_usfev.51.desc
+
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.51.a
+		add_political_power = -50
+		add_war_support = -0.05
+		ai_chance = {
+			factor = 2
+		}
+	}
 
 # Сибирь вводит войска в Челябинск (КОМУЧ)
 country_event = {
