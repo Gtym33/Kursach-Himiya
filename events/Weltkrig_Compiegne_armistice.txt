@@ -326,21 +326,21 @@ country_event = {
 			if = {
 				limit = { has_war_with = FRA }
 				every_state = {
-					limit = { is_owned_by = TUR OR = { is_core_of = SYR is_core_of = LEB state = 344 state = 350 is_claimed_by = FRA is_core_of = FRA } }
+					limit = { is_owned_by = TUR OR = { is_core_of = SYR is_core_of = LEB is_claimed_by = FRA is_core_of = FRA } }
 					FRA = { transfer_state = PREV }
 				}
 			}
 			if = {
 				limit = { has_war_with = ENG }
 				every_state = {
-					limit = { is_owned_by = TUR OR = { region = 28 region = 116 state = 344 state = 350 state = 352 is_claimed_by = ENG is_core_of = ENG } }
+					limit = { is_owned_by = TUR OR = { region = 28 region = 116  is_claimed_by = ENG is_core_of = ENG } }
 					ENG = { transfer_state = PREV }
 				}
 			}
 			if = {
 				limit = { has_war_with = ITA }
 				every_state = {
-					limit = { is_owned_by = TUR OR = { state = 164 state = 342 is_claimed_by = ITA is_core_of = ITA } }
+					limit = { is_owned_by = TUR OR = { state = 164 is_claimed_by = ITA is_core_of = ITA } }
 					ITA = { transfer_state = PREV }
 				}
 			}
@@ -392,8 +392,6 @@ country_event = {
 				decrees_of_ruler_b_law
 				poliparty_system_law
 				neutral_foreign_policy_law
-				civilian_economy
-				disarmed_nation
 				#TUR_permanent_political_crisis
 			}
 			clr_country_flag = TUR_triumvirate_enver_cemal_talaat
@@ -417,56 +415,64 @@ country_event = {
 				TUR_Mehmed_V_idea
 				TUR_Mehmed_VI_idea
 			}
-			every_country = {
-				limit = { is_subject_of = ROOT OR = { tag = KRS tag = AZR tag = ARM tag = GEO tag = MRC tag = DAG } has_war_with = ENG }
-				OVERLORD = { end_puppet = PREV }
-				leave_faction = yes
+			add_ideas = Ahmed_Izzet_Pasha_1
+				create_country_leader = { name = "Mustafa Kemal Paşa" desc = TUR_Mustafa_Kemal_Ataturk_DESC picture = "gfx/leaders/TUR/Portrait_Mustafa_Kemal_Ataturk.dds" ideology = national_syndicalism_ideology  traits = { min_1_respected_war_hero } }
+				set_party_name = {
+					ideology = national_syndicalism
+					long_name = TUR_national_syndicalism_party_kemal_party_long
+					name = TUR_national_syndicalism_kemal_party
+				}
+				country_event = { id = turkey_rev.4 days = 80 }
 				every_country = {
-					limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
-					white_peace = PREV
+					limit = { is_subject_of = ROOT OR = { tag = KRS tag = AZR tag = ARM tag = GEO tag = MRC tag = DAG } has_war_with = ENG }
+					OVERLORD = { end_puppet = PREV }
+					leave_faction = yes
+					every_country = {
+						limit = { OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+						white_peace = PREV
+					}
 				}
-			}
-			every_country = {
-				limit = {
-					has_war_with = ROOT
-					NOT = { original_tag = ROOT }
-					#NOT = { tag = KRD }
+				every_country = {
+					limit = {
+						has_war_with = ROOT
+						NOT = { original_tag = ROOT }
+						#NOT = { tag = KRD }
+					}
+					ROOT = { white_peace = PREV }
 				}
-				ROOT = { white_peace = PREV }
-			}
-			every_country = {
-				limit = { is_subject_of = ROOT }
-				hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
-			}
-			every_country = {
-				limit = { OR = { tag = ENG tag = FRA tag = ITA tag = GRR tag = GRE tag = RUS } OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
-				PREV = { give_military_access = PREV }
-			}
-			hidden_effect = {
-				country_event = { id = compiegne_armistice.-1 hours = 1 }
-			}
-			hidden_effect = {
-				if = {
-					limit = { OR = { has_country_flag = communist_occ has_government = communism } }
-					
-					clr_country_flag = communist_occ
+				every_country = {
+					limit = { is_subject_of = ROOT }
+					hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
+				}
+				every_country = {
+					limit = { OR = { tag = ENG tag = FRA tag = ITA tag = GRR tag = GRE tag = RUS } OR = { is_in_faction_with = ENG AND = { is_in_faction_with = FRA NOT = { is_in_faction_with = GER } } } }
+					PREV = { give_military_access = PREV }
+				}
+				#hidden_effect = {
+				#	country_event = { id = compiegne_armistice.-1 hours = 1 }
+				#}
+				hidden_effect = {
 					if = {
-						limit = { NOT = { has_government = communism } }
-						set_politics = {
-							ruling_party = communism
-						}
-						add_popularity = {
-							ideology = despotism
-							popularity = 0.1
-						}
-						add_popularity = {
-							ideology = communism
-							popularity = 0.3
+						limit = { OR = { has_country_flag = communist_occ has_government = communism } }
+						
+						clr_country_flag = communist_occ
+						if = {
+							limit = { NOT = { has_government = communism } }
+							set_politics = {
+								ruling_party = communism
+							}
+							add_popularity = {
+								ideology = despotism
+								popularity = 0.1
+							}
+							add_popularity = {
+								ideology = communism
+								popularity = 0.3
+							}
 						}
 					}
 				}
 			}
-		}
 		add_threat = -5
 		if = {
 			limit = { has_idea = TUR_dependent_turkish_economy }
@@ -496,6 +502,19 @@ country_event = {
 				clr_country_flag = RUS_occupated_PER_WWI
 			}
 		}
+		hidden_effect = {
+			remove_ideas = military_ministry_corruption_1
+			remove_ideas = military_ministry_corruption_2
+			remove_ideas = military_ministry_corruption_3
+			remove_ideas = military_ministry_corruption_4
+			remove_ideas = military_ministry_corruption_5
+		}
+		797 = { set_demilitarized_zone = yes teleport_armies = { to_state = 340 } }
+		add_political_power = -300
+		load_focus_tree = Turkey_sultanate_focus
+		country_event = { id = turkey_rev.1 days = 3 }
+		country_event = { id = turkey_rev.2 days = 5 }
+		country_event = { id = turkey_rev.3 days = 7 }
 	}
 }
 # Болгария
@@ -966,7 +985,7 @@ country_event = {
 		}
 		AUH = {
 			every_owned_state = {
-				limit = { OR = { state = 107 state = 108 state = 948 state = 947 state = 803 state = 1263 state = 802 state = 928 state = 106 state = 993 state = 986 state = 105 state = 1265 } }
+				limit = { OR = { state = 107 state = 108 state = 948 state = 947 state = 803 state = 1263 state = 802 state = 1054 state = 106 state = 993 state = 986 state = 105 state = 1265 } }
 				SER = { transfer_state = PREV }
 			}
 		}
@@ -1284,7 +1303,7 @@ country_event = {
 				set_state_owner = 925
 			}
 			if = {
-				limit = { OR = { 93 = { OR = { is_subject_of = RUS is_owned_by = RUS } } 199 = { OR = { is_subject_of = RUS is_owned_by = RUS } } } }
+				limit = { OR = { 93 = { CONTROLLER = { OR = { is_subject_of = RUS tag = RUS } } } 199 = { CONTROLLER = { OR = { is_subject_of = RUS tag = RUS } } } } }
 				RUS = { country_event = { id = rcw_britishseas.12 hours = 1 } }
 			}
 		}
@@ -3138,7 +3157,7 @@ country_event = {
 			}
 		TUR = {
 			every_state = {
-				limit = { is_owned_by = TUR OR = { state = 291 state = 675 state = 676 state = 455 state = 454 state = 1155 state = 905 state = 352 } }
+				limit = { is_owned_by = TUR OR = { state = 291 state = 675 state = 676 state = 455 state = 454 state = 1155 state = 905 } }
 				ENG = { transfer_state = PREV }
 			}
 			every_state = {
@@ -3681,7 +3700,7 @@ country_event = {
 		}
 		AUH = {
 			every_owned_state = {
-				limit = { OR = { state = 107 state = 108 state = 948 state = 947 state = 803 state = 1263 state = 802 state = 928 state = 106 state = 993 state = 986 state = 105 state = 1265 } }
+				limit = { OR = { state = 107 state = 108 state = 948 state = 947 state = 803 state = 1263 state = 802 state = 1054 state = 106 state = 993 state = 986 state = 105 state = 1265 } }
 				SER = { transfer_state = PREV }
 			}
 		}

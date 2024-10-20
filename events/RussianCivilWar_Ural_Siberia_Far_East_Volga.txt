@@ -1776,6 +1776,17 @@ country_event = {
 #				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 #				add_core_of = RSS
 #			}
+#			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+#			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+#			RSS = {
+#				if = {
+#					limit = { any_character = { has_id = 92353 } }
+#					add_ideas = {
+#						Pavel_Rinov_6
+#						Pavel_Rinov_army_chief
+#					}
+#				}
+#			}
 #		}
 #	}
 	
@@ -1843,6 +1854,17 @@ country_event = {
 			every_state = {
 				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 				add_core_of = RSS
+			}
+			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			RSS = {
+				if = {
+					limit = { any_character = { has_id = 92353 } }
+					add_ideas = {
+						Pavel_Rinov_6
+						Pavel_Rinov_army_chief
+					}
+				}
 			}
 		}
 	}
@@ -2800,7 +2822,20 @@ country_event = {
 		}
 		
 		RSR = {
-			every_enemy_country = { limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } } white_peace = RSR }
+			every_enemy_country = {
+				limit = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } OR = { is_subject = no OVERLORD = { OR = { capital_scope = { OR = { region = 14 region = 87 region = 147 region = 238 region = 148 region = 149 region = 151 region = 152 region = 154 region = 155 region = 186 region = 229 } } tag = SIB is_subject_of = SIB is_in_faction_with = SIB } OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes former_russian_empire_polish_region_country = yes } } } }
+				remove_wargoal = {
+					type = all
+					target = RSR
+				}
+				RSR = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+					white_peace = PREV
+				}
+			}
 		}
 		diplomatic_relation = { country = SIB relation = non_aggression_pact }
 		SIB = { diplomatic_relation = { country = RSR relation = non_aggression_pact } }
@@ -2809,19 +2844,82 @@ country_event = {
 		every_state = { limit = { is_owned_by = SIB } remove_core_of = RSR remove_claim_by = RSR }
 		every_state = { limit = { is_owned_by = RSR } remove_core_of = SIB remove_claim_by = SIB }
 		
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = {
+					has_idea = russia_in_ruins_idea
+					SIB = {
+						controls_state = 251
+						controls_state = 651
+						controls_state = 652
+						controls_state = 653
+						controls_state = 572
+					}
+				}
+			}
+		}
 	}
 	option = {
 		name = rcw_usfev.50.b
-		if = {
-			limit = { SIB = { controls_state = 251 } }
-			add_war_support = -0.15
-			add_political_power = -100
-					else_if = {
-						limit = { SIB = { controls_state = 651 } }
-						add_war_support = -0.05
-						add_political_power = -50
-						}
+		
+		SIB = { country_event = { id = rcw_usfev.51 days = 1 } }
+		
+		ai_chance = {
+			factor = 3
+			modifier = {
+				factor = 0.5
+				has_idea = russia_in_ruins_idea
+				SIB = {
+					controls_state = 651
+					controls_state = 652
+					controls_state = 653
+					controls_state = 572
+				}
 			}
+			modifier = {
+				factor = 0.5
+				SIB = {
+					controls_state = 251
+					controls_state = 651
+					controls_state = 652
+					controls_state = 653
+					controls_state = 572
+				}
+			}
+			modifier = {
+				factor = 0
+				has_idea = russia_in_ruins_idea
+				SIB = {
+					controls_state = 251
+					controls_state = 651
+					controls_state = 652
+					controls_state = 653
+					controls_state = 572
+				}
+			}
+		}
+	}
+}
+
+# Отказ РСФСР
+country_event = {
+	id = rcw_usfev.51
+	title = rcw_usfev.51.t
+	desc = rcw_usfev.51.desc
+
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.51.a
+		add_political_power = -50
+		add_war_support = -0.05
+		ai_chance = {
+			factor = 2
+		}
 	}
 }
 
@@ -2942,8 +3040,14 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.a #Гришин
-		trigger = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = no } }
+		trigger = { any_unit_leader = { has_id = 92345 } }
 		set_politics = { ruling_party = despotism }
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes } } }
+				create_country_leader = { name = "Alexey Grishin-Almazov" desc = "RUS_Alexey_Grishin-Almazov_DESC" picture = "gfx/leaders/SIB/Portrait_Alexey_Grishin-Almazov.dds" expire = "1953.7.7" ideology = despotism_ideology traits = { warmonger min_1_reformist_soldier min_1_flamboyant_tough_guy political_dancer } }
+			}
+		}
 		add_ideas = military_dictatorship_gov_form
 		add_stability = -0.15
 		add_war_support = 0.02
@@ -2957,7 +3061,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.b #Михайлов
-		trigger = { has_country_leader = { name = "Ivan Mikhailov" ruling_only = no } }
+		trigger = { has_country_leader = { name = "Ivan Mikhailov" ruling_only = no } NOT = { has_country_flag = Ivan_Mikhailov_dismissed } }
 		set_politics = { ruling_party = conservatism }
 		if = {
 			limit = { NOT = { has_idea = military_dictatorship_gov_form } }
@@ -2990,8 +3094,14 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.d #Сахаров
-		trigger = { has_country_leader = { name = "Konstantin Sakharov" ruling_only = no } }
+		trigger = { any_unit_leader = { has_id = 92351 } }
 		set_politics = { ruling_party = fascism }
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_leader = { name = "Konstantin Sakharov" ruling_only = yes } } }
+				create_country_leader = { name = "Konstantin Sakharov" desc = "RUS_Konstantin_Sakharov_DESC" picture = "gfx/leaders/SIB/Portrait_Konstantin_Sakharov.dds" expire = "1941.2.23" ideology = fascism_ideology traits = { warmonger_old_general dictator prince_of_terror min_1_spiritual_leader anti_democrat dislike_jew } }
+			}
+		}
 		add_ideas = military_dictatorship_gov_form
 		every_unit_leader = { limit = { has_id = 92351 is_field_marshal = no } promote_leader = yes }
 		add_stability = -0.15
@@ -3006,8 +3116,14 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.e #Дитерихс
-		trigger = { has_country_leader = { name = "Mikhail Diterihs" ruling_only = no } }
+		trigger = { any_unit_leader = { has_id = 77400 } }
 		set_politics = { ruling_party = authoritarism }
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_leader = { name = "Mikhail Diterihs" ruling_only = yes } } }
+				create_country_leader = { name = "Mikhail Diterihs" desc = "RUS_Mikhail_Diterihs_DESC" picture = "gfx/leaders/SIB/Portrait_Mikhail_Diterihs.dds" expire = "1934.10.9" ideology = authoritarism_ideology traits = { warmonger_old_general great_war_hero staunch_monarchist min_1_traditionalist min_1_spiritual_leader } }
+			}
+		}
 		add_ideas = military_dictatorship_gov_form
 		add_stability = -0.15
 		add_war_support = 0.02
@@ -3020,8 +3136,14 @@ country_event = {
 	}
 	option = {
 		name = rcw_usfev.55.f #Волков
-		trigger = { has_country_leader = { name = "Vyacheslav Volkov" ruling_only = no } }
+		trigger = { any_unit_leader = { has_id = 92359 } }
 		set_politics = { ruling_party = authoritarism }
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_leader = { name = "Vyacheslav Volkov" ruling_only = yes } } }
+				create_country_leader = { name = "Vyacheslav Volkov" desc = "RUS_Vyacheslav_Volkov_DESC" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { dictator staunch_monarchist warmonger } }
+			}
+		}
 		add_ideas = military_dictatorship_gov_form
 		add_stability = -0.15
 		add_war_support = 0.02
@@ -3035,8 +3157,14 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.55.g #Иванов-Ринов
-		trigger = { has_country_leader = { name = "Pavel Ivanov-Rinov" ruling_only = no } }
+		trigger = { any_unit_leader = { has_id = 92353 } }
 		set_politics = { ruling_party = despotism }
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_country_leader = { name = "Pavel Ivanov-Rinov" ruling_only = yes } } }
+				create_country_leader = { name = "Pavel Ivanov-Rinov" desc = "" picture = "gfx/leaders/SIB/Portrait_Pavel_Ivanov-Rinov.dds" expire = "1934.10.9" ideology = despotism_ideology traits = { staunch_monarchist } }
+			}
+		}
 		add_ideas = military_dictatorship_gov_form
 		add_stability = -0.15
 		add_war_support = 0.02
@@ -5226,6 +5354,171 @@ country_event = {
 	}
 }
 
+# Омский мятеж большевиков
+country_event = {
+	id = rcw_usfev.114
+	title = rcw_usfev.114.t
+	desc = rcw_usfev.114.desc
+
+	picture = GFX_report_event_rus_bund_bleat
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = RSS
+		has_focus_tree = Russia_Russian_state_Kolchak_focus
+		controls_state = 571
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 35
+	}
+
+	option = {
+		name = rcw_usfev.114.a
+		add_stability = -0.04
+		if = {
+			limit = { NOT = { has_completed_focus = RSS_working_cash } }
+			add_ideas = CCA_workers_neutrality
+		}
+	}
+	option = {
+		name = rcw_usfev.114.b
+		add_stability = -0.04
+		add_political_power = -25
+		add_popularity = { ideology = authoritarism popularity = -0.03 }
+	}
+}
+
+# Военный министр посетил фронт
+country_event = {
+	id = rcw_usfev.115
+	title = rcw_usfev.115.t
+	desc = {
+		text = rcw_usfev.115.desc
+		trigger = { has_idea = Alexandr_Kolchak_6 }
+	}
+	desc = {
+		text = rcw_usfev.115.desc_1
+		trigger = { has_idea = Alexey_Almazov_6 }
+	}
+
+	picture = GFX_report_event_RSS_minister_visited_front
+	
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_usfev.115.a
+		add_war_support = 0.03
+		add_popularity = { ideology = despotism popularity = 0.03 }
+	}
+}
+
+# Главное министерство
+country_event = {
+	id = rcw_usfev.116
+	title = rcw_usfev.116.t
+	desc = rcw_usfev.116.desc
+
+	picture = GFX_report_event_rss_new_government
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			remove_ideas_with_trait = military_minister_trait
+			remove_ideas_with_trait = army_chief
+		}
+	}
+	
+	option = {
+		trigger = { any_character = { has_id = 92345 } }
+		name = rcw_usfev.116.a # Гришин-Алмазов возглавит министерство как прежде
+		add_ideas = {
+			Alexey_Almazov_6
+			Alexey_Almazov_army_chief
+		}
+		add_political_power = -40
+		add_stability = -0.05
+		add_popularity = { ideology = despotism popularity = 0.07 }
+		add_to_variable = {
+			var = directory_balance
+			value = 2
+		}
+		country_event = { id = rcw_usfev.115 days = 5 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { OR = { any_character = { has_id = 92353 } has_idea = Pavel_Rinov_6 } }
+		name = rcw_usfev.116.b # Иванов-Ринов временно сохранит пост
+		add_ideas = {
+			Pavel_Rinov_6
+			Pavel_Rinov_army_chief
+		}
+		add_political_power = -25
+		add_war_support = -0.04
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { has_character = RUS_Alexandr_Kolchak }
+		name = rcw_usfev.116.c # Колчак – компромиссная фигура
+		add_ideas = {
+			Alexandr_Kolchak_6
+			Vasiliy_Boldyrev_army_chief
+		}
+		add_to_variable = {
+			var = directory_balance
+			value = 1
+		}
+		add_stability = 0.02
+		add_popularity = { ideology = despotism popularity = 0.03 }
+		RUS_Alexandr_Kolchak = {
+			clr_character_flag = dismissed_flag
+			promote_character = yes
+		}
+		country_event = { id = rcw_usfev.115 days = 5 }
+		ai_chance = {
+			factor = 16
+			modifier = {
+				factor = 999
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { any_character = { has_id = 77414 } }
+		name = rcw_usfev.116.d # Эсер Лебедев справится с этой миссией 
+		add_ideas = {
+			Vladimir_Lebedev_6
+			Nikolay_Galkin_army_chief
+		}
+		add_political_power = -40
+		add_stability = -0.03
+		add_popularity = { ideology = social_liberalism popularity = 0.03 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+
 # Временная столица Директории
 country_event = {
 	id = rcw_usfev.117
@@ -5345,8 +5638,6 @@ country_event = {
 			remove_ideas_with_trait = economy_minister_trait
 			remove_ideas_with_trait = security_minister_trait
 			remove_ideas_with_trait = head_of_intel_trait
-			remove_ideas_with_trait = military_minister_trait
-			remove_ideas_with_trait = army_chief
 		}
 	}
 	
@@ -5364,8 +5655,6 @@ country_event = {
 			Ivan_Mikhailov_3
 			Vladimir_Krutovsky_4
 			Grigoriy_Patushinsky_5
-			Pavel_Rinov_6
-			Pavel_Rinov_army_chief
 		}
 		ai_chance = {
 			factor = 1
@@ -5390,8 +5679,6 @@ country_event = {
 			Dmitriy_Rakov_3
 			Prokopiy_Klimushkin_4
 			Evgeny_Rogovsky_5
-			Nikolay_Galkin_6
-			Nikolay_Galkin_army_chief
 		}
 		set_country_flag = government_esser
 		ai_chance = {
@@ -5405,7 +5692,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.118.c
-		add_stability = -0.05
+		add_stability = -0.03
 		add_popularity = { ideology = social_liberalism popularity = 0.05 }
 		add_ideas = {
 			Vladimir_Vinogradov_1
@@ -5413,8 +5700,6 @@ country_event = {
 			Ivan_Mikhailov_3
 			Alexander_Gattenberger_4
 			Sergey_Starynkevich_5
-			Vasiliy_Boldyrev_6
-			Vasiliy_Boldyrev_army_chief
 		}
 		ai_chance = {
 			factor = 1
@@ -5430,80 +5715,25 @@ country_event = {
 country_event = {
 	id = rcw_usfev.119
 	title = rcw_usfev.119.t
-	desc = { text = rcw_usfev.119.d_dutov trigger = {check_variable = { directory_balance > 1 } has_country_flag = OCH_will_try_to_influence_RSS OCH = { has_government = despotism } }}
-	desc = { text = rcw_usfev.119.d_adm_n_dutov trigger = {check_variable = { directory_balance > 1 } has_country_flag = OCH_will_try_to_influence_RSS OCH = { NOT = { has_government = despotism } } }}
-	desc = { text = rcw_usfev.119.d_adm trigger = {check_variable = { directory_balance > 1 } NOT = { has_country_flag = OCH_will_try_to_influence_RSS }}}
-	desc = { text = rcw_usfev.119.d_kad trigger = {NOT = { check_variable = { directory_balance > 1 } }}}
+	desc = { text = rcw_usfev.119.d_kad trigger = { NOT = { check_variable = { directory_balance > 1 } } } }
+	desc = { text = rcw_usfev.119.desc trigger = { check_variable = { directory_balance > 1 } OR = { has_character = RUS_Alexandr_Kolchak has_idea = Alexey_Almazov_6 any_unit_leader = { has_id = 76547 } has_country_flag = RSS_Starck_instead_Kolchak } } }
+	desc = { text = rcw_usfev.119.desc_non trigger = { check_variable = { directory_balance > 1 } NOT = { has_character = RUS_Alexandr_Kolchak has_idea = Alexey_Almazov_6 any_unit_leader = { has_id = 76547 } has_country_flag = RSS_Starck_instead_Kolchak } } }
 	picture = GFX_report_event_prm_diterikhs_coup
 	
 	is_triggered_only = yes
 	
 	immediate = {
 		hidden_effect = {
-			remove_ideas_with_trait = head_of_government_trait
-			remove_ideas_with_trait = foreign_minister_trait
-			remove_ideas_with_trait = economy_minister_trait
-			remove_ideas_with_trait = security_minister_trait
-			remove_ideas_with_trait = head_of_intel_trait
-			remove_ideas_with_trait = military_minister_trait
-			remove_ideas_with_trait = army_chief
+			remove_ideas_with_trait = radical_socialism_counselor
+			remove_ideas_with_trait = communist_counselor
+			remove_ideas_with_trait = social_democrat_counselor
+			remove_ideas_with_trait = social_liberal_counselor
 		}
 	}
 	
 	option = {
 		name = rcw_usfev.119.a
-		trigger = { check_variable = { directory_balance > 1 } NOT = { has_country_flag = OCH_will_try_to_influence_RSS } }
-		drop_cosmetic_tag = yes
-		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
-		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
-		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
-		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
-		add_popularity = { ideology = despotism popularity = 0.15 }
-		add_popularity = { ideology = market_liberalism popularity = 0.05 }
-		every_unit_leader = { limit = { has_id = 88152 } set_nationality = REB }
-		hidden_effect = {
-			retire_ideology_leader = social_liberalism
-			retire_ideology_leader = social_liberalism
-			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
-			retire_ideology_leader = social_democracy
-			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
-			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { min_2_biased_intellectual liberal_journalist silent_workhorse } }
-			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
-			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { min_1_supreme_ruler staunch_monarchist warmonger } }
-			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
-			load_focus_tree = Russia_Russian_state_Kolchak_focus
-			RUS_Alexandr_Kolchak = {
-				add_country_leader_role = {
-					promote_leader = yes
-					country_leader = {
-						desc = RUS_Alexandr_Kolchak_DESC
-						ideology = despotism_ideology
-						traits = { moy_admiral warmonger goal_in_politics goal }
-						expire = "1953.3.1.1"
-					}
-				}
-				promote_character = yes
-			}
-		}
-		set_politics = { ruling_party = despotism elections_allowed = no }
-		clear_variable = directory_balance
-		remove_ideas = RSS_disjointed_government
-		add_ideas = RSS_disjointed_government_after
-		add_ideas = {
-			Pyotr_Vologodsky_1
-			Yuri_Klyuchnikov_2
-			Ivan_Mikhailov_3
-			Alexander_Gattenberger_4
-			Sergey_Starynkevich_5
-			Nikolay_Stepanov_6
-			Vasily_Markovsky_army_chief
-		}
-		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
-	}
-	
-	option = {
-		name = rcw_usfev.119.a
-		trigger = {NOT = { check_variable = { directory_balance > 1 } }}
+		trigger = { NOT = { check_variable = { directory_balance > 1 } } }
 		add_stability = -0.05
 		add_popularity = { ideology = social_liberalism popularity = -0.1 }
 		add_popularity = { ideology = market_liberalism popularity = 0.15 }
@@ -5538,7 +5768,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.119.b
-		trigger = { check_variable = { directory_balance > 1 } has_country_flag = OCH_will_try_to_influence_RSS OCH = { NOT = { has_government = despotism } } }
+		trigger = { check_variable = { directory_balance > 1 } has_character = RUS_Alexandr_Kolchak NOT = { has_idea = Alexey_Almazov_6 } }
 		drop_cosmetic_tag = yes
 		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
 		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
@@ -5584,12 +5814,16 @@ country_event = {
 			Nikolay_Stepanov_6
 			Vasily_Markovsky_army_chief
 		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
 		clr_country_flag = OCH_will_try_to_influence_RSS
 		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
+		ai_chance = {
+			factor = 1
+		}
 	}
 	option = {
 		name = rcw_usfev.119.c
-		trigger = { check_variable = { directory_balance > 1 } has_country_flag = OCH_will_try_to_influence_RSS OCH = { NOT = { has_government = despotism } } }
+		trigger = { check_variable = { directory_balance > 1 } has_idea = Alexey_Almazov_6 }
 		drop_cosmetic_tag = yes
 		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
 		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
@@ -5623,24 +5857,17 @@ country_event = {
 			Nikolay_Stepanov_6
 			Vasily_Markovsky_army_chief
 		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
 		clr_country_flag = OCH_will_try_to_influence_RSS
-		create_country_leader = { name = "Alexandr Dutov" desc = OCH_Alexandr_Dutov_desc picture = "gfx/leaders/OCH/Portrait_Alexandr_Dutov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general ataman_of_revolution dictator ataman_of_all_cossacks } }
-		annex_country = {
-			target = OCH
-			transfer_troops = yes
-		}
-		OCH = {
-			every_unit_leader = { set_nationality = ROOT }
-		}
+		create_country_leader = { name = "Alexey Grishin-Almazov" desc = "RUS_Alexey_Grishin-Almazov_DESC" picture = "gfx/leaders/SIB/Portrait_Alexey_Grishin-Almazov.dds" expire = "1953.7.7" ideology = despotism_ideology traits = { warmonger min_1_reformist_soldier min_1_flamboyant_tough_guy political_dancer } }
 		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
-		if = {
-			limit = { OCH = { is_ai = no } }
-			change_tag_from = OCH
+		ai_chance = {
+			factor = 1
 		}
 	}
 	option = {
 		name = rcw_usfev.119.d
-		trigger = { check_variable = { directory_balance > 1 } has_country_flag = OCH_will_try_to_influence_RSS OCH = { has_government = despotism } }
+		trigger = { check_variable = { directory_balance > 1 } any_unit_leader = { has_id = 76547 } }
 		drop_cosmetic_tag = yes
 		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
 		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
@@ -5674,19 +5901,99 @@ country_event = {
 			Nikolay_Stepanov_6
 			Vasily_Markovsky_army_chief
 		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
 		clr_country_flag = OCH_will_try_to_influence_RSS
-		create_country_leader = { name = "Alexandr Dutov" desc = OCH_Alexandr_Dutov_desc picture = "gfx/leaders/OCH/Portrait_Alexandr_Dutov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general ataman_of_revolution dictator ataman_of_all_cossacks } }
-		annex_country = {
-			target = OCH
-			transfer_troops = yes
-		}
-		OCH = {
-			every_unit_leader = { set_nationality = ROOT }
-		}
+		create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Portrait_Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero russian_sulla goal_in_politics } }
 		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
-		if = {
-			limit = { OCH = { is_ai = no } }
-			change_tag_from = OCH
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_usfev.119.e
+		trigger = { check_variable = { directory_balance > 1 } has_country_flag = RSS_Starck_instead_Kolchak }
+		drop_cosmetic_tag = yes
+		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
+		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
+		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
+		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		every_unit_leader = { limit = { has_id = 88152 } set_nationality = REB }
+		hidden_effect = {
+			retire_ideology_leader = social_liberalism
+			retire_ideology_leader = social_liberalism
+			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
+			retire_ideology_leader = social_democracy
+			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
+			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { min_2_biased_intellectual liberal_journalist silent_workhorse } }
+			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
+			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { min_1_supreme_ruler staunch_monarchist warmonger } }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+			load_focus_tree = Russia_Russian_state_Kolchak_focus
+		}
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		clear_variable = directory_balance
+		remove_ideas = RSS_disjointed_government
+		add_ideas = RSS_disjointed_government_after
+		add_ideas = {
+			Pyotr_Vologodsky_1
+			Yuri_Klyuchnikov_2
+			Ivan_Mikhailov_3
+			Alexander_Gattenberger_4
+			Sergey_Starynkevich_5
+			Nikolay_Stepanov_6
+			Vasily_Markovsky_army_chief
+		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
+		clr_country_flag = OCH_will_try_to_influence_RSS
+		create_country_leader = { name = "Georgy Starck" desc = "" picture = "gfx/leaders/RUS/Portrait_Georgiy_Starck.dds" expire = "1953.7.7" ideology = despotism_ideology traits = { moy_admiral warmonger goal_in_politics goal } }
+		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_usfev.119.f
+		trigger = { check_variable = { directory_balance > 1 } NOT = { has_character = RUS_Alexandr_Kolchak has_idea = Alexey_Almazov_6 any_unit_leader = { has_id = 76547 } has_country_flag = RSS_Starck_instead_Kolchak } }
+		drop_cosmetic_tag = yes
+		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
+		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
+		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
+		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		every_unit_leader = { limit = { has_id = 88152 } set_nationality = REB }
+		hidden_effect = {
+			retire_ideology_leader = social_liberalism
+			retire_ideology_leader = social_liberalism
+			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
+			retire_ideology_leader = social_democracy
+			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
+			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { min_2_biased_intellectual liberal_journalist silent_workhorse } }
+			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
+			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { min_1_supreme_ruler staunch_monarchist warmonger } }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+			load_focus_tree = Russia_Russian_state_Kolchak_focus
+		}
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		clear_variable = directory_balance
+		remove_ideas = RSS_disjointed_government
+		add_ideas = RSS_disjointed_government_after
+		add_ideas = {
+			Pyotr_Vologodsky_1
+			Yuri_Klyuchnikov_2
+			Ivan_Mikhailov_3
+			Alexander_Gattenberger_4
+			Sergey_Starynkevich_5
+			Nikolay_Stepanov_6
+			Vasily_Markovsky_army_chief
+		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
+		country_event = { id = rcw_usfev.134 hours = 2 }
+		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
+		ai_chance = {
+			factor = 0
 		}
 	}
 }
@@ -6197,9 +6504,8 @@ country_event = {
 country_event = {
 	id = rcw_usfev.131
 	title = rcw_usfev.119.t
-	desc = { text = rcw_usfev.119.d_dutov trigger = { has_country_flag = OCH_will_try_to_influence_RSS OCH = { has_government = despotism } }}
-	desc = { text = rcw_usfev.119.d_adm_n_dutov trigger = { has_country_flag = OCH_will_try_to_influence_RSS OCH = { NOT = { has_government = despotism } } }}
-	desc = { text = rcw_usfev.119.d_adm trigger = { NOT = { has_country_flag = OCH_will_try_to_influence_RSS }}}
+	desc = { text = rcw_usfev.119.desc trigger = { OR = { has_character = RUS_Alexandr_Kolchak has_idea = Alexey_Almazov_6 any_unit_leader = { has_id = 76547 } has_country_flag = RSS_Starck_instead_Kolchak } } }
+	desc = { text = rcw_usfev.119.desc_non trigger = { NOT = { has_character = RUS_Alexandr_Kolchak has_idea = Alexey_Almazov_6 any_unit_leader = { has_id = 76547 } has_country_flag = RSS_Starck_instead_Kolchak } } }
 	picture = GFX_report_event_prm_diterikhs_coup
 	
 	trigger = {
@@ -6216,66 +6522,17 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			remove_ideas_with_trait = head_of_government_trait
-			remove_ideas_with_trait = foreign_minister_trait
-			remove_ideas_with_trait = economy_minister_trait
-			remove_ideas_with_trait = security_minister_trait
-			remove_ideas_with_trait = head_of_intel_trait
-			remove_ideas_with_trait = military_minister_trait
-			remove_ideas_with_trait = army_chief
+			remove_ideas_with_trait = radical_socialism_counselor
+			remove_ideas_with_trait = communist_counselor
+			remove_ideas_with_trait = social_democrat_counselor
+			remove_ideas_with_trait = social_liberal_counselor
 		}
 	}
 	
 	option = {
-		trigger = { NOT = { has_country_flag = OCH_will_try_to_influence_RSS } }
-		name = rcw_usfev.119.a
-		set_politics = {ruling_party = despotism elections_allowed = no}
-		drop_cosmetic_tag = yes
-		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
-		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
-		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
-		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
-		hidden_effect = {
-			retire_ideology_leader = social_liberalism
-			retire_ideology_leader = social_liberalism
-			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
-			retire_ideology_leader = social_democracy
-			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
-			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
-			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
-			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = {  } }
-			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
-			load_focus_tree = Russia_Russian_state_Kolchak_focus
-			RUS_Alexandr_Kolchak = {
-				add_country_leader_role = {
-					promote_leader = yes
-					country_leader = {
-						desc = RUS_Alexandr_Kolchak_DESC
-						ideology = despotism_ideology
-						traits = { moy_admiral warmonger goal_in_politics goal }
-						expire = "1953.3.1.1"
-					}
-				}
-				promote_character = yes
-			}
-		}
-		clear_variable = directory_balance
-		remove_ideas = RSS_disjointed_government
-		add_ideas = RSS_disjointed_government_after
-		add_ideas = {
-			Pyotr_Vologodsky_1
-			Yuri_Klyuchnikov_2
-			Ivan_Mikhailov_3
-			Alexander_Gattenberger_4
-			Sergey_Starynkevich_5
-			Nikolay_Stepanov_6
-			Vasily_Markovsky_army_chief
-		}
-	}
-	option = {
-		trigger = { has_country_flag = OCH_will_try_to_influence_RSS OCH = { NOT = { has_government = despotism } } }
+		trigger = { has_character = RUS_Alexandr_Kolchak NOT = { has_idea = Alexey_Almazov_6 } }
 		name = rcw_usfev.119.b
-		set_politics = {ruling_party = despotism elections_allowed = no}
+		set_politics = { ruling_party = despotism elections_allowed = no }
 		drop_cosmetic_tag = yes
 		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
 		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
@@ -6317,29 +6574,36 @@ country_event = {
 			Nikolay_Stepanov_6
 			Vasily_Markovsky_army_chief
 		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
 		clr_country_flag = OCH_will_try_to_influence_RSS
+		ai_chance = {
+			factor = 1
+		}
 	}
 	option = {
-		trigger = { has_country_flag = OCH_will_try_to_influence_RSS OCH = { NOT = { has_government = despotism } } }
+		trigger = { has_idea = Alexey_Almazov_6 }
 		name = rcw_usfev.119.c
-		set_politics = {ruling_party = despotism elections_allowed = no}
 		drop_cosmetic_tag = yes
 		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
 		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
 		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
 		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		every_unit_leader = { limit = { has_id = 88152 } set_nationality = REB }
 		hidden_effect = {
 			retire_ideology_leader = social_liberalism
 			retire_ideology_leader = social_liberalism
 			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
 			retire_ideology_leader = social_democracy
 			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
-			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
+			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { min_2_biased_intellectual liberal_journalist silent_workhorse } }
 			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
-			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = {  } }
+			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { min_1_supreme_ruler staunch_monarchist warmonger } }
 			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
 			load_focus_tree = Russia_Russian_state_Kolchak_focus
 		}
+		set_politics = { ruling_party = despotism elections_allowed = no }
 		clear_variable = directory_balance
 		remove_ideas = RSS_disjointed_government
 		add_ideas = RSS_disjointed_government_after
@@ -6352,41 +6616,38 @@ country_event = {
 			Nikolay_Stepanov_6
 			Vasily_Markovsky_army_chief
 		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
 		clr_country_flag = OCH_will_try_to_influence_RSS
-		create_country_leader = { name = "Alexandr Dutov" desc = OCH_Alexandr_Dutov_desc picture = "gfx/leaders/OCH/Portrait_Alexandr_Dutov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general ataman_of_revolution dictator ataman_of_all_cossacks } }
-		annex_country = {
-			target = OCH
-			transfer_troops = yes
-		}
-		OCH = {
-			every_unit_leader = { set_nationality = ROOT }
-		}
-		if = {
-			limit = { OCH = { is_ai = no } }
-			change_tag_from = OCH
+		create_country_leader = { name = "Alexey Grishin-Almazov" desc = "RUS_Alexey_Grishin-Almazov_DESC" picture = "gfx/leaders/SIB/Portrait_Alexey_Grishin-Almazov.dds" expire = "1953.7.7" ideology = despotism_ideology traits = { warmonger min_1_reformist_soldier min_1_flamboyant_tough_guy political_dancer } }
+		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
+		ai_chance = {
+			factor = 1
 		}
 	}
 	option = {
-		trigger = { has_country_flag = OCH_will_try_to_influence_RSS OCH = { has_government = despotism } }
 		name = rcw_usfev.119.d
-		set_politics = {ruling_party = despotism elections_allowed = no}
+		trigger = { any_unit_leader = { has_id = 76547 } }
 		drop_cosmetic_tag = yes
 		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
 		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
 		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
 		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		every_unit_leader = { limit = { has_id = 88152 } set_nationality = REB }
 		hidden_effect = {
 			retire_ideology_leader = social_liberalism
 			retire_ideology_leader = social_liberalism
 			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
 			retire_ideology_leader = social_democracy
 			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
-			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
+			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { min_2_biased_intellectual liberal_journalist silent_workhorse } }
 			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
-			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = {  } }
+			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { min_1_supreme_ruler staunch_monarchist warmonger } }
 			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
 			load_focus_tree = Russia_Russian_state_Kolchak_focus
 		}
+		set_politics = { ruling_party = despotism elections_allowed = no }
 		clear_variable = directory_balance
 		remove_ideas = RSS_disjointed_government
 		add_ideas = RSS_disjointed_government_after
@@ -6399,21 +6660,101 @@ country_event = {
 			Nikolay_Stepanov_6
 			Vasily_Markovsky_army_chief
 		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
 		clr_country_flag = OCH_will_try_to_influence_RSS
-		create_country_leader = { name = "Alexandr Dutov" desc = OCH_Alexandr_Dutov_desc picture = "gfx/leaders/OCH/Portrait_Alexandr_Dutov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general ataman_of_revolution dictator ataman_of_all_cossacks } }
-		annex_country = {
-			target = OCH
-			transfer_troops = yes
-		}
-		OCH = {
-			every_unit_leader = { set_nationality = ROOT }
-		}
-		if = {
-			limit = { OCH = { is_ai = no } }
-			change_tag_from = OCH
+		create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Portrait_Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero russian_sulla goal_in_politics } }
+		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
+		ai_chance = {
+			factor = 0
 		}
 	}
-	
+	option = {
+		name = rcw_usfev.119.e
+		trigger = { has_country_flag = RSS_Starck_instead_Kolchak }
+		drop_cosmetic_tag = yes
+		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
+		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
+		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
+		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		every_unit_leader = { limit = { has_id = 88152 } set_nationality = REB }
+		hidden_effect = {
+			retire_ideology_leader = social_liberalism
+			retire_ideology_leader = social_liberalism
+			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
+			retire_ideology_leader = social_democracy
+			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
+			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { min_2_biased_intellectual liberal_journalist silent_workhorse } }
+			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
+			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { min_1_supreme_ruler staunch_monarchist warmonger } }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+			load_focus_tree = Russia_Russian_state_Kolchak_focus
+		}
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		clear_variable = directory_balance
+		remove_ideas = RSS_disjointed_government
+		add_ideas = RSS_disjointed_government_after
+		add_ideas = {
+			Pyotr_Vologodsky_1
+			Yuri_Klyuchnikov_2
+			Ivan_Mikhailov_3
+			Alexander_Gattenberger_4
+			Sergey_Starynkevich_5
+			Nikolay_Stepanov_6
+			Vasily_Markovsky_army_chief
+		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
+		clr_country_flag = OCH_will_try_to_influence_RSS
+		create_country_leader = { name = "Georgy Starck" desc = "" picture = "gfx/leaders/RUS/Portrait_Georgiy_Starck.dds" expire = "1953.7.7" ideology = despotism_ideology traits = { moy_admiral warmonger goal_in_politics goal } }
+		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_usfev.119.f
+		trigger = { NOT = { has_character = RUS_Alexandr_Kolchak has_idea = Alexey_Almazov_6 any_unit_leader = { has_id = 76547 } has_country_flag = RSS_Starck_instead_Kolchak } }
+		drop_cosmetic_tag = yes
+		set_party_name = { ideology = despotism long_name = RUS_authoritarism_kolchak_party_long name = RUS_authoritarism_kolchak_party }
+		set_party_name = { ideology = social_democracy long_name = RUS_social_democracy_kolchak_party_long name = RUS_social_democracy_kolchak_party }
+		set_party_name = { ideology = social_liberalism long_name = RUS_social_liberalism_kolchak_party_long name = RUS_social_liberalism_kolchak_party }
+		set_party_name = { ideology = market_liberalism long_name = RUS_market_liberalism_kolchak_party_long name = RUS_market_liberalism_kolchak_party }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		every_unit_leader = { limit = { has_id = 88152 } set_nationality = REB }
+		hidden_effect = {
+			retire_ideology_leader = social_liberalism
+			retire_ideology_leader = social_liberalism
+			create_country_leader = { name = "Nikolay Nekrasov" desc = "" picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1975.1.1" ideology = social_liberalism_ideology traits = {  } }
+			retire_ideology_leader = social_democracy
+			create_country_leader = { name = "Victor Chernov" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_reformism traits = { soc_lib_reformer economist } }
+			create_country_leader = { name = "Alexandr Clafton" desc = "" picture = "gfx/leaders/RUS/Portrait_Alexandr_Clafton.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { min_2_biased_intellectual liberal_journalist silent_workhorse } }
+			create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/SIB/Portrait_Victor_Pepelyaev.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = {  } }
+			create_country_leader = { name = "Vyacheslav Volkov" desc = "" picture = "gfx/leaders/SIB/Portrait_Vyacheslav_Volkov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { min_1_supreme_ruler staunch_monarchist warmonger } }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+			load_focus_tree = Russia_Russian_state_Kolchak_focus
+		}
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		clear_variable = directory_balance
+		remove_ideas = RSS_disjointed_government
+		add_ideas = RSS_disjointed_government_after
+		add_ideas = {
+			Pyotr_Vologodsky_1
+			Yuri_Klyuchnikov_2
+			Ivan_Mikhailov_3
+			Alexander_Gattenberger_4
+			Sergey_Starynkevich_5
+			Nikolay_Stepanov_6
+			Vasily_Markovsky_army_chief
+		}
+		clr_country_flag = RSS_Starck_instead_Kolchak
+		country_event = { id = rcw_usfev.134 hours = 2 }
+		hidden_effect = { news_event = { id = news_n.30 days = 1 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
 }
 
 # Съезд партии Народной свободы (Сибирь) 
@@ -6482,6 +6823,152 @@ country_event = {
 		add_ideas = Alexsandr_Kolchak_6
 		ai_chance = {
 			factor = 0
+		}
+	}
+}
+
+# Кандидатура Верховного Правителя
+country_event = {
+	id = rcw_usfev.134
+	title = rcw_usfev.134.t
+	desc = rcw_usfev.134.desc
+
+	picture = GFX_report_event_sib_kolchak_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_usfev.134.a
+		clr_country_flag = OCH_will_try_to_influence_RSS
+		annex_country = {
+			target = OCH
+			transfer_troops = yes
+		}
+		OCH = { every_unit_leader = { set_nationality = ROOT } }
+		hidden_effect = {
+			HRB = {
+				if = {
+					limit = { has_country_leader = { name = "Dmitriy Horvat" } }
+					kill_ideology_leader = conservatism
+				}
+			}
+		}
+		create_country_leader = { name = "Dmitriy Horvat" desc = "RUS_Dmitriy_Horvat_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Horvat.dds" expire = "1935.1.1" ideology = despotism_ideology  traits = { warmonger_old_general } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		trigger = { BKL = { OR = { has_country_leader = { name = "Grigoriy Semyonov" ruling_only = yes } has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes } has_country_leader = { name = "Vasiliy Zimin" ruling_only = yes } } } }
+		name = rcw_usfev.134.b
+		clr_country_flag = OCH_will_try_to_influence_RSS
+		if = {
+			limit = { BKL = { has_country_leader = { name = "Grigoriy Semyonov" ruling_only = yes } } }
+			hidden_effect = { BKL = { every_unit_leader = { limit = { has_id = 88157 } set_nationality = ROOT } kill_ideology_leader = despotism } }
+			create_country_leader = { name = "Grigoriy Semyonov" desc = BKL_Grigoriy_Semenov_DESC picture = "gfx/leaders/BKL/Portrait_Grigoriy_Semyonov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general cornered_fox } }
+		}
+		else_if = {
+			limit = { BKL = { has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes } } }
+			hidden_effect = { BKL = { every_unit_leader = { limit = { has_id = 77402 } set_nationality = ROOT } kill_ideology_leader = despotism } }
+			create_country_leader = {
+				name = "Roman Fyodorovich von Ungern-Sternberg" desc = "RUS_Roman_Fedorovich_von_Ungern-Sternberg_DESC"
+				picture = "gfx/leaders/RUS/Portrait_Roman_Fyodorovich_von_Ungern-Sternberg.dds"
+				expire = "1965.1.1"
+				ideology = despotism_ideology
+				traits = { spirit_of_genghis warmonger }
+			}
+		}
+		else_if = {
+			limit = { BKL = { has_country_leader = { name = "Vasiliy Zimin" ruling_only = yes } } }
+			hidden_effect = { BKL = { kill_ideology_leader = conservatism } }
+			create_country_leader = { name = "Vasiliy Zimin" desc = BKL_Vasiliy_Zimin_DESC picture = "gfx/leaders/BKL/Portrait_Vasiliy_Zimin.dds" expire = "1935.1.1" ideology = despotism_ideology traits = {  } }
+		}
+		annex_country = {
+			target = BKL
+			transfer_troops = yes
+		}
+		BKL = { every_unit_leader = { set_nationality = ROOT } }
+		if = {
+			limit = { BKL = { is_ai = no } }
+			change_tag_from = BKL
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		trigger = { has_country_flag = OCH_will_try_to_influence_RSS OCH = { has_country_leader = { name = "Alexandr Dutov" ruling_only = yes } } }
+		name = rcw_usfev.134.c
+		clr_country_flag = OCH_will_try_to_influence_RSS
+		annex_country = {
+			target = OCH
+			transfer_troops = yes
+		}
+		OCH = { every_unit_leader = { set_nationality = ROOT } }
+		create_country_leader = { name = "Alexandr Dutov" desc = OCH_Alexandr_Dutov_desc picture = "gfx/leaders/OCH/Portrait_Alexandr_Dutov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general ataman_of_revolution dictator ataman_of_all_cossacks } }
+		if = {
+			limit = { OCH = { is_ai = no } }
+			change_tag_from = OCH
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		trigger = { OR = { any_unit_leader = { has_id = 77400 } PRM = { any_unit_leader = { has_id = 77400 } } } }
+		name = rcw_usfev.134.d
+		clr_country_flag = OCH_will_try_to_influence_RSS
+		PRM = { every_unit_leader = { limit = { has_id = 77400 } set_nationality = ROOT } }
+		if = {
+			limit = { PRM = { has_country_leader = { name = "Mikhail Diterihs" ruling_only = yes } } }
+			hidden_effect = { PRM = { kill_ideology_leader = authoritarism } }
+		}
+		create_country_leader = { name = "Mikhail Diterihs" desc = "RUS_Mikhail_Diterihs_DESC" picture = "gfx/leaders/SIB/Portrait_Mikhail_Diterihs.dds" expire = "1934.10.9" ideology = authoritarism_ideology traits = { warmonger_old_general great_war_hero staunch_monarchist min_1_traditionalist min_1_spiritual_leader } }
+		set_politics = { ruling_party = authoritarism elections_allowed = no }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Нейтральный кандидат (Старк)
+country_event = {
+	id = rcw_usfev.135
+	title = rcw_usfev.135.t
+	desc = rcw_usfev.135.desc
+	picture = GFX_report_event_och_beseda_s_Grishinym_Almazovym
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		original_tag = RSS
+		has_focus_tree = Russia_Russian_state_directory_focus
+		check_variable = { directory_balance > 1 }
+		NOT = { has_character = RUS_Alexandr_Kolchak }
+		any_unit_leader = { has_id = 88156 } # Старк
+		NOT = { has_country_flag = Alexandr_Kolchak_is_here }
+		NOT = {
+			PRM = { has_country_flag = Alexandr_Kolchak_was_here }
+			JAP = { has_country_flag = Alexandr_Kolchak_was_here }
+		}
+	}
+	
+	mean_time_to_happen = { days = 15 }
+	
+	option = {
+		name = rcw_usfev.135.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = OCH_second_revolt } }
+		name = rcw_usfev.135.b
+		set_country_flag = RSS_Starck_instead_Kolchak
+		ai_chance = {
+			factor = 1
 		}
 	}
 }
@@ -7998,6 +8485,17 @@ country_event = {
 				party_populatiry_addition_script_1 = yes
 				set_ruling_party_for_uniting_country_script = yes
 				country_event = { id = rcw_usfev.1918 hours = 1 }
+				SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				RSS = {
+					if = {
+						limit = { any_character = { has_id = 92353 } }
+						add_ideas = {
+							Pavel_Rinov_6
+							Pavel_Rinov_army_chief
+						}
+					}
+				}
 			}
 		}
 		if = {
@@ -8115,6 +8613,17 @@ country_event = {
 				party_populatiry_addition_script_1 = yes
 				set_ruling_party_for_uniting_country_script = yes
 				country_event = { id = rcw_usfev.1918 hours = 1 }
+				SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+				RSS = {
+					if = {
+						limit = { any_character = { has_id = 92353 } }
+						add_ideas = {
+							Pavel_Rinov_6
+							Pavel_Rinov_army_chief
+						}
+					}
+				}
 			}
 		ai_chance = {
 			factor = 1
@@ -13092,6 +13601,17 @@ country_event = {
 				limit = { is_core_of = RUS NOT = { is_on_continent = europe is_on_continent = middle_east } }
 				add_core_of = RSS
 			}
+			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			RSS = {
+				if = {
+					limit = { any_character = { has_id = 92353 } }
+					add_ideas = {
+						Pavel_Rinov_6
+						Pavel_Rinov_army_chief
+					}
+				}
+			}
 		}
 	}
 	option = {
@@ -13224,6 +13744,17 @@ country_event = {
 					}
 					add_core_of = RSS
 				}	
+			}
+			SIB = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			CCA = { random_unit_leader = { limit = { has_id = 92353 } set_nationality = RSS } }
+			RSS = {
+				if = {
+					limit = { any_character = { has_id = 92353 } }
+					add_ideas = {
+						Pavel_Rinov_6
+						Pavel_Rinov_army_chief
+					}
+				}
 			}
 		}
 	}
@@ -14488,7 +15019,7 @@ country_event = {
 	title = rcw_usfev.501.t
 	desc = rcw_usfev.501.desc
 	
-	picture = GFX_report_event_prm_diterikhs_coup
+	picture = GFX_report_event_RSS_alien_power
 	
 	is_triggered_only = yes
 	
@@ -14525,7 +15056,7 @@ country_event = {
 	title = rcw_usfev.502.t
 	desc = rcw_usfev.502.desc
 	
-	picture = GFX_report_event_prm_diterikhs_coup
+	picture = GFX_report_event_RSS_disobedience
 	
 	is_triggered_only = yes
 	
@@ -14565,7 +15096,7 @@ country_event = {
 	title = rcw_usfev.503.t
 	desc = rcw_usfev.503.desc
 	
-	picture = GFX_report_event_prm_diterikhs_coup
+	picture = GFX_report_event_RSS_kalmykov_riot
 	
 	is_triggered_only = yes
 	
@@ -14795,7 +15326,7 @@ country_event = {
 	title = rcw_usfev.504.t
 	desc = rcw_usfev.504.desc
 	
-	picture = GFX_report_event_prm_diterikhs_coup
+	picture = GFX_report_event_RSS_disobedience
 	
 	is_triggered_only = yes
 	
@@ -16327,7 +16858,7 @@ country_event = {
 			division_template = {
 				name = "Vol'nokazachiy otriad"
 				regiments = {
-					militia = { x = 0 y = 0 }
+					irregular_cavalry = { x = 0 y = 0 }
 				}
 			}
 			every_state = {
@@ -16477,7 +17008,7 @@ country_event = {
 			division_template = {
 				name = "Vol'nokazachiy otriad"
 				regiments = {
-					militia = { x = 0 y = 0 }
+					irregular_cavalry = { x = 0 y = 0 }
 				}
 			}
 			every_state = {
@@ -17008,6 +17539,8 @@ country_event = {
 	desc = rcw_usfev.2000.desc
 	is_triggered_only = yes
 	
+	picture = GFX_report_event_RSS_siberian_clique
+	
 	immediate = {
 		hidden_effect = {
 			add_ideas = RSS_irremovability_of_ministers_idea
@@ -17033,6 +17566,8 @@ country_event = {
 	title = rcw_usfev.2001.t
 	desc = rcw_usfev.2001.desc
 	is_triggered_only = yes
+	
+	picture = GFX_report_event_RSS_supreme_ruler_mission
 	
 	option = {
 		name = rcw_usfev.2001.a #Да здравствует Верховный Правитель!
@@ -17070,6 +17605,7 @@ country_event = {
 	title = rcw_usfev.2002.t
 	desc = rcw_usfev.2002.desc
 	fire_only_once = yes
+	picture = GFX_report_event_RSS_siberian_clique
 	trigger = {
 		NOT = { has_global_flag = RUS_civil_war_over }
 		tag = RSS
