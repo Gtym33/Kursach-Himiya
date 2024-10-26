@@ -22,15 +22,18 @@ focus_tree = {
 			factor = 10
 		}
 		completion_reward = {
-			hidden_effect = {
-			set_variable = { 
-			var = cap_progress_2
-			value = RSS.surrender_progress
+			country_event = rcw_usfev.2000
+			if = {
+				limit = { NOT = { has_idea_with_trait = foreign_minister_trait } }
+				add_ideas = Ivan_Sukin_2
 			}
-			set_variable = { 
-			var = cap_progress_1
-			value = RVA.surrender_progress 
+			if = {
+				limit = { NOT = { has_idea_with_trait = economy_minister_trait } }
+				add_ideas = Ivan_Mikhailov_3
 			}
+			if = {
+				limit = { NOT = { has_idea_with_trait = security_minister_trait } }
+				add_ideas = Victor_Pepelyaev_4
 			}
 		}
 	}
@@ -45,7 +48,7 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = RSS_complete_dictatorship
 		}
-		x = 9
+		x = 10
 		y = 1
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -53,6 +56,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			add_political_power = 300
+			add_stability = 0.2
 		}
 	}
 	
@@ -64,7 +68,7 @@ focus_tree = {
 			focus = RSS_nepredreshenie
 			focus = RSS_complete_dictatorship
 		}
-		x = 9
+		x = 10
 		y = 2
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -93,6 +97,7 @@ focus_tree = {
 			factor = 10
 		}
 		completion_reward = {
+			add_stability = 0.05
 			add_ideas = SIB_police_reform_idea
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_state
@@ -124,20 +129,6 @@ focus_tree = {
 				lack_of_officers_fall = yes
 				lack_of_officers_fall = yes
 			}
-			hidden_effect = {
-				remove_ideas = {
-					wartime_officers_10
-					wartime_officers_9
-					wartime_officers_8
-					wartime_officers_7
-					wartime_officers_6
-					wartime_officers_5
-					wartime_officers_4
-					wartime_officers_3
-					wartime_officers_2
-					wartime_officers_1
-				}
-			}
 		}
 	}
 	
@@ -156,7 +147,7 @@ focus_tree = {
 		}
 		completion_reward = {
 			add_ideas = RSS_domobilization_idea
-			add_stability = -0.1
+			add_war_support = -0.05
 			add_popularity = { ideology = ROOT popularity = -0.05 }
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_state
@@ -181,18 +172,53 @@ focus_tree = {
 				NOT = { has_global_flag = RSS_civil_war_eser_coup }
 			}
 		}
-		x = 11
+		x = 12
 		y = 1
 		cancel_if_invalid = yes
 		ai_will_do = {
 			factor = 10
 		}
 		completion_reward = {
+			add_stability = 0.1
 			add_country_leader_trait = moy_admiral_2
 			add_popularity = { ideology = fascism popularity = 0.05 }
 			add_ideas = {
 				military_dictatorship_gov_form
 				decrees_of_ruler_b_law
+			}
+		}
+	}
+	
+	focus = {
+		id = RSS_full_centralization
+		icon = GFX_goal_RSS_implosion
+		cost = 3
+		prerequisite = {
+			focus = RSS_complete_dictatorship
+		}
+		x = 12
+		y = 2
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		completion_reward = {
+			if = {
+				limit = {
+					is_subject = no
+				}
+				every_country = {
+					limit = { is_subject_of = ROOT is_any_former_russian_empire_country = yes }
+					country_event = rcw_usfev.145
+				}
+				else = {
+					OVERLORD = {
+						every_country = {
+							limit = { is_subject_of = PREV is_any_former_russian_empire_country = yes }
+							country_event = rcw_usfev.145
+						}
+					}
+				}
 			}
 		}
 	}
@@ -258,6 +284,37 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = RSS_martial_law_on_the_transsib
+		icon = GFX_goal_RSS_r_g_d
+		cost = 3
+		prerequisite = {
+			focus = RSS_militar_field_courts
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = RSS_martial_law_on_the_transsib_trigger_tt
+				trigger = { has_variable = { global.RCW_green_var_Russian_state > 7 } }
+			}
+		}
+		x = 13
+		y = 4
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		completion_reward = {
+			add_political_power = -50
+			add_stability = 0.05
+			rise_collapse_of_railway_system = yes
+			custom_effect_tooltip = RSS_martial_law_on_the_transsib_tt
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_state
+				value = -1
+			}
+		}
+	}
+	
+	focus = {
 		id = RSS_ban_ataman
 		icon = GFX_goal_RSS_atamanchina
 		cost = 3
@@ -275,12 +332,9 @@ focus_tree = {
 		}
 		bypass = {
 			OR = {
-				has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes }
+				NOT = { has_idea = RSS_atamanshina }
 				has_country_leader = { name = "Ivan Kalmykov" ruling_only = yes }
-				has_country_leader = { name = "Mikhail Diterihs" ruling_only = yes }
-				has_country_leader = { name = "Dmitriy Horvat" ruling_only = yes }
 				has_country_leader = { name = "Grigoriy Semyonov" ruling_only = yes }
-				has_country_leader = { name = "Vasiliy Flug" ruling_only = yes }
 				has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes }
 				has_country_leader = { name = "Leonid Skipetrov" ruling_only = yes }
 			}
@@ -289,75 +343,23 @@ focus_tree = {
 			add_stability = 0.15
 			remove_ideas = RSS_atamanshina
 			
-			#Alexey Grishin-Almazov
 			if = {
-				limit = { NOT = { tag = SCH } NOT = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes } } }
-				every_unit_leader = { limit = { has_id = 92345 } set_nationality = SCH }
-				if = {
-					limit = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = no } }
-					retire_ideology_leader = despotism
-				}
-			}
-			#Ivan Kalmykov
-			if = {
-				limit = { NOT = { tag = PRM } NOT = { has_country_leader = { name = "Ivan Kalmykov" ruling_only = yes } } }
-				every_unit_leader = { limit = { has_id = 88161 } set_nationality = PRM }
-			}
-			#Mikhail Diterihs
-			if = {
-				limit = { NOT = { tag = PRM } NOT = { has_country_leader = { name = "Mikhail Diterihs" ruling_only = yes } } }
-				every_unit_leader = { limit = { has_id = 77400 } set_nationality = PRM }
-				if = {
-					limit = { has_country_leader = { name = "Mikhail Diterihs" ruling_only = no } }
-					if = {
-						limit = { tag = RSS }
-						retire_ideology_leader = social_conservatism
-						else = {
-							retire_ideology_leader = authoritarism
-						}
-					}
-				}
-			}
-			#Dmitriy Horvat
-			if = {
-				limit = { NOT = { tag = PRM } NOT = { has_country_leader = { name = "Dmitriy Horvat" ruling_only = yes } } }
-				every_unit_leader = { limit = { has_id = 88162 } set_nationality = PRM }
-				if = {
-					limit = { has_country_leader = { name = "Dmitriy Horvat" ruling_only = no } }
-					retire_ideology_leader = social_conservatism
-				}
-			}
-			#Vasiliy Flug
-			if = {
-				limit = { NOT = { tag = PRM } }
-				every_unit_leader = { limit = { has_id = 77405 } set_nationality = PRM }
+				limit = { BKL = { is_subject_of = ROOT } }
+				BKL = { country_event = rcw_usfev.501 }
 			}
 			
-			#Grigoriy Semyonov
 			if = {
-				limit = { NOT = { tag = BKL } NOT = { has_country_leader = { name = "Grigoriy Semyonov" ruling_only = yes } } }
-				every_unit_leader = { limit = { has_id = 88157 } set_nationality = BKL }
-				if = {
-					limit = { has_country_leader = { name = "Grigoriy Semyonov" ruling_only = no } }
-					retire_ideology_leader = authoritarism
-				}
-			}
-			#Roman Fyodorovich von Ungern-Sternberg
-			if = {
-				limit = { NOT = { tag = BKL } NOT = { has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes } } }
-				every_unit_leader = { limit = { has_id = 77402 } set_nationality = BKL }
-				if = {
-					limit = { has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = no } }
-					retire_ideology_leader = authoritarism
-				}
-			}
-			#Leonid Skipetrov
-			if = {
-				limit = { NOT = { tag = BKL } }
-				every_unit_leader = { limit = { has_id = 77403 } set_nationality = BKL }
+				limit = { PRM = { is_subject_of = ROOT has_stability < 0.5 has_army_manpower = { size < 30000 } OR = { controls_state = 409 controls_state = 1035 } } }
+				country_event = rcw_usfev.503
+				PRM = { country_event = rcw_usfev.503 }
 			}
 			
-			#hidden_effect = { country_event = { id = rcw_usfev.146 hours = 1 } }
+			if = {
+				limit = { TRK = { is_subject_of = ROOT has_stability < 0.5 has_army_manpower = { size < 30000 } } }
+				country_event = rcw_usfev.504
+				TRK = { country_event = rcw_usfev.504 }
+			}
+			
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_state
 				value = -1
@@ -450,8 +452,6 @@ focus_tree = {
 		cost = 5
 		prerequisite = {
 			focus = RSS_general_appeal_cossack
-		}
-		prerequisite = {
 			focus = RSS_domobilization
 		}
 		x = 10
@@ -503,38 +503,81 @@ focus_tree = {
 			}
 		}
 	}
+	focus = {
+		id = RSS_antibolshevik_crusade
+		icon = GFX_goal_SIB_antibolshevik_crusade
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			has_war = no
+		}
+		prerequisite = {
+			focus = RSS_holy_cross_and_green_banner
+		}
+		x = 0
+		y = 1
+		relative_position_id = RSS_holy_cross_and_green_banner
+		completion_reward = {
+			add_popularity = { ideology = communism popularity = -0.1 }
+			add_popularity = { ideology = radical_socialism popularity = -0.1 }
+			add_popularity = { ideology = authoritarism popularity = 0.1 }
+			add_popularity = { ideology = despotism popularity = 0.15 }
+			add_popularity = { ideology = fascism popularity = 0.1 }
+			add_timed_idea = {
+				idea = SIB_antibolshevik_crusade_idea
+				days = 93
+			}
+		}
+	}
+	
 	
 	focus = {
-		id = RSS_full_centralization
-		icon = GFX_goal_RSS_implosion
+		id = RSS_russian_politburo
+		icon = GFX_goal_SIB_conference
+		cost = 4
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+		}
+		prerequisite = {
+			focus = RSS_complete_dictatorship
+		}
+		relative_position_id = RSS_complete_dictatorship
+		x = 2
+		y = 1
+		completion_reward = {
+			add_ideas = SIB_russian_politburo_idea
+		}
+	}
+	
+	focus = {
+		id = RSS_proclaim_regency
+		icon = GFX_goal_RSS_south_staff
 		cost = 3
 		prerequisite = {
 			focus = RSS_complete_dictatorship
 		}
-		x = 13
+		available = {
+			OR = {
+				has_country_flag = Nikolay_Alexandrovich_Romanov_is_here
+				has_country_flag = Mikhail_Alexandrovich_Romanov_is_here
+			}
+		}
+		
+		x = 3
 		y = 2
+		relative_position_id = RSS_complete_dictatorship
 		cancel_if_invalid = yes
 		ai_will_do = {
-			factor = 10
+			factor = 0
 		}
 		completion_reward = {
-			if = {
-				limit = {
-					is_subject = no
-				}
-				every_country = {
-					limit = { is_subject_of = ROOT is_any_former_russian_empire_country = yes }
-					country_event = rcw_usfev.145
-				}
-				else = {
-					OVERLORD = {
-						every_country = {
-							limit = { is_subject_of = PREV is_any_former_russian_empire_country = yes }
-							country_event = rcw_usfev.145
-						}
-					}
-				}
-			}
+			country_event = rcw_usfev.2001
 		}
 	}
 	
@@ -550,8 +593,8 @@ focus_tree = {
 			RVA = { is_subject_of = ROOT }
 		}
 		
-		x = 15
-		y = 2
+		x = 13
+		y = 3
 		cancel_if_invalid = yes
 		ai_will_do = {
 			factor = 0
@@ -570,7 +613,7 @@ focus_tree = {
 				retire_ideology_leader = despotism
 				RVA = {
 					create_country_leader = { name = "Alexandr Kolchak" desc = "RUS_Alexandr_Kolchak_DESC" picture = "gfx/leaders/RUS/Portrait_Alexandr_Kolchak_supreme_ruler.dds" expire = "1936.2.7" ideology = despotism_ideology traits = { moy_admiral warmonger goal_in_politics goal } }
-					add_ideas = Alexander_Kolchak_1
+					add_ideas = Alexandr_Kolchak_1
 					set_politics = { ruling_party = despotism }
 				}
 			}
@@ -611,20 +654,22 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		bypass = {
+			NOT = {
+				has_idea = RSS_irremovability_of_ministers_idea
+				has_idea = RSS_disjointed_government
+				has_idea = RSS_disjointed_government_after
+			}
+		}
 		completion_reward = {
-			remove_ideas_with_trait = head_of_government_trait
-			remove_ideas_with_trait = foreign_minister_trait
-			remove_ideas_with_trait = economy_minister_trait
-			remove_ideas_with_trait = security_minister_trait
-			remove_ideas_with_trait = head_of_intel_trait
-			remove_ideas = RSS_disjointed_government
-			remove_ideas = RSS_disjointed_government_after
-			remove_ideas = PRC_government_corruption
+			remove_ideas = RSS_irremovability_of_ministers_idea
 			if = {
-				limit = { has_country_leader = { name = "Alexandr Kolchak" ruling_only = yes } }
-				add_ideas = {
-					Alexander_Kolchak_1
-				}
+				limit = { has_idea = RSS_disjointed_government }
+				remove_ideas = RSS_disjointed_government
+			}
+			if = {
+				limit = { has_idea = RSS_disjointed_government_after }
+				remove_ideas = RSS_disjointed_government_after
 			}
 		}
 	}
@@ -634,37 +679,33 @@ focus_tree = {
 		icon = GFX_goal_RSS_zemskiy
 		cost = 3
 		prerequisite = {
-			focus = RSS_cleaning_cabinet
-			focus = RSS_move_south
+			focus = RSS_approval_general_governorships
 		}
-		x = 15
+		available = {
+			surrender_progress > 0.4
+		}
+		x = 7
 		y = 3
 		cancel_if_invalid = yes
 		ai_will_do = {
 			factor = 10
 		}
 		completion_reward = {
-			add_stability = 0.05
-			add_political_power = 140 #75
-			elections_allowed_60 = yes
-			if = {
-				limit = { is_subject = yes }
-				OVERLORD = {
-					add_stability = 0.05
-					add_political_power = 140 #75
-					elections_allowed_60 = yes
-					every_state = {
-						limit = { is_core_of = RUS OR = { is_on_continent = europe is_on_continent = middle_east } }
-						add_core_of = PREV
-					}
-				}
-				else = {
-					every_state = {
-						limit = { is_core_of = RUS OR = { is_on_continent = europe is_on_continent = middle_east } }
-						add_core_of = ROOT
-					}
-				}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.02
 			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.02
+			}
+			add_stability = 0.05
+			add_political_power = 140
+			country_event = rcw_usfev.146
 		}
 	}
 	
@@ -701,7 +742,7 @@ focus_tree = {
 			factor = 10
 		}
 		completion_reward = {
-			add_stability = 0.05
+			add_stability = 0.07
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_state
 				value = -1
@@ -718,6 +759,9 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = RSS_cleaning_cabinet
+		}
+		available = {
+			NOT = { has_idea = government_corruption_1 has_idea = government_corruption_2 has_idea = government_corruption_3 has_idea = government_corruption_4 has_idea = government_corruption_5 }
 		}
 		x = 19
 		y = 3
@@ -766,38 +810,7 @@ focus_tree = {
 			factor = 10
 		}
 		completion_reward = {
-			if = {
-				limit = { has_idea = collapse_of_railway_system_5 }
-				swap_ideas = {
-					remove_idea = collapse_of_railway_system_5
-					add_idea = collapse_of_railway_system_4
-				}
-			}
-			if = {
-				limit = { has_idea = collapse_of_railway_system_4 }
-				swap_ideas = {
-					remove_idea = collapse_of_railway_system_4
-					add_idea = collapse_of_railway_system_3
-				}
-			}
-			if = {
-				limit = { has_idea = collapse_of_railway_system_3 }
-				swap_ideas = {
-					remove_idea = collapse_of_railway_system_3
-					add_idea = collapse_of_railway_system_2
-				}
-			}
-			if = {
-				limit = { has_idea = collapse_of_railway_system_2 }
-				swap_ideas = {
-					remove_idea = collapse_of_railway_system_2
-					add_idea = collapse_of_railway_system_1
-				}
-			}
-			if = {
-				limit = { has_idea = collapse_of_railway_system_1 }
-				remove_ideas = collapse_of_railway_system_1
-			}
+			fall_collapse_of_railway_system = yes
 		}
 	}
 	
@@ -869,6 +882,46 @@ focus_tree = {
 	#		country_event = { id = rcw_usfev.74 days = 1 }
 	#	}
 	#}
+	
+	
+	
+	focus = {
+		id = RSS_return_central_asia
+		icon = GFX_goal_RSS_mobil_officer
+		cost = 3
+		prerequisite = {
+			focus = RSS_orientation_change
+		}
+		available = {
+			TRK = {
+				OR = {
+					is_subject_of = ROOT
+					is_subject_of = OVERLORD
+					exists = no
+					has_capitulated = yes
+					NOT = { has_government = radical_socialism has_government = communism }
+				}
+			}
+		}
+		x = 16
+		y = 4
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		completion_reward = {
+			every_country = {
+				limit = { OR = { tag = KHI tag = BUK tag = TRK } exists = yes NOT = { has_government = radical_socialism has_government = communism has_war_with = ROOT } is_subject = no }
+				if = {
+					limit = { ROOT = { is_subject = no } }
+					country_event = { id = rcw_usfev.152 days = 1 }
+					else = {
+						ROOT = { OVERLORD = { PREV.PREV = { country_event = { id = rcw_usfev.152 days = 1 } } } }
+					}
+				}
+			}
+		}
+	}
 	
 	focus = {
 		id = RSS_recognition_Finland
@@ -1000,9 +1053,10 @@ focus_tree = {
 				is_subject = no
 				NOT = { has_war_with = ROOT }
 				NOT = { has_government = communism has_government = radical_socialism }
+				NOT = { this_country_has_some_russian_cosmetic = yes }
 			}
 		}
-		x = 14
+		x = 20
 		y = 4
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -1049,43 +1103,4 @@ focus_tree = {
 			UKR = { country_event = { id = rcw_usfev.153 days = 1 } }
 		}
 	}
-	
-	focus = {
-		id = RSS_return_central_asia
-		icon = GFX_goal_RSS_mobil_officer
-		cost = 3
-		prerequisite = {
-			focus = RSS_orientation_change
-		}
-		available = {
-			TRK = {
-				OR = {
-					is_subject_of = ROOT
-					is_subject_of = OVERLORD
-					exists = no
-					has_capitulated = yes
-					NOT = { has_government = radical_socialism has_government = communism }
-				}
-			}
-		}
-		x = 16
-		y = 4
-		cancel_if_invalid = yes
-		ai_will_do = {
-			factor = 10
-		}
-		completion_reward = {
-			every_country = {
-				limit = { OR = { tag = KHI tag = BUK tag = TRK } exists = yes NOT = { has_government = radical_socialism has_government = communism has_war_with = ROOT } is_subject = no }
-				if = {
-					limit = { ROOT = { is_subject = no } }
-					country_event = { id = rcw_usfev.152 days = 1 }
-					else = {
-						ROOT = { OVERLORD = { PREV.PREV = { country_event = { id = rcw_usfev.152 days = 1 } } } }
-					}
-				}
-			}
-		}
-	}
-	
 }
