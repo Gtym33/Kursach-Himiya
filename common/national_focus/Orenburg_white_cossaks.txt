@@ -349,7 +349,11 @@ focus_tree = {
 		available = {
 			NOT = { has_completed_focus = OCH_rising_of_Orenburg_cossacks }
 			controls_state = 1103
-			has_government = despotism
+			OR = {
+				has_government = despotism
+				has_government = authoritarism
+				has_government = fascism
+			}
 			NOT = { any_other_country = { NOT = { has_government = radical_socialism has_government = communism } has_country_flag = Nikolay_Alexandrovich_Romanov_is_here } }
 			NOT = { RUS = { has_country_flag = Nikolay_Alexandrovich_Romanov_dead } }
 		}
@@ -565,6 +569,8 @@ focus_tree = {
 				}
 			}
 			custom_effect_tooltip = OCH_active_agitation_to_veterans_tt
+			custom_effect_tooltip = lack_of_officers_rise_1_tt
+			hidden_effect = { lack_of_officers_rise = yes }
 		}
 	}
 	focus = {
@@ -688,6 +694,11 @@ focus_tree = {
 					owner = ROOT
 				}
 			}
+			custom_effect_tooltip = lack_of_officers_rise_2_tt
+			hidden_effect = {
+				lack_of_officers_rise = yes
+				lack_of_officers_rise = yes
+			}
 			
 			add_stability = 0.1
 			add_war_support = 0.35
@@ -701,7 +712,16 @@ focus_tree = {
 				}
 			}
 			country_event = { id = rcw_usfev.422 days = 1 }
-			create_corps_commander = { name = "Kirill Kargin" id = 89158 portrait_path = "gfx/leaders/OCH/Portrait_Kirill_Kargin.dds" traits = { politically_connected cavalry_officer } skill = 1 attack_skill = 4 defense_skill = 1 planning_skill = 3 logistics_skill = 3 }
+			add_corps_commander_role = {
+				character = OCH_Kirill_Kargin
+				skill = 1
+				attack_skill = 4
+				defense_skill = 1
+				planning_skill = 3
+				logistics_skill = 3
+				legacy_id = 89158
+				visible = { NOT = { has_character_flag = dismissed_flag } }
+			}
 		}
 	}
 	focus = {
@@ -1194,10 +1214,13 @@ focus_tree = {
 		icon = GFX_goal_DON_constituent_assembly_defense_units
 		cost = 1
 		available = {
-			check_variable = {
-				var = esereb
-				value = 3
-				compare = greater_than_or_equals
+			custom_trigger_tooltip = {
+				tooltip = esereb_var_3_tt
+				check_variable = {
+					var = esereb
+					value = 3
+					compare = greater_than_or_equals
+				}
 			}
 			controls_state = 251
 			controls_state = 651
@@ -1406,7 +1429,7 @@ focus_tree = {
 						set_popularities = {
 							national_syndicalism = 30
 							authoritarism = 2
-							social_conservatism = 5
+							conservatism = 5
 							radical_socialism = 7
 							social_democracy = 12
 							social_liberalism = 29
@@ -1459,10 +1482,13 @@ focus_tree = {
 		icon = GFX_goal_SIB_militsia
 		cost = 1
 		available = {
-			check_variable = {
-				var = sibreb
-				value = 3
-				compare = greater_than_or_equals
+			custom_trigger_tooltip = {
+				tooltip = sibreb_var_3_tt
+				check_variable = {
+					var = sibreb
+					value = 3
+					compare = greater_than_or_equals
+				}
 			}
 			controls_state = 653
 			controls_state = 571
@@ -1569,6 +1595,7 @@ focus_tree = {
 						
 						state = 1039
 						state = 1184
+						state = 1024
 						state = 1040
 					}
 				}
@@ -2213,6 +2240,7 @@ focus_tree = {
 				OR = {
 					state = 573
 					state = 653
+					state = 398
 				}
 			}
 			NOT = { country_exists = URL }
@@ -2225,10 +2253,38 @@ focus_tree = {
 
 		completion_reward = {
 			every_state = {
-				limit = { OR = { state = 573 state = 653 } }
+				limit = {
+					OR = {
+						state = 1025
+						state = 653
+						state = 573
+						state = 581
+						state = 1231
+						state = 398
+						state = 911
+						state = 579
+					}
+				}
+				add_core_of = URL
+			}
+			every_controlled_state = {
+				limit = { is_core_of = URL }
 				URL = { set_state_owner = PREV }
 			}
 			puppet = URL
+			every_state = {
+				limit = { is_core_of = URL }
+				set_state_province_controller = {
+					controller = URL
+					limit = {
+						OR = {
+							tag = ROOT
+							is_in_faction_with = ROOT
+							is_subject_of = ROOT
+						}
+					}
+				}
+			}
 		}
 	}
 }

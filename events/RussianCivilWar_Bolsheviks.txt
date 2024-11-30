@@ -1658,9 +1658,14 @@ country_event = {
 		}
 		if = {
 			limit = {
-				has_idea = two_party_system_law
-				check_variable = { communism_coalition = 1 }
-				check_variable = { radical_socialism_coalition = 1 }
+				OR = {
+					has_idea = poliparty_system_law
+					AND = {
+						has_idea = two_party_system_law
+						check_variable = { communism_coalition = 1 }
+						check_variable = { radical_socialism_coalition = 1 }
+					}
+				}
 			}
 			country_event = rcw_bolsheviks.51
 		}
@@ -1699,28 +1704,47 @@ country_event = {
 country_event = {
 	id = rcw_bolsheviks.48
 	title = rcw_bolsheviks.48.t
-	desc = rcw_bolsheviks.48.desc
-	picture = GFX_report_event_sov_felix_VCHK
-	
-	is_triggered_only = yes
-	
-	option = {
+	desc = {
+		text = rcw_bolsheviks.48.desc
 		trigger = {
 			NOT = {
+				has_idea = poliparty_system_law
 				has_idea = two_party_system_law
 				check_variable = { communism_coalition = 1 }
 				check_variable = { radical_socialism_coalition = 1 }
 			}
 		}
+	}
+	desc = {
+		text = rcw_bolsheviks.48.desc_1
+		trigger = {
+			OR = {
+				has_idea = poliparty_system_law
+				AND = {
+					has_idea = two_party_system_law
+					check_variable = { communism_coalition = 1 }
+					check_variable = { radical_socialism_coalition = 1 }
+				}
+			}
+		}
+	}
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
 		name = rcw_bolsheviks.48.a
 		if = {
 			limit = { has_idea = RUS_exchange_in_kind_idea }
-			remove_ideas = RUS_exchange_in_kind_idea
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 2
 			}
-			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 50 }
+			swap_ideas = {
+				remove_idea = RUS_exchange_in_kind_idea
+				add_idea = RUS_prodrazverstka_idea
+			}
+			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 100 }
 		}
 		if = {
 			limit = { has_idea = RUS_prodnalog_idea }
@@ -1729,21 +1753,46 @@ country_event = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 1
 			}
+			swap_ideas = {
+				remove_idea = RUS_prodnalog_idea
+				add_idea = RUS_prodrazverstka_idea
+			}
+			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 50 }
 		}
-		add_ideas = RUS_prodrazverstka_idea
+		if = {
+			limit = {
+				OR = {
+					has_idea = poliparty_system_law
+					AND = {
+						has_idea = two_party_system_law
+						check_variable = { communism_coalition = 1 }
+						check_variable = { radical_socialism_coalition = 1 }
+					}
+				}
+			}
+			country_event = rcw_bolsheviks.51
+		}
+	}
+	option = {
+		trigger = { has_idea = RUS_prodnalog_idea }
+		name = rcw_bolsheviks.48.b
+		add_stability = -0.01
 	}
 	option = {
 		trigger = { has_idea = RUS_exchange_in_kind_idea }
-		name = rcw_bolsheviks.48.b
+		name = rcw_bolsheviks.48.c
 		if = {
 			limit = { has_idea = RUS_exchange_in_kind_idea }
-			remove_ideas = RUS_exchange_in_kind_idea
 			add_to_variable = {
 				var = global.RCW_green_var_Russian_SFSR
 				value = 1
 			}
+			swap_ideas = {
+				remove_idea = RUS_exchange_in_kind_idea
+				add_idea = RUS_prodnalog_idea
+			}
 		}
-		add_ideas = RUS_prodnalog_idea
+		add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 50 }
 	}
 }
 # Гражданская война на селе
@@ -3279,7 +3328,7 @@ country_event = {
 		any_unit_leader = { has_id = 77426 }
 		OR = {
 			has_country_flag = RUS_left_SR_revolt_suppose
-			CCA = { has_country_flag = main_left_essers_is_here }
+			CCA = { exists = yes has_country_flag = main_left_essers_is_here }
 		}
 		#CCA = {
 			#exists = yes
@@ -3291,6 +3340,10 @@ country_event = {
 		hidden_effect = {
 			every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = REB }
 			add_timed_idea = { idea = red_army_is_weakened days = 25 }
+			add_days_mission_timeout = {
+				mission = evacuation_of_gold
+				days = 30
+			}
 		}
 	}
 	
@@ -3465,8 +3518,8 @@ country_event = {
 			division_template = {
 				name = "Kavaleriyskaya brigada"
 				regiments = {
-					cavalry = { x = 0 y = 0 }
-					cavalry = { x = 0 y = 1 }
+					irregular_cavalry = { x = 0 y = 0 }
+					irregular_cavalry = { x = 0 y = 1 }
 				}
 			}
 			ROOT = {
@@ -3503,7 +3556,7 @@ country_event = {
 						NOT = {
 							tag = PREV
 							is_any_former_russian_empire_country = yes
-							former_russian_empire_baltic_states_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
 							has_war_with = PREV
 							is_in_faction_with = PREV
 						}
@@ -3612,6 +3665,7 @@ country_event = {
 			subtract_from_variable = { var = moderate_faction_CC value = 3 }
 			check_overlap_of_CC_n_CEC_deputies_add = yes
 			set_frame_of_CC_n_CEC = yes
+			CCA = { set_country_flag = main_left_essers_is_here }
 		}
 	}
 }
@@ -3699,7 +3753,7 @@ country_event = {
 	
 	option = {
 		name = rcw_bolsheviks.106.a
-		create_country_leader = { name = "Grigoriy Zinoviev" desc = SOV_Grigoriy_Zinoviev_DESC picture = "gfx/leaders/SOV/Portrait_Grigoriy_Zinoviev.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+		create_country_leader = { name = "Grigoriy Zinoviev" desc = SOV_Grigoriy_Zinoviev_DESC picture = "gfx/leaders/SOV/Portrait_Grigoriy_Zinoviev.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } }
 		set_country_flag = homogeneous_socialist_government
 		hidden_effect = {
 			remove_ideas_with_trait = head_of_government_trait
@@ -3713,7 +3767,7 @@ country_event = {
 			Irakly_Tsereteli_2
 			Viktor_Chernov_3
 			Alexey_Rykov_4
-			Alexander_Zarudny_5
+			Alexandr_Zarudny_5
 			Lev_Trotsky_army_chief
 		}
 		add_ideas = {
@@ -5034,7 +5088,7 @@ country_event = {
 		if = {
 			limit = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } }
 			kill_ideology_leader = communism
-			create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = stalinism traits = {  } }
+			create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = centralist_marxism traits = {  } }
 			#news_event
 		}
 		set_country_flag = Lev_Trotsky_dead
@@ -5485,7 +5539,7 @@ country_event = {
 		if = {
 			limit = { has_government = communism }
 			retire_country_leader = yes
-			create_country_leader = { name = "Timofey Sapronov" desc = SOV_Timofey_Sapronov_DESC picture = "gfx/leaders/SOV/Portrait_Timofey_Sapronov.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+			create_country_leader = { name = "Timofey Sapronov" desc = SOV_Timofey_Sapronov_DESC picture = "gfx/leaders/SOV/Portrait_Timofey_Sapronov.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } }
 			else = {
 				set_politics = { ruling_party = radical_socialism elections_allowed = no }
 				retire_country_leader = yes
@@ -5551,7 +5605,7 @@ country_event = {
 		if = {
 			limit = { has_government = communism }
 			retire_country_leader = yes
-			create_country_leader = { name = "N. Osinskiy" desc = SOV_Valerian_Obolensky-Osinskiy_DESC picture = "gfx/leaders/SOV/Portrait_Valerian_Obolensky-Osinskiy.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+			create_country_leader = { name = "N. Osinskiy" desc = SOV_Valerian_Obolensky-Osinskiy_DESC picture = "gfx/leaders/SOV/Portrait_Valerian_Obolensky-Osinskiy.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } }
 			else = {
 				set_politics = { ruling_party = radical_socialism elections_allowed = no }
 				retire_country_leader = yes
@@ -5675,7 +5729,7 @@ country_event = {
 		if = {
 			limit = { has_government = communism }
 			retire_country_leader = yes
-			create_country_leader = { name = "N. Osinskiy" desc = SOV_Valerian_Obolensky-Osinskiy_DESC picture = "gfx/leaders/SOV/Portrait_Valerian_Obolensky-Osinskiy.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+			create_country_leader = { name = "N. Osinskiy" desc = SOV_Valerian_Obolensky-Osinskiy_DESC picture = "gfx/leaders/SOV/Portrait_Valerian_Obolensky-Osinskiy.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } }
 			else = {
 				set_politics = { ruling_party = radical_socialism elections_allowed = no }
 				retire_country_leader = yes
@@ -5708,7 +5762,7 @@ country_event = {
 					limit = { has_government = communism }
 					retire_country_leader = yes
 				}
-				create_country_leader = { name = "Timofey Sapronov" desc = SOV_Timofey_Sapronov_DESC picture = "gfx/leaders/SOV/Portrait_Timofey_Sapronov.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+				create_country_leader = { name = "Timofey Sapronov" desc = SOV_Timofey_Sapronov_DESC picture = "gfx/leaders/SOV/Portrait_Timofey_Sapronov.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } }
 			}
 		}
 		set_country_flag = RUS_RKP_b_VIII_decist_war_plan
@@ -5761,7 +5815,7 @@ country_event = {
 			if = {
 				limit = { has_government = communism }
 				retire_country_leader = yes
-				create_country_leader = { name = "N. Osinskiy" desc = SOV_Valerian_Obolensky-Osinskiy_DESC picture = "gfx/leaders/SOV/Portrait_Valerian_Obolensky-Osinskiy.dds" expire = "1935.1.1" ideology = marxism traits = {  } }
+				create_country_leader = { name = "N. Osinskiy" desc = SOV_Valerian_Obolensky-Osinskiy_DESC picture = "gfx/leaders/SOV/Portrait_Valerian_Obolensky-Osinskiy.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } }
 				else = {
 					set_politics = { ruling_party = radical_socialism elections_allowed = no }
 					retire_country_leader = yes
@@ -6061,9 +6115,9 @@ country_event = {
 		set_politics = { ruling_party = communism elections_allowed = no }
 		if = {
 			limit = { NOT = { has_country_flag = Lev_Trotsky_dead } }
-			create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = stalinism traits = { permanent_revolutionary red_army_organizer } }
+			create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = centralist_marxism traits = { permanent_revolutionary red_army_organizer } }
 			else = {
-				create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = stalinism traits = {  } }
+				create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = centralist_marxism traits = {  } }
 			}
 		}
 		add_ideas = Lev_Trotsky_1
@@ -6983,11 +7037,11 @@ country_event = {
 		set_politics = { ruling_party = communism elections_allowed = no }
 		if = {
 			limit = { NOT = { has_country_flag = Lev_Trotsky_dead } NOT = { has_country_leader = { name = "Lev Trotsky" ruling_only = yes } } }
-			create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = stalinism traits = { permanent_revolutionary red_army_organizer } }
+			create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = centralist_marxism traits = { permanent_revolutionary red_army_organizer } }
 		}
 		if = {
 			limit = { has_country_flag = Lev_Trotsky_dead NOT = { has_country_leader = { name = "Ephraim Sklyansky" ruling_only = yes } } }
-			create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = stalinism traits = {  } }
+			create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = centralist_marxism traits = {  } }
 		}
 		add_ideas = Lev_Trotsky_1
 		add_ideas = Lev_Trotsky_6
@@ -7043,7 +7097,7 @@ country_event = {
 			limit = {
 				has_country_flag = Alexandr_Shlyapnikov_arrested
 			}
-			create_country_leader = { name = "Alexandra Kollontay" desc = RUS_Alexandra_Kollontay_DESC picture="gfx/leaders/SOV/Portrait_Alexandra_Kollontay.dds" expire="1935.1.1" ideology = marxism traits={ } }
+			create_country_leader = { name = "Alexandra Kollontay" desc = RUS_Alexandra_Kollontay_DESC picture="gfx/leaders/SOV/Portrait_Alexandra_Kollontay.dds" expire="1935.1.1" ideology = temperate_marxism traits={ } }
 			else = {
 				create_country_leader = { name = "Alexandr Shlyapnikov" desc = RUS_Alexandr_Shlyapnikov_DESC picture="gfx/leaders/SOV/Portrait_Alexandr_Shlyapnikov.dds" expire="1935.1.1" ideology = syndicalism traits={ } }
 			}
@@ -7082,7 +7136,7 @@ country_event = {
 			}
 			create_country_leader = { name = "Alexandr Shlyapnikov" desc = RUS_Alexandr_Shlyapnikov_DESC picture="gfx/leaders/SOV/Portrait_Alexandr_Shlyapnikov.dds" expire="1935.1.1" ideology = syndicalism traits={ } }
 			else = {
-				create_country_leader = { name = "David Ryazanov" desc = RUS_David_Ryazanov_DESC picture="gfx/leaders/SOV/Portrait_David_Ryazanov.dds" expire="1935.1.1" ideology = marxism traits={ } }
+				create_country_leader = { name = "David Ryazanov" desc = RUS_David_Ryazanov_DESC picture="gfx/leaders/SOV/Portrait_David_Ryazanov.dds" expire="1935.1.1" ideology = temperate_marxism traits={ } }
 			}
 		}
 		clr_country_flag = Alexandr_Shlyapnikov_arrested
@@ -7166,7 +7220,7 @@ country_event = {
 				set_country_flag = war_communism_abolished
 			}
 		}
-		create_country_leader = { name = "David Ryazanov" desc = RUS_David_Ryazanov_DESC picture="gfx/leaders/SOV/Portrait_David_Ryazanov.dds" expire="1935.1.1" ideology = marxism traits={ } }
+		create_country_leader = { name = "David Ryazanov" desc = RUS_David_Ryazanov_DESC picture="gfx/leaders/SOV/Portrait_David_Ryazanov.dds" expire="1935.1.1" ideology = temperate_marxism traits={ } }
 		add_ideas = soviet_republic_gov_form
 		add_ideas = local_assembly_decisions_b_law
 		add_ideas = poliparty_system_law
@@ -7217,9 +7271,9 @@ country_event = {
 		set_politics = { ruling_party = communism elections_allowed = no }
 		if = {
 			limit = { NOT = { has_country_flag = Lev_Trotsky_dead } }
-			create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = stalinism traits = { permanent_revolutionary red_army_organizer } }
+			create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = centralist_marxism traits = { permanent_revolutionary red_army_organizer } }
 			else = {
-				create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = stalinism traits = {  } }
+				create_country_leader = { name = "Ephraim Sklyansky" desc = SOV_Ephraim_Sklyansky_DESC picture = "gfx/leaders/SOV/Portrait_Ephraim_Sklyansky.dds" ideology = centralist_marxism traits = {  } }
 			}
 		}
 		add_ideas = Lev_Trotsky_1
@@ -7308,6 +7362,6 @@ country_event = {
 			limit = { has_country_leader = { name = "Vladimir Lenin" ruling_only = yes } }
 			retire_country_leader = yes
 		}
-		create_country_leader = { name = "Nikolay Bukharin" desc = SOV_Nikolay_Bukharin_DESC picture = "gfx/leaders/SOV/Portrait_Nikolay_Bukharin.dds" ideology = marxism traits = { editor } }
+		create_country_leader = { name = "Nikolay Bukharin" desc = SOV_Nikolay_Bukharin_DESC picture = "gfx/leaders/SOV/Portrait_Nikolay_Bukharin.dds" ideology = temperate_marxism traits = { editor } }
 	}
 }

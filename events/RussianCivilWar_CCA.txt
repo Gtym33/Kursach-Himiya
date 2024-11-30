@@ -582,21 +582,73 @@ country_event = {
 		has_country_flag = CCA_open_controll_officers_des_flag
 		tag = CCA
 		NOT = { has_government = despotism }
+		NOT = { has_government = authoritarism }
 		check_variable = { CCA_officers_unrest > 6 }
+		any_neighbor_country = {
+			NOT = { has_war_with = ROOT }
+			NOT = { has_government = social_liberalism }
+			NOT = { has_government = social_democracy }
+			NOT = { has_government = communism }
+			NOT = { has_government = radical_socialism }
+		}
 	}
 	mean_time_to_happen = { days = 1 }
 	option = {
 		name = rcw_cca.19.a
 		lack_of_officers_rise = yes
 		if = {
-			limit = { SIB = { exists = yes } }
+			limit = {
+				SIB = {
+					exists = yes
+					NOT = { has_war_with = ROOT }
+					NOT = { has_government = social_liberalism }
+					NOT = { has_government = social_democracy }
+					NOT = { has_government = communism }
+					NOT = { has_government = radical_socialism }
+				}
+			}
 			SIB = { country_event = { id = rcw_cca.20 days = 2 } }
 		}
-		if = {
-			limit = { SIB = { exists = no } }
+		else_if = {
+			limit = {
+				BKL = {
+					exists = yes
+					NOT = { has_war_with = ROOT }
+					NOT = { has_government = social_liberalism }
+					NOT = { has_government = social_democracy }
+					NOT = { has_government = communism }
+					NOT = { has_government = radical_socialism }
+				}
+			}
+			BKL = { country_event = { id = rcw_cca.20 days = 2 } }
+		}
+		else_if = {
+			limit = {
+				any_neighbor_country = {
+					is_former_russian_empire_russian_country = yes
+					NOT = { has_war_with = ROOT }
+					NOT = { has_government = social_liberalism }
+					NOT = { has_government = social_democracy }
+					NOT = { has_government = communism }
+					NOT = { has_government = radical_socialism }
+				}
+			}
 			random_neighbor_country = {
-				limit = { 
-					NOT = { has_war_with = CCA }
+				limit = {
+					is_former_russian_empire_russian_country = yes
+					NOT = { has_war_with = ROOT }
+					NOT = { has_government = social_liberalism }
+					NOT = { has_government = social_democracy }
+					NOT = { has_government = communism }
+					NOT = { has_government = radical_socialism }
+				}
+				country_event = { id = rcw_cca.20 days = 2 }
+			}
+		}
+		else = {
+			random_neighbor_country = {
+				limit = {
+					NOT = { has_war_with = ROOT }
 					NOT = { has_government = social_liberalism }
 					NOT = { has_government = social_democracy }
 					NOT = { has_government = communism }
@@ -747,6 +799,8 @@ country_event = {
 		tag = CCA
 		check_variable = { CCA_officers_unrest > 6 }
 		check_variable = { right_parties_summa > 0.05 }
+		NOT = { has_government = despotism }
+		NOT = { has_government = authoritarism }
 	}
 	mean_time_to_happen = { days = 1 }
 	option = {
@@ -2243,10 +2297,7 @@ country_event = {
 			country_event = { id = rcw_cca.78 days = 14 }
 			if = {
 				limit = {
-					OR = {
-						any_unit_leader = { has_id = 92345 }
-						has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes }
-					}
+					has_character = RUS_Alexey_Grishin-Almazov
 					OR = {
 						has_any_of_Brigada_Chekhoslovatskogo_legiona = yes
 						has_idea = czesch_white_gar
@@ -2317,7 +2368,7 @@ country_event = {
 		ai_chance = {
 			factor = 0.3
 		}
-		add_popularity = { ideology = social_conservatism popularity = -0.03 }
+		add_popularity = { ideology = conservatism popularity = -0.03 }
 	}
 }
 # Сибирская таможня
@@ -2402,11 +2453,11 @@ country_event = {
 	title = rcw_cca.78.t
 	desc = { 
 		text = rcw_cca.78.desc_1
-		trigger = { SIB = { NOT = { any_unit_leader = { has_id = 92345 } } } }
+		trigger = { SIB = { NOT = { has_character = RUS_Alexey_Grishin-Almazov RUS_Alexey_Grishin-Almazov = { NOT = { has_character_flag = dismissed_flag } } } } }
 	}
 	desc = { 
 		text = rcw_cca.78.desc_2
-		trigger =  { SIB = { any_unit_leader = { has_id = 92345 } } }
+		trigger =  { SIB = { has_character = RUS_Alexey_Grishin-Almazov RUS_Alexey_Grishin-Almazov = { NOT = { has_character_flag = dismissed_flag } } } }
 	}
 	picture = GFX_report_event_RSS_government
 	immediate = {
@@ -2428,7 +2479,7 @@ country_event = {
 				tag = CCA
 				tag = SIB 
 			}
-			SIB = { NOT = { any_unit_leader = { has_id = 92345 } } }
+			SIB = { NOT = { has_character = RUS_Alexey_Grishin-Almazov RUS_Alexey_Grishin-Almazov = { NOT = { has_character_flag = dismissed_flag } } } }
 		}
 		if = {
 			limit = { tag = CCA }
@@ -2458,7 +2509,7 @@ country_event = {
 				tag = CCA
 				tag = SIB 
 			}
-			SIB = { any_unit_leader = { has_id = 92345 } }
+			SIB = { has_character = RUS_Alexey_Grishin-Almazov RUS_Alexey_Grishin-Almazov = { NOT = { has_character_flag = dismissed_flag } } }
 		}
 		if = {
 			limit = { tag = CCA }
@@ -2550,7 +2601,7 @@ country_event = {
 			factor = 1
 		}
 		trigger = {
-			NOT = { has_country_leader = {  name = "Alexey Grishin-Almazov" ruling_only = yes } }
+			NOT = { has_country_leader = { character = RUS_Alexey_Grishin-Almazov ruling_only = yes } }
 		}
 		country_event = { id = rcw_usfev.54 days = 2 }
 	}
@@ -3218,7 +3269,7 @@ country_event = {
 			set_variable = { var = global.SIB_soc_dem value = party_popularity@social_democracy }
 			set_variable = { var = global.SIB_soc_lib value = party_popularity@social_liberalism }
 			set_variable = { var = global.SIB_mark_lib value = party_popularity@market_liberalism }
-			set_variable = { var = global.SIB_soc_con value = party_popularity@social_conservatism }
+			set_variable = { var = global.SIB_soc_con value = party_popularity@conservatism }
 			set_variable = { var = global.SIB_auth value = party_popularity@authoritarism }
 			set_variable = { var = global.SIB_desp value = party_popularity@despotism }
 			set_variable = { var = global.SIB_fasc value = party_popularity@fascism }
@@ -3239,7 +3290,7 @@ country_event = {
 		add_popularity = { ideology = social_democracy popularity = global.SIB_soc_dem }
 		add_popularity = { ideology = social_liberalism popularity = global.SIB_soc_lib }
 		add_popularity = { ideology = market_liberalism popularity = global.SIB_mark_lib }
-		add_popularity = { ideology = social_conservatism popularity = global.SIB_soc_con }
+		add_popularity = { ideology = conservatism popularity = global.SIB_soc_con }
 		add_popularity = { ideology = authoritarism popularity = global.SIB_auth }
 		add_popularity = { ideology = despotism popularity = global.SIB_desp }
 		add_popularity = { ideology = fascism popularity = global.SIB_fasc }

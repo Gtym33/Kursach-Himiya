@@ -160,6 +160,18 @@ focus_tree = {
 				if = { limit = { has_global_flag = RUS_all_russian_constituent_assembly_ended NOT = { has_country_flag = RUS_all_russian_constituent_assembly_third_session_war has_country_flag = RUS_all_russian_constituent_assembly_third_session_peace } }
 				set_country_flag = RUS_all_russian_constituent_assembly_third_session_peace }
 			}
+			random_other_country = {
+				limit = { original_tag = ODS is_socialist_country = yes is_subject = no NOT = { has_war_with = ROOT } }
+				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			random_other_country = {
+				limit = { original_tag = USR is_socialist_country = yes is_subject = no NOT = { has_war_with = ROOT } }
+				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
+			random_other_country = {
+				limit = { original_tag = CRI is_socialist_country = yes is_subject = no NOT = { has_war_with = ROOT } }
+				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
+			}
 			if = {
 				limit = {
 					NOT = {
@@ -202,6 +214,7 @@ focus_tree = {
 					NOT = { has_government = radical_socialism }
 					NOT = { has_government = communism }
 					NOT = { is_in_faction_with = ROOT }
+					NOT = { has_war_with = ROOT }
 					OR = {
 						is_subject = no
 						is_subject_of = GER
@@ -230,9 +243,24 @@ focus_tree = {
 						relation = non_aggression_pact
 						active = no
 					}
-					declare_war_on = {
-						target = PREV
-						type = annex_everything
+					if = {
+						limit = { NOT = { has_war_with = PREV } }
+						declare_war_on = {
+							target = PREV
+							type = annex_everything
+						}
+					}
+				}
+				hidden_effect = {
+					remove_wargoal = {
+						type = all
+						target = ROOT
+					}
+					ROOT = {
+						remove_wargoal = {
+							type = all
+							target = PREV
+						}
 					}
 				}
 			}
@@ -244,18 +272,6 @@ focus_tree = {
 						type = annex_everything
 					}
 				}
-			}
-			random_other_country = {
-				limit = { original_tag = ODS is_socialist_country = yes is_subject = no NOT = { has_war_with = ROOT } }
-				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
-			}
-			random_other_country = {
-				limit = { original_tag = USR is_socialist_country = yes is_subject = no NOT = { has_war_with = ROOT } }
-				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
-			}
-			random_other_country = {
-				limit = { original_tag = CRI is_socialist_country = yes is_subject = no NOT = { has_war_with = ROOT } }
-				ROOT = { PREV = { subjecting_script_with_transfer_parties_dominion = yes } }
 			}
 		}
 
@@ -568,6 +584,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = RUS_struggle_against_counterrevolution
 		completion_reward = {
+			add_stability = 0.05
 			add_ideas = RUS_kombeds_idea
 			add_political_power = 50
 			add_to_variable = {
@@ -755,6 +772,7 @@ focus_tree = {
 		y = 2
 		relative_position_id = RUS_vchk
 		completion_reward = {
+			add_war_support = 0.05
 			if = {
 				limit = { has_government = communism }
 				GER = {
@@ -1058,6 +1076,7 @@ focus_tree = {
 		relative_position_id = RUS_vchk
 		completion_reward = {
 			fall_hyper_inflation = yes
+			add_stability = 0.03
 		}
 	}
 
@@ -1141,6 +1160,7 @@ focus_tree = {
 		relative_position_id = RUS_vchk
 		completion_reward = {
 			add_stability = 0.2
+			add_war_support = 0.1
 			set_country_flag = RUS_red_terror
 			add_political_power = 100
 			add_ideas = red_terror_idea
@@ -1153,8 +1173,8 @@ focus_tree = {
 		cost = 5
 		available = {
 			OR = {
-				AND = { RSS = { exists = yes has_capitulated = no OR = { has_country_leader = { name = "Alexandr Kolchak" ruling_only = yes } has_country_leader = { name = "Konstantin Sakharov" ruling_only = yes  } } has_war_with = RSS } }
-				AND = { SIB = { exists = yes has_capitulated = no has_country_leader = { name = "Konstantin Sakharov" ruling_only = yes } } has_war_with = SIB }
+				AND = { RSS = { exists = yes has_capitulated = no OR = { has_country_leader = { character = RUS_Alexandr_Kolchak ruling_only = yes } has_country_leader = { character = RUS_Konstantin_Sakharov ruling_only = yes  } } has_war_with = RSS } }
+				AND = { SIB = { exists = yes has_capitulated = no has_country_leader = { character = RUS_Konstantin_Sakharov ruling_only = yes } } has_war_with = SIB }
 			}
 		}
 		ai_will_do = {
@@ -1543,6 +1563,7 @@ focus_tree = {
 		y = 5
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
+			add_stability = 0.1
 			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 70 }
 			if = {
 				limit = { NOT = { has_country_flag = war_communism has_country_flag = war_communism_abolished } }
@@ -1663,6 +1684,7 @@ focus_tree = {
 		y = 5
 		relative_position_id = RUS_sovnarkom
 		completion_reward = {
+			add_stability = 0.05
 			set_country_flag = war_communism
 			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 240 }
 			add_popularity = {
@@ -1834,6 +1856,7 @@ focus_tree = {
 		completion_reward = {
 			rise_labor_legislation = yes
 			add_political_power = 100
+			add_stability = 0.05
 			if = {
 				limit = {
 					has_idea = workers_control_law
@@ -1936,6 +1959,7 @@ focus_tree = {
 				ideology = communism
 				popularity = 0.07
 			}
+			add_stability = 0.05
 			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 35 }
 		}
 
@@ -2575,15 +2599,15 @@ focus_tree = {
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Iosif_Stalin_dead } } }
-					SOV = { create_country_leader = { name = "Iosif Stalin" desc = SOV_Iosif_Stalin_DESC picture = "gfx/leaders/SOV/Portrait_Iosif_Stalin.dds" expire = "1935.1.1" ideology = stalinism traits = {  } } }
+					SOV = { create_country_leader = { name = "Iosif Stalin" desc = SOV_Iosif_Stalin_DESC picture = "gfx/leaders/SOV/Portrait_Iosif_Stalin.dds" expire = "1935.1.1" ideology = centralist_marxism traits = {  } } }
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Lev_Kamenev_dead } } }
-					SOV = { create_country_leader = { name = "Lev Kamenev" desc = SOV_Lev_Kamenev_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Kamenev.dds" expire = "1935.1.1" ideology = marxism traits = {  } } }
+					SOV = { create_country_leader = { name = "Lev Kamenev" desc = SOV_Lev_Kamenev_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Kamenev.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } } }
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Nikolay_Bukharin_dead } } }
-					SOV = { create_country_leader = { name = "Nikolay Bukharin" desc = SOV_Nikolay_Bukharin_DESC picture = "gfx/leaders/SOV/Portrait_Nikolay_Bukharin.dds" expire = "1935.1.1" ideology = stalinism traits = { worker_and_peasant } } }
+					SOV = { create_country_leader = { name = "Nikolay Bukharin" desc = SOV_Nikolay_Bukharin_DESC picture = "gfx/leaders/SOV/Portrait_Nikolay_Bukharin.dds" expire = "1935.1.1" ideology = centralist_marxism traits = { worker_and_peasant } } }
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Alexey_Rykov_dead } } }
@@ -2591,7 +2615,7 @@ focus_tree = {
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Lev_Trotsky_dead } } }
-					SOV = { create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = stalinism traits = { permanent_revolutionary } } }
+					SOV = { create_country_leader = { name = "Lev Trotsky" desc = SOV_Lev_Trotsky_DESC picture = "gfx/leaders/SOV/Portrait_Lev_Trotsky.dds" expire = "1935.1.1" ideology = centralist_marxism traits = { permanent_revolutionary } } }
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Vladimir_Lenin_dead } } }
@@ -2599,11 +2623,11 @@ focus_tree = {
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Yuly_Martov_dead } } }
-					SOV = { create_country_leader = { name = "Yuly Martov" desc = RUS_Yuly_Martov_DESC picture = "gfx/leaders/RUS/Portrait_Yuly_Martov.dds" expire = "1935.1.1" ideology = social_democracy_ideology  traits = {  } } }
+					SOV = { create_country_leader = { name = "Yuly Martov" desc = RUS_Yuly_Martov_DESC picture = "gfx/leaders/RUS/Portrait_Yuly_Martov.dds" expire = "1935.1.1" ideology = old_social_democracy  traits = {  } } }
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Victor_Chernov_dead } } }
-					SOV = { create_country_leader = { name = "Victor Chernov" desc = RUS_Victor_Chernov_DESC picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_liberalism_ideology  traits = {  } } }
+					SOV = { create_country_leader = { name = "Victor Chernov" desc = RUS_Victor_Chernov_DESC picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = social_liberalism_ideology  traits = { soc_lib_reformer economist } } }
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Pavel_Milyukov_dead } } }
@@ -2611,7 +2635,7 @@ focus_tree = {
 				}
 				if = {
 					limit = { RUS = { NOT = { has_country_flag = Nikolay_Trubetskoy_dead } } }
-					SOV = { create_country_leader = { name = "Nikolay Trubetskoy" desc = SOV_Vladimir_Lenin_DESC picture = "gfx/leaders/RUS/Portrait_Nikolay_Trubetskoy.dds" expire = "1935.1.1" ideology = social_conservatism_ideology traits = { } } }
+					SOV = { create_country_leader = { name = "Nikolay Trubetskoy" desc = SOV_Vladimir_Lenin_DESC picture = "gfx/leaders/RUS/Portrait_Nikolay_Trubetskoy.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { } } }
 				}
 				
 				SOV = {
@@ -2686,7 +2710,6 @@ focus_tree = {
 		relative_position_id = RUS_compromise_working_control
 		completion_reward = {
 			add_days_mission_timeout = { mission = RUS_collapse_of_the_bolshevik_economy days = 35 }
-			add_stability = -0.1
 			add_popularity = {
 				ideology = ROOT
 				popularity = 0.1
@@ -2950,9 +2973,15 @@ focus_tree = {
 			}
 			if = {
 				limit = { has_idea = disorganization_of_army }
-				swap_ideas = {
-					remove_idea = disorganization_of_army
-					add_idea = RUS_new_red_army_idea
+				effect_tooltip = {
+					swap_ideas = {
+						remove_idea = disorganization_of_army
+						add_idea = RUS_new_red_army_idea
+					}
+				}
+				hidden_effect = {
+					remove_ideas = disorganization_of_army
+					add_ideas = RUS_new_red_army_idea
 				}
 				else = {
 					add_ideas = RUS_new_red_army_idea
@@ -2972,8 +3001,8 @@ focus_tree = {
 					infantry = { x = 0 y = 0 }
 					infantry = { x = 0 y = 1 }
 					infantry = { x = 0 y = 2 }
-					infantry = { x = 0 y = 3 }
-					infantry = { x = 0 y = 4 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
 				}
 				support = {
 					engineer = { x = 0 y = 0 }
@@ -3020,7 +3049,7 @@ focus_tree = {
 		completion_reward = {
 			hidden_effect = {
 				division_template = {
-					name = "Interbrigada"
+					name = "Internatsyonalnyy polk"
 					regiments = {
 						infantry = { x = 0 y = 0 }
 						infantry = { x = 0 y = 1 }
@@ -3030,7 +3059,7 @@ focus_tree = {
 					}
 				}
 				division_template = {
-					name = "Vengerskiy kavaleriyskiy polk"
+					name = "Internatsyonalnyy kavaleriyskiy polk"
 					regiments = {
 						cavalry = { x = 0 y = 0 }
 						cavalry = { x = 0 y = 1 }
@@ -3038,54 +3067,18 @@ focus_tree = {
 				}
 			}
 			capital_scope = {
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Interbrigada\" division_template = \"Interbrigada\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Vengerskiy kavaleriyskiy polk\" division_template = \"Vengerskiy kavaleriyskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
-				create_unit = {
-					division = "name = \"Vengerskiy kavaleriyskiy polk\" division_template = \"Vengerskiy kavaleriyskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1"
-					owner = ROOT
-				}
+				create_unit = { division = "name = \"1-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"2-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"3-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"4-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"5-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"6-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"7-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"8-y Latyshskiy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"Internatsyonalnyy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"Internatsyonalnyy polk\" division_template = \"Internatsyonalnyy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"Vengerskiy kavaleriyskiy polk\" division_template = \"Internatsyonalnyy kavaleriyskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
+				create_unit = { division = "name = \"Vengerskiy kavaleriyskiy polk\" division_template = \"Internatsyonalnyy kavaleriyskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1" owner = ROOT }
 			}
 		}
 
@@ -3131,21 +3124,9 @@ focus_tree = {
 		completion_reward = {
 			add_political_power = 30
 			rise_mobilization_law = yes
+			create_template_Krasnaya_Gvardiya = yes
 			unlock_decision_category_tooltip = SOV_mobilization_of_red_guard_desisions
 			hidden_effect = {
-				if = {
-					limit = { NOT = { has_template = "Krasnaya Gvardiya" } }
-					division_template = {
-						name = "Krasnaya Gvardiya"
-						regiments = {
-							militia = { x = 0 y = 0 }
-							militia = { x = 0 y = 1 }
-							militia = { x = 1 y = 0 }
-						}
-						priority = 0
-						is_locked = yes
-					}
-				}
 				213 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				215 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				964 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
@@ -3205,7 +3186,7 @@ focus_tree = {
 				96 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				206 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				924 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				912 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				980 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				940 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				243 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				205 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
@@ -3255,13 +3236,13 @@ focus_tree = {
 				813 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				231 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				230 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				897 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1421 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				229 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				893 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1417 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				808 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				232 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				928 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				898 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				828 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				1227 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				899 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				653 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				572 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
@@ -3299,13 +3280,13 @@ focus_tree = {
 				1051 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				1055 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				1061 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				1057 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				929 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				1059 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				149 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				150 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				146 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				1054 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
-				1058 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				928 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
+				930 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 				1053 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 			}
 		}
@@ -3429,7 +3410,7 @@ focus_tree = {
 				96 = { set_state_flag = mob_red_neirfront_militia_flag }
 				206 = { set_state_flag = mob_red_neirfront_militia_flag }
 				924 = { set_state_flag = mob_red_neirfront_militia_flag }
-				912 = { set_state_flag = mob_red_neirfront_militia_flag }
+				980 = { set_state_flag = mob_red_neirfront_militia_flag }
 				940 = { set_state_flag = mob_red_neirfront_militia_flag }
 				243 = { set_state_flag = mob_red_neirfront_militia_flag }
 				205 = { set_state_flag = mob_red_neirfront_militia_flag }
@@ -3479,13 +3460,13 @@ focus_tree = {
 				813 = { set_state_flag = mob_red_neirfront_militia_flag }
 				231 = { set_state_flag = mob_red_neirfront_militia_flag }
 				230 = { set_state_flag = mob_red_neirfront_militia_flag }
-				897 = { set_state_flag = mob_red_neirfront_militia_flag }
+				1421 = { set_state_flag = mob_red_neirfront_militia_flag }
 				229 = { set_state_flag = mob_red_neirfront_militia_flag }
-				893 = { set_state_flag = mob_red_neirfront_militia_flag }
+				1417 = { set_state_flag = mob_red_neirfront_militia_flag }
 				808 = { set_state_flag = mob_red_neirfront_militia_flag }
 				232 = { set_state_flag = mob_red_neirfront_militia_flag }
-				928 = { set_state_flag = mob_red_neirfront_militia_flag }
-				898 = { set_state_flag = mob_red_neirfront_militia_flag }
+				828 = { set_state_flag = mob_red_neirfront_militia_flag }
+				1227 = { set_state_flag = mob_red_neirfront_militia_flag }
 				899 = { set_state_flag = mob_red_neirfront_militia_flag }
 				653 = { set_state_flag = mob_red_neirfront_militia_flag }
 				572 = { set_state_flag = mob_red_neirfront_militia_flag }
@@ -3523,13 +3504,13 @@ focus_tree = {
 				1051 = { set_state_flag = mob_red_neirfront_militia_flag }
 				1055 = { set_state_flag = mob_red_neirfront_militia_flag }
 				1061 = { set_state_flag = mob_red_neirfront_militia_flag }
-				1057 = { set_state_flag = mob_red_neirfront_militia_flag }
+				929 = { set_state_flag = mob_red_neirfront_militia_flag }
 				1059 = { set_state_flag = mob_red_neirfront_militia_flag }
 				149 = { set_state_flag = mob_red_neirfront_militia_flag }
 				150 = { set_state_flag = mob_red_neirfront_militia_flag }
 				146 = { set_state_flag = mob_red_neirfront_militia_flag }
-				1054 = { set_state_flag = mob_red_neirfront_militia_flag }
-				1058 = { set_state_flag = mob_red_neirfront_militia_flag }
+				928 = { set_state_flag = mob_red_neirfront_militia_flag }
+				930 = { set_state_flag = mob_red_neirfront_militia_flag }
 				1053 = { set_state_flag = mob_red_neirfront_militia_flag }
 			}
 		}

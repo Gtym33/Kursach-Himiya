@@ -1,3 +1,575 @@
+#Turkish rev des
+TUR_rebels_unrest_des_cat = {
+	TUR_rebels_human_decision = { # FROM - state
+		icon = generic_assassination
+		state_target = yes
+		target_root_trigger = {
+			OR = {
+				has_completed_focus = TUR_fight_rebels_focus
+				has_completed_focus = TRR_rebels_unrest_focus
+			}
+		}
+
+		target_trigger = {
+		}
+
+		available = {
+			#ROOT = { NOT = { has_country_flag = NRR_sabotage_behind_enemy_lines_flag } }
+			army_manpower_in_state = {
+				amount > 14999
+				state = FROM 
+			}
+		}
+		ai_will_do = {
+			base = 1 # This is generally a good thing to do
+			#modifier = {
+			#	add = FROM.state_strategic_value # Prioritize important states
+			#	always = yes
+			#}
+			#modifier = {
+			#	factor = 2
+			#	always = yes
+			#}
+		}
+
+		visible = {
+			FROM = {
+				has_dynamic_modifier = {  modifier = TUR_state_rebellion_dynamic_modifier }
+				region = 129
+			}
+			is_ai = no
+		}
+		on_map_mode = map_only
+		fire_only_once = no
+		days_re_enable = 30
+		cost = 10
+		days_remove = 60
+		cancel_trigger = { 
+			army_manpower_in_state = {
+				amount < 15000
+				state = FROM 
+			}
+		}
+		complete_effect = {
+
+		}
+		remove_effect = {
+			FROM = { remove_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } }
+			country_event = turkey_rev.36
+		}
+		cancel_effect = { 
+			country_event = turkey_rev.37
+		}
+	}
+	TUR_rebels_ai_decision = { # FROM - state
+		icon = generic_assassination
+		state_target = yes
+		target_root_trigger = {
+			OR = {
+				has_completed_focus = TUR_fight_rebels_focus
+				has_completed_focus = TRR_rebels_unrest_focus
+			}
+		}
+
+		target_trigger = {
+		}
+
+		available = {
+			#ROOT = { NOT = { has_country_flag = NRR_sabotage_behind_enemy_lines_flag } }
+			NOT = { has_country_flag = TUR_rebel_des_active }
+		}
+		ai_will_do = {
+			base = 1000 # This is generally a good thing to do
+			factor = 100
+			#modifier = {
+			#	add = FROM.state_strategic_value # Prioritize important states
+			#	always = yes
+			#}
+			#modifier = {
+			#	factor = 2
+			#	always = yes
+			#}
+		}
+
+		visible = {
+			FROM = {
+				has_dynamic_modifier = {  modifier = TUR_state_rebellion_dynamic_modifier }
+				region = 129
+			}
+			is_ai = yes
+		}
+		on_map_mode = map_only
+		fire_only_once = no
+		days_re_enable = 30
+		cost = 0
+		days_remove = 30
+		cancel_trigger = { 
+			FROM = { NOT = { is_fully_controlled_by = ROOT } }
+		}
+		complete_effect = {
+			set_country_flag = TUR_rebel_des_active
+			add_manpower = -15000
+			add_equipment_to_stockpile = {
+			type = infantry_equipment
+				amount = -300
+			}
+		}
+		remove_effect = {
+			FROM = { remove_dynamic_modifier = { modifier = TUR_state_rebellion_dynamic_modifier } }
+			country_event = turkey_rev.36
+			add_manpower = 12000
+			clr_country_flag = TUR_rebel_des_active
+		}
+		cancel_effect = { 
+			country_event = turkey_rev.37
+			clr_country_flag = TUR_rebel_des_active
+		}
+	}
+}
+
+TUR_caliph_army_des_cat = {
+	TUR_call_for_volunteers_decision = {
+		#target = {}
+		state_target = yes
+		target_root_trigger = { always = yes }
+		target_trigger = { FROM = { region = 129 } }
+		available = { FROM = { is_controlled_by = TUR } }
+		visible = { 
+			tag = TUR 
+			FROM = { is_controlled_by = TUR }
+			#has_war_with = TRR
+		}
+		ai_will_do = {
+			factor = 100
+		}
+		icon = faction_tur_traditionalist
+		highlight_states = { highlight_state_targets = { state = FROM } }
+		on_map_mode = map_only
+        cost = 0
+		days_remove = 7
+        fire_only_once = yes
+        remove_effect = {
+			FROM = { create_unit = { division = "name = \"Kuva-i Inzibatiyye\" division_template = \"Kuva-i Inzibatiyye\" start_experience_factor = 0.1 start_equipment_factor = 1" count = 2 owner = TUR } }
+		}
+	}
+}
+TUR_partisans_des_cat = {
+	TRR_sabotage_behind_enemy_lines_decision = { # FROM - state
+		icon = generic_assassination
+		state_target = yes
+		target_root_trigger = {
+			OR = {
+				has_completed_focus = TRR_partisans_focus
+			}
+		}
+
+		target_trigger = {
+		}
+
+		available = {
+			ROOT = { NOT = { has_country_flag = TRR_sabotage_behind_enemy_lines_flag } }
+		}
+		ai_will_do = {
+			base = 100 # This is generally a good thing to do
+			modifier = {
+				add = FROM.state_strategic_value # Prioritize important states
+				always = yes
+			}
+			modifier = {
+				factor = 2
+				always = yes
+			}
+		}
+
+		visible = {
+			FROM = {
+				OR = {
+					CONTROLLER = { has_war_with = ROOT NOT = { has_full_control_of_state = PREV } }
+					AND = {
+						is_controlled_by = ROOT
+						NOT = { is_fully_controlled_by = ROOT }
+					}
+				}
+				AND = {
+					ROOT = { has_completed_focus = TRR_partisans_focus }
+					region = 129
+				}
+				any_neighbor_state = { is_controlled_by = ROOT }
+			}
+		}
+
+		on_map_mode = map_only
+		fire_only_once = no
+		days_re_enable = 90
+		custom_cost_trigger = {
+			command_power > 14
+		}
+		custom_cost_text = decision_cost_CP_15
+		days_remove = 14
+
+		complete_effect = {
+			hidden_effect = {
+				add_command_power = -15
+				set_country_flag = TRR_sabotage_behind_enemy_lines_flag
+			}
+		}
+		remove_effect = {
+			damage_units = {
+				state = FROM
+				limit = { NOT = { tag = ROOT } }
+				org_damage = 0.25
+				str_damage = 0.05
+				ratio = yes
+				army = yes
+				navy = yes
+			}
+			custom_effect_tooltip = SOV_sabotage_behind_enemy_lines_decision_tt
+			clr_country_flag = TRR_sabotage_behind_enemy_lines_flag
+		}
+	}
+}
+TRR_warehouses_des_cat = { 
+	TRR_open_warehouse_decision = {
+		#target = {}
+		state_target = yes
+		target_root_trigger = { always = yes }
+		target_trigger = { FROM = { region = 129 } }
+		available = { FROM = { is_controlled_by = ROOT } }
+		visible = { 
+			always = yes
+			FROM = { has_state_flag = TRR_has_warehouse }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		icon = generic_reorganize_irregulars
+		highlight_states = { highlight_state_targets = { state = FROM } }
+		#on_map_mode = map_only
+        cost = 15
+		days_remove = 7
+        fire_only_once = yes
+        remove_effect = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 500
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment
+				amount = 20
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment
+				amount = 20
+			}
+		}
+	}
+}
+TRR_syr_border_des_cat = { 
+	TRR_345_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			348 = { is_fully_controlled_by = TRR }
+			345 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 348
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.58
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 345
+					num_provinces = 1
+				}
+			}
+		}
+	}
+	TRR_1151_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			348 = { is_fully_controlled_by = TRR }
+			1151 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 348
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.581
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 1151
+					num_provinces = 1
+				}
+			}
+			
+		}
+	}
+	TRR_350_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			349 = { is_fully_controlled_by = TRR }
+			350 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 349
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.582
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 350
+					num_provinces = 1
+				}
+			}
+		}
+	}
+	TRR_344_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			348 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = TRR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 10
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 348
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.583
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 344
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_345_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			345 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 344
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.581
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 345
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_1151_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			1151 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 344
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.582
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 1151
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_350_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			350 = { is_fully_controlled_by = TRR }
+			344 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 344
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.583
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 350
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+	SYR_344_region_border_conf_decision = {
+		icon = generic_reorganize_irregulars
+		fire_only_once = no
+		available = {
+			344 = { is_fully_controlled_by = TRR }
+			677 = { is_fully_controlled_by = SYR }
+			NOT = { has_global_flag = TRR_SYR_border_war_flag }
+		}
+		visible = {
+			tag = SYR
+		}
+		cancel_if_not_visible = yes
+		ai_will_do = {
+			factor = 1
+		}
+		cost = 10
+		days_re_enable = 30
+		days_remove = 7
+		complete_effect = { set_global_flag = TRR_SYR_border_war_flag }
+		remove_effect = {
+			start_border_war = {
+				change_state_after_war = no
+				attacker = {
+					state = 677
+					num_provinces = 1
+					modifier = 1
+					on_win = turkey_rev.584
+					on_lose = turkey_rev.585
+					on_cancel = turkey_rev.585
+				}	
+				defender = {
+					state = 344
+					num_provinces = 1
+				}
+			}
+			 
+		}
+	}
+}
+#WWI des
+
 TUR_building_bunkers_WWI_decisions = {
 	TUR_strengthen_Palestine = {
 		icon = generic_army_support
@@ -781,7 +1353,7 @@ foreign_politics = {
 			}
 			CRI = {
 				set_politics = {
-					ruling_party = social_conservatism
+					ruling_party = conservatism
 					elections_allowed = no
 				}
 				inherit_technology = TUR
@@ -2563,7 +3135,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_909 = {
+	pan_turanist_propaganda_941 = {
 	
 		icon = generic_nationalism
 	
@@ -2579,7 +3151,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			909 = {
+			941 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -2590,14 +3162,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 909 } }
+		highlight_states = { highlight_state_targets = { state = 941 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			909 = {
+			941 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
@@ -2643,7 +3215,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_886 = {
+	pan_turanist_propaganda_1410 = {
 	
 		icon = generic_nationalism
 	
@@ -2659,7 +3231,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			886 = {
+			1410 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -2670,14 +3242,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 886 } }
+		highlight_states = { highlight_state_targets = { state = 1410 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			886 = {
+			1410 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
@@ -3843,7 +4415,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_896 = {
+	pan_turanist_propaganda_1420 = {
 	
 		icon = generic_nationalism
 	
@@ -3859,7 +4431,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			896 = {
+			1420 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -3870,14 +4442,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 896 } }
+		highlight_states = { highlight_state_targets = { state = 1420 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			896 = {
+			1420 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
@@ -3963,7 +4535,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_897 = {
+	pan_turanist_propaganda_1421 = {
 	
 		icon = generic_nationalism
 	
@@ -3979,7 +4551,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			897 = {
+			1421 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -3990,20 +4562,20 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 897 } }
+		highlight_states = { highlight_state_targets = { state = 1421 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			897 = {
+			1421 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
 	}
 	
-	pan_turanist_propaganda_890 = {
+	pan_turanist_propaganda_1414 = {
 	
 		icon = generic_nationalism
 	
@@ -4019,7 +4591,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			890 = {
+			1414 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -4030,20 +4602,20 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 890 } }
+		highlight_states = { highlight_state_targets = { state = 1414 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			890 = {
+			1414 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
 	}
 	
-	pan_turanist_propaganda_894 = {
+	pan_turanist_propaganda_1418 = {
 	
 		icon = generic_nationalism
 	
@@ -4059,7 +4631,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			894 = {
+			1418 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -4070,20 +4642,20 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 894 } }
+		highlight_states = { highlight_state_targets = { state = 1418 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			894 = {
+			1418 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
 	}
 	
-	pan_turanist_propaganda_893 = {
+	pan_turanist_propaganda_1417 = {
 	
 		icon = generic_nationalism
 	
@@ -4099,7 +4671,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			893 = {
+			1417 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -4110,20 +4682,20 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 893 } }
+		highlight_states = { highlight_state_targets = { state = 1417 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			893 = {
+			1417 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
 	}
 	
-	pan_turanist_propaganda_892 = {
+	pan_turanist_propaganda_1416 = {
 	
 		icon = generic_nationalism
 	
@@ -4139,7 +4711,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			892 = {
+			1416 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -4150,20 +4722,20 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 892 } }
+		highlight_states = { highlight_state_targets = { state = 1416 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			892 = {
+			1416 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
 	}
 	
-	pan_turanist_propaganda_891 = {
+	pan_turanist_propaganda_1415 = {
 	
 		icon = generic_nationalism
 	
@@ -4179,7 +4751,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			891 = {
+			1415 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -4190,20 +4762,20 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 891 } }
+		highlight_states = { highlight_state_targets = { state = 1415 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			891 = {
+			1415 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
 	}
 	
-	pan_turanist_propaganda_888 = {
+	pan_turanist_propaganda_1412 = {
 	
 		icon = generic_nationalism
 	
@@ -4219,7 +4791,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			888 = {
+			1412 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -4230,20 +4802,20 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 888 } }
+		highlight_states = { highlight_state_targets = { state = 1412 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			888 = {
+			1412 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
 	}
 	
-	pan_turanist_propaganda_887 = {
+	pan_turanist_propaganda_1411 = {
 	
 		icon = generic_nationalism
 	
@@ -4259,7 +4831,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			887 = {
+			1411 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -4270,14 +4842,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 887 } }
+		highlight_states = { highlight_state_targets = { state = 1411 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			887 = {
+			1411 = {
 				add_dynamic_modifier = { modifier = pan_turanist_agitation }
 			}
 		}
@@ -6593,7 +7165,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_887 = {
+	pan_turanist_propaganda_core_1411 = {
 	
 		icon = generic_nationalism
 	
@@ -6609,7 +7181,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			887 = {
+			1411 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6622,14 +7194,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 887 } }
+		highlight_states = { highlight_state_targets = { state = 1411 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			887 = {
+			1411 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -6644,7 +7216,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_888 = {
+	pan_turanist_propaganda_core_1412 = {
 	
 		icon = generic_nationalism
 	
@@ -6660,7 +7232,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			888 = {
+			1412 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6673,14 +7245,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 888 } }
+		highlight_states = { highlight_state_targets = { state = 1412 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			888 = {
+			1412 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -6695,7 +7267,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_891 = {
+	pan_turanist_propaganda_core_1415 = {
 	
 		icon = generic_nationalism
 	
@@ -6711,7 +7283,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			891 = {
+			1415 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6724,14 +7296,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 891 } }
+		highlight_states = { highlight_state_targets = { state = 1415 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			891 = {
+			1415 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -6746,7 +7318,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_892 = {
+	pan_turanist_propaganda_core_1416 = {
 	
 		icon = generic_nationalism
 	
@@ -6762,7 +7334,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			892 = {
+			1416 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6775,14 +7347,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 892 } }
+		highlight_states = { highlight_state_targets = { state = 1416 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			892 = {
+			1416 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -6797,7 +7369,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_893 = {
+	pan_turanist_propaganda_core_1417 = {
 	
 		icon = generic_nationalism
 	
@@ -6813,7 +7385,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			893 = {
+			1417 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6826,14 +7398,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 893 } }
+		highlight_states = { highlight_state_targets = { state = 1417 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			893 = {
+			1417 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -6848,7 +7420,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_894 = {
+	pan_turanist_propaganda_core_1418 = {
 	
 		icon = generic_nationalism
 	
@@ -6864,7 +7436,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			894 = {
+			1418 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6877,14 +7449,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 894 } }
+		highlight_states = { highlight_state_targets = { state = 1418 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			894 = {
+			1418 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -6899,7 +7471,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_890 = {
+	pan_turanist_propaganda_core_1414 = {
 	
 		icon = generic_nationalism
 	
@@ -6915,7 +7487,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			890 = {
+			1414 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6928,14 +7500,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 890 } }
+		highlight_states = { highlight_state_targets = { state = 1414 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			890 = {
+			1414 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -6950,7 +7522,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_897 = {
+	pan_turanist_propaganda_core_1421 = {
 	
 		icon = generic_nationalism
 	
@@ -6966,7 +7538,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			897 = {
+			1421 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -6979,14 +7551,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 897 } }
+		highlight_states = { highlight_state_targets = { state = 1421 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			897 = {
+			1421 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -7103,7 +7675,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_896 = {
+	pan_turanist_propaganda_core_1420 = {
 	
 		icon = generic_nationalism
 	
@@ -7119,7 +7691,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			896 = {
+			1420 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -7132,14 +7704,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 896 } }
+		highlight_states = { highlight_state_targets = { state = 1420 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			896 = {
+			1420 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -8633,7 +9205,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_886 = {
+	pan_turanist_propaganda_core_1410 = {
 	
 		icon = generic_nationalism
 	
@@ -8649,7 +9221,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			886 = {
+			1410 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -8662,14 +9234,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 886 } }
+		highlight_states = { highlight_state_targets = { state = 1410 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			886 = {
+			1410 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -8735,7 +9307,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		}
 	}
 	
-	pan_turanist_propaganda_core_909 = {
+	pan_turanist_propaganda_core_941 = {
 	
 		icon = generic_nationalism
 	
@@ -8751,7 +9323,7 @@ TUR_pan_turanist_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_turanist_propaganda_enable
-			909 = {
+			941 = {
 				is_controlled_by = ROOT
 				has_dynamic_modifier = { modifier = pan_turanist_agitation }
 				compliance > 89
@@ -8764,14 +9336,14 @@ TUR_pan_turanist_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 909 } }
+		highlight_states = { highlight_state_targets = { state = 941 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			909 = {
+			941 = {
 				remove_dynamic_modifier = { modifier = pan_turanist_agitation }
 				if = {
 					limit = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
@@ -13059,7 +13631,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 
-	pan_islamic_propaganda_929 = {
+	pan_islamic_propaganda_1057 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -13075,7 +13647,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			929 = {
+			1057 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -13086,14 +13658,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 929 } }
+		highlight_states = { highlight_state_targets = { state = 1057 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			929 = {
+			1057 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -13499,7 +14071,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 
-	pan_islamic_propaganda_886 = {
+	pan_islamic_propaganda_1410 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -13515,7 +14087,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			886 = {
+			1410 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -13526,14 +14098,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 886 } }
+		highlight_states = { highlight_state_targets = { state = 1410 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			886 = {
+			1410 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -13979,7 +14551,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 
-	pan_islamic_propaganda_909 = {
+	pan_islamic_propaganda_941 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -13995,7 +14567,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			909 = {
+			941 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -14006,14 +14578,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 909 } }
+		highlight_states = { highlight_state_targets = { state = 941 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			909 = {
+			941 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -14059,7 +14631,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 
-	pan_islamic_propaganda_885 = {
+	pan_islamic_propaganda_1409 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -14075,7 +14647,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			885 = {
+			1409 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -14086,20 +14658,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 885 } }
+		highlight_states = { highlight_state_targets = { state = 1409 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			885 = {
+			1409 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_884 = {
+	pan_islamic_propaganda_1408 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -14115,7 +14687,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			884 = {
+			1408 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -14126,14 +14698,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 884 } }
+		highlight_states = { highlight_state_targets = { state = 1408 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			884 = {
+			1408 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -16059,7 +16631,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 
-	pan_islamic_propaganda_897 = {
+	pan_islamic_propaganda_1421 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16075,7 +16647,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			897 = {
+			1421 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16086,20 +16658,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 897 } }
+		highlight_states = { highlight_state_targets = { state = 1421 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			897 = {
+			1421 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_893 = {
+	pan_islamic_propaganda_1417 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16115,7 +16687,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			893 = {
+			1417 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16126,14 +16698,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 893 } }
+		highlight_states = { highlight_state_targets = { state = 1417 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			893 = {
+			1417 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -16179,7 +16751,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 
-	pan_islamic_propaganda_895 = {
+	pan_islamic_propaganda_1419 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16195,7 +16767,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			895 = {
+			1419 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16206,20 +16778,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 895 } }
+		highlight_states = { highlight_state_targets = { state = 1419 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			895 = {
+			1419 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_888 = {
+	pan_islamic_propaganda_1412 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16235,7 +16807,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			888 = {
+			1412 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16246,20 +16818,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 888 } }
+		highlight_states = { highlight_state_targets = { state = 1412 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			888 = {
+			1412 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_892 = {
+	pan_islamic_propaganda_1416 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16275,7 +16847,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			892 = {
+			1416 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16286,20 +16858,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 892 } }
+		highlight_states = { highlight_state_targets = { state = 1416 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			892 = {
+			1416 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_891 = {
+	pan_islamic_propaganda_1415 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16315,7 +16887,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			891 = {
+			1415 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16326,20 +16898,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 891 } }
+		highlight_states = { highlight_state_targets = { state = 1415 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			891 = {
+			1415 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_887 = {
+	pan_islamic_propaganda_1411 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16355,7 +16927,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			887 = {
+			1411 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16366,20 +16938,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 887 } }
+		highlight_states = { highlight_state_targets = { state = 1411 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			887 = {
+			1411 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_896 = {
+	pan_islamic_propaganda_1420 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16395,7 +16967,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			896 = {
+			1420 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16406,20 +16978,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 896 } }
+		highlight_states = { highlight_state_targets = { state = 1420 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			896 = {
+			1420 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_894 = {
+	pan_islamic_propaganda_1418 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16435,7 +17007,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			894 = {
+			1418 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16446,20 +17018,20 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 894 } }
+		highlight_states = { highlight_state_targets = { state = 1418 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			894 = {
+			1418 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
 	}
 
-	pan_islamic_propaganda_890 = {
+	pan_islamic_propaganda_1414 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -16475,7 +17047,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			890 = {
+			1414 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -16486,14 +17058,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 890 } }
+		highlight_states = { highlight_state_targets = { state = 1414 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			890 = {
+			1414 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -20419,7 +20991,8 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 
-	pan_islamic_propaganda_1227 = {
+
+	pan_islamic_propaganda_898 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -20435,7 +21008,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			1227 = {
+			898 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -20446,14 +21019,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 1227 } }
+		highlight_states = { highlight_state_targets = { state = 898 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			1227 = {
+			898 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -20979,7 +21552,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		}
 	}
 	
-	pan_islamic_propaganda_898 = {
+	pan_islamic_propaganda_1227 = {
 	
 		icon = faction_tur_traditionalist
 	
@@ -20995,7 +21568,7 @@ TUR_pan_islamic_propaganda_decisions = {
 		visible = {
 			original_tag = TUR
 			has_country_flag = TUR_pan_islamic_propaganda_enable
-			898 = {
+			1227 = {
 				is_controlled_by = ROOT
 				NOT = {
 					is_core_of = ROOT
@@ -21006,14 +21579,14 @@ TUR_pan_islamic_propaganda_decisions = {
 	
 		cost = 15
 		
-		highlight_states = { highlight_state_targets = { state = 898 } }
+		highlight_states = { highlight_state_targets = { state = 1227 } }
 		
 		ai_will_do = {
 			factor = 100
 		}
 		
 		complete_effect = {
-			898 = {
+			1227 = {
 				add_dynamic_modifier = { modifier = pan_islamic_agitation }
 			}
 		}
@@ -23036,7 +23609,7 @@ TUR_national_society_of_artisans_decisions = {
 		
 		fire_only_once = yes
 		
-		highlight_states = { highlight_state_targets = { state = 341 } }
+		highlight_states = { highlight_state_targets = { state = 346 } }
 		
 		ai_will_do = {
 			factor = 100
@@ -23236,7 +23809,7 @@ TUR_national_society_of_artisans_decisions = {
 		}
 	}
 	
-	national_society_of_artisans_799 = {
+	national_society_of_artisans_1404 = {
 	
 		icon = generic_industry
 	
@@ -23252,7 +23825,7 @@ TUR_national_society_of_artisans_decisions = {
 		visible = {
 			original_tag = TUR
 			has_completed_focus = TUR_national_society_of_artisans
-			799 = {
+			1404 = {
 				is_fully_controlled_by = ROOT
 			}
 		}
@@ -23261,7 +23834,7 @@ TUR_national_society_of_artisans_decisions = {
 		
 		fire_only_once = yes
 		
-		highlight_states = { highlight_state_targets = { state = 799 } }
+		highlight_states = { highlight_state_targets = { state = 1404 } }
 		
 		ai_will_do = {
 			factor = 100
@@ -23270,7 +23843,7 @@ TUR_national_society_of_artisans_decisions = {
 		days_remove = 30
 		
 		remove_effect = {
-			799 = {
+			1404 = {
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = industrial_complex
@@ -23326,7 +23899,7 @@ TUR_national_society_of_artisans_decisions = {
 		}
 	}
 	
-	national_society_of_artisans_350 = {
+	national_society_of_artisans_1151 = {
 	
 		icon = generic_industry
 	
@@ -23342,7 +23915,7 @@ TUR_national_society_of_artisans_decisions = {
 		visible = {
 			original_tag = TUR
 			has_completed_focus = TUR_national_society_of_artisans
-			350 = {
+			1151 = {
 				is_fully_controlled_by = ROOT
 			}
 		}
@@ -23351,7 +23924,7 @@ TUR_national_society_of_artisans_decisions = {
 		
 		fire_only_once = yes
 		
-		highlight_states = { highlight_state_targets = { state = 350 } }
+		highlight_states = { highlight_state_targets = { state = 1151 } }
 		
 		ai_will_do = {
 			factor = 100
@@ -23360,7 +23933,7 @@ TUR_national_society_of_artisans_decisions = {
 		days_remove = 30
 		
 		remove_effect = {
-			350 = {
+			1151 = {
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = industrial_complex
@@ -23406,59 +23979,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			267 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -23498,59 +24058,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			907 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -23590,59 +24137,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			229 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -23682,59 +24216,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			266 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -23774,59 +24295,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			448 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -23866,59 +24374,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			458 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -23958,59 +24453,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			459 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -24050,59 +24532,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			461 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -24142,59 +24611,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			584 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -24234,59 +24690,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			405 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -24326,59 +24769,46 @@ TUR_militia_WWI_decisions = {
 		
 		complete_effect = {
 			add_manpower = 50000
-			if = {
-				limit = { NOT = { has_template = "Milis (WWI)" } }
-				division_template = {
-					name = "Milis (WWI)"
-					regiments = {
-						militia = { x = 0 y = 0 }
-						militia = { x = 0 y = 1 }
-						militia = { x = 1 y = 0 }
-						militia = { x = 1 y = 1 }
-					}
-					priority = 0
-					is_locked = yes
-				}
-			}
+			create_template_Milis = yes
 			882 = {
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 				create_unit = {
-					division = "name = \"Milis (WWI)\" division_template = \"Milis (WWI)\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					division = "name = \"Milis\" division_template = \"Milis\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
 					owner = ROOT
 				}
 			}
@@ -24404,7 +24834,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					check_variable = {
 						var = enver_power
@@ -24425,7 +24855,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 					check_variable = {
 						var = cemal_power
@@ -24441,7 +24871,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					check_variable = {
 						var = talaat_power
@@ -24527,7 +24957,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = talaat_power
 					check_variable = {
@@ -24537,7 +24967,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 					has_variable = talaat_power
 					check_variable = {
@@ -24560,7 +24990,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		complete_effect = {
 			if = {
 				limit = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				subtract_from_variable = { var = enver_power value = 1 }
@@ -24570,7 +25000,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 				}
 				subtract_from_variable = { var = cemal_power value = 1 }
@@ -24600,7 +25030,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = cemal_power
 					check_variable = {
@@ -24610,7 +25040,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					has_variable = cemal_power
 					check_variable = {
@@ -24633,7 +25063,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		complete_effect = {
 			if = {
 				limit = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				subtract_from_variable = { var = enver_power value = 1 }
@@ -24643,7 +25073,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 				}
 				subtract_from_variable = { var = talaat_power value = 1 }
@@ -24673,15 +25103,15 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 				}
 			}
@@ -24698,7 +25128,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		complete_effect = {
 			if = {
 				limit = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 				}
 				add_to_variable = { var = enver_power value = 1 }
@@ -24706,7 +25136,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 				}
 				add_to_variable = { var = cemal_power value = 1 }
@@ -24714,7 +25144,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			}
 			else_if = {
 				limit = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 				}
 				add_to_variable = { var = talaat_power value = 1 }
@@ -24737,12 +25167,12 @@ TUR_young_turkish_triumvirate_decisions = {
 			original_tag = TUR
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = talaat_power
 				}
 				AND = {
-					has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 					has_variable = cemal_power
 					has_variable = talaat_power
 				}
@@ -24777,12 +25207,12 @@ TUR_young_turkish_triumvirate_decisions = {
 			original_tag = TUR
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					has_variable = cemal_power
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					has_variable = cemal_power
 				}
@@ -24813,17 +25243,17 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 				NOT = { has_variable = cemal_power }
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 		}
 		
@@ -24880,18 +25310,18 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 				NOT = { has_variable = cemal_power }
 				has_country_flag = TUR_cemal_talaat_is_ally
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 			NOT = { has_country_flag = TUR_cemal_talaat_is_ally }
 			OR = {
@@ -24914,7 +25344,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					has_variable = talaat_power
 					OR = {
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_enver_power = enver_power }
 							subtract_from_temp_variable = { temp_enver_power = 3 }
@@ -24925,7 +25355,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -24936,7 +25366,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_talaat_power = talaat_power }
 							subtract_from_temp_variable = { temp_talaat_power = 3 }
@@ -24947,7 +25377,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -24961,7 +25391,7 @@ TUR_young_turkish_triumvirate_decisions = {
 				}
 				OR = {
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_enver_power = enver_power }
 						subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -24972,7 +25402,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -24983,7 +25413,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_talaat_power = talaat_power }
 						subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -24994,7 +25424,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25027,17 +25457,17 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 				NOT = { has_variable = talaat_power }
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+			has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
 			has_variable = talaat_power
 		}
 		
@@ -25084,18 +25514,18 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 				NOT = { has_variable = talaat_power }
 				has_country_flag = TUR_cemal_talaat_is_ally
 			}
 		}
 		
 		available = {
-			has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+			has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 		}
 		
 		activation = {
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
 			has_variable = talaat_power
 			NOT = { has_country_flag = TUR_cemal_talaat_is_ally }
 			OR = {
@@ -25118,7 +25548,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					has_variable = talaat_power
 					OR = {
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_enver_power = enver_power }
 							subtract_from_temp_variable = { temp_enver_power = 3 }
@@ -25129,7 +25559,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -25140,7 +25570,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_talaat_power = talaat_power }
 							subtract_from_temp_variable = { temp_talaat_power = 3 }
@@ -25151,7 +25581,7 @@ TUR_young_turkish_triumvirate_decisions = {
 							}
 						}
 						AND = {
-							has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+							has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 							has_variable = talaat_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 3 }
@@ -25165,7 +25595,7 @@ TUR_young_turkish_triumvirate_decisions = {
 				}
 				OR = {
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_enver_power = enver_power }
 						subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25176,7 +25606,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+						has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 						has_variable = enver_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25187,7 +25617,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_talaat_power = talaat_power }
 						subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -25198,7 +25628,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						}
 					}
 					AND = {
-						has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+						has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 						has_variable = talaat_power
 						set_temp_variable = { temp_cemal_power = cemal_power }
 						subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25231,16 +25661,16 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
-				has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
+				has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 				NOT = { has_variable = enver_power }
 				NOT = { has_country_flag = TUR_cemal_talaat_is_ally }
-				NOT = { has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes } }
+				NOT = { has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes } }
 			}
 		}
 		
 		available = {
-			NOT = { has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes } }
 		}
 		
 		activation = {
@@ -25250,7 +25680,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			has_variable = talaat_power
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					set_temp_variable = { temp_duumvirate_power = cemal_power }
 					add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25262,7 +25692,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					set_temp_variable = { temp_duumvirate_power = cemal_power }
 					add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25296,7 +25726,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		cancel_trigger = {
 			OR = {
-				has_country_leader = { name = "Mustafa Kemal Paşa" ruling_only = yes }
+				has_country_leader = { name = "Mustafa Kemal Pasa" ruling_only = yes }
 				OR = {
 					NOT = { has_country_flag = TUR_weak_control_WWI }
 					#NOT = { has_country_leader = { name = "Otto Liman von Sanders" ruling_only = yes } }
@@ -25308,13 +25738,13 @@ TUR_young_turkish_triumvirate_decisions = {
 		}
 		
 		available = {
-			has_country_leader = { name = "Mustafa Kemal Paşa" ruling_only = yes }
+			has_country_leader = { name = "Mustafa Kemal Pasa" ruling_only = yes }
 		}
 		
 		activation = {
 			has_global_flag = WWI_is_now
 			NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-			NOT = { has_country_leader = { name = "Mustafa Kemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mustafa Kemal Pasa" ruling_only = yes } }
 			OR = {
 				has_country_flag = TUR_weak_control_WWI
 				#has_country_leader = { name = "Otto Liman von Sanders" ruling_only = yes }
@@ -25343,7 +25773,7 @@ TUR_young_turkish_triumvirate_decisions = {
 			has_government = despotism
 			OR = {
 				AND = {
-					has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+					has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 					has_variable = enver_power
 					check_variable = {
 						var = enver_power
@@ -25352,7 +25782,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 				}
 				AND = {
-					has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+					has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 					has_variable = talaat_power
 					check_variable = {
 						var = talaat_power
@@ -25365,7 +25795,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		visible = {
 			original_tag = TUR
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 		}
 	
@@ -25386,7 +25816,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = cemal_power
@@ -25395,7 +25825,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									check_variable = {
 										var = cemal_power
@@ -25411,7 +25841,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25422,7 +25852,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									set_temp_variable = { temp_talaat_power = talaat_power }
 									subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -25443,7 +25873,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25459,7 +25889,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									set_temp_variable = { temp_talaat_power = talaat_power }
 									subtract_from_temp_variable = { temp_talaat_power = 2 }
@@ -25485,7 +25915,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = cemal_power
@@ -25494,7 +25924,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes }
+									has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes }
 									has_variable = talaat_power
 									check_variable = {
 										var = cemal_power
@@ -25527,7 +25957,7 @@ TUR_young_turkish_triumvirate_decisions = {
 		
 		visible = {
 			original_tag = TUR
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
 			has_variable = talaat_power
 		}
 	
@@ -25548,7 +25978,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = talaat_power
@@ -25557,7 +25987,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									check_variable = {
 										var = talaat_power
@@ -25573,7 +26003,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25584,7 +26014,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									set_temp_variable = { temp_cemal_power = cemal_power }
 									subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25605,7 +26035,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									set_temp_variable = { temp_enver_power = enver_power }
 									subtract_from_temp_variable = { temp_enver_power = 2 }
@@ -25621,7 +26051,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									set_temp_variable = { temp_cemal_power = cemal_power }
 									subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25647,7 +26077,7 @@ TUR_young_turkish_triumvirate_decisions = {
 						limit = {
 							OR = {
 								AND = {
-									has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 									has_variable = enver_power
 									check_variable = {
 										var = talaat_power
@@ -25656,7 +26086,7 @@ TUR_young_turkish_triumvirate_decisions = {
 									}
 								}
 								AND = {
-									has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes }
+									has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes }
 									has_variable = cemal_power
 									check_variable = {
 										var = talaat_power
@@ -25685,16 +26115,16 @@ TUR_young_turkish_triumvirate_decisions = {
 	
 		available = {
 			has_government = despotism
-			has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 			has_variable = enver_power
 		}
 		
 		visible = {
 			original_tag = TUR
-			has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+			has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 			has_variable = enver_power
-			NOT = { has_country_leader = { name = "Mehmed Talaat Paşa" ruling_only = yes } }
-			NOT = { has_country_leader = { name = "Ahmet Cemal Paşa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Mehmed Talaat Pasa" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Ahmet Cemal Pasa" ruling_only = yes } }
 			has_variable = cemal_power
 			has_variable = talaat_power
 		}
@@ -25714,7 +26144,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					limit = { has_country_flag = TUR_cemal_talaat_is_ally }
 					if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25728,7 +26158,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25747,7 +26177,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25772,7 +26202,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_duumvirate_power = cemal_power }
 							add_to_temp_variable = { temp_duumvirate_power = talaat_power }
@@ -25790,7 +26220,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					limit = { NOT = { has_country_flag = TUR_cemal_talaat_is_ally } }
 					if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							check_variable = {
 								var = cemal_power
@@ -25807,7 +26237,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							OR = {
 								AND = {
@@ -25848,7 +26278,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25874,7 +26304,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 2 }
@@ -25908,7 +26338,7 @@ TUR_young_turkish_triumvirate_decisions = {
 					}
 					else_if = {
 						limit = {
-							has_country_leader = { name = "İsmail Enver Paşa" ruling_only = yes }
+							has_country_leader = { name = "Ismail Enver Pasa" ruling_only = yes }
 							has_variable = enver_power
 							set_temp_variable = { temp_cemal_power = cemal_power }
 							subtract_from_temp_variable = { temp_cemal_power = 2 }
