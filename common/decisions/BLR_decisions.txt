@@ -911,6 +911,20 @@ political_actions = {
 		days_remove = 25
 		fire_only_once = yes
 	}
+	
+BLR_dvishenie_balahovicha = {
+    icon = generic_military
+	activation = {
+        OR = { always = no }  
+	}
+	available = {
+        always = no
+	}
+	timeout_effect = {
+        country_event = belarus.55
+	}
+	days_mission_timeout = 60
+}
 }
 BLR_zeleno_dubci_vostanie = {
 
@@ -2269,4 +2283,103 @@ BLR_litva_postavka = {
 	    fire_only_once = no
 		days_re_enable = 60
     }
+}
+BLR_org_vosstanie = {
+
+	BLR_build_local_resistance_force = {
+		icon = GFX_decision_revolt
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		state_target = yes
+		on_map_mode = map_only 
+		target_trigger = {
+			FROM = {
+				is_core_of = BLR
+				NOT = { is_controlled_by = BLR }
+				OR = {
+					state = 940
+					state = 980
+					state = 207
+					state = 1051
+					state = 96
+					state = 1401
+					state = 241
+					state = 955
+					state = 94
+					state = 922
+					state = 1168
+					state = 924
+					state = 1167
+					state = 206
+					state = 194
+					state = 994
+					state = 957
+					state = 204
+					state = 1056
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 3
+					state = FROM
+				}
+				FROM = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		target_root_trigger = {
+			original_tag = BLR
+			RUS = { controls_state = FROM }
+			has_country_flag = BLR_organize_regional_revolts_flag
+		}
+
+		visible = {
+			is_government_in_exile = yes 
+		}
+		cancel_if_not_visible = yes 
+		cost = 35
+		days_remove = 30
+		days_re_enable = 90
+
+		fire_only_once = no
+		
+		complete_effect = {
+		   	FROM = {
+				save_global_event_target_as = state_var 
+			}
+            add_equipment_to_stockpile = {
+			    type = infantry_equipment
+			    amount = -80
+		    }
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+						set_state_flag = eser_rebels_called
+						hidden_effect = {
+							state_event = { id = rss_eser_tech.4 days = 364 }
+						}
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
 }
