@@ -29,6 +29,7 @@
 #ban_all_parties_law
 #allow_one_party_law
 #two_party_system_law
+#dominant_party_system_law
 #poliparty_system_law
 
 
@@ -310,9 +311,16 @@ ideas = {
 			cost = 200
 			removal_cost = -1
 			available = {
-				NOT = { has_idea = limited_monarchy_gov_form }
-				NOT = { has_idea = parliamentary_republic_gov_form }
-				NOT = { has_idea = presidential_republic_gov_form }
+				OR = {
+					has_idea = absolute_monarchy_gov_form
+					has_idea = military_dictatorship_gov_form
+				}
+			}
+			cancel = {
+				NOT = {
+					has_idea = absolute_monarchy_gov_form
+					has_idea = military_dictatorship_gov_form
+				}
 			}
 			modifier = {
 				drift_defence_factor = -0.5
@@ -325,59 +333,26 @@ ideas = {
 			removal_cost = -1
 			available = {
 				NOT = { has_idea = absolute_monarchy_gov_form }
-				NOT = { has_idea = ban_all_parties_law }
 				custom_trigger_tooltip = {
 					tooltip = ruling_party_more_50
-					OR = {
-						AND = {
-							has_government = radical_socialism
-							radical_socialism > 0.5
-						}
-						AND = {
-							is_socialist_country = yes
-							communism > 0.5
-						}
-						AND = {
-							has_government = social_democracy
-							social_democracy > 0.5
-						}
-						AND = {
-							has_government = social_liberalism
-							social_liberalism > 0.5
-						}
-						AND = {
-							has_government = market_liberalism
-							market_liberalism > 0.5
-						}
-						AND = {
-							has_government = conservatism
-							conservatism > 0.5
-						}
-						AND = {
-							has_government = authoritarism
-							authoritarism > 0.5
-						}
-						AND = {
-							has_government = despotism
-							despotism > 0.5
-						}
-						AND = {
-							is_reactionary_country = yes
-							fascism > 0.5
-						}
-						AND = {
-							has_government = national_syndicalism
-							national_syndicalism > 0.5
-						}
+					check_variable = { ROOT.party_popularity@ruling_party > 0.5 }
+				}
+				set_temp_variable = { temp_one_party = ROOT.party_popularity@ruling_party }
+				add_to_temp_variable = { temp_one_party = -0.15 }
+				custom_trigger_tooltip = {
+					tooltip = ruling_party_gap_15
+					check_variable = {
+						var = temp_one_party
+						value = ROOT.highest_party_popularity@exclude_ruling_party
+						compare = greater_than_or_equals
 					}
 				}
 			}
-			available = {
-				NOT = { has_idea = absolute_monarchy_gov_form }
-				NOT = { has_idea = limited_monarchy_gov_form }
+			cancel = {
+				has_idea = absolute_monarchy_gov_form
 			}
 			modifier = {
-				consumer_goods_factor = -0.03
+				stability_factor = 0.05
 				opinion_gain_monthly_same_ideology_factor = 0.15
 			}
 			rule = {
@@ -390,10 +365,36 @@ ideas = {
 			removal_cost = -1
 			available = {
 				NOT = { has_idea = absolute_monarchy_gov_form }
-				NOT = { has_idea = military_dictatorship_gov_form }
+				custom_trigger_tooltip = {
+					tooltip = ruling_party_is_dominating
+					check_variable = { highest_party_ideology = current_party_ideology_group }
+				}
+				custom_trigger_tooltip = {
+					tooltip = ruling_party_more_33
+					check_variable = { party_popularity@ruling_party > 0.333 }
+				}
+				set_temp_variable = { temp_two_party = party_popularity@ruling_party }
+				add_to_temp_variable = { temp_two_party = -0.2 }
+				custom_trigger_tooltip = {
+					tooltip = ruling_party_gap_not_20
+					check_variable = {
+						var = temp_two_party
+						value = highest_party_popularity@exclude_ruling_party
+						compare = less_than_or_equals
+					}
+				}
+			}
+			cancel = {
+				OR = {
+					has_idea = absolute_monarchy_gov_form
+					custom_trigger_tooltip = {
+						tooltip = ruling_party_less_33
+						check_variable = { party_popularity@ruling_party < 0.333 }
+					}
+				}
 			}
 			modifier = {
-				stability_factor = 0.025
+				political_power_gain = 0.2
 				
 				economic_controll_cost_factor = 0.1
 				labor_legislation_cost_factor = 0.1
@@ -401,16 +402,45 @@ ideas = {
 				economy_cost_factor = 0.1
 				mobilization_laws_cost_factor = 0.1
 			}
-			on_add = {
-				initiate_verification_of_the_popularity_of_coalitions = yes
-				set_first_wthout_ruling_legal_party_flag = yes
-				if = {
-					limit = { NOT = { has_country_flag = dont_rise_party_pop_in_two_party_sys_law } }
-					add_popularity = { ideology = ROOT popularity = 0.1 }
-					set_temp_variable = { ruling_party_popularity_change = 0.1 }
-					add_first_wthout_ruling_legal_party_popularity = yes
-					else = { clr_country_flag = dont_rise_party_pop_in_two_party_sys_law }
+			cancel_if_invalid = no
+		}
+		dominant_party_system_law = {
+			cost = 150
+			removal_cost = -1
+			available = {
+				NOT = { has_idea = absolute_monarchy_gov_form }
+				custom_trigger_tooltip = {
+					tooltip = ruling_party_is_dominating
+					check_variable = { highest_party_ideology = current_party_ideology_group }
 				}
+				custom_trigger_tooltip = {
+					tooltip = ruling_party_more_33
+					check_variable = { party_popularity@ruling_party > 0.333 }
+				}
+				set_temp_variable = { temp_dominant_party = party_popularity@ruling_party }
+				add_to_temp_variable = { temp_dominant_party = -0.1 }
+				custom_trigger_tooltip = {
+					tooltip = ruling_party_gap_10
+					check_variable = {
+						var = temp_dominant_party
+						value = highest_party_popularity@exclude_ruling_party
+						compare = greater_than_or_equals
+					}
+				}
+			}
+			cancel = {
+				OR = {
+					has_idea = absolute_monarchy_gov_form
+					custom_trigger_tooltip = {
+						tooltip = ruling_party_less_33
+						check_variable = { party_popularity@ruling_party < 0.333 }
+					}
+				}
+			}
+			default = yes
+			modifier = {
+				stability_factor = 0.05
+				defensive_war_stability_factor = -0.05
 			}
 			cancel_if_invalid = no
 		}
@@ -421,17 +451,21 @@ ideas = {
 				NOT = { has_idea = absolute_monarchy_gov_form }
 				NOT = { has_idea = military_dictatorship_gov_form }
 			}
-			default = yes
+			cancel = {
+				OR = {
+					has_idea = absolute_monarchy_gov_form
+					has_idea = military_dictatorship_gov_form
+				}
+			}
 			modifier = {
+				political_power_gain = 0.1
 				justify_war_goal_time = 0.15
-				war_support_factor = -0.025
-				stability_factor = 0.05
 				
-				economic_controll_cost_factor = 0.2
-				labor_legislation_cost_factor = 0.2
-				trade_laws_cost_factor = 0.2
-				economy_cost_factor = 0.2
-				mobilization_laws_cost_factor = 0.2
+				economic_controll_cost_factor = 0.1
+				labor_legislation_cost_factor = 0.1
+				trade_laws_cost_factor = 0.1
+				economy_cost_factor = 0.1
+				mobilization_laws_cost_factor = 0.1
 			}
 			cancel_if_invalid = no
 		}
