@@ -1,0 +1,286 @@
+on_actions = {
+	
+	# ROOT is capitulated country, FROM is winner
+	on_capitulation_immediate = {
+		effect = {
+			if = {
+				limit = {
+					ROOT = { has_country_flag = TRG_IKZ_Kaocen_revolt }
+				}
+				ROOT = {
+					leave_faction = yes
+					add_ideas = neutral_foreign_policy_law
+					clr_country_flag = TRG_IKZ_Kaocen_revolt
+					delete_unit = { disband = yes }
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+					transfer_units_fraction = {
+						target = FROM
+						size = 0
+						stockpile_ratio = 1
+						army_ratio = 0
+						navy_ratio = 1
+						air_ratio = 0.5
+						keep_unit_leaders_trigger = { always = yes }
+					}
+				}
+				FRA = { annex_country = { target = ROOT transfer_troops = no } }
+			}
+			if = {
+				limit = {
+					ROOT = { has_country_flag = OAF_GER_WWI_in_Africa }
+				}
+				ROOT = {
+					leave_faction = yes
+					add_ideas = neutral_foreign_policy_law
+					clr_country_flag = TRG_IKZ_Kaocen_revolt
+					delete_unit = { disband = yes }
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+					transfer_units_fraction = {
+						target = FROM
+						size = 0
+						stockpile_ratio = 1
+						army_ratio = 0
+						navy_ratio = 1
+						air_ratio = 0.5
+						keep_unit_leaders_trigger = { always = yes }
+					}
+					every_unit_leader = {
+						set_nationality = GER
+					}
+				}
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 768
+							state = 769
+						}
+					}
+					random_country = { limit = { owns_state = 718 } transfer_state = PREV }
+				}
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 546
+						}
+					}
+					random_country = { limit = { owns_state = 547 } transfer_state = PREV }
+				}
+				FROM = { annex_country = { target = ROOT transfer_troops = no } }
+			}
+			if = {
+				limit = {
+					ROOT = { has_country_flag = SNS_anti_ITA_revolt }
+				}
+				ROOT = {
+					leave_faction = yes
+					if = {
+						limit = { is_subject = yes }
+						OVERLORD = { end_puppet = ROOT }
+					}
+					add_ideas = neutral_foreign_policy_law
+					clr_country_flag = SNS_anti_ITA_revolt
+					delete_unit = { disband = yes }
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+					transfer_units_fraction = {
+						target = FROM
+						size = 0
+						stockpile_ratio = 1
+						army_ratio = 0
+						navy_ratio = 1
+						air_ratio = 0.5
+						keep_unit_leaders_trigger = { always = yes }
+					}
+				}
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 1162
+							state = 1161
+							state = 1062
+							state = 1159
+							state = 981
+							state = 1160
+						}
+					}
+					random_country = { limit = { owns_state = 452 } transfer_state = PREV }
+				}
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 775
+							state = 1163
+							state = 1156
+						}
+					}
+					random_country = { limit = { owns_state = 774 } transfer_state = PREV }
+				}
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							state = 661
+							state = 273
+							state = 1158
+							state = 449
+							state = 662
+							state = 450
+							state = 663
+							state = 451
+							state = 1157
+						}
+					}
+					random_country = { limit = { owns_state = 448 } transfer_state = PREV }
+				}
+			}
+		}
+	}
+	
+	# ROOT is capitulated country, FROM is winner
+	on_capitulation = {
+		effect = {
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+					ROOT = { tag = ENG }
+				}
+				set_global_flag = WWI_ENG_HAS_CAPITULATED
+				news_event = { id = news_n.113 days = 0 }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED }
+					ROOT = { tag = FRA }
+				}
+				set_global_flag = WWI_FRA_HAS_CAPITULATED
+				news_event = { id = news_n.112 days = 0 }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED }
+					ROOT = { tag = ITA }
+				}
+				news_event = { id = news_n.111 days = 0 }
+				set_global_flag = WWI_ITA_HAS_CAPITULATED
+				ITA = { country_event = weltkrieg_frankfurt.15 }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					ROOT = { tag = BUL }
+					NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+				}
+				news_event = { id = news_n.101 days = 0 }
+				BUL = {
+					country_event = compiegne_armistice.999
+				}
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					ROOT = { tag = TUR }
+					NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+				}
+				news_event = { id = news_n.102 days = 0 }
+				TUR = {
+					country_event = { id = compiegne_armistice.1 hours = 1 }
+				}
+			}
+		}
+	}
+	
+	#ROOT is the winner, FROM is the loser.
+	on_peaceconference_ended = {
+		effect = {
+		}
+	}
+	
+	#Not run on a specific country.
+	on_startup = {
+		effect = {
+			if = {
+				limit = { RUS = { has_country_flag = RUS_monarchy_not_fall } }
+				RUS = { set_variable = { RUS_otrecheniye = 0 } country_event = { id = russian_ovrthrw_of_mon.0 days = 22 } country_event = { id = russian_ovrthrw_of_mon.103 days = 17 } country_event = { id = russian_ovrthrw_of_mon.104 days = 70 } }
+			}
+			if = {
+				limit = { has_start_date < 1918.11.11 }
+				set_global_flag = WWI_is_now
+			}
+			if = {
+				limit = { has_start_date < 1918.11.11 }
+				GER = {
+					country_event = { id = npt.kostili.1 hours = 0 }
+				}
+				AUH = {
+					country_event = { id = austro-hungarian.12 hours = 1 }
+					set_variable = {
+						var = loyalty_slavs
+						value = 0
+					}
+				}
+			}
+			KHU = {
+				give_resource_rights = { receiver = ENG state = 413 }
+			}
+		}
+	}
+
+	#ROOT is new controller #FROM is old controller #FROM.FROM is state ID
+	on_state_control_changed = {
+		effect = {
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM.FROM = { OR = { state = 12 state = 209 state = 11 state = 204 state = 91 state = 202 state = 980 state = 206 state = 341 state = 195 state = 219 state = 242 state = 220 state = 64 state = 9 state = 4 state = 43 } }
+					RUS = { has_country_flag = RUS_monarchy_not_fall }
+				}
+				if = {
+					limit = { FROM = { OR = { tag = RUS is_in_faction_with = RUS is_subject_of = RUS tag = UKR } } ROOT = { OR = { tag = GER tag = AUH tag = BUL tag = TUR is_in_faction_with = GER is_in_faction_with = AUH } } }
+					RUS = { add_to_variable = { RUS_otrecheniye = 1 } }
+					if = {
+						limit = { FROM.FROM = { OR = { state = 202 state = 980 state = 206 state = 341 } } }
+						RUS = { add_to_variable = { RUS_otrecheniye = 1 } }
+					}
+					if = {
+						limit = { FROM.FROM = { OR = { state = 195 state = 219 state = 242 state = 220 state = 64 state = 9 state = 4 state = 43 } } }
+						RUS = { add_to_variable = { RUS_otrecheniye = 2 } }
+					}
+				}
+				if = {
+					limit = { ROOT = { OR = { tag = RUS is_in_faction_with = RUS is_subject_of = RUS tag = UKR } } FROM = { OR = { tag = GER tag = AUH tag = BUL tag = TUR is_in_faction_with = GER is_in_faction_with = AUH } } }
+					RUS = { add_to_variable = { RUS_otrecheniye = -1 } }
+					if = {
+						limit = { FROM.FROM = { OR = { state = 202 state = 980 state = 206 state = 341 } } }
+						RUS = { add_to_variable = { RUS_otrecheniye = -1 } }
+					}
+					if = {
+						limit = { FROM.FROM = { OR = { state = 195 state = 219 state = 242 state = 220 state = 64 state = 9 state = 4 state = 43 } } }
+						RUS = { add_to_variable = { RUS_otrecheniye = -2 } }
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM.FROM = { has_dynamic_modifier = { modifier = pan_turanist_agitation } }
+					ROOT = { NOT = { has_country_flag = TUR_pan_turanist_propaganda_enable } }
+				}
+				FROM.FROM = { remove_dynamic_modifier = { modifier = pan_turanist_agitation } }
+			}
+			if = {
+				limit = {
+					has_global_flag = WWI_is_now
+					FROM.FROM = { has_dynamic_modifier = { modifier = pan_islamic_agitation } }
+					ROOT = { NOT = { has_country_flag = TUR_pan_islamic_propaganda_enable } }
+				}
+				FROM.FROM = { remove_dynamic_modifier = { modifier = pan_islamic_agitation } }
+			}
+		}
+	}
+}

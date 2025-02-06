@@ -1,0 +1,4949 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw
+
+
+# Черноморский флот в тумане
+country_event = {
+	id = rcw.11
+	title = rcw.11.t
+	desc = rcw.11.desc
+	picture = GFX_report_event_SOV_purge_navy
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.11.a
+		set_global_flag = black_fleet_in_exile
+	}
+}
+# Сибирская флотилия на якоре
+country_event = {
+	id = rcw.12
+	title = rcw.12.t
+	desc = rcw.12.desc
+	picture = GFX_report_event_SOV_purge_navy
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.12.a
+		set_global_flag = siberia_fleet_in_exile
+	}
+}
+# Захват Сибирской флотилии белыми
+country_event = {
+	id = rcw.13
+	title = rcw.13.t
+	desc = rcw.13.desc
+	picture = GFX_report_event_SOV_purge_navy
+	trigger = { has_global_flag = siberia_fleet_in_exile }
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.13.a
+		clr_global_flag = siberia_fleet_in_exile
+		PRM = {
+			if = {
+				limit = { has_dlc = "Man the Guns" }
+				load_oob = RUS_1917_siberia_navy_cutted
+				else = {
+					load_oob = RUS_1917_siberia_navy_legacy_cutted
+				}
+			}
+		}
+	}
+}
+# Балтийский флот в ловушке
+country_event = {
+	id = rcw.21
+	title = rcw.21.t
+	desc = rcw.21.desc
+	picture = GFX_report_event_SOV_purge_navy
+	trigger = { has_global_flag = baltic_fleet_in_exile_prev }
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.21.a
+		clr_global_flag = baltic_fleet_in_exile_prev
+		hidden_effect = { country_event = { id = rcw.22 days = 30 } }
+	}
+}
+# Поход Балтийского флота
+country_event = {
+	id = rcw.22
+	title = rcw.22.t
+	desc = rcw.22.desc
+	picture = GFX_report_event_SOV_purge_navy
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.22.a
+		hidden_effect = { country_event = { id = rcw.23 days = 60 } }
+	}
+}
+# Поход Балтийского флота
+country_event = {
+	id = rcw.23
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = {
+		if = {
+			limit = { controls_state = 195 controls_state = 1372 }
+			country_event = rcw.24
+			else = {
+				country_event = rcw.25
+			}
+		}
+	}
+}
+# Удачное завершение похода
+country_event = {
+	id = rcw.24
+	title = rcw.24.t
+	desc = rcw.24.desc
+	picture = GFX_report_event_SOV_purge_navy
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.24.a
+		if = {
+			limit = { has_dlc = "Man the Guns" }
+			load_oob = RUS_1917_baltic_navy
+			else = {
+				load_oob = RUS_1917_baltic_navy_legacy
+			}
+		}
+	}
+}
+# Провал похода
+country_event = {
+	id = rcw.25
+	title = rcw.25.t
+	desc = rcw.25.desc
+	picture = GFX_report_event_SOV_purge_navy
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.25.a
+		MCW = {
+			if = {
+				limit = { controls_state = 195 }
+				country_event = rcw.26
+				else = {
+					set_global_flag = baltic_fleet_in_exile
+				}
+			}
+		}
+	}
+}
+# Настороженная встреча
+country_event = {
+	id = rcw.26
+	title = rcw.26.t
+	desc = rcw.26.desc
+	picture = GFX_report_event_SOV_purge_navy
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.26.a
+		if = {
+			limit = { has_dlc = "Man the Guns" }
+			load_oob = RUS_1917_baltic_navy
+			else = {
+				load_oob = RUS_1917_baltic_navy_legacy
+			}
+		}
+		add_war_support = 0.03
+		add_political_power = 10
+		add_popularity = {
+			ideology = communism
+			popularity = 0.01
+		}
+	}
+}
+
+# Антисоветские и советские восстания в России
+
+# Общеказахский съезд
+country_event = {
+	id = rcw.60
+	title = rcw.60.t
+	desc = rcw.60.desc
+	picture = GFX_report_event_sov_redarm
+	
+	trigger = {
+		has_start_date < 1918.3.14
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+	}
+	
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			KAZ = {
+				set_cosmetic_tag = KAZ_ALASH
+			}
+		}
+	}
+	mean_time_to_happen = {
+		days = 38
+	}
+	
+	option = {
+		name = rcw.60.a
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					any_country = {
+						is_subject_of = ROOT
+						PREV = { is_owned_by = PREV }
+					}
+				}
+				OR = {
+					state = 881
+					state = 404
+					state = 1395
+				}
+			}
+			KAZ = { transfer_state = PREV }
+		}
+		KAZ = {
+			add_ideas = neutral_foreign_policy_law
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = KAZ_1917
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = rcw.60.b
+		trigger = {
+			is_ai = no
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					any_country = {
+						is_subject_of = ROOT
+						PREV = { is_owned_by = PREV }
+					}
+				}
+				OR = {
+					state = 881
+					state = 404
+					state = 1395
+				}
+			}
+			KAZ = { transfer_state = PREV }
+		}
+		KAZ = {
+			add_ideas = neutral_foreign_policy_law
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = KAZ_1917
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		KAZ = { change_tag_from = RUS }
+	}
+}
+
+
+###Поволжский голод###
+country_event = {
+	id = rcw.101
+	title = rcw.101.t
+	desc = {
+		text = rcw.101.desc
+		trigger = {
+			tag = RUS
+			OR = { has_government = radical_socialism has_government = communism }
+		}
+	}
+	
+	desc = {
+		text = rcw.101.desc_1
+		trigger = {
+			OR = {
+				NOT = { tag = RUS }
+				NOT = { has_government = radical_socialism has_government = communism }
+			}
+		}
+	}
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		OR = {
+			NOT = { has_global_flag = RUS_civil_war_over }
+			has_idea = russia_in_ruins_idea
+		}
+		is_main_former_russian_empire_country = yes
+		OR = {
+			has_global_flag = RUS_constituent_assembly_civil_war
+			has_global_flag = RUS_civil_war_intervention_start
+			has_global_flag = RUS_Kornilov_civil_war
+		}
+		date > 1921.6.1
+		date < 1921.6.29
+		401 = {
+			is_controlled_by = ROOT
+		}
+		251 = {
+			is_controlled_by = ROOT
+		}
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = { days = 0 }
+	
+	option = {
+		name = rcw.101.a
+		
+	}
+}
+
+###Разруха больше чем в реальности###
+country_event = {
+	id = rcw.102
+	title = rcw.102.t
+	desc = rcw.102.desc
+	picture = GFX_report_event_sov_demobilisation
+	
+	trigger = {
+		has_global_flag = RUS_devastation_fired
+		is_any_former_russian_empire_country = yes
+		NOT = { has_idea = russia_in_ruins_idea }
+		NOT = { has_country_flag = RUS_devastation_leave_before }
+		any_other_country = { is_any_former_russian_empire_country = yes has_war_with = ROOT }
+		NOT = { tag = RGR }
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	option = {
+		name = rcw.102.a
+		add_ideas = russia_in_ruins_idea
+		if = {
+			limit = { is_main_former_russian_empire_country = yes NOT = { has_stability > 0.1 has_war_support > 0.1 } }
+			add_ideas = war_fatigue_3
+		}
+		else_if = {
+			limit = { is_main_former_russian_empire_country = yes OR = { NOT = { has_stability > 0.1 } NOT = { has_war_support > 0.1 } } }
+			add_ideas = war_fatigue_2
+		}
+		else_if = {
+			limit = { is_main_former_russian_empire_country = yes }
+			add_ideas = war_fatigue_1
+		}
+		if = {
+			limit = { is_main_former_russian_empire_country = yes }
+			unlock_decision_category_tooltip = russia_in_ruins_category
+		}
+	}
+}
+
+# Борьба окончена
+country_event = {
+	id = rcw.103
+	title = rcw.103.t
+	desc = rcw.103.desc
+	is_triggered_only = yes
+	picture = GFX_report_event_RUS_fight_is_over
+	
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.103.a
+		every_other_country = {
+			limit = {
+				OR = {
+					is_any_former_russian_empire_country = yes
+					NOT = { is_neighbor_of = ROOT }
+				}
+				has_war_with = ROOT
+			}
+			country_event = rcw_all_rus_NA.26
+			ROOT = { white_peace = PREV }
+		}
+		if = {
+			limit = {
+				is_main_former_russian_empire_country = yes
+				NOT = {
+					has_government = radical_socialism
+					has_government = communism
+					has_idea = failed_mission
+				}
+			}
+			add_ideas = failed_mission
+		}
+		add_stability = 0.15
+	}
+}
+
+# Разрушение фабрик
+country_event = {
+	id = rcw.104
+	title = rcw.104.t
+	desc = rcw.104.desc
+	is_triggered_only = yes
+	picture = GFX_report_event_RUS_factory_destruction
+
+	option = {
+		name = rcw.104.a
+		random_list = {
+			1 = {
+				random_controlled_state = {
+					remove_building = {
+						type = industrial_complex
+						level = 1
+					}
+				}
+			}
+			1 = {
+				random_controlled_state = {
+					remove_building = {
+						type = arms_factory
+						level = 1
+					}
+				}
+			}
+		}
+	}
+}
+
+# Рост инфляции
+country_event = {
+	id = rcw.105
+	title = rcw.105.t
+	desc = rcw.105.desc
+	picture = GFX_report_event_RUS_inflation
+	is_triggered_only = yes
+
+	option = {
+		name = rcw.105.a
+		rise_hyper_inflation = yes
+	}
+}
+
+# Разорение железных дорог
+country_event = {
+	id = rcw.106
+	title = rcw.106.t
+	desc = rcw.106.desc
+	is_triggered_only = yes
+	picture = GFX_report_event_RUS_ruin_railroads
+
+	option = {
+		name = rcw.106.a
+		rise_collapse_of_railway_system = yes
+	}
+}
+
+#Мятеж зелёных
+country_event = {
+	id = rcw.107
+	title = rcw.107.t
+	desc = rcw.107.desc
+	is_triggered_only = yes
+	picture = GFX_report_event_RUS_green_rebellion
+
+	option = {
+		name = rcw.107.a
+	}
+}
+
+#Голодная смерть
+country_event = {
+	id = rcw.108
+	title = rcw.108.t
+	desc = rcw.108.desc
+	is_triggered_only = yes
+	picture = GFX_report_event_RUS_starvation
+
+	option = {
+		name = rcw.108.a
+		add_manpower = -5000
+		rise_foodstuffs_supply_crisis = yes
+	}
+}
+
+#Дезертирство
+country_event = {
+	id = rcw.109
+	title = rcw.109.t
+	desc = rcw.109.desc
+	is_triggered_only = yes
+	picture = GFX_report_event_RUS_desertion
+
+	option = {
+		name = rcw.109.a
+		add_manpower = -25000
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = -500
+		}
+	}
+}
+
+###### Ивенты взаиводействия белых и Антанты ######
+
+
+# Просьба СЗА или Сибири или ВСЮР или Севера о винтовках Антанты и признании Антанты
+country_event = {
+	id = rcw.156
+	title = rcw.156.t
+	desc = {
+		text = rcw.156.desc_NWA
+		trigger = { FROM = { OR = { tag = NWA tag = WVA } } }
+	}
+	desc = {
+		text = rcw.156.desc_SIB
+		trigger = { FROM = { OR = { tag = SIB tag = RSS } } }
+	}
+	desc = {
+		text = rcw.156.desc_RVA
+		trigger = { FROM = { tag = RVA } }
+	}
+	desc = {
+		text = rcw.156.desc_NRR
+		trigger = { FROM = { tag = NRR } }
+	}
+	
+	picture = GFX_report_event_nwa_allies
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = rcw.156.a
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 999
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept_strong }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = FROM
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_semi_recognized_by_PREV = yes
+				}
+			}
+			add_to_array = { rcw_supported_states = FROM.id }
+		}
+		FROM = { country_event = rcw.158 }
+	}
+	
+	option = {
+		name = rcw.156.b
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 199
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 200
+			target = FROM
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_semi_recognized_by_PREV = yes
+				}
+			}
+			add_to_array = { rcw_supported_states = FROM.id }
+		}
+		FROM = { country_event = rcw.159 }
+	}
+	
+	option = {
+		name = rcw.156.c
+		ai_chance = {
+			factor = 1
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_semi_recognized_by_PREV = yes
+				}
+			}
+			add_to_array = { rcw_supported_states = FROM.id }
+		}
+		FROM = { country_event = rcw.160 }
+	}
+	
+	option = {
+		name = rcw.156.d
+		ai_chance = {
+			factor = 1
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_no_accept_SIB }
+		FROM = { country_event = rcw.161 }
+	}
+}
+
+# Просьба СЗА Германии о защите
+country_event = {
+	id = rcw.157
+	title = rcw.157.t
+	desc = rcw.157.desc
+	picture = GFX_report_event_nwa_berlin
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.157.a
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 999
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept_strong }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = FROM
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_semi_recognized_by_PREV = yes
+				}
+			}
+			add_to_array = { rcw_supported_states = FROM.id }
+		}
+		FROM = { country_event = rcw.158 }
+	}
+	
+	option = {
+		name = rcw.157.b
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 199
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 200
+			target = FROM
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_semi_recognized_by_PREV = yes
+				}
+			}
+			add_to_array = { rcw_supported_states = FROM.id }
+		}
+		FROM = { country_event = rcw.159 }
+	}
+	
+	option = {
+		name = rcw.157.c
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_semi_recognized_by_PREV = yes
+				}
+			}
+			add_to_array = { rcw_supported_states = FROM.id }
+		}
+		FROM = { country_event = rcw.160 }
+	}
+	
+	option = {
+		name = rcw.157.d
+		add_opinion_modifier = { target = FROM modifier = Entente_no_accept_SIB }
+		FROM = { country_event = rcw.161 }
+	}
+}
+
+# Вам дали 1000
+country_event = {
+	id = rcw.158
+	title = rcw.158.t
+	desc = rcw.158.desc
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.158.a
+	}
+}
+# Вам дали 200
+country_event = {
+	id = rcw.159
+	title = rcw.159.t
+	desc = rcw.159.desc
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.159.a
+	}
+}
+# Вас признали
+country_event = {
+	id = rcw.160
+	title = rcw.160.t
+	desc = rcw.160.desc
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.160.a
+	}
+}
+# Вам отказано
+country_event = {
+	id = rcw.161
+	title = rcw.161.t
+	desc = rcw.161.desc
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.161.a
+	}
+}
+# Международный заказ
+country_event = {
+	id = rcw.162
+	title = rcw.162.t
+	desc = rcw.162.desc
+	picture = GFX_report_event_rus_entente
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.162.a #Противник будет подавлен танковой армадой
+		set_country_flag = { flag = RCW_buying_tanks days = 60 }
+		ENG = { country_event = { id = rcw.163 days = 1 } }
+		FRA = { country_event = { id = rcw.163 days = 1 } }
+		USA = { country_event = { id = rcw.163 days = 1 } }
+		ITA = { country_event = { id = rcw.163 days = 1 } }
+	}
+	option = {
+		trigger = { tag = SIB }
+		name = rcw.162.b #Авиация позволит лучше контролировать сибирские леса
+		set_country_flag = { flag = RCW_buying_aircraft days = 60 }
+		ENG = { country_event = { id = rcw.163 days = 1 } }
+		FRA = { country_event = { id = rcw.163 days = 1 } }
+		USA = { country_event = { id = rcw.163 days = 1 } }
+		ITA = { country_event = { id = rcw.163 days = 1 } }
+	}
+	option = {
+		trigger = { NOT = { tag = SIB } }
+		name = rcw.162.b_1 #Авиация позволит лучше контролировать российские просторы
+		set_country_flag = { flag = RCW_buying_aircraft days = 60 }
+		ENG = { country_event = { id = rcw.163 days = 1 } }
+		FRA = { country_event = { id = rcw.163 days = 1 } }
+		USA = { country_event = { id = rcw.163 days = 1 } }
+		ITA = { country_event = { id = rcw.163 days = 1 } }
+	}
+	option = {
+		name = rcw.162.c #Армии нужнее рации и телефоны, чем мудрёные машины
+		set_country_flag = { flag = RCW_buying_radio days = 60 }
+		ENG = { country_event = { id = rcw.163 days = 1 } }
+		FRA = { country_event = { id = rcw.163 days = 1 } }
+		USA = { country_event = { id = rcw.163 days = 1 } }
+		ITA = { country_event = { id = rcw.163 days = 1 } }
+	}
+}
+country_event = {
+	id = rcw.163
+	title = rcw.163.t
+	desc = {
+		text = rcw.163.desc
+		trigger = { FROM = { has_country_flag = RCW_buying_tanks } }
+	}
+	desc = {
+		text = rcw.163.desc_1
+		trigger = { FROM = { has_country_flag = RCW_buying_aircraft } }
+	}
+	desc = {
+		text = rcw.163.desc_2
+		trigger = { FROM = { has_country_flag = RCW_buying_radio } }
+	}
+	picture = GFX_report_event_sovarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			OR = {
+				AND = {
+					FROM = { has_country_flag = RCW_buying_tanks }
+					has_tech = gwtank
+				}
+				AND = {
+					FROM = { has_country_flag = RCW_buying_aircraft }
+					has_tech = biplane_fighter1
+				}
+				AND = {
+					FROM = { has_country_flag = RCW_buying_radio }
+					has_tech = tech_support
+				}
+			}
+		}
+		name = rcw.163.a #Это в наших интересах
+		
+		if = {
+			limit = { FROM = { has_country_flag = RCW_buying_tanks } }
+			effect_tooltip = {
+				send_equipment = {
+					equipment = light_tank_chassis
+					amount = 300
+					target = FROM
+				}
+			}
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = RCW_buying_aircraft } }
+			effect_tooltip = {
+				send_equipment = {
+					equipment = biplane_plane_airframe
+					amount = 100
+					target = FROM
+				}
+			}
+		}
+		else_if = {
+			limit = { FROM = { has_country_flag = RCW_buying_radio } }
+			effect_tooltip = {
+				send_equipment = {
+					equipment = support_equipment
+					amount = 500
+					target = FROM
+				}
+			}
+		}
+		
+		FROM = { country_event = { id = rcw.164 days = 1 } }
+		
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw.163.b #Неизвестно, как Сибирь сможет это оплатить
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = rcw.164
+	title = rcw.164.t
+	desc = rcw.164.desc
+	picture = GFX_report_event_sovarmy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.164.a #Мы готовы приобрести их продукцию
+		if = {
+			limit = { has_country_flag = RCW_buying_tanks }
+			add_political_power = -35
+			if = {
+				limit = { NOT = { has_tech = gwtank } }
+				set_technology = {
+					gwtank = 1
+				}
+			}
+			add_equipment_to_stockpile = {
+				type = light_tank_chassis
+				amount = 300
+				producer = FROM
+			}
+			FROM = {
+				add_equipment_to_stockpile = {
+					type = light_tank_chassis
+					amount = -300
+					producer = FROM
+				}
+			}
+		}
+		else_if = {
+			limit = { has_country_flag = RCW_buying_aircraft }
+			add_political_power = -50
+			if = {
+				limit = { NOT = { has_tech = biplane_fighter1 } }
+				set_technology = {
+					biplane_fighter1 = 1
+				}
+			}
+			add_equipment_to_stockpile = {
+				type = biplane_plane_airframe
+				amount = 100
+				producer = FROM
+			}
+			FROM = {
+				add_equipment_to_stockpile = {
+					type = biplane_plane_airframe
+					amount = -100
+					producer = FROM
+				}
+			}
+		}
+		else_if = {
+			limit = { has_country_flag = RCW_buying_radio }
+			add_political_power = -25
+			if = {
+				limit = { NOT = { has_tech = tech_support } }
+				set_technology = {
+					tech_support = 1
+				}
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment
+				amount = 500
+				producer = FROM
+			}
+			FROM = {
+				add_equipment_to_stockpile = {
+					type = support_equipment
+					amount = -500
+					producer = FROM
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw.164.b #По нашим оценкам их вооружение не лучшее
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+
+# Просьба Украины о винтовках Антанты и признании Антанты
+country_event = {
+	id = rcw.165
+	title = rcw.165.t
+	desc = {
+		text = rcw.165.desc_UKR_pup
+		trigger = { FROM = { former_russian_empire_ukraine_country = yes is_puppet_of = RUS } }
+	}
+	desc = {
+		text = rcw.165.desc_UKR_ind
+		trigger = { FROM = { former_russian_empire_ukraine_country = yes NOT = { is_puppet_of = RUS } } }
+	}
+	
+	picture = GFX_report_event_nwa_allies
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.165.a
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 999
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept_strong }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = FROM
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+		FROM = { country_event = rcw.158 }
+	}
+	
+	option = {
+		name = rcw.165.b
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 199
+			}
+		}
+		add_opinion_modifier = { target = FROM modifier = Entente_support_by_equimment_accept }
+		send_equipment = {
+			type = infantry_equipment
+			amount = 200
+			target = FROM
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+		FROM = { country_event = rcw.159 }
+	}
+	
+	option = {
+		name = rcw.165.c
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FROM.id
+					}
+				}
+				FROM = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+		FROM = { country_event = rcw.160 }
+	}
+	
+	option = {
+		name = rcw.165.d
+		add_opinion_modifier = { target = FROM modifier = Entente_no_accept_SIB }
+		FROM = { country_event = rcw.161 }
+	}
+}
+
+# Просьба вмешаться
+country_event = {
+	id = rcw.201
+	title = rcw.201.t
+	desc = rcw.201.desc
+	picture = GFX_report_event_rcw_int_help_request
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.201.a #Нас это не интересует
+		
+		FROM = { add_opinion_modifier = { target = ROOT modifier = rejected_recognize_rel } }
+		FROM = { country_event = rcw.203 }
+		
+		ai_chance = {
+			factor = 5
+		}
+	}
+	option = {
+		name = rcw.201.b #Мы готовы помочь
+		add_to_array = { rcw_supported_states = FROM.id }
+		FROM = { THIS_country_will_be_semi_recognized_by_PREV = yes }
+		FROM = { country_event = rcw.202 }
+		
+		ai_chance = {
+			factor = 1
+			modifier = { factor = 3 NOT = { any_other_country = { is_in_array = { array = rcw_supported_states value = FROM.id } } } }
+			
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 9999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 19999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 29999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 39999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 49999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 59999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 69999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 79999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 89999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 99999 } } }
+			modifier = { factor = 3 FROM = { has_army_manpower = { size > 149999 } } }
+			modifier = { factor = 3 FROM = { has_army_manpower = { size > 199999 } } }
+			modifier = { factor = 4 FROM = { has_army_manpower = { size > 299999 } } }
+			modifier = { factor = 5 FROM = { has_government = ROOT } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 0 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 1 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 2 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 3 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 4 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 5 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 6 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 7 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 8 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 9 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 10 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 11 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 12 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 13 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 14 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 15 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 16 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 17 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 18 } }
+			modifier = { factor = 1.5 FROM = { num_of_factories > 19 } }
+			modifier = { factor = 3 FROM = { original_tag = RSS } }
+			modifier = { factor = 5 FROM = { owns_state = 219 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > -1 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 19 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 29 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 49 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 69 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 79 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 89 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 99 } }
+		}
+	}
+}
+# Приняли
+country_event = {
+	id = rcw.202
+	title = rcw.202.t
+	desc = rcw.202.desc
+	picture = GFX_report_event_rcw_int_help_request
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.202.a
+	}
+}
+# Отказ
+country_event = {
+	id = rcw.203
+	title = rcw.203.t
+	desc = rcw.203.desc
+	picture = GFX_report_event_rcw_int_help_request
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.203.a
+	}
+}
+# Просьба о признании
+country_event = {
+	id = rcw.204
+	title = rcw.204.t
+	desc = rcw.204.desc
+	picture = GFX_report_event_rcw_int_recognition
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.204.a #Отложим признание до конца войны 
+		
+		FROM = { country_event = rcw.206 }
+		
+		ai_chance = {
+			factor = 10
+		}
+	}
+	option = {
+		name = rcw.204.b #Настал момент для официального признания 
+		FROM = { THIS_country_will_be_recognized_by_PREV = yes }
+		FROM = { country_event = rcw.205 }
+		
+		ai_chance = {
+			factor = 1
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 9999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 19999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 29999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 39999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 49999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 59999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 69999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 79999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 89999 } } }
+			modifier = { factor = 2 FROM = { has_army_manpower = { size > 99999 } } }
+			modifier = { factor = 4 FROM = { has_government = ROOT } }
+			modifier = { factor = 2 FROM = { num_of_factories > 0 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 1 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 2 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 3 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 4 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 5 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 6 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 7 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 8 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 9 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 10 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 11 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 12 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 13 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 14 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 15 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 16 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 17 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 18 } }
+			modifier = { factor = 2 FROM = { num_of_factories > 19 } }
+			modifier = { factor = 3 FROM = { original_tag = RSS } }
+			modifier = { factor = 5 FROM = { owns_state = 219 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 30 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 50 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 70 } }
+			modifier = { factor = 2 has_opinion = { target = FROM value > 90 } }
+		}
+	}
+}
+# Приняли
+country_event = {
+	id = rcw.205
+	title = rcw.205.t
+	desc = rcw.205.desc
+	picture = GFX_report_event_rcw_int_recognition
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.205.a
+	}
+}
+# Отказ (Признаем после войны)
+country_event = {
+	id = rcw.206
+	title = rcw.206.t
+	desc = rcw.206.desc
+	picture = GFX_report_event_rcw_int_recognition
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.206.a
+	}
+}
+# Прибытие иностранного оружия
+country_event = {
+	id = rcw.207
+	title = rcw.207.t
+	desc = rcw.207.desc
+	picture = GFX_report_event_rcw_int_infequip_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.207.a
+		FROM = {
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = 200
+				target = ROOT
+			}
+		}
+	}
+}
+# Прибытие иностранного топлива
+country_event = {
+	id = rcw.208
+	title = rcw.208.t
+	desc = rcw.208.desc
+	picture = GFX_report_event_rcw_int_fuel_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.208.a
+		#FROM = { add_fuel = -500 }
+		add_fuel = 500
+	}
+}
+# Серьёзная помощь лёгкими танками
+country_event = {
+	id = rcw.209
+	title = rcw.209.t
+	desc = rcw.209.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.209.a
+		FROM = {
+			send_equipment = {
+				equipment = light_tank_chassis
+				amount = 25
+				target = ROOT
+			}
+		}
+	}
+}
+# Серьёзная помощь средними танками
+country_event = {
+	id = rcw.210
+	title = rcw.210.t
+	desc = rcw.210.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.210.a
+		FROM = {
+			send_equipment = {
+				equipment = medium_tank_chassis
+				amount = 20
+				target = ROOT
+			}
+		}
+	}
+}
+# Серьёзная помощь тяжёлыми танками
+country_event = {
+	id = rcw.211
+	title = rcw.211.t
+	desc = rcw.211.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.211.a
+		FROM = {
+			send_equipment = {
+				equipment = heavy_tank_chassis
+				amount = 15
+				target = ROOT
+			}
+		}
+	}
+}
+# Серьёзная помощь автомобилями
+country_event = {
+	id = rcw.212
+	title = rcw.212.t
+	desc = rcw.212.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.212.a
+		FROM = {
+			send_equipment = {
+				equipment = motorized_equipment
+				amount = 50
+				target = ROOT
+			}
+		}
+	}
+}
+# Серьёзная помощь пушками и гаубицами
+country_event = {
+	id = rcw.213
+	title = rcw.213.t
+	desc = rcw.213.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.213.a
+		FROM = {
+			send_equipment = {
+				equipment = artillery_equipment
+				amount = 36
+				target = ROOT
+			}
+			send_equipment = {
+				equipment = field_guns_equipment
+				amount = 36
+				target = ROOT
+			}
+		}
+	}
+}
+# Серьёзная помощь самолётами
+country_event = {
+	id = rcw.214
+	title = rcw.214.t
+	desc = rcw.214.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.214.a
+		FROM = {
+			send_equipment = {
+				equipment = biplane_plane_airframe
+				amount = 5
+				target = ROOT
+			}
+		}
+	}
+}
+# Серьёзная помощь броневиками
+country_event = {
+	id = rcw.215
+	title = rcw.215.t
+	desc = rcw.215.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+	}
+	
+	option = {
+		name = rcw.215.a
+		FROM = {
+			send_equipment = {
+				equipment = armored_car_equipment
+				amount = 30
+				target = ROOT
+			}
+		}
+	}
+}
+
+# Прибытие военных инструкторов
+country_event = {
+	id = rcw.221
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = Alfred_Knox_is_here }
+			clr_country_flag = Alfred_Knox_is_here
+			every_unit_leader = { limit = { has_id = 28055 } set_nationality = REB }
+		}
+		set_country_flag = Alfred_Knox_is_here
+		add_ideas = Alfred_Knox_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.222
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = John_Ward_is_here }
+			clr_country_flag = John_Ward_is_here
+		}
+		set_country_flag = John_Ward_is_here
+		add_ideas = John_Ward_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.223
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = Charles_James_Briggs_is_here }
+			clr_country_flag = Charles_James_Briggs_is_here
+		}
+		set_country_flag = Charles_James_Briggs_is_here
+		add_ideas = Charles_James_Briggs_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.224
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = Herbert_Campbell_Holman_is_here }
+			clr_country_flag = Herbert_Campbell_Holman_is_here
+		}
+		set_country_flag = Herbert_Campbell_Holman_is_here
+		add_ideas = Herbert_Campbell_Holman_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.225
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = Hubert_de_la_Poer_Gough_is_here }
+			clr_country_flag = Hubert_de_la_Poer_Gough_is_here
+		}
+		set_country_flag = Hubert_de_la_Poer_Gough_is_here
+		add_ideas = Hubert_de_la_Poer_Gough_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.226
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = James_Harold_Elmsley_is_here }
+			clr_country_flag = James_Harold_Elmsley_is_here
+		}
+		set_country_flag = James_Harold_Elmsley_is_here
+		add_ideas = James_Harold_Elmsley_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.227
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = Maurice_Janin_is_here }
+			clr_country_flag = Maurice_Janin_is_here
+		}
+		set_country_flag = Maurice_Janin_is_here
+		add_ideas = Maurice_Janin_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.228
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = Charles_Marie_Emmanuel_Mangin_is_here }
+			clr_country_flag = Charles_Marie_Emmanuel_Mangin_is_here
+			every_unit_leader = { limit = { has_id = 32013 } set_nationality = REB }
+		}
+		set_country_flag = Charles_Marie_Emmanuel_Mangin_is_here
+		add_ideas = Charles_Marie_Emmanuel_Mangin_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.229
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = Oi_Shigemoto_is_here }
+			clr_country_flag = Oi_Shigemoto_is_here
+			every_unit_leader = { limit = { OR = { has_id = 88167 has_id = 77427 has_id = 77428 } } set_nationality = JAP }
+		}
+		set_country_flag = Oi_Shigemoto_is_here
+		add_ideas = Oi_Shigemoto_attache_high_command
+	}
+}
+country_event = {
+	id = rcw.230
+	title = rcw.221.t
+	desc = rcw.221.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.221.a
+		army_experience = 3
+		add_command_power = 10
+		every_other_country = {
+			limit = { has_country_flag = William_Sidney_Graves_is_here }
+			clr_country_flag = William_Sidney_Graves_is_here
+		}
+		set_country_flag = William_Sidney_Graves_is_here
+		add_ideas = William_Sidney_Graves_attache_high_command
+	}
+}
+
+# Британцы огорчены
+country_event = {
+	id = rcw.239
+	title = rcw.239.t
+	desc = rcw.239.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	trigger = {
+		tag = NWA
+		OR = {
+			has_country_flag = Hubert_de_la_Poer_Gough_is_here
+			has_idea = Hubert_de_la_Poer_Gough_attache_high_command
+		}
+		OR = {
+			has_war_with = EST
+			has_war_with = LAT
+			has_war_with = LIT
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	option = {
+		name = rcw.239.a
+		clr_country_flag = Hubert_de_la_Poer_Gough_is_here
+		remove_ideas = Hubert_de_la_Poer_Gough_attache_high_command
+	}
+}
+
+# Японские советники отбывают в Приморье
+country_event = {
+	id = rcw.240
+	title = rcw.240.t
+	desc = rcw.240.desc
+	picture = GFX_report_event_rcw_int_tanks_arrived
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.240.a
+		every_unit_leader = { limit = { OR = { has_id = 77427 has_id = 77428 } } set_nationality = PRM }
+	}
+}
+
+# Размер кредита
+country_event = {
+	id = rcw.241
+	title = rcw.241.t
+	desc = rcw.241.desc
+	picture = GFX_report_event_rcw_int_credit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.241.a #Предоставим необходимые средства
+	}
+	option = {
+		trigger = {
+			OR = {
+				AND = {
+					original_tag = ENG
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_ENG } }
+				}
+				AND = {
+					original_tag = RAJ
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_RAJ } }
+				}
+				AND = {
+					original_tag = FRA
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_FRA } }
+				}
+				AND = {
+					original_tag = BEL
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_BEL } }
+				}
+				AND = {
+					original_tag = SAF
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_SAF } }
+				}
+				AND = {
+					original_tag = AST
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_AST } }
+				}
+				AND = {
+					original_tag = USA
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_USA } }
+				}
+				AND = {
+					original_tag = JAP
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_JAP } }
+				}
+				AND = {
+					original_tag = MAN
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_MAN } }
+				}
+				AND = {
+					original_tag = FNG
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_FNG } }
+				}
+				AND = {
+					original_tag = SWE
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_SWE } }
+				}
+				AND = {
+					original_tag = FIN
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_FIN } }
+				}
+				AND = {
+					original_tag = ITA
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_ITA } }
+				}
+				AND = {
+					original_tag = SER
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_SER } }
+				}
+				AND = {
+					original_tag = GRE
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_GRE } }
+				}
+				AND = {
+					original_tag = GRR
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_GRR } }
+				}
+				AND = {
+					original_tag = ROM
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_ROM } }
+				}
+				AND = {
+					original_tag = GER
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_GER } }
+				}
+				AND = {
+					original_tag = PRE
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_PRE } }
+				}
+				AND = {
+					original_tag = AUH
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_AUH } }
+				}
+				AND = {
+					original_tag = TUR
+					FROM = { NOT = { has_idea = Entente_credit_for_Russia_TUR } }
+				}
+			}
+		}
+		name = rcw.241.b #Предложим действительно крупную сумму
+		add_political_power = -40
+		set_country_flag = rcw_int_flag_credit_big
+	}
+}
+# Нам дают маленький кредит
+country_event = {
+	id = rcw.242
+	title = rcw.242.t
+	desc = rcw.242.desc
+	picture = GFX_report_event_rcw_int_credit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.242.a #Нет, нам это не нужно
+		FROM = { country_event = rcw.244 }
+	}
+	option = {
+		name = rcw.242.b #Этих денег хватит на некоторые расходы
+		add_political_power = 30
+		if = {
+			limit = { NOT = { has_variable = global.RUS_credit_pay } }
+			set_variable = { global.RUS_credit_pay = 0 }
+		}
+		add_to_variable = { global.RUS_credit_pay = 0.25 }
+	}
+}
+# Нам дают большой кредит
+country_event = {
+	id = rcw.243
+	title = rcw.243.t
+	desc = rcw.243.desc
+	picture = GFX_report_event_rcw_int_credit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.243.a #Нет, нам это не нужно
+		FROM = { country_event = rcw.244 }
+	}
+	option = {
+		name = rcw.243.b #Действительно крупные деньги обеспечат победу
+		add_political_power = 30
+		if = {
+			limit = { NOT = { has_variable = global.RUS_credit_pay } }
+			set_variable = { global.RUS_credit_pay = 0 }
+		}
+		add_to_variable = { global.RUS_credit_pay = 1 }
+		if = {
+			limit = { FROM = { original_tag = ENG } }
+			add_ideas = Entente_credit_for_Russia_ENG
+		}
+		else_if = {
+			limit = { FROM = { original_tag = RAJ } }
+			add_ideas = Entente_credit_for_Russia_RAJ
+		}
+		else_if = {
+			limit = { FROM = { original_tag = FRA } }
+			add_ideas = Entente_credit_for_Russia_FRA
+		}
+		else_if = {
+			limit = { FROM = { original_tag = BEL } }
+			add_ideas = Entente_credit_for_Russia_BEL
+		}
+		else_if = {
+			limit = { FROM = { original_tag = SAF } }
+			add_ideas = Entente_credit_for_Russia_SAF
+		}
+		else_if = {
+			limit = { FROM = { original_tag = AST } }
+			add_ideas = Entente_credit_for_Russia_AST
+		}
+		else_if = {
+			limit = { FROM = { original_tag = USA } }
+			add_ideas = Entente_credit_for_Russia_USA
+		}
+		else_if = {
+			limit = { FROM = { original_tag = JAP } }
+			add_ideas = Entente_credit_for_Russia_JAP
+		}
+		else_if = {
+			limit = { FROM = { original_tag = MAN } }
+			add_ideas = Entente_credit_for_Russia_MAN
+		}
+		else_if = {
+			limit = { FROM = { original_tag = FNG } }
+			add_ideas = Entente_credit_for_Russia_FNG
+		}
+		else_if = {
+			limit = { FROM = { original_tag = SWE } }
+			add_ideas = Entente_credit_for_Russia_SWE
+		}
+		else_if = {
+			limit = { FROM = { original_tag = FIN } }
+			add_ideas = Entente_credit_for_Russia_FIN
+		}
+		else_if = {
+			limit = { FROM = { original_tag = ITA } }
+			add_ideas = Entente_credit_for_Russia_ITA
+		}
+		else_if = {
+			limit = { FROM = { original_tag = SER } }
+			add_ideas = Entente_credit_for_Russia_SER
+		}
+		else_if = {
+			limit = { FROM = { original_tag = GRE } }
+			add_ideas = Entente_credit_for_Russia_GRE
+		}
+		else_if = {
+			limit = { FROM = { original_tag = GRR } }
+			add_ideas = Entente_credit_for_Russia_GRR
+		}
+		else_if = {
+			limit = { FROM = { original_tag = ROM } }
+			add_ideas = Entente_credit_for_Russia_ROM
+		}
+		else_if = {
+			limit = { FROM = { original_tag = GER } }
+			add_ideas = Entente_credit_for_Russia_GER
+		}
+		else_if = {
+			limit = { FROM = { original_tag = PRE } }
+			add_ideas = Entente_credit_for_Russia_PRE
+		}
+		else_if = {
+			limit = { FROM = { original_tag = AUH } }
+			add_ideas = Entente_credit_for_Russia_AUH
+		}
+		else_if = {
+			limit = { FROM = { original_tag = TUR } }
+			add_ideas = Entente_credit_for_Russia_TUR
+		}
+	}
+}
+# Белые отказываются от кредита
+country_event = {
+	id = rcw.244
+	title = rcw.244.t
+	desc = rcw.244.desc
+	picture = GFX_report_event_rcw_int_credit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.244.a
+		add_political_power = 20
+	}
+}
+# Размер кредита
+country_event = {
+	id = rcw.246
+	is_triggered_only = yes
+	hidden = yes
+	immediate = { FROM = { country_event = rcw.241 } }
+}
+
+# Внешние обязательства (выплата кредитов)
+country_event = {
+	id = rcw.251
+	title = rcw.251.t
+	desc = rcw.251.desc
+	picture = GFX_report_event_rcw_int_credit_repay
+	trigger = {
+		has_global_flag = RUS_civil_war_over
+		OR = {
+			has_idea = Entente_credit_for_Russia_ENG
+			has_idea = Entente_credit_for_Russia_RAJ
+			has_idea = Entente_credit_for_Russia_FRA
+			has_idea = Entente_credit_for_Russia_BEL
+			has_idea = Entente_credit_for_Russia_SAF
+			has_idea = Entente_credit_for_Russia_AST
+			has_idea = Entente_credit_for_Russia_USA
+			has_idea = Entente_credit_for_Russia_JAP
+			has_idea = Entente_credit_for_Russia_MAN
+			has_idea = Entente_credit_for_Russia_FNG
+			has_idea = Entente_credit_for_Russia_SWE
+			has_idea = Entente_credit_for_Russia_FIN
+			has_idea = Entente_credit_for_Russia_ITA
+			has_idea = Entente_credit_for_Russia_SER
+			has_idea = Entente_credit_for_Russia_GRE
+			has_idea = Entente_credit_for_Russia_GRR
+			has_idea = Entente_credit_for_Russia_ROM
+			has_idea = Entente_credit_for_Russia_GER
+			has_idea = Entente_credit_for_Russia_PRE
+			has_idea = Entente_credit_for_Russia_AUH
+			has_idea = Entente_credit_for_Russia_TUR
+		}
+	}
+	mean_time_to_happen = {
+		days = 14
+	}
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { ENG = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_ENG
+			}
+			if = {
+				limit = { RAJ = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_RAJ
+			}
+			if = {
+				limit = { FRA = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_FRA
+			}
+			if = {
+				limit = { BEL = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_BEL
+			}
+			if = {
+				limit = { SAF = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_SAF
+			}
+			if = {
+				limit = { AST = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_AST
+			}
+			if = {
+				limit = { USA = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_USA
+			}
+			if = {
+				limit = { JAP = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_JAP
+			}
+			if = {
+				limit = { MAN = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_MAN
+			}
+			if = {
+				limit = { FNG = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_FNG
+			}
+			if = {
+				limit = { SWE = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_SWE
+			}
+			if = {
+				limit = { FIN = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_FIN
+			}
+			if = {
+				limit = { ITA = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_ITA
+			}
+			if = {
+				limit = { SER = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_SER
+			}
+			if = {
+				limit = { GRE = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_GRE
+			}
+			if = {
+				limit = { GRR = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_GRR
+			}
+			if = {
+				limit = { ROM = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_ROM
+			}
+			if = {
+				limit = { GER = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_GER
+			}
+			if = {
+				limit = { PRE = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_PRE
+			}
+			if = {
+				limit = { AUH = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_AUH
+			}
+			if = {
+				limit = { TUR = { exists = no } }
+				remove_ideas = Entente_credit_for_Russia_TUR
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_ENG }
+				remove_ideas = Entente_credit_for_Russia_ENG
+				ENG = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_RAJ }
+				remove_ideas = Entente_credit_for_Russia_RAJ
+				RAJ = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_FRA }
+				remove_ideas = Entente_credit_for_Russia_FRA
+				FRA = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_BEL }
+				remove_ideas = Entente_credit_for_Russia_BEL
+				BEL = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_SAF }
+				remove_ideas = Entente_credit_for_Russia_SAF
+				SAF = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_AST }
+				remove_ideas = Entente_credit_for_Russia_AST
+				AST = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_USA }
+				remove_ideas = Entente_credit_for_Russia_USA
+				USA = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_JAP }
+				remove_ideas = Entente_credit_for_Russia_JAP
+				JAP = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_MAN }
+				remove_ideas = Entente_credit_for_Russia_MAN
+				MAN = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_FNG }
+				remove_ideas = Entente_credit_for_Russia_FNG
+				FNG = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_SWE }
+				remove_ideas = Entente_credit_for_Russia_SWE
+				SWE = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_FIN }
+				remove_ideas = Entente_credit_for_Russia_FIN
+				FIN = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_ITA }
+				remove_ideas = Entente_credit_for_Russia_ITA
+				ITA = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_SER }
+				remove_ideas = Entente_credit_for_Russia_SER
+				SER = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_GRE }
+				remove_ideas = Entente_credit_for_Russia_GRE
+				GRE = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_GRR }
+				remove_ideas = Entente_credit_for_Russia_GRR
+				GRR = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_ROM }
+				remove_ideas = Entente_credit_for_Russia_ROM
+				ROM = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_GER }
+				remove_ideas = Entente_credit_for_Russia_GER
+				GER = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_PRE }
+				remove_ideas = Entente_credit_for_Russia_PRE
+				PRE = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_AUH }
+				remove_ideas = Entente_credit_for_Russia_AUH
+				AUH = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+			if = {
+				limit = { has_idea = Entente_credit_for_Russia_TUR }
+				remove_ideas = Entente_credit_for_Russia_TUR
+				TUR = {
+					if = { limit = { ROOT = { original_tag = MCW } } add_ideas = pay_Entente_credit_for_Russia_MCW }
+					else_if = { limit = { ROOT = { original_tag = SIB } } add_ideas = pay_Entente_credit_for_Russia_SIB }
+					else_if = { limit = { ROOT = { original_tag = CCA } } add_ideas = pay_Entente_credit_for_Russia_CCA }
+					else_if = { limit = { ROOT = { original_tag = RSS } } add_ideas = pay_Entente_credit_for_Russia_RSS }
+					else_if = { limit = { ROOT = { original_tag = NRR } } add_ideas = pay_Entente_credit_for_Russia_NRR }
+					else_if = { limit = { ROOT = { original_tag = RVA } } add_ideas = pay_Entente_credit_for_Russia_RVA }
+					else_if = { limit = { ROOT = { original_tag = DON } } add_ideas = pay_Entente_credit_for_Russia_DON }
+					else_if = { limit = { ROOT = { original_tag = KUB } } add_ideas = pay_Entente_credit_for_Russia_KUB }
+					else_if = { limit = { ROOT = { original_tag = NVA } } add_ideas = pay_Entente_credit_for_Russia_NVA }
+					else_if = { limit = { ROOT = { original_tag = NWA } } add_ideas = pay_Entente_credit_for_Russia_NWA }
+					else_if = { limit = { ROOT = { original_tag = WVA } } add_ideas = pay_Entente_credit_for_Russia_WVA }
+					else_if = { limit = { ROOT = { original_tag = PRM } } add_ideas = pay_Entente_credit_for_Russia_PRM }
+					else_if = { limit = { ROOT = { original_tag = CPG } } add_ideas = pay_Entente_credit_for_Russia_CPG }
+					else_if = { limit = { ROOT = { original_tag = OCH } } add_ideas = pay_Entente_credit_for_Russia_OCH }
+					else_if = { limit = { ROOT = { original_tag = BKL } } add_ideas = pay_Entente_credit_for_Russia_BKL }
+					else_if = { limit = { ROOT = { original_tag = BYA } } add_ideas = pay_Entente_credit_for_Russia_BYA }
+					else_if = { limit = { ROOT = { original_tag = CRI } } add_ideas = pay_Entente_credit_for_Russia_CRI }
+				}
+			}
+		}
+	}
+	option = {
+		name = rcw.251.a
+		if = {
+			limit = { check_variable = { global.RUS_credit_pay > 8 } }
+			add_ideas = pay_Entente_credit_for_Russia_for_Russia_5
+			add_ideas = corporatocracy_law
+		}
+		else_if = {
+			limit = { check_variable = { global.RUS_credit_pay > 6 } }
+			add_ideas = pay_Entente_credit_for_Russia_for_Russia_4
+			add_ideas = corporatocracy_law
+		}
+		else_if = {
+			limit = { check_variable = { global.RUS_credit_pay > 4 } }
+			add_ideas = pay_Entente_credit_for_Russia_for_Russia_3
+			add_ideas = corporatocracy_law
+		}
+		else_if = {
+			limit = { check_variable = { global.RUS_credit_pay > 2 } }
+			add_ideas = pay_Entente_credit_for_Russia_for_Russia_2
+		}
+		else_if = {
+			limit = { check_variable = { global.RUS_credit_pay > 0 } }
+			add_ideas = pay_Entente_credit_for_Russia_for_Russia_1
+		}
+	}
+}
+
+# Страна просит сократить размер долга
+country_event = {
+	id = rcw.252
+	title = rcw.252.t
+	desc = rcw.252.desc
+	picture = GFX_report_event_rcw_int_credit_repay
+	is_triggered_only = yes
+	option = {
+		name = rcw.252.a
+		reverse_add_opinion_modifier = {
+			target = FROM
+			modifier = whites_loves_not_greedy_Entente
+		}
+		if = {
+			limit = { ROOT = { tag = ENG } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_ENG
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = RAJ } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_RAJ
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = FRA } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_FRA
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = BEL } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_BEL
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = SAF } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_SAF
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = AST } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_AST
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = USA } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_USA
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = JAP } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_JAP
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = MAN } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_MAN
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = FNG } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_FNG
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = SWE } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_SWE
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = FIN } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_FIN
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = ITA } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_ITA
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = SER } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_SER
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = GRE } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_GRE
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = GRR } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_GRR
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = ROM } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_ROM
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = GER } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_GER
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = PRE } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_PRE
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = AUH } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_AUH
+				days = -200
+			}
+		}
+		if = {
+			limit = { ROOT = { tag = TUR } }
+			add_days_remove = {
+				decision = rcw_allies_credit_pay_TUR
+				days = -200
+			}
+		}
+	}
+	option = {
+		name = rcw.252.b
+		FROM = { country_event = rcw.253 }
+	}
+}
+# Отказ
+country_event = {
+	id = rcw.253
+	title = rcw.253.t
+	desc = rcw.253.desc
+	picture = GFX_report_event_rcw_int_credit_repay
+	is_triggered_only = yes
+	option = {
+		name = rcw.253.a
+	}
+}
+
+# Начало продовольственного кризиса
+country_event = {
+	id = rcw.1001
+	title = rcw.1001.t
+	desc = rcw.1001.desc
+	picture = GFX_report_event_sov_food_crisis
+	
+	trigger = {
+		tag = RUS
+		NOT = { has_completed_focus = RUS_prodnalog }
+		NOT = { has_completed_focus = RUS_voluntary_agriculture_cooperatives }
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_idea = peasant_and_land_and_bread_question
+		NOT = { has_global_flag = RUS_civil_war_over }
+		NOT = { has_country_flag = RUS_foodstuffs_supply_crisis_flag }
+		OR = {
+			has_idea = collapse_of_railway_system_1
+			has_idea = collapse_of_railway_system_2
+			has_idea = collapse_of_railway_system_3
+			has_idea = collapse_of_railway_system_4
+			has_idea = collapse_of_railway_system_5
+		}
+		NOT = {
+			has_idea = foodstuffs_supply_crisis_2
+			has_idea = foodstuffs_supply_crisis_3
+			has_idea = foodstuffs_supply_crisis_4
+			has_idea = foodstuffs_supply_crisis_5
+		}
+		OR = {
+			controls_state = 195
+			controls_state = 219
+		}
+		OR = {
+			SIB = { exists = yes }
+			CCA = { exists = yes }
+			RSS = { exists = yes }
+			DON = { exists = yes }
+			RVA = { exists = yes }
+		}
+		OR = {
+			has_war_with = SIB
+			has_war_with = CCA
+			has_war_with = RSS
+			has_war_with = DON
+			has_war_with = RVA
+		}
+				count_triggers = {
+					amount = 7
+					572 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					582 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					651 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					652 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					251 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					250 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					239 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					265 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					257 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					258 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					260 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					240 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					220 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					234 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					
+					1367 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					958 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					259 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					193 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					1371 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+					201 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 60 } } } } }
+				}
+	}
+	
+	mean_time_to_happen = {
+		days = 180
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw.1001.a
+		add_political_power = -25
+		add_stability = -0.02
+		add_ideas = foodstuffs_supply_crisis_1
+		set_country_flag = RUS_foodstuffs_supply_crisis_flag
+	}
+}
+
+# Усугубление продовольсвенной ситуации
+country_event = {
+	id = rcw.1002
+	title = rcw.1002.t
+	desc = rcw.1002.desc
+	picture = GFX_report_event_sov_food_crisis
+	
+	trigger = {
+		tag = RUS
+		has_war = yes
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_foodstuffs_supply_crisis_flag
+		OR = {
+			has_idea = foodstuffs_supply_crisis_1
+			has_idea = foodstuffs_supply_crisis_2
+			has_idea = foodstuffs_supply_crisis_3
+			has_idea = foodstuffs_supply_crisis_4
+		}
+		OR = {
+			has_idea = peasant_and_land_and_bread_question
+			has_idea = peasant_and_land_and_bread_question_0_5
+			has_idea = peasant_and_land_and_bread_question_0_25
+		}
+		OR = {
+			has_idea = collapse_of_railway_system_1
+			has_idea = collapse_of_railway_system_2
+			has_idea = collapse_of_railway_system_3
+			has_idea = collapse_of_railway_system_4
+		}
+		OR = {
+			controls_state = 195
+			controls_state = 219
+		}
+				count_triggers = {
+					amount = 13
+					572 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					582 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					651 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					652 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					251 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					250 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					239 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					265 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					257 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					258 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					260 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					240 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					220 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					234 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					
+					1367 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					958 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					259 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					193 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					1371 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					201 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+				}
+	}
+	
+	mean_time_to_happen = {
+		days = 243
+		modifier = {
+			factor = 0.33
+			NOT = { has_country_flag = war_communism }
+			NOT = { has_idea = RUS_exchange_in_kind_idea }
+		}
+		modifier = {
+			factor = 1.33
+			has_idea = RUS_exchange_in_kind_idea
+		}
+		modifier = {
+			factor = 0.25
+			NOT = { has_idea = RUS_exchange_in_kind_idea }
+			NOT = { has_idea = RUS_prodrazverstka_idea }
+			NOT = { has_idea = RUS_prodnalog_idea }
+		}
+		modifier = {
+			factor = 0.25
+			NOT = { has_idea = RUS_exchange_in_kind_idea }
+			NOT = { has_idea = RUS_prodrazverstka_idea }
+			NOT = { has_idea = RUS_prodnalog_idea }
+				count_triggers = {
+					amount = 15
+					572 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					582 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					651 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					652 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					251 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					250 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					239 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					265 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					257 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					258 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					260 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					240 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					220 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					234 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					
+					1367 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					958 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					259 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					193 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					1371 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					201 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+				}
+		}
+		modifier = {
+			factor = 2
+			has_idea = foodstuffs_supply_crisis_2
+			NOT = {
+				count_triggers = {
+					amount = 15
+					572 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					582 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					651 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					652 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					251 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					250 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					239 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					265 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					257 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					258 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					260 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					240 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					220 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					234 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					
+					1367 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					958 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					259 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					193 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					1371 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					201 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+				}
+			}
+		}
+		modifier = {
+			factor = 2
+			has_idea = foodstuffs_supply_crisis_3
+			NOT = {
+				count_triggers = {
+					amount = 17
+					572 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					582 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					651 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					652 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					251 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					250 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					239 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					265 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					257 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					258 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					260 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					240 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					220 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					234 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					
+					1367 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					958 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					259 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					193 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					1371 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					201 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+				}
+			}
+		}
+		modifier = {
+			factor = 2
+			has_idea = foodstuffs_supply_crisis_4
+			NOT = {
+				count_triggers = {
+					amount = 19
+					572 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					582 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					651 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					652 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					251 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					250 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					239 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					265 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					257 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					258 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					260 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					240 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					220 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					234 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					
+					1367 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					958 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					259 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					193 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					1371 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+					201 = { controller = { NOT = { tag = ROOT } OR = { has_war_with = RUS NOT = { has_opinion = { target = ROOT value = 0 } } } } }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw.1002.a
+		add_stability = -0.01
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			remove_ideas = foodstuffs_supply_crisis_4
+			add_ideas = foodstuffs_supply_crisis_5
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_3 }
+			remove_ideas = foodstuffs_supply_crisis_3
+			add_ideas = foodstuffs_supply_crisis_4
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_2 }
+			remove_ideas = foodstuffs_supply_crisis_2
+			add_ideas = foodstuffs_supply_crisis_3
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_1 }
+			remove_ideas = foodstuffs_supply_crisis_1
+			add_ideas = foodstuffs_supply_crisis_2
+		}
+	}
+}
+
+# Облегчение продовольственной ситуации
+country_event = {
+	id = rcw.1003
+	title = rcw.1003.t
+	desc = rcw.1003.desc
+	picture = GFX_report_event_sov_food_crisis
+	
+	trigger = {
+		tag = RUS
+		OR = {
+			has_idea = foodstuffs_supply_crisis_1
+			has_idea = foodstuffs_supply_crisis_2
+			has_idea = foodstuffs_supply_crisis_3
+			has_idea = foodstuffs_supply_crisis_4
+			has_idea = foodstuffs_supply_crisis_5
+		}
+		OR = {
+			has_war = no
+			OR = {
+				AND = {
+					OR = {
+						AND = {
+							has_idea = foodstuffs_supply_crisis_2
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.85 }
+						}
+						AND = {
+							has_idea = foodstuffs_supply_crisis_3
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.7 }
+						}
+						AND = {
+							has_idea = foodstuffs_supply_crisis_4
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.55 }
+						}
+						AND = {
+							has_idea = foodstuffs_supply_crisis_5
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.4 }
+						}
+					}
+					has_completed_focus = RUS_prodrazverstka
+				}
+				AND = {
+					OR = {
+						AND = {
+							has_idea = foodstuffs_supply_crisis_2
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.95 }
+						}
+						AND = {
+							has_idea = foodstuffs_supply_crisis_3
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.825 }
+						}
+						AND = {
+							has_idea = foodstuffs_supply_crisis_4
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.7 }
+						}
+						AND = {
+							has_idea = foodstuffs_supply_crisis_5
+							check_variable = { global.bolsheviks_control_of_bread_regions > 0.575 }
+						}
+					}
+					NOT = { has_completed_focus = RUS_prodrazverstka }
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 160
+		modifier = {
+			factor = 0.5
+			has_completed_focus = RUS_prodrazverstka
+		}
+	}
+	
+	hidden = yes
+	
+	option = {
+		name = rcw.1003.a
+		add_stability = 0.02
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+			remove_ideas = foodstuffs_supply_crisis_5
+			add_ideas = foodstuffs_supply_crisis_4
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			remove_ideas = foodstuffs_supply_crisis_4
+			add_ideas = foodstuffs_supply_crisis_3
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_3 }
+			remove_ideas = foodstuffs_supply_crisis_3
+			add_ideas = foodstuffs_supply_crisis_2
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_2 }
+			remove_ideas = foodstuffs_supply_crisis_2
+			add_ideas = foodstuffs_supply_crisis_1
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_1 }
+			remove_ideas = foodstuffs_supply_crisis_1
+			clr_country_flag = RUS_foodstuffs_supply_crisis_flag
+		}
+	}
+}
+
+# If non-main former Russian empire faction takes Moscow
+country_event = {
+	id = rcw.1919
+	title = rcw.1919.t
+	desc = rcw.1919.desc
+	
+	picture = GFX_report_event_military_planning
+
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		NOT = { has_global_flag = RCW_Allrussian_national_assembly }
+		NOT = { has_global_flag = dont_fire_Rus_CW_end }
+		has_global_flag = RUS_civil_war_intervention_start
+		RUS = { NOT = { has_country_flag = RUS_dont_fire_CW_end } }
+		219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+		is_subject = no
+		NOT = { is_former_russian_empire_russian_country = yes }
+	}
+	
+	fire_only_once = yes
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		set_global_flag = dont_fire_Rus_CW_end
+	}
+	
+	option = {
+		trigger = { any_country = { is_former_russian_empire_russian_country = yes exists = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_war_with = ROOT } } }
+		name = rcw.1919.a
+		if = {
+			limit = { NOT = { any_other_country = { is_main_former_russian_empire_country = yes exists = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_war_with = ROOT } } } }
+			random_other_country = {
+				limit = { is_former_russian_empire_russian_country = yes exists = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_war_with = ROOT } }
+				transfer_state = 219
+			}
+			else = {
+				random_other_country = {
+					limit = { is_main_former_russian_empire_country = yes exists = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } NOT = { has_war_with = ROOT } }
+					transfer_state = 219
+				}
+			}
+		}
+		clr_global_flag = dont_fire_Rus_CW_end
+	}
+	option = {
+		name = rcw.1919.b
+		hidden_effect = {
+			if = {
+				limit = { RVA = { exists = no } OR = { DON = { OR = { has_idea = DON_volunteer_recruitment_network_idea has_idea = DON_Volunteer_army_presence_idea } } KUB = { has_idea = DON_Volunteer_army_presence_idea } } }
+				country_event = { id = rcw.1920 days = 14 }
+				else = {
+					every_country = {
+						limit = { is_main_former_russian_empire_country = yes }
+						declare_war_on = { target = ROOT type = annex_everything }
+					}
+					clr_global_flag = dont_fire_Rus_CW_end
+				}
+			}
+		}
+	}
+}
+# Revolt in Moscow
+country_event = {
+	id = rcw.1920
+	title = rcw.1920.t
+	desc = rcw.1920.desc
+	picture = GFX_report_event_rcw_rva
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.1920.a
+		clr_global_flag = dont_fire_Rus_CW_end
+		hidden_effect = {
+			every_country = {
+				limit = { OR = { tag = REB tag = DON tag = KUB } }
+				delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy batal'yon" }
+				delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy pekhotnyy polk" }
+				delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy kavaleristskiy polk" }
+				remove_ideas = DON_volunteer_recruitment_network_idea
+				remove_ideas = DON_Volunteer_army_presence_idea
+				remove_ideas = SIB_right_oficers
+			}
+		}
+				REB = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				DON = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				KUB = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				RVA = { transfer_state = 219 set_capital = { state = 219 remember_old_capital = no } }
+				
+				every_state = {
+					limit = {
+						OR = {
+							state = 219
+						}
+					}
+					add_core_of = RVA
+				}
+				hidden_effect = {
+					RVA = {
+						every_country = {
+							limit = { has_war_with = ROOT }
+							RVA = {
+								declare_war_on = {
+									target = PREV
+									type = annex_everything
+								}
+							}
+						}
+						add_equipment_to_stockpile = {
+							type = infantry_equipment_great_war
+							amount = 1000
+							producer = RUS
+						}
+						add_equipment_to_stockpile = {
+							type = support_equipment_1
+							amount = 100
+							producer = RUS
+						}
+						remove_all_foreing_locked_templates_from_liberated_country = yes
+						division_template = {
+							name = "Dobrovol'cheskiy pekhotnyy polk"
+							regiments = {
+								infantry = { x = 0 y = 0 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }
+							}
+							priority = 1
+						}
+						division_template = {
+							name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
+							regiments = {
+								cavalry = { x = 0 y = 0 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+							}
+							priority = 1
+						}
+					}
+					219 = {
+						create_unit = {
+							division = "name = \"Georgievskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Kornilovskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Rostovskiy dobrovol'cheskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Oficerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Yunkerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+					}
+				}
+				RVA = {
+					hidden_effect = {
+						every_country = {
+							limit = {
+								NOT = {
+									tag = PREV
+									is_any_former_russian_empire_country = yes
+									former_russian_empire_baltic_states_country = yes tag = HRB
+									has_war_with = PREV
+									is_in_faction_with = PREV
+								}
+							}
+							set_THIS_country_non_recognize_PREV = yes
+						}
+					}
+				}
+	}
+	option = {
+		name = rcw.1920.b
+		if = {
+			limit = { is_faction_leader = yes }
+			every_country = {
+				limit = { is_in_faction_with = ROOT OR = { is_main_former_russian_empire_country = yes OVERLORD = { is_main_former_russian_empire_country = yes } } }
+				leave_faction = yes
+			}
+		}
+		else_if = {
+			limit = { is_faction_leader = no any_other_country = { is_in_faction_with = ROOT is_main_former_russian_empire_country = yes } }
+			leave_faction = yes
+		}
+		every_country = {
+			limit = { is_main_former_russian_empire_country = yes is_subject = no OR = { is_in_faction = no is_faction_leader = yes } }
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		
+		hidden_effect = {
+			every_country = {
+				limit = { OR = { tag = REB tag = DON tag = KUB } }
+				delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy batal'yon" }
+				delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy pekhotnyy polk" }
+				delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy kavaleristskiy polk" }
+				remove_ideas = DON_volunteer_recruitment_network_idea
+				remove_ideas = DON_Volunteer_army_presence_idea
+				remove_ideas = SIB_right_oficers
+			}
+		}
+				REB = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				DON = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				KUB = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = RVA } }
+				RVA = { transfer_state = 219 set_capital = { state = 219 remember_old_capital = no } }
+				
+				every_state = {
+					limit = {
+						OR = {
+							state = 219
+						}
+					}
+					add_core_of = RVA
+				}
+				hidden_effect = {
+					RVA = {
+						every_country = {
+							limit = { has_war_with = ROOT }
+							RVA = {
+								declare_war_on = {
+									target = PREV
+									type = annex_everything
+								}
+							}
+						}
+						add_equipment_to_stockpile = {
+							type = infantry_equipment_great_war
+							amount = 1000
+							producer = RUS
+						}
+						add_equipment_to_stockpile = {
+							type = support_equipment_1
+							amount = 100
+							producer = RUS
+						}
+						remove_all_foreing_locked_templates_from_liberated_country = yes
+						division_template = {
+							name = "Dobrovol'cheskiy pekhotnyy polk"
+							regiments = {
+								infantry = { x = 0 y = 0 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }
+							}
+							priority = 1
+						}
+						division_template = {
+							name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
+							regiments = {
+								cavalry = { x = 0 y = 0 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+							}
+							priority = 1
+						}
+					}
+					219 = {
+						create_unit = {
+							division = "name = \"Georgievskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Kornilovskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Rostovskiy dobrovol'cheskiy polk\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Oficerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+						create_unit = {
+							division = "name = \"Yunkerskiy batal'yon\" division_template = \"Dobrovol'cheskiy pekhotnyy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+							owner = RVA
+						}
+					}
+				}
+				RVA = {
+					hidden_effect = {
+						every_country = {
+							limit = {
+								NOT = {
+									tag = PREV
+									is_any_former_russian_empire_country = yes
+									former_russian_empire_baltic_states_country = yes tag = HRB
+									has_war_with = PREV
+									is_in_faction_with = PREV
+								}
+							}
+							set_THIS_country_non_recognize_PREV = yes
+						}
+					}
+				}
+		declare_war_on = {
+			target = RVA
+			type = annex_everything
+		}
+	}
+}
+
+# Civil war over
+country_event = {
+	id = rcw.1922
+	title = rcw.1922.t
+	desc = {
+		text = rcw.1922.desc
+		trigger = {
+			tag = RUS
+		}
+	}
+	desc = {
+		text = rcw.1922.desc_1
+		trigger = {
+			NOT = { tag = RGR }
+			NOT = { tag = RUS }
+			is_main_former_russian_empire_country = yes
+		}
+	}
+	desc = {
+		text = rcw.1922.desc_2
+		trigger = {
+			tag = RGR
+		}
+	}
+	desc = {
+		text = rcw.1922.desc_3
+		trigger = {
+			is_main_former_russian_empire_country = no
+		}
+	}
+	
+	picture = GFX_report_event_military_planning
+
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		OR = { NOT = { has_global_flag = RCW_Allrussian_national_assembly } has_country_flag = RCW_Russia_unifier_flag }
+		NOT = { has_global_flag = dont_fire_Rus_CW_end }
+		has_global_flag = RUS_civil_war_intervention_start
+		RUS = { NOT = { has_country_flag = RUS_dont_fire_CW_end } }
+		219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+		is_subject = no
+		is_former_russian_empire_russian_country = yes
+		
+		NOT = {
+			any_other_country = {
+				is_main_former_russian_empire_country = yes
+				exists = yes
+				is_subject = no
+			}
+		}
+		has_war = no
+		OR = {
+			NOT = { tag = RSR }
+			AND = {
+				OR = {
+					NOT = { has_country_flag = RUS_has_czechoslovak_legion }
+					has_country_flag = RUS_has_formed_czechoslovak_legion
+					has_country_flag = RUS_red_czechoslovak_legion
+				}
+				OR = {
+					has_country_flag = RUS_karaul_ustal
+					has_global_flag = RUS_all_russian_constituent_assembly_ended
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+		modifier = {
+			factor = 0.01
+			has_focus_tree = Russia_Bolsheviks_focus
+		}
+	}
+	
+	fire_only_once = yes
+
+	option = {
+		name = rcw.1922.a
+		set_global_flag = RUS_civil_war_over
+		RUS = {
+			clr_country_flag = OCH_revolt
+			clr_country_flag = UCH_revolt
+		}
+		every_possible_country = { limit = { has_country_flag = CRI_war_flag } clr_country_flag = CRI_war_flag }
+		every_possible_country = { limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } clr_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+		hidden_effect = {
+			every_state = {
+				clear_variable = mob_red_guard_industrial_complex
+				clear_variable = mob_red_guard_arms_factory
+				clr_state_flag = mob_red_neirfront_militia_flag
+			}
+			every_country = {
+				limit = {
+					OR = {
+						tag = NWA
+						tag = RVA
+						tag = DON
+						tag = KUB
+						tag = CRI
+						tag = SIB
+						tag = CCA
+						tag = RSS
+						tag = PRM
+						tag = BKL
+						tag = BYA
+					}
+				}
+				clr_country_flag = Alfred_Knox_is_here
+				remove_ideas = Alfred_Knox_attache_high_command
+				every_unit_leader = { limit = { has_id = 28055 } set_nationality = ENG }
+				REB = { every_unit_leader = { limit = { has_id = 28055 } set_nationality = ENG } }
+				clr_country_flag = John_Ward_is_here
+				remove_ideas = John_Ward_attache_high_command
+				clr_country_flag = Charles_James_Briggs_is_here
+				remove_ideas = Charles_James_Briggs_attache_high_command
+				clr_country_flag = Herbert_Campbell_Holman_is_here
+				remove_ideas = Herbert_Campbell_Holman_attache_high_command
+				clr_country_flag = Hubert_de_la_Poer_Gough_is_here
+				remove_ideas = Hubert_de_la_Poer_Gough_attache_high_command
+				clr_country_flag = James_Harold_Elmsley_is_here
+				remove_ideas = James_Harold_Elmsley_attache_high_command
+				clr_country_flag = Maurice_Janin_is_here
+				remove_ideas = Maurice_Janin_attache_high_command
+				clr_country_flag = Charles_Marie_Emmanuel_Mangin_is_here
+				remove_ideas = Charles_Marie_Emmanuel_Mangin_attache_high_command
+				every_unit_leader = { limit = { has_id = 32013 } set_nationality = FRA }
+				REB = { every_unit_leader = { limit = { has_id = 32013 } set_nationality = FRA } }
+				if = {
+					limit = { NOT = { has_country_leader = { name = "Oi Shigemoto" ruling_only = yes } } }
+					clr_country_flag = Oi_Shigemoto_is_here
+					remove_ideas = Oi_Shigemoto_attache_high_command
+					every_unit_leader = { limit = { OR = { has_id = 88167 has_id = 77427 has_id = 77428 } } set_nationality = JAP }
+					REB = { every_unit_leader = { limit = { OR = { has_id = 88167 has_id = 77427 has_id = 77428 } } set_nationality = JAP } }
+				}
+				clr_country_flag = William_Sidney_Graves_is_here
+				remove_ideas = William_Sidney_Graves_attache_high_command
+			}
+		}
+		every_country = {
+			limit = { is_main_former_russian_empire_country = yes is_subject_of = ROOT }
+			ROOT = {
+				annex_country = {
+					target = PREV
+					transfer_troops = yes
+				}
+			}
+		}
+		if = {
+			limit = { tag = RGR }
+			country_event = rcw.1923
+		}
+		if = {
+			limit = {
+				NOT = { tag = RGR }
+				NOT = { has_government = radical_socialism }
+				NOT = { has_government = communism }
+			}
+			every_country = {
+				limit = {
+					OR = {
+						tag = ENG
+						tag = FRA
+						tag = USA
+						tag = GER
+						tag = AUH
+						
+						is_subject_of = ENG
+						is_subject_of = FRA
+						is_subject_of = USA
+						is_subject_of = GER
+						is_subject_of = AUH
+					}
+				}
+				every_country = {
+					limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+		if = {
+			limit = { has_idea = Entente_credit_for_Russia }
+			remove_ideas = Entente_credit_for_Russia
+			add_timed_idea = { idea = Entente_credit_for_Russia_pay days = 900 }
+		}
+		if = {
+			limit = { tag = RSR }
+			hidden_effect = { news_event = news_n.37 }
+		}
+	}
+}
+
+# Зелёные выиграли эту войну
+country_event = {
+	id = rcw.1923
+	title = rcw.1923.t
+	desc = rcw.1923.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = rcw.1923.a
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		
+		set_popularities = {
+			radical_socialism = 14
+			communism = 14
+			social_democracy = 5
+			market_liberalism = 16
+			social_liberalism = 35
+			conservatism = 16
+		}
+		
+		remove_ideas = RGR_supply_bonus
+		
+		every_country = {
+			limit = { has_war_with = ROOT }
+			white_peace = ROOT
+		}
+		every_country = {
+			limit = { is_neighbor_of = ROOT }
+			every_state = {
+				limit = { is_owned_by = ROOT is_core_of = PREV }
+				PREV = { transfer_state = PREV }
+			}
+		}
+		
+		if = {
+			limit = {
+				OR = {
+					ROOT = { owns_state = 655 }
+					PRM = { owns_state = 655 }
+					BKL = { owns_state = 655 }
+				}
+				JAP = { owns_state = 537 }
+			}
+			JAP = { transfer_state = 655 }
+		}
+		
+		if = {
+			limit = { MRC = { exists = yes } }
+			every_state = {
+				limit = {
+					OR = {
+						state = 903
+						state = 1057
+						state = 232
+						state = 821
+						state = 971
+						state = 1232
+						state = 1311
+						state = 1315
+						state = 1316
+						state = 1317
+						state = 1420
+						state = 1419
+						state = 1058
+						state = 828
+						state = 810
+						state = 921
+						state = 1377
+						state = 1385
+						state = 1278
+					}
+				}
+				add_core_of = MRC
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					MRC = { transfer_state = PREV }
+				}
+			}
+		}
+		
+		if = {
+			limit = { GEO = { exists = no } }
+			GEO = {
+				set_politics = {
+					ruling_party = social_democracy
+				}
+				set_popularities = {
+					radical_socialism = 0
+					communism = 15
+					authoritarism = 0
+					social_democracy = 85
+					social_liberalism = 0
+					market_liberalism = 0
+					conservatism = 0
+					despotism = 0
+					fascism = 0
+					national_syndicalism = 0
+				}
+			}
+			release = GEO
+			else = {
+				GEO = {
+					if = { limit = { ROOT = { owns_state = 902 } } transfer_state = 902 }
+					if = { limit = { ROOT = { owns_state = 1342 } } transfer_state = 1342 }
+				}
+			}
+		}
+		
+		if = {
+			limit = { ARM = { exists = no } }
+			ARM = {
+				set_politics = {
+					ruling_party = social_democracy
+				}
+				set_popularities = {
+					radical_socialism = 0
+					communism = 14
+					authoritarism = 0
+					social_democracy = 39
+					social_liberalism = 13
+					market_liberalism = 13
+					conservatism = 21
+					despotism = 0
+					fascism = 0
+					national_syndicalism = 0
+				}
+			}
+			release = ARM
+		}
+		
+		if = {
+			limit = { AZR = { exists = no } }
+			AZR = {
+				set_politics = {
+					ruling_party = market_liberalism
+				}
+				set_popularities = {
+					radical_socialism = 0
+					communism = 0
+					authoritarism = 0
+					social_democracy = 30
+					social_liberalism = 10
+					market_liberalism = 35
+					conservatism = 10
+					despotism = 15
+					fascism = 0
+					national_syndicalism = 0
+				}
+			}
+			release = AZR
+		}
+		
+		if = {
+			limit = { UKR = { exists = no } USR = { exists = no } }
+			UKR = {
+				set_politics = {
+					ruling_party = radical_socialism
+				}
+				set_popularities = {
+					radical_socialism = 34
+					communism = 44
+					social_liberalism = 15
+					market_liberalism = 7
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						OWNER = { is_subject_of = ROOT }
+					}
+					OR = {
+						is_core_of = UKR
+						is_claimed_by = UKR
+					}
+				}
+				UKR = { transfer_state = PREV }
+			}
+			every_unit_leader = { limit = { OR = { has_id = 19316 } } set_nationality = UKR }
+			every_unit_leader = { limit = { OR = { has_id = 19317 } } set_nationality = UKR }
+		}
+		
+		if = {
+			limit = { EST = { exists = no } }
+			EST = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						is_core_of = EST
+					}
+					EST = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = despotism
+				}
+				set_popularities = {
+					radical_socialism = 10
+					communism = 25
+					social_democracy = 10
+					social_liberalism = 10
+					market_liberalism = 10
+					conservatism = 10
+					authoritarism = 0
+					despotism = 25
+					fascism = 0
+					national_syndicalism = 0
+				}
+			}
+		}
+		
+		if = {
+			limit = { LAT = { exists = no } }
+			LAT = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						is_core_of = LAT
+					}
+					LAT = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = despotism
+				}
+				set_popularities = {
+					radical_socialism = 0
+					communism = 55
+					social_democracy = 5
+					social_liberalism = 0
+					market_liberalism = 0
+					conservatism = 10
+					authoritarism = 5
+					despotism = 25
+					fascism = 0
+					national_syndicalism = 0
+				}
+			}
+		}
+		
+		if = {
+			limit = { LIT = { exists = no } }
+			LIT = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						is_core_of = LIT
+					}
+					LIT = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = despotism
+				}
+				set_popularities = {
+					conservatism = 30
+					fascism = 15
+					communism = 15
+					despotism = 40
+				}
+			}
+		}
+		
+		if = {
+			limit = { POL = { exists = no } }
+			POL = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						is_core_of = POL
+					}
+					POL = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = despotism
+				}
+				set_popularities = {
+					conservatism = 13
+					radical_socialism = 5
+					communism = 7
+					authoritarism = 20
+					despotism = 55
+				}
+			}
+		}
+		
+		if = {
+			limit = { TAN = { exists = no } }
+			TAN = {
+				if = { limit = { ROOT = { owns_state = 329 } } transfer_state = 329 }
+				set_politics = {
+					ruling_party = communism
+				}
+				set_popularities = {
+					radical_socialism = 40
+					conservatism = 0
+					fascism = 0
+					communism = 40
+					authoritarism = 20
+				}
+			}
+		}
+		
+		if = {
+			limit = { NRR = { exists = yes has_capitulated = no } }
+			NRR = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							is_controlled_by = ROOT
+						}
+						OR = {
+							state = 213
+							state = 214
+							state = 215
+							state = 216
+							state = 262
+							state = 722
+							state = 913
+							state = 964
+							state = 1076
+							state = 1078
+							state = 1079
+							state = 1081
+							state = 1082
+							state = 1083
+							state = 1084
+							state = 1085
+							state = 1086
+							state = 1087
+							state = 1088
+							state = 879
+							state = 1092
+							state = 1094
+							state = 1096
+							state = 1097
+						}
+					}
+					NRR = { transfer_state = PREV }
+				}
+				set_politics = {
+					ruling_party = despotism
+				}
+				set_popularities = {
+					radical_socialism = 0
+					communism = 0
+					social_democracy = 0
+					social_liberalism = 0
+					market_liberalism = 0
+					conservatism = 0
+					authoritarism = 0
+					despotism = 100
+					fascism = 0
+					national_syndicalism = 0
+				}
+			}
+			else = {
+				NRR = {
+				every_state = {
+						limit = {
+							is_core_of = NRR
+						}
+						remove_core_of = NRR
+					}
+				}
+			}
+		}
+		
+		every_state = {
+			limit = { is_core_of = NWA }
+			remove_core_of = NWA
+		}
+		
+		if = { limit = { ROOT = { owns_state = 1280 } } KHI = { transfer_state = 1280 } }
+		if = { limit = { ROOT = { owns_state = 1091 } } KHI = { transfer_state = 1091 } }
+		
+		if = { limit = { NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED } } ENG = { KHI = { subjecting_script_with_transfer_parties_colony = yes } } }
+		if = { limit = { NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED } } ENG = { BUK = { subjecting_script_with_transfer_parties_colony = yes } } }
+		if = { limit = { NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED } } ENG = { CPG = { subjecting_script_with_transfer_parties_colony = yes } } }
+		
+		CPG = {
+				if = {
+					limit = { CPG = { exists = yes } }
+					every_state = {
+						limit = {
+							is_core_of = CPG
+						}
+						CPG = { transfer_state = PREV }
+					}
+				}
+				set_politics = {
+					ruling_party = despotism
+				}
+				set_popularities = {
+					social_liberalism = 35
+					market_liberalism = 20
+					conservatism = 10
+					despotism = 15
+					communism = 20
+				}
+				set_cosmetic_tag = CPG_UK
+		}
+		
+		if = {
+			limit = { NOT = { check_variable = { centralisation > 9 } } }
+			if = {
+				limit = { PRM = { exists = yes } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						is_core_of = PRM
+					}
+					PRM = { transfer_state = PREV }
+				}
+			}
+			else_if = {
+				limit = { PRM = { exists = no } any_state = { is_core_of = PRM } }
+				PRM = {
+					every_state = {
+						limit = {
+							OR = {
+								is_owned_by = ROOT
+								OWNER = { is_subject_of = ROOT }
+							}
+							is_core_of = PRM
+						}
+						PRM = { transfer_state = PREV }
+					}
+					set_politics = {
+						ruling_party = radical_socialism
+					}
+					set_popularities = {
+						national_syndicalism = 1
+						despotism = 10
+						fascism = 5
+						radical_socialism = 6
+						authoritarism = 10
+						social_democracy = 10
+						social_liberalism = 23
+						market_liberalism = 10
+						conservatism = 15
+						communism = 10
+					}
+				}
+			}
+			else_if = {
+				limit = { PRM = { exists = no } NOT = { any_state = { is_core_of = PRM } } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						is_core_of = ZKL
+					}
+					ZKL = { transfer_state = PREV inherit_technology = ROOT }
+				}
+			}
+			
+			if = {
+				limit = { TRK = { exists = no } }
+				TRK = {
+					set_politics = {
+						ruling_party = conservatism
+					}
+					set_popularities = {
+						radical_socialism = 5
+						communism = 20
+						social_democracy = 5
+						social_liberalism = 10
+						market_liberalism = 0
+						conservatism = 30
+						authoritarism = 0
+						despotism = 10
+						fascism = 15
+						national_syndicalism = 5
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						OWNER = { is_subject_of = ROOT }
+					}
+					OR = {
+						state = 586
+						state = 405
+						state = 732
+						state = 1018
+						state = 742
+						state = 1408
+					}
+				}
+				TRK = { transfer_state = PREV }
+			}
+			if = {
+				limit = { NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED } }
+				ENG = { TRK = { subjecting_script_with_transfer_parties_colony = yes } }
+				TRK = {
+					set_politics = {
+						ruling_party = conservatism
+					}
+					set_popularities = {
+						radical_socialism = 5
+						communism = 20
+						social_democracy = 5
+						social_liberalism = 10
+						market_liberalism = 0
+						conservatism = 30
+						authoritarism = 0
+						despotism = 10
+						fascism = 15
+						national_syndicalism = 5
+					}
+				}
+			}
+		}
+		if = {
+			limit = { NOT = { check_variable = { centralisation > 8 } } }
+			
+			if = {
+				limit = { BKL = { exists = yes } }
+				BKL = {
+					every_state = {
+						limit = {
+							OR = {
+								is_owned_by = ROOT
+								OWNER = { is_subject_of = ROOT }
+							}
+							is_core_of = BKL
+						}
+						BKL = { transfer_state = PREV }
+					}
+				}
+				else = {
+					BKL = {
+						set_politics = {
+							ruling_party = authoritarism
+						}
+						set_popularities = {
+							national_syndicalism = 1
+							despotism = 10
+							fascism = 5
+							radical_socialism = 6
+							authoritarism = 10
+							social_democracy = 10
+							social_liberalism = 23
+							market_liberalism = 10
+							conservatism = 15
+							communism = 10
+						}
+						every_state = {
+							limit = {
+								is_core_of = BKL
+							}
+							remove_core_of = BKL
+						}
+					}
+				}
+			}
+			
+			every_state = {
+				limit = {
+					OR = {
+						state = 218
+						state = 995
+						state = 228
+						state = 238
+						state = 996
+						state = 245
+						state = 1346
+						state = 265
+						state = 1261
+						state = 953
+						state = 1284
+						state = 954
+						state = 235
+						state = 1282
+						state = 1283
+						state = 234
+						state = 917
+						state = 233
+						state = 902
+						state = 1342
+						state = 1044
+						state = 1045
+						state = 1349
+						state = 1173
+					}
+				}
+				add_core_of = DON
+			}
+			260 = { add_claim_by = DON }
+			if = {
+				limit = { DON = { exists = no } }
+				DON = {
+					set_politics = {
+						ruling_party = communism
+					}
+					set_popularities = {
+						radical_socialism = 34
+						communism = 44
+						social_liberalism = 15
+						market_liberalism = 7
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						OWNER = { is_subject_of = ROOT }
+					}
+					OR = {
+						is_core_of = DON
+						state = 227
+						state = 1377
+						state = 1385
+						state = 810
+						state = 921
+						state = 828
+						state = 1058
+						state = 1419
+						state = 903
+						state = 971
+						state = 1232
+						state = 1311
+						state = 1315
+						state = 1316
+						state = 1317
+						state = 1420
+						state = 232
+						state = 821
+						state = 1057
+						state = 1278
+					}
+				}
+				DON = { transfer_state = PREV }
+			}
+			DON = {
+				if = {
+					limit = { has_government = communism }
+					load_oob = DON_red_cossack
+				}
+			}
+			
+			every_state = {
+				limit = {
+					OR = {
+						state = 574
+						state = 562
+						state = 874
+						state = 637
+						state = 1400
+						state = 644
+						state = 877
+						state = 875
+						state = 561
+						state = 1039
+						state = 1184
+						state = 1024
+						state = 1040
+					}
+				}
+				add_core_of = YAK
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					YAK = { transfer_state = PREV }
+				}
+			}
+			YAK = { inherit_technology = ROOT }
+			every_unit_leader = { limit = { OR = { has_id = 92347 } } set_nationality = YAK }
+			
+			every_state = {
+				limit = {
+					OR = {
+						state = 568
+						state = 567
+						state = 566
+						state = 565
+						state = 575
+						state = 576
+						state = 516
+						state = 563
+						state = 564
+						state = 1041
+					}
+				}
+				add_core_of = ESB
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					ESB = { transfer_state = PREV }
+				}
+			}
+			ESB = { inherit_technology = ROOT }
+			every_unit_leader = { limit = { OR = { has_id = 19315 } } set_nationality = ESB }
+		}
+		if = {
+			limit = { NOT = { check_variable = { centralisation > 5 } } }
+			
+			if = {
+				limit = { BLR = { exists = no } }
+				BLR = {
+					every_state = {
+						limit = {
+							OR = {
+								is_owned_by = ROOT
+								OWNER = { is_subject_of = ROOT }
+							}
+							is_core_of = BLR
+						}
+						BLR = { transfer_state = PREV }
+					}
+					set_politics = {
+						ruling_party = social_democracy
+					}
+					set_popularities = {
+						radical_socialism = 0
+						communism = 25
+						social_democracy = 25
+						social_liberalism = 20
+						market_liberalism = 0
+						conservatism = 0
+						authoritarism = 20
+						despotism = 10
+						fascism = 0
+						national_syndicalism = 0
+					}
+				}
+			}
+			
+			every_state = {
+				limit = {
+					OR = {
+						state = 570
+						state = 40
+						state = 654
+						state = 569
+						state = 1279
+						state = 578
+						state = 1350
+						state = 577
+						state = 824
+					}
+				}
+				add_core_of = TAI
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					TAI = { transfer_state = PREV }
+				}
+			}
+			TAI = { inherit_technology = ROOT }
+			every_unit_leader = { limit = { OR = { has_id = 19312 } } set_nationality = TAI }
+			
+			every_state = {
+				limit = {
+					OR = {
+						state = 239
+						state = 250
+						state = 251
+						state = 401
+						state = 217
+						state = 920
+						state = 1261
+						state = 237
+						state = 236
+						state = 402
+						state = 1396
+						state = 1397
+						state = 587
+						state = 1398
+						state = 651
+						state = 1299
+						region = 137
+					}
+				}
+				add_core_of = VLG
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					VLG = { transfer_state = PREV }
+				}
+			}
+			VLG = { inherit_technology = ROOT }
+			every_unit_leader = { limit = { OR = { has_id = 19318 } } set_nationality = VLG }
+		}
+		if = {
+			limit = { NOT = { check_variable = { centralisation > 4 } } }
+			
+			KAZ = { drop_cosmetic_tag = yes }
+			if = {
+				limit = { KAZ = { exists = no } }
+				KAZ = {
+					set_politics = {
+						ruling_party = market_liberalism
+					}
+					set_popularities = {
+						radical_socialism = 0
+						communism = 0
+						social_democracy = 30
+						social_liberalism = 10
+						market_liberalism = 35
+						conservatism = 10
+						authoritarism = 0
+						despotism = 15
+						fascism = 0
+						national_syndicalism = 0
+					}
+				}
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+						OR = {
+							state = 1409
+							state = 589
+							state = 404
+							state = 1395
+							state = 881
+							state = 588
+							state = 882
+							state = 590
+							state = 583
+						}
+					}
+					KAZ = { transfer_state = PREV }
+				}
+			}
+			
+			every_state = {
+				limit = {
+					OR = {
+						state = 573
+						state = 582
+						state = 572
+						state = 1392
+						state = 1103
+						state = 1067
+						state = 653
+						state = 403
+						state = 581
+						state = 911
+						state = 1025
+						state = 580
+						state = 579
+						state = 571
+						state = 1260
+						state = 1231
+					}
+				}
+				add_core_of = WSB
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					WSB = { transfer_state = PREV }
+				}
+			}
+			WSB = { inherit_technology = ROOT }
+		}
+		if = {
+			limit = { NOT = { check_variable = { centralisation > 2 } } }
+			
+			if = {
+				limit = { TAT = { exists = no } }
+				TAT = {
+					set_politics = {
+						ruling_party = market_liberalism
+					}
+					set_popularities = {
+						fascism = 0
+						authoritarism = 0
+						conservatism = 22
+						radical_socialism = 17
+						social_democracy = 12
+						social_liberalism = 14
+						market_liberalism = 25
+						communism = 10
+						national_syndicalism = 0
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 249
+						state = 651
+						state = 1299
+						state = 1072
+					}
+				}
+				add_core_of = TAT
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							is_owned_by = VLG
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					TAT = { transfer_state = PREV }
+				}
+			}
+			TAT = { inherit_technology = ROOT }
+			
+			every_state = {
+				limit = {
+					OR = {
+						state = 260
+						state = 240
+						state = 1347
+						state = 220
+						state = 224
+						state = 222
+						state = 258
+						state = 257
+						state = 960
+						state = 923
+					}
+				}
+				add_core_of = VRZ
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					VRZ = { transfer_state = PREV }
+				}
+			}
+			VRZ = { inherit_technology = ROOT }
+			every_unit_leader = { limit = { OR = { has_id = 19311 } } set_nationality = VRZ }
+		}
+		
+		if = {
+			limit = { CRI = { exists = no } NOT = { owns_state = 917 owns_state = 919 } }
+			every_state = {
+				limit = {
+					region = 230
+				}
+				add_core_of = CRI
+				if = {
+					limit = {
+						OR = {
+							is_owned_by = ROOT
+							OWNER = { is_subject_of = ROOT }
+						}
+					}
+					CRI = { transfer_state = PREV }
+				}
+			}
+			CRI = {
+				set_politics = {
+					ruling_party = conservatism
+				}
+				set_popularities = {
+					conservatism = 60
+					authoritarism = 20
+					communism = 15
+					fascism = 5
+				}
+			}
+		}
+		
+		RSS = {
+			every_state = {
+					limit = {
+						is_core_of = RSS
+					}
+				remove_core_of = RSS
+			}
+		}
+		
+		CCA = {
+			every_state = {
+					limit = {
+						is_core_of = CCA
+					}
+				remove_core_of = CCA
+			}
+		}
+		
+		SIB = {
+			every_state = {
+				limit = {
+					is_core_of = SIB
+				}
+				remove_core_of = SIB
+			}
+		}
+		
+		RVA = {
+			every_state = {
+					limit = {
+						is_core_of = RVA
+					}
+				remove_core_of = RVA
+			}
+		}
+		
+		ROOT = {
+			every_state = {
+					limit = {
+						is_owned_by = ROOT
+					}
+				add_core_of = ROOT
+			}
+		}
+	}
+}
+
+# Notification event that leader has been killed
+unit_leader_event = {
+	id = rcw.2001
+	title = rcw.2001.t
+	desc = rcw.2001.desc
+	
+	picture = GFX_report_event_military_planning
+
+	is_triggered_only = yes
+
+	option = {
+		name = unfortunate
+		effect_tooltip = {
+			FROM = {
+				remove_unit_leader = yes
+			}
+		}
+	}
+}
+
+# Notification event that leader has been killed by god
+unit_leader_event = {
+	id = rcw.2002
+	title = rcw.2002.t
+	desc = rcw.2002.desc
+	
+	picture = GFX_report_event_military_planning
+
+	is_triggered_only = yes
+
+	option = {
+		name = unfortunate
+		effect_tooltip = {
+			FROM = {
+				remove_unit_leader = yes
+			}
+		}
+	}
+}

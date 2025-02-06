@@ -1,0 +1,1461 @@
+﻿###########################
+# Finland Events
+###########################
+
+add_namespace = finland
+
+###### Тернистый путь к государственной независимости ######
+
+# Реакция Финляндии на Февральскую революцию
+country_event = {
+	id = finland.1
+	title = finland.1.t
+	desc = finland.1.desc
+	picture = GFX_report_event_first_coalition_gov
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1917.11.6
+		tag = FIN
+		has_cosmetic_tag = FIN_russian
+		RUS = { has_country_flag = RUS_provisional_government_created }
+		is_subject_of = RUS
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	#На шаг ближе к независимости
+	option = {
+		name = finland.1.a
+		hidden_effect = {
+			FIN = {
+				set_country_flag = FIN_zein_under_arest
+				retire_country_leader = yes
+			}
+			RUS = {
+				set_autonomy = {
+					target = FIN
+					autonomy_state = autonomy_colony
+				}
+			}
+			FIN = {
+				set_politics = {
+					ruling_party = social_democracy
+					elections_allowed = no
+				}
+				set_popularities = {
+						national_syndicalism = 0
+						despotism = 0
+						fascism = 0
+						radical_socialism = 0
+						authoritarism = 15
+						social_democracy = 35
+						social_liberalism = 6
+						market_liberalism = 4
+						conservatism = 25
+						communism = 15
+				}
+				remove_ideas_with_trait = head_of_government_trait
+				remove_ideas_with_trait = foreign_minister_trait
+				remove_ideas_with_trait = economy_minister_trait
+				remove_ideas_with_trait = security_minister_trait
+				remove_ideas_with_trait = head_of_intel_trait
+				add_ideas = {
+					Oskari_Tokoi_1
+					Oskari_Tokoi_2
+					Vaino_Tanner_3
+					Antti_Tulenheimo_4
+					Antti_Tulenheimo_5
+				}
+				country_event = { id = finland.2 days = 5 }
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_1
+	}
+}
+
+# Назначение Стаховича
+country_event = {
+	id = finland.2
+	title = finland.2.t
+	desc = finland.2.desc
+	picture = GFX_report_event_rus_chinovniki
+
+	trigger = {
+		has_cosmetic_tag = FIN_russian
+	}
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.2.a
+		custom_effect_tooltip = fin_tooltip_2
+		hidden_effect = {
+			create_country_leader = { name = "Mikhail Stakhovich" desc = FIN_Mikhail_Stakhovich_desc picture = "gfx/leaders/FIN/Portrait_Mikhail_Stakhovich.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = {  } }
+			set_politics = {
+				ruling_party = authoritarism
+				elections_allowed = no
+			}
+		}
+	}
+}
+
+# Июльский Кризис и переворот Корнилова, если удачный
+country_event = {
+	id = finland.3
+	title = finland.3.t
+	desc = finland.3.desc
+	picture = GFX_report_event_rus_reds
+	
+	trigger = {
+		is_subject_of = RUS
+		has_cosmetic_tag = FIN_russian
+	}
+	
+	is_triggered_only = yes
+	
+	#Провозгласить независимость
+	option = {
+		name = finland.3.a
+		hidden_effect = { RUS = { country_event = finland.4 } }
+		custom_effect_tooltip = fin_tooltip_3
+	}
+	
+	#Сидеть пердеть
+	option = {
+		name = finland.3.b
+	}
+}
+# Ивент России - Финляндия требует независимости
+country_event = {
+	id = finland.4
+	title = finland.4.t
+	desc = finland.4.d
+	picture = GFX_report_event_all_power_to_the_soviets
+	
+	is_triggered_only = yes
+	
+	#Пусть делают что хотят
+	option = {
+		name = finland.4.a
+		FIN = { country_event = finland.5 }
+		ai_chance = {
+			factor = 50
+			modifier = {
+				is_historical_focus_on = yes
+				factor = 0
+			}
+		}
+	}
+	
+	#Арестовать их
+	option = {
+		name = finland.4.b
+		trigger = {
+			OR = {
+				NOT = { has_country_flag = general_kornilov }
+				AND = {
+					has_country_flag = general_kornilov
+					check_variable = { RUS_force_uses > 0 }
+				}
+			}
+		}
+		FIN = { country_event = finland.6 }
+		add_political_power = -50
+		if = {
+			limit = { has_country_flag = general_kornilov }
+			add_to_variable = { var = RUS_force_uses value = -1 }
+		}
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+# Провозглашение независимости
+country_event = {
+	id = finland.5
+	title = finland.5.t
+	desc = finland.5.desc
+	picture = GFX_report_event_stock
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.5.a
+		RUS = { end_puppet = FIN }
+		hidden_effect = {
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+			set_popularities = {
+					radical_socialism = 0
+					communism = 15
+					social_democracy = 40
+					social_liberalism = 13
+					market_liberalism = 12
+					conservatism = 12
+					authoritarism = 0
+					despotism = 8
+					fascism = 0
+					national_syndicalism = 0
+			}
+			drop_cosmetic_tag = yes
+			set_cosmetic_tag = FIN_white
+			leave_faction = yes
+			add_ideas = neutral_foreign_policy_law
+			every_country = {
+				limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS tag = SNS is_in_faction_with = TRG tag = TRG is_in_faction_with = OAF tag = OAF is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+				white_peace = FIN
+			}
+			every_country = {
+				limit = { has_war_with = RUS is_in_faction = no }
+				white_peace = FIN
+			}
+		}
+		add_political_power = 100
+	}
+}
+# Разгон сейма
+country_event = {
+	id = finland.6
+	title = finland.6.t
+	desc = finland.6.desc
+	picture = GFX_report_event_rus_chinovniki
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.6.a
+		add_political_power = -50
+	}
+}
+
+# Отставка Стаховича
+country_event = {
+	id = finland.7
+	title = finland.7.t
+	desc = finland.7.desc
+	picture = GFX_report_event_rus_chinovniki
+
+	
+	trigger = {
+		is_subject_of = RUS
+		has_cosmetic_tag = FIN_russian
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.7.a
+		hidden_effect = {
+			FIN = {
+				create_country_leader = { name = "Nikolay Nekrasov" desc = FIN_Nikolay_Nekrasov_desc picture = "gfx/leaders/RUS/Portrait_Nikolay_Nekrasov.dds" expire = "1935.1.1" ideology = market_liberalism_ideology traits = {  } }
+				set_politics = {
+					ruling_party = market_liberalism
+					elections_allowed = no
+				}
+				set_popularities = {
+						radical_socialism = 0
+						communism = 15
+						social_democracy = 40
+						social_liberalism = 13
+						market_liberalism = 12
+						conservatism = 12
+						authoritarism = 0
+						despotism = 8
+						fascism = 0
+						national_syndicalism = 0
+				}
+				remove_ideas_with_trait = head_of_government_trait
+				remove_ideas_with_trait = foreign_minister_trait
+				remove_ideas_with_trait = economy_minister_trait
+				remove_ideas_with_trait = security_minister_trait
+				remove_ideas_with_trait = head_of_intel_trait
+				add_ideas = {
+					Oskari_Tokoi_1
+					Oskari_Tokoi_2
+					Vaino_Tanner_3
+					Antti_Tulenheimo_4
+					Antti_Tulenheimo_5
+				}
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_7
+	}
+}
+# Отставка Стаховича (для меньшевиков)
+country_event = {
+	id = finland.8
+	title = finland.8.t
+	desc = finland.8.desc
+	picture = GFX_report_event_rus_chinovniki
+
+	trigger = {
+		is_subject_of = RUS
+		has_cosmetic_tag = FIN_russian
+	}
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.8.a
+		hidden_effect = {
+			FIN = {
+				create_country_leader = { name = "Matvey Skobelev" desc = FIN_Matvey_Skobelev_desc picture = "gfx/leaders/FIN/Portrait_Matvey_Skobelev.dds" expire = "1935.1.1" ideology = social_reformism traits = {  } }
+				set_politics = {
+					ruling_party = social_democracy
+					elections_allowed = no
+				}
+				set_popularities = {
+						radical_socialism = 0
+						communism = 15
+						social_democracy = 40
+						social_liberalism = 13
+						market_liberalism = 12
+						conservatism = 12
+						authoritarism = 0
+						despotism = 8
+						fascism = 0
+						national_syndicalism = 0
+				}
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_8
+	}
+}
+
+# Независимость после прихода к власти большевиков
+country_event = {
+	id = finland.9
+	title = finland.9.t
+	desc = {
+		text = finland.9.desc
+		trigger = {
+			NOT = { has_global_flag = RUS_Kornilov_civil_war }
+		}
+	}
+	desc = {
+		text = finland.9.desc_alt
+		trigger = {
+			has_global_flag = RUS_Kornilov_civil_war
+		}
+	}
+	picture = GFX_report_event_all_power_to_the_soviets
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1917.11.6
+		tag = FIN
+		RUS = {
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_global_flag = RUS_Kornilov_civil_war
+			}
+		}
+		has_cosmetic_tag = FIN_russian
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = finland.9.a
+		RUS = { end_puppet = FIN }
+		hidden_effect = {
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+			set_popularities = {
+					radical_socialism = 0
+					communism = 15
+					social_democracy = 40
+					social_liberalism = 13
+					market_liberalism = 12
+					conservatism = 12
+					authoritarism = 0
+					despotism = 8
+					fascism = 0
+					national_syndicalism = 0
+			}
+			drop_cosmetic_tag = yes
+			set_cosmetic_tag = FIN_white
+			leave_faction = yes
+			add_ideas = neutral_foreign_policy_law
+			every_country = {
+				limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS tag = SNS is_in_faction_with = TRG tag = TRG is_in_faction_with = OAF tag = OAF is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+				white_peace = FIN
+			}
+			every_country = {
+				limit = { has_war_with = RUS is_in_faction = no }
+				white_peace = FIN
+			}
+			FIN = {
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								former_russian_empire_baltic_states_country = yes tag = HRB
+								tag = FIN
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+	}
+}
+
+# Ивент РСФСР - признание независимости Финляндия
+country_event = {
+	id = finland.10
+	title = finland.10.t
+	desc = finland.10.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.7.2
+		tag = RUS
+		OR = {
+			has_government = radical_socialism
+			has_government = communism
+		}
+		FIN = { NOT = { is_subject_of = RUS } }
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	#Признать независимость
+	option = {
+		name = finland.10.a
+		every_state = {
+			limit = { is_core_of = FIN  NOT = { state = 1049 state = 722 } }
+			remove_core_of = RUS
+			remove_core_of = RSS
+			remove_core_of = CCA
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = ROOT
+					is_in_faction_with = ROOT
+					is_subject_of = ROOT
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FIN.id
+					}
+				}
+				FIN = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+	}
+	
+	#Не признавать независимость
+	option = {
+		name = finland.10.b
+	}
+}
+
+###### От Ноября до Февраля, или рост напряжённости в обществе ######
+
+# Новая конституция
+country_event = {
+	id = finland.11
+	title = finland.11.t
+	desc = finland.11.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.11.a
+		
+	}
+}
+
+# Усиление охранных отрядов и красной гвардии
+country_event = {
+	id = finland.12
+	title = finland.12.t
+	desc = finland.12.desc
+	picture = GFX_report_event_fin_security_corps
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.7.2
+		tag = FIN
+		NOT = { has_global_flag = FIN_civil_war_end }
+		NOT = { has_global_flag = FIN_civil_war_begin }
+		is_subject = no
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	option = {
+		name = finland.12.a
+		add_ideas = punakaarti
+		add_ideas = suojeluskunta
+		add_stability = -0.05
+	}
+}
+
+# Разоружение российских гарнизонов
+country_event = {
+	id = finland.13
+	title = finland.13.t
+	desc = finland.13.desc
+	picture = GFX_report_event_fin_shuckor
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.7.2
+		tag = FIN
+		NOT = { has_global_flag = FIN_civil_war_end }
+		NOT = { has_global_flag = FIN_civil_war_begin }
+		is_subject = no
+		has_idea = suojeluskunta
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = finland.13.a
+		add_stability = -0.05
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 500
+			producer = RUS
+		}
+	}
+}
+
+# Вооружение отрядов красногвардейцев
+country_event = {
+	id = finland.14
+	title = finland.14.t
+	desc = finland.14.desc
+	picture = GFX_report_event_fin_red_guard
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.7.2
+		tag = FIN
+		NOT = { has_global_flag = FIN_civil_war_end }
+		NOT = { has_global_flag = FIN_civil_war_begin }
+		is_subject = no
+		has_idea = punakaarti
+	}
+	
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	option = {
+		name = finland.14.a
+		add_stability = -0.05
+		set_country_flag = red_guards_armed
+	}
+}
+
+# Восстание в Хельсинки
+country_event = {
+	id = finland.15
+	title = finland.15.t
+	desc = finland.15.desc
+	picture = GFX_report_event_fin_start_civilwar
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.7.2
+		tag = FIN
+		NOT = { has_global_flag = FIN_civil_war_end }
+		NOT = { has_global_flag = FIN_civil_war_begin }
+		is_subject = no
+		has_idea = punakaarti
+		has_country_flag = red_guards_armed
+		NOT = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 20
+	}
+	
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = red_guards_armed
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -1
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = -1
+			}
+			set_capital = { state = 149 }
+			clr_country_flag = political_social_democrats_in_socialist_coalition
+			
+			clr_global_flag = FIN_civil_war_end
+			set_global_flag = FIN_civil_war_begin
+			set_capital = { state = 149 }
+			create_dynamic_country = {
+				original_tag = FIN
+				set_temp_variable = { red_FIN = this }
+				ROOT = {
+					every_owned_state = {
+						limit = { OR = { state = 111 state = 1049 state = 1050 state = 926 state = 1053 state = 1055 state = 1056 } }
+						
+						var:red_FIN = {
+							transfer_state = PREV
+						}
+					}
+				}
+				add_random_ministers = yes
+				add_random_ministers = yes
+				set_country_flag = political_social_democrats_in_socialist_coalition
+				add_ideas = neutral_foreign_policy_law
+				add_opinion_modifier = { target = RUS modifier = socialist_social_democracy }
+				RUS = { add_opinion_modifier = { target = PREV modifier = socialist_social_democracy } }
+				set_cosmetic_tag = FNR_red
+				
+				create_field_marshal = {
+					name = "Kulervo Manner"
+					id = 6748
+					portrait_path = "gfx/leaders/FIN/Portrait_Kulervo_Manner.dds"
+					traits = { media_personality }
+					skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 2 logistics_skill = 3
+				}
+
+				create_corps_commander = {
+					name = "Eero Haapalainen"
+					id = 6747
+					portrait_path = "gfx/leaders/FIN/Portrait_Eero_Haapalainen.dds"
+					traits = { winter_specialist }
+					skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 2 logistics_skill = 2
+				}
+
+				create_corps_commander = {
+					name = "Adolf Taimi"
+					id = 6746
+					portrait_path = "gfx/leaders/FIN/Portrait_Adolf_Taimi.dds"
+					traits = { ranger }
+					skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 2
+				}
+
+				create_corps_commander = {
+					name = "Eino Rahja"
+					id = 6745
+					portrait_path = "gfx/leaders/FIN/Portrait_Eino_Rahja.dds"
+					traits = { }
+					skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 2
+				}
+
+				add_ideas = {
+					Kullervo_Manner_1
+					Yrjo_Sirola_2
+					Jalo_Kohonen_3
+					Eero_Haapalainen_4
+					Matti_Turkia_5
+					
+					Ali_Aaltonen_hc
+					
+					workers_control_law
+					sisu
+				}
+					set_politics = {
+						ruling_party = social_democracy
+						election_frequency = 36
+						elections_allowed = no
+					}
+					set_popularities = {
+						social_democracy = 50
+						communism = 50
+					}
+					create_country_leader = { name = "Yuryo Sirola" desc = FIN_Yuryo_Sirola_desc picture = "gfx/leaders/FIN/Portrait_Yuryo_Sirola.dds" expire = "1935.1.1" ideology = temperate_marxism traits = {  } }
+					create_country_leader = { name = "Kulervo Manner" desc = FIN_Kulervo_Manner_desc picture = "gfx/leaders/FIN/Portrait_Kulervo_Manner.dds" expire = "1935.1.1" ideology = old_social_democracy traits = {  } }
+				var:red_FIN = { save_global_event_target_as = red_FIN }
+					every_country = {
+						limit = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+			}
+			hidden_effect = { news_event = { id = news_n.16 hours = 12 } }
+		}
+	}
+	
+	#Играть за белых
+	option = {
+		name = finland.15.a
+		set_country_flag = FIN_white_side
+		add_stability = -0.15
+		hidden_effect = {
+			remove_ideas = punakaarti
+			country_event = { id = finland.16 hours = 1 }
+		}
+		event_target:red_FIN = {
+			set_country_flag = FIN_red_side
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			add_civil_war_target = ROOT
+			load_oob = "FNR_punakaarti"
+		}
+	}
+	
+	#Играть за красных
+	option = {
+		name = finland.15.b
+		set_country_flag = FIN_white_side
+		add_stability = -0.15
+		hidden_effect = {
+			remove_ideas = punakaarti
+			country_event = { id = finland.16 hours = 1 }
+		}
+		event_target:red_FIN = {
+			set_country_flag = FIN_red_side
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+			add_civil_war_target = ROOT
+			load_oob = "FNR_punakaarti"
+		}
+		event_target:red_FIN = {
+			change_tag_from = ROOT
+		}
+	}
+}
+
+# Преобразование отрядов в войска
+country_event = {
+	id = finland.16
+	title = finland.16.t
+	desc = finland.16.desc
+	picture = GFX_report_event_fin_shuckor
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.16.a
+		if = {
+			limit = { has_idea = suojeluskunta }
+			remove_ideas = suojeluskunta
+			load_oob = "FIN_suojeluskunta"
+		}
+		if = {
+			limit = { has_idea = jaakariliike }
+			remove_ideas = jaakariliike
+			load_oob = "FIN_jaakariliike"
+		}
+	}
+}
+
+# Конец гражданской войны для Белых
+country_event = {
+	id = finland.17
+	title = finland.17.t
+	desc = finland.17.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.7.2
+		NOT = { has_global_flag = FIN_civil_war_end }
+		has_global_flag = FIN_civil_war_begin
+		tag = FIN
+		has_country_flag = FIN_white_side
+		NOT = { any_other_country = { original_tag = FIN NOT = { is_subject_of = ROOT } } }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = finland.17.a
+		clr_country_flag = FIN_white_side
+		clr_global_flag = FIN_civil_war_begin
+		set_global_flag = FIN_civil_war_end
+		if = {
+			limit = { is_subject = no }
+			drop_cosmetic_tag = yes
+		}
+		every_other_country = {
+			limit = { original_tag = FIN is_subject_of = ROOT }
+			ROOT = {
+				annex_country = {
+					target = PREV
+					transfer_troops = no
+				}
+			}
+		}
+		set_province_name = { id = 3025 name = "Tampere" }
+		1056 = { set_state_name = "Tampere" }
+		set_province_name = { id = 11105 name = "Helsinki" }
+		111 = { set_state_name = "Helsinki" }
+		set_province_name = { id = 9206 name = "Viipuri" }
+		1050 = { set_state_name = "Viipuri" }
+		set_province_name = { id = 3122 name = "Vaasa" }
+		149 = { set_state_name = "Vaasa" }
+		set_province_name = { id = 3083 name = "Turku" }
+		926 = { set_state_name = "Turku" }
+		set_province_name = { id = 3025 name = "Tampere" }
+		set_province_name = { id = 9167 name = "Hameenlinna" }
+		927 = { set_state_name = "STATE_927" }
+		928 = { set_state_name = "STATE_928" }
+		set_capital = { state = 111 }
+	}
+}
+# Конец гражданской войны для Красных
+country_event = {
+	id = finland.18
+	title = finland.18.t
+	desc = finland.18.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.7.2
+		NOT = { has_global_flag = FIN_civil_war_end }
+		has_global_flag = FIN_civil_war_begin
+		tag = FIN
+		has_country_flag = FIN_red_side
+		NOT = { any_other_country = { original_tag = FIN NOT = { is_subject_of = ROOT } } }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = finland.18.a
+		clr_country_flag = FIN_red_side
+		clr_global_flag = FIN_civil_war_begin
+		set_global_flag = FIN_civil_war_end
+		if = {
+			limit = { is_subject = no }
+			drop_cosmetic_tag = yes
+			hidden_effect = { set_cosmetic_tag = FIN_red_color }
+		}
+		every_other_country = {
+			limit = { original_tag = FIN is_subject_of = ROOT }
+			ROOT = {
+				annex_country = {
+					target = PREV
+					transfer_troops = no
+				}
+			}
+		}
+		set_province_name = { id = 3025 name = "Tampere" }
+		1056 = { set_state_name = "Tampere" }
+		set_province_name = { id = 11105 name = "Helsinki" }
+		111 = { set_state_name = "Helsinki" }
+		set_province_name = { id = 9206 name = "Viipuri" }
+		1050 = { set_state_name = "Viipuri" }
+		set_province_name = { id = 3122 name = "Vaasa" }
+		149 = { set_state_name = "Vaasa" }
+		set_province_name = { id = 3083 name = "Turku" }
+		926 = { set_state_name = "Turku" }
+		set_province_name = { id = 3025 name = "Tampere" }
+		set_province_name = { id = 9167 name = "Hameenlinna" }
+		927 = { set_state_name = "STATE_927" }
+		928 = { set_state_name = "STATE_928" }
+		set_capital = { state = 111 }
+		if = {
+			limit = {
+				RUS = {
+					exists = yes
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+					}
+				}
+			}
+			RUS = { country_event = { id = finland.19 days = 1 } }
+		}
+	}
+}
+
+# Установление границы между Красной Финляндией и РСФСР
+country_event = {
+	id = finland.19
+	title = finland.19.t
+	desc = finland.19.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	#Отдать все спорные пограничные территории
+	option = {
+		name = finland.19.a
+		every_state = {
+			limit = { is_core_of = FIN }
+			remove_core_of = RUS
+			remove_core_of = RSS
+			remove_core_of = CCA
+		}
+		every_state = {
+			limit = { is_core_of = FIN is_owned_by = RUS }
+			FIN = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	#Установить границу какая есть сейчас такую и оставить
+	option = {
+		name = finland.19.b
+		every_state = {
+			limit = { is_core_of = FIN is_owned_by = RUS }
+			remove_core_of = FIN
+		}
+		every_state = {
+			limit = { is_core_of = RUS is_owned_by = FIN }
+			remove_core_of = RUS
+			remove_core_of = RSS
+			remove_core_of = CCA
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	
+	#Потребовать все пограничные земли
+	option = {
+		name = finland.19.b
+		effect_tooltip = {
+			every_state = {
+				limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FIN }
+				RUS = { transfer_state = PREV }
+			}
+			every_state = {
+				limit = { is_core_of = FIN is_owned_by = RUS }
+				remove_core_of = FIN
+			}
+		}
+		hidden_effect = { FIN = { country_event = finland.20 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Требования России
+country_event = {
+	id = finland.20
+	title = finland.20.t
+	desc = finland.20.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	#Согласиться
+	option = {
+		name = finland.20.a
+		every_state = {
+			limit = { OR = { is_core_of = RUS state = 146 state = 1049 state = 1050 } is_owned_by = FIN }
+			RUS = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = { is_core_of = FIN is_owned_by = RUS }
+			remove_core_of = FIN
+		}
+		ai_chance = {
+			factor = 50
+		}
+	}
+	
+	#Отклонить
+	option = {
+		name = finland.20.b
+		hidden_effect = { RUS = { country_event = finland.21 } }
+		ai_chance = {
+			factor = 50
+		}
+	}
+}
+# Отказ Финляндии
+country_event = {
+	id = finland.21
+	title = finland.21.t
+	desc = finland.21.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.21.a
+	}
+}
+
+# Вступление в Коминтерн
+country_event = {
+	id = finland.22
+	title = finland.22.t
+	desc = finland.22.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FIN
+		is_socialist_country = yes
+		is_in_faction = no
+		is_subject = no
+		OR = {
+			RUS = { is_socialist_country = yes is_faction_leader = yes }
+			SOV = { is_socialist_country = yes is_faction_leader = yes }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	#Присоединиться к России
+	option = {
+		name = finland.22.a
+		random_country = {
+			limit = { OR = { tag = RUS tag = SOV } is_socialist_country = yes is_faction_leader = yes }
+			country_event = generic.2
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	#Нет
+	option = {
+		name = finland.22.a
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Русские оставили Финляндию
+country_event = {
+	id = finland.23
+	title = finland.23.t
+	desc = finland.23.desc
+	picture = GFX_report_event_all_power_to_the_soviets
+
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.23.a
+		RUS = { end_puppet = FIN }
+		set_global_flag = FIN_civil_war_end
+		hidden_effect = {
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+			set_popularities = {
+					radical_socialism = 0
+					communism = 15
+					social_democracy = 40
+					social_liberalism = 13
+					market_liberalism = 12
+					conservatism = 12
+					authoritarism = 0
+					despotism = 8
+					fascism = 0
+					national_syndicalism = 0
+			}
+			drop_cosmetic_tag = yes
+			set_cosmetic_tag = FIN_white
+			leave_faction = yes
+			add_ideas = neutral_foreign_policy_law
+			every_country = {
+				limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS tag = SNS is_in_faction_with = TRG tag = TRG is_in_faction_with = OAF tag = OAF is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } is_faction_leader = yes }
+				white_peace = FIN
+			}
+			every_country = {
+				limit = { has_war_with = RUS is_in_faction = no }
+				white_peace = FIN
+			}
+			FIN = {
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								former_russian_empire_baltic_states_country = yes tag = HRB
+								tag = FIN
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+	}
+}
+
+
+###### МАНАРХИЯ - МАТЬ ПОРЯДКА! ######
+
+###Выбор короля
+country_event = {
+	id = finland.31
+	title = finland.31.t
+	desc = finland.31.desc
+	picture = GFX_report_event_spain_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FIN
+		FIN = { has_country_flag = FIN_zein_under_arest }
+		NOT = { is_subject_of = RUS }
+		has_country_flag = FIN_monarchy
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		
+	}
+	
+	#Аату I
+	option = {
+		name = finland.31.a
+		ai_chance = { factor = 20 }
+		hidden_effect = {
+		FIN = {
+		
+			set_country_flag = FIN_king_aatu
+		
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+						
+			#retire_country_leader
+			
+			#create_country_leader = { name = "Aatu I" desc = FIN_Aatu_I_desc picture = "gfx/leaders/FIN/Portrait_Adolf_Friedrich_Mecklenburg-Schwerin.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = {  } }
+		
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_20.a
+	}
+		
+	#Оскари I
+	option = {
+		name = finland.31.b
+		ai_chance = { factor = 10 }
+		hidden_effect = {
+		FIN = {
+			
+			set_country_flag = FIN_king_oskari
+		
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+			#retire_country_leader
+			
+			#create_country_leader = { name = "Oskari I" desc = FIN_Oskari_I_desc picture = "gfx/leaders/FIN/Portrait_Oskari_I.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = {  } }
+		
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_20.b
+	}	
+	#Фридрих Карл Гессен-Кассельский // Вяйнё I
+	option = {
+		name = finland.31.c
+		ai_chance = { factor = 30 }
+		hidden_effect = {
+		FIN = {
+		
+			set_country_flag = FIN_king_vaino
+		
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+									
+			#retire_country_leader
+			
+				
+			#create_country_leader = { name = "Väinö I" desc = FIN_Vaino_I_desc picture = "gfx/leaders/FIN/Portrait_Vaino_I.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = {  } }
+		
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_20.c
+	}
+	
+	#Вилйо I
+	option = {
+		name = finland.31.d
+		ai_chance = { factor = 20 }
+		hidden_effect = {
+		FIN = {
+			
+			set_country_flag = FIN_king_viljo
+		
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+			
+			#retire_country_leader
+			
+			create_country_leader = { name = "Viljo I" desc = FIN_Viljo_I_desc picture = "gfx/leaders/FIN/Portrait_Viljo_I.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = {  } }
+		
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_20.d
+	}	
+	
+	#Леннарт I
+	option = {
+		name = finland.31.e
+		ai_chance = { factor = 20 }
+		hidden_effect = {
+		FIN = {
+			
+			set_country_flag = FIN_king_lennart
+		
+			set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+			
+			#retire_country_leader
+			
+				create_country_leader = { name = "Lennart I" desc = FIN_Lennart_I_desc picture = "gfx/leaders/FIN/Portrait_Lennart_I.dds" expire = "1935.1.1" ideology = authoritarism_ideology  traits = {  } }
+		
+			}
+		}
+		custom_effect_tooltip = fin_tooltip_20.e
+	}
+}
+
+# Немецкий вопрос
+country_event = {
+	id = finland.32
+	title = finland.32.t
+	desc = finland.32.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.32.a
+		add_stability = 0.10
+		add_war_support = -0.10
+	}
+	
+	option = {
+		name = finland.32.b
+		add_stability = -0.05
+		add_war_support = 0.05
+		add_manpower = 1000
+	}
+	
+	option = {
+		name = finland.32.c
+		add_war_support = 0.20
+		add_stability = -0.20
+		add_manpower = 5000
+		add_popularity = { ideology = authoritarism popularity = -0.2 }
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_great_war
+			amount = 1000
+			producer = FIN
+		}
+	}
+}
+
+# Акт об утверждении конституции Финляндии
+country_event = {
+	id = finland.33
+	title = finland.33.t
+	desc = finland.33.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.33.a
+		add_stability = 0.05
+		add_popularity = { ideology = authoritarism popularity = -0.1 }
+	}
+}
+
+# Русификация
+country_event = {
+	id = finland.34
+	title = finland.34.t
+	desc = finland.34.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.34.a
+		add_stability = 0.10
+		add_popularity = { ideology = conservatism popularity = 0.1 }
+		add_opinion_modifier = { target = RUS modifier = FIN_no_resification_RUS }
+		RUS = {
+			add_opinion_modifier = { target = FIN modifier = FIN_no_resification_RUS }
+		}
+	}
+}
+
+# Разоружение и военные на территории княжества
+country_event = {
+	id = finland.35
+	title = finland.35.t
+	desc = finland.35.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.35.a
+		add_war_support = 0.05
+		add_stability = -0.05
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_great_war
+			amount = 3000
+			producer = FIN
+		}
+		division_template = {
+			name = "Suojeluskunta"	# Militia
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 1 y = 0 }
+					militia = { x = 1 y = 1 }
+				}
+		}
+		capital_scope = {
+			create_unit = {
+						division = "name = \"Suojeluskunta rykmentti\" division_template = \"Suojeluskunta\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+			create_unit = {
+						division = "name = \"Suojeluskunta rykmentti\" division_template = \"Suojeluskunta\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+		}
+		add_opinion_modifier = { target = RUS modifier = FIN_no_military_RUS }
+		RUS = {
+			add_opinion_modifier = { target = FIN modifier = FIN_no_military_RUS }
+		}
+	}
+	
+	option = {
+		name = finland.35.b
+		add_stability = -0.15
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_great_war
+			amount = 5000
+			producer = FIN
+		}
+		add_opinion_modifier = { target = RUS modifier = FIN_no_military_RUS }
+		RUS = {
+			add_opinion_modifier = { target = FIN modifier = FIN_no_military_RUS }
+		}
+	}
+	
+	option = {
+		name = finland.35.c
+		add_opinion_modifier = { target = RUS modifier = FIN_no_military_RUS }
+		RUS = {
+			add_opinion_modifier = { target = FIN modifier = FIN_no_military_RUS }
+		}
+	}
+}
+
+# Сейм
+country_event = {
+	id = finland.36
+	title = finland.36.t
+	desc = finland.36.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.36.a
+		add_stability = 0.05
+		add_war_support = 0.10
+		add_opinion_modifier = { target = RUS modifier = FIN_seim_RUS }
+		RUS = {
+			add_opinion_modifier = { target = FIN modifier = FIN_seim_RUS }
+		}
+	}
+}
+
+# "ФИНСКИЕ ВЫСТУПЛЕНИЯ" В РОССИИ
+country_event = {
+	id = finland.37
+	title = finland.37.t
+	desc = finland.37.desc
+	picture = GFX_report_event_fin_finish_civilwar
+
+	is_triggered_only = yes
+	
+	option = {
+		name = finland.37.a
+		add_ideas = FIN_political_clashes
+		#
+	}
+	
+	option = {
+		name = finland.37.b
+		add_ideas = FIN_wide_autonomy
+		set_politics = {
+				ruling_party = conservatism
+				elections_allowed = no
+			}
+	}
+}

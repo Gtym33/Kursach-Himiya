@@ -1,0 +1,3001 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_amrprm
+
+# Амурский комитет общественного порядка (для ДВ чтобы пересесть)
+country_event = {
+	id = rcw_amrprm.0
+	title = rcw_amrprm.1.t
+	desc = rcw_amrprm.1.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+	
+	is_triggered_only = yes
+	option = {
+		name = rcw_amrprm.1.a
+	}
+	
+	option = {
+		name = rcw_amrprm.1.b
+		AMR = { change_tag_from = ROOT }
+	}
+}
+
+# Амурский комитет общественного порядка
+country_event = {
+	id = rcw_amrprm.1
+	title = rcw_amrprm.1.t
+	desc = rcw_amrprm.1.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+
+	trigger = {
+		has_start_date < 1917.12.1 #примерно через месяц после революции
+		tag = RUS
+		AMR = { exists = no }
+		RUS = {
+			NOT = { has_country_flag = AMR_revolt }
+			has_country_flag = RUS_Oktober_revolution_fired
+		}
+		1039 = { OWNER = { OR = { is_subject_of = ROOT tag = ROOT tag = FER } } }
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	fire_only_once = yes
+
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { FER = { is_ai = no exists = yes } }
+				FER = { country_event = rcw_amrprm.0 }
+			}
+			every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = AMR }
+			AMR = {
+				inherit_technology = RUS
+				set_cosmetic_tag = AMR_oblast
+				transfer_state = 561
+				transfer_state = 1024
+				transfer_state = 1039
+				transfer_state = 1184
+				add_ideas = neutral_foreign_policy_law
+				add_ideas = RUS_red_guards_provisional_government
+				add_ideas = AMR_dvoevlastie
+				remove_all_foreing_locked_templates_from_liberated_country = yes
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes tag = HRB
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.1.a
+		hidden_effect = {
+			AMR = {
+				load_oob = "AMR_1917"
+				country_event = { id = rcw_amrprm.2 days = 60 }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.1.b
+		trigger = {
+			is_ai = no
+			AMR = { OR = { exists = no is_ai = yes } }
+			FER = { OR = { exists = no is_ai = yes } }
+		}
+		hidden_effect = {
+			AMR = {
+				load_oob = "AMR_1917"
+				country_event = { id = rcw_amrprm.2 days = 60 }
+			}
+		}
+		AMR = { change_tag_from = RUS }
+	}
+
+}
+
+# Благовещенский Совет рабочих и солдатских депутатов
+country_event = {
+	id = rcw_amrprm.2
+	title = rcw_amrprm.2.t
+	desc = rcw_amrprm.2.desc
+
+	picture = GFX_report_event_amur_sovet
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.2.a
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
+		remove_ideas = RUS_red_guards_provisional_government
+		country_event = {
+			id = rcw_amrprm.3
+			days = 60
+		}
+		if = {
+			limit = { RSR = { has_war_with = ROOT } }
+			white_peace = RSR
+		}
+		RSR = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } }
+	}
+}
+
+# Гамовский мятеж
+country_event = {
+	id = rcw_amrprm.3
+	title = rcw_amrprm.3.t
+	desc = rcw_amrprm.3.desc
+
+	picture = GFX_report_event_rus_kazaks_war
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.3.a
+		remove_ideas = AMR_dvoevlastie
+		add_stability = -0.2
+		random_owned_state = {
+			limit = { NOT = { state = 1039 } }
+			ROOT = { set_capital = { state = PREV } }
+		}
+		start_civil_war = {
+			ideology = despotism
+			size = 0
+			states = { 1039 }
+		}
+		add_ideas = emergency_laws_b_law
+		set_country_flag = AMR_gamov_revolt
+		hidden_effect = {
+					create_template_Krasnaya_Gvardiya = yes
+					division_template = {
+						name = "Matrosy amurskoy flotilii"
+						regiments = {
+							marine = { x = 0 y = 0 }
+							marine = { x = 0 y = 1 }
+						}
+						is_locked = yes
+					}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Matrosy amurskoy flotilii\" division_template = \"Matrosy amurskoy flotilii\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+				owner = CONTROLLER
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = CONTROLLER
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = CONTROLLER
+			}
+		}
+		set_province_controller = 13701
+		set_province_controller = 12657
+		set_province_controller = 13709
+		set_province_controller = 13710
+		set_province_controller = 13711
+		set_province_controller = 13699
+		1039 = {
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = ROOT
+			}
+		}
+		hidden_effect = {
+			random_other_country = {
+				limit = { original_tag = ROOT }
+				set_country_flag = AMR_gamov_revolt
+				hidden_effect = {
+					create_country_leader = { name = "Efrem Peregojin" desc = "" picture = "gfx/leaders/AMR/Portrait_Efrem_Peregojin.dds" expire = "1935.1.1" ideology = anarchist_communism traits = {  } }
+					create_country_leader = { name = "Fyodor Mukhin" desc = "" picture = "gfx/leaders/AMR/Portrait_Fyodor_Mukhin.dds" expire = "1935.1.1" ideology = leninism traits = {  } }
+					create_country_leader = { name = "Ivan Shishlov" desc = "" picture = "gfx/leaders/AMR/Portrait_Ivan_Shishlov.dds" expire = "1935.1.1" ideology = social_reformism traits = {  } }
+					create_country_leader = { name = "Alexandr Alexeevskiy" desc = "" picture = "gfx/leaders/AMR/Portrait_Alexandr_Alexeevskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+				}
+				save_global_event_target_as = AMR_CW
+				every_unit_leader = { limit = { NOT = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = ROOT }
+				ROOT = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				REB = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				division_template = {
+					name = "Otryady samooborony"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+						militia = { x = 1 y = 1 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+				division_template = {
+					name = "Kavaleriyskaya brigada"
+					regiments = {
+						irregular_cavalry = { x = 0 y = 0 }
+						irregular_cavalry = { x = 0 y = 1 }
+					}
+					support = {
+						field_guns = { x = 0 y = 0 }
+					}
+					is_locked = yes
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Otryady samooborony\" division_template = \"Otryady samooborony\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Otryady samooborony\" division_template = \"Otryady samooborony\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Otryady samooborony\" division_template = \"Otryady samooborony\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Kazachya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+				}
+				event_target:AMR_CW = {
+					every_country = {
+						limit = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+				hidden_effect = { clear_global_event_target = AMR_CW }
+			}
+		}
+	}
+
+	option = {
+		name = rcw_amrprm.3.b
+		remove_ideas = AMR_dvoevlastie
+		add_stability = -0.2
+		random_owned_state = {
+			limit = { NOT = { state = 1039 } }
+			ROOT = { set_capital = { state = PREV } }
+		}
+		start_civil_war = {
+			ideology = despotism
+			size = 0
+			states = { 1039 }
+		}
+		add_ideas = emergency_laws_b_law
+		set_country_flag = AMR_gamov_revolt
+		hidden_effect = {
+					create_template_Krasnaya_Gvardiya = yes
+					division_template = {
+						name = "Matrosy amurskoy flotilii"
+						regiments = {
+							marine = { x = 0 y = 0 }
+							marine = { x = 0 y = 1 }
+						}
+						is_locked = yes
+					}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Matrosy amurskoy flotilii\" division_template = \"Matrosy amurskoy flotilii\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+				owner = CONTROLLER
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = CONTROLLER
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = CONTROLLER
+			}
+		}
+		set_province_controller = 13701
+		set_province_controller = 12657
+		set_province_controller = 13709
+		set_province_controller = 13710
+		set_province_controller = 13711
+		set_province_controller = 13699
+		1039 = {
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+				owner = ROOT
+			}
+		}
+		hidden_effect = {
+			random_other_country = {
+				limit = { original_tag = ROOT }
+				set_country_flag = AMR_gamov_revolt
+				hidden_effect = {
+					create_country_leader = { name = "Efrem Peregojin" desc = "" picture = "gfx/leaders/AMR/Portrait_Efrem_Peregojin.dds" expire = "1935.1.1" ideology = anarchist_communism traits = {  } }
+					create_country_leader = { name = "Fyodor Mukhin" desc = "" picture = "gfx/leaders/AMR/Portrait_Fyodor_Mukhin.dds" expire = "1935.1.1" ideology = leninism traits = {  } }
+					create_country_leader = { name = "Ivan Shishlov" desc = "" picture = "gfx/leaders/AMR/Portrait_Ivan_Shishlov.dds" expire = "1935.1.1" ideology = social_reformism traits = {  } }
+					create_country_leader = { name = "Alexandr Alexeevskiy" desc = "" picture = "gfx/leaders/AMR/Portrait_Alexandr_Alexeevskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+				}
+				save_global_event_target_as = AMR_CW
+				every_unit_leader = { limit = { NOT = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = ROOT }
+				ROOT = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				REB = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				division_template = {
+					name = "Otryady samooborony"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+						militia = { x = 1 y = 1 }
+					}
+					priority = 0
+					is_locked = yes
+				}
+				division_template = {
+					name = "Kavaleriyskaya brigada"
+					regiments = {
+						irregular_cavalry = { x = 0 y = 0 }
+						irregular_cavalry = { x = 0 y = 1 }
+					}
+					support = {
+						field_guns = { x = 0 y = 0 }
+					}
+					is_locked = yes
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Otryady samooborony\" division_template = \"Otryady samooborony\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Otryady samooborony\" division_template = \"Otryady samooborony\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Otryady samooborony\" division_template = \"Otryady samooborony\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Kazachya brigada\" division_template = \"Kavaleriyskaya brigada\" start_experience_factor = 0.1 start_equipment_factor = 0.5"
+						owner = CONTROLLER
+					}
+				}
+				event_target:AMR_CW = {
+					every_country = {
+						limit = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+				hidden_effect = { clear_global_event_target = AMR_CW }
+			}
+		}
+		random_other_country = {
+			limit = { original_tag = ROOT }
+			change_tag_from = ROOT
+		}
+	}
+}
+
+# Порядок восстановлен
+country_event = {
+	id = rcw_amrprm.4
+	title = rcw_amrprm.4.t
+	desc = rcw_amrprm.4.desc
+
+	trigger = {
+		has_start_date < 1918.7.2
+		original_tag = AMR
+		has_country_flag = AMR_gamov_revolt
+		NOT = { has_government = communism }
+		has_civil_war = no
+	}
+
+	picture = GFX_report_event_amur_restore_order
+
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	
+	option = {
+		name = rcw_amrprm.4.a
+		set_capital = { state = 1039 }
+		clr_country_flag = AMR_gamov_revolt
+			set_politics = {
+				ruling_party = social_liberalism
+				elections_allowed = no
+			}
+			country_event = {
+				id = rcw_amrprm.12
+				days = 7
+			}
+		if = {
+			limit = { RSR = { exists = yes } NOT = { has_war_with = RSR } }
+			declare_war_on = {
+				target = RSR
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = { FER = { exists = yes is_subject_of = RSR } NOT = { has_war_with = FER } }
+			declare_war_on = {
+				target = FER
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.4.b
+		set_capital = { state = 1039 }
+		clr_country_flag = AMR_gamov_revolt
+			set_politics = {
+				ruling_party = despotism
+				elections_allowed = no
+			}
+			country_event = {
+				id = rcw_amrprm.6
+				days = 7
+			}
+		if = {
+			limit = { RSR = { exists = yes } NOT = { has_war_with = RSR } }
+			declare_war_on = {
+				target = RSR
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = { FER = { exists = yes is_subject_of = RSR } NOT = { has_war_with = FER } }
+			declare_war_on = {
+				target = FER
+				type = annex_everything
+			}
+		}
+	}
+
+}
+
+# V крестьянский съезд
+country_event = {
+	id = rcw_amrprm.5
+	title = rcw_amrprm.5.t
+	desc = rcw_amrprm.5.desc
+
+	picture = GFX_report_event_amur_sovet_victory
+
+	trigger = {
+		has_start_date < 1918.7.2
+		original_tag = AMR
+		has_country_flag = AMR_gamov_revolt
+		has_government = communism
+		has_civil_war = no
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	option = {
+		name = rcw_amrprm.5.a
+		set_capital = { state = 1039 }
+		clr_country_flag = AMR_gamov_revolt
+		add_ideas = {
+			soviet_republic_gov_form
+			federal_gov_terr
+			decrees_of_ruler_b_law
+			allow_one_party_law
+		}
+		drop_cosmetic_tag = yes
+		every_state = {
+			limit = {
+				OR = {
+					state = 561
+					state = 1039
+					state = 1184
+					state = 1024
+					state = 1040
+					state = 657
+					state = 560
+				}
+				OR = {
+					is_core_of = FER
+					is_core_of = RUS
+				}
+				NOT = { is_core_of = AMR }
+			}
+			add_core_of = AMR
+		}
+		if = {
+			limit = { RSR = { exists = yes } }
+			RSR = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } }
+		}
+	}
+
+}
+
+# II Войсковой круг Амурского казачьего войска
+country_event = {
+	id = rcw_amrprm.6
+	title = rcw_amrprm.6.t
+	desc = rcw_amrprm.6.desc
+
+	picture = GFX_report_event_amur_restore_order_krug
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.6.a
+		add_ideas = cossaks_regionalism
+		add_ideas = {
+			military_dictatorship_gov_form
+			decrees_of_ruler_b_law
+		}
+		drop_cosmetic_tag = yes
+		every_state = {
+			limit = {
+				OR = {
+					state = 561
+					state = 1039
+					state = 1184
+					state = 1024
+					state = 1040
+					state = 657
+					state = 560
+				}
+				OR = {
+					is_core_of = FER
+					is_core_of = RUS
+				}
+				NOT = { is_core_of = AMR }
+			}
+			add_core_of = AMR
+		}
+	}
+}
+
+# Наплыв анархистов
+country_event = {
+	id = rcw_amrprm.7
+	title = rcw_amrprm.7.t
+	desc = rcw_amrprm.7.desc
+
+	picture = GFX_report_event_amur_anarchist
+
+	trigger = {
+		has_start_date < 1918.7.2
+		original_tag = AMR
+		has_government = communism
+		has_civil_war = no
+		563 = { CONTROLLER = { NOT = { has_government = radical_socialism has_government = communism } } }
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 20
+	}
+
+	
+	option = {
+		name = rcw_amrprm.7.a
+		add_timed_idea = {
+			idea = anarchism_orgy 
+			days = 60 
+		}
+		rise_hyper_inflation = yes
+	}
+	
+	option = {
+		name = rcw_amrprm.7.b
+		add_timed_idea = {
+			idea = anarchism_orgy
+			days = 60 
+		}
+		rise_hyper_inflation = yes
+		set_country_flag = fighting_with_anarchism
+	}
+
+}
+
+# Бой за Торговую площадь
+country_event = {
+	id = rcw_amrprm.8
+	title = rcw_amrprm.8.t
+	desc = rcw_amrprm.8.desc
+
+	picture = GFX_report_event_amur_anarchist_battle
+
+	trigger = {
+		has_start_date < 1918.7.2
+		original_tag = AMR
+		has_idea = anarchism_orgy
+		has_stability < 0.5
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	
+	option = {
+		name = rcw_amrprm.8.a
+		set_politics = {
+			ruling_party = radical_socialism
+			elections_allowed = no
+		}
+		delete_unit_template_and_units = { 
+			division_template = "Kavaleriyskaya brigada"
+		}
+		delete_unit_template_and_units = { 
+			division_template = "Otryady samooborony"
+		}
+		delete_unit_template_and_units = { 
+			division_template = "Krasnaya Gvardiya"
+		}
+		delete_unit_template_and_units = { 
+			division_template = "Matrosy amurskoy flotilii"
+		}
+		division_template = {
+			name = "Chyornaya Gvardiya"
+			regiments = {
+				militia = { x = 0 y = 0 }
+				militia = { x = 0 y = 1 }
+				militia = { x = 1 y = 0 }
+			}
+			priority = 0
+			is_locked = yes
+		}
+		create_unit = {
+			division = "name = \"Bratva\" division_template = \"Chyornaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+			owner = AMR
+		}
+		create_unit = {
+			division = "name = \"Amurskiy Otryad\" division_template = \"Chyornaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+			owner = AMR
+		}
+		create_corps_commander = { name = "Efrem Peregojin" id = 64408 portrait_path = "gfx/leaders/AMR/Portrait_Efrem_Peregojin.dds" traits = {  } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+	}
+
+}
+
+# Перестрелка на улице Большой
+country_event = {
+	id = rcw_amrprm.9
+	title = rcw_amrprm.9.t
+	desc = rcw_amrprm.9.desc
+
+	trigger = {
+		has_start_date < 1918.7.2
+		original_tag = AMR
+		has_idea = anarchism_orgy
+		has_country_flag = fighting_with_anarchism
+		NOT = { has_government = radical_socialism }
+	}
+
+	picture = GFX_report_event_amur_anarchist_battle
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.9.a
+		remove_ideas = anarchism_orgy
+		add_stability = 0.05
+	}
+}
+
+# II съезд амурских хлеборобов
+country_event = {
+	id = rcw_amrprm.10
+	title = rcw_amrprm.10.t
+	desc = rcw_amrprm.10.desc
+
+	picture = GFX_report_event_RSS_army
+
+	trigger = {
+		original_tag = AMR
+		has_civil_war = no
+		OR = {
+			has_government = communism
+			has_government = radical_socialism
+		}
+	}
+
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 90
+	}
+
+	
+	option = {
+		name = rcw_amrprm.10.a
+		add_war_support = -0.2
+		
+		hidden_effect = { create_country_leader = { name = "Peschanoozerskiy Soviet" desc = AMR_Peschanoozerskiy_Soviet_DESC picture = "gfx/leaders/PRM/Portrait_Peschanoozerskiy_Soviet.dds" expire = "1921.5.1" ideology = social_reformism traits = {  } } }
+		start_civil_war = {
+			ideology = social_democracy
+			size = 0
+			states = { 1184 }
+		}
+		hidden_effect = {
+			random_other_country = {
+				limit = { original_tag = ROOT }
+				set_country_flag = AMR_chleboroby
+				save_global_event_target_as = AMR_CW
+				set_cosmetic_tag = AMR_oblast
+				hidden_effect = {
+					create_country_leader = { name = "Efrem Peregojin" desc = "" picture = "gfx/leaders/AMR/Portrait_Efrem_Peregojin.dds" expire = "1935.1.1" ideology = anarchist_communism traits = {  } }
+					create_country_leader = { name = "Fyodor Mukhin" desc = "" picture = "gfx/leaders/AMR/Portrait_Fyodor_Mukhin.dds" expire = "1935.1.1" ideology = leninism traits = {  } }
+					create_country_leader = { name = "Alexandr Alexeevskiy" desc = "" picture = "gfx/leaders/AMR/Portrait_Alexandr_Alexeevskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+					create_country_leader = { name = "Ivan Gamov" desc = "" picture = "gfx/leaders/AMR/Portrait_Ivan_Gamov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = {  } }
+				}
+				transfer_units_fraction = {
+					target = ROOT
+					size = 1
+					stockpile_ratio = 0
+					army_ratio = 1
+					navy_ratio = 1
+					air_ratio = 1
+				}
+				every_unit_leader = { limit = { NOT = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = ROOT }
+				ROOT = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				REB = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				division_template = {
+					name = "Chleborobnoe opolcheniye"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+						militia = { x = 1 y = 1 }
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Chleborobnoe opolcheniye\" division_template = \"Chleborobnoe opolcheniye\" start_experience_factor = 0.2 start_equipment_factor = 1"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Chleborobnoe opolcheniye\" division_template = \"Chleborobnoe opolcheniye\" start_experience_factor = 0.2 start_equipment_factor = 1"
+						owner = CONTROLLER
+					}
+				}
+				event_target:AMR_CW = {
+					every_country = {
+						limit = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+				if = {
+					limit = { RSR = { exists = yes } NOT = { has_war_with = RSR } }
+					declare_war_on = {
+						target = RSR
+						type = annex_everything
+					}
+				}
+				if = {
+					limit = { FER = { exists = yes is_subject_of = RSR NOT = { has_war_with = event_target:AMR_CW } } NOT = { has_war_with = FER } }
+					declare_war_on = {
+						target = FER
+						type = annex_everything
+					}
+				}
+				hidden_effect = { clear_global_event_target = AMR_CW }
+			}
+		}
+	}
+
+	option = {
+		name = rcw_amrprm.10.b
+		add_war_support = -0.2
+		
+		hidden_effect = { create_country_leader = { name = "Peschanoozerskiy Soviet" desc = AMR_Peschanoozerskiy_Soviet_DESC picture = "gfx/leaders/PRM/Portrait_Peschanoozerskiy_Soviet.dds" expire = "1921.5.1" ideology = social_reformism traits = {  } } }
+		start_civil_war = {
+			ideology = social_democracy
+			size = 0
+			states = { 1184 }
+		}
+		hidden_effect = {
+			random_other_country = {
+				limit = { original_tag = ROOT }
+				set_country_flag = AMR_chleboroby
+				save_global_event_target_as = AMR_CW
+				set_cosmetic_tag = AMR_oblast
+				hidden_effect = {
+					create_country_leader = { name = "Efrem Peregojin" desc = "" picture = "gfx/leaders/AMR/Portrait_Efrem_Peregojin.dds" expire = "1935.1.1" ideology = anarchist_communism traits = {  } }
+					create_country_leader = { name = "Fyodor Mukhin" desc = "" picture = "gfx/leaders/AMR/Portrait_Fyodor_Mukhin.dds" expire = "1935.1.1" ideology = leninism traits = {  } }
+					create_country_leader = { name = "Alexandr Alexeevskiy" desc = "" picture = "gfx/leaders/AMR/Portrait_Alexandr_Alexeevskiy.dds" expire = "1935.1.1" ideology = social_liberalism_ideology traits = {  } }
+					create_country_leader = { name = "Ivan Gamov" desc = "" picture = "gfx/leaders/AMR/Portrait_Ivan_Gamov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = {  } }
+				}
+				transfer_units_fraction = {
+					target = ROOT
+					size = 1
+					stockpile_ratio = 0
+					army_ratio = 1
+					navy_ratio = 1
+					air_ratio = 1
+				}
+				every_unit_leader = { limit = { NOT = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = ROOT }
+				ROOT = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				REB = { every_unit_leader = { limit = { OR = { has_id = 64403 has_id = 64404 has_id = 64405 } } set_nationality = event_target:AMR_CW } }
+				division_template = {
+					name = "Chleborobnoe opolcheniye"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+						militia = { x = 1 y = 1 }
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Chleborobnoe opolcheniye\" division_template = \"Chleborobnoe opolcheniye\" start_experience_factor = 0.2 start_equipment_factor = 1"
+						owner = CONTROLLER
+					}
+					create_unit = {
+						division = "name = \"Chleborobnoe opolcheniye\" division_template = \"Chleborobnoe opolcheniye\" start_experience_factor = 0.2 start_equipment_factor = 1"
+						owner = CONTROLLER
+					}
+				}
+				event_target:AMR_CW = {
+					every_country = {
+						limit = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+				if = {
+					limit = { RSR = { exists = yes } NOT = { has_war_with = RSR } }
+					declare_war_on = {
+						target = RSR
+						type = annex_everything
+					}
+				}
+				if = {
+					limit = { FER = { exists = yes is_subject_of = RSR NOT = { has_war_with = event_target:AMR_CW } } NOT = { has_war_with = FER } }
+					declare_war_on = {
+						target = FER
+						type = annex_everything
+					}
+				}
+				hidden_effect = { clear_global_event_target = AMR_CW }
+			}
+		}
+		random_other_country = {
+			limit = { original_tag = ROOT }
+			change_tag_from = ROOT
+		}
+	}
+}
+
+# Новые и старые союзники
+country_event = {
+	id = rcw_amrprm.11
+	title = rcw_amrprm.11.t
+	desc = rcw_amrprm.11.desc
+
+	picture = GFX_report_event_amur_restore_order_krug
+
+	trigger = {
+		original_tag = AMR
+		has_government = social_democracy
+		has_civil_war = yes
+		has_country_flag = AMR_chleboroby
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 7
+	}
+
+	
+	option = {
+		name = rcw_amrprm.11.a
+		add_ideas = help_from_foreign_interventionists
+		add_war_support = 0.1
+		add_popularity = { ideology = despotism popularity = 0.1 }
+		add_popularity = { ideology = social_liberalism popularity = 0.1 }
+		hidden_effect = {
+			division_template = {
+				name = "Dobrovol'cheskiy kavaleristskiy polk"
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+				}
+				support = {
+					field_guns = { x = 0 y = 0 }
+				}
+				is_locked = yes
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 0.3 start_equipment_factor = 1"
+				owner = ROOT
+			}
+		}
+	}
+}
+
+# Временное правительство
+country_event = {
+	id = rcw_amrprm.12
+	title = rcw_amrprm.12.t
+	desc = rcw_amrprm.12.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+
+	trigger = {
+		original_tag = AMR
+		has_government = social_democracy
+		has_civil_war = no
+		has_country_flag = AMR_chleboroby
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 0
+	}
+
+	
+	option = {
+		name = rcw_amrprm.12.a
+		clr_country_flag = AMR_chleboroby
+		set_politics = { ruling_party = social_liberalism }
+		add_timed_idea = { 
+			idea = RUS_dvoevlastie_1
+			days = 60 
+		}
+		drop_cosmetic_tag = yes
+		every_state = {
+			limit = {
+				OR = {
+					state = 561
+					state = 1039
+					state = 1184
+					state = 1024
+					state = 1040
+					state = 657
+					state = 560
+				}
+				OR = {
+					is_core_of = FER
+					is_core_of = RUS
+				}
+				NOT = { is_core_of = AMR }
+			}
+			add_core_of = AMR
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.12.b
+		clr_country_flag = AMR_chleboroby
+		set_politics = { ruling_party = social_democracy }
+		create_country_leader = { name = "Ivan Shishlov" desc = "" picture = "gfx/leaders/AMR/Portrait_Ivan_Shishlov.dds" expire = "1935.1.1" ideology = social_reformism traits = {  } }
+		drop_cosmetic_tag = yes
+		every_state = {
+			limit = {
+				OR = {
+					state = 561
+					state = 1039
+					state = 1184
+					state = 1024
+					state = 1040
+					state = 657
+					state = 560
+				}
+				OR = {
+					is_core_of = FER
+					is_core_of = RUS
+				}
+				NOT = { is_core_of = AMR }
+			}
+			add_core_of = AMR
+		}
+	}
+
+}
+
+# Атаманщина
+country_event = {
+	id = rcw_amrprm.13
+	title = rcw_amrprm.13.t
+	desc = rcw_amrprm.13.desc
+
+	trigger = {
+		original_tag = AMR
+		OR = {
+			has_government = social_democracy
+			has_government = social_liberalism
+		}
+		NOT = { has_idea = AMR_dvoevlastie }
+	}
+
+	picture = GFX_report_event_amur_atamanshina
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 60
+	}
+
+	
+	option = {
+		name = rcw_amrprm.13.a
+		add_ideas = RSS_atamanshina
+	}
+
+}
+
+
+# Интервенция забайкальцев
+country_event = {
+	id = rcw_amrprm.14
+	title = rcw_amrprm.xd.t
+	desc = {
+		text = rcw_amrprm.14.desc
+		trigger = { has_completed_focus = BKL_ussuri_and_amur_cossacks }
+	}
+	desc = {
+		text = rcw_amrprm.14.desc_1
+		trigger = { NOT = { has_completed_focus = BKL_ussuri_and_amur_cossacks } }
+	}
+
+	picture = GFX_report_event_amur_interventsia_zabaikalia
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	
+	option = {
+		name = rcw_amrprm.14.a
+		BKL = { puppet = AMR }
+		AMR = {
+			create_country_leader = { name = "Ilya Shemelin" desc = AMR_Ilya_Shemelin_DESC picture = "gfx/leaders/AMR/Portrait_Ilya_Shemelin.dds" expire = "1927.4.21" ideology = despotism_ideology traits = {  } }
+			create_corps_commander = { name = "Ilya Shemelin" id = 64409 portrait_path = "gfx/leaders/AMR/Portrait_Ilya_Shemelin.dds" traits = {  } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			set_politics = { 
+				ruling_party = despotism
+				elections_allowed = no
+			}
+		}
+	}
+	
+	option = {
+		trigger = {
+			BKL = { NOT = { has_completed_focus = BKL_ussuri_and_amur_cossacks } }
+		}
+		name = rcw_amrprm.14.b
+		BKL = {
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = AMR
+			}
+		}
+	}
+
+}
+
+# Замена коменданта
+country_event = {
+	id = rcw_amrprm.15
+	title = rcw_amrprm.15.t
+	desc = rcw_amrprm.15.desc
+
+	picture = GFX_report_event_amur_interventsia_zabaikalia
+	trigger = {
+		original_tag = AMR
+		has_idea = help_from_foreign_interventionists
+		has_stability < 0.25
+		has_country_leader = {
+			name = "Ilya Shemelin"
+			ruling_only = yes
+		}
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_amrprm.15.a
+		add_stability = 0.15
+		if = {
+			limit = { has_idea = RSS_atamanshina }
+			swap_ideas = {
+				remove_idea = RSS_atamanshina
+				add_idea = RSS_atamanshina_ivanov_rinov
+			}
+		}
+		create_country_leader = { name = "Ivan Gamov" desc = "" picture = "gfx/leaders/AMR/Portrait_Ivan_Gamov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = {  } }
+		BKL = {
+			end_puppet = AMR
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.15.b
+		hidden_effect = {
+			country_event = {
+				id = rcw_amrprm.16
+				days = 5
+			}
+		}
+	}
+
+}
+
+# Апофеоз интервенции
+country_event = {
+	id = rcw_amrprm.16
+	title = rcw_amrprm.16.t
+	desc = rcw_amrprm.16.desc
+
+	picture = GFX_report_event_RSS_special_ally
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	
+	option = {
+		name = rcw_amrprm.16.a
+		create_country_leader = { name = "Otodzo Yamada" desc = AMR_Otodzo_Yamada_DESC picture = "gfx/leaders/AMR/Portrait_Otodzo_Yamada.dds" expire = "1927.4.21" ideology = despotism_ideology traits = {  } }
+		create_corps_commander = { name = "Otodzo Yamada" id = 64410 portrait_path = "gfx/leaders/AMR/Portrait_Otodzo_Yamada.dds" traits = {  } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		set_cosmetic_tag = AMR_JAP
+		division_template = {
+			name = "Japonskie Interventy"
+			is_locked = yes
+			regiments = {
+				infantry = { x = 1 y = 0 }
+				infantry = { x = 1 y = 1 }
+			}
+			support = {
+				artillery = { x = 0 y = 1 }
+			}
+		}
+		AMR = {
+			add_equipment_to_stockpile = {
+				type = artillery_equipment
+				amount = 72
+				producer = JAP
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment
+				amount = 1000
+				producer = JAP
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Japonskiy polk\" division_template = \"Japonskie Interventy\" start_experience_factor = 1 start_equipment_factor = 1"
+				owner = AMR
+			}
+			create_unit = {
+				division = "name = \"Japonskiy polk\" division_template = \"Japonskie Interventy\" start_experience_factor = 1 start_equipment_factor = 1"
+				owner = AMR
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.16.b
+		start_civil_war = {
+			ideology = despotism
+			size = 0.5
+			capital = 1039
+		}
+		create_country_leader = { name = "Otodzo Yamada" desc = AMR_Otodzo_Yamada_DESC picture = "gfx/leaders/AMR/Portrait_Otodzo_Yamada.dds" expire = "1927.4.21" ideology = despotism_ideology traits = {  } }
+		create_corps_commander = { name = "Otodzo Yamada" id = 64410 portrait_path = "gfx/leaders/AMR/Portrait_Otodzo_Yamada.dds" traits = {  } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		set_cosmetic_tag = AMR_JAP
+		hidden_effect = {
+			random_other_country = {
+				limit = { original_tag = AMR }
+				save_global_event_target_as = AMR_CW
+				every_unit_leader = { limit = { NOT = { has_id = 64410 } } set_nationality = ROOT }
+				ROOT = { every_unit_leader = { limit = { has_id = 64410 } set_nationality = event_target:AMR_CW } }
+				add_timed_idea = {
+					idea = disorganization_of_army
+					days = 90
+				}
+				division_template = {
+					name = "Japonskie Interventy"
+					is_locked = yes
+					regiments = {
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+					}
+					support = {
+						artillery = { x = 0 y = 1 }
+					}
+				}
+				transfer_units_fraction = {
+					target = ROOT
+					size = 1
+					stockpile_ratio = 1
+					army_ratio = 1
+					navy_ratio = 1
+					air_ratio = 1
+				}
+				add_equipment_to_stockpile = {
+					type = artillery_equipment
+					amount = 72
+					producer = JAP
+				}
+				add_equipment_to_stockpile = {
+					type = artillery_equipment
+					amount = 1000
+					producer = JAP
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Japonskiy polk\" division_template = \"Japonskie Interventy\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
+					create_unit = {
+						division = "name = \"Japonskiy polk\" division_template = \"Japonskie Interventy\" start_experience_factor = 1 start_equipment_factor = 1"
+						owner = PREV
+					}
+				}
+				event_target:AMR_CW = {
+					every_country = {
+						limit = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+				every_country = {
+					limit = {
+						has_war_with = AMR
+						NOT = { has_war_with = event_target:AMR_CW }
+					}
+					declare_war_on = { target = event_target:AMR_CW type = annex_everything }
+				}
+			}
+			transfer_units_fraction = {
+				target = event_target:AMR_CW
+				size = 1
+				stockpile_ratio = 0.8
+				army_ratio = 0
+				navy_ratio = 0
+				air_ratio = 0
+			}
+			hidden_effect = { clear_global_event_target = AMR_CW }
+		}
+	}
+}
+
+# Взятие Хабаровска
+country_event = {
+	id = rcw_amrprm.17
+	title = rcw_amrprm.17.t
+	desc = rcw_amrprm.17.desc
+
+	picture = GFX_report_event_amur_habarovsk
+
+	trigger = {
+		original_tag = AMR
+		has_government = despotism
+		controls_state = 409
+		HRB = { NOT = { has_country_flag = HRB_Kolchak_plan has_country_flag = HRB_Kolchak_plan_fail any_unit_leader = { has_id = 88164 } } }
+	}
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		trigger = { NOT = { PRM = { exists = no } } }
+		name = rcw_amrprm.17.a
+		add_to_variable = { var = global.RUS_threat_of_intervention value = 1 }
+		PRM = { transfer_state = 409 }
+		PRM = {
+			PRM = { inherit_technology = RUS }
+			add_ideas = neutral_foreign_policy_law
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			set_politics = { ruling_party = national_syndicalism }
+			add_popularity = { ideology = social_liberalism popularity = -0.1 }
+			add_popularity = { ideology = national_syndicalism popularity = 0.1 }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+			if = {
+				limit = { NOT = { HRB = { has_character = RUS_Ivan_Kalmykov } } }
+				REB = { RUS_Ivan_Kalmykov = { set_nationality = PREV.PREV } }
+			}
+			hidden_effect = {
+				division_template = {
+					name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+					}
+				}
+			}
+			409 = {
+				create_unit = {
+					division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+					owner = PRM
+				}
+				create_unit = {
+					division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+					owner = PRM
+				}
+			}
+		}
+		ROOT = { PRM = { subjecting_script_with_transfer_parties_dominion = yes } }
+	}
+	
+	option = {
+		name = rcw_amrprm.17.b
+		if = {
+			limit = { NOT = { HRB = { has_character = RUS_Ivan_Kalmykov } } }
+			REB = { RUS_Ivan_Kalmykov = { set_nationality = PREV.PREV } }
+		}
+		add_manpower = 500
+		add_war_support = 0.05
+		hidden_effect = {
+			division_template = {
+				name = "Dobrovol'cheskiy kavaleristskiy polk"		# Cavalry
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+				}
+			}
+		}
+		409 = {
+			create_unit = {
+				division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+				owner = AMR
+			}
+			create_unit = {
+				division = "name = \"Oficerskiy kavaleristskiy polk\" division_template = \"Dobrovol'cheskiy kavaleristskiy polk\" start_experience_factor = 1 start_equipment_factor = 1"
+				owner = AMR
+			}
+		}
+	}
+}
+
+# Беглецы из Забайкалья
+country_event = {
+	id = rcw_amrprm.18
+	title = rcw_amrprm.18.t
+	desc = rcw_amrprm.18.desc
+
+	picture = GFX_report_event_amur_interventsia_zabaikalia
+	trigger = {
+		original_tag = AMR
+		OR = {
+			has_government = social_democracy
+			has_government = social_liberalism
+			has_government = despotism
+		}
+		BKL = {
+			exists = no
+		}
+		563 = {
+			CONTROLLER = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+				}
+			}
+		}
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 14
+	}
+
+	
+	option = {
+		name = rcw_amrprm.18.a
+		trigger = {
+			OR = {
+				NOT = {
+					has_country_leader = {
+						name = "Ilya Shemelin"
+						# ruling_only = no 
+					}
+				}
+				RUS = { has_country_flag = Grigoriy_Semyonov_dead }
+			}
+		}
+		add_manpower = 2000
+		add_popularity = {
+			ideology = despotism 
+			popularity = 0.1
+		}
+		BKL = {
+			every_unit_leader = { set_nationality = ROOT }
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.18.b
+		trigger = {
+			has_country_leader = { 
+				name = "Ilya Shemelin"
+				# ruling_only = no 
+			}
+			NOT = { RUS = { has_country_flag = Grigoriy_Semyonov_dead } }
+		}
+		create_country_leader = { name = "Grigoriy Semenov" desc = AMR_Grigoriy_Semenov_DESC picture = "gfx/leaders/BKL/Portrait_Grigoriy_Semenov.dds" expire = "1962.3.4" ideology = despotism_ideology traits = {  } }
+		set_country_flag = AMR_corps_commander_Semenov
+		add_manpower = 2000
+		add_popularity = { 
+			ideology = despotism 
+			popularity = 0.1 
+		}
+		BKL = {
+			every_unit_leader = { set_nationality = ROOT }
+		}
+	}
+
+}
+
+# Амурское учредительное собрание
+country_event = {
+	id = rcw_amrprm.19
+	title = rcw_amrprm.19.t
+	desc = rcw_amrprm.19.desc
+
+	picture = GFX_report_event_RSS_republic
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = rcw_amrprm.19.a
+		trigger = { RSS = { exists = yes NOT = { has_war_with = ROOT } } }
+		effect_tooltip = {
+			RSS = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+		}
+		RSS = { country_event = { id = rcw_amrprm.20 days = 1 } }
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0.5
+				RSS = { has_government = market_liberalism }
+			}
+			modifier = {
+				factor = 0.5
+				RSS = { OR = { has_government = market_liberalism has_government = despotism } }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.19.b
+		trigger = {
+			RSS = { OR = { exists = no has_war_with = ROOT NOT = { has_government = social_liberalism } } }
+			has_cosmetic_tag = AMR_FER
+		}
+		set_cosmetic_tag = AMR_United_States_of_Russia
+		ai_chance = {
+			factor = 1
+		}
+	}
+
+	option = {
+		name = rcw_amrprm.19.c
+		trigger = {
+			has_cosmetic_tag = AMR_FER
+			OR = {
+				has_idea = russia_in_ruins_idea
+				NOT = {
+					any_other_country = {
+						OR = {
+							original_tag = PRM
+							original_tag = BKL
+							original_tag = RSS
+							original_tag = SIB
+						}
+						exists = yes
+						has_capitulated = no
+						NOT = { has_government = radical_socialism has_government = communism }
+					}
+				}
+			}
+		}
+		set_cosmetic_tag = FER
+		JAP = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			ROOT = { end_puppet = PREV }
+		}
+		every_owned_state = {
+			limit = { CONTROLLER = { NOT = { tag = ROOT } } }
+			CONTROLLER = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = { has_war_with = ROOT }
+			ROOT = { white_peace = PREV }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+
+	option = {
+		name = rcw_amrprm.19.d
+		trigger = {
+			PRM = { exists = yes NOT = { has_war_with = ROOT } OR = { has_government = social_liberalism has_government = conservatism } }
+			NOT = { has_cosmetic_tag = AMR_FER }
+		}
+		effect_tooltip = {
+			PRM = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+		}
+		PRM = { country_event = { id = rcw_amrprm.20 days = 1 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 3
+				PRM = { has_government = conservatism }
+			}
+			modifier = {
+				factor = 0.5
+				PRM = { has_government = social_liberalism }
+			}
+		}
+	}
+
+	option = {
+		name = rcw_amrprm.19.e
+		trigger = {
+			BKL = { exists = yes NOT = { has_war_with = ROOT } has_cosmetic_tag = BKL_REO }
+		}
+		effect_tooltip = {
+			BKL = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+		}
+		BKL = { country_event = { id = rcw_amrprm.20 days = 1 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+
+	option = {
+		name = rcw_amrprm.19.f
+		trigger = {
+			has_cosmetic_tag = AMR_FER
+			any_unit_leader = { has_id = 88157 }
+		}
+		add_stability = -0.2
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		create_country_leader = { name = "Grigoriy I" desc = AMR_Grigoriy_Semenov_DESC picture = "gfx/leaders/BKL/Portrait_Grigoriy_Semenov.dds" expire = "1962.3.4" ideology = despotism_ideology traits = {  } }
+		set_cosmetic_tag = AMR_ussurian_duchy
+		ai_chance = {
+			factor = 1
+		}
+	}
+
+}
+
+# Конец амурской самостийности
+country_event = {
+	id = rcw_amrprm.20
+	title = rcw_amrprm.20.t
+	desc = rcw_amrprm.20.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = rcw_amrprm.20.a
+		annex_country = {
+			target = FROM
+			transfer_troops = yes
+		}
+	}
+}
+
+# Призыв к объединению
+country_event = {
+	id = rcw_amrprm.21
+	title = rcw_amrprm.21.t
+	desc = rcw_amrprm.21.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.21.a
+		every_state = {
+			limit = {
+				is_core_of = FROM
+			}
+			add_core_of = ROOT
+		}
+		FROM = {
+			every_unit_leader = { set_nationality = ROOT }
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			set_cosmetic_tag = SIB_communes_federation
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.21.b
+		FROM = {
+			country_event = { id = rcw_amrprm.22 days = 1 }
+		}
+	}
+}
+
+# Уклончивый ответ
+country_event = {
+	id = rcw_amrprm.22
+	title = rcw_amrprm.22.t
+	desc = rcw_amrprm.22.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+		name = rcw_amrprm.22.a
+		create_faction = black_front
+		add_to_faction = FROM
+	}
+	
+	option = {
+		name = rcw_amrprm.22.b
+		if = {
+			limit = { NOT = { has_war_with = FROM } }
+			declare_war_on = {
+				target = FROM
+				type = annex_everything
+			}
+		}
+	}
+}
+
+
+
+country_event = {
+	id = rcw_amrprm.94
+	title = rcw_amrprm.94.t
+	desc = rcw_amrprm.94.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = FER
+		has_country_flag = FER_start_political_instability
+		communism > 0.3
+	}
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.94.a
+		
+		set_politics = { ruling_party = communism elections_allowed = no }
+		clr_country_flag = FER_start_political_instability
+		remove_ideas = RUS_red_guards_provisional_government
+		
+		RUS = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		
+		every_country = {
+			limit = { has_offensive_war_with = RUS NOT = { has_war_with = ROOT } is_subject = no }
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		every_country = {
+			limit = { has_defensive_war_with = RUS NOT = { has_war_with = ROOT } is_subject = no }
+			ROOT = {
+				declare_war_on = {
+					target = PREV
+					type = annex_everything
+				}
+			}
+		}
+	}
+}
+
+# Восстание в Приморье (если Семёнов взял Владивосток)
+country_event = {
+	id = rcw_amrprm.95
+	title = rcw_amrprm.95.t
+	desc = rcw_amrprm.95.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = { RUS = { has_country_flag = RUS_czechoslovak_legion_uprising } }
+		tag = RUS
+		BKL = { controls_state = 408 }
+		PRM = { exists = no }
+		SIB = { exists = no }
+		CCA = { exists = no }
+		RSS = { exists = no }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_amrprm.95.a
+		add_to_variable = { var = global.RUS_threat_of_intervention value = 1 }
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = RUS
+					is_owned_by = FER
+				}
+				OR = {
+					state = 717
+					state = 409
+					state = 408
+					state = 655
+					state = 951
+					state = 1034
+					state = 1035
+					state = 1036
+					state = 1037
+					state = 1038
+					state = 1185
+					state = 1186
+					state = 1255
+				}
+			}
+			PRM = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_core_of = BKL
+				is_core_of = PRM
+			}
+			remove_core_of = BKL
+		}
+		PRM = {
+			PRM = { inherit_technology = RUS }
+			add_ideas = neutral_foreign_policy_law
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = PRM_contra
+			if = {
+				limit = { NOT = { any_other_country = { has_character = RUS_Ivan_Kalmykov } } }
+				REB = { RUS_Ivan_Kalmykov = { set_nationality = PREV.PREV } }
+			}
+			if = {
+				limit = { has_global_flag = siberia_fleet_in_exile }
+				RSR = { country_event = rcw.13 }
+			}
+				if = {
+					limit = { FER = { exists = yes is_subject_of = RSR } }
+					FER = {
+						create_template_Krasnaya_Gvardiya = yes
+						load_oob = RUS_PRM_red_guard
+					}
+					else = { RUS = { load_oob = RUS_PRM_red_guard } }
+				}
+			set_politics = { ruling_party = national_syndicalism }
+			add_popularity = { ideology = social_liberalism popularity = -0.1 }
+			add_popularity = { ideology = national_syndicalism popularity = 0.1 }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		BKL = { PRM = { subjecting_script_with_transfer_parties_dominion = yes } }
+		if = {
+			limit = { NOT = { has_war_with = PRM } }
+			declare_war_on = {
+				target = PRM
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		trigger = {
+			is_ai = no
+		}
+		name = rcw_amrprm.95.b
+		add_to_variable = { var = global.RUS_threat_of_intervention value = 1 }
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = RUS
+					is_owned_by = FER
+				}
+				OR = {
+					state = 717
+					state = 409
+					state = 408
+					state = 655
+					state = 951
+					state = 1034
+					state = 1035
+					state = 1036
+					state = 1037
+					state = 1038
+					state = 1185
+					state = 1186
+					state = 1255
+				}
+			}
+			PRM = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_core_of = BKL
+				is_core_of = PRM
+			}
+			remove_core_of = BKL
+		}
+		PRM = {
+			PRM = { inherit_technology = RUS }
+			add_ideas = neutral_foreign_policy_law
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = PRM_contra
+			if = {
+				limit = { NOT = { any_other_country = { has_character = RUS_Ivan_Kalmykov } } }
+				REB = { RUS_Ivan_Kalmykov = { set_nationality = PREV.PREV } }
+			}
+			if = {
+				limit = { has_global_flag = siberia_fleet_in_exile }
+				RSR = { country_event = rcw.13 }
+			}
+				if = {
+					limit = { FER = { exists = yes is_subject_of = RSR } }
+					FER = {
+						create_template_Krasnaya_Gvardiya = yes
+						load_oob = RUS_PRM_red_guard
+					}
+					else = { RUS = { load_oob = RUS_PRM_red_guard } }
+				}
+			set_politics = { ruling_party = national_syndicalism }
+			add_popularity = { ideology = social_liberalism popularity = -0.1 }
+			add_popularity = { ideology = national_syndicalism popularity = 0.1 }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		BKL = { PRM = { subjecting_script_with_transfer_parties_dominion = yes } }
+		if = {
+			limit = { NOT = { has_war_with = PRM } }
+			declare_war_on = {
+				target = PRM
+				type = annex_everything
+			}
+		}
+		PRM = { change_tag_from = RUS }
+	}
+}
+
+###Переворот Хорвата в Приморье###
+country_event = {
+	id = rcw_amrprm.96
+	title = rcw_amrprm.96.t
+	desc = rcw_amrprm.96.desc
+
+	picture = GFX_report_event_prm_call_to_croat
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.96.a
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+		set_politics = { ruling_party = conservatism }
+		add_popularity = { ideology = authoritarism popularity = 0.05 }
+	}
+	option = {
+		name = rcw_amrprm.96.b
+		ai_chance = {
+			factor = 4
+		}
+	}
+}
+
+
+###Последствия правого переворота в Сибири в Приморье###
+country_event = {
+	id = rcw_amrprm.97
+	title = rcw_amrprm.97.t
+	desc = rcw_amrprm.97.desc
+
+	picture = GFX_report_event_prm_right_coup_in_siberia
+	
+	trigger = {
+		tag = PRM
+		is_subject = yes
+		OVERLORD = {
+			OR = {
+				original_tag = SIB
+				original_tag = RSS
+			}
+			OR = {
+				has_government = despotism
+				has_government = fascism
+				has_government = authoritarism
+				has_government = conservatism
+				has_government = national_syndicalism
+			}
+		}
+		NOT = {
+			has_government = despotism
+			has_government = fascism
+			has_government = authoritarism
+			has_government = conservatism
+			has_government = national_syndicalism
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.97.a
+		ai_chance = {
+			factor = 1
+		}
+		every_unit_leader = { limit = { has_id = 77400 } set_nationality = OVERLORD }
+		set_politics = { ruling_party = conservatism }
+		add_popularity = { ideology = communism popularity = 0.05 }
+	}
+			
+	option = {
+		name = rcw_amrprm.97.b
+		add_stability = 0.05
+		every_unit_leader = { limit = { has_id = 77400 } set_nationality = OVERLORD }
+		OVERLORD = { end_puppet = PRM }
+	}
+}
+
+###Опасный Гайда в Приморье### Требования ген. Гайды
+country_event = {
+	id = rcw_amrprm.98
+	title = rcw_amrprm.98.t
+	desc = rcw_amrprm.98.desc
+
+	picture = GFX_report_event_prm_all_about_gajda
+	
+	trigger = {
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+		OR = {
+			tag = SIB
+			tag = RSS
+		}
+		date > 1919.07.1
+		NOT = { controls_state = 219 }
+		any_unit_leader = { has_id = 92354 }
+		NOT = { has_idea = Radola_Gaida_army_chief }
+	}
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.98.a
+		ai_chance = {
+			factor = 100
+			modifier = {
+				factor = 0
+				NOT = { has_government = social_liberalism has_government = social_democracy }
+			}
+		}
+		every_unit_leader = { limit = { OR = { has_id = 92354 } } promote_leader = yes }
+		add_popularity = { ideology = social_liberalism popularity = 0.05 }
+		add_ideas = Radola_Gaida_army_chief
+	}
+	option = {
+		name = rcw_amrprm.98.b
+		ai_chance = {
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = { has_government = social_liberalism has_government = social_democracy }
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+				OR = {
+					PRM = { has_government = social_liberalism }
+					PRM = { has_government = communism }
+					}
+				}
+			}
+			PRM = {country_event = { id = rcw_amrprm.99 days = 7 } }
+		}
+		every_unit_leader = { limit = { has_id = 92354 } set_nationality = REB }
+	}
+}
+
+###Опасный Гайда, действие###
+country_event = {
+	id = rcw_amrprm.99
+	title = rcw_amrprm.99.t
+	desc = rcw_amrprm.99.desc
+
+	picture = GFX_report_event_prm_all_about_gajda
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.99.a
+		random_list = {
+			95 = {
+				country_event = { id = rcw_amrprm.101 hours = 6 }
+			}
+			5 = {
+				country_event = { id = rcw_amrprm.100 hours = 6 }
+			}
+		}
+	}
+	option = {
+		name = rcw_amrprm.99.b
+		random_list = {
+			10 = {
+				country_event = { id = rcw_amrprm.101 hours = 6 }
+			}
+			90 = {
+				country_event = { id = rcw_amrprm.100 hours = 6 }
+			}
+		}
+	}
+}
+
+###Успешный переворот Гайды###
+country_event = {
+	id = rcw_amrprm.100
+	title = rcw_amrprm.100.t
+	desc = rcw_amrprm.100.desc
+
+	picture = GFX_report_event_prm_all_about_gajda
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.100.a
+		set_politics = { ruling_party = social_liberalism }
+		add_popularity = { ideology = social_liberalism popularity = 0.05 }
+		add_popularity = { ideology = communism popularity = 0.1 }
+		add_stability = -0.05
+		every_unit_leader = { limit = { has_id = 92354 } set_nationality = PRM }
+		if = {
+		limit = { RSS = { exists = yes } }
+		every_unit_leader = { limit = { has_id = 88162 } set_nationality = RSS }
+			else = {
+				if = {
+					limit = { SIB = { exists = yes } }
+					every_unit_leader = { limit = { has_id = 88162 } set_nationality = SIB }
+				}
+				else = {
+					if = {
+						limit = { BKL = { exists = yes } }
+						every_unit_leader = { limit = { has_id = 88162 } set_nationality = BKL }
+					}
+				}
+			}
+		}
+		OVERLORD = { end_puppet = PRM }
+		country_event = { id = rcw_amrprm.102 days = 5 }
+	}
+}
+
+###Провал Гайды###
+country_event = {
+	id = rcw_amrprm.101
+	title = rcw_amrprm.101.t
+	desc = rcw_amrprm.101.desc
+
+	picture = GFX_report_event_prm_all_about_gajda
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.101.a
+		add_stability = 0.05
+	}
+}
+
+###Гайда требуют особых полномочий###
+country_event = {
+	id = rcw_amrprm.102
+	title = rcw_amrprm.102.t
+	desc = rcw_amrprm.102.desc
+
+	picture = GFX_report_event_prm_all_about_gajda
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.102.a
+		create_country_leader = { name = "Radola Gaida" desc = "" picture = "gfx/leaders/CZE/Portrait_Radola_Gaida.dds" expire = "1953.4.15" ideology = national_syndicalism_ideology traits = {  } }
+		set_politics = { ruling_party = national_syndicalism }
+		add_popularity = { ideology = national_syndicalism popularity = 0.15 }
+		set_party_name = { ideology = national_syndicalism long_name = PRM_national_syndicalism_party_gajda_long name = PRM_national_syndicalism_party_gajda }
+		set_cosmetic_tag = PRM_g
+	}
+		
+	option = {
+		name = rcw_amrprm.102.b
+		add_political_power = -100
+		JAP = {country_event = { id = rcw_amrprm.103 days = 1 }}
+	}
+		
+	option = {
+		name = rcw_amrprm.102.c
+		country_event = { id = rcw_amrprm.104 hours = 3 }
+	}
+}
+
+# Звонок за помощью в Токио от Приморья
+country_event = {
+	id = rcw_amrprm.103
+	title = rcw_amrprm.103.t
+	desc = rcw_amrprm.103.desc
+
+	picture = GFX_report_event_prm_all_about_gajda
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.103.a
+		ai_chance = {
+			factor = 100
+			}
+		add_political_power = 25
+		add_opinion_modifier = { target = PRM modifier = JAP_Radola_diss }
+		every_unit_leader = { limit = { has_id = 92354 } set_nationality = CZE }
+		#hidden_effect = {
+		#	every_country = {
+		#		limit = {
+		#			OR = {
+		#				tag = ROOT
+		#				is_in_faction_with = ROOT
+		#				is_subject_of = ROOT
+		#			}
+		#		}
+		#		if = {
+		#			limit = {
+		#				is_in_array = {
+		#					array = unrecognized_states
+		#					value = FROM.id
+		#				}
+		#			}
+		#			FROM = {
+		#				THIS_country_will_be_recognized_by_PREV = yes
+		#			}
+		#		}
+		#	}
+		#}
+	}
+	
+	option = {
+		name = rcw_amrprm.103.b
+		PRM = {
+			create_country_leader = { name = "Radola Gaida" desc = "" picture = "gfx/leaders/CZE/Portrait_Radola_Gaida.dds" expire = "1953.4.15" ideology = national_syndicalism_ideology traits = {  } }
+			set_politics = { ruling_party = national_syndicalism }
+			add_popularity = { ideology = national_syndicalism popularity = 0.15 }
+			set_party_name = { ideology = national_syndicalism long_name = PRM_national_syndicalism_party_gajda_long name = PRM_national_syndicalism_party_gajda }
+			set_cosmetic_tag = PRM_g
+		}
+	}
+}
+
+# Контрпереворот Калмыкова
+country_event = {
+	id = rcw_amrprm.104
+	title = rcw_amrprm.104.t
+	desc = rcw_amrprm.104.desc
+
+	picture = GFX_report_event_prm_kalmykov_coup
+	
+	is_triggered_only = yes
+
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.104.a
+		add_political_power = 25
+		set_politics = { ruling_party = national_syndicalism }
+		add_popularity = { ideology = national_syndicalism popularity = 0.1 }
+		add_popularity = { ideology = social_liberalism popularity = -0.2 }
+		add_stability = -0.1
+		every_unit_leader = { limit = { has_id = 92354 } remove_unit_leader = yes }
+		CZE = { set_country_flag = Radola_Gaida_dead }
+		RUS = { set_country_flag = Radola_Gaida_dead }
+		SOV = { set_country_flag = Radola_Gaida_dead }
+		RSS = { set_country_flag = Radola_Gaida_dead }
+		SIB = { set_country_flag = Radola_Gaida_dead }
+	}
+}
+
+# Волнения в Приморье, если белые потеряли Омск
+country_event = {
+	id = rcw_amrprm.105
+	title = rcw_amrprm.105.t
+	desc = rcw_amrprm.105.desc
+
+	picture = GFX_report_event_prm_bolsheviks_coup
+	
+	trigger = {
+		tag = PRM
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired has_country_flag = RUS_czechoslovak_legion_uprising }
+		RUS = { controls_state = 571 }
+		RUS = { controls_state = 570 }
+		RUS = { controls_state = 251 }
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.105.a
+		add_political_power = -50
+		add_popularity = { ideology = communism popularity = 0.15 }
+	}
+}
+
+# Волнения в Приморье, если красные в Забайкалье
+country_event = {
+	id = rcw_amrprm.107
+	title = rcw_amrprm.107.t
+	desc = rcw_amrprm.107.desc
+
+	picture = GFX_report_event_prm_bolsheviks_coup
+	
+	trigger = {
+		tag = PRM
+		RUS = { has_government = communism }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired has_country_flag = RUS_czechoslovak_legion_uprising }
+		RUS = { controls_state = 571 }
+		RUS = { controls_state = 563 }
+		RUS = { controls_state = 570 }
+		RUS = { controls_state = 251 }
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.107.a
+		add_political_power = -100
+		add_popularity = { ideology = communism popularity = 0.25 }
+	}
+}
+
+# Переворот в Приморье, если там много красных
+country_event = {
+	id = rcw_amrprm.108
+	title = rcw_amrprm.108.t
+	desc = rcw_amrprm.108.desc
+
+	picture = GFX_report_event_prm_bolsheviks_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.108.a
+		PRM = {
+			OVERLORD = { end_puppet = PREV }
+			leave_faction = yes
+			set_politics = { ruling_party = communism }
+			if = {
+				limit = { has_country_leader = { name = "Pyotr Derber" ruling_only = no } }
+				retire_ideology_leader = social_liberalism
+			}
+			set_country_flag = political_social_liberals_in_socialist_coalition
+			clr_country_flag = political_social_liberals_not_in_liberal_coalition
+			every_unit_leader = { limit = { has_id = 88161 } set_nationality = REB } #Калмыков
+			every_unit_leader = { limit = { has_id = 88162 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 77405 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 77400 } set_nationality = REB }
+			create_field_marshal = { name = "Alexandr Krasnoshchyokov" id = 88163 portrait_path = "gfx/leaders/SOV/Portrait_Alexandr_Krasnoshchyokov.dds" traits = { thorough_planner } skill = 2 }
+			create_corps_commander = { name = "Arkady Krakovetsky" id = 88165 portrait_path = "gfx/leaders/PRM/Portrait_Arkady_Krakovetsky.dds" traits = {  } skill = 2 }
+			if = {
+				limit = { NOT = { any_unit_leader = { has_id = 88164 } } }
+				create_corps_commander = { name = "Yakov Tryapitsyn" id = 88164 portrait_path = "gfx/leaders/PRM/Portrait_Yakov_Tryapitsyn.dds" traits = {  } skill = 2 }
+			}
+			ROOT = { white_peace = PREV }
+		}
+		JAP = { country_event = { id = rcw_amrprm.109 days = 5 } }
+	}
+	option = {
+		name = rcw_amrprm.108.b #Власть берём, но создаём "буфер"
+		PRM = {
+			OVERLORD = { end_puppet = PREV }
+			leave_faction = yes
+			set_politics = { ruling_party = social_liberalism }
+			if = {
+				limit = { has_country_leader = { name = "Pyotr Derber" ruling_only = no } }
+				retire_ideology_leader = social_liberalism
+			}
+			set_country_flag = political_social_liberals_in_socialist_coalition
+			clr_country_flag = political_social_liberals_not_in_liberal_coalition
+			every_unit_leader = { limit = { has_id = 88161 } set_nationality = REB } #Калмыков
+			every_unit_leader = { limit = { has_id = 88162 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 77405 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 77400 } set_nationality = REB }
+			create_field_marshal = { name = "Alexandr Krasnoshchyokov" id = 88163 portrait_path = "gfx/leaders/SOV/Portrait_Alexandr_Krasnoshchyokov.dds" traits = { thorough_planner } skill = 2 }
+			create_corps_commander = { name = "Arkady Krakovetsky" id = 88165 portrait_path = "gfx/leaders/PRM/Portrait_Arkady_Krakovetsky.dds" traits = {  } skill = 2 }
+			if = {
+				limit = { NOT = { any_unit_leader = { has_id = 88164 } } }
+				create_corps_commander = { name = "Yakov Tryapitsyn" id = 88164 portrait_path = "gfx/leaders/PRM/Portrait_Yakov_Tryapitsyn.dds" traits = {  } skill = 2 }
+			}
+			ROOT = { white_peace = PREV }
+		}
+		JAP = { country_event = { id = rcw_amrprm.109 days = 5 } }
+	}
+}
+
+###Реакция Японцев на переворот###
+country_event = {
+	id = rcw_amrprm.109
+	title = rcw_amrprm.109.t
+	desc = rcw_amrprm.109.desc
+
+	picture = GFX_report_event_rcw_sibir_uprising
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = {
+					PRM = { has_government = communism }
+					PRM = { has_government = radical_socialism }
+				}
+			}
+		}
+		name = rcw_amrprm.109.a
+		add_opinion_modifier = { target = USA modifier = USA_no_accept_JAP_PRM }
+		add_political_power = -100
+		PRM = {
+			set_party_name = { ideology = despotism long_name = PRM_despotism_JAP_long name = PRM_despotism_JAP }
+			create_country_leader = { name = "Oi Shigemoto" desc = "" picture = "gfx/leaders/JAP/Portrait_Oi_Shigemoto.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general } }
+		}
+		every_country = {
+			every_unit_leader = { limit = { OR = { has_id = 88167 has_id = 77427 has_id = 77428 } } set_nationality = PRM }
+		}
+		REB = { every_unit_leader = { limit = { OR = { has_id = 88167 has_id = 77427 has_id = 77428 } } set_nationality = PRM } }
+		every_other_country = {
+			limit = { NOT = { original_tag = JAP original_tag = PRM } any_unit_leader = { OR = { has_id = 77427 has_id = 77428 } } }
+			country_event = rcw.240
+		}
+		JAP = { PRM = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
+		PRM = {
+			set_politics = {
+				ruling_party = despotism
+			}
+		}
+		PRM = {
+			start_civil_war = {
+				ruling_party = despotism
+				ideology = communism
+				size = 0.5
+				capital = 560
+				states = { 560 561 714 657 655 1038 }
+				keep_unit_leaders = { 88161 88162 77405 77400 88167 }
+			}
+			set_cosmetic_tag = PRM_JAP
+		}
+		random_other_country = {
+			limit = {
+				original_tag = PRM
+				has_government = communism
+			}
+			set_stability = 0.9
+			set_war_support = 0.8
+			PRM = {
+				every_unit_leader = { limit = { has_id = 88163 } set_nationality = PREV.PREV }
+				every_unit_leader = { limit = { has_id = 88165 } set_nationality = PREV.PREV }
+				every_unit_leader = { limit = { has_id = 19190 } set_nationality = PREV.PREV }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.109.b
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					PRM = { has_government = communism }
+					PRM = { has_government = radical_socialism }
+				}
+			}
+		}
+		PRM = {	country_event = { id = rcw_amrprm.110 days = 31 } }
+	}
+	
+	option = {
+		name = rcw_amrprm.109.c
+		ai_chance = {
+			factor = 999
+			modifier = {
+				factor = 0
+				JAP = { NOT = { has_government = communism has_government = radical_socialism } }
+			}
+		}
+		add_political_power = -50
+		RUS = { annex_country = { target = PRM transfer_troops = yes } }
+	}
+}
+
+
+###Николаевский инцидент###
+country_event = {
+	id = rcw_amrprm.110
+	title = rcw_amrprm.110.t
+	desc = {
+		text = rcw_amrprm.110.desc
+
+		trigger = { NOT = { has_country_flag = rcw_usfev_110_Lazo_killed has_country_flag = rcw_usfev_110_Krakoveckiy_killed has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
+	}
+	desc = {
+		text = rcw_amrprm.110.desc_1
+		trigger = { has_country_flag = rcw_usfev_110_Lazo_killed }
+	}
+	desc = {
+		text = rcw_amrprm.110.desc_2
+		trigger = { has_country_flag = rcw_usfev_110_Krakoveckiy_killed }
+	}
+	desc = {
+		text = rcw_amrprm.110.desc_3
+		trigger = { has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed }
+	}
+	picture = GFX_report_event_prm_nicolsk
+	
+	trigger = {
+		tag = PRM
+		PRM = { has_government = communism }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+	}
+	
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	fire_only_once = yes
+	
+	immediate = {
+		hidden_effect = {
+			clr_country_flag = rcw_usfev_110_Lazo_killed
+			clr_country_flag = rcw_usfev_110_Krakoveckiy_killed
+			clr_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed
+			random_list = {
+				50 = {
+					set_country_flag = rcw_usfev_110_Lazo_killed
+					modifier = {
+						factor = 0
+						NOT = { any_unit_leader = { has_id = 19189 } } #Sergey Lazo
+					}
+				}
+				20 = {
+					set_country_flag = rcw_usfev_110_Krakoveckiy_killed
+				}
+				10 = {
+					set_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed
+					modifier = {
+						factor = 0
+						NOT = { any_unit_leader = { has_id = 19189 } } #Sergey Lazo
+					}
+				}
+				20 = {
+					
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.110.a
+		ai_chance = {
+			factor = 999
+		}
+		if = {
+			limit = { has_country_leader = { name = "Yakov Tryapitsyn" ruling_only = no } }
+			kill_ideology_leader = radical_socialism
+		}
+		
+		if = {
+			limit = { OR = { has_country_flag = rcw_usfev_110_Lazo_killed has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
+			every_unit_leader = { limit = { has_id = 19189 } remove_unit_leader = yes }
+		}
+		if = {
+			limit = { OR = { has_country_flag = rcw_usfev_110_Krakoveckiy_killed has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
+			kill_ideology_leader = social_liberalism
+		}
+		hidden_effect = {
+			clr_country_flag = rcw_usfev_110_Lazo_killed
+			clr_country_flag = rcw_usfev_110_Krakoveckiy_killed
+			clr_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.110.b
+		hidden_effect = {
+			if = {
+				limit = { NOT = { any_unit_leader = { has_id = 88164 } } }
+				create_corps_commander = { name = "Yakov Tryapitsyn" id = 88164 portrait_path = "gfx/leaders/PRM/Portrait_Yakov_Tryapitsyn.dds" traits = {  } skill = 2 }
+			}
+			start_civil_war = {
+				ideology = radical_socialism
+				size = 0.5
+				capital = 560
+				states = {
+					560
+				}
+			}
+			random_other_country = {
+				limit = {
+					original_tag = PRM
+					has_government = radical_socialism
+				}
+				set_stability = 0.9
+				set_war_support = 0.8
+				every_unit_leader = { limit = { has_id = 88164 } set_nationality = PREV }
+			}
+		}
+		
+		if = {
+			limit = { OR = { has_country_flag = rcw_usfev_110_Lazo_killed has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
+			every_unit_leader = { limit = { has_id = 19189 } remove_unit_leader = yes }
+		}
+		if = {
+			limit = { OR = { has_country_flag = rcw_usfev_110_Krakoveckiy_killed has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
+			kill_ideology_leader = social_liberalism
+		}
+		hidden_effect = {
+			clr_country_flag = rcw_usfev_110_Lazo_killed
+			clr_country_flag = rcw_usfev_110_Krakoveckiy_killed
+			clr_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.110.c
+		add_popularity = { ideology = radical_socialism popularity = 0.15 }
+		add_ideas = PRM_partisan
+		
+		if = {
+			limit = { OR = { has_country_flag = rcw_usfev_110_Lazo_killed has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
+			every_unit_leader = { limit = { has_id = 19189 } remove_unit_leader = yes }
+		}
+		if = {
+			limit = { OR = { has_country_flag = rcw_usfev_110_Krakoveckiy_killed has_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed } }
+			kill_ideology_leader = social_liberalism
+		}
+		hidden_effect = {
+			clr_country_flag = rcw_usfev_110_Lazo_killed
+			clr_country_flag = rcw_usfev_110_Krakoveckiy_killed
+			clr_country_flag = rcw_usfev_110_Lazo_n_Krakoveckiy_killed
+		}
+	}
+}
+
+###Анархизация советов###
+country_event = {
+	id = rcw_amrprm.111
+	title = rcw_amrprm.111.t
+	desc = rcw_amrprm.111.desc
+
+	picture = GFX_report_event_prm_tryapitsyn
+	
+	trigger = {
+		tag = PRM
+		NOT = { has_government = radical_socialism }
+		OR = {
+			radical_socialism > 0.35
+			AND = {
+				communism > 0.25
+				NOT = { has_government = communism }
+				NOT = { has_country_flag = PRM_Bolshevistsky_perevorot_fired }
+				radical_socialism > 0.15
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		trigger = {
+			OR = {
+				radical_socialism > 0.35
+				has_country_flag = PRM_Bolshevistsky_perevorot_fired
+				has_government = communism
+				NOT = { communism > 0.25 }
+			}
+		}
+		name = rcw_amrprm.111.a
+		add_stability = 0.1
+		set_politics = { ruling_party = radical_socialism }
+		remove_ideas = PRM_partisan
+	}
+	
+	option = {
+		trigger = {
+			OR = {
+				radical_socialism > 0.35
+				has_country_flag = PRM_Bolshevistsky_perevorot_fired
+				has_government = communism
+				NOT = { communism > 0.25 }
+			}
+		}
+		name = rcw_amrprm.111.b
+		add_popularity = { ideology = radical_socialism popularity = -0.05 }
+		remove_ideas = PRM_partisan
+	}
+	
+	option = {
+		name = rcw_amrprm.111.c
+		remove_ideas = PRM_partisan
+		start_civil_war = {
+			ideology = radical_socialism
+			size = 0.5
+			capital = 560
+			states = {
+				560
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = PRM
+				has_government = radical_socialism
+			}
+			set_stability = 0.9
+			set_war_support = 0.8
+			every_unit_leader = { limit = { has_id = 88164 } set_nationality = ROOT }
+		}
+	}
+}
+
+# Правый переворот в Приморье
+country_event = {
+	id = rcw_amrprm.112
+	title = rcw_amrprm.112.t
+	desc = rcw_amrprm.112.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	trigger = {
+		tag = PRM
+		OR = {
+			PRM = { has_government = radical_socialism }
+			PRM = { has_government = communism }
+		}
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+	}
+	
+	mean_time_to_happen = {
+		days = 365
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.112.a
+		ai_chance = {
+			factor = 999
+		}
+		if = {
+			limit = { RUS = { exists = yes } }
+			every_unit_leader = { limit = { has_id = 19190 } set_nationality = RUS }
+		}
+		else_if = {
+			limit = { SOV = { exists = yes } }
+			every_unit_leader = { limit = { has_id = 19190 } set_nationality = SOV }
+		}
+		set_politics = { ruling_party = fascism }
+		every_country = {
+			every_unit_leader = { limit = { has_id = 88163 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88164 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88165 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88167 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 92349 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 92350 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 92350 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 88156 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 77405 } set_nationality = PRM }
+		}
+		load_oob = PRM_contra_2.0
+	}
+	
+	option = {
+		name = rcw_amrprm.112.b
+		trigger = {
+			OR = {
+				RUS = { exists = yes }
+				SOV = { exists = yes }
+			}
+		}
+		set_politics = { ruling_party = fascism }
+		every_country = {
+			every_unit_leader = { limit = { has_id = 88163 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88164 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88165 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88167 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 92349 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 92350 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 92350 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 88156 } set_nationality = PRM }
+			every_unit_leader = { limit = { has_id = 77405 } set_nationality = PRM }
+		}
+		load_oob = PRM_contra_2.0
+		if = {
+			limit = { RUS = { exists = yes } }
+			every_unit_leader = { limit = { has_id = 19190 } set_nationality = RUS }
+			RUS = { change_tag_from = PRM }
+		}
+		else_if = {
+			limit = { SOV = { exists = yes } }
+			every_unit_leader = { limit = { has_id = 19190 } set_nationality = SOV }
+			SOV = { change_tag_from = PRM }
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.112.c
+		start_civil_war = {
+			ideology = fascism
+			size = 0.5
+			capital = 408
+			states = {
+				408 714 657 655 1034 1035
+			}
+			keep_unit_leaders = {
+				88163 88164 88165 19190
+			}
+		}
+		random_other_country = {
+			limit = {
+				original_tag = PRM
+				has_government = fascism
+			}
+			set_stability = 0.9
+			set_war_support = 0.8
+			every_country = {
+				every_unit_leader = { limit = { has_id = 88167 } set_nationality = PREV.PREV }
+				every_unit_leader = { limit = { has_id = 92349 } set_nationality = PREV.PREV }
+				every_unit_leader = { limit = { has_id = 92350 } set_nationality = PREV.PREV }
+				every_unit_leader = { limit = { has_id = 92350 } set_nationality = PREV.PREV }
+				every_unit_leader = { limit = { has_id = 88156 } set_nationality = PREV.PREV }
+				every_unit_leader = { limit = { has_id = 77405 } set_nationality = PREV.PREV }
+			}
+			load_oob = PRM_contra_2.0
+		}
+	}
+}
+
+# Марионетка Сибири (Миссия Вологодского)
+country_event = {
+	id = rcw_amrprm.113
+	title = rcw_amrprm.113.t
+	desc = rcw_amrprm.113.desc
+
+	picture = GFX_report_event_sib_derber_and_vologodsky
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = PRM
+		is_subject = no
+		SIB = { exists = yes NOT = { has_war_with = ROOT has_government = communism has_government = radical_socialism } }
+		NOT = { has_government = communism has_government = radical_socialism }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+	}
+	
+	mean_time_to_happen = {
+		days = 35
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.113.a
+		ai_chance = {
+			factor = 999
+		}
+		SIB = { PRM = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB } # Mikhail Diterihs
+		set_country_flag = Vologodskiy_came_there
+		if = {
+			limit = {
+				has_character = RUS_Alexandr_Kolchak
+				NOT = {
+					has_country_leader = {
+						character = RUS_Alexandr_Kolchak
+						ruling_only = yes
+					}
+				}
+			}
+			country_event = rcw_kolchak.26
+		}
+	}
+	
+	option = {
+		name = rcw_amrprm.113.b
+		set_country_flag = Vologodskiy_came_there
+		if = {
+			limit = {
+				has_character = RUS_Alexandr_Kolchak
+				NOT = {
+					has_country_leader = {
+						character = RUS_Alexandr_Kolchak
+						ruling_only = yes
+					}
+				}
+			}
+			country_event = rcw_kolchak.26
+		}
+	}
+}

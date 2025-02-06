@@ -1,0 +1,1304 @@
+﻿###########################
+# Election Events
+###########################
+
+add_namespace = election
+
+# Test Election Event
+country_event = {
+	id = election.1
+	title = election.1.t
+	desc = election.1.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = election.1.a
+	}
+}
+
+# Public Opposes Rearmament
+country_event = {
+	id = election.2
+	title = election.2.t
+	desc = election.2.d
+	picture = GFX_report_event_airplane_factory
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		OR = {
+			has_war = no
+			any_neighbor_country = {
+				has_war = no
+			}
+			any_allied_country = {
+				has_war = no
+			}
+		}
+		has_idea = partial_economic_mobilisation
+	}
+
+	option = {
+		ai_chance = { 
+			base = 1
+		}
+		name = election.2.a
+		add_ideas = low_economic_mobilisation
+	}
+
+	option = {
+		name = election.2.b
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_unity = yes
+			}
+		}
+		add_stability = -0.05
+		add_war_support = -0.05
+	}
+}
+
+
+# Public Demands Rearmament
+country_event = {
+	id = election.3
+	title = election.3.t
+	desc = election.3.d
+	picture = GFX_report_event_tank_factory
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		has_war = no
+		OR = {
+			any_neighbor_country = {
+				has_war = yes
+			}
+			any_allied_country = {
+				has_war = yes
+			}
+		}
+		OR = {
+			has_idea = low_economic_mobilisation
+			has_idea = civilian_economy
+			has_idea = isolation
+			has_idea = undisturbed_isolation
+			has_idea = volunteer_only
+			has_idea = disarmed_nation
+		}
+	}
+
+	option = {
+		name = election.3.a
+		if = {
+			limit = { has_idea = low_economic_mobilisation }
+			add_ideas = partial_economic_mobilisation
+		}
+		if = {
+			limit = { has_idea = civilian_economy }
+			add_ideas = low_economic_mobilisation
+		}
+		if = {
+			limit = { has_idea = isolation }
+			add_ideas = civilian_economy
+		}
+		if = {
+			limit = { has_idea = undisturbed_isolation }
+			add_ideas = isolation
+		}
+		if = {
+			limit = { has_idea = volunteer_only }
+			add_ideas = limited_conscription
+		}
+		if = {
+			limit = { has_idea = disarmed_nation }
+			add_ideas = volunteer_only
+		}
+		add_war_support = 0.05
+	}
+
+	option = {
+		name = election.3.b
+		ai_chance = {
+			base = 0
+		}
+		add_stability = -0.05
+	}
+}
+
+# Fascists in Government?
+country_event = {
+	id = election.4
+	title = election.4.t
+	desc = election.4.d
+	picture = GFX_report_event_fascist_gathering
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		NOT = { has_idea = fascism_defeated }
+		fascism > 0.15
+	}
+	
+	option = {
+		name = election.4.a
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 2
+				can_lose_democracy_support = yes
+			}
+			modifier = {
+				add = 1
+				can_lose_unity = no
+			}
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.1
+		}
+		set_country_flag = coalition_with_fascists
+	}
+
+	option = {
+		name = election.4.b
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_unity = yes
+			}
+		}
+		add_stability = -0.05
+		random_list = {
+			50 = {
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.03
+				}
+			}
+			50 = {
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.03
+				}
+			}
+		}
+		set_country_flag = government_declined_fascists
+	}
+}
+
+# Communists in Government?
+country_event = {
+	id = election.5
+	title = election.5.t
+	desc = election.5.d
+	picture = GFX_report_event_worker_protests
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		NOT = { has_idea = communism_defeated }
+		communism > 0.15
+	}
+	
+	option = {
+		name = election.5.a
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 2
+				can_lose_democracy_support = yes
+			}
+			modifier = {
+				add = 1
+				can_lose_unity = no
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					AND = {
+						tag = FRA
+						is_historical_focus_on = yes
+						date < 1937.1.1
+					}
+					communism > 0.38
+				}
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.1
+		}
+		set_country_flag = coalition_with_communists
+	}
+
+	option = {
+		name = election.5.b
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_unity = yes
+			}
+			modifier = {
+				add = 1
+				OR = {
+					AND = {
+						tag = FRA
+						is_historical_focus_on = yes
+						date < 1937.1.1
+					}
+					communism > 0.38
+				}
+			}
+		}
+		add_stability = -0.05
+		random_list = {
+		50 = {
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.05
+		}
+		}
+		50 = {
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.05
+		}
+		}
+		}
+		set_country_flag = government_declined_communists
+	}
+}
+
+# Democratic Parties in Minority
+country_event = {
+	id = election.6
+	title = election.6.t
+	desc = election.6.d
+	picture = GFX_report_event_journalists_speech
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		check_variable = {liberal_parties < 0.5}
+		check_variable = {authoritarian_parties < 0.5}
+		check_variable = {socialist_parties < 0.5}
+	}
+	
+	option = {
+		name = election.6.a
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_democracy_support = yes
+			}
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.1
+		}
+		set_country_flag = coalition_with_fascists
+	}
+
+	option = {
+		name = election.6.b
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_democracy_support = yes
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.1
+		}
+		set_country_flag = coalition_with_communists
+	}
+
+	option = {
+		name = election.6.c
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 1
+				can_lose_democracy_support = no
+			}
+		}
+		random_list = {
+		50 = {
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.05
+		}
+		}
+		50 = {
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.05
+		}
+		}
+		}
+		add_political_power = -80
+	}
+}
+
+# Fascists Influence Foreign Policy
+country_event = {
+	id = election.7
+	title = election.7.t
+	desc = election.7.d
+	picture = GFX_report_event_fascist_gathering
+	
+	mean_time_to_happen = {
+		days = 730
+	}
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		has_country_flag = coalition_with_fascists
+		any_other_country = {
+			has_government = fascism
+			is_faction_leader = yes
+		}
+	}
+	
+	option = {
+		name = election.7.a
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 2
+				can_lose_democracy_support = yes
+			}
+			modifier = {
+				add = 1
+				can_lose_unity = no
+			}
+		}
+		random_other_country = {
+			limit = {
+				has_government = fascism
+				is_faction_leader = yes
+			}
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = fascists_in_government
+			}			
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.05
+		}
+	}
+
+	option = {
+		name = election.7.b
+		ai_chance = {
+			base = 10
+			modifier = {
+				factor = 0
+				can_lose_unity = no
+			}
+		}
+		add_stability = -0.05
+		random_list = {
+		50 = {
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.03
+		}
+		}
+		50 = {
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+		}
+		}
+	}
+}
+
+# Communists Influence Foreign Policy
+country_event = {
+	id = election.8
+	title = election.8.t
+	desc = election.8.d
+	picture = GFX_report_event_worker_protests
+	
+	mean_time_to_happen = {
+		days = 730
+	}
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		has_country_flag = coalition_with_communists
+		any_other_country = {
+			has_government = communism
+			is_faction_leader = yes
+		}
+	}
+	
+	option = {
+		name = election.8.a
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 2
+				can_lose_democracy_support = yes
+			}
+			modifier = {
+				add = 1
+				can_lose_unity = no
+			}
+		}
+		random_other_country = {
+			limit = {
+				has_government = communism
+				is_faction_leader = yes
+				NOT = { has_war_with = ROOT }
+			}
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = communists_in_government
+			}
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+	}
+
+	option = {
+		name = election.8.b
+		ai_chance = {
+			base = 10
+			modifier = {
+				factor = 0
+				can_lose_unity = no
+			}
+		}
+		add_stability = -0.05
+		if = {
+			limit = { NOT = { has_country_flag = political_social_liberals_in_socialist_coalition } }
+			random_list = {
+				50 = {
+					add_popularity = {
+						ideology = social_liberalism
+						popularity = 0.03
+					}
+				}
+				50 = {
+					add_popularity = {
+						ideology = market_liberalism
+						popularity = 0.03
+					}
+				}
+			}
+			else = {
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.03
+				}
+			}
+		}
+	}
+}
+
+# Magnate Favors Fascism
+country_event = {
+	id = election.13
+	title = election.13.t
+	desc = election.13.d
+	picture = GFX_report_event_fascist_gathering
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		has_idea_with_trait = motorized_equipment_manufacturer
+	}
+	
+	option = {
+		name = election.13.a
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 1
+				can_lose_democracy_support = yes
+			}
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.10
+		}
+	}
+
+	option = {
+		name = election.13.b
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 1
+				can_lose_democracy_support = no
+			}
+		}
+		random_list = {
+		50 = {
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.05
+		}
+		}
+		50 = {
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.05
+		}
+		}
+		}
+		remove_ideas_with_trait = motorized_equipment_manufacturer
+	}
+}
+
+# Wartime Exception
+country_event = {
+	id = election.14
+	title = election.14.t
+	desc = election.14.d
+	picture = GFX_report_event_tank_factory
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		has_war = yes
+	}
+	
+	option = {
+		name = election.14.a
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_unity = yes
+			}
+		}
+		add_stability = -0.05
+	}
+
+	option = {
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 3
+				can_lose_democracy_support = yes
+			}
+			modifier = {
+				add = 1
+				can_lose_unity = no
+			}
+		}
+		name = election.14.b
+		add_political_power = 20
+		add_stability = 0.05
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.05
+		}
+	}
+}
+
+# Government Contested
+country_event = {
+	id = election.15
+	title = election.15.t
+	desc = election.15.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_democratic_country = yes
+		has_war = yes
+		any_war_score < 20
+	}
+	
+	option = {
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 3
+				can_lose_democracy_support = no
+			}
+		}
+		name = election.15.a
+		add_political_power = -50
+		add_stability = -0.05
+	}
+
+	option = {
+		name = election.15.b
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 10
+				can_lose_democracy_support = yes
+			}
+			modifier = {
+				add = 1
+				can_lose_unity = no
+			}
+		}
+		add_political_power = 25
+		add_stability = 0.05
+		add_popularity = {
+			ideology = communism
+			popularity = 0.07
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.07
+		}
+	}
+}
+
+# 
+country_event = {
+	id = election.51
+	title = election.51.t
+	desc = election.51.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		is_socialist_country = no
+		if = {
+			limit = { has_country_flag = political_social_liberals_in_socialist_coalition }
+			NOT = { has_government = social_liberalism }
+		}
+		OR = {
+			AND = {
+				has_idea = no_legislation
+				check_variable = { socialist_parties > 0.1 }
+			}
+			AND = {
+				has_idea = minimum_legislation
+				check_variable = { socialist_parties > 0.2 }
+			}
+			AND = {
+				has_idea = acceptable_legislation
+				check_variable = { socialist_parties > 0.3 }
+			}
+			AND = {
+				has_idea = good_legislation
+				check_variable = { socialist_parties > 0.4 }
+			}
+		}
+	}
+	
+	option = {
+		name = election.51.a
+		add_stability = -0.02
+		if = {
+			limit = {
+				NOT = { has_government = social_democracy }
+				check_variable = {
+					var = global.red_alert
+					value = 30
+					compare = less_than
+				}
+			}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.03
+			}
+			else = {
+				if = {
+					limit = {
+						check_variable = { radical_socialism_party > communism_party }
+					}
+					add_popularity = {
+						ideology = radical_socialism
+						popularity = 0.03
+					}
+					else = {
+						add_popularity = {
+							ideology = communism
+							popularity = 0.03
+						}
+					}
+				}
+			}
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 30
+				can_lose_unity = yes
+			}
+		}
+	}
+	option = {
+		name = election.51.b
+		if = {
+			limit = {
+				has_idea = good_legislation
+			}
+			swap_ideas = {
+				remove_idea = good_legislation
+				add_idea = great_legislation
+			}
+		}
+		if = {
+			limit = {
+				has_idea = acceptable_legislation
+			}
+			swap_ideas = {
+				remove_idea = acceptable_legislation
+				add_idea = good_legislation
+			}
+		}
+		if = {
+			limit = {
+				has_idea = minimum_legislation
+			}
+			swap_ideas = {
+				remove_idea = minimum_legislation
+				add_idea = acceptable_legislation
+			}
+		}
+		if = {
+			limit = {
+				has_idea = no_legislation
+			}
+			swap_ideas = {
+				remove_idea = no_legislation
+				add_idea = minimum_legislation
+			}
+		}
+		add_political_power = -75
+		ai_chance = {
+			base = 1
+			modifier = {
+				add = 5
+				check_variable = {
+					var = global.red_alert
+					value = 30
+					compare = greater_than
+				}
+			}
+			modifier = {
+				add = 5
+				check_variable = {
+					var = global.red_alert
+					value = 40
+					compare = greater_than
+				}
+			}
+			modifier = {
+				add = 5
+				check_variable = {
+					var = global.red_alert
+					value = 50
+					compare = greater_than
+				}
+			}
+			modifier = {
+				add = 5
+				check_variable = {
+					var = global.red_alert
+					value = 60
+					compare = greater_than
+				}
+			}
+			modifier = {
+				add = 5
+				check_variable = {
+					var = global.red_alert
+					value = 70
+					compare = greater_than
+				}
+			}
+			modifier = {
+				add = 5
+				check_variable = {
+					var = global.red_alert
+					value = 80
+					compare = greater_than
+				}
+			}
+			modifier = {
+				add = 5
+				check_variable = {
+					var = global.red_alert
+					value = 90
+					compare = greater_than
+				}
+			}
+		}
+	}
+}
+
+# 
+country_event = {
+	id = election.52
+	title = election.52.t
+	desc = election.52.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		has_idea = laissez_faire_law
+		market_liberalism < 0.3
+	}
+	
+	option = {
+		name = election.52.a
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+		add_stability = -0.05
+		ai_chance = {
+			base = 0
+		}
+	}
+	option = {
+		name = election.52.b
+		swap_ideas = {
+			remove_idea = laissez_faire_law
+			add_idea = interventionalism_law
+		}
+		ai_chance = {
+			base = 10
+		}
+	}
+}
+
+# 
+country_event = {
+	id = election.53
+	title = election.53.t
+	desc = election.53.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		has_idea = laissez_faire_law
+		NOT = { has_idea = free_trade }
+		market_liberalism > 0.3
+	}
+	
+	option = {
+		name = election.53.a
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+		add_stability = -0.05
+		ai_chance = {
+			base = 0
+		}
+	}
+	option = {
+		name = election.53.b
+		if = {
+			limit = { has_idea = export_focus }
+			swap_ideas = {
+				remove_idea = export_focus
+				add_idea = free_trade
+			}
+		}
+		if = {
+			limit = { has_idea = limited_exports }
+			swap_ideas = {
+				remove_idea = limited_exports
+				add_idea = free_trade
+			}
+		}
+		if = {
+			limit = { has_idea = closed_economy }
+			swap_ideas = {
+				remove_idea = closed_economy
+				add_idea = export_focus
+			}
+		}
+		ai_chance = {
+			base = 10
+		}
+	}
+}
+
+# 
+country_event = {
+	id = election.54
+	title = election.54.t
+	desc = election.54.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		has_idea = state_capitalism_law
+		market_liberalism > 0.4
+	}
+	
+	option = {
+		name = election.53.a
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.03
+		}
+		add_stability = -0.02
+		ai_chance = {
+			base = 15
+			modifier = {
+				factor = 0
+				market_liberalism > 0.5
+			}
+		}
+	}
+	option = {
+		name = election.53.b
+		swap_ideas = {
+			remove_idea = state_capitalism_law
+			add_idea = interventionalism_law
+		}
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 1
+				market_liberalism > 0.41
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.42
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.43
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.44
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.45
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.46
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.47
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.48
+			}
+			modifier = {
+				add = 1
+				market_liberalism > 0.49
+			}
+			modifier = {
+				add = 10
+				market_liberalism > 0.5
+			}
+		}
+	}
+}
+
+# 
+country_event = {
+	id = election.55
+	title = election.55.t
+	desc = election.55.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+
+	trigger = {
+		OR = {
+			AND = {
+				tag = RUS
+				NOT = { has_country_flag = RUS_provisional_government_created }
+			}
+			NOT = { tag = RUS }
+		}
+		has_idea = planed_economy_law
+		is_socialist_country = no
+		NOT = { has_government = social_democracy }
+	}
+	
+	option = {
+		name = election.55.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.06
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.06
+		}
+		add_stability = -0.06
+		ai_chance = {
+			base = 0
+		}
+	}
+	option = {
+		name = election.55.b
+		if = {
+			limit = {
+				OR = {
+					has_government = fascism
+					has_government = national_syndicalism
+				}
+			}
+			add_ideas = state_capitalism_law
+			else = {
+				add_ideas = laissez_faire_law
+			}
+		}
+		ai_chance = {
+			base = 10
+		}
+	}
+}
+
+# Победа левых на выборах
+country_event = {
+	id = election.101
+	title = election.101.t
+	desc = election.101.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+
+	trigger = {
+		NOT = { is_socialist_country = yes }
+		check_variable = { socialist_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.101.a
+		elections_allowed_0 = yes
+	}
+}
+
+# Победа левых на выборах
+country_event = {
+	id = election.102
+	title = election.102.t
+	desc = election.102.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+
+	trigger = {
+		NOT = { is_socdem_country = yes }
+		check_variable = { socdem_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.102.a
+
+		elections_allowed_0 = yes
+	}
+}
+
+# Победа либеральной коалиции на выборах
+country_event = {
+	id = election.103
+	title = election.103.t
+	desc = election.103.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+
+	trigger = {
+		NOT = { is_liberal_country = yes }
+		check_variable = { liberal_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.103.a
+	}
+}
+
+# Победа авторитарной коалиции на выборах
+country_event = {
+	id = election.104
+	title = election.104.t
+	desc = election.104.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+
+	trigger = {
+		NOT = { is_authoritarian_country = yes }
+		check_variable = { authoritarian_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.104.a
+		elections_allowed_0 = yes
+	}
+}
+
+# Победа реакционной коалиции на выборах
+country_event = {
+	id = election.105
+	title = election.105.t
+	desc = election.105.d
+	picture = GFX_report_event_gathering_protest
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+
+	trigger = {
+		NOT = { is_reactionary_country = yes }
+		check_variable = { reactionary_parties > 0.5 }
+	}
+	
+	option = {
+		name = election.105.a
+		elections_allowed_0 = yes
+	}
+}

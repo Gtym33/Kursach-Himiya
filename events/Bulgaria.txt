@@ -1,0 +1,3554 @@
+﻿add_namespace = bulgaria
+
+# Либерлизация на фоне поражения на фронте?
+country_event = {
+	id = bulgaria.1
+	title = bulgaria.1.t
+	desc = bulgaria.1.desc
+	picture = GFX_report_event_bul_dobro_pole
+	
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1918.11.11
+		tag = BUL
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+		is_subject = no
+		controls_state = 48
+		OR = {
+			AND = {
+				993 = { CONTROLLER = { has_war_with = BUL } }
+				944 = { CONTROLLER = { has_war_with = BUL } }
+			}
+			106 = { CONTROLLER = { has_war_with = BUL } }
+			212 = { CONTROLLER = { has_war_with = BUL } }
+			945 = { CONTROLLER = { has_war_with = BUL } }
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	
+	immediate = {
+		set_country_flag = BUL_not_cap_yet
+		hidden_effect = {
+			add_stability = -0.15
+			add_war_support = -0.10
+			if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
+			if = {
+				limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
+				add_ideas = mutiny_1
+				country_event = stability.23
+				else_if = {
+					limit = { has_idea = mutiny_1 }
+					remove_ideas = mutiny_1
+					add_ideas = mutiny_2
+				}
+				else_if = {
+					limit = { has_idea = mutiny_2 }
+					remove_ideas = mutiny_2
+					add_ideas = mutiny_3
+				}
+				else_if = {
+					limit = { has_idea = mutiny_3 }
+						add_stability = -0.10
+						add_war_support = -0.20
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = bulgaria.1.a
+		effect_tooltip = {
+			add_stability = -0.15
+			add_war_support = -0.10
+			if = {
+				limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
+				add_ideas = mutiny_1
+				else_if = {
+					limit = { has_idea = mutiny_1 }
+					remove_ideas = mutiny_1
+					add_ideas = mutiny_2
+				}
+				else_if = {
+					limit = { has_idea = mutiny_2 }
+					remove_ideas = mutiny_2
+					add_ideas = mutiny_3
+				}
+				else_if = {
+					limit = { has_idea = mutiny_3 }
+						add_stability = -0.10
+						add_war_support = -0.20
+				}
+			}
+		}
+		add_political_power = -25
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.05
+		}
+		set_country_flag = BUL_bunt_capitulations
+		country_event = { id = bulgaria.2 days = 3 }
+		ai_chance = {
+			factor = 4
+		}
+	}
+	
+	option = {
+		name = bulgaria.1.b
+		effect_tooltip = {
+			add_stability = -0.15
+			add_war_support = -0.10
+			if = {
+				limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
+				add_ideas = mutiny_1
+				else_if = {
+					limit = { has_idea = mutiny_1 }
+					remove_ideas = mutiny_1
+					add_ideas = mutiny_2
+				}
+				else_if = {
+					limit = { has_idea = mutiny_2 }
+					remove_ideas = mutiny_2
+					add_ideas = mutiny_3
+				}
+				else_if = {
+					limit = { has_idea = mutiny_3 }
+						add_stability = -0.10
+						add_war_support = -0.20
+				}
+			}
+		}
+		trigger = { is_in_faction_with = GER is_in_faction_with = AUH NOT = { GER = { has_country_flag = GER_monarchy_fall } } }
+		add_political_power = -70
+		set_country_flag = BUL_bunt_capitulations
+		country_event = { id = bulgaria.3 days = 7 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Дипломатия Стамболийского
+country_event = {
+	id = bulgaria.2
+	title = bulgaria.2.t
+	desc = bulgaria.2.desc
+	picture = GFX_report_event_bul_stambolyisky_policy
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		tag = BUL
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+	}
+	
+	option = {
+		name = bulgaria.2.a # Вильгельм, введи войска
+		trigger = { controls_state = 48 is_in_faction_with = GER is_in_faction_with = AUH NOT = { GER = { has_country_flag = GER_monarchy_fall } } OR = { is_neighbor_of = GER is_neighbor_of = AUH } }
+		country_event = { id = bulgaria.3 days = 5 }
+		ai_chance = {
+			factor = 3
+		}
+	}
+	
+	option = {
+		name = bulgaria.2.b # Мы справимся сами, но заключим мир
+		country_event = { id = bulgaria.4 days = 7 }
+		country_event = { id = compiegne_armistice.999 days = 3 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = bulgaria.2.c # Это поражение в войне
+		country_event = { id = compiegne_armistice.999 days = 1 }
+		clr_country_flag = BUL_bunt_capitulations
+		set_politics = {
+			ruling_party = national_syndicalism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.15
+		}
+		drop_cosmetic_tag = yes
+		remove_ideas = BUL_Ferdinand_I_idea
+		add_ideas = parliamentary_republic_gov_form
+		add_stability = -0.10
+		add_war_support = -0.20
+		create_corps_commander = { name = "Rayko Daskalov" id = 75007 portrait_path = "gfx/leaders/BUL/Portrait_Rayko_Daskalov.dds" traits = { politically_connected guerilla_fighter } skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Ввод германских войск
+country_event = {
+	id = bulgaria.3
+	title = bulgaria.3.t
+	desc = bulgaria.3.desc
+	picture = GFX_report_event_bul_with_central_powers
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		tag = BUL
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+	}
+	
+	immediate = {
+		hidden_effect = {
+			add_stability = -0.05
+			add_war_support = -0.10
+			if = {
+				limit = { has_idea = mutiny_1 NOT = { has_country_flag = crisis_in_progress } }
+				remove_ideas = mutiny_1
+				else_if = {
+					limit = { has_idea = mutiny_2 NOT = { has_country_flag = crisis_in_progress } }
+					remove_ideas = mutiny_2
+				}
+				else_if = {
+					limit = { has_idea = mutiny_3 NOT = { has_country_flag = crisis_in_progress } }
+					remove_ideas = mutiny_3
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = bulgaria.3.a
+		add_political_power = -50
+		country_event = { id = compiegne_armistice.999 days = 2 }
+		clr_country_flag = BUL_bunt_capitulations
+		effect_tooltip = {
+			add_stability = -0.05
+			add_war_support = -0.10
+		}
+	}
+	
+	option = {
+		name = bulgaria.3.b
+		add_political_power = -100
+		clr_country_flag = BUL_not_cap_yet
+		clr_country_flag = BUL_bunt_capitulations
+		effect_tooltip = {
+			add_stability = -0.05
+			add_war_support = -0.10
+		}
+	}
+	
+}
+
+# Столица в руках бунтующих солдат
+country_event = {
+	id = bulgaria.4
+	title = bulgaria.4.t
+	desc = bulgaria.4.desc
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = BUL
+		has_start_date < 1918.11.11
+		has_global_flag = WWI_BUL_HAS_CAPITULATED
+		NOT = { has_government = national_syndicalism }
+		has_country_flag = BUL_bunt_capitulations
+	}
+	
+	option = {
+		name = bulgaria.4.a
+		clr_country_flag = BUL_bunt_capitulations
+		every_unit_leader = { limit = { OR = { has_id = 75001 has_id = 75002 has_id = 75003 has_id = 75004 has_id = 75005 } } set_nationality = REB }
+		hidden_effect = {
+		remove_ideas = BUL_Ferdinand_I_idea
+		set_capital = { state = 212 }
+		}
+		start_civil_war = {
+				ruling_party = authoritarism
+				ideology = national_syndicalism
+				size = 0.5
+				states = { 48 }
+				keep_unit_leaders = {
+					75006 75007 75008 75009
+				}
+		}
+		set_country_flag = BUL_monarchists_in_this_country
+		hidden_effect = { country_event = bulgaria.100 } #проверка нацдухов на царя
+		random_other_country = {
+				limit = {
+					original_tag = BUL
+					has_government = national_syndicalism
+				}
+				hidden_effect = {
+					create_country_leader = { name = "Spiro Gulabchev" desc = BUL_Spiro_Gulabchev_DESC picture = "gfx/leaders/BUL/Portrait_Spiro_Gulabchev.dds" expire = "1918.1.31" ideology = centralist_marxism traits = {  } }
+					create_country_leader = { name = "Georgi Dimitrov" desc = BUL_Georgi_Dimitrov_DESC picture = "gfx/leaders/BUL/Portrait_Georgi_Dimitrov.dds" expire = "1949.7.2" ideology = centralist_marxism traits = {  } }
+					create_country_leader = { name = "Dimitar Blagoev" desc = BUL_Dimitar_Blagoev_DESC picture = "gfx/leaders/BUL/Portrait_Dimitar_Blagoev.dds" expire = "1924.6.14" ideology = temperate_marxism traits = { father_of_bulgarian_social_democracy balkan_federation_supporter } }
+					create_country_leader = { name = "Yanko Sakazov" desc = BUL_Yanko_Sakazov_DESC picture = "gfx/leaders/BUL/Portrait_Yanko_Sakazov.dds" expire = "1941.2.2" ideology = old_social_democracy traits = {  } }
+					create_country_leader = { name = "Teodor Teodorov" desc = BUL_Teodor_Teodorov_DESC picture = "gfx/leaders/BUL/Portrait_Teodor_Teodorov.dds" expire = "1924.8.5" ideology = social_liberalism_ideology traits = { parlament_lion } }
+					create_country_leader = { name = "Aleksandar Malinov" desc = BUL_Aleksandar_Malinov_DESC picture = "gfx/leaders/BUL/Portrait_Aleksandar_Malinov.dds" expire = "1938.5.3" ideology = market_liberalism_ideology traits = { prime_minister_of_indenendence } }
+					#create_country_leader = { name = "Nikola Genadiev" desc = BUL_Nikola_Genadiev_DESC picture = "gfx/leaders/BUL/Portrait_Nikola_Genadiev.dds" expire = "1929.10.21" ideology = market_liberalism_ideology traits = {  } }
+					create_country_leader = { name = "Vasil Radoslavov" desc = BUL_Vasil_Radoslavov_DESC picture = "gfx/leaders/BUL/Portrait_Vasil_Radoslavov.dds" expire = "1923.10.30" ideology = conservatism_ideology traits = { bulgarian_expand_supporter } }
+					create_country_leader = { name = "Boris III von Saxe-Coburg-Gotha" desc = BUL_Boris_III_DESC picture = "gfx/leaders/BUL/Portrait_Boris_III_of_Bulgaria.dds" expire = "1943.8.28" ideology = monarchism traits = {  } }
+					create_country_leader = { name = "Aleksandar Tsankov" desc = BUL_Aleksandar_Tsankov_DESC picture = "gfx/leaders/BUL/Portrait_Aleksandar_Tsankov.dds" expire = "1959.7.27" ideology = fascism_ideology traits = { economist flame_nationalist } }
+				}
+				set_stability = 0.9
+				set_war_support = 0.8
+				create_corps_commander = { name = "Rayko Daskalov" id = 75010 portrait_path = "gfx/leaders/BUL/Portrait_Rayko_Daskalov.dds" traits = { politically_connected guerilla_fighter } skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+				create_corps_commander = { name = "Ivan Tuleshkov" id = 75011 portrait_path = "gfx/leaders/BUL/Portrait_Ivan_Tuleshkov.dds" traits = { infantry_officer } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+				create_corps_commander = { name = "Nikolay Petrini" id = 75012 portrait_path = "gfx/leaders/BUL/Portrait_Nikolay_Petrini.dds" traits = { infantry_officer trait_reckless wounded } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+				create_corps_commander = { name = "Dimitar Grancharov" id = 75013 portrait_path = "gfx/leaders/BUL/Portrait_Dimitar_Grancharov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+				hidden_effect = {
+					every_unit_leader = {
+						limit = { has_id = 75012 }
+						remove_unit_leader_trait = wounded
+						add_timed_unit_leader_trait = {
+							trait = wounded
+							days = 90
+						}
+					}
+					every_unit_leader = { limit = { NOT = { has_id = 75010 has_id = 75011 has_id = 75012 has_id = 75013 } } set_nationality = BUL }
+					load_focus_tree = { tree = Bulgaria_focus keep_completed = no }
+					unlock_national_focus = BUL_army_supply_and_regulation_directorate
+					unlock_national_focus = BUL_demand_the_northern_dobrogea
+					unlock_national_focus = BUL_claims_for_albania
+					unlock_national_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+					unlock_national_focus = BUL_withdrawal_of_german_money
+					unlock_national_focus = BUL_expulsion_of_german_capital
+					unlock_national_focus = BUL_nationalization_of_industry_and_mining_resources
+					unlock_national_focus = BUL_new_government
+					unlock_national_focus = BUL_quest_for_peace
+					unlock_national_focus = BUL_amnesty_for_opposition
+				}
+		}
+		hidden_effect = {
+			news_event = { id = news_n.106 hours = 12 }
+			set_global_flag = BUL_CW_mon
+		}
+		hidden_effect = {
+			every_country = {
+				limit = { has_country_flag = WWI_Entente_member is_subject = no OR = { tag = ENG tag = FRA tag = USA tag = RUS } }
+				country_event = { id = bulgaria.5 days = 1 }
+			}
+		}
+	}
+	
+	option = {
+		name = bulgaria.4.b
+		clr_country_flag = BUL_bunt_capitulations
+		every_unit_leader = { limit = { OR = { has_id = 75001 has_id = 75002 has_id = 75003 has_id = 75004 has_id = 75005 } } set_nationality = REB }
+		trigger = {
+			is_ai = no
+		}
+		create_corps_commander = { name = "Rayko Daskalov" id = 75010 portrait_path = "gfx/leaders/BUL/Portrait_Rayko_Daskalov.dds" traits = { politically_connected guerilla_fighter } skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+		create_corps_commander = { name = "Ivan Tuleshkov" id = 75011 portrait_path = "gfx/leaders/BUL/Portrait_Ivan_Tuleshkov.dds" traits = { infantry_officer } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+		create_corps_commander = { name = "Nikolay Petrini" id = 75012 portrait_path = "gfx/leaders/BUL/Portrait_Nikolay_Petrini.dds" traits = { infantry_officer trait_reckless wounded } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+		create_corps_commander = { name = "Dimitar Grancharov" id = 75013 portrait_path = "gfx/leaders/BUL/Portrait_Dimitar_Grancharov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+		hidden_effect = {
+			every_unit_leader = {
+				limit = { has_id = 75012 }
+				remove_unit_leader_trait = wounded
+				add_timed_unit_leader_trait = {
+					trait = wounded
+					days = 90
+				}
+			}
+		}
+		hidden_effect = {
+			drop_cosmetic_tag = yes
+			remove_ideas = BUL_Ferdinand_I_idea
+		}
+		start_civil_war = {
+				ruling_party = national_syndicalism
+				ideology = authoritarism
+				size = 0.5
+				states = { 944 212 987 945 211 }
+				keep_unit_leaders = { 75010 75011 75012 75013 }
+		}
+		random_other_country = {
+				limit = {
+					original_tag = BUL
+					has_government = authoritarism
+				}
+				set_country_flag = BUL_monarchists_in_this_country
+				hidden_effect = {
+					create_country_leader = { name = "Spiro Gulabchev" desc = BUL_Spiro_Gulabchev_DESC picture = "gfx/leaders/BUL/Portrait_Spiro_Gulabchev.dds" expire = "1918.1.31" ideology = centralist_marxism traits = {  } }
+					create_country_leader = { name = "Georgi Dimitrov" desc = BUL_Georgi_Dimitrov_DESC picture = "gfx/leaders/BUL/Portrait_Georgi_Dimitrov.dds" expire = "1949.7.2" ideology = centralist_marxism traits = {  } }
+					create_country_leader = { name = "Dimitar Blagoev" desc = BUL_Dimitar_Blagoev_DESC picture = "gfx/leaders/BUL/Portrait_Dimitar_Blagoev.dds" expire = "1924.6.14" ideology = temperate_marxism traits = { father_of_bulgarian_social_democracy balkan_federation_supporter } }
+					create_country_leader = { name = "Yanko Sakazov" desc = BUL_Yanko_Sakazov_DESC picture = "gfx/leaders/BUL/Portrait_Yanko_Sakazov.dds" expire = "1941.2.2" ideology = old_social_democracy traits = {  } }
+					create_country_leader = { name = "Teodor Teodorov" desc = BUL_Teodor_Teodorov_DESC picture = "gfx/leaders/BUL/Portrait_Teodor_Teodorov.dds" expire = "1924.8.5" ideology = social_liberalism_ideology traits = { parlament_lion } }
+					create_country_leader = { name = "Aleksandar Malinov" desc = BUL_Aleksandar_Malinov_DESC picture = "gfx/leaders/BUL/Portrait_Aleksandar_Malinov.dds" expire = "1938.5.3" ideology = market_liberalism_ideology traits = { prime_minister_of_indenendence } }
+					#create_country_leader = { name = "Nikola Genadiev" desc = BUL_Nikola_Genadiev_DESC picture = "gfx/leaders/BUL/Portrait_Nikola_Genadiev.dds" expire = "1929.10.21" ideology = market_liberalism_ideology traits = {  } }
+					create_country_leader = { name = "Vasil Radoslavov" desc = BUL_Vasil_Radoslavov_DESC picture = "gfx/leaders/BUL/Portrait_Vasil_Radoslavov.dds" expire = "1923.10.30" ideology = conservatism_ideology traits = { bulgarian_expand_supporter } }
+					create_country_leader = { name = "Aleksandar Tsankov" desc = BUL_Aleksandar_Tsankov_DESC picture = "gfx/leaders/BUL/Portrait_Aleksandar_Tsankov.dds" expire = "1959.7.27" ideology = fascism_ideology traits = { economist flame_nationalist } }
+					create_country_leader = { name = "Aleksandar Stamboliyski" desc = BUL_Aleksandar_Stamboliyski_DESC picture = "gfx/leaders/BUL/Portrait_Aleksandar_Stamboliyski.dds" expire = "1923.6.14" ideology = national_syndicalism_ideology traits = {  } }
+				}
+				hidden_effect = { country_event = bulgaria.100 } #проверка нацдухов на царя
+				set_stability = 0.9
+				set_war_support = 0.8
+				add_ideas = limited_monarchy_gov_form
+				save_global_event_target_as = BUL_CW
+				BUL = { every_unit_leader = { limit = { NOT = { has_id = 75010 has_id = 75011 has_id = 75012 has_id = 75013 } } set_nationality = event_target:BUL_CW } }
+				hidden_effect = { clear_global_event_target = BUL_CW }
+				hidden_effect = {
+					load_focus_tree = { tree = Bulgaria_focus keep_completed = no }
+					unlock_national_focus = BUL_army_supply_and_regulation_directorate
+					unlock_national_focus = BUL_demand_the_northern_dobrogea
+					unlock_national_focus = BUL_claims_for_albania
+					unlock_national_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+					unlock_national_focus = BUL_money_issue
+					unlock_national_focus = BUL_arms_purchase
+					unlock_national_focus = BUL_massive_propaganda
+					unlock_national_focus = BUL_new_government
+					unlock_national_focus = BUL_quest_for_peace
+					unlock_national_focus = BUL_desperate_struggle
+				}
+		}
+		add_ideas = parliamentary_republic_gov_form
+		hidden_effect = {
+			news_event = { id = news_n.106 hours = 12 }
+			set_global_flag = BUL_CW_mon
+		}
+		hidden_effect = {
+			every_country = {
+				limit = { has_country_flag = WWI_Entente_member is_subject = no OR = { tag = ENG tag = FRA tag = USA tag = RUS } }
+				country_event = { id = bulgaria.5 days = 1 random = 48 }
+			}
+		}
+	}
+	
+}
+
+country_event = {
+	id = bulgaria.5
+	title = bulgaria.5.t
+	desc = bulgaria.5.desc
+	picture = GFX_report_event_bul_civil_war
+	is_triggered_only = yes
+	option = {
+		name = bulgaria.5.a
+	}
+	option = {
+		name = bulgaria.5.b
+		random_country = {
+			limit = { original_tag = BUL has_government = authoritarism }
+			ROOT = { set_THIS_country_non_recognize_PREV = yes }
+		}
+		random_country = {
+			limit = { original_tag = BUL has_government = national_syndicalism }
+			country_event = { id = bulgaria.6 days = 1 random = 24 }
+		}
+	}
+	option = {
+		name = bulgaria.5.c
+		random_country = {
+			limit = { original_tag = BUL has_government = national_syndicalism }
+			ROOT = { set_THIS_country_non_recognize_PREV = yes }
+		}
+		random_country = {
+			limit = { original_tag = BUL has_government = authoritarism }
+			country_event = { id = bulgaria.6 days = 1 random = 24 }
+		}
+	}
+	option = {
+		trigger = { any_country = { original_tag = BUL has_government = authoritarism OR = { has_idea = BUL_Ferdinand_I_idea has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes } } } }
+		name = bulgaria.5.d
+		random_country = {
+			limit = { original_tag = BUL has_government = national_syndicalism }
+			ROOT = { set_THIS_country_non_recognize_PREV = yes }
+		}
+		random_country = {
+			limit = { original_tag = BUL has_government = authoritarism }
+			country_event = { id = bulgaria.6 days = 1 random = 24 }
+			set_country_flag = BUL_allies_help_Ferdinand_overtrow
+		}
+	}
+}
+
+country_event = {
+	id = bulgaria.6
+	title = bulgaria.6.t
+	desc = {
+		text = bulgaria.6.desc
+		trigger = { NOT = { has_country_flag = BUL_allies_help_Ferdinand_overtrow } }
+	}
+	desc = {
+		text = bulgaria.6.desc_1
+		trigger = { has_country_flag = BUL_allies_help_Ferdinand_overtrow }
+	}
+	picture = GFX_report_event_bul_civil_war
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { has_country_flag = BUL_allies_help_Ferdinand_overtrow NOT = { has_idea = BUL_Ferdinand_I_idea has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes } } }
+				clr_country_flag = BUL_allies_help_Ferdinand_overtrow
+			}
+		}
+	}
+	option = {
+		name = bulgaria.6.a
+		add_war_support = 0.05
+		clr_country_flag = BUL_allies_help_Ferdinand_overtrow
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				has_country_flag = BUL_allies_help_Ferdinand_overtrow
+			}
+		}
+	}
+	option = {
+		name = bulgaria.6.b
+		add_war_support = -0.03
+		FROM = {
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = 200
+				target = ROOT
+			}
+		}
+		if = {
+			limit = { has_country_flag = BUL_allies_help_Ferdinand_overtrow }
+			clr_country_flag = BUL_allies_help_Ferdinand_overtrow
+			if = {
+				limit = { has_idea = BUL_Ferdinand_I_idea }
+				swap_ideas = {
+					remove_idea = BUL_Ferdinand_I_idea
+					add_idea = BUL_Boris_III_idea
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_idea = BUL_Ferdinand_I_idea_hidden }
+					swap_ideas = {
+						remove_idea = BUL_Ferdinand_I_idea_hidden
+						add_idea = BUL_Boris_III_idea_hidden
+					}
+				}
+			}
+			if = {
+				limit = { has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes } }
+				retire_country_leader = yes
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+country_event = {
+	id = bulgaria.8
+	title = bulgaria.8.t
+	desc = bulgaria.8.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	is_triggered_only = yes
+	option = {
+		name = bulgaria.8.a
+		if = {
+			limit = { owns_state = 1122 }
+			transfer_state = 1046
+			1046 = { set_demilitarized_zone = no }
+		}
+	}
+}
+
+country_event = {
+	id = bulgaria.9
+	title = bulgaria.9.t
+	desc = bulgaria.9.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	is_triggered_only = yes
+	option = {
+		name = bulgaria.9.a
+		if = {
+			limit = { tag = BUL }
+			add_war_support = -0.05
+			add_stability = -0.025
+			add_popularity = { ideology = authoritarism popularity = -0.03 }
+		}
+	}
+}
+
+country_event = {
+	id = bulgaria.10
+	title = bulgaria.10.t
+	desc = bulgaria.10.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	is_triggered_only = yes
+	option = {
+		name = bulgaria.10.a
+	}
+}
+
+# Болгары требуют себе Северную Добруджу
+country_event = {
+	id = bulgaria.11
+	title = bulgaria.11.t
+	desc = bulgaria.11.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = { #Да
+		name = bulgaria.11.a
+		BUL = { country_event = bulgaria.12 }
+		if = {
+			limit = { tag = ROM }
+			add_stability = -0.07
+			add_popularity = { ideology = communism popularity = 0.04 }
+			add_popularity = { ideology = fascism popularity = 0.04 }
+			BUL = { transfer_state = 1046 }
+			else = {
+				BUL = {
+					set_state_controller = 1046
+					effect_tooltip = {
+						add_war_support = 0.05
+						add_popularity = { ideology = authoritarism popularity = 0.05 }
+					}
+				}
+			}
+		}
+	}
+	
+	option = { #Нет
+		trigger = { 1046 = { is_demilitarized_zone = no } }
+		name = bulgaria.11.b
+		BUL = { country_event = bulgaria.13 }
+	}
+}
+
+# Союзники согласились
+country_event = {
+	id = bulgaria.12
+	title = bulgaria.12.t
+	desc = bulgaria.12.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.12.a
+		if = {
+			limit = { NOT = { has_war_with = ROM } }
+			effect_tooltip = {
+				ROM = {
+					add_stability = -0.07
+					add_popularity = { ideology = communism popularity = 0.04 }
+					add_popularity = { ideology = fascism popularity = 0.04 }
+				}
+			}
+			else = {
+				add_war_support = 0.05
+				add_popularity = { ideology = authoritarism popularity = 0.05 }
+			}
+		}
+	}
+}
+
+# Союзники не согласились
+country_event = {
+	id = bulgaria.13
+	title = bulgaria.13.t
+	desc = bulgaria.13.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.13.a
+		add_war_support = -0.05
+		add_stability = -0.025
+		add_popularity = { ideology = authoritarism popularity = -0.03 }
+		add_popularity = { ideology = ROOT popularity = -0.03 }
+	}
+	option = {
+		trigger = { NOT = { has_war_with = ROM } }
+		name = bulgaria.13.b
+		start_border_war = {
+			change_state_after_war = yes
+			attacker = {
+				state = 1122
+				num_provinces = 1
+				on_win = bulgaria.8
+				on_lose = bulgaria.9
+				on_cancel = bulgaria.10
+			}
+			defender = {
+				state = 1046
+				num_provinces = 1
+				on_win = bulgaria.9
+				on_lose = bulgaria.8
+				on_cancel = bulgaria.10
+			}
+		}
+	}
+}
+
+# Болгары требуют себе Нови-Пазар
+country_event = {
+	id = bulgaria.14
+	title = bulgaria.14.t
+	desc = bulgaria.14.desc
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	is_triggered_only = yes
+	
+	option = { #Да
+		name = bulgaria.14.a
+		add_to_variable = { global.Central_Powers_give_BUL_Novi_Pazar = vote_power }
+		
+		add_to_variable = { global.Central_Powers_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Central_Powers_major_conf_votes = global.Central_Powers_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Central_Powers_not_give_BUL_Novi_Pazar > global.Central_Powers_give_BUL_Novi_Pazar } }
+					else = {
+						BUL = { country_event = bulgaria.15 }
+						SER = {
+							every_owned_state = {
+								limit = { OR = { is_controlled_by = AUH is_controlled_by = GER is_controlled_by = TUR } OR = { state = 108 state = 969 state = 948 state = 947 state = 1263 state = 1054 state = 106 state = 993 } }
+								BUL = { set_state_controller = PREV }
+							}
+						}
+					}
+					BUL = { country_event = bulgaria.16 }
+				}
+				clear_variable = global.Central_Powers_major_conf_votes
+				clear_variable = global.Central_Powers_major_conf_members
+				clear_variable = global.Central_Powers_not_give_BUL_Novi_Pazar
+				clear_variable = global.Central_Powers_give_BUL_Novi_Pazar
+			}
+		}
+	}
+	
+	option = { #Нет
+		name = bulgaria.14.b
+		add_to_variable = { global.Central_Powers_not_give_BUL_Novi_Pazar = vote_power }
+		
+		add_to_variable = { global.Central_Powers_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Central_Powers_major_conf_votes = global.Central_Powers_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Central_Powers_not_give_BUL_Novi_Pazar > global.Central_Powers_give_BUL_Novi_Pazar } }
+					else = {
+						BUL = { country_event = bulgaria.15 }
+						SER = {
+							every_owned_state = {
+								limit = { OR = { is_controlled_by = AUH is_controlled_by = GER is_controlled_by = TUR } OR = { state = 108 state = 969 state = 948 state = 947 state = 1263 state = 1054 state = 106 state = 993 } }
+								BUL = { set_state_controller = PREV }
+							}
+						}
+					}
+					BUL = { country_event = bulgaria.16 }
+				}
+				clear_variable = global.Central_Powers_major_conf_votes
+				clear_variable = global.Central_Powers_major_conf_members
+				clear_variable = global.Central_Powers_not_give_BUL_Novi_Pazar
+				clear_variable = global.Central_Powers_give_BUL_Novi_Pazar
+			}
+		}
+	}
+}
+
+# Союзники согласились
+country_event = {
+	id = bulgaria.15
+	title = bulgaria.15.t
+	desc = bulgaria.15.desc
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.15.a
+		add_popularity = { ideology = authoritarism popularity = 0.04 }
+		add_war_support = 0.04
+		AUH = {
+			add_stability = 0.03
+		}
+	}
+}
+
+# Союзники не согласились
+country_event = {
+	id = bulgaria.16
+	title = bulgaria.16.t
+	desc = bulgaria.16.desc
+	picture = GFX_report_event_bul_fall_of_sophia
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.16.a
+		add_political_power = -50
+	}
+}
+
+# Болгары выбирают что делать с Албанией
+country_event = {
+	id = bulgaria.17
+	title = bulgaria.17.t
+	desc = bulgaria.17.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = { #Ради безопасности Македонии Албания будет занята полностью
+		name = bulgaria.17.a
+		set_country_flag = BUL_claim_on_ALB_1
+			set_variable = { global.Central_Powers_major_conf_votes = 0 }
+			set_variable = { global.Central_Powers_major_conf_members = 0 }
+			set_variable = { global.Central_Powers_not_give_BUL_ALB = 0 }
+			set_variable = { global.Central_Powers_give_BUL_ALB = 0 }
+			every_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+					is_subject = no
+					capital_scope = { is_on_continent = europe }
+				}
+				if = {
+					limit = {
+						OR = {
+							tag = GER
+							tag = AUH
+							tag = TUR
+						}
+					}
+					set_variable = { vote_power = 2 }
+					add_to_variable = { global.Central_Powers_major_conf_members = 2 }
+					else = {
+						set_variable = { vote_power = 1 }
+						add_to_variable = { global.Central_Powers_major_conf_members = 1 }
+					}
+				}
+				country_event = { id = bulgaria.18 days = 1 }
+			}
+	}
+	
+	option = { #Кирилл Преславский позаботится о благе албанского народа
+		name = bulgaria.17.b
+		set_country_flag = BUL_claim_on_ALB_2
+			set_variable = { global.Central_Powers_major_conf_votes = 0 }
+			set_variable = { global.Central_Powers_major_conf_members = 0 }
+			set_variable = { global.Central_Powers_not_give_BUL_ALB = 0 }
+			set_variable = { global.Central_Powers_give_BUL_ALB = 0 }
+			every_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+					is_subject = no
+					capital_scope = { is_on_continent = europe }
+				}
+				if = {
+					limit = {
+						OR = {
+							tag = GER
+							tag = AUH
+							tag = TUR
+						}
+					}
+					set_variable = { vote_power = 2 }
+					add_to_variable = { global.Central_Powers_major_conf_members = 2 }
+					else = {
+						set_variable = { vote_power = 1 }
+						add_to_variable = { global.Central_Powers_major_conf_members = 1 }
+					}
+				}
+				country_event = { id = bulgaria.18 days = 1 }
+			}
+	}
+	
+	option = { #Третья нота понравится туркам и сыграет нам на руку
+		name = bulgaria.17.c
+		set_country_flag = BUL_claim_on_ALB_3
+			set_variable = { global.Central_Powers_major_conf_votes = 0 }
+			set_variable = { global.Central_Powers_major_conf_members = 0 }
+			set_variable = { global.Central_Powers_not_give_BUL_ALB = 0 }
+			set_variable = { global.Central_Powers_give_BUL_ALB = 0 }
+			every_other_country = {
+				limit = {
+					is_in_faction_with = ROOT
+					is_subject = no
+					capital_scope = { is_on_continent = europe }
+				}
+				if = {
+					limit = {
+						OR = {
+							tag = GER
+							tag = AUH
+							tag = TUR
+						}
+					}
+					set_variable = { vote_power = 2 }
+					add_to_variable = { global.Central_Powers_major_conf_members = 2 }
+					else = {
+						set_variable = { vote_power = 1 }
+						add_to_variable = { global.Central_Powers_major_conf_members = 1 }
+					}
+				}
+				country_event = { id = bulgaria.18 days = 1 }
+			}
+	}
+}
+
+
+# Болгары требуют себе Албанию
+country_event = {
+	id = bulgaria.18
+	title = bulgaria.18.t
+	desc = {
+		text = bulgaria.18.desc
+		trigger = { FROM = { has_country_flag = BUL_claim_on_ALB_1 } }
+	}
+	desc = {
+		text = bulgaria.18.desc_2
+		trigger = { FROM = { has_country_flag = BUL_claim_on_ALB_2 } }
+	}
+	desc = {
+		text = bulgaria.18.desc_3
+		trigger = { FROM = { has_country_flag = BUL_claim_on_ALB_3 } }
+	}
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = { #Да
+		name = bulgaria.18.a
+		add_to_variable = { global.Central_Powers_give_BUL_ALB = vote_power }
+		
+		add_to_variable = { global.Central_Powers_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Central_Powers_major_conf_votes = global.Central_Powers_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Central_Powers_not_give_BUL_ALB > global.Central_Powers_give_BUL_ALB } }
+					else = {
+						BUL = {
+							country_event = bulgaria.19
+						}
+					}
+					BUL = { country_event = bulgaria.20 }
+				}
+				clear_variable = global.Central_Powers_major_conf_votes
+				clear_variable = global.Central_Powers_major_conf_members
+				clear_variable = global.Central_Powers_not_give_BUL_ALB
+				clear_variable = global.Central_Powers_give_BUL_ALB
+			}
+		}
+	}
+	
+	option = { #Нет
+		name = bulgaria.18.b
+		add_to_variable = { global.Central_Powers_not_give_BUL_ALB = vote_power }
+		
+		add_to_variable = { global.Central_Powers_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Central_Powers_major_conf_votes = global.Central_Powers_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Central_Powers_not_give_BUL_ALB > global.Central_Powers_give_BUL_ALB } }
+					else = {
+						BUL = {
+							country_event = bulgaria.19
+						}
+					}
+					BUL = { country_event = bulgaria.20 }
+				}
+				clear_variable = global.Central_Powers_major_conf_votes
+				clear_variable = global.Central_Powers_major_conf_members
+				clear_variable = global.Central_Powers_not_give_BUL_ALB
+				clear_variable = global.Central_Powers_give_BUL_ALB
+			}
+		}
+	}
+}
+
+# Союзники согласились
+country_event = {
+	id = bulgaria.19
+	title = bulgaria.19.t
+	desc = {
+		text = bulgaria.19.desc
+		trigger = { has_country_flag = BUL_claim_on_ALB_1 }
+	}
+	desc = {
+		text = bulgaria.19.desc_2
+		trigger = { has_country_flag = BUL_claim_on_ALB_2 }
+	}
+	desc = {
+		text = bulgaria.19.desc_3
+		trigger = { has_country_flag = BUL_claim_on_ALB_3 }
+	}
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.19.a
+		add_popularity = { ideology = authoritarism popularity = 0.04 }
+		add_war_support = 0.04
+		AUH = {
+			add_stability = 0.03
+		}
+	}
+}
+
+# Союзники не согласились
+country_event = {
+	id = bulgaria.20
+	title = bulgaria.20.t
+	desc = {
+		text = bulgaria.20.desc
+		trigger = { has_country_flag = BUL_claim_on_ALB_1 }
+	}
+	desc = {
+		text = bulgaria.20.desc_2
+		trigger = { has_country_flag = BUL_claim_on_ALB_2 }
+	}
+	desc = {
+		text = bulgaria.20.desc_3
+		trigger = { has_country_flag = BUL_claim_on_ALB_3 }
+	}
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.20.a
+		clr_country_flag = BUL_claim_on_ALB_1
+		clr_country_flag = BUL_claim_on_ALB_2
+		clr_country_flag = BUL_claim_on_ALB_3
+	}
+}
+
+# Болгария просит ружия
+country_event = {
+	id = bulgaria.21
+	title = bulgaria.21.t
+	desc = bulgaria.21.desc
+	picture = GFX_report_event_bul_weapon_request
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.21.a
+		BUL = { rise_hyper_inflation = yes }
+		send_equipment = {
+			equipment = field_guns_equipment
+			amount = 180
+			target = BUL
+		}
+		send_equipment = {
+			equipment = artillery_equipment
+			amount = 120
+			target = BUL
+		}
+		send_equipment = {
+			equipment = motorized_equipment
+			amount = 120
+			target = BUL
+		}
+		ai_chance = { factor = 1 }
+	}
+	option = {
+		name = bulgaria.21.b
+		BUL = {
+			add_political_power = -35
+		}
+		add_political_power = 10
+		send_equipment = {
+			equipment = field_guns_equipment
+			amount = 100
+			target = BUL
+		}
+		send_equipment = {
+			equipment = artillery_equipment
+			amount = 50
+			target = BUL
+		}
+		ai_chance = { factor = 3 }
+	}
+	option = {
+		name = bulgaria.21.c
+		BUL = { country_event = { id = bulgaria.22 days = 1 } set_country_flag = BUL_betrayed_by_GER }
+		ai_chance = { factor = 1 }
+	}
+}
+
+country_event = {
+	id = bulgaria.22
+	title = bulgaria.22.t
+	desc = bulgaria.22.desc
+	picture = GFX_report_event_bul_weapon_request
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.22.a
+		ai_chance = { factor = 1 }
+		custom_effect_tooltip = bulgaria_22_a_tt
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = BUL_demand_the_northern_dobrogea }
+				set_country_flag = flag_BUL_demand_the_northern_dobrogea
+			}
+			if = {
+				limit = { has_completed_focus = BUL_claims_for_albania }
+				set_country_flag = flag_BUL_claims_for_albania
+			}
+			if = {
+				limit = { has_completed_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar }
+				set_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+			}
+			load_focus_tree = { tree = Bulgaria_focus keep_completed = no }
+			unlock_national_focus = BUL_army_supply_and_regulation_directorate
+			if = {
+				limit = { has_country_flag = flag_BUL_demand_the_northern_dobrogea }
+				unlock_national_focus = BUL_demand_the_northern_dobrogea
+				clr_country_flag = flag_BUL_demand_the_northern_dobrogea
+			}
+			if = {
+				limit = { has_country_flag = flag_BUL_claims_for_albania }
+				unlock_national_focus = BUL_claims_for_albania
+				clr_country_flag = flag_BUL_claims_for_albania
+			}
+			if = {
+				limit = { has_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar }
+				unlock_national_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+				clr_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+			}
+		}
+	}
+	option = {
+		name = bulgaria.22.b
+		ai_chance = { factor = 3 }
+		add_war_support = -0.04
+		clr_country_flag = BUL_betrayed_by_GER
+	}
+}
+
+#Наши люди в Софии
+country_event = {
+	id = bulgaria.23
+	title = bulgaria.23.t
+	desc = bulgaria.23.desc
+	picture = report_event_bul_german_policy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.23.a
+		ai_chance = { factor = 1 }
+		custom_effect_tooltip = bulgaria_23_a_tt
+		set_country_flag = GER_keep_BUL
+	}
+	option = {
+		name = bulgaria.23.b
+		ai_chance = { factor = 1 }
+		add_war_support = -0.04
+		clr_country_flag = BUL_betrayed_by_GER
+		BUL = { country_event = { id = bulgaria.24 days = 2 } }
+	}
+	option = {
+		name = bulgaria.23.c
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				BUL = { has_country_flag = BUL_betrayed_by_GER }
+			}
+		}
+		add_war_support = -0.04
+		clr_country_flag = BUL_betrayed_by_GER
+	}
+}
+
+country_event = {
+	id = bulgaria.24
+	title = bulgaria.24.t
+	desc = bulgaria.24.desc
+	picture = GFX_report_event_bul_with_central_powers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.24.a
+		ai_chance = { factor = 1 }
+		GER = { country_event = { id = bulgaria.25 days = 1 } }
+	}
+	option = {
+		name = bulgaria.24.b
+		ai_chance = { factor = 2 }
+		
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = BUL_demand_the_northern_dobrogea }
+				set_country_flag = flag_BUL_demand_the_northern_dobrogea
+			}
+			if = {
+				limit = { has_completed_focus = BUL_claims_for_albania }
+				set_country_flag = flag_BUL_claims_for_albania
+			}
+			if = {
+				limit = { has_completed_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar }
+				set_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+			}
+			load_focus_tree = { tree = Bulgaria_focus keep_completed = no }
+			unlock_national_focus = BUL_army_supply_and_regulation_directorate
+			if = {
+				limit = { has_country_flag = flag_BUL_demand_the_northern_dobrogea }
+				unlock_national_focus = BUL_demand_the_northern_dobrogea
+				clr_country_flag = flag_BUL_demand_the_northern_dobrogea
+			}
+			if = {
+				limit = { has_country_flag = flag_BUL_claims_for_albania }
+				unlock_national_focus = BUL_claims_for_albania
+				clr_country_flag = flag_BUL_claims_for_albania
+			}
+			if = {
+				limit = { has_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar }
+				unlock_national_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+				clr_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+			}
+			if = {
+				limit = { has_country_flag = BUL_betrayed_by_GER }
+				unlock_national_focus = BUL_money_issue
+				unlock_national_focus = BUL_arms_purchase
+				clr_country_flag = BUL_betrayed_by_GER
+			}
+			set_country_flag = BUL_otkaz_ot_plana
+		}
+	}
+}
+
+# Болгария отказала
+country_event = {
+	id = bulgaria.25
+	title = bulgaria.25.t
+	desc = bulgaria.25.desc
+	picture = GFX_report_event_bul_with_central_powers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.25.a
+	}
+}
+
+# Бескровный переворот
+country_event = {
+	id = bulgaria.29
+	title = bulgaria.29.t
+	desc = bulgaria.29.desc
+	picture = GFX_report_event_bul_progerman_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.29.a
+		custom_effect_tooltip = bulgaria_29_a_tt
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = BUL_demand_the_northern_dobrogea }
+				set_country_flag = flag_BUL_demand_the_northern_dobrogea
+			}
+			if = {
+				limit = { has_completed_focus = BUL_claims_for_albania }
+				set_country_flag = flag_BUL_claims_for_albania
+			}
+			if = {
+				limit = { has_completed_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar }
+				set_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+			}
+			load_focus_tree = { tree = Bulgaria_focus keep_completed = no }
+			unlock_national_focus = BUL_army_supply_and_regulation_directorate
+			if = {
+				limit = { has_country_flag = flag_BUL_demand_the_northern_dobrogea }
+				unlock_national_focus = BUL_demand_the_northern_dobrogea
+				clr_country_flag = flag_BUL_demand_the_northern_dobrogea
+			}
+			if = {
+				limit = { has_country_flag = flag_BUL_claims_for_albania }
+				unlock_national_focus = BUL_claims_for_albania
+				clr_country_flag = flag_BUL_claims_for_albania
+			}
+			if = {
+				limit = { has_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar }
+				unlock_national_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+				clr_country_flag = flag_BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+			}
+			
+			if = {
+				limit = { has_country_flag = BUL_betrayed_by_GER }
+				unlock_national_focus = BUL_money_issue
+				unlock_national_focus = BUL_arms_purchase
+				clr_country_flag = BUL_betrayed_by_GER
+			}
+			set_country_flag = BUL_pro_GER_coup
+		}
+	}
+}
+
+# Новое правительство
+country_event = {
+	id = bulgaria.31
+	title = bulgaria.31.t
+	desc = bulgaria.31.desc
+	picture = GFX_report_event_bul_new_government
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.31.a
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+			remove_ideas_with_trait = military_minister_trait
+		}
+		
+		add_ideas = {
+			Aleksandar_Malinov_1
+			Aleksandar_Malinov_2
+			Andrey_Lyapchev_3
+			Mihail_Takev_4
+			Iosif_Fadenheht_5
+			Sava_Savov_6
+		}
+		
+		set_politics = { ruling_party = market_liberalism }
+		hidden_effect = { country_event = bulgaria.100 } #проверка нацдухов на царя
+		add_popularity = { ideology = market_liberalism popularity = 0.15 }
+		
+		clr_country_flag = BUL_betrayed_by_GER
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = {
+			NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+			NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		}
+		name = bulgaria.31.b
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = military_minister_trait
+		}
+		add_ideas = {
+			Vasil_Radoslavov_1
+			Aleksandar_Tsankov_2
+			Andrey_Lyapchev_3
+			Ivan_Vylkov_4
+			Mihail_Savov_6
+		}
+		remove_ideas_with_trait = head_of_intel_trait
+		
+		add_political_power = 75
+		set_politics = { ruling_party = conservatism }
+		hidden_effect = { country_event = bulgaria.100 } #проверка нацдухов на царя
+		add_popularity = { ideology = conservatism popularity = 0.05 }
+		
+		set_country_flag = BUL_flag_war_must_go_on
+		clr_country_flag = BUL_betrayed_by_GER
+		GER = { clr_country_flag = GER_keep_BUL clr_country_flag = flag_GER_BUL_recrute_BUL_generals clr_country_flag = flag_GER_BUL_unite_progerman_opposition }
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				has_country_flag = BUL_betrayed_by_GER
+			}
+		}
+	}
+}
+
+# Гром над Моравой
+country_event = {
+	id = bulgaria.41
+	title = bulgaria.41.t
+	desc = bulgaria.41.desc
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.41.a
+		if = {
+			limit = { NOT = { has_war_with = SER } }
+			if = {
+				limit = { is_ai = no }
+				create_wargoal = {
+					type = annex_everything
+					target = SER
+				}
+				else = { declare_war_on = { target = SER type = annex_everything } }
+			}
+		}
+	}
+}
+
+# Мир с Турцией
+country_event = {
+	id = bulgaria.42
+	title = bulgaria.42.t
+	desc = bulgaria.42.desc
+	picture = GFX_report_event_bul_german_policy
+	
+	trigger = {
+		tag = BUL
+		has_country_flag = BUL_flag_we_are_no_longer_paradise_submissive
+		has_war_with = TUR
+		controls_state = 949
+		controls_state = 341
+		controls_state = 797
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		clr_country_flag = BUL_flag_we_are_no_longer_paradise_submissive
+	}
+	
+	option = {
+		name = bulgaria.42.a
+		add_war_support = -0.07
+		ai_chance = { factor = 0 }
+	}
+	option = {
+		name = bulgaria.42.b
+		add_war_support = -0.05
+		TUR = { country_event = bulgaria.43 }
+		ai_chance = { factor = 1 }
+	}
+	option = {
+		name = bulgaria.42.c
+		TUR = { set_country_flag = BUL_peace_without_Constantinopol country_event = bulgaria.43 }
+		ai_chance = { factor = 0 }
+	}
+}
+# Мир с Турцией
+country_event = {
+	id = bulgaria.43
+	title = bulgaria.43.t
+	desc = {
+		text = bulgaria.43.desc
+		trigger = { NOT = { has_country_flag = BUL_peace_without_Constantinopol } }
+	}
+	desc = {
+		text = bulgaria.43.desc_1
+		trigger = { has_country_flag = BUL_peace_without_Constantinopol }
+	}
+	picture = GFX_report_event_bul_german_policy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.43.a
+		ai_chance = {
+			factor = 1
+			modifier = { factor = 0 has_country_flag = BUL_peace_without_Constantinopol }
+		}
+		clr_country_flag = BUL_peace_without_Constantinopol
+		FROM = { country_event = bulgaria.44 }
+	}
+	option = {
+		name = bulgaria.43.b
+		ai_chance = {
+			factor = 3
+		}
+		every_owned_state = {
+			limit = {
+				is_on_continent = europe
+				NOT = { state = 341 }
+			}
+			FROM = { transfer_state = PREV }
+		}
+		if = {
+			limit = { NOT = { has_country_flag = BUL_peace_without_Constantinopol } }
+			FROM = { transfer_state = 341 }
+		}
+		every_country = {
+			limit = { OR = { AND = { is_in_faction_with = BUL is_faction_leader = yes } tag = BUL is_in_faction = no } }
+			ROOT = { white_peace = PREV }
+		}
+		clr_country_flag = BUL_peace_without_Constantinopol
+	}
+}
+# Отказ Турции
+country_event = {
+	id = bulgaria.44
+	title = bulgaria.44.t
+	desc = bulgaria.44.desc
+	picture = GFX_report_event_bul_german_policy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.44.a
+	}
+}
+
+# Армия берёт власть
+country_event = {
+	id = bulgaria.45
+	title = bulgaria.45.t
+	desc = bulgaria.45.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.45.a
+	}
+}
+
+# Болгарские войска заняли Константинополь (погранконфликт)
+country_event = {
+	id = bulgaria.46
+	title = bulgaria.46.t
+	desc = bulgaria.46.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.46.a
+		if = {
+			limit = { controls_state = 797 }
+			news_event = news_c.12
+			add_political_power = 25
+			add_war_support = 0.02
+		}
+		if = {
+			limit = { NOT = { controls_state = 797 } }
+			add_political_power = -50
+			add_war_support = -0.02
+		}
+	}
+}
+# Болгарские войска не смогли занять Константинополь (погранконфликт)
+country_event = {
+	id = bulgaria.47
+	title = bulgaria.47.t
+	desc = bulgaria.47.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.47.a
+		if = {
+			limit = { controls_state = 797 }
+			add_political_power = 25
+			add_war_support = 0.02
+		}
+		if = {
+			limit = { NOT = { controls_state = 797 } }
+			add_political_power = -50
+			add_war_support = -0.02
+		}
+	}
+}
+
+# Отправка дипломатов Антанте
+country_event = {
+	id = bulgaria.51
+	title = bulgaria.51.t
+	desc = bulgaria.51.desc
+	picture = GFX_report_event_bul_peace_ww1
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = BUL_pro_GER_coup }
+	}
+	
+	immediate = {
+		hidden_effect = { GER = { clr_country_flag = GER_keep_BUL clr_country_flag = flag_GER_BUL_recrute_BUL_generals clr_country_flag = flag_GER_BUL_unite_progerman_opposition } }
+	}
+	
+	option = {
+		name = bulgaria.51.a
+		hidden_effect = {
+			set_variable = { global.Entente_major_conf_members = 0 }
+			set_variable = { global.Entente_white_peace_with_BUL = 0 }
+			set_variable = { global.Entente_not_white_peace_with_BUL = 0 }
+			set_variable = { global.Entente_major_conf_votes = 0 }
+			every_country = {
+				limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+				if = {
+					limit = { OR = { tag = USA tag = RUS } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					set_variable = { vote_power = 3 }
+				}
+				else_if = {
+					limit = { OR = { tag = FRA tag = ENG } }
+					add_to_variable = { global.Entente_major_conf_members = 4 }
+					set_variable = { vote_power = 4 }
+				}
+				else = {
+					add_to_variable = { global.Entente_major_conf_members = 1 }
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = bulgaria.52 days = 2 }
+			}
+		}
+	}
+}
+# Болгарский запрос перемирия
+country_event = {
+	id = bulgaria.52
+	title = bulgaria.52.t
+	desc = bulgaria.52.desc
+	picture = GFX_report_event_bul_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.52.a
+		add_to_variable = { global.Entente_white_peace_with_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_white_peace_with_BUL > global.Entente_not_white_peace_with_BUL } }
+					BUL = { country_event = bulgaria.53 }
+					else = {
+						BUL = { country_event = bulgaria.54 }
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_white_peace_with_BUL
+				clear_variable = global.Entente_not_white_peace_with_BUL
+			}
+		}
+	}
+	option = {
+		name = bulgaria.52.b
+		add_to_variable = { global.Entente_not_white_peace_with_BUL = vote_power }
+		
+		add_to_variable = { global.Entente_major_conf_votes = vote_power }
+		
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { global.Entente_major_conf_votes = global.Entente_major_conf_members } }
+				if = {
+					limit = { check_variable = { global.Entente_white_peace_with_BUL > global.Entente_not_white_peace_with_BUL } }
+					BUL = { country_event = bulgaria.53 }
+					else = {
+						BUL = { country_event = bulgaria.54 }
+					}
+				}
+				clear_variable = global.Entente_major_conf_votes
+				clear_variable = global.Entente_major_conf_members
+				clear_variable = global.Entente_white_peace_with_BUL
+				clear_variable = global.Entente_not_white_peace_with_BUL
+			}
+		}
+	}
+}
+# Ответ Антанты белый мир
+country_event = {
+	id = bulgaria.53
+	title = bulgaria.53.t
+	desc = bulgaria.53.desc
+	picture = GFX_report_event_bul_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.53.a
+		add_war_support = -0.2
+		add_stability = 0.05
+		GER = { clr_country_flag = GER_keep_BUL clr_country_flag = flag_GER_BUL_recrute_BUL_generals clr_country_flag = flag_GER_BUL_unite_progerman_opposition }
+		set_global_flag = WWI_BUL_HAS_CAPITULATED
+		BUL = {
+			clr_country_flag = BUL_claim_on_ALB_1
+			clr_country_flag = BUL_claim_on_ALB_2
+			clr_country_flag = BUL_claim_on_ALB_3
+		}
+		hidden_effect = {
+			every_state = {
+				limit = {
+					OR = { region = 130 region = 239 region = 240 state = 240 }
+					is_core_of = UKR
+					is_owned_by = AUH
+				}
+				UKR = { transfer_state = PREV }
+			}
+			every_state = {
+				limit = {
+					OR = { region = 130 region = 239 region = 240 state = 240 }
+					is_core_of = USR
+					is_owned_by = AUH
+				}
+				USR = { transfer_state = PREV }
+			}
+			if = {
+				limit = { country_exists = CRI }
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						region = 230
+						NOT = { is_core_of = ROOT }
+					}
+					CRI = { transfer_state = PREV }
+				}
+				else = {
+					random_other_country = {
+						limit = { any_owned_state = { region = 230 } }
+						every_state = {
+							limit = {
+								is_owned_by = ROOT
+								region = 230
+								NOT = { is_core_of = ROOT }
+							}
+							PREV = { transfer_state = PREV }
+						}
+					}
+				}
+			}
+		}
+		if = {
+			limit = {
+				controls_state = 106
+			}
+			transfer_state = 106
+			transfer_state = 1054
+			transfer_state = 993
+		}
+			leave_faction = yes
+			add_ideas = neutral_foreign_policy_law
+			every_country = {
+				limit = {
+					has_war_with = ROOT
+					OR = { is_faction_leader = yes is_in_faction = no }
+					NOT = { original_tag = ROOT }
+				}
+				ROOT = { white_peace = PREV }
+			}
+			every_country = {
+				limit = { is_subject_of = ROOT }
+				hidden_effect = { country_event = { id = compiegne_armistice.0 hours = 1 } }
+			}
+			every_country = {
+				limit = { OR = { tag = ENG tag = FRA tag = ITA tag = GRR } NOT = { is_in_faction_with = GER } }
+				PREV = { give_military_access = PREV }
+			}
+	}
+}
+# Ответ Антанты ол юр бэйс ар белонг ту ас вы хуесосы ебаные
+country_event = {
+	id = bulgaria.54
+	title = bulgaria.54.t
+	desc = bulgaria.54.desc
+	picture = GFX_report_event_bul_peace_ww1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.54.a
+		country_event = compiegne_armistice.999
+	}
+}
+# Болгария предлагает свои услуги чтобы она вступила в войну на стороне Антанты
+country_event = {
+	id = bulgaria.55
+	title = bulgaria.55.t
+	desc = bulgaria.55.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		ai_chance = { factor = 0 }
+		name = bulgaria.55.a
+		FROM = { country_event = bulgaria.56 } #отказ
+	}
+	option = {
+		ai_chance = { factor = 100 }
+		name = bulgaria.55.b
+		FROM = { country_event = bulgaria.57 } #согласие
+	}
+}
+# Отказ Антанты
+country_event = {
+	id = bulgaria.56
+	title = bulgaria.56.t
+	desc = bulgaria.56.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.56.a
+	}
+}
+# Возвращение в войну
+country_event = {
+	id = bulgaria.57
+	title = bulgaria.57.t
+	desc = bulgaria.57.desc
+	picture = GFX_report_event_bul_dobro_pole
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.57.a
+		set_country_flag = WWI_Entente_member
+		add_popularity = { ideology = communism popularity = 0.04 }
+		add_war_support = -0.05
+		add_stability = -0.06
+		FROM = {
+			add_to_faction = ROOT
+		}
+		add_to_war = { targeted_alliance = FROM enemy = GER }
+		add_to_war = { targeted_alliance = FROM enemy = AUH }
+		add_to_war = { targeted_alliance = FROM enemy = TUR }
+		add_to_war = { targeted_alliance = FROM enemy = SNS }
+		add_to_war = { targeted_alliance = FROM enemy = TRG }
+		
+		set_country_flag = crisis_in_progress
+		add_ideas = draft_dodging_2
+		country_event = stability.21
+	}
+}
+# Просьба болгарских революционеров (Конвои Коминтерна)
+country_event = {
+	id = bulgaria.58
+	title = bulgaria.58.t
+	desc = bulgaria.58.desc
+	picture = GFX_report_event_bul_socialist_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.58.a
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = 1000
+			target = FROM
+		}
+	}
+	option = {
+		name = bulgaria.58.b
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = 500
+			target = FROM
+		}
+	}
+	option = {
+		name = bulgaria.58.c
+	}
+}
+# Отказ от авторитарности
+country_event = {
+	id = bulgaria.59
+	title = bulgaria.59.t
+	desc = bulgaria.59.desc
+	picture = GFX_report_event_bul_socialist_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.59.a
+		if = {
+			limit = { has_idea = BUL_military_league_activities }
+			remove_ideas = BUL_military_league_activities
+		}
+		if = {
+			limit = { has_idea = BUL_secret_police_idea }
+			remove_ideas = BUL_secret_police_idea
+		}
+	}
+}
+
+# Потоки беженцев
+country_event = {
+	id = bulgaria.60
+	title = bulgaria.60.t
+	desc = bulgaria.60.desc
+	picture = GFX_report_event_bul_ww1_refuges
+	
+	trigger = {
+		tag = BUL
+		has_war = no
+		SER = { owns_state = 106 }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = bulgaria.60.a
+		add_popularity = { ideology = national_syndicalism popularity = 0.05 }
+		if = {
+			limit = { NOT = { has_idea = peasant_and_land_and_bread_question has_idea = peasant_and_land_and_bread_question_0_5 has_idea = peasant_and_land_and_bread_question_0_25 } }
+			add_ideas = peasant_and_land_and_bread_question_0_25
+		}
+	}
+}
+
+# Отставка правительства
+country_event = {
+	id = bulgaria.61
+	title = bulgaria.61.t
+	desc = bulgaria.61.desc
+	picture = GFX_report_event_bul_new_government
+	
+	trigger = {
+		tag = BUL
+		NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
+		NOT = { has_global_flag = WWI_is_now }
+		has_idea = BUL_disjointed_government
+		OR = {
+			has_stability < 0.4
+			check_variable = { party_popularity@ruling_party < 0.1 }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = bulgaria.61.a
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+			remove_ideas_with_trait = military_minister_trait
+		}
+		
+		remove_ideas = BUL_disjointed_government
+		add_stability = -0.06
+		if = { limit = { NOT = { has_government = communism } } add_popularity = { ideology = communism popularity = 0.04 } }
+		if = { limit = { NOT = { has_government = social_democracy } } add_popularity = { ideology = social_democracy popularity = 0.04 } }
+		if = { limit = { NOT = { has_government = national_syndicalism } } add_popularity = { ideology = national_syndicalism popularity = 0.04 } }
+		news_event = { id = news_n.107 hours = 24 }
+	}
+}
+
+# Широкая коалиция
+country_event = {
+	id = bulgaria.62
+	title = bulgaria.62.t
+	desc = bulgaria.62.desc
+	picture = GFX_report_event_bul_german_policy
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		set_temp_variable = { temp0 = 0 }
+		set_temp_variable = { tempradsoc = radical_socialism_party }
+		set_temp_variable = { tempcommi = communism_party }
+		set_temp_variable = { tempsocdem = social_democracy_party }
+		set_temp_variable = { tempmarketlib = market_liberalism_party }
+		set_temp_variable = { tempcons = conservatism_party }
+		set_temp_variable = { tempdesp = despotism_party }
+		set_temp_variable = { tempfasc = fascism_party }
+		set_temp_variable = { tempnatsynd = national_syndicalism_party }
+
+		if = { limit = { check_variable = { tempradsoc > temp0 } } set_temp_variable = { temp0 = tempradsoc }
+		}
+		if = { limit = { check_variable = { tempcommi > temp0 } } set_temp_variable = { temp0 = tempcommi }
+		}
+		if = { limit = { check_variable = { tempsocdem > temp0 } } set_temp_variable = { temp0 = tempsocdem }
+		}
+		if = { limit = { check_variable = { tempmarketlib > temp0 } } set_temp_variable = { temp0 = tempmarketlib }
+		}
+		if = { limit = { check_variable = { tempcons > temp0 } } set_temp_variable = { temp0 = tempcons }
+		}
+		if = { limit = { check_variable = { tempdesp > temp0 } } set_temp_variable = { temp0 = tempdesp }
+		}
+		if = { limit = { check_variable = { tempfasc > temp0 } } set_temp_variable = { temp0 = tempfasc }
+		}
+		if = { limit = { check_variable = { tempnatsynd > temp0 } } set_temp_variable = { temp0 = tempnatsynd }
+		}
+
+		if = { limit = { check_variable = { temp0 = tempradsoc } } set_country_flag = first_legal_party_is_radsoc
+		}
+		else_if = { limit = { check_variable = { temp0 = tempcommi } } set_country_flag = first_legal_party_is_commi
+		}
+		else_if = { limit = { check_variable = { temp0 = tempsocdem } } set_country_flag = first_legal_party_is_socdem
+		}
+		else_if = { limit = { check_variable = { temp0 = tempmarketlib } } set_country_flag = first_legal_party_is_marketlib
+		}
+		else_if = { limit = { check_variable = { temp0 = tempcons } } set_country_flag = first_legal_party_is_cons
+		}
+		else_if = { limit = { check_variable = { temp0 = tempdesp } } set_country_flag = first_legal_party_is_desp
+		}
+		else_if = { limit = { check_variable = { temp0 = tempfasc } } set_country_flag = first_legal_party_is_fasc
+		}
+		else_if = { limit = { check_variable = { temp0 = tempnatsynd } } set_country_flag = first_legal_party_is_natsynd
+		}
+	}
+	
+	option = {
+		name = bulgaria.62.a
+		set_country_flag = flag_wide_coalition_des
+		add_stability = 0.04
+		set_politics = { ruling_party = social_liberalism }
+		hidden_effect = { country_event = bulgaria.100 } #проверка нацдухов на царя
+		
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+			remove_ideas_with_trait = military_minister_trait
+		}
+		add_ideas = {
+			Teodor_Teodorov_1
+			Teodor_Teodorov_2
+			Yanko_Sakazov_3
+			Nikola_Mushanov_4
+			Petar_Djidrov_5
+			Andrey_Lyapchev_6
+		}
+	}
+	option = {
+		name = bulgaria.62.b
+		set_country_flag = flag_wide_coalition_des
+		
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+			remove_ideas_with_trait = military_minister_trait
+		}
+		add_ideas = {
+			Teodor_Teodorov_2
+			Yanko_Sakazov_3
+			Nikola_Mushanov_4
+			Petar_Djidrov_5
+			Andrey_Lyapchev_6
+		}
+		
+		if = {
+			limit = { has_country_flag = first_legal_party_is_radsoc }
+			set_politics = { ruling_party = radical_socialism }
+			#add_ideas = random_BUL_radsoc_1
+		}
+		else_if = {
+			limit = { has_country_flag = first_legal_party_is_commi }
+			set_politics = { ruling_party = communism }
+			add_ideas = Dimitar_Blagoev_1
+		}
+		else_if = {
+			limit = { has_country_flag = first_legal_party_is_socdem }
+			set_politics = { ruling_party = social_democracy }
+			add_ideas = Yanko_Sakazov_1
+		}
+		else_if = {
+			limit = { has_country_flag = first_legal_party_is_marketlib }
+			set_politics = { ruling_party = market_liberalism }
+			add_ideas = Aleksandar_Malinov_1
+		}
+		else_if = {
+			limit = { has_country_flag = first_legal_party_is_cons }
+			set_politics = { ruling_party = conservatism }
+			add_ideas = Vasil_Radoslavov_1
+		}
+		else_if = {
+			limit = { has_country_flag = first_legal_party_is_desp }
+			set_politics = { ruling_party = despotism }
+			add_ideas = Ivan_Vylkov_1
+		}
+		else_if = {
+			limit = { has_country_flag = first_legal_party_is_fasc }
+			set_politics = { ruling_party = fascism }
+			add_ideas = Aleksandar_Tsankov_1
+		}
+		else_if = {
+			limit = { has_country_flag = first_legal_party_is_natsynd }
+			set_politics = { ruling_party = national_syndicalism }
+			add_ideas = Aleksandar_Stamboliyski_1
+		}
+		hidden_effect = { country_event = bulgaria.100 } #проверка нацдухов на царя
+	}
+}
+
+
+# Съезд коммунистов (тесняков)
+country_event = {
+	id = bulgaria.63
+	title = bulgaria.63.t
+	desc = bulgaria.63.desc
+	picture = GFX_report_event_bul_tesnayks_meeting
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { has_country_flag = BUL_coalition_commie }
+		name = bulgaria.63.a #Вперед рабочий класс!
+		set_party_name = {
+			ideology = communism
+			long_name = BUL_communism_party_BCP_long
+			name = BUL_communism_party_BCP
+		}
+		add_popularity = { ideology = communism popularity = 0.04 }
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = BUL_coalition_commie } }
+		name = bulgaria.63.b #Пойдем на переговоры с БКП, мы тоже в своём роде социалисты
+		set_party_name = {
+			ideology = communism
+			long_name = BUL_communism_party_BCP_long
+			name = BUL_communism_party_BCP
+		}
+			if = {
+				limit = { has_country_flag = BUL_coalition_natsind }
+				add_popularity = { ideology = national_syndicalism popularity = 0.02 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_socdem }
+				add_popularity = { ideology = social_democracy popularity = 0.02 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_marketlib }
+				add_popularity = { ideology = market_liberalism popularity = 0.02 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_soclib }
+				add_popularity = { ideology = social_liberalism popularity = 0.02 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_cons }
+				add_popularity = { ideology = conservatism popularity = 0.02 }
+			}
+		add_popularity = { ideology = communism popularity = 0.05 }
+		random_list = {
+			70 = { }
+			30 = { country_event = { id = bulgaria.66 days = 30 } }
+		}
+		custom_effect_tooltip = bulgaria_63_b_tt
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = BUL_coalition_commie } }
+		name = bulgaria.63.c #Наш долг — противостоять поджигателям гражданской войны
+		set_party_name = {
+			ideology = communism
+			long_name = BUL_communism_party_BCP_long
+			name = BUL_communism_party_BCP
+		}
+		add_political_power = -40
+		add_stability = -0.03
+		random_list = {
+			15 = { }
+			85 = { country_event = { id = bulgaria.66 days = 30 } }
+		}
+	}
+}
+
+# Съезд нацсиндов (Стамболийского)
+country_event = {
+	id = bulgaria.64
+	title = bulgaria.64.t
+	desc = bulgaria.64.desc
+	picture = GFX_report_event_bul_bzns_meeting
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { has_country_flag = BUL_coalition_natsind }
+		name = bulgaria.64.a #Болгарские крестьяне заслужили это
+		add_popularity = { ideology = national_syndicalism popularity = 0.04 }
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = BUL_coalition_natsind } }
+		name = bulgaria.64.b #Сейчас не время для подобных съездов
+		add_political_power = -10
+		random_list = {
+			90 = { add_ideas = BUL_disjointed_government }
+			10 = { }
+		}
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = BUL_coalition_natsind } }
+		name = bulgaria.64.c #Переговоры с умеренными могут усугубить раскол
+		add_political_power = -40
+		add_popularity = { ideology = national_syndicalism popularity = -0.03 }
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = BUL_coalition_natsind } }
+		name = bulgaria.64.d #Эти крестьянские бредни нас не волнуют
+		add_popularity = { ideology = national_syndicalism popularity = 0.04 }
+	}
+}
+
+# Создание конституционного блока
+country_event = {
+	id = bulgaria.65
+	title = bulgaria.65.t
+	desc = bulgaria.65.desc
+	picture = GFX_report_event_bul_tesnayks_meeting
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { OR = { has_country_flag = BUL_coalition_soclib has_country_flag = BUL_coalition_marketlib } }
+		name = bulgaria.65.a
+		
+		set_variable = { social_liberalism_coalition = 3 }
+		set_variable = { market_liberalism_coalition = 3 }
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = BUL_coalition_soclib has_country_flag = BUL_coalition_marketlib } }
+		name = bulgaria.65.b
+		add_political_power = -10
+		add_popularity = { ideology = social_liberalism popularity = -0.03 }
+		add_popularity = { ideology = market_liberalism popularity = -0.05 }
+		if = {
+			limit = { NOT = { has_global_flag = BUL_CW_mon } }
+			random_list = {
+				50 = { }
+				50 = { country_event = bulgaria.67 }
+			}
+		}
+		else_if = {
+			limit = { has_global_flag = BUL_CW_mon has_country_flag = BUL_monarchists_in_this_country }
+			random_list = {
+				30 = { }
+				70 = { country_event = bulgaria.67 }
+			}
+		}
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = BUL_coalition_soclib has_country_flag = BUL_coalition_marketlib } }
+		name = bulgaria.65.c
+		set_variable = { social_liberalism_coalition = 3 }
+		set_variable = { market_liberalism_coalition = 3 }
+		custom_effect_tooltip = bulgaria_65_c_tt
+	}
+}
+
+# Социалисты организуют забастовки
+country_event = {
+	id = bulgaria.66
+	title = bulgaria.66.t
+	desc = bulgaria.66.desc
+	picture = GFX_report_event_worker_protests
+	
+	trigger = { NOT = { has_country_flag = flag_coalition_3_strike } }
+	
+	is_triggered_only = yes
+	
+	immediate = { set_country_flag = flag_coalition_3_strike_fired }
+	
+	option = {
+		trigger = { has_country_flag = flag_coalition_3_take }
+		name = bulgaria.66.a #Только врагам рабочих есть чего опасаться
+		if = {
+			limit = { has_country_flag = BUL_coalition_socdem }
+			add_popularity = { ideology = social_democracy popularity = 0.05 }
+			else = {
+				add_popularity = { ideology = communism popularity = 0.05 }
+			}
+		}
+		add_timed_idea = { idea = strikes_3 days = 28 }
+		clr_country_flag = flag_coalition_3_take
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = flag_coalition_3_take } }
+		name = bulgaria.66.b #Пойдём на соглашение с рабочими
+		add_political_power = -30
+			if = {
+				limit = { has_country_flag = BUL_coalition_natsind }
+				add_popularity = { ideology = national_syndicalism popularity = 0.03 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_socdem }
+				add_popularity = { ideology = social_democracy popularity = 0.03 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_marketlib }
+				add_popularity = { ideology = market_liberalism popularity = 0.03 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_soclib }
+				add_popularity = { ideology = social_liberalism popularity = 0.03 }
+			}
+			else_if = {
+				limit = { has_country_flag = BUL_coalition_cons }
+				add_popularity = { ideology = conservatism popularity = 0.03 }
+			}
+		add_timed_idea = { idea = strikes_3 days = 14 }
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = flag_coalition_3_take } }
+		name = bulgaria.66.c #Придётся уступить коммунистам
+		add_political_power = -15
+		add_popularity = { ideology = communism popularity = 0.05 }
+		
+		add_timed_idea = { idea = strikes_3 days = 7 }
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = flag_coalition_3_take } }
+		name = bulgaria.66.d #Обстоятельства вынуждают нас к введению чрезвычайного положения
+		add_stability = -0.04
+		add_timed_idea = { idea = strikes_3 days = 28 }
+	}
+}
+
+# Недовольство армии
+country_event = {
+	id = bulgaria.67
+	title = bulgaria.67.t
+	desc = bulgaria.67.desc
+	picture = GFX_report_event_bul_bulgarian_territory_expansion
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	trigger = {
+		NOT = { has_global_flag = BUL_CW_mon }
+	}
+	
+	option = {
+		name = bulgaria.67.a #Необходимо усилить пропаганду наших идей в войсках
+		add_political_power = -25
+		add_timed_idea = { idea = BUL_chetniks days = 120 }
+		set_variable = { authoritarism_coalition = 4 }
+		set_variable = { despotism_coalition = 4 }
+	}
+	option = {
+		name = bulgaria.67.b #Армия не выступит против народа
+		add_popularity = { ideology = despotism popularity = 0.04 }
+		add_timed_idea = { idea = BUL_chetniks days = 120 }
+		set_variable = { authoritarism_coalition = 4 }
+		set_variable = { despotism_coalition = 4 }
+	}
+}
+
+# Итоги выборов
+country_event = {
+	id = bulgaria.68
+	title = bulgaria.68.t
+	desc = bulgaria.68.desc
+	picture = GFX_report_event_bul_german_policy
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+			
+			set_temp_variable = { temp1 = 0 }
+			
+			set_temp_variable = { temp_radical_socialism_party = radical_socialism_party }
+			set_temp_variable = { temp_communism_party = communism_party }
+			set_temp_variable = { temp_social_democracy_party = social_democracy_party }
+			set_temp_variable = { temp_social_liberalism_party = social_liberalism_party }
+			set_temp_variable = { temp_market_liberalism_party = market_liberalism_party }
+			set_temp_variable = { temp_conservatism_party = conservatism_party }
+			set_temp_variable = { temp_national_syndicalism_party = national_syndicalism_party }
+			
+			if = {
+				limit = { check_variable = { radical_socialism_coalition = 1 } check_variable = { radical_socialism_party > temp1 } }
+				set_temp_variable = { temp1 = radical_socialism_party }
+			}
+			if = {
+				limit = { check_variable = { communism_coalition = 1 } check_variable = { communism_party > temp1 } }
+				set_temp_variable = { temp1 = communism_party }
+			}
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 1 } check_variable = { social_democracy_party > temp1 } }
+				set_temp_variable = { temp1 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 1 } check_variable = { social_liberalism_party > temp1 } }
+				set_temp_variable = { temp1 = social_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { market_liberalism_coalition = 1 } check_variable = { market_liberalism_party > temp1 } }
+				set_temp_variable = { temp1 = market_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { conservatism_coalition = 1 } check_variable = { conservatism_party > temp1 } }
+				set_temp_variable = { temp1 = conservatism_party }
+			}
+			if = {
+				limit = { check_variable = { national_syndicalism_coalition = 1 } check_variable = { national_syndicalism_party > temp1 } }
+				set_temp_variable = { temp1 = national_syndicalism_party }
+			}
+			
+			if = {
+				limit = { check_variable = { radical_socialism_coalition = 0 } check_variable = { radical_socialism_party > temp1 } }
+				set_temp_variable = { temp1 = radical_socialism_party }
+			}
+			if = {
+				limit = { check_variable = { communism_coalition = 0 } check_variable = { communism_party > temp1 } }
+				set_temp_variable = { temp1 = communism_party }
+			}
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 0 } has_country_flag = political_social_democrats_in_socialist_coalition check_variable = { social_democracy_party > temp1 } }
+				set_temp_variable = { temp1 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 0 } has_country_flag = political_social_liberals_in_socialist_coalition check_variable = { social_liberalism_party > temp1 } }
+				set_temp_variable = { temp1 = social_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { national_syndicalism_coalition = 0 } has_country_flag = political_national_syndicalism_in_socialist_coalition check_variable = { national_syndicalism_party > temp1 } }
+				set_temp_variable = { temp1 = national_syndicalism_party }
+			}
+			
+			
+			if = {
+				limit = { check_variable = { radical_socialism_coalition = 2 } check_variable = { radical_socialism_party > temp2 } }
+				set_temp_variable = { temp2 = radical_socialism_party }
+			}
+			if = {
+				limit = { check_variable = { communism_coalition = 2 } check_variable = { communism_party > temp2 } }
+				set_temp_variable = { temp2 = communism_party }
+			}
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 2 } check_variable = { social_democracy_party > temp2 } }
+				set_temp_variable = { temp2 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 2 } check_variable = { social_liberalism_party > temp2 } }
+				set_temp_variable = { temp2 = social_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { market_liberalism_coalition = 2 } check_variable = { market_liberalism_party > temp2 } }
+				set_temp_variable = { temp2 = market_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { conservatism_coalition = 2 } check_variable = { conservatism_party > temp2 } }
+				set_temp_variable = { temp2 = conservatism_party }
+			}
+			if = {
+				limit = { check_variable = { national_syndicalism_coalition = 2 } check_variable = { national_syndicalism_party > temp2 } }
+				set_temp_variable = { temp2 = national_syndicalism_party }
+			}
+			
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 0 } NOT = { has_country_flag = political_social_democrats_in_socialist_coalition has_country_flag = political_social_democrats_in_liberal_coalition } check_variable = { social_democracy_party > temp2 } }
+				set_temp_variable = { temp2 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 0 } NOT = { has_country_flag = political_social_liberals_in_socialist_coalition } has_country_flag = political_social_liberals_not_in_liberal_coalition check_variable = { social_liberalism_party > temp2 } }
+				set_temp_variable = { temp2 = social_liberalism_party }
+			}
+			
+			
+			if = {
+				limit = { check_variable = { radical_socialism_coalition = 3 } check_variable = { radical_socialism_party > temp3 } }
+				set_temp_variable = { temp3 = radical_socialism_party }
+			}
+			if = {
+				limit = { check_variable = { communism_coalition = 3 } check_variable = { communism_party > temp3 } }
+				set_temp_variable = { temp3 = communism_party }
+			}
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 3 } check_variable = { social_democracy_party > temp3 } }
+				set_temp_variable = { temp3 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 3 } check_variable = { social_liberalism_party > temp3 } }
+				set_temp_variable = { temp3 = social_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { market_liberalism_coalition = 3 } check_variable = { market_liberalism_party > temp3 } }
+				set_temp_variable = { temp3 = market_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { conservatism_coalition = 3 } check_variable = { conservatism_party > temp3 } }
+				set_temp_variable = { temp3 = conservatism_party }
+			}
+			if = {
+				limit = { check_variable = { national_syndicalism_coalition = 3 } check_variable = { national_syndicalism_party > temp3 } }
+				set_temp_variable = { temp3 = national_syndicalism_party }
+			}
+			
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 0 } has_country_flag = political_social_democrats_in_liberal_coalition check_variable = { social_democracy_party > temp3 } }
+				set_temp_variable = { temp3 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 0 } NOT = { has_country_flag = political_social_liberals_not_in_liberal_coalition has_country_flag = political_social_liberals_in_socialist_coalition } check_variable = { social_liberalism_party > temp3 } }
+				set_temp_variable = { temp3 = social_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { market_liberalism_coalition = 0 } check_variable = { market_liberalism_party > temp3 } }
+				set_temp_variable = { temp3 = market_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { conservatism_coalition = 0 } has_country_flag = political_conservatives_in_liberal_coalition check_variable = { conservatism_party > temp3 } }
+				set_temp_variable = { temp3 = conservatism_party }
+			}
+			
+			
+			set_temp_variable = { temp4 = 0 }
+			
+			if = {
+				limit = { check_variable = { radical_socialism_coalition = 4 } check_variable = { radical_socialism_party > temp4 } }
+				set_temp_variable = { temp4 = radical_socialism_party }
+			}
+			if = {
+				limit = { check_variable = { communism_coalition = 4 } check_variable = { communism_party > temp4 } }
+				set_temp_variable = { temp4 = communism_party }
+			}
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 4 } check_variable = { social_democracy_party > temp4 } }
+				set_temp_variable = { temp4 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 4 } check_variable = { social_liberalism_party > temp4 } }
+				set_temp_variable = { temp4 = social_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { market_liberalism_coalition = 4 } check_variable = { market_liberalism_party > temp4 } }
+				set_temp_variable = { temp4 = market_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { conservatism_coalition = 4 } check_variable = { conservatism_party > temp4 } }
+				set_temp_variable = { temp4 = conservatism_party }
+			}
+			if = {
+				limit = { check_variable = { national_syndicalism_coalition = 4 } check_variable = { national_syndicalism_party > temp4 } }
+				set_temp_variable = { temp4 = national_syndicalism_party }
+			}
+			
+			if = {
+				limit = { check_variable = { conservatism_coalition = 0 } NOT = { has_country_flag = political_conservatives_in_liberal_coalition } check_variable = { conservatism_party > temp4 } }
+				set_temp_variable = { temp4 = conservatism_party }
+			}
+			
+			
+			if = {
+				limit = { check_variable = { radical_socialism_coalition = 5 } check_variable = { radical_socialism_party > temp5 } }
+				set_temp_variable = { temp5 = radical_socialism_party }
+			}
+			if = {
+				limit = { check_variable = { communism_coalition = 5 } check_variable = { communism_party > temp5 } }
+				set_temp_variable = { temp5 = communism_party }
+			}
+			if = {
+				limit = { check_variable = { social_democracy_coalition = 5 } check_variable = { social_democracy_party > temp5 } }
+				set_temp_variable = { temp5 = social_democracy_party }
+			}
+			if = {
+				limit = { check_variable = { social_liberalism_coalition = 5 } check_variable = { social_liberalism_party > temp5 } }
+				set_temp_variable = { temp5 = social_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { market_liberalism_coalition = 5 } check_variable = { market_liberalism_party > temp5 } }
+				set_temp_variable = { temp5 = market_liberalism_party }
+			}
+			if = {
+				limit = { check_variable = { conservatism_coalition = 5 } check_variable = { conservatism_party > temp5 } }
+				set_temp_variable = { temp5 = conservatism_party }
+			}
+			if = {
+				limit = { check_variable = { national_syndicalism_coalition = 5 } check_variable = { national_syndicalism_party > temp5 } }
+				set_temp_variable = { temp5 = national_syndicalism_party }
+			}
+			
+			if = {
+				limit = { check_variable = { national_syndicalism_coalition = 0 } NOT = { has_country_flag = political_national_syndicalism_in_socialist_coalition } check_variable = { national_syndicalism_party > temp5 } }
+				set_temp_variable = { temp5 = national_syndicalism_party }
+			}
+			
+			set_temp_variable = { temp0 = 0 }
+			if = {
+				limit = { check_variable = { temp1 > temp0 } }
+				set_temp_variable = { temp0 = temp1 }
+			}
+			if = {
+				limit = { check_variable = { temp2 > temp0 } }
+				set_temp_variable = { temp0 = temp2 }
+			}
+			if = {
+				limit = { check_variable = { temp3 > temp0 } }
+				set_temp_variable = { temp0 = temp3 }
+			}
+			if = {
+				limit = { check_variable = { temp4 > temp0 } }
+				set_temp_variable = { temp0 = temp4 }
+			}
+			if = {
+				limit = { check_variable = { temp5 > temp0 } }
+				set_temp_variable = { temp0 = temp5 }
+			}
+			
+			if = {
+				limit = { check_variable = { temp0 = temp_radical_socialism_party } }
+				set_country_flag = bulgaria_68_radsoc
+			}
+			else_if = {
+				limit = { check_variable = { temp0 = temp_communism_party } }
+				set_country_flag = bulgaria_68_commies
+			}
+			else_if = {
+				limit = { check_variable = { temp0 = temp_social_democracy_party } }
+				set_country_flag = bulgaria_68_socdem
+			}
+			else_if = {
+				limit = { check_variable = { temp0 = temp_social_liberalism_party } }
+				set_country_flag = bulgaria_68_soclib
+			}
+			else_if = {
+				limit = { check_variable = { temp0 = temp_market_liberalism_party } }
+				set_country_flag = bulgaria_68_marketlib
+			}
+			else_if = {
+				limit = { check_variable = { temp0 = temp_conservatism_party } }
+				set_country_flag = bulgaria_68_cons
+			}
+			else_if = {
+				limit = { check_variable = { temp0 = temp_national_syndicalism_party } }
+				set_country_flag = bulgaria_68_natsind
+			}
+			
+			if = {
+				limit = { has_country_flag = BUL_coalition_marketlib has_country_flag = bulgaria_68_soclib }
+				clr_country_flag = bulgaria_68_soclib
+				set_country_flag = bulgaria_68_marketlib
+			}
+			if = {
+				limit = { has_country_flag = BUL_coalition_soclib has_country_flag = bulgaria_68_marketlib }
+				clr_country_flag = bulgaria_68_marketlib
+				set_country_flag = bulgaria_68_soclib
+			}
+		}
+	}
+	
+	option = {
+		trigger = {
+			has_country_flag = bulgaria_68_natsind
+		}
+		name = bulgaria.68.a
+		set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+		add_ideas = Aleksandar_Stamboliyski_1
+		clr_country_flag = bulgaria_68_radsoc
+		clr_country_flag = bulgaria_68_commies
+		clr_country_flag = bulgaria_68_socdem
+		clr_country_flag = bulgaria_68_soclib
+		clr_country_flag = bulgaria_68_marketlib
+		clr_country_flag = bulgaria_68_cons
+		clr_country_flag = bulgaria_68_natsind
+	}
+	option = {
+		trigger = {
+			has_country_flag = bulgaria_68_commies
+		}
+		name = bulgaria.68.a
+		if = {
+			limit = { check_variable = { party_popularity@radical_socialism > party_popularity@communism } }
+			set_politics = { ruling_party = radical_socialism elections_allowed = no }
+			#add_ideas = random_BUL_radsoc_1
+			else = {
+				set_politics = { ruling_party = communism elections_allowed = no }
+				add_ideas = Dimitar_Blagoev_1
+			}
+		}
+		clr_country_flag = bulgaria_68_radsoc
+		clr_country_flag = bulgaria_68_commies
+		clr_country_flag = bulgaria_68_socdem
+		clr_country_flag = bulgaria_68_soclib
+		clr_country_flag = bulgaria_68_marketlib
+		clr_country_flag = bulgaria_68_cons
+		clr_country_flag = bulgaria_68_natsind
+	}
+	option = {
+		trigger = {
+			has_country_flag = bulgaria_68_socdem
+		}
+		name = bulgaria.68.a
+		set_politics = { ruling_party = social_democracy elections_allowed = no }
+		add_ideas = Yanko_Sakazov_1
+		clr_country_flag = bulgaria_68_radsoc
+		clr_country_flag = bulgaria_68_commies
+		clr_country_flag = bulgaria_68_socdem
+		clr_country_flag = bulgaria_68_soclib
+		clr_country_flag = bulgaria_68_marketlib
+		clr_country_flag = bulgaria_68_cons
+		clr_country_flag = bulgaria_68_natsind
+	}
+	option = {
+		trigger = {
+			has_country_flag = bulgaria_68_marketlib
+		}
+		name = bulgaria.68.a
+		set_politics = { ruling_party = market_liberalism elections_allowed = no }
+		add_ideas = Aleksandar_Malinov_1
+		clr_country_flag = bulgaria_68_radsoc
+		clr_country_flag = bulgaria_68_commies
+		clr_country_flag = bulgaria_68_socdem
+		clr_country_flag = bulgaria_68_soclib
+		clr_country_flag = bulgaria_68_marketlib
+		clr_country_flag = bulgaria_68_cons
+		clr_country_flag = bulgaria_68_natsind
+	}
+	option = {
+		trigger = {
+			has_country_flag = bulgaria_68_soclib
+		}
+		name = bulgaria.68.a
+		set_politics = { ruling_party = social_liberalism elections_allowed = no }
+		add_ideas = Teodor_Teodorov_1
+		clr_country_flag = bulgaria_68_radsoc
+		clr_country_flag = bulgaria_68_commies
+		clr_country_flag = bulgaria_68_socdem
+		clr_country_flag = bulgaria_68_soclib
+		clr_country_flag = bulgaria_68_marketlib
+		clr_country_flag = bulgaria_68_cons
+		clr_country_flag = bulgaria_68_natsind
+	}
+	option = {
+		trigger = {
+			has_country_flag = bulgaria_68_cons
+		}
+		name = bulgaria.68.a
+		set_politics = { ruling_party = conservatism elections_allowed = no }
+		add_ideas = Vasil_Radoslavov_1
+		clr_country_flag = bulgaria_68_radsoc
+		clr_country_flag = bulgaria_68_commies
+		clr_country_flag = bulgaria_68_socdem
+		clr_country_flag = bulgaria_68_soclib
+		clr_country_flag = bulgaria_68_marketlib
+		clr_country_flag = bulgaria_68_cons
+		clr_country_flag = bulgaria_68_natsind
+	}
+}
+
+# Контуры конституционной реформы
+country_event = {
+	id = bulgaria.69
+	title = bulgaria.69.t
+	desc = bulgaria.69.desc
+	picture = GFX_report_event_bul_constitutional_reform
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { NOT = { has_government = radical_socialism has_government = communism } }
+		name = bulgaria.69.a
+		add_ideas = limited_monarchy_gov_form
+		add_ideas = allow_one_party_law
+		remove_ideas = BUL_turnovo_constitution
+	}
+	option = {
+		name = bulgaria.69.b
+		add_ideas = presidential_republic_gov_form
+		add_ideas = allow_one_party_law
+		remove_ideas = BUL_turnovo_constitution
+		drop_cosmetic_tag = yes
+	}
+	option = {
+		name = bulgaria.69.c
+		add_ideas = parliamentary_republic_gov_form
+		add_ideas = poliparty_system_law
+		remove_ideas = BUL_turnovo_constitution
+		drop_cosmetic_tag = yes
+	}
+}
+
+# Правый переворот
+country_event = {
+	id = bulgaria.70
+	title = bulgaria.70.t
+	desc = bulgaria.70.desc
+	picture = GFX_report_event_bul_progerman_coup
+	
+	trigger = {
+		tag = BUL
+		has_idea = BUL_chetniks
+		check_variable = { authoritarian_parties > 0.12 }
+		OR = {
+			has_government = radical_socialism
+			has_government = communism
+			has_government = social_democracy
+			has_government = national_syndicalism
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = bulgaria.70.a #Да здравствует правительство Порядка
+		set_party_name = {
+			ideology = conservatism
+			long_name = BUL_conservatism_party_democratic_sgovor_long
+			name = BUL_conservatism_party_democratic_sgovor
+		}
+		hidden_effect = { create_country_leader = { name = "Andrey Lyapchev" desc = BUL_Andrey_Lyapchev_DESC picture = "gfx/leaders/BUL/Portrait_Andrey_Lyapchev.dds" expire = "1933.11.6" ideology = conservatism_ideology traits = {  } } }
+		create_country_leader = { name = "Aleksandar Tsankov" desc = BUL_Aleksandar_Tsankov_DESC picture = "gfx/leaders/BUL/Portrait_Aleksandar_Tsankov.dds" expire = "1959.7.27" ideology = conservatism_ideology traits = { economist flame_nationalist } }
+		set_politics = { ruling_party = conservatism elections_allowed = no }
+		add_popularity = { ideology = conservatism popularity = 0.08 }
+		add_popularity = { ideology = authoritarism popularity = -0.04 }
+		add_popularity = { ideology = despotism popularity = -0.04 }
+		add_ideas = Aleksandar_Tsankov_1
+		remove_ideas = BUL_chetniks
+	}
+	option = {
+		name = bulgaria.70.b #Да здравствует демократическое правительство
+		set_party_name = {
+			ideology = conservatism
+			long_name = BUL_conservatism_party_democratic_sgovor_long
+			name = BUL_conservatism_party_democratic_sgovor
+		}
+		create_country_leader = { name = "Andrey Lyapchev" desc = BUL_Andrey_Lyapchev_DESC picture = "gfx/leaders/BUL/Portrait_Andrey_Lyapchev.dds" expire = "1933.11.6" ideology = conservatism_ideology traits = {  } }
+		set_politics = { ruling_party = conservatism elections_allowed = no }
+		add_popularity = { ideology = conservatism popularity = 0.08 }
+		add_popularity = { ideology = authoritarism popularity = -0.04 }
+		add_popularity = { ideology = despotism popularity = -0.04 }
+		add_ideas = Andrey_Lyapchev_1
+		remove_ideas = BUL_chetniks
+	}
+	option = {
+		name = bulgaria.70.c #Да здравствует национальное правительство
+		set_party_name = {
+			ideology = conservatism
+			long_name = BUL_conservatism_party_democratic_sgovor_long
+			name = BUL_conservatism_party_democratic_sgovor
+		}
+		create_country_leader = { name = "Andrey Lyapchev" desc = BUL_Andrey_Lyapchev_DESC picture = "gfx/leaders/BUL/Portrait_Andrey_Lyapchev.dds" expire = "1933.11.6" ideology = conservatism_ideology traits = {  } }
+		set_politics = { ruling_party = fascism elections_allowed = no }
+		add_popularity = { ideology = fascism popularity = 0.08 }
+		add_popularity = { ideology = authoritarism popularity = -0.04 }
+		add_popularity = { ideology = despotism popularity = -0.04 }
+		add_ideas = Aleksandar_Tsankov_1
+		remove_ideas = BUL_chetniks
+	}
+	option = {
+		name = bulgaria.70.d #Да здравствует Военная лига
+		set_party_name = {
+			ideology = conservatism
+			long_name = BUL_conservatism_party_democratic_sgovor_long
+			name = BUL_conservatism_party_democratic_sgovor
+		}
+		create_country_leader = { name = "Andrey Lyapchev" desc = BUL_Andrey_Lyapchev_DESC picture = "gfx/leaders/BUL/Portrait_Andrey_Lyapchev.dds" expire = "1933.11.6" ideology = conservatism_ideology traits = {  } }
+		set_politics = { ruling_party = despotism elections_allowed = no }
+		add_popularity = { ideology = despotism popularity = 0.04 }
+		add_ideas = Ivan_Vylkov_1
+		remove_ideas = BUL_chetniks
+	}
+}
+
+# Социалистическая революция
+country_event = {
+	id = bulgaria.71
+	title = bulgaria.71.t
+	desc = bulgaria.71.desc
+	picture = GFX_report_event_bul_socialist_revolution
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.71.a #Радикалы, только навредят болгарскому народу
+		add_stability = -0.04
+		if = {
+			limit = {
+				NOT = { has_government = radical_socialism }
+				OR = {
+					check_variable = { party_popularity@radical_socialism > party_popularity@communism }
+					has_government = communism
+				}
+				OR = {
+					check_variable = { party_popularity@radical_socialism > socdem_parties }
+					has_government = social_democracy
+				}
+				OR = {
+					check_variable = { party_popularity@radical_socialism > party_popularity@national_syndicalism }
+					has_government = national_syndicalism
+				}
+			}
+			start_civil_war = {
+				ideology = radical_socialism
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { has_government = communism }
+				OR = {
+					check_variable = { party_popularity@communism > party_popularity@radical_socialism }
+					has_government = radical_socialism
+				}
+				OR = {
+					check_variable = { party_popularity@communism > socdem_parties }
+					has_government = social_democracy
+				}
+				OR = {
+					check_variable = { party_popularity@communism > party_popularity@national_syndicalism }
+					has_government = national_syndicalism
+				}
+			}
+			start_civil_war = {
+				ideology = communism
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { has_government = social_democracy }
+				OR = {
+					check_variable = { socdem_parties > party_popularity@radical_socialism }
+					has_government = radical_socialism
+				}
+				OR = {
+					check_variable = { socdem_parties > party_popularity@communism }
+					has_government = communism
+				}
+				OR = {
+					check_variable = { socdem_parties > party_popularity@national_syndicalism }
+					has_government = national_syndicalism
+				}
+			}
+			start_civil_war = {
+				ideology = social_democracy
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { has_government = national_syndicalism }
+				OR = {
+					check_variable = { party_popularity@national_syndicalism > party_popularity@radical_socialism }
+					has_government = radical_socialism
+				}
+				OR = {
+					check_variable = { party_popularity@national_syndicalism > party_popularity@communism }
+					has_government = communism
+				}
+				OR = {
+					check_variable = { party_popularity@national_syndicalism > socdem_parties }
+					has_government = social_democracy
+				}
+			}
+			start_civil_war = {
+				ideology = national_syndicalism
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		random_other_country = {
+			limit = { original_tag = BUL }
+			every_unit_leader = { set_nationality = ROOT }
+			create_corps_commander = { name = "Ivan Minkov" portrait_path = "gfx/leaders/BUL/Portrait_Ivan_Minkov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Kosta Yankov" portrait_path = "gfx/leaders/BUL/Portrait_Kosta_Yankov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Georgi Dimitrov" portrait_path = "gfx/leaders/BUL/Portrait_Georgi_Dimitrov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Vasil Kolarov" portrait_path = "gfx/leaders/BUL/Portrait_Vasil_Kolarov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			add_ideas = {
+				presidential_republic_gov_form
+				federal_gov_terr
+				local_assembly_decisions_b_law
+				allow_one_party_law
+			}
+			hidden_effect = {
+					load_focus_tree = { tree = Bulgaria_focus keep_completed = no }
+					unlock_national_focus = BUL_army_supply_and_regulation_directorate
+					unlock_national_focus = BUL_demand_the_northern_dobrogea
+					unlock_national_focus = BUL_claims_for_albania
+					unlock_national_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+					unlock_national_focus = BUL_withdrawal_of_german_money
+					unlock_national_focus = BUL_expulsion_of_german_capital
+					unlock_national_focus = BUL_nationalization_of_industry_and_mining_resources
+					unlock_national_focus = BUL_new_government
+					unlock_national_focus = BUL_quest_for_peace
+					unlock_national_focus = BUL_amnesty_for_opposition
+					unlock_national_focus = BUL_renunciation
+					unlock_national_focus = BUL_demobilization
+					unlock_national_focus = BUL_wide_coalition
+			}
+		}
+	}
+	
+	option = {
+		name = bulgaria.71.b #Настало время освобождения
+		add_stability = -0.04
+		if = {
+			limit = {
+				NOT = { has_government = radical_socialism }
+				OR = {
+					check_variable = { party_popularity@radical_socialism > party_popularity@communism }
+					has_government = communism
+				}
+				OR = {
+					check_variable = { party_popularity@radical_socialism > socdem_parties }
+					has_government = social_democracy
+				}
+				OR = {
+					check_variable = { party_popularity@radical_socialism > party_popularity@national_syndicalism }
+					has_government = national_syndicalism
+				}
+			}
+			start_civil_war = {
+				ideology = radical_socialism
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { has_government = communism }
+				OR = {
+					check_variable = { party_popularity@communism > party_popularity@radical_socialism }
+					has_government = radical_socialism
+				}
+				OR = {
+					check_variable = { party_popularity@communism > socdem_parties }
+					has_government = social_democracy
+				}
+				OR = {
+					check_variable = { party_popularity@communism > party_popularity@national_syndicalism }
+					has_government = national_syndicalism
+				}
+			}
+			start_civil_war = {
+				ideology = communism
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { has_government = social_democracy }
+				OR = {
+					check_variable = { socdem_parties > party_popularity@radical_socialism }
+					has_government = radical_socialism
+				}
+				OR = {
+					check_variable = { socdem_parties > party_popularity@communism }
+					has_government = communism
+				}
+				OR = {
+					check_variable = { socdem_parties > party_popularity@national_syndicalism }
+					has_government = national_syndicalism
+				}
+			}
+			start_civil_war = {
+				ideology = social_democracy
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		else_if = {
+			limit = {
+				NOT = { has_government = national_syndicalism }
+				OR = {
+					check_variable = { party_popularity@national_syndicalism > party_popularity@radical_socialism }
+					has_government = radical_socialism
+				}
+				OR = {
+					check_variable = { party_popularity@national_syndicalism > party_popularity@communism }
+					has_government = communism
+				}
+				OR = {
+					check_variable = { party_popularity@national_syndicalism > socdem_parties }
+					has_government = social_democracy
+				}
+			}
+			start_civil_war = {
+				ideology = national_syndicalism
+				size = 0.3
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		random_other_country = {
+			limit = { original_tag = BUL }
+			every_unit_leader = { set_nationality = ROOT }
+			create_corps_commander = { name = "Ivan Minkov" portrait_path = "gfx/leaders/BUL/Portrait_Ivan_Minkov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Kosta Yankov" portrait_path = "gfx/leaders/BUL/Portrait_Kosta_Yankov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Georgi Dimitrov" portrait_path = "gfx/leaders/BUL/Portrait_Georgi_Dimitrov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			create_corps_commander = { name = "Vasil Kolarov" portrait_path = "gfx/leaders/BUL/Portrait_Vasil_Kolarov.dds" traits = {  } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+			add_ideas = {
+				presidential_republic_gov_form
+				federal_gov_terr
+				local_assembly_decisions_b_law
+				allow_one_party_law
+			}
+			hidden_effect = {
+					load_focus_tree = { tree = Bulgaria_focus keep_completed = no }
+					unlock_national_focus = BUL_army_supply_and_regulation_directorate
+					unlock_national_focus = BUL_demand_the_northern_dobrogea
+					unlock_national_focus = BUL_claims_for_albania
+					unlock_national_focus = BUL_protection_of_the_Bulgarians_in_Novi_Pazar
+					unlock_national_focus = BUL_withdrawal_of_german_money
+					unlock_national_focus = BUL_expulsion_of_german_capital
+					unlock_national_focus = BUL_nationalization_of_industry_and_mining_resources
+					unlock_national_focus = BUL_new_government
+					unlock_national_focus = BUL_quest_for_peace
+					unlock_national_focus = BUL_amnesty_for_opposition
+					unlock_national_focus = BUL_renunciation
+					unlock_national_focus = BUL_demobilization
+					unlock_national_focus = BUL_wide_coalition
+			}
+		}
+		random_other_country = {
+			limit = { original_tag = BUL }
+			change_tag_from = ROOT
+		}
+	}
+}
+
+# Принуждение к миру (Греция и Румыния)
+country_event = {
+	id = bulgaria.72
+	title = bulgaria.72.t
+	desc = bulgaria.72.desc
+	picture = GFX_report_event_bul_constitutional_reform
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			OR = {
+				owns_state = 1046
+				owns_state = 1122
+				owns_state = 77
+				owns_state = 184
+				owns_state = 983
+				owns_state = 982
+			}
+		}
+		name = bulgaria.72.a #Приступайте к вторжению
+		add_stability = -0.04
+		add_political_power = -50
+		
+		if = {
+			limit = { original_tag = ROM }
+			if = {
+				limit = { owns_state = 77 }
+				start_border_war = {
+					change_state_after_war = no
+					attacker = {
+						state = 77
+						num_provinces = 2
+						on_win = bulgaria.73
+						on_lose = bulgaria.74
+						on_cancel = bulgaria.74
+					}
+					defender = {
+						state = 945
+						num_provinces = 3
+						on_win = bulgaria.75
+						on_lose = bulgaria.76
+						on_cancel = bulgaria.75
+					}
+				}
+			}
+			else_if = {
+				limit = { owns_state = 1122 }
+				start_border_war = {
+					change_state_after_war = no
+					attacker = {
+						state = 1122
+						num_provinces = 1
+						on_win = bulgaria.73
+						on_lose = bulgaria.74
+						on_cancel = bulgaria.74
+					}
+					defender = {
+						state = 77
+						num_provinces = 2
+						on_win = bulgaria.75
+						on_lose = bulgaria.76
+						on_cancel = bulgaria.75
+					}
+				}
+			}
+			else_if = {
+				limit = { owns_state = 1046 }
+				start_border_war = {
+					change_state_after_war = no
+					attacker = {
+						state = 1046
+						num_provinces = 1
+						on_win = bulgaria.73
+						on_lose = bulgaria.74
+						on_cancel = bulgaria.74
+					}
+					defender = {
+						state = 1122
+						num_provinces = 1
+						on_win = bulgaria.75
+						on_lose = bulgaria.76
+						on_cancel = bulgaria.75
+					}
+				}
+			}
+		}
+		if = {
+			limit = { OR = { original_tag = GRR original_tag = GRE } }
+			if = {
+				limit = { owns_state = 983 owns_state = 184 }
+				start_border_war = {
+					change_state_after_war = no
+					attacker = {
+						state = 184
+						num_provinces = 3
+						on_win = bulgaria.73
+						on_lose = bulgaria.74
+						on_cancel = bulgaria.74
+					}
+					defender = {
+						state = 994
+						num_provinces = 2
+						on_win = bulgaria.75
+						on_lose = bulgaria.77
+						on_cancel = bulgaria.75
+					}
+				}
+			}
+			else_if = {
+				limit = { owns_state = 184 }
+				start_border_war = {
+					change_state_after_war = no
+					attacker = {
+						state = 184
+						num_provinces = 2
+						on_win = bulgaria.73
+						on_lose = bulgaria.74
+						on_cancel = bulgaria.74
+					}
+					defender = {
+						state = 983
+						num_provinces = 1
+						on_win = bulgaria.75
+						on_lose = bulgaria.77
+						on_cancel = bulgaria.75
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = bulgaria.72.b #Глупость. Болгария слишком слаба
+	}
+}
+
+# Вооружённое принуждение (Греция и Румыния)
+country_event = {
+	id = bulgaria.73
+	title = bulgaria.73.t
+	desc = bulgaria.73.desc
+	picture = GFX_report_event_bul_constitutional_reform
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.73.a
+		if = {
+			limit = { owns_state = 77 945 = { is_owned_by = BUL } }
+			945 = { set_demilitarized_zone = yes }
+		}
+		else_if = {
+			limit = { owns_state = 1122 77 = { is_owned_by = BUL } }
+			77 = { set_demilitarized_zone = yes }
+		}
+		else_if = {
+			limit = { owns_state = 1046 1122 = { is_owned_by = BUL } }
+			1122 = { set_demilitarized_zone = yes }
+		}
+		else_if = {
+			limit = { owns_state = 184 owns_state = 983 944 = { is_owned_by = BUL } }
+			944 = { set_demilitarized_zone = yes }
+		}
+		else_if = {
+			limit = { owns_state = 184 983 = { is_owned_by = BUL } }
+			983 = { set_demilitarized_zone = yes }
+		}
+	}
+}
+# Отражение атаки (Греция и Румыния)
+country_event = {
+	id = bulgaria.74
+	title = bulgaria.74.t
+	desc = bulgaria.74.desc
+	picture = GFX_report_event_bul_constitutional_reform
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.74.a
+	}
+}
+
+# Отражение атаки
+country_event = {
+	id = bulgaria.75
+	title = bulgaria.75.t
+	desc = bulgaria.75.desc
+	picture = GFX_report_event_bul_constitutional_reform
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.75.a
+		add_war_support = 0.04
+		add_political_power = 15
+	}
+}
+# Вооружённое принуждение
+country_event = {
+	id = bulgaria.76
+	title = bulgaria.76.t
+	desc = bulgaria.76.desc
+	picture = GFX_report_event_bul_constitutional_reform
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.76.a
+		add_war_support = 0.04
+		ROM = {
+			reverse_add_opinion_modifier = { target = ROOT modifier = BUL_dont_go_peace }
+		}
+	}
+	option = {
+		name = bulgaria.76.b
+		add_stability = -0.04
+		complete_national_focus = BUL_compliance_obligations_neyinskih
+	}
+}
+# Вооружённое принуждение
+country_event = {
+	id = bulgaria.77
+	title = bulgaria.77.t
+	desc = bulgaria.77.desc
+	picture = GFX_report_event_bul_constitutional_reform
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.77.a
+		add_war_support = 0.04
+		random_other_country = {
+			limit = { OR = { original_tag = GRR original_tag = GRE } NOT = { has_war_with = ROOT } is_neighbor_of = ROOT }
+			reverse_add_opinion_modifier = { target = ROOT modifier = BUL_dont_go_peace }
+		}
+	}
+	option = {
+		name = bulgaria.77.b
+		add_stability = -0.04
+		complete_national_focus = BUL_compliance_obligations_neyinskih
+	}
+}
+
+# Смерть генерала Колева
+country_event = {
+	id = bulgaria.80
+	
+	trigger = {
+		has_start_date < 1917.11.7
+		tag = BUL
+		any_unit_leader = { has_id = 75005 }
+		date > 1917.6.1
+	}
+	
+	hidden = yes
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		every_unit_leader = {
+			limit = { has_id = 75005 }
+			unit_leader_event = {
+				id = bulgaria.81
+				days = 1
+				random_days = 89
+			}
+		}
+	}
+}
+# Смерть генерала Колева
+unit_leader_event = {
+	id = bulgaria.81
+	title = bulgaria.81.t
+	desc = bulgaria.81.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.81.a
+		remove_unit_leader = yes
+	}
+}
+
+# Смерть Димитра Благоева
+country_event = {
+	id = bulgaria.82
+	
+	trigger = {
+		tag = BUL
+		date > 1923.1.1
+		NOT = { has_country_flag = Dimitar_Blagoev_dead }
+	}
+	
+	hidden = yes
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		country_event = {
+			id = bulgaria.83
+			days = 0
+			random_days = 730
+		}
+	}
+}
+# Смерть генерала Колева
+country_event = {
+	id = bulgaria.83
+	title = bulgaria.83.t
+	desc = bulgaria.83.desc
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = bulgaria.83.a
+		set_country_flag = Dimitar_Blagoev_dead
+		if = {
+			limit = { has_country_leader = { name = "Dimitar Blagoev" ruling_only = no } }
+			kill_ideology_leader = communism
+		}
+	}
+}
+
+# Экономичские проблемы в ходе ПМВ
+
+country_event = {
+	id = bulgaria.98
+	hidden = yes
+	trigger = {
+		tag = BUL
+		OR = {
+			NOT = { has_global_flag = WWI_is_now }
+			has_global_flag = WWI_BUL_HAS_CAPITULATED
+			NOT = { has_war_with = ENG }
+		}
+		OR = {
+			has_idea = foodstuffs_supply_crisis_1
+			has_idea = foodstuffs_supply_crisis_2
+			has_idea = foodstuffs_supply_crisis_3
+			has_idea = foodstuffs_supply_crisis_4
+			has_idea = foodstuffs_supply_crisis_5
+		}
+	}
+	mean_time_to_happen = {
+		days = 60
+	}
+	option = {
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_1 }
+			remove_ideas = foodstuffs_supply_crisis_1
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_2 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_2
+				add_idea = foodstuffs_supply_crisis_1
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_3 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_3
+				add_idea = foodstuffs_supply_crisis_2
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_4
+				add_idea = foodstuffs_supply_crisis_3
+			}
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_5
+				add_idea = foodstuffs_supply_crisis_4
+			}
+		}
+	}
+}
+
+country_event = {
+	id = bulgaria.100
+	hidden = yes
+	is_triggered_only = yes
+	option = {
+		if = {
+			limit = { has_idea = BUL_Ferdinand_I_idea_hidden NOT = { has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes } } }
+			remove_ideas = BUL_Ferdinand_I_idea_hidden
+			add_ideas = BUL_Ferdinand_I_idea
+		}
+		if = {
+			limit = { has_idea = BUL_Boris_III_idea_hidden NOT = { has_country_leader = { name = "Boris III von Saxe-Coburg-Gotha" ruling_only = yes } } }
+			remove_ideas = BUL_Boris_III_idea_hidden
+			add_ideas = BUL_Boris_III_idea
+		}
+		if = {
+			limit = { has_country_leader = { name = "Ferdinand I von Saxe-Coburg-Gotha" ruling_only = yes } }
+			remove_ideas = BUL_Ferdinand_I_idea
+			add_ideas = BUL_Ferdinand_I_idea_hidden
+		}
+		if = {
+			limit = { has_country_leader = { name = "Boris III von Saxe-Coburg-Gotha" ruling_only = yes } }
+			remove_ideas = BUL_Boris_III_idea
+			add_ideas = BUL_Boris_III_idea_hidden
+		}
+	}
+}

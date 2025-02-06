@@ -1,0 +1,2818 @@
+﻿###############################
+#       Izhevsk Events        #
+###############################
+
+add_namespace = rcw_izhevsk
+
+
+# Ижевско-воткинское восстание
+country_event = {
+	id = rcw_izhevsk.1
+	title = rcw_izhevsk.1.t
+	desc = rcw_izhevsk.1.desc
+
+	picture = GFX_report_event_rcw_votkinsk_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		NOT = { has_war_with = GER }
+		any_country = {
+			is_main_former_russian_empire_country_without_other_triggers = yes
+			has_war_with = ROOT
+		}
+		NOT = { has_country_flag = IZH_revolt }
+		controls_state = 399
+	}
+	
+	mean_time_to_happen = {
+		days = 300
+		modifier = {
+			factor = 0.5
+			OR = {
+				any_state = {
+					region = 40
+					NOT = { is_controlled_by = RUS }
+				}
+				surrender_progress > 0.3
+			}
+		}
+		modifier = {
+			factor = 0.05
+			OR = {
+				399 = {
+					any_neighbor_state = {
+						CONTROLLER = {
+							is_main_former_russian_empire_country_without_other_triggers = yes
+							has_war_with = RUS
+						}
+					}
+				}
+				surrender_progress > 0.6
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	#is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = { IZH = { set_politics = { ruling_party = national_syndicalism elections_allowed = no } } }
+	}
+	
+	option = {
+		name = rcw_izhevsk.1.a
+		add_to_variable = {
+			var = global.RCW_green_var_Russian_SFSR
+			value = 1
+		}
+		set_country_flag = IZH_revolt
+		IZH = {
+			transfer_state = 399
+			hidden_effect = {
+				every_state = {
+					limit = { is_core_of = UDM }
+					add_core_of = IZH
+				}
+			}
+			inherit_technology = RUS
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = IZH_rebel
+			load_oob = IZH_rebel_Izhevsk
+			load_focus_tree = Izhevsk_uprising_focus
+			add_ideas = {
+				NVA_decentralization_of_army_a
+				#IZH_apathy_is_death
+				#IZH_tension_with_the_udmurts
+				hyper_inflation_1
+				peasant_and_land_and_bread_question_0_5
+				lack_of_officers_5
+			}
+			country_event = { id = rcw_izhevsk.2 days = 7 }
+			country_event = { id = rcw_izhevsk.3 days = 14 }
+			country_event = { id = rcw_izhevsk.5 days = 30 }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_izhevsk.1.b
+		trigger = { is_ai = no }
+		add_to_variable = {
+			var = global.RCW_green_var_Russian_SFSR
+			value = 1
+		}
+		set_country_flag = IZH_revolt
+		IZH = {
+			transfer_state = 399
+			hidden_effect = {
+				every_state = {
+					limit = { is_core_of = UDM }
+					add_core_of = IZH
+				}
+			}
+			inherit_technology = RUS
+			remove_all_foreing_locked_templates_from_liberated_country = yes
+			load_oob = IZH_rebel
+			load_oob = IZH_rebel_Izhevsk
+			load_focus_tree = Izhevsk_uprising_focus
+			add_ideas = {
+				NVA_decentralization_of_army_a
+				#IZH_apathy_is_death
+				#IZH_tension_with_the_udmurts
+				hyper_inflation_1
+				peasant_and_land_and_bread_question_0_5
+				lack_of_officers_5
+			}
+			country_event = { id = rcw_izhevsk.2 days = 7 }
+			country_event = { id = rcw_izhevsk.3 days = 14 }
+			country_event = { id = rcw_izhevsk.5 days = 30 }
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		IZH = { change_tag_from = RUS }
+	}
+}
+
+# Закамские заводы
+country_event = {
+	id = rcw_izhevsk.2
+	title = rcw_izhevsk.2.t
+	desc = rcw_izhevsk.2.desc
+
+	picture = GFX_report_event_rcw_votkinsk_uprising
+	
+	trigger = { has_war_with = RSR }
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.2.a
+		set_province_controller = 7403
+		load_oob = IZH_rebel_Kambarka
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = IZH_merging_peoples_armies }
+				set_division_template_lock = { division_template = "Izhevskaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Sarapul'skaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Votkinskiy Povstancheskiy Otryad" is_locked = no }
+				set_division_template_lock = { division_template = "Votkinskaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Kambarskiy Povstancheskiy Otryad" is_locked = no }
+			}
+		}
+	}
+}
+
+# Аэропланная агитация
+country_event = {
+	id = rcw_izhevsk.3
+	title = rcw_izhevsk.3.t
+	desc = rcw_izhevsk.3.desc
+
+	picture = GFX_IZH_event_agroplanned_agitation
+	
+	trigger = { has_war_with = RSR }
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.3.a
+		add_war_support = 0.07
+	}
+}
+
+# Освобождение Воткинска
+country_event = {
+	id = rcw_izhevsk.4
+	title = rcw_izhevsk.4.t
+	desc = rcw_izhevsk.4.desc
+
+	picture = GFX_report_event_rcw_votkinsk_uprising
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		controls_state = 1301
+		has_war_with = RSR
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	
+	option = {
+		name = rcw_izhevsk.4.a
+		create_corps_commander = { name = "Georgy Yuriev" id = 11003 portrait_path = "gfx/leaders/Russia/Portrait_Russia_Generic_3.dds" traits = { bearer_of_artillery politically_connected } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+		load_oob = IZH_rebel_Votkinsk
+		hidden_effect = {
+			if = {
+				limit = { has_completed_focus = IZH_merging_peoples_armies }
+				set_division_template_lock = { division_template = "Izhevskaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Sarapul'skaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Votkinskiy Povstancheskiy Otryad" is_locked = no }
+				set_division_template_lock = { division_template = "Votkinskaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Kambarskiy Povstancheskiy Otryad" is_locked = no }
+			}
+		}
+		hidden_effect = { country_event = { id = rcw_izhevsk.8 days = 70 } }
+	}
+}
+
+# Воззвание союза фронтовиков города Ижевска
+country_event = {
+	id = rcw_izhevsk.5
+	title = rcw_izhevsk.5.t
+	desc = rcw_izhevsk.5.desc
+
+	picture = GFX_IZH_event_union_of_veterans
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		controls_state = 399
+		has_war_with = RSR
+	}
+	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_izhevsk.5.a
+		add_war_support = 0.03
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		hidden_effect = { country_event = { id = rcw_izhevsk.6 days = 30 } }
+	}
+}
+
+# Двухмесячный юбилей
+country_event = {
+	id = rcw_izhevsk.6
+	title = rcw_izhevsk.6.t
+	desc = rcw_izhevsk.6.desc
+
+	picture = GFX_IZH_event_union_of_veterans
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		controls_state = 399
+		has_war_with = RSR
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.6.a
+		add_war_support = 0.03
+		add_political_power = 15
+		hidden_effect = { country_event = { id = rcw_izhevsk.7 days = 31 } }
+	}
+}
+
+# Три месяца обороны
+country_event = {
+	id = rcw_izhevsk.7
+	title = rcw_izhevsk.7.t
+	desc = rcw_izhevsk.7.desc
+
+	picture = GFX_IZH_event_union_of_veterans
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		controls_state = 399
+		has_war_with = RSR
+	}
+	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_izhevsk.7.a
+		unlock_decision_tooltip = IZH_collect_warm_clothes_decision
+		set_country_flag = IZH_collect_warm_clothes_flag
+	}
+}
+
+# Заявление о росте спекуляции
+country_event = {
+	id = rcw_izhevsk.8
+	title = rcw_izhevsk.8.t
+	desc = rcw_izhevsk.8.desc
+
+	picture = GFX_IZH_event_blockade
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		controls_state = 1301
+		has_war_with = RSR
+	}
+	
+	is_triggered_only = yes
+	
+	
+	option = {
+		trigger = { NOT = { has_completed_focus = IZH_counterintelligent } }
+		name = rcw_izhevsk.8.a
+		rise_2_hyper_inflation = yes
+	}
+	option = {
+		trigger = { has_completed_focus = IZH_counterintelligent }
+		name = rcw_izhevsk.8.b
+		rise_hyper_inflation = yes
+	}
+}
+
+# Кризис децентрализации
+country_event = {
+	id = rcw_izhevsk.11
+	title = rcw_izhevsk.11.t
+	desc = rcw_izhevsk.11.desc
+
+	picture = GFX_IZH_event_decentralization_crisis
+	
+	trigger = {
+		tag = IZH
+		OR = {
+			AND = {
+				has_idea = NVA_decentralization_of_army_a
+				has_army_manpower = {
+					size > 39999
+				}
+			}
+			AND = {
+				has_idea = IZH_local_peoples_armies_idea
+				has_army_manpower = {
+					size > 59999
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 70
+	}
+	
+	fire_only_once = yes
+	
+	
+	option = {
+		trigger = { has_government = social_liberalism NOT = { has_completed_focus = IZH_Povolzhskoye_pravitelstvo } }
+		name = rcw_izhevsk.11.a
+		if = {
+			limit = { has_idea = NVA_decentralization_of_army_a }
+			remove_ideas = NVA_decentralization_of_army_a
+		}
+		if = {
+			limit = { has_idea = IZH_local_peoples_armies_idea }
+			remove_ideas = IZH_local_peoples_armies_idea
+		}
+		add_timed_idea = { idea = IZH_collapse_of_front days = 7 }
+		country_event = { id = rcw_izhevsk.12 days = 7 }
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		add_ideas = military_dictatorship_gov_form
+		uncomplete_national_focus = {
+			focus = IZH_eser_government
+			uncomplete_children = yes
+			refund_political_power = no
+		}
+		complete_national_focus = IZH_third_way
+	}
+	option = {
+		name = rcw_izhevsk.11.b
+		if = {
+			limit = { has_idea = NVA_decentralization_of_army_a }
+			remove_ideas = NVA_decentralization_of_army_a
+		}
+		if = {
+			limit = { has_idea = IZH_local_peoples_armies_idea }
+			remove_ideas = IZH_local_peoples_armies_idea
+		}
+		add_timed_idea = { idea = IZH_collapse_of_front days = 28 }
+		add_political_power = -100
+	}
+}
+# Восстановление порядка
+country_event = {
+	id = rcw_izhevsk.12
+	title = rcw_izhevsk.12.t
+	desc = rcw_izhevsk.12.desc
+
+	picture = GFX_IZH_event_firm_power
+	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_izhevsk.12.a
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.03
+		}
+		remove_ideas = IZH_collapse_of_front
+	}
+}
+
+# Вопрос эвакуации
+country_event = {
+	id = rcw_izhevsk.21
+	title = rcw_izhevsk.21.t
+	desc = rcw_izhevsk.21.desc
+
+	picture = GFX_IZH_event_evacuation_issue
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		controls_state = 399
+		has_war_with = RSR
+		RSR = { OR = { has_government = radical_socialism has_government = communism } }
+		surrender_progress > 0.65
+		has_completed_focus = IZH_widespread_uprising
+		NOT = { has_completed_focus = IZH_Povolzhskoye_pravitelstvo }
+		any_neighbor_country = {
+			NOT = { has_war_with = ROOT }
+			has_war_with = RSR
+			OR = {
+				tag = CCA
+				tag = NWA
+				tag = DON
+				tag = SIB
+				tag = RVA
+				tag = RSS
+				tag = PRM
+				tag = BKL
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	immediate = {
+		if = {
+			limit = {
+				any_unit_leader = { has_id = 11000 }
+				NOT = { has_country_leader = { name = "Dmitriy Fedechkin" ruling_only = yes } }
+			}
+			custom_effect_tooltip = rcw_izhevsk_21_tt
+		}
+	}
+	
+	fire_only_once = yes
+	
+	
+	option = {
+		trigger = {
+			any_unit_leader = { has_id = 11000 }
+			NOT = { has_country_leader = { name = "Dmitriy Fedechkin" ruling_only = yes } }
+			has_government = social_liberalism
+		}
+		name = rcw_izhevsk.21.a
+		set_country_flag = rcw_izhevsk_21_oborona
+		custom_effect_tooltip = rcw_izhevsk_21_a_tt
+		hidden_effect = {
+			country_event = { id = rcw_izhevsk.22 days = 1 }
+		}
+	}
+	option = {
+		trigger = {
+			NOT = { has_country_leader = { name = "Dmitriy Fedechkin" ruling_only = yes } }
+			OR = {
+				NOT = { any_unit_leader = { has_id = 11000 } }
+				NOT = { has_government = social_liberalism }
+			}
+		}
+		name = rcw_izhevsk.21.b
+		set_country_flag = rcw_izhevsk_21_oborona
+		if = {
+			limit = {
+				any_unit_leader = { has_id = 11000 }
+				NOT = { has_country_leader = { name = "Dmitriy Fedechkin" ruling_only = yes } }
+			}
+			custom_effect_tooltip = rcw_izhevsk_21_b_tt
+			hidden_effect = {
+				remove_ideas = Dmitriy_Fedechkin_army_chief
+				random_neighbor_country = {
+					limit = {
+						NOT = { has_war_with = ROOT }
+						has_war_with = RSR
+						OR = {
+							tag = CCA
+							tag = NWA
+							tag = DON
+							tag = SIB
+							tag = RVA
+							tag = RSS
+							tag = PRM
+							tag = BKL
+						}
+					}
+					ROOT = { every_unit_leader = { limit = { has_id = 11000 } set_nationality = PREV } }
+					set_country_flag = Dmitriy_Fedechkin_is_here
+					country_event = rcw_izhevsk.23
+				}
+			}
+		}
+		add_war_support = 0.05
+	}
+	option = {
+		name = rcw_izhevsk.21.c
+		country_event = { id = rcw_izhevsk.24 days = 1 }
+	}
+}
+# Исчезновение комитета
+country_event = {
+	id = rcw_izhevsk.22
+	title = rcw_izhevsk.22.t
+	desc = rcw_izhevsk.22.desc
+
+	picture = GFX_IZH_event_evacuation_issue
+	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_izhevsk.22.a
+		add_war_support = -0.1
+		add_stability = -0.1
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.05
+		}
+		custom_effect_tooltip = rcw_izhevsk_21_b_tt
+		hidden_effect = {
+			remove_ideas = Dmitriy_Fedechkin_army_chief
+			random_neighbor_country = {
+				limit = {
+					NOT = { has_war_with = ROOT }
+					has_war_with = RSR
+					OR = {
+						tag = CCA
+						tag = NWA
+						tag = DON
+						tag = SIB
+						tag = RVA
+						tag = RSS
+						tag = PRM
+						tag = BKL
+					}
+				}
+				ROOT = { every_unit_leader = { limit = { has_id = 11000 } set_nationality = PREV } }
+				set_country_flag = Dmitriy_Fedechkin_is_here
+				country_event = rcw_izhevsk.23
+			}
+		}
+	}
+}
+# Прибытие Федечкина
+country_event = {
+	id = rcw_izhevsk.23
+	title = rcw_izhevsk.23.t
+	desc = rcw_izhevsk.23.desc
+
+	picture = GFX_IZH_event_fedichkin_arrival
+	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_izhevsk.23.a
+		FROM = { every_unit_leader = { limit = { has_id = 11000 } set_nationality = ROOT } }
+	}
+}
+# Маршрут отступления
+country_event = {
+	id = rcw_izhevsk.24
+	title = rcw_izhevsk.24.t
+	desc = rcw_izhevsk.24.desc
+
+	picture = GFX_IZH_event_evacuation_issue
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = CCA
+			}
+		}
+		name = rcw_izhevsk.24.CCA
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = CCA
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = NWA
+			}
+		}
+		name = rcw_izhevsk.24.NWA
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = NWA
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = DON
+			}
+		}
+		name = rcw_izhevsk.24.DON
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = DON
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = SIB
+			}
+		}
+		name = rcw_izhevsk.24.SIB
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = SIB
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = RVA
+			}
+		}
+		name = rcw_izhevsk.24.RVA
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = RVA
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = RSS
+			}
+		}
+		name = rcw_izhevsk.24.RSS
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = RSS
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = PRM
+			}
+		}
+		name = rcw_izhevsk.24.PRM
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = PRM
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+	option = {
+		trigger = {
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = BKL
+			}
+		}
+		name = rcw_izhevsk.24.BKL
+		country_event = { id = rcw_izhevsk.25 days = 4 }
+		random_neighbor_country = {
+			limit = {
+				NOT = { has_war_with = ROOT }
+				has_war_with = RSR
+				tag = BKL
+			}
+			country_event = { id = rcw_izhevsk.26 days = 7 }
+		}
+	}
+}
+# Дезертирство
+country_event = {
+	id = rcw_izhevsk.25
+	title = rcw_izhevsk.25.t
+	desc = rcw_izhevsk.25.desc
+
+	picture = GFX_IZH_event_evacuation_issue
+	
+	is_triggered_only = yes
+	timeout_days = 1
+	
+	option = {
+		name = rcw_izhevsk.25.a
+		custom_effect_tooltip = rcw_izhevsk_25_a_tt
+		hidden_effect = {
+			911 = { OWNER = { set_country_flag = owner_of_911 } }
+			REB = {
+				set_state_owner = 911
+			}
+			every_unit_leader = {
+				set_unit_leader_flag = RSS_irregular_army_generals
+			}
+			transfer_units_fraction ={
+				target = REB
+				size = 0.5
+				keep_unit_leaders_trigger = {
+					has_unit_leader_flag = RSS_irregular_army_generals
+				}
+			}
+			random_country = {
+				limit = { has_country_flag = owner_of_911 }
+				annex_country = {
+					target = REB
+					transfer_troops = no
+				}
+			}
+			every_unit_leader = {
+				clr_unit_leader_flag = RSS_irregular_army_generals
+			}
+		}
+	}
+}
+# Прибытие ижевцев
+country_event = {
+	id = rcw_izhevsk.26
+	title = rcw_izhevsk.26.t
+	desc = rcw_izhevsk.26.desc
+
+	picture = GFX_IZH_event_evacuation_issue
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.26.a
+		FROM = {
+			hidden_effect = {
+				set_division_template_lock = { division_template = "Izhevskaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Sarapul'skaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Votkinskiy Povstancheskiy Otryad" is_locked = no }
+				set_division_template_lock = { division_template = "Votkinskaya Povstancheskaya Brigada" is_locked = no }
+				set_division_template_lock = { division_template = "Kambarskiy Povstancheskiy Otryad" is_locked = no }
+			}
+			transfer_units_fraction ={
+				target = ROOT
+				size = 1
+				keep_unit_leaders_trigger = {
+					always = no
+				}
+			}
+			every_unit_leader = { set_nationality = ROOT }
+		}
+		RSR = {
+			country_event = { id = rcw_izhevsk.27 days = 1 }
+		}
+		if = {
+			limit = { is_ai = yes FROM = { is_ai = no } }
+			change_tag_from = FROM
+		}
+	}
+}
+# Бегство ижевцев
+country_event = {
+	id = rcw_izhevsk.27
+	title = rcw_izhevsk.27.t
+	desc = rcw_izhevsk.27.desc
+
+	picture = GFX_IZH_event_evacuation_issue
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.27.a
+		annex_country = {
+			target = IZH
+			transfer_troops = no
+		}
+	}
+}
+# Красные тиски
+country_event = {
+	id = rcw_izhevsk.28
+	title = rcw_izhevsk.28.t
+	desc = rcw_izhevsk.28.desc
+
+	picture = GFX_IZH_event_evacuation_issue
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		has_country_flag = rcw_izhevsk_21_oborona
+		NOT = { controls_state = 399 }
+		has_war_with = RSR
+		RSR = { OR = { has_government = radical_socialism has_government = communism } }
+		has_completed_focus = IZH_widespread_uprising
+		NOT = { has_completed_focus = IZH_Povolzhskoye_pravitelstvo }
+		any_neighbor_country = {
+			NOT = { has_war_with = ROOT }
+			has_war_with = RSR
+			OR = {
+				tag = CCA
+				tag = NWA
+				tag = DON
+				tag = SIB
+				tag = RVA
+				tag = RSS
+				tag = PRM
+				tag = BKL
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	
+	option = {
+		name = rcw_izhevsk.28.a
+		country_event = rcw_izhevsk.24
+		clr_country_flag = rcw_izhevsk_21_oborona
+	}
+	option = {
+		trigger = {
+			any_controlled_state = { NOT = { state = 399 state = 1300 state = 1301 state = 1302 state = 1099 } }
+			surrender_progress < 0.6
+		}
+		name = rcw_izhevsk.28.b
+		add_war_support = -0.1
+		add_stability = -0.1
+		clr_country_flag = rcw_izhevsk_21_oborona
+	}
+}
+
+# Блокада
+country_event = {
+	id = rcw_izhevsk.31
+	title = rcw_izhevsk.31.t
+	desc = rcw_izhevsk.31.desc
+
+	picture = GFX_IZH_event_blockade
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		controls_state = 399
+		NOT = {
+			any_controlled_state = { NOT = { state = 399 state = 1300 state = 1301 state = 1302 state = 1099 } }
+			any_controlled_state = {
+				any_neighbor_state = {
+					CONTROLLER = {
+						NOT = { has_war_with = ROOT }
+						any_controlled_state = { NOT = { state = 399 state = 1300 state = 1301 state = 1302 state = 1099 } }
+						is_neighbor_of = ROOT
+					}
+				}
+			}
+		}
+		has_war_with = RSR
+		NOT = { has_idea = IZH_red_blockade }
+		RSR = { OR = { has_government = radical_socialism has_government = communism } }
+	}
+	
+	mean_time_to_happen = {
+		days = 21
+	}
+	
+	option = {
+		name = rcw_izhevsk.31.a
+		add_ideas = IZH_red_blockade
+		if = {
+			limit = { has_idea = OCH_substandard_ammunition_idea }
+			remove_ideas = OCH_substandard_ammunition_idea
+			add_ideas = OCH_substandard_ammunition_idea
+		}
+		hidden_effect = {
+			country_event = { id = rcw_izhevsk.32 days = 60 }
+			country_event = { id = rcw_izhevsk.33 days = 150 }
+			country_event = { id = rcw_izhevsk.33 days = 300 }
+			country_event = { id = rcw_izhevsk.33 days = 450 }
+			country_event = { id = rcw_izhevsk.33 days = 700 }
+			country_event = { id = rcw_izhevsk.33 days = 850 }
+			country_event = { id = rcw_izhevsk.33 days = 1000 }
+		}
+	}
+}
+# Последствия блокады
+country_event = {
+	id = rcw_izhevsk.32
+	title = rcw_izhevsk.32.t
+	desc = rcw_izhevsk.32.desc
+
+	picture = GFX_IZH_event_blockade
+	
+	trigger = {
+		has_idea = IZH_red_blockade
+	}
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_izhevsk.32.a
+		rise_hyper_inflation = yes
+		add_ideas = OCH_substandard_ammunition_idea
+		add_war_support = -0.05
+		add_stability = -0.05
+	}
+}
+# Последствия блокады голод
+country_event = {
+	id = rcw_izhevsk.33
+	trigger = {
+		has_idea = IZH_red_blockade
+	}
+	is_triggered_only = yes
+	hidden = yes
+	immediate = {
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			remove_ideas = foodstuffs_supply_crisis_4
+			add_ideas = foodstuffs_supply_crisis_5
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_3 }
+			remove_ideas = foodstuffs_supply_crisis_3
+			add_ideas = foodstuffs_supply_crisis_4
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_2 }
+			remove_ideas = foodstuffs_supply_crisis_2
+			add_ideas = foodstuffs_supply_crisis_3
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_1 }
+			remove_ideas = foodstuffs_supply_crisis_1
+			add_ideas = foodstuffs_supply_crisis_2
+		}
+		else = { add_ideas = foodstuffs_supply_crisis_1 }
+	}
+}
+# Прорыв блокады
+country_event = {
+	id = rcw_izhevsk.34
+	title = rcw_izhevsk.34.t
+	desc = rcw_izhevsk.34.desc
+
+	picture = GFX_IZH_event_blockade_breakthrough
+	
+	trigger = {
+		tag = IZH
+		has_idea = IZH_red_blockade
+		OR = {
+			any_controlled_state = { NOT = { state = 399 state = 1300 state = 1301 state = 1302 state = 1099 } }
+			any_neighbor_country = {
+				NOT = { has_war_with = ROOT }
+				any_controlled_state = { NOT = { state = 399 state = 1300 state = 1301 state = 1302 state = 1099 } }
+			}
+			NOT = { has_war_with = RSR }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	option = {
+		name = rcw_izhevsk.34.a
+		remove_ideas = IZH_red_blockade
+		add_manpower = 3000
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 100
+			producer = IZH
+		}
+		add_equipment_to_stockpile = {
+			type = train_equipment
+			amount = 5
+			producer = IZH
+		}
+		add_political_power = 35
+		add_war_support = 0.05
+		if = {
+			limit = { has_idea = OCH_substandard_ammunition_idea }
+			remove_ideas = OCH_substandard_ammunition_idea
+			add_timed_idea = { idea = OCH_substandard_ammunition_idea days = 720 }
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_1 }
+			remove_ideas = foodstuffs_supply_crisis_1
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_2 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_2
+				add_idea = foodstuffs_supply_crisis_1
+			}
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_3 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_3
+				add_idea = foodstuffs_supply_crisis_2
+			}
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_4
+				add_idea = foodstuffs_supply_crisis_3
+			}
+		}
+		else_if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+			swap_ideas = {
+				remove_idea = foodstuffs_supply_crisis_5
+				add_idea = foodstuffs_supply_crisis_4
+			}
+		}
+	}
+}
+
+# Повстанческое правительство
+country_event = {
+	id = rcw_izhevsk.41
+	title = rcw_izhevsk.41.t
+	desc = rcw_izhevsk.41.desc
+
+	picture = GFX_IZH_event_government_status
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.41.a
+		set_politics = {
+			ruling_party = national_syndicalism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.05
+		}
+		add_political_power = 30
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		name = rcw_izhevsk.41.b
+		set_politics = {
+			ruling_party = social_liberalism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.05
+		}
+		add_stability = 0.04
+		if = {
+			limit = { CCA = { exists = yes has_war_with = RSR NOT = { has_war_with = ROOT } } }
+			CCA = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		}
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = rcw_izhevsk.41.c
+		set_cosmetic_tag = IZH_army
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		add_ideas = military_dictatorship_gov_form
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.05
+		}
+		add_war_support = 0.04
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+# Воззвание Куракина
+country_event = {
+	id = rcw_izhevsk.42
+	title = rcw_izhevsk.42.t
+	desc = rcw_izhevsk.42.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.42.a
+	}
+}
+# Лопата спасёт Ижевск
+country_event = {
+	id = rcw_izhevsk.43
+	title = rcw_izhevsk.43.t
+	desc = rcw_izhevsk.43.desc
+
+	picture = GFX_IZH_event_shovel_for_izhevsk
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.43.a
+	}
+}
+# Декларация Прикомуча
+country_event = {
+	id = rcw_izhevsk.44
+	title = rcw_izhevsk.44.t
+	desc = {
+		text = rcw_izhevsk.44.desc
+		trigger = { CCA = { NOT = { exists = no has_war_with = ROOT has_government = communism has_government = authoritarism has_government = despotism has_government = fascism has_government = national_syndicalism } } }
+	}
+	desc = {
+		text = rcw_izhevsk.44.desc_1
+		trigger = { CCA = { OR = { exists = no has_war_with = ROOT has_government = communism has_government = authoritarism has_government = despotism has_government = fascism has_government = national_syndicalism } } }
+	}
+
+	picture = GFX_IZH_event_choice_national_policy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.44.a
+		if = {
+			limit = { has_idea = local_assembly_decisions_b_law }
+			add_ideas = uncodified_constitution_b_law
+		}
+	}
+}
+# Результаты набора в партию
+country_event = {
+	id = rcw_izhevsk.45
+	title = rcw_izhevsk.45.t
+	desc = rcw_izhevsk.45.desc
+
+	picture = GFX_IZH_event_recruitment_to_the_party
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.45.a
+		add_stability = 0.1
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.15
+		}
+		add_political_power = 25
+	}
+}
+country_event = {
+	id = rcw_izhevsk.46
+	title = rcw_izhevsk.45.t
+	desc = rcw_izhevsk.46.desc
+
+	picture = GFX_IZH_event_recruitment_to_the_party
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.46.a
+		add_stability = 0.05
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+	}
+}
+country_event = {
+	id = rcw_izhevsk.47
+	title = rcw_izhevsk.45.t
+	desc = rcw_izhevsk.47.desc
+
+	picture = GFX_IZH_event_recruitment_to_the_party
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.47.a
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.05
+		}
+		add_political_power = -25
+	}
+}
+country_event = {
+	id = rcw_izhevsk.48
+	title = rcw_izhevsk.45.t
+	desc = rcw_izhevsk.48.desc
+
+	picture = GFX_IZH_event_recruitment_to_the_party
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.48.a
+		add_stability = -0.05
+		add_political_power = -50
+	}
+}
+
+# Советская власть при демократическом строе
+country_event = {
+	id = rcw_izhevsk.49
+	title = rcw_izhevsk.49.t
+	desc = rcw_izhevsk.49.desc
+
+	picture = GFX_IZH_event_sovetskaya_vlast
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.49.a
+		add_ideas = DON_CCA_soviet_without_communists
+	}
+	option = {
+		name = rcw_izhevsk.49.b
+		add_ideas = DON_CCA_soviet_no_power
+	}
+	option = {
+		name = rcw_izhevsk.49.c
+		add_ideas = CCA_replace_soviets_on_zemstvos_idea
+	}
+}
+
+# Преодоление разобщённости
+country_event = {
+	id = rcw_izhevsk.50
+	title = rcw_izhevsk.50.t
+	desc = rcw_izhevsk.50.desc
+
+	picture = GFX_IZH_event_firm_power
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { has_idea = confederal_gov_terr }
+		name = rcw_izhevsk.50.a
+		swap_ideas = {
+			remove_idea = confederal_gov_terr
+			add_idea = federal_gov_terr
+		}
+	}
+	option = {
+		trigger = { has_idea = confederal_gov_terr }
+		name = rcw_izhevsk.50.b
+		swap_ideas = {
+			remove_idea = confederal_gov_terr
+			add_idea = unitary_gov_terr
+		}
+		add_political_power = -25
+	}
+	option = {
+		trigger = { has_idea = workers_control_law }
+		name = rcw_izhevsk.50.c
+		swap_ideas = {
+			remove_idea = confederal_gov_terr
+			add_idea = unitary_gov_terr
+		}
+		swap_ideas = {
+			remove_idea = workers_control_law
+			add_idea = planed_economy_law
+		}
+		add_political_power = -100
+		add_stability = -0.05
+	}
+	option = {
+		trigger = { has_idea = workers_control_law }
+		name = rcw_izhevsk.50.d
+		swap_ideas = {
+			remove_idea = workers_control_law
+			add_idea = mixed_economy_law
+		}
+	}
+}
+
+# Выбор национальной политики
+country_event = {
+	id = rcw_izhevsk.51
+	title = rcw_izhevsk.51.t
+	desc = rcw_izhevsk.51.desc
+
+	picture = GFX_IZH_event_choice_national_policy
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { has_completed_focus = IZH_Povolzhskoye_pravitelstvo }
+		name = rcw_izhevsk.51.a
+		set_country_flag = IZH_explanation_of_national_policy_autonomies
+		unlock_decision_category_tooltip = CCA_self-organization_of_autonomies
+	}
+	option = {
+		name = rcw_izhevsk.51.b
+		add_ideas = RSS_inorodci
+	}
+	option = {
+		trigger = { NOT = { has_completed_focus = IZH_Povolzhskoye_pravitelstvo has_completed_focus = IZH_third_way } }
+		name = rcw_izhevsk.51.c
+		add_stability = 0.05
+		add_war_support = 0.05
+		add_manpower = 10000
+		set_country_flag = IZH_explanation_of_national_policy_deal_with_udmurts
+	}
+}
+
+# Вотякско-русская республика
+country_event = {
+	id = rcw_izhevsk.52
+	title = rcw_izhevsk.52.t
+	desc = rcw_izhevsk.52.desc
+
+	picture = GFX_IZH_event_choice_national_policy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.52.a
+		UDM = {
+			set_cosmetic_tag = UDM_IZH
+			transfer_state = 1300
+			set_politics = {
+				ruling_party = social_liberalism
+				elections_allowed = no
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.3
+			}
+			every_country = {
+				limit = {
+					has_offensive_war_with = ROOT
+				}
+				declare_war_on = {
+					target = UDM
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = {
+					has_defensive_war_with = ROOT
+					NOT = { has_war_with = UDM }
+				}
+				UDM = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+		}
+		transfer_units_fraction= {
+			target = UDM
+			size = 1
+			stockpile_ratio = 1
+			army_ratio = 1
+			navy_ratio = 1
+			air_ratio = 1
+			keep_unit_leaders_trigger = { always = no }
+		}
+		UDM = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			change_tag_from = ROOT
+		}
+	}
+}
+
+# Представитель Ижевска (Миссия Куракина)
+country_event = {
+	id = rcw_izhevsk.53
+	title = rcw_izhevsk.53.t
+	desc = rcw_izhevsk.53.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			NOT = {
+				has_equipment = {
+					field_guns_equipment > 199
+				}
+				has_equipment = {
+					support_equipment > 99
+				}
+			}
+		}
+		name = rcw_izhevsk.53.a
+		FROM = { country_event = rcw_izhevsk.54 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		trigger = {
+			has_equipment = {
+				field_guns_equipment > 199
+			}
+			has_equipment = {
+				support_equipment > 99
+			}
+		}
+		name = rcw_izhevsk.53.b
+		effect_tooltip = {
+			send_equipment = {
+				equipment = field_guns_equipment
+				amount = 200
+				target = FROM
+			}
+			send_equipment = {
+				equipment = support_equipment
+				amount = 100
+				target = FROM
+			}
+		}
+		FROM = { country_event = rcw_izhevsk.55 }
+		reverse_add_opinion_modifier = { target = FROM modifier = IZH_material_support_strong }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = {
+			has_equipment = {
+				field_guns_equipment > 199
+			}
+		}
+		name = rcw_izhevsk.53.c
+		effect_tooltip = {
+			send_equipment = {
+				equipment = field_guns_equipment
+				amount = 200
+				target = FROM
+			}
+		}
+		FROM = { country_event = rcw_izhevsk.56 }
+		reverse_add_opinion_modifier = { target = FROM modifier = IZH_material_support }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = {
+			has_equipment = {
+				support_equipment > 99
+			}
+		}
+		name = rcw_izhevsk.53.d
+		effect_tooltip = {
+			send_equipment = {
+				equipment = support_equipment
+				amount = 100
+				target = FROM
+			}
+		}
+		FROM = { country_event = rcw_izhevsk.57 }
+		reverse_add_opinion_modifier = { target = FROM modifier = IZH_material_support }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = {
+			NOT = { has_idea = OCH_substandard_ammunition_idea }
+			FROM = { has_idea = OCH_substandard_ammunition_idea }
+		}
+		name = rcw_izhevsk.53.e
+		FROM = { country_event = rcw_izhevsk.58 }
+		ai_chance = {
+			factor = 2
+		}
+	}
+}
+# Неудача Куракина
+country_event = {
+	id = rcw_izhevsk.54
+	title = rcw_izhevsk.54.t
+	desc = rcw_izhevsk.54.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.54.a
+		add_war_support = -0.05
+	}
+}
+# Успех Куракина
+country_event = {
+	id = rcw_izhevsk.55
+	title = rcw_izhevsk.55.t
+	desc = rcw_izhevsk.55.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.55.a
+		FROM = {
+			send_equipment = {
+				equipment = field_guns_equipment
+				amount = 200
+				target = ROOT
+			}
+			send_equipment = {
+				equipment = support_equipment
+				amount = 100
+				target = ROOT
+			}
+		}
+	}
+}
+country_event = {
+	id = rcw_izhevsk.56
+	title = rcw_izhevsk.55.t
+	desc = rcw_izhevsk.55.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.55.a
+		FROM = {
+			send_equipment = {
+				equipment = field_guns_equipment
+				amount = 200
+				target = ROOT
+			}
+		}
+	}
+}
+country_event = {
+	id = rcw_izhevsk.57
+	title = rcw_izhevsk.55.t
+	desc = rcw_izhevsk.55.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.55.a
+		FROM = {
+			send_equipment = {
+				equipment = support_equipment
+				amount = 100
+				target = ROOT
+			}
+		}
+	}
+}
+# Порох в пороховницы
+country_event = {
+	id = rcw_izhevsk.58
+	title = rcw_izhevsk.58.t
+	desc = rcw_izhevsk.58.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.58.a
+		remove_ideas = OCH_substandard_ammunition_idea
+	}
+}
+
+# Статус правительства
+country_event = {
+	id = rcw_izhevsk.61
+	title = rcw_izhevsk.61.t
+	desc = rcw_izhevsk.61.desc
+
+	picture = GFX_IZH_event_government_status
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.61.a
+		every_state = {
+			limit = {
+				OR = {
+					region = 40
+					region = 231
+				}
+				is_core_of = RUS
+			}
+			add_core_of = ROOT
+		}
+		set_cosmetic_tag = IZH_VLG
+	}
+	
+	option = {
+		trigger = {
+			OR = {
+				CCA = { exists = yes NOT = { has_government = conservatism has_government = authoritarism has_government = despotism has_government = fascism } }
+				NRR = { exists = yes has_country_flag = NRR_VUSO }
+				RSS = { exists = yes has_government = social_liberalism }
+			}
+		}
+		name = rcw_izhevsk.61.b
+		every_state = {
+			limit = {
+				OR = {
+					region = 40
+					region = 231
+				}
+				is_core_of = RUS
+			}
+			add_core_of = ROOT
+		}
+		set_cosmetic_tag = IZH_VLG
+		if = {
+			limit = { CCA = { exists = yes NOT = { has_government = conservatism has_government = authoritarism has_government = despotism has_government = fascism } } }
+			CCA = { country_event = rcw_izhevsk.62 }
+		}
+		else_if = {
+			limit = { NRR = { exists = yes has_country_flag = NRR_VUSO } }
+			NRR = { country_event = rcw_izhevsk.62 }
+		}
+		else_if = {
+			limit = { RSS = { exists = yes has_government = social_liberalism } }
+			RSS = { country_event = rcw_izhevsk.62 }
+		}
+	}
+	
+	option = {
+		trigger = {
+			CCA = { OR = { exists = no has_government = conservatism has_government = authoritarism has_government = despotism has_government = fascism } }
+			NRR = { OR = { exists = no has_country_flag = NRR_VPSO } }
+			RSS = { OR = { exists = no NOT = { has_government = social_liberalism } } }
+		}
+		name = rcw_izhevsk.61.c
+		set_cosmetic_tag = CCA
+		add_political_power = 50
+	}
+}
+# Декларация верности Поволжского правительства
+country_event = {
+	id = rcw_izhevsk.62
+	title = rcw_izhevsk.62.t
+	desc = rcw_izhevsk.62.desc
+
+	picture = GFX_IZH_event_government_status
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.62.a
+		ROOT = { FROM = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+	}
+}
+
+# Твёрдая власть
+country_event = {
+	id = rcw_izhevsk.71
+	title = rcw_izhevsk.71.t
+	desc = rcw_izhevsk.71.desc
+
+	picture = GFX_IZH_event_firm_power
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.71.a
+		add_ideas = military_dictatorship_gov_form
+		add_ideas = decrees_of_ruler_b_law
+		if = {
+			limit = { has_idea = federal_gov_terr }
+			swap_ideas = {
+				remove_idea = federal_gov_terr
+				add_idea = unitary_gov_terr
+			}
+		}
+		if = {
+			limit = { has_idea = confederal_gov_terr }
+			swap_ideas = {
+				remove_idea = confederal_gov_terr
+				add_idea = unitary_gov_terr
+			}
+		}
+		add_stability = -0.1
+		add_political_power = -50
+		hidden_effect = {
+			country_event = { id = rcw_izhevsk.72 days = 10 }
+		}
+	}
+	option = {
+		name = rcw_izhevsk.71.b
+		add_ideas = military_dictatorship_gov_form
+		add_ideas = emergency_laws_b_law
+		if = {
+			limit = { has_idea = federal_gov_terr }
+			swap_ideas = {
+				remove_idea = federal_gov_terr
+				add_idea = unitary_gov_terr
+			}
+		}
+		if = {
+			limit = { has_idea = confederal_gov_terr }
+			swap_ideas = {
+				remove_idea = confederal_gov_terr
+				add_idea = unitary_gov_terr
+			}
+		}
+		add_stability = -0.07
+		add_political_power = -30
+		hidden_effect = {
+			if = {
+				limit = { has_stability < 0.5 }
+				country_event = { id = rcw_izhevsk.72 days = 10 }
+			}
+		}
+	}
+	option = {
+		name = rcw_izhevsk.71.c
+		add_ideas = presidential_republic_gov_form
+		add_ideas = emergency_laws_b_law
+		if = {
+			limit = { has_idea = federal_gov_terr }
+			swap_ideas = {
+				remove_idea = federal_gov_terr
+				add_idea = unitary_gov_terr
+			}
+		}
+		if = {
+			limit = { has_idea = confederal_gov_terr }
+			swap_ideas = {
+				remove_idea = confederal_gov_terr
+				add_idea = unitary_gov_terr
+			}
+		}
+		add_stability = -0.03
+		add_political_power = -10
+		hidden_effect = {
+			if = {
+				limit = { has_stability < 0.4 }
+				country_event = { id = rcw_izhevsk.72 days = 40 }
+			}
+		}
+	}
+	option = {
+		name = rcw_izhevsk.71.d
+		if = {
+			limit = { has_idea = confederal_gov_terr }
+			swap_ideas = {
+				remove_idea = confederal_gov_terr
+				add_idea = federal_gov_terr
+			}
+		}
+		add_ideas = presidential_republic_gov_form
+	}
+}
+# Левая оппозиция
+country_event = {
+	id = rcw_izhevsk.72
+	title = rcw_izhevsk.72.t
+	desc = rcw_izhevsk.72.desc
+
+	picture = GFX_IZH_event_left_opposition
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { has_completed_focus = IZH_counterintelligent }
+		name = rcw_izhevsk.72.a
+		add_political_power = -50
+		add_stability = -0.05
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.1
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = -0.05
+		}
+		hidden_effect = {
+			if = {
+				limit = { has_stability < 0.4 }
+				country_event = { id = rcw_izhevsk.74 days = 1 }
+			}
+		}
+	}
+	option = {
+		name = rcw_izhevsk.72.b
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.1
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = -0.05
+		}
+		add_ideas = white_terror_idea_plus_socialists
+		hidden_effect = {
+			if = {
+				limit = { has_stability < 0.4 }
+				country_event = { id = rcw_izhevsk.74 days = 1 }
+			}
+		}
+	}
+	option = {
+		name = rcw_izhevsk.72.c
+		add_timed_idea = { idea = IZH_influence_of_left_opposition days = 120 }
+		add_war_support = 0.04
+		hidden_effect = {
+			if = {
+				limit = { has_stability < 0.4 }
+				country_event = { id = rcw_izhevsk.74 days = 1 }
+			}
+		}
+	}
+	option = {
+		trigger = { has_stability > 0.3 }
+		name = rcw_izhevsk.72.d
+		country_event = { id = rcw_izhevsk.73 days = 4 }
+	}
+}
+# Переговоры с социалистами
+country_event = {
+	id = rcw_izhevsk.73
+	title = rcw_izhevsk.73.t
+	desc = rcw_izhevsk.73.desc
+
+	picture = GFX_IZH_event_left_opposition
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.73.a
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.07
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.03
+		}
+		add_ideas = parliamentary_republic_gov_form
+		add_ideas = uncodified_constitution_b_law
+		add_ideas = federal_gov_terr
+		elections_allowed_24 = yes
+		add_political_power = -50
+		custom_effect_tooltip = lack_of_officers_rise_1_tt
+		hidden_effect = { lack_of_officers_rise = yes }
+		add_ideas = Nikolay_Yevseyev_1
+		add_ideas = Konstantin_Shulakov_3
+		add_ideas = Vasiliy_Buzanov_6
+	}
+}
+# Волнения в народной армии
+country_event = {
+	id = rcw_izhevsk.74
+	title = rcw_izhevsk.74.t
+	desc = rcw_izhevsk.74.desc
+
+	picture = GFX_IZH_event_blockade_breakthrough
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.74.a
+		effect_tooltip = {
+			if = {
+				limit = { has_idea = IZH_influence_of_left_opposition }
+				remove_ideas = IZH_influence_of_left_opposition
+			}
+			if = {
+				limit = { NOT = { has_idea = white_terror_idea has_idea = white_terror_idea_plus_socialists } }
+				add_ideas = white_terror_idea_plus_socialists
+			}
+			add_timed_idea = { idea = strikes_3 days = 7 }
+			add_timed_idea = { idea = mutiny_3 days = 7 }
+		}
+		hidden_effect = {
+			if = {
+				limit = { has_stability > 0.25 }
+				if = {
+					limit = { has_idea = IZH_influence_of_left_opposition }
+					remove_ideas = IZH_influence_of_left_opposition
+				}
+				if = {
+					limit = { NOT = { has_idea = white_terror_idea has_idea = white_terror_idea_plus_socialists } }
+					add_ideas = white_terror_idea_plus_socialists
+				}
+				add_timed_idea = { idea = strikes_3 days = 7 }
+				add_timed_idea = { idea = mutiny_3 days = 7 }
+				else = {
+					country_event = { id = rcw_izhevsk.75 }
+				}
+			}
+		}
+	}
+	
+	option = {
+		trigger = { NOT = { has_idea = white_terror_idea has_idea = white_terror_idea_plus_socialists } }
+		name = rcw_izhevsk.74.b
+		set_politics = { ruling_party = social_liberalism elections_allowed = no }
+		add_ideas = parliamentary_republic_gov_form
+		add_ideas = uncodified_constitution_b_law
+		add_ideas = federal_gov_terr
+		uncomplete_national_focus = {
+			focus = IZH_third_way
+			uncomplete_children = yes
+			refund_political_power = no
+		}
+	}
+}
+# Свержение диктатуры
+country_event = {
+	id = rcw_izhevsk.75
+	title = rcw_izhevsk.75.t
+	desc = rcw_izhevsk.75.desc
+
+	picture = GFX_IZH_event_sovetskaya_vlast
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.75.a
+		if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.15
+			}
+			custom_effect_tooltip = rcw_izhevsk_75_tt_1
+			hidden_effect = {
+				remove_ideas = Dmitriy_Fedechkin_army_chief
+				remove_ideas = Yakov_Zebziev_high_command
+				random_neighbor_country = {
+					limit = {
+						NOT = { has_war_with = ROOT }
+						has_war_with = RSR
+						OR = {
+							tag = CCA
+							tag = NWA
+							tag = DON
+							tag = SIB
+							tag = RVA
+							tag = RSS
+							tag = PRM
+							tag = BKL
+						}
+					}
+					ROOT = { every_unit_leader = { limit = { has_id = 10999 } set_nationality = PREV } }
+					ROOT = { every_unit_leader = { limit = { has_id = 11000 } set_nationality = PREV } }
+					set_country_flag = Dmitriy_Fedechkin_is_here
+					set_country_flag = Yakov_Zebziev_is_here
+					country_event = rcw_izhevsk.23
+				}
+				ROOT = { every_unit_leader = { limit = { has_id = 10999 } set_nationality = REB } }
+				ROOT = { every_unit_leader = { limit = { has_id = 11000 } set_nationality = REB } }
+			}
+		}
+		if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.15
+			}
+			custom_effect_tooltip = rcw_izhevsk_75_tt_2
+			hidden_effect = {
+				remove_ideas = Semyon_Soldatov_1
+				ROOT = { every_unit_leader = { limit = { has_id = 11002 } set_nationality = REB } }
+			}
+		}
+		set_politics = { ruling_party = social_liberalism elections_allowed = no }
+		add_ideas = parliamentary_republic_gov_form
+		add_ideas = uncodified_constitution_b_law
+		add_ideas = federal_gov_terr
+		uncomplete_national_focus = {
+			focus = IZH_third_way
+			uncomplete_children = yes
+			refund_political_power = no
+		}
+		add_stability = -0.1
+		add_war_support = -0.15
+		custom_effect_tooltip = lack_of_officers_rise_2_tt
+		hidden_effect = { lack_of_officers_rise = yes lack_of_officers_rise = yes }
+	}
+}
+# Офицер генштаба
+country_event = {
+	id = rcw_izhevsk.76
+	title = rcw_izhevsk.76.t
+	desc = rcw_izhevsk.76.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.76.a
+		set_country_flag = Vladimir_Kappel_is_here
+		CCA = { every_unit_leader = { limit = { has_id = 88150 } set_nationality = ROOT } }
+		RSS = { every_unit_leader = { limit = { has_id = 88150 } set_nationality = ROOT } }
+		RUS = { every_unit_leader = { limit = { has_id = 88150 } set_nationality = ROOT } }
+		SIB = { every_unit_leader = { limit = { has_id = 88150 } set_nationality = ROOT } }
+		REB = { every_unit_leader = { limit = { has_id = 88150 } set_nationality = ROOT } }
+		random_other_country = {
+			limit = { any_unit_leader = { has_id = 88150 } }
+			every_unit_leader = { limit = { has_id = 88150 } set_nationality = ROOT }
+		}
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.03
+		}
+		create_country_leader = { name = "Vladimir Kappel" desc = "" picture = "gfx/leaders/RUS/Portrait_Vladimir_Kappel.dds" expire = "1953.07.22" ideology = authoritarism_ideology traits = { warmonger_old_general staunch_monarchist min_2_ideological_crusader } }
+	}
+}
+
+# Крестьянский съезд
+country_event = {
+	id = rcw_izhevsk.81
+	title = rcw_izhevsk.81.t
+	desc = rcw_izhevsk.81.desc
+
+	picture = GFX_IZH_event_peasant_brothers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.81.a
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.05
+		}
+		add_political_power = -70
+		peasant_and_land_and_bread_question_fall = yes
+		add_timed_idea = { idea = peasant_and_land_and_bread_question_reformation_period days = 270 }
+		add_ideas = cooperative_land_ownership
+	}
+	option = {
+		name = rcw_izhevsk.81.b
+		add_ideas = RVA_third_sheaf_gov
+	}
+	option = {
+		name = rcw_izhevsk.81.c
+		add_stability = 0.05
+		add_political_power = 25
+		add_ideas = IZH_loyal_rural_councils
+	}
+	option = {
+		name = rcw_izhevsk.81.d
+		add_ideas = RSS_peasant_self_defence
+	}
+}
+# Сила в единстве
+country_event = {
+	id = rcw_izhevsk.82
+	title = rcw_izhevsk.82.t
+	desc = rcw_izhevsk.82.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.82.a
+		add_ideas = IZH_union_of_three
+	}
+}
+# Партия народа
+country_event = {
+	id = rcw_izhevsk.83
+	title = rcw_izhevsk.83.t
+	desc = rcw_izhevsk.83.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.83.a
+		add_ideas = allow_one_party_law
+		add_political_power = -30
+		if = {
+			limit = { has_idea = IZH_influence_of_left_opposition }
+			remove_ideas = IZH_influence_of_left_opposition
+		}
+		set_party_name = { ideology = national_syndicalism long_name = IZH_national_syndicalism_party_new_long name = IZH_national_syndicalism_party_new }
+		set_party_name = { ideology = fascism long_name = IZH_fascism_party_new_long name = IZH_fascism_party_new }
+	}
+	option = {
+		name = rcw_izhevsk.83.b
+		add_ideas = poliparty_system_law
+		add_political_power = 50
+		set_party_name = { ideology = national_syndicalism long_name = IZH_national_syndicalism_party_new_long name = IZH_national_syndicalism_party_new }
+		set_party_name = { ideology = fascism long_name = IZH_fascism_party_new_long name = IZH_fascism_party_new }
+	}
+}
+# Образ Вождя
+country_event = {
+	id = rcw_izhevsk.84
+	title = rcw_izhevsk.84.t
+	desc = rcw_izhevsk.84.desc
+
+	picture = GFX_IZH_event_image_leader
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.84.a
+		add_country_leader_trait = simple_russian_worker
+	}
+	option = {
+		name = rcw_izhevsk.84.b
+		add_country_leader_trait = true_russian_soldier
+	}
+}
+# Эффективная пропаганда
+country_event = {
+	id = rcw_izhevsk.85
+	title = rcw_izhevsk.85.t
+	desc = rcw_izhevsk.85.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.85.a
+		add_ideas = ideological_expansion_law
+	}
+}
+# Присутствие Народно-трудового союза
+country_event = {
+	id = rcw_izhevsk.86
+	title = rcw_izhevsk.86.t
+	desc = rcw_izhevsk.86.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.86.a
+		clr_country_flag = agitators_from_IZH
+		reverse_add_opinion_modifier = { target = FROM modifier = IZH_banned_party }
+		FROM = { country_event = rcw_izhevsk.91 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = {
+			NOT = { has_idea = ban_all_parties_law has_idea = allow_one_party_law }
+		}
+		name = rcw_izhevsk.86.b
+		add_ideas = IZH_action_of_peoples_labour_union
+		ai_chance = {
+			factor = 2
+		}
+	}
+}
+# Народно-трудовой союз оказывает давление
+country_event = {
+	id = rcw_izhevsk.87
+	title = rcw_izhevsk.87.t
+	desc = rcw_izhevsk.87.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.87.a
+		hidden_effect = { set_min_random_head_of_intel_national_syndicalist = yes }
+		custom_effect_tooltip = set_min_random_head_of_intel_national_syndicalist_tt
+		
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		add_political_power = 10
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = rcw_izhevsk.87.b
+		hidden_effect = { set_min_random_security_minister_national_syndicalist = yes }
+		custom_effect_tooltip = set_min_random_security_minister_national_syndicalist_tt
+		
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		add_stability = 0.03
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = rcw_izhevsk.87.c
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.02
+		}
+		add_political_power = 20
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_izhevsk.87.d
+		add_stability = -0.03
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -0.05
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Акт народно-трудовой солидарности
+country_event = {
+	id = rcw_izhevsk.88
+	title = rcw_izhevsk.88.t
+	desc = rcw_izhevsk.88.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.88.a
+		hidden_effect = {
+			every_owned_state = {
+				limit = { is_capital = no NOT = { is_fully_controlled_by = OWNER } }
+				set_state_flag = transfered_state
+				set_state_owner_to = FROM
+			}
+		}
+		FROM = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		hidden_effect = {
+			every_state = {
+				limit = { has_state_flag = transfered_state }
+				clr_state_flag = transfered_state
+				set_state_owner_to = ROOT
+			}
+		}
+		FROM = { country_event = rcw_izhevsk.89 }
+		add_ideas = IZH_action_of_peoples_labour_union
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0.3
+				has_government = authoritarism
+			}
+		}
+	}
+	option = {
+		name = rcw_izhevsk.88.b
+		FROM = { country_event = rcw_izhevsk.90 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Их правительство подчинилось
+country_event = {
+	id = rcw_izhevsk.89
+	title = rcw_izhevsk.89.t
+	desc = rcw_izhevsk.89.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.89.a
+	}
+}
+# Их правительство ответило отказом
+country_event = {
+	id = rcw_izhevsk.90
+	title = rcw_izhevsk.90.t
+	desc = rcw_izhevsk.90.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.90.a
+	}
+}
+# Их правительство ответило отказом
+country_event = {
+	id = rcw_izhevsk.91
+	title = rcw_izhevsk.91.t
+	desc = rcw_izhevsk.91.desc
+
+	picture = GFX_IZH_event_NTS
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.91.a
+	}
+}
+
+# Доктрина новой России
+country_event = {
+	id = rcw_izhevsk.92
+	title = rcw_izhevsk.92.t
+	desc = rcw_izhevsk.92.desc
+
+	picture = GFX_IZH_event_new_russia_doctrine
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+	
+	option = {
+		name = rcw_izhevsk.92.a
+		add_ideas = state_capitalism_law
+		hidden_effect = {
+			set_temp_variable = { radical_socialism_party_temp = radical_socialism_party }
+			set_temp_variable = { communism_party_temp = communism_party }
+			set_temp_variable = { social_democracy_party_temp = social_democracy_party }
+			set_temp_variable = { social_liberalism_party_temp = social_liberalism_party }
+			set_temp_variable = { market_liberalism_party_temp = market_liberalism_party }
+			set_temp_variable = { conservatism_party_temp = conservatism_party }
+			set_temp_variable = { authoritarism_party_temp = authoritarism_party }
+			set_temp_variable = { despotism_party_temp = despotism_party }
+			set_temp_variable = { fascism_party_temp = fascism_party }
+			set_temp_variable = { national_syndicalism_party_temp = national_syndicalism_party }
+			multiply_temp_variable = { radical_socialism_party_temp = 100 }
+			multiply_temp_variable = { communism_party_temp = 100 }
+			multiply_temp_variable = { social_democracy_party_temp = 100 }
+			multiply_temp_variable = { social_liberalism_party_temp = 100 }
+			multiply_temp_variable = { market_liberalism_party_temp = 100 }
+			multiply_temp_variable = { conservatism_party_temp = 100 }
+			multiply_temp_variable = { authoritarism_party_temp = 100 }
+			multiply_temp_variable = { despotism_party_temp = 100 }
+			multiply_temp_variable = { fascism_party_temp = 100 }
+			multiply_temp_variable = { national_syndicalism_party_temp = 100 }
+			add_to_temp_variable = { fascism_party_temp = national_syndicalism_party_temp }
+			set_temp_variable = { national_syndicalism_party_temp = 100 }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = radical_socialism_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = communism_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = social_democracy_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = social_liberalism_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = market_liberalism_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = conservatism_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = authoritarism_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = despotism_party_temp }
+			subtract_from_temp_variable = { national_syndicalism_party_temp = fascism_party_temp }
+			set_popularities = {
+				radical_socialism = var:radical_socialism_party_temp
+				communism = var:communism_party_temp
+				social_democracy = var:social_democracy_party_temp
+				social_liberalism = var:social_liberalism_party_temp
+				market_liberalism = var:market_liberalism_party_temp
+				conservatism = var:conservatism_party_temp
+				authoritarism = var:authoritarism_party_temp
+				despotism = var:despotism_party_temp
+				fascism = var:fascism_party_temp
+				national_syndicalism = var:national_syndicalism_party_temp
+			}
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+		custom_effect_tooltip = rcw_izhevsk_92_a_tt
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.1
+		}
+		if = {
+			limit = { has_country_leader_with_trait = simple_russian_worker }
+			hidden_effect = { retire_country_leader = yes }
+			create_country_leader = { name = "Semyon Soldatov" desc = RUS_Semyon_Soldatov_DESC picture = "gfx/leaders/UDM/Portrait_Semyon_Soldatov.dds" ideology = fascism_ideology traits = { worker_and_peasant simple_russian_worker } }
+		}
+		else_if = {
+			limit = { has_country_leader_with_trait = true_russian_soldier }
+			hidden_effect = { retire_country_leader = yes }
+			create_country_leader = { name = "Semyon Soldatov" desc = RUS_Semyon_Soldatov_DESC picture = "gfx/leaders/UDM/Portrait_Semyon_Soldatov.dds" ideology = fascism_ideology traits = { worker_and_peasant true_russian_soldier } }
+		}
+		else = {
+			hidden_effect = { retire_country_leader = yes }
+			create_country_leader = { name = "Semyon Soldatov" desc = RUS_Semyon_Soldatov_DESC picture = "gfx/leaders/UDM/Portrait_Semyon_Soldatov.dds" ideology = fascism_ideology traits = { worker_and_peasant } }
+		}
+		set_politics = { ruling_party = fascism elections_allowed = no }
+	}
+	option = {
+		name = rcw_izhevsk.92.b
+		add_ideas = commanding_heights_law
+	}
+}
+
+# Братья крестьяне!
+country_event = {
+	id = rcw_izhevsk.101
+	title = rcw_izhevsk.101.t
+	desc = rcw_izhevsk.101.desc
+
+	picture = GFX_IZH_event_peasant_brothers
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.101.a
+	}
+}
+# Приказ об офицерах
+country_event = {
+	id = rcw_izhevsk.102
+	title = rcw_izhevsk.102.t
+	desc = rcw_izhevsk.102.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.102.a
+	}
+}
+# Штаб Народной армии
+country_event = {
+	id = rcw_izhevsk.103
+	title = rcw_izhevsk.103.t
+	desc = rcw_izhevsk.103.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.103.a
+	}
+}
+# Протест ижевских офицеров
+country_event = {
+	id = rcw_izhevsk.104
+	title = rcw_izhevsk.104.t
+	desc = rcw_izhevsk.104.desc
+
+	picture = GFX_IZH_event_army_headquarters
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			any_unit_leader = { has_id = 11000 }
+			NOT = { has_country_leader = { name = "Dmitriy Fedechkin" ruling_only = yes } }
+		}
+		name = rcw_izhevsk.104.a
+		add_war_support = -0.05
+		custom_effect_tooltip = rcw_izhevsk_21_b_tt
+		hidden_effect = {
+			remove_ideas = Dmitriy_Fedechkin_army_chief
+			random_neighbor_country = {
+				limit = {
+					NOT = { has_war_with = ROOT }
+					has_war_with = RSR
+					OR = {
+						tag = CCA
+						tag = NWA
+						tag = DON
+						tag = SIB
+						tag = RVA
+						tag = RSS
+						tag = PRM
+						tag = BKL
+					}
+				}
+				ROOT = { every_unit_leader = { limit = { has_id = 11000 } set_nationality = PREV } }
+				set_country_flag = Dmitriy_Fedechkin_is_here
+				country_event = rcw_izhevsk.23
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_izhevsk.104.b
+		add_political_power = -20
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_izhevsk.104.c
+		add_political_power = -40
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.04
+		}
+		set_country_flag = IZH_local_peoples_armies_officers_protests
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+###Сомнения (Радсоцы в Ижевске)
+country_event = {
+	id = rcw_izhevsk.125
+	title = rcw_izhevsk.125.t
+	desc = rcw_izhevsk.125.desc
+
+	picture = GFX_report_event_sov_redarm
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.125.a
+		add_stability = 0.01
+		ai_chance = {
+			factor = 2
+		}
+	}
+	
+	option = {
+		name = rcw_izhevsk.125.b
+		add_stability = -0.05
+		country_event = { id = rcw_izhevsk.183 days = 1 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				CCA = { exists = no }
+			}
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+
+
+###Мирная сдача власти###
+country_event = {
+	id = rcw_izhevsk.183
+	title = rcw_izhevsk.183.t
+	desc = rcw_izhevsk.183.desc
+
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_izhevsk.183.a
+		set_politics = {
+			ruling_party = radical_socialism
+			elections_allowed = no
+		}
+		if = {
+			limit = { has_idea = white_terror_idea }
+			swap_ideas = {
+				remove_idea = white_terror_idea
+				add_idea = left_esser_terror_idea
+			}
+		}
+		create_country_leader = { name = "Semyon Soldatov" desc = RUS_Semyon_Soldatov_DESC picture = "gfx/leaders/IZH/Portrait_Semyon_Soldatov.dds" ideology = anarchist_syndicalism traits = { worker_and_peasant } }
+		if = {
+			limit = { CCA = { exists = yes NOT = { has_war_with = ROOT } } }
+			declare_war_on = { target = CCA type = annex_everything }
+		}
+		every_country = {
+			limit = {
+				is_former_russian_empire_russian_country = yes
+				NOT = { has_government = radical_socialism }
+				NOT = { has_war_with = ROOT }
+				is_subject = no
+			}
+			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
+		}
+	}
+}
+
+###Ижевские повстанцы на стороне белых без восстания###
+country_event = {
+	id = rcw_izhevsk.184
+	title = rcw_izhevsk.184.t
+	desc = rcw_izhevsk.184.desc
+
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		is_main_former_russian_empire_country_without_other_triggers = yes
+		has_war_with = RUS
+		RUS = {
+			has_country_flag = RUS_Oktober_revolution_fired
+			NOT = { has_country_flag = IZH_revolt }
+		}
+		controls_state = 399
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_izhevsk.184.a
+		RUS = { set_country_flag = IZH_revolt }
+		load_oob = IZH_rebel_Izhevsk
+		hidden_effect = {
+			set_division_template_lock = { division_template = "Izhevskaya Povstancheskaya Brigada" is_locked = no }
+			set_division_template_lock = { division_template = "Sarapul'skaya Povstancheskaya Brigada" is_locked = no }
+			set_division_template_lock = { division_template = "Votkinskiy Povstancheskiy Otryad" is_locked = no }
+			set_division_template_lock = { division_template = "Votkinskaya Povstancheskaya Brigada" is_locked = no }
+			set_division_template_lock = { division_template = "Kambarskiy Povstancheskiy Otryad" is_locked = no }
+		}
+	}
+}
+
+###Ижевск присоединяется к директории###
+country_event = {
+	id = rcw_izhevsk.185
+	title = rcw_izhevsk.185.t
+	desc = rcw_izhevsk.185.desc
+
+	picture = GFX_report_event_sov_felix_VCHK
+	
+	trigger = {
+		always = no
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = IZH
+		has_government = social_liberalism
+		RSS = { exists = yes }
+		NOT = { has_war_with = RSS }
+		is_neighbor_of = RSS
+		OR = {
+			is_subject = no
+			is_subject_of = RSS
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_izhevsk.185.a
+		RSS = {
+			annex_country = {
+				target = IZH
+				transfer_troops = yes
+			}
+		}
+	}
+}
+
+# Снятие технологии на психические таки если нет нацдуха
+country_event = {
+	id = rcw_izhevsk.201
+	trigger = {
+		has_tech = psychic_attack_tech
+		NOT = { has_idea = IZH_psychic_attack_idea }
+	}
+	hidden = yes
+	mean_time_to_happen = {
+		days = 3
+	}
+	immediate = {
+		set_technology = { psychic_attack_tech = 0 popup = no }
+		set_technology = { psychic_attack_tech_2 = 1 popup = no }
+		set_technology = { psychic_attack_tech_2 = 0 popup = no }
+	}
+}

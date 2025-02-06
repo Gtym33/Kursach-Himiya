@@ -1,0 +1,972 @@
+#	Example:
+#
+#	example_effect = {
+#		add_political_power = 66
+#		add_popularity = {
+#			ideology = fascism
+#			popularity = 0.33
+#		}
+#	}
+#
+#
+#	In a script file:
+#
+#	effect = {
+#		example_effect = yes
+#	}
+#
+
+#####################################
+### emergency_factory_conversion ####
+#####################################
+
+#This is going to give misleading and ugly tooltips. Making it nice will take effort. TODO_WTT_CD make nice or ignore and remove comment. Easiest solution is just making a custom tooltip that says "5 civilian factories will be converted to military factories" and ignore telling the player the states where it will happen.
+
+replace_civ_with_arms_factories = {
+
+	random_owned_controlled_state = {
+		limit = {
+			is_fully_controlled_by = ROOT
+			industrial_complex > 0
+		}
+		remove_building = {
+			type = industrial_complex
+			level = 1
+		}
+		add_building_construction = {
+			type = arms_factory
+			level = 1
+			instant_build = yes
+		}
+	}
+
+	random_owned_controlled_state = {
+		limit = {
+			is_fully_controlled_by = ROOT
+			industrial_complex > 0
+		}
+		remove_building = {
+			type = industrial_complex
+			level = 1
+		}
+		add_building_construction = {
+			type = arms_factory
+			level = 1
+			instant_build = yes
+		}
+	}
+
+	random_owned_controlled_state = {
+		limit = {
+			is_fully_controlled_by = ROOT
+			industrial_complex > 0
+		}
+		remove_building = {
+			type = industrial_complex
+			level = 1
+		}
+		add_building_construction = {
+			type = arms_factory
+			level = 1
+			instant_build = yes
+		}
+	}
+
+	random_owned_controlled_state = {
+		limit = {
+			is_fully_controlled_by = ROOT
+			industrial_complex > 0
+		}
+		remove_building = {
+			type = industrial_complex
+			level = 1
+		}
+		add_building_construction = {
+			type = arms_factory
+			level = 1
+			instant_build = yes
+		}
+	}
+
+	random_owned_controlled_state = {
+		limit = {
+			is_fully_controlled_by = ROOT
+			industrial_complex > 0
+		}
+		remove_building = {
+			type = industrial_complex
+			level = 1
+		}
+		add_building_construction = {
+			type = arms_factory
+			level = 1
+			instant_build = yes
+		}
+	}
+}
+
+#Country scope
+ROOT_inherit_current_scope_wars_effect = {
+	custom_effect_tooltip = ROOT_inherit_current_scope_wars_effect
+	hidden_effect = {
+		every_country = {
+			limit = {
+				has_defensive_war_with = PREV
+			}
+			ROOT = { declare_war_on = { target = PREV type = annex_everything } }
+		}
+		every_country = {
+			limit = {
+				has_offensive_war_with = PREV
+			}
+			declare_war_on = { target = ROOT type = annex_everything }
+		}
+	}
+}
+
+print_variable_log_effect = {
+	print_variables = {
+		file = variables_yug
+		append = yes
+	}
+}
+
+remove_naval_treaty_effect = {
+	if = {
+		limit = {
+			has_idea = MTG_naval_treaty_adherent
+		}
+		remove_ideas = MTG_naval_treaty_adherent
+	}
+	else_if = {
+		limit = {
+			has_idea = MTG_naval_treaty_cheating
+		}
+		remove_ideas = MTG_naval_treaty_cheating
+	}
+	else_if = {
+		limit = {
+			has_idea = MTG_naval_treaty_adherent_reduced
+		}
+		remove_ideas = MTG_naval_treaty_adherent_reduced
+	}
+	else_if = {
+		limit = {
+			has_idea = MTG_naval_treaty_cheating_reduced
+		}
+		remove_ideas = MTG_naval_treaty_cheating_reduced
+	}
+	set_country_flag = MTG_naval_treaty_abandoned
+}
+
+
+
+clear_sabotaged_resources_if_necesary = {
+	if = {
+		limit = {
+			not = {
+				has_dynamic_modifier = {
+					modifier = sabotaged_resources
+				}
+			}
+		}
+
+		clear_variable = sabotaged_oil
+		clear_variable = sabotaged_aluminium
+		clear_variable = sabotaged_rubber
+		clear_variable = sabotaged_tungsten
+		clear_variable = sabotaged_steel
+		clear_variable = sabotaged_chromium
+	}
+}
+
+remove_from_allowed_party = {
+	if = {
+		limit = { has_government = radical_socialism }
+		set_temp_variable = { allowed_party_radical_socialism = 0 }
+	}
+	else_if = {
+		limit = { has_government = communism }
+		set_temp_variable = { allowed_party_communism = 0 }
+	}
+	else_if = {
+		limit = { has_government = social_democracy }
+		set_temp_variable = { allowed_party_social_democracy = 0 }
+	}
+	else_if = {
+		limit = { has_government = social_liberalism }
+		set_temp_variable = { allowed_party_social_liberalism = 0 }
+	}
+	else_if = {
+		limit = { has_government = market_liberalism }
+		set_temp_variable = { allowed_party_market_liberalism = 0 }
+	}
+	else_if = {
+		limit = { has_government = conservatism }
+		set_temp_variable = { allowed_party_conservatism = 0 }
+	}
+	else_if = {
+		limit = { has_government = authoritarism }
+		set_temp_variable = { allowed_party_authoritarism = 0 }
+	}
+	else_if = {
+		limit = { has_government = despotism }
+		set_temp_variable = { allowed_party_despotism = 0 }
+	}
+	else_if = {
+		limit = { has_government = fascism }
+		set_temp_variable = { allowed_party_fascism = 0 }
+	}
+	else_if = {
+		limit = { has_government = national_syndicalism }
+		set_temp_variable = { allowed_party_national_syndicalism = 0 }
+	}
+}
+
+#expectes a temp variable country_to_initiate which should contain original_tag to instantiate as a collabration government
+instantiate_collaboration_government = {
+	custom_effect_tooltip = compliance_80_effect_tooltip
+	hidden_effect = {
+		set_variable = { collaboration_formed@var:country_to_initiate = 1 }
+
+		if = {
+			# if country_to_initiate does not exist, simply release it as a puppet
+			limit = {
+				var:country_to_initiate = {
+					exists = no
+				}
+			}
+			var:country_to_initiate = { set_variable = { collaboration_formed_by = PREV } }
+			release_autonomy = {
+				target = country_to_initiate
+				autonomy_state = autonomy_collaboration_government
+				freedom_level = 0.5
+				release_non_owned_controlled = yes
+			}
+		}
+		else = {
+			# if country_to_initiate exists, create a dynamic country as our new puppet
+
+			create_dynamic_country = {
+				original_tag = country_to_initiate
+
+				set_variable = { collaboration_formed_by = PREV }
+				set_temp_variable = { new_country = this }
+
+				PREV = {
+					every_controlled_state = {
+						limit = { occupied_country_tag = country_to_initiate }
+
+						var:new_country = {
+							transfer_state = PREV
+						}
+					}
+
+					puppet = new_country
+
+					set_autonomy = {
+						target = new_country
+						autonomy_state = autonomy_collaboration_government
+						freedom_level = 0.5
+					}
+				}
+			}
+		}
+	}
+}
+
+abandon_colony_tag = {
+	if = {
+		limit = {
+			is_subject = yes
+		}
+		if = {
+			limit = {
+				original_tag = CAN
+			}
+			if = {
+				limit = { NOT = { has_dlc = "Together for Victory" } }
+				set_cosmetic_tag = CAN_ALY
+			}
+			else = {
+				set_cosmetic_tag = CAN_UK
+			}
+		}
+		else_if = {
+			limit = {
+				original_tag = RAJ
+			}
+			set_cosmetic_tag = RAJ_UK
+		}
+		else_if = {
+			limit = {
+				original_tag = RAJ
+				NOT = {
+					any_country = {
+						has_cosmetic_tag = RAJ_FREE
+					}
+				}
+			}
+			set_cosmetic_tag = RAJ_FREE
+		}
+		else_if = {
+			limit = {
+				original_tag = MAL
+			}
+			set_cosmetic_tag = MAL_UK
+		}
+		else_if = {
+			limit = {
+				original_tag = INS
+			}
+			set_cosmetic_tag = INS_HOL
+		}
+		else_if = {
+			limit = {
+				original_tag = CAN
+				NOT = {
+					any_country = {
+						has_cosmetic_tag = CAN_FREE
+					}
+				}
+			}
+			set_cosmetic_tag = CAN_FREE
+		}
+		else_if = {
+			limit = {
+				original_tag = INS
+				NOT = { has_cosmetic_tag = MAJ_UNIFIED }
+				NOT = {
+					any_country = {
+						has_cosmetic_tag = INS_FREE
+					}
+				}
+			}
+			set_cosmetic_tag = INS_FREE
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_cosmetic_tag = united_polynesia
+					has_cosmetic_tag = MAJ_UNIFIED
+				}
+			}
+		}
+		else = {
+			drop_cosmetic_tag = yes
+		}
+	}
+}
+
+gain_random_agency_upgrade = { #Gives a random agency upgrade or grants a free agency if one has not yet been established
+	custom_effect_tooltip = free_agency_upgrade_tt
+	hidden_effect = {
+		if = {
+			limit = {
+				has_intelligence_agency = no
+			}
+			create_intelligence_agency = yes
+		}
+		else = {
+			random_list = {
+				1 = {
+					upgrade_intelligence_agency = upgrade_economy_civilian
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_economy_civilian
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_army_department
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_army_department
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_naval_department
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_naval_department
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_airforce_department
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_airforce_department
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_passive_defense
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_passive_defense
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_anti_partisan
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_anti_partisan
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_blueprint_stealing
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_blueprint_stealing
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_portable_radios
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_portable_radios
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_invisible_ink
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_invisible_ink
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_plastic_explosives
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_plastic_explosives
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_suicide_pills
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_suicide_pills
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_training_centers
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_training_centers
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_commando_training
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_commando_training
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_interrogation_techniques
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_interrogation_techniques
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_diplo_training
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_diplo_training
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_psycho_warfare
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_psycho_warfare
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_form_department
+					modifier = {
+						factor = 0
+						has_done_agency_upgrade = upgrade_form_department
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_decryption_boost
+					modifier = {
+						factor = 0
+						OR = {
+							has_done_agency_upgrade = upgrade_decryption_boost
+							NOT = { has_done_agency_upgrade = upgrade_form_department }
+						}
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_decryption_boost_2
+					modifier = {
+						factor = 0
+						OR = {
+							has_done_agency_upgrade = upgrade_decryption_boost_2
+							NOT = { has_done_agency_upgrade = upgrade_form_department }
+							NOT = { has_done_agency_upgrade = upgrade_decryption_boost }
+						}
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_crypto_strength
+					modifier = {
+						factor = 0
+						OR = {
+							has_done_agency_upgrade = upgrade_crypto_strength
+							NOT = { has_done_agency_upgrade = upgrade_form_department }
+						}
+					}
+				}
+				1 = {
+					upgrade_intelligence_agency = upgrade_crypto_strength_2
+					modifier = {
+						factor = 0
+						OR = {
+							has_done_agency_upgrade = upgrade_crypto_strength_2
+							NOT = { has_done_agency_upgrade = upgrade_form_department }
+							NOT = { has_done_agency_upgrade = upgrade_crypto_strength }
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+bba_create_cas_license_effect = { #this assumes that the corresponding get_cas_effect has run already to generate a design template if necessary
+	if = {
+		limit = {
+			has_tech = advanced_small_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = small_plane_cas_airframe_3
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = improved_small_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = small_plane_cas_airframe_2
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = basic_small_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = small_plane_cas_airframe_1
+			}
+			cost_factor = 0
+		}
+	}
+}
+
+bba_create_fighter_license_effect = { #this assumes that the corresponding get_fighter_effect has run already to generate a design template if necessary
+	if = {
+		limit = {
+			has_tech = advanced_small_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = small_plane_airframe_3
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = improved_small_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = small_plane_airframe_2
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = basic_small_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = small_plane_airframe_1
+			}
+			cost_factor = 0
+		}
+	}
+}
+
+bba_create_tac_license_effect = { #this assumes that the corresponding get_tac_effect has run already to generate a design template if necessary
+	if = {
+		limit = {
+			has_tech = advanced_medium_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = medium_plane_airframe_3
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = improved_medium_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = medium_plane_airframe_2
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = basic_medium_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = medium_plane_airframe_1
+			}
+			cost_factor = 0
+		}
+	}
+}
+
+bba_create_heavy_fighter_license_effect = { #this assumes that the corresponding get_fighter_effect has run already to generate a design template if necessary
+	if = {
+		limit = {
+			has_tech = advanced_medium_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = medium_plane_fighter_airframe_3
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = improved_medium_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = medium_plane_fighter_airframe_2
+			}
+			cost_factor = 0
+		}
+	}
+	else_if = {
+		limit = {
+			has_tech = basic_medium_airframe
+		}
+		create_production_license = {
+			target = event_target:license_target
+			equipment = {
+				type = medium_plane_fighter_airframe_1
+			}
+			cost_factor = 0
+		}
+	}
+}
+
+remove_any_country_role_from_character = { #Expected to be used inside the character scope
+	#log = "I am [THIS.GetName]"
+	if = {
+		limit = {
+			is_character_slot = air_chief
+		}
+		remove_advisor_role = { slot = air_chief }
+	}
+	if = {
+		limit = {
+			is_character_slot = army_chief
+		}
+		remove_advisor_role = { slot = army_chief }
+	}
+	if = {
+		limit = {
+			is_character_slot = navy_chief
+		}
+		remove_advisor_role = { slot = navy_chief }
+	}
+	if = {
+		limit = {
+			is_character_slot = high_command
+		}
+		remove_advisor_role = { slot = high_command }
+	}
+	if = {
+		limit = {
+			is_character_slot = theorist
+		}
+		remove_advisor_role = { slot = theorist }
+	}
+	if = {
+		limit = {
+			is_character_slot = political_advisor
+		}
+		remove_advisor_role = { slot = political_advisor }
+	}
+}
+
+### Paratroopers
+SF_PARA_sabotage_effect = { #When changing this, update the research tooltip
+	damage_building = {
+		type = infrastructure
+		damage = 2
+	}
+	damage_building = {
+		type = industrial_complex
+		damage = 1
+	}
+	damage_building = {
+		type = arms_factory
+		damage = 1
+	}
+	set_state_flag = {
+		flag = para_drop_effect
+		days = 30
+	}
+}
+
+SF_PARA_combat_effect = { #When changing this, update the research tooltip
+	every_state_division = {
+		limit = { 
+			OWNER = { has_war_with = FROM }
+		}
+		set_unit_organization = 0.50
+	}
+	set_state_flag = {
+		flag = para_drop_effect
+		days = 30
+	}
+}
+
+### Muuuurrrriiinnnnneeeeessssss
+SF_marine_demoliton_effect = { #When changing this, update the research tooltip
+	damage_building = {
+		type = radar_station
+		damage = 1
+	}
+	damage_building = {
+		type = naval_base
+		damage = 1
+	}
+	damage_building = {
+		type = dockyard
+		damage = 1
+	}
+	damage_building = {
+		type = nuclear_reactor
+		damage = 1
+	}
+	damage_building = {
+		type = rocket_site
+		damage = 1
+	}
+	damage_building = {
+		type = fuel_silo
+		damage = 1
+	}
+	set_state_flag = {
+		flag = marines_commando_effect
+		days = 30
+	}
+}
+# The idea is that you can use these effects to store the party popularities (and, if desired, the ruling party) when puppeting or possibly when starting civil wars, and then use the "restore" effects to reset it after the puppeting has happened, so that you don't have to use the overlord's ideology if you don't want to. 
+get_current_ideology_popularities = {
+	set_variable = { ROOT.radical_socialist_support_before_change = ROOT.party_popularity_100@radical_socialism }
+	set_variable = { ROOT.communist_support_before_change = ROOT.party_popularity_100@communism }
+	set_variable = { ROOT.social_democratic_support_before_change = ROOT.party_popularity_100@social_democracy }
+	set_variable = { ROOT.social_liberal_support_before_change = ROOT.party_popularity_100@social_liberalism }
+	set_variable = { ROOT.market_liberal_support_before_change = ROOT.party_popularity_100@market_liberalism }
+	set_variable = { ROOT.conservative_support_before_change = ROOT.party_popularity_100@conservatism }
+	set_variable = { ROOT.authoritarian_support_before_change = ROOT.party_popularity_100@authoritarism }
+	set_variable = { ROOT.despotist_support_before_change = ROOT.party_popularity_100@despotism }
+	set_variable = { ROOT.fascist_support_before_change = ROOT.party_popularity_100@fascism }
+	set_variable = { ROOT.national_syndicalist_support_before_change = ROOT.party_popularity_100@national_syndicalism }
+}
+get_current_ruling_party = {
+	set_variable = { ROOT.ruling_ideology_before_change = ROOT.current_party_ideology_group }
+}
+restore_ideology_popularities = {
+	hidden_effect = {
+		# Reset popluarities to what they were before puppeting 
+		set_popularities = {
+			radical_socialism = ROOT.radical_socialist_support_before_change
+			communism = ROOT.communist_support_before_change
+			social_democracy = ROOT.social_democratic_support_before_change
+			social_liberalism = ROOT.social_liberal_support_before_change
+			market_liberalism = ROOT.market_liberal_support_before_change
+			conservatism = ROOT.conservative_support_before_change
+			authoritarism = ROOT.authoritarian_support_before_change
+			despotism = ROOT.despotist_support_before_change
+			fascism = ROOT.fascist_support_before_change
+			national_syndicalism = ROOT.national_syndicalist_support_before_change
+		}
+		clear_variable = ROOT.radical_socialist_support_before_change
+		clear_variable = ROOT.communist_support_before_change
+		clear_variable = ROOT.social_democratic_support_before_change
+		clear_variable = ROOT.social_liberal_support_before_change
+		clear_variable = ROOT.market_liberal_support_before_change
+		clear_variable = ROOT.conservative_support_before_change
+		clear_variable = ROOT.authoritarian_support_before_change
+		clear_variable = ROOT.despotist_support_before_change
+		clear_variable = ROOT.fascist_support_before_change
+		clear_variable = ROOT.national_syndicalist_support_before_change
+	}
+}
+restore_ruling_party = {
+	ROOT = {
+		set_politics = {
+			ruling_party = var:ROOT.ruling_ideology_before_change
+		}
+	}
+}
+
+
+#Upgrades state cat to the next valid level. Called from state scope
+increase_state_category = {
+	if = {
+		limit = {
+			has_state_category = tiny_island
+		}
+		set_state_category = small_island
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 1
+		}
+	}
+
+	if = {
+		limit = {
+			OR = {
+				has_state_category = wasteland
+				has_state_category = enclave
+			}
+		}
+		set_state_category = pastoral
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 1
+		}
+	}
+	else_if = {
+		limit = {
+			has_state_category = pastoral
+		}
+		set_state_category = rural
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 1
+		}
+	}
+	else_if = {
+		limit = {
+			has_state_category = rural
+		}
+		set_state_category = town
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 2
+		}
+	}
+	else_if = {
+		limit = {
+			has_state_category = town
+		}
+		set_state_category = large_town
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 1
+		}
+	}
+	else_if = {
+		limit = {
+			has_state_category = large_town
+		}
+		set_state_category = city
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 1
+		}
+	}
+	else_if = {
+		limit = {
+			has_state_category = city
+		}
+		set_state_category = large_city
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 2
+		}
+	}
+
+	else_if = {
+		limit = {
+			has_state_category = large_city
+		}
+		set_state_category = metropolis
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 2
+		}
+	}
+
+	else_if = {
+		limit = {
+			has_state_category = metropolis
+		} 
+		set_state_category = megalopolis
+		effect_tooltip = {
+			add_extra_state_shared_building_slots = 2
+		}
+	}
+
+}
+
+add_potential_special_forces_tree = {
+	custom_effect_tooltip = add_potential_special_forces_tree_tt
+	if = {
+		limit = { NOT = { has_variable = sf_trees } }
+		set_variable = { sf_trees = 2 }
+	}
+	else = {
+		add_to_variable = { sf_trees = 1 }
+	}
+}
+
+remove_potential_special_forces_tree = {
+	if = {
+		limit = { NOT = { has_variable = sf_trees } }
+		set_variable = { sf_trees = 0 }
+	}
+	else = {
+		subtract_from_variable = { sf_trees = 1 }
+	}
+}
+
+store_core_states_on_game_start = { #Should be called from history file
+	every_core_state = {
+		ROOT = {
+			add_to_array = {
+				array = core_states_at_game_start
+				value = PREV
+			}
+		}
+	}
+}

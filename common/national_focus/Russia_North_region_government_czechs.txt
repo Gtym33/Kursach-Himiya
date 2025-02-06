@@ -1,0 +1,1069 @@
+focus_tree = {
+	id = Russia_North_region_government_czechs_focus
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = NRR
+		}
+	}
+	default = no
+	continuous_focus_position = { x = 0 y = 15 }
+	#Установление курса
+	focus = {
+		id = NRR_choose_course_chech
+		icon = GFX_NRR_choose_course
+		cost = 0.2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 0
+		completion_reward = {
+			country_event = rcw_nrr.18
+			hidden_effect = { country_event = { id = rcw_nrr_chech.1 days = 21 } }
+			if = {
+				limit = { controls_state = 351 }
+				country_event = { id = rcw_nrr_chech.2 days = 1 }
+			}
+			country_event = { id = rcw_nrr_chech.4 days = 4 }
+		}
+	}
+	#Российская народная армия
+	focus = {
+		id = NRR_people_army_chech
+		icon = GFX_NRR_roosiyskaya_people_army
+		cost = 2
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_choose_course_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 1
+		completion_reward = {
+			country_event = rcw_nrr_chech.5
+		}
+	}
+	#Северная мобилизация
+	focus = {
+		id = NRR_north_mob_chech
+		icon = GFX_NRR_north_mobilisation
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_people_army_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 2
+		completion_reward = {
+			hidden_effect = { country_event = { id = rcw_nrr.31 days = 60 } }
+			if = {
+				limit = { has_country_flag = NRR_failed_coup }
+				country_event = rcw_nrr_chech.17 #Катастрофичная мобилизация
+				clr_country_flag = NRR_failed_coup
+				add_ideas = OCH_low_discipline_idea
+			}
+			else_if = {
+				limit = { has_country_flag = NRR_normal_mobilisation }
+				country_event = rcw_nrr_chech.19 #Итоги мобилизации
+				clr_country_flag = NRR_normal_mobilisation
+			}
+			else = { country_event = rcw_nrr_chech.18 add_ideas = OCH_low_discipline_idea } #Неудачная мобилизация
+		}
+	}
+	#Коллективная власть
+	focus = {
+		id = NRR_collective_power_chech
+		icon = GFX_goal_NRR_collective_power
+		cost = 4
+		available = {
+			has_country_flag = SVR_delegation
+		}
+		prerequisite = {
+			focus = NRR_north_mob_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 3
+		completion_reward = {
+			if = {
+				limit = { has_government = social_liberalism }
+				create_country_leader = { name = "Nikolay Chaikovsky" desc = RUS_Nikolay_Chaikovsky_DESC picture = "gfx/leaders/RUS/Portrait_Nikolay_Chaikovsky.dds" ideology = narodnichestvo traits = { russian_revolution_old } }
+				add_ideas = NRR_political_unity
+			}
+			if = {
+				limit = { has_government = national_syndicalism }
+				country_event = rcw_nrr_chech.23
+			}
+		}
+	}
+	#Реорганизация земств
+	focus = {
+		id = NRR_zemstva_reorg_chech
+		icon = GFX_NRR_zemstva
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_collective_power_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 4
+		completion_reward = {
+			add_timed_idea = {
+				idea = DON_democratic_reforms
+				days = 70
+			}
+		}
+	}
+	#Наследник временного правительства
+	focus = {
+		id = NRR_prov_gov_succsesor_chech
+		icon = GFX_NRR_allrussia_gov
+		cost = 4
+		available = {
+			OR = {
+				controls_state = 195
+				controls_state = 219
+			}
+		}
+		prerequisite = {
+			focus = NRR_zemstva_reorg_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 5
+		completion_reward = {
+			add_political_power = 150
+			add_stability = 0.1
+			if = {
+				limit = { has_idea = NRR_loyal_pol_idea }
+				remove_ideas = NRR_loyal_pol_idea
+			}
+			if = {
+				limit = { has_idea = NRR_half_loyal_pol_idea }
+				remove_ideas = NRR_half_loyal_pol_idea
+			}
+			if = {
+				limit = { has_idea = NRR_oppose_pol_idea }
+				remove_ideas = NRR_oppose_pol_idea
+			}
+			add_timed_idea = {
+				idea = OCH_wide_offensive_idea
+				days = 30
+			}
+			set_cosmetic_tag = NAG
+			add_ideas = federal_gov_terr
+			if = {
+				limit = { 
+					OR = {
+						is_puppet = yes
+						is_subject = yes
+					}	
+				}
+				OVERLORD = { end_puppet = ROOT }
+			}
+			if = {
+				limit = { controls_state = 219 }
+				219 = { add_core_of = NRR }
+			}
+			if = {
+				limit = { controls_state = 195 }
+				195 = { add_core_of = NRR }
+				797 = {
+					add_core_of = ROOT
+				}
+				1048 = {
+					add_core_of = ROOT
+				}
+				1021 = {
+					add_core_of = ROOT
+				}
+				1023 = {
+					add_core_of = ROOT
+				}
+				1019 = {
+					add_core_of = ROOT
+				}
+				1022 = {
+					add_core_of = ROOT
+				}
+				1042 = {
+					add_core_of = ROOT
+				}
+				1048 = {
+					add_core_of = ROOT
+				}
+				208 = {
+					add_core_of = ROOT
+				}
+			}
+			if = {
+				limit = { NOT = { controls_state = 219  } }
+				set_capital = {
+					state = 195 
+					remember_old_capital = no
+				}
+			}
+			else = {
+				set_capital = {
+					state = 219 
+					remember_old_capital = no
+				}
+			}
+		}
+	}
+	#Дипломатические обращения
+	focus = {
+		id = NRR_diplomatic_obr_chech
+		icon = GFX_NRR_obrasheniya
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_prov_gov_succsesor_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 6
+		completion_reward = {
+			unlock_decision_category_tooltip = NRR_dilomatic_note 
+		}
+	}
+	#Заграничный комитет
+	focus = {
+		id = NRR_zagran_kom_chech
+		icon = GFX_goal_NRR_foriegn_committee
+		cost = 4
+		available = {
+			has_global_flag = WWI_GER_HAS_CAPITULATED
+		}
+		prerequisite = {
+			focus = NRR_diplomatic_obr_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 5
+		y = 7
+		completion_reward = {
+			add_ideas = NRR_zagrancom
+		}
+	}
+	#Давление на Москву
+	focus = {
+		id = NRR_moscow_pressing_chech
+		icon = GFX_goal_NRR_pressure_on_moscow
+		cost = 4
+		available = {
+			has_government = social_liberalism
+			NVA = { controls_state = 219 }
+			NVA = { has_completed_focus = NVA_russian_vendee }
+			NVA = {
+				NOT = {
+					OR = {
+						has_government = fascism
+						has_government = authoritarism
+						has_government = despotism
+					}
+				}
+			}
+			NVA = {
+				OR = {
+					has_country_flag = collaboration_with_the_left
+					has_country_flag = collaboration_with_both
+				}
+			}
+		}
+		prerequisite = {
+			focus = NRR_diplomatic_obr_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 7
+		y = 7
+		completion_reward = {
+			if = {
+				limit = {
+					NVA = {
+						has_completed_focus = NVA_constituent_assembly_of_central_russia
+						NOT = { has_government = national_syndicalism }
+					}
+				}
+				NVA = { country_event = { id = rcw_nrr_chech.25 days = 1 } }
+			}
+			else_if = {
+				limit = { 
+					NVA = {
+						has_government = national_syndicalism
+						NOT = { has_country_flag = rnp_created } 
+					}
+				} 
+				NVA = { country_event = { id = rcw_nrr_chech.26 days = 1 } }
+			}
+			else_if = {
+				limit = { 
+					NVA = {
+						has_government = national_syndicalism
+						has_country_flag = rnp_created 
+					}
+				} 
+				NVA = { country_event = { id = rcw_nrr_chech.27 days = 1 } }
+			}
+		}
+	}
+	#Выборы на освобожденных землях
+	focus = {
+		id = NRR_elections_chech
+		icon = GFX_NRR_elections
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_zemstva_reorg_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 5
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_state_elections_decisions 
+		}
+	}
+	#Переговоры с финнами
+	focus = {
+		id = NRR_finns_chech
+		icon = GFX_NRR_FIN_negotiations
+		cost = 3
+		available = {
+			FIN = {
+				exists = yes
+				NOT = { has_war_with = RUS }
+				NOT = { has_war_with = NRR }
+				NOT = { has_government = communism }
+				NOT = { has_government = radical_socialism }
+				NOT = { has_government = social_democracy }
+			}
+			has_war_with = RUS
+		}
+		prerequisite = {
+			focus = NRR_zemstva_reorg_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 10
+		y = 5
+		completion_reward = {
+			if = {
+				limit = { has_idea = NRR_FIN_legion_idea }
+				remove_ideas = NRR_FIN_legion_idea
+			}
+			if = {
+				limit = { is_puppet = yes }
+				OVERLORD = { country_event = rcw_nrr.64 }
+			}
+			else = { FIN = { country_event = rcw_nrr.67 } }
+		}
+	}
+	#Работа с послами
+	focus = {
+		id = NRR_posols_chech
+		icon = GFX_NRR_ambassadors
+		cost = 2
+		available = {
+			has_idea = NRR_ambassador_capital_idea
+			has_completed_focus = NRR_collective_power_chech
+		}
+		prerequisite = {
+			focus = NRR_north_mob_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 3
+		completion_reward = {
+			ITA = { country_event = rcw.156 }
+			FRA = { country_event = rcw.156 }
+			ENG = { country_event = rcw.156 }
+			USA = { country_event = rcw.156 }
+		}
+	}
+	#Народная армия
+	focus = {
+		id = NRR_pep_army_again_chech
+		icon = GFX_goal_NRR_people_army
+		cost = 2
+		available = {
+			NOT = { has_country_flag = Diterihs_glavcom }
+		}
+		prerequisite = {
+			focus = NRR_north_mob_chech
+		}
+		mutually_exclusive = { 
+			focus = NRR_discipl_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 3
+		completion_reward = {
+			add_ideas = RSS_narodoarmeyskoe_yadro
+		}
+	}
+	#Ужесточение дисциплины
+	focus = {
+		id = NRR_discipl_chech
+		icon = GFX_NRR_disciplina
+		cost = 2
+		available = {
+			OR = {
+				has_country_flag = Gaida_glavcom
+				has_country_flag = Diterihs_glavcom
+			}
+			NOT = { has_government = national_syndicalism }
+		}
+		mutually_exclusive = { 
+			focus = NRR_pep_army_again_chech
+		}
+		prerequisite = {
+			focus = NRR_north_mob_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 3
+		completion_reward = {
+			if = {
+				limit = { has_idea = OCH_low_discipline_idea }
+				remove_ideas = OCH_low_discipline_idea
+			}
+			add_war_support = -0.03
+		}
+	}
+	#Обращение к офицерам
+	focus = {
+		id = NRR_oficers_chech
+		icon = GFX_NRR_officers
+		cost = 1
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_discipl_chech
+			focus = NRR_pep_army_again_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 4
+		completion_reward = {
+			country_event = { id = rcw_nrr.38 days = 21 }
+			country_event = { id = rcw_nrr.39 days = 60 }
+			if = {
+				limit = { has_completed_focus = NRR_discipl_chech } 
+				country_event = { id = rcw_nrr.40 days = 40 }
+			}
+		}
+	}
+	#Институт комиссаров
+	focus = {
+		id = NRR_commissars_chech
+		icon = GFX_goal_NRR_commissioners
+		cost = 4
+		available = {
+			has_completed_focus = NRR_pep_army_again_chech
+		}
+		prerequisite = {
+			focus = NRR_oficers_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 5
+		completion_reward = {
+			add_ideas = NRR_staff_commissars_of_the_esser
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.05
+			}
+			if = {
+				limit = { has_idea = OCH_low_discipline_idea }
+				remove_ideas = OCH_low_discipline_idea
+				add_timed_idea = {
+					idea = OCH_low_discipline_idea
+					days = 90
+				}
+			}
+		}
+	}
+	#Правильная демократизация
+	focus = {
+		id = NRR_democratisation_chech
+		icon = GFX_goal_NRR_right_democratision
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_commissars_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 12
+		y = 6
+		completion_reward = {
+			lack_of_officers_fall = yes
+			add_war_support = 0.05
+			hidden_effect = {
+				if = {
+					limit = {
+						OR = {
+							has_stability < 0.3
+							has_war_support < 0.3
+						}
+					}
+					country_event = { id = rcw_rss_eser_rep.10 days = 1 }
+				}
+			}
+		}
+	}
+	#Национальное ополчение
+	focus = {
+		id = NRR_opolcheniye_chech
+		icon = GFX_NRR_national_militia
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_oficers_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 5
+		completion_reward = {
+			add_ideas = NRR_local_militia
+		}
+	}
+	#Мобилизация в ополчение
+	focus = {
+		id = NRR_mobilizatsiya_v_opolcheniye_chech
+		icon = GFX_NRR_mobilisation_in_militia
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_opolcheniye_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 6
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = NRR_local_militia
+				add_idea = NRR_tyloviki
+			}
+		}
+	}
+	#Партизанское движение
+	focus = {
+		id = NRR_partisans_chech
+		icon = GFX_NRR_partisans
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_oficers_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 7
+		completion_reward = {
+			unlock_decision_tooltip = {
+				decision = NRR_sabotage_behind_enemy_lines_decision
+				show_effect_tooltip = yes
+				show_modifiers = no
+			}
+			if = {
+				limit = {
+					OR = {
+						has_country_flag = soc_liberal_programm
+						has_country_flag = market_liberal_programm
+					}
+				}
+				country_event = rcw_nrr_chech.20
+			}
+		}
+	}
+	#Северные стрелковые бригады
+	focus = {
+		id = NRR_brigades_chech
+		icon = GFX_NRR_north_brigades
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_oficers_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 5
+		select_effect = {
+			set_variable = {
+				var = NRR_north_brigade_des
+				value = 0
+			}
+			set_variable = {
+				var = NRR_prisoners_brigade_des
+				value = 0
+			}
+			division_template = {
+				name = "Severnaya Stralkovaya Brigada" 
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+				}
+				support = {
+					artillery = { x = 0 y = 0 }
+				}
+				is_locked = no
+			}
+		}
+		completion_reward = {
+			low_allies_inf = yes
+			rise_mobilization_law = yes
+			unlock_decision_category_tooltip = NRR_north_brigades_des_cat
+		}
+	}
+	#Вербовка военопленных
+	focus = {
+		id = NRR_verbovka_chech
+		icon = GFX_NRR_prisoners
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_brigades_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 6
+		completion_reward = {
+			add_manpower = 14000
+			add_timed_idea = { idea = NRR_manpower_from_front days = 200 }
+		}
+	}
+	#Военно-полевые суды
+	focus = {
+		id = NRR_poleviye_sudy_chech
+		icon = GFX_goal_RSS_court_martial
+		cost = 4
+		available = {
+			has_completed_focus = NRR_discipl_chech
+		}
+		prerequisite = {
+			focus = NRR_oficers_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 5
+		completion_reward = {
+			add_ideas = RSS_militar_field_courts_idea
+		}
+	}
+	#Дисциплинарные части
+	focus = {
+		id = NRR_discipline_chasty_chech
+		icon = GFX_NRR_shtrafbat
+		cost = 4
+		available = {
+			has_completed_focus = NRR_verbovka_chech
+		}
+		prerequisite = {
+			focus = NRR_poleviye_sudy_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 6
+		completion_reward = {
+			division_template = {
+				name = "Disciplinarniy Batalyon" 
+				regiments = {
+					penal_battalion = { x = 0 y = 1 }
+					penal_battalion = { x = 0 y = 0 }
+				}
+				support = {
+				}
+				is_locked = yes
+			}
+			capital_scope = {
+				create_unit = {  division = "name = \"Дисциплинарный батальон\" division_template = \"Disciplinarniy Batalyon\" start_experience_factor = 0.5 start_equipment_factor = 1"  owner = ROOT count = 4 }
+			}
+		}
+	}
+	#Распаковка запасов
+	focus = {
+		id = NRR_zapasy_chech
+		icon = GFX_NRR_warehouses
+		cost = 3
+		available = {
+			has_country_flag = NRR_intervention
+			controls_state = 214
+			controls_state = 213
+			OR = {
+				controls_state = 351
+				controls_state = 1090
+				controls_state = 1076
+			}
+		}
+		prerequisite = {
+			focus = NRR_north_mob_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 3
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_0
+				amount = 8000
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1
+				amount = 1500
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment_1
+				amount = 400
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = field_guns_equipment_1
+				amount = 400
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment
+				amount = 400
+				producer = ENG
+			}
+			if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+				remove_ideas = foodstuffs_supply_crisis_5
+				add_ideas = foodstuffs_supply_crisis_4
+			}
+			else_if = {
+				limit = { has_idea = foodstuffs_supply_crisis_4 }
+				remove_ideas = foodstuffs_supply_crisis_4
+				add_ideas = foodstuffs_supply_crisis_3
+			}
+			else_if = {
+				limit = { has_idea = foodstuffs_supply_crisis_3 }
+				remove_ideas = foodstuffs_supply_crisis_3
+				add_ideas = foodstuffs_supply_crisis_2
+			}
+			else_if = {
+				limit = { has_idea = foodstuffs_supply_crisis_2 }
+				remove_ideas = foodstuffs_supply_crisis_2
+				add_ideas = foodstuffs_supply_crisis_1
+			}
+		}
+	}
+	#Комиссия СВР
+	focus = {
+		id = NRR_comission_svr_chech
+		icon = GFX_goal_NRR_commission
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_north_mob_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 4
+		completion_reward = {
+			add_political_power = 50
+			add_stability = 0.1
+		}
+	}
+	#Земельная реформа
+	focus = {
+		id = NRR_reform_chech
+		icon = GFX_NRR_reform
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_comission_svr_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 20
+		y = 5
+		completion_reward = {
+			if = {
+				limit = { has_government = social_liberalism }
+				country_event = rcw_nrr.45
+			}
+			else = { country_event = rcw_nrr.46 }
+		}
+	}
+	#Поощрение кооперации
+	focus = {
+		id = NRR_cooperation_support_chech
+		icon = GFX_NRR_cooperation
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_reform_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 20
+		y = 6
+		completion_reward = {
+			add_ideas = RSS_peasant_cooperation
+		}
+	}
+	#Контролирование рабочих
+	focus = {
+		id = NRR_workers_trolling_chech
+		icon = GFX_NRR_labor_control
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_comission_svr_chech
+		}
+		mutually_exclusive = { 
+			focus = NRR_samouprav_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 22
+		y = 5
+		completion_reward = {
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.1
+			}
+			add_ideas = RSS_must_work
+		}
+	}
+	#Трудовая мобилизация
+	focus = {
+		id = NRR_work_mob_chech
+		icon = GFX_goal_NRR_labor_mobilization
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_workers_trolling_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 22
+		y = 6
+		completion_reward = {
+			add_timed_idea = {
+				idea = RSS_intense_labor
+				days = 120
+			}
+		}
+	}
+	#Транспортное управление
+	focus = {
+		id = NRR_transport_mob_chech
+		icon = GFX_goal_NRR_transport_management
+		cost = 4
+		available = {
+			OR = {
+				has_idea = collapse_of_railway_system_1
+				has_idea = collapse_of_railway_system_2
+				has_idea = collapse_of_railway_system_3
+				has_idea = collapse_of_railway_system_4
+				has_idea = collapse_of_railway_system_5
+			}
+		}
+		bypass = {
+			NOT = {
+				has_idea = collapse_of_railway_system_1
+				has_idea = collapse_of_railway_system_2
+				has_idea = collapse_of_railway_system_3
+				has_idea = collapse_of_railway_system_4
+				has_idea = collapse_of_railway_system_5
+			}
+		}
+		prerequisite = {
+			focus = NRR_work_mob_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 22
+		y = 7
+		completion_reward = {
+			fall_collapse_of_railway_system_2 = yes
+		}
+	}
+	#Путь к самоуправлению
+	focus = {
+		id = NRR_samouprav_chech
+		icon = GFX_goal_NRR_path_to_self_rule
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_comission_svr_chech
+		}
+		mutually_exclusive = { 
+			focus = NRR_workers_trolling_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 24
+		y = 5
+		completion_reward = {
+			add_ideas = workers_control_law
+			add_timed_idea = {
+				idea = NRR_workers_controll
+				days = 730
+			}
+		}
+	}
+	#Железнодорожные комитеты
+	focus = {
+		id = NRR_zhede_comitets_chech
+		icon = GFX_goal_NRR_railway_committee
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_samouprav_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 24
+		y = 6
+		completion_reward = {
+			fall_collapse_of_railway_system = yes
+			hidden_effect = { country_event = { id = rcw_nrr_chech.21 days = 40 } }
+		}
+	}
+	#Фабричная демократия
+	focus = {
+		id = NRR_zavod_democratiya_chech
+		icon = GFX_goal_NRR_factory_democracy
+		cost = 7
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_zhede_comitets_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 24
+		y = 7
+		completion_reward = {
+			country_event = rcw_nrr_chech.22 
+		}
+	}
+	#Денежная реформа
+	focus = {
+		id = NRR_money_reform_chech
+		icon = GFX_NRR_reform_money
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_comission_svr_chech
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 26
+		y = 5
+		completion_reward = {
+			country_event = rcw_nrr.48
+		}
+	}
+}

@@ -1,0 +1,102 @@
+﻿###########################
+# Soviet Events
+###########################
+
+add_namespace = soviet
+
+# Organisation of USSR
+country_event = {
+	id = soviet.0
+	title = soviet.0.t
+	desc = soviet.0.d
+	picture = GFX_report_event_japanese_transport_soldiers
+	
+	is_triggered_only = yes
+	
+	#International federation
+	option = {
+		trigger = { NOT = { has_completed_focus = RUS_decentralization } }
+		name = soviet.0.a
+		SOV = { add_ideas = federal_gov_terr }
+	}
+	
+	#Stalin's autonomy plan
+	option = {
+		trigger = { NOT = { has_completed_focus = RUS_decentralization } NOT = { has_country_flag = Iosif_Stalin_dead } }
+		name = soviet.0.b
+		SOV = { add_ideas = unitary_gov_terr }
+	}
+	
+	#Confederation
+	option = {
+		name = soviet.0.b
+		SOV = { add_ideas = confederal_gov_terr }
+	}
+}
+
+# Form USSR
+country_event = {
+	id = soviet.1
+	title = soviet.1.t
+	desc = soviet.1.d
+	picture = GFX_report_event_japanese_transport_soldiers
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		name = soviet.1.a
+		every_country = {
+			limit = {
+				NOT = { tag = ROOT }
+				OR = {
+					is_subject_of = ROOT
+					AND = {
+						is_in_faction_with = ROOT
+						has_government = communism
+						OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes original_tag = FIN original_tag = POL original_tag = BUL }
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_core_of = PREV
+				}
+				remove_core_of = RUS
+				remove_core_of = CCA
+				remove_core_of = RSS
+				add_core_of = event_target:UNITED_COUNTRY
+			}
+			ROOT = {
+				annex_country = {
+					target = PREV
+					transfer_troops = yes
+				}
+			}
+		}
+		event_target:UNITED_COUNTRY = {
+			set_popularities = {
+					radical_socialism = var:radical_socialism_party
+					communism = var:communism_party
+					social_democracy = var:social_democracy_party
+					social_liberalism = var:social_liberalism_party
+					market_liberalism = var:market_liberalism_party
+					conservatism = var:conservatism_party
+					authoritarism = var:authoritarism_party
+					despotism = var:despotism_party
+					fascism = var:fascism_party
+					national_syndicalism = var:national_syndicalism_party
+			}
+		}
+		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
+		random_state = {
+			limit = { has_state_flag = new_capital }
+			event_target:UNITED_COUNTRY = { set_capital = { state = PREV } }
+			clr_state_flag = new_capital
+		}
+		clear_global_event_target = INTEGRATING_COUNTRY_MAJOR
+		clear_global_event_target = INTEGRATING_COUNTRY_MINOR
+		clear_global_event_target = UNITED_COUNTRY
+	}
+}

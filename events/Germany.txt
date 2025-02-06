@@ -1,0 +1,1379 @@
+﻿###########################
+# German Events
+###########################
+
+add_namespace = germany
+
+###### Дипломатические действия Германии во время Первой Мировой Войны, зарезервированы номера 1-100 ######
+
+# Телеграмма Циммермана
+country_event = {
+	id = germany.1
+	title = germany.1.t
+	desc = germany.1.desc
+	picture = GFX_report_event_cimmerman_telegramm
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.1.a
+		effect_tooltip = {
+			MEX = { country_event = { id = germany.10 days = 15 } }
+		}
+		hidden_effect = {
+			if = {
+				limit = { is_historical_focus_on = yes }
+				ENG = { country_event = { id = germany.2 days = 1 } }
+				else = {
+					random_list = {
+						95 = {
+							ENG = { country_event = { id = germany.2 days = 1 } }
+							MEX = { country_event = { id = germany.9 days = 15 } }
+						}
+						5 = {
+							MEX = { country_event = { id = germany.10 days = 15 } }
+						}
+					}
+				}
+			}
+		}
+	}
+}
+# Эвент Великобритании - Перехват телеграммы
+country_event = {
+	id = germany.2
+	title = germany.2.t
+	desc = germany.2.desc
+	picture = GFX_report_event_eng_british_spynetwork
+
+	is_triggered_only = yes
+	
+	#Передадим...
+	option = {
+		name = germany.2.a
+		country_event = { id = germany.3 days = 10 }
+	}
+	
+	#Есть причины чтобы не передавать. Особые.
+	option = {
+		name = germany.2.b
+		MEX = { country_event = { id = germany.10 days = 14 } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Эвент Великобритании - Решение о передаче
+country_event = {
+	id = germany.3
+	title = germany.3.t
+	desc = germany.3.desc
+	picture = GFX_report_event_eng_british_spynetwork
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.3.a
+		USA = { country_event = { id = germany.4 days = 15 } }
+		ai_chance = {
+			factor = 100
+		}
+	}
+}
+# Эвент Соединённых Штатов Америки - Передача перехваченной телеграммы
+country_event = {
+	id = germany.4
+	title = germany.4.t
+	desc = germany.4.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Нет оснований не верить...
+	option = {
+		name = germany.4.a
+		add_war_support = 0.15
+		country_event = { id = germany.6 days = 10 }
+		ai_chance = {
+			factor = 95
+		}
+	}
+	
+	#Это британские провокации!
+	option = {
+		name = germany.4.b
+		add_war_support = -0.05
+		hidden_effect = { MEX = { country_event = { id = germany.10 days = 5 } } }
+		ai_chance = {
+			factor = 5
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+# Эвент Соединённых Штатов Америки - Публикация телеграммы
+country_event = {
+	id = germany.6
+	title = germany.6.t
+	desc = germany.6.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.6.a
+		add_war_support = 0.15
+		hidden_effect = {
+			news_event = { id = news_n.1 hours = 12 }
+			GER = { country_event = { id = germany.8 days = 29 } }
+		}
+	}
+}
+# Публичное признание
+country_event = {
+	id = germany.8
+	title = germany.8.t
+	desc = germany.8.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = { news_event = { id = news_n.2 hours = 12 } }
+	}
+	
+	option = {
+		name = germany.8.a
+		remove_ideas = Arthur_Zimmermann_2
+		add_ideas = Richard_von_Kuhlmann_2
+	}
+}
+# Эвент Мексики - Предложение Германии (телеграмма перехвачена)
+country_event = {
+	id = germany.9
+	title = germany.9.t
+	desc = germany.9.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Официальный отказ
+	option = {
+		name = germany.9.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	#А почему мы должны отказываться?
+	option = {
+		name = germany.9.b
+		hidden_effect = {
+			USA = {
+				if = {
+					limit = { NOT = { has_war_with = ROOT } }
+					declare_war_on = {
+						target = ROOT
+						type = annex_everything
+					}
+				}
+			}
+			news_event = { id = news_n.3 hours = 12 }
+			GER = {
+				add_to_faction = MEX
+			}
+		}
+		set_global_flag = MEX_accept_cimerman_offer
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Эвент Мексики - Предложение Германии (телеграмма не перехвачена)
+country_event = {
+	id = germany.10
+	title = germany.10.t
+	desc = germany.10.desc
+	picture = GFX_report_event_mex_mexico_in_fww
+
+	is_triggered_only = yes
+	
+	#Отказ
+	option = {
+		name = germany.10.a
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	#Согласится
+	option = {
+		name = germany.10.b
+		set_global_flag = MEX_accept_cimerman_offer
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Эвент Мексики - Вступление в войну
+country_event = {
+	id = germany.11
+	title = germany.11.t
+	desc = germany.11.desc
+	picture = GFX_report_event_mex_mexico_in_fww
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.11.a
+		USA = {
+			if = {
+				limit = { NOT = { has_war_with = ROOT } }
+				declare_war_on = {
+					target = ROOT
+					type = annex_everything
+				}
+			}
+		}
+		hidden_effect = { news_event = { id = news_n.3 hours = 12 } }
+		GER = {
+			add_to_faction = MEX
+		}
+	}
+}
+
+# Поддержка большевиков
+country_event = {
+	id = germany.12
+	title = germany.12.t
+	desc = germany.12.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.12.a
+		RUS = {
+			add_popularity = {
+				ideology = communism
+				popularity = 0.02
+			}
+		}
+		add_timed_idea = { idea = credits_for_bolsheviks days = 90 }
+	}
+}
+# Ивент Финляндии - Поддержка от Германии
+country_event = {
+	id = germany.13
+	title = germany.13.t
+	desc = germany.13.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.13.a
+		load_oob = "FIN_GER_support"
+		add_opinion_modifier = {
+			target = GER
+			modifier = FIN_GER_support
+		}
+		GER = {
+			add_opinion_modifier = {
+				target = FIN
+				modifier = FIN_GER_support
+			}
+		}
+		every_country = {
+			limit = {
+				OR = {
+					tag = GER
+					is_in_faction_with = GER
+					is_subject_of = GER
+				}
+			}
+			if = {
+				limit = {
+					is_in_array = {
+						array = unrecognized_states
+						value = FIN.id
+					}
+				}
+				FIN = {
+					THIS_country_will_be_recognized_by_PREV = yes
+				}
+			}
+		}
+	}
+}
+# Приглашение в альянс Германии
+country_event = {
+	id = germany.14
+	title = germany.14.t
+	desc = germany.14.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.14.a
+		GER = { add_to_faction = ROOT }
+		add_to_war = {
+			targeted_alliance = GER
+			enemy = ENG
+		}
+		ai_chance = {
+			factor = 100
+		}
+	}
+	option = {
+		name = germany.14.b
+		add_war_support = -0.3
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Эвент Италии - Мир с Центральными державами
+country_event = {
+	id = germany.15
+	title = germany.15.t
+	desc = germany.15.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.15.a
+		set_global_flag = WWI_ITA_HAS_CAPITULATED
+		every_country = {
+			limit = { is_in_faction_with = ENG }
+			ITA = { recall_attache = PREV }
+		}
+		every_country = {
+			limit = { is_in_faction_with = GER }
+			ITA = { white_peace = ROOT }
+		}
+		if = {
+			limit = { AUH = { exists = yes } }
+			AUH = {
+				transfer_state = 160
+			}
+			give_military_access = AUH
+		}
+		give_military_access = GER
+		add_stability = -0.1
+		add_popularity = {
+			ideology = conservatism
+			popularity = -0.1
+		}
+		ai_chance = {
+			factor = 70
+		}
+	}
+	option = {
+		name = germany.15.b
+		add_war_support = -0.1
+		add_timed_idea = { idea = ITA_antiwar_strikes days = 15 }
+		ai_chance = {
+			factor = 30
+		}
+	}
+}
+
+
+
+
+# Растёт закредитованность программы Гинденбурга
+country_event = {
+	id = germany.16
+	hidden = yes
+	trigger = {
+		tag = GER
+		has_war = yes
+		has_global_flag = WWI_is_now
+		has_idea = GER_hindenburg_program
+		NOT = { has_idea = GER_hindenburg_program_end }
+		has_variable = hindenburg_program_cost
+	}
+	mean_time_to_happen = {
+		days = 30
+	}
+	option = {
+		add_to_variable = {
+    		var = hindenburg_program_cost
+    		value = 1
+		}
+	}
+}
+
+# Программа Гинденбурга свёрнута
+country_event = {
+	id = germany.17
+	title = germany.17.t
+	desc = germany.17.desc
+	trigger = {
+		OR = {
+			AND = {
+				tag = GER
+				has_war = yes
+				has_global_flag = WWI_is_now
+				has_idea = GER_hindenburg_program
+				NOT = { has_idea = GER_hindenburg_program_end }
+				has_variable = hindenburg_program_cost
+				check_variable = { hindenburg_program_cost = 5 }
+			}
+			has_war = no
+			NOT = { has_global_flag = WWI_is_now }
+		}
+	}
+	mean_time_to_happen = {
+		days = 0
+	}
+	fire_only_once = yes
+	option = {
+		name = germany.17.a
+		remove_ideas = GER_hindenburg_program
+		add_ideas = GER_hindenburg_program_end
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.05
+		}
+		clear_variable = GER_hindenburg_program
+	}
+}
+
+# Раскол СДПГ по поводу войны
+country_event = {
+	id = germany.18
+	title = germany.18.t
+	desc = germany.18.desc
+	
+	trigger = {
+		tag = GER
+		has_war = yes
+		has_global_flag = WWI_is_now
+		OR = {
+			has_government = authoritarism
+			has_government = despotism
+		}
+		NOT = { has_country_flag = GER_monarchy_fall }
+		OR = {
+			has_war_with = RUS
+			has_war_with = USA
+			has_war_with = FRA
+			has_war_with = ENG
+		}
+		date > 1917.6.1
+		has_start_date < 1917.11.7
+	}
+	
+	mean_time_to_happen = {
+		days = 31
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = germany.18.a
+		add_popularity = {
+			ideology = social_democracy
+			popularity = -0.08
+		}
+		add_war_support = -0.05
+	}
+}
+
+# Австро-Венгрия требует Крым
+country_event = {
+	id = germany.19
+	title = germany.19.t
+	desc = germany.19.desc
+	
+	trigger = {
+		tag = GER
+		NOT = { has_country_flag = GER_monarchy_fall }
+	}
+
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.19.a
+			every_state = {
+				limit = {
+					region = 230
+					OWNER = {
+						OR = {
+							tag = ROOT
+							is_subject_of = ROOT
+						}
+					}
+				}
+				AUH = { transfer_state = PREV }
+			}
+			if = {
+				limit = { GER = { owns_state = 917 } }
+				transfer_state = 917
+			}
+	}
+	
+	option = {
+		name = germany.19.b
+		
+	}
+}
+
+# Австро-Венгрия требует Украину
+country_event = {
+	id = germany.20
+	title = germany.20.t
+	desc = germany.20.desc
+	
+	trigger = {
+		tag = GER
+		NOT = { has_country_flag = GER_monarchy_fall }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.20.a
+		UKR = { OVERLORD = { end_puppet = UKR } }
+		AUH = { UKR = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		every_state = {
+			limit = {
+				OR = {
+					region = 130
+					region = 235
+					region = 239
+					region = 240
+					state = 93
+					state = 904
+				}
+				is_owned_by = GER
+			}
+			UKR = { transfer_state = PREV }
+		}
+	}
+	
+	option = {
+		name = germany.20.b
+		
+	}
+}
+
+###### Революционные события в Германии, зарезервированы номера 101-150 ######
+
+# Влияние революции в России на настроения в обществе
+country_event = {
+	id = germany.101
+	title = germany.101.t
+	desc = germany.101.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = GER
+		RUS = {
+			OR = {
+				has_country_flag = RUS_Oktober_revolution_fired
+				has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic
+			}
+		}
+		NOT = { has_country_flag = GER_monarchy_fall }
+		has_stability < 0.65
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = germany.101.a
+		add_stability = -0.05
+		add_war_support = -0.1
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.05
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.02
+		}
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+}
+
+# Глоток мира - мир с царской/февральской Россией
+country_event = {
+	id = germany.102
+	title = germany.102.t
+	desc = {
+		text = germany.102.desc
+		trigger = { RUS = { NOT = { has_country_flag = RUS_Oktober_revolution_fired has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic } } }
+	}
+	desc = {
+		text = germany.102.desc_1
+		trigger = { RUS = { OR = { has_country_flag = RUS_Oktober_revolution_fired has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic } } }
+	}
+	picture = GFX_report_event_ger_peace_ww1
+
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		NOT = { has_completed_focus = GER_peace_with_RUS }
+		NOT = { has_war_with = RUS }
+		NOT = { has_country_flag = GER_monarchy_fall }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = germany.102.a
+		if = {
+			limit = { RUS = { has_country_flag = RUS_brest_peace_hardest } }
+			add_war_support = -0.2
+		}
+		else_if = {
+			limit = { RUS = { has_country_flag = RUS_brest_peace_hard } }
+			add_war_support = -0.1
+		}
+		else_if = {
+			limit = { RUS = { has_country_flag = RUS_brest_peace_average } }
+			add_war_support = -0.05
+		}
+		else_if = {
+			limit = { RUS = { has_country_flag = RUS_brest_peace_soft } }
+			add_war_support = 0.05
+		}
+		else_if = {
+			limit = { RUS = { has_country_flag = RUS_brest_peace_white } }
+			add_war_support = 0.2
+		}
+		if = {
+			limit = { RUS = { OR = { has_country_flag = RUS_Oktober_revolution_fired has_country_flag = RUS_all_russian_constituent_assembly_first_session_soviet_republic } }}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.06
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.12
+			}
+		}
+		set_country_flag = WWI_GER_last_teutonic_advance
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+}
+
+# Провал последнего рывка
+country_event = {
+	id = germany.104
+	title = germany.104.t
+	desc = germany.104.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		NOT = { has_war_with = RUS }
+		has_country_flag = WWI_GER_last_teutonic_advance
+		OR = {
+			AND = { FRA = { controls_state = 16 is_puppet = no } }
+			AND = { FRA = { is_puppet = yes NOT = { controls_state = 16 } } }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 120
+	}
+	
+	option = {
+		name = germany.104.a
+		add_war_support = -0.1
+		add_stability = -0.07
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.07
+		}
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+}
+
+# Падение поддержки раз в месяц
+country_event = {
+	id = germany.105
+	hidden = yes
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		NOT = { has_country_flag = GER_monarchy_fall }
+		OR = {
+			AND = { FRA = { controls_state = 16 is_puppet = no } }
+			AND = { FRA = { is_puppet = yes NOT = { controls_state = 16 } } }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 30
+	}
+	
+	option = {
+		random_list = {
+			35 = { add_war_support = -0.01 }
+			30 = { add_war_support = -0.02 }
+			25 = { add_war_support = -0.03 }
+			10 = { add_war_support = -0.04 }
+		}
+		random_list = {
+			35 = { add_stability = -0.01 }
+			30 = { add_stability = -0.02 }
+			25 = { add_stability = -0.03 }
+			10 = { add_stability = -0.04 }
+		}
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.01
+		}
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+}
+
+# Падение поддержки если выбили из Бельгии
+country_event = {
+	id = germany.106
+	hidden = yes
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = GER
+		NOT = { has_country_flag = GER_monarchy_fall }
+		has_global_flag = WWI_is_now
+		OR = {
+			AND = { FRA = { controls_state = 16 is_puppet = no } }
+			AND = { FRA = { is_puppet = yes NOT = { controls_state = 16 } } }
+		}
+		OR = {
+			NOT = {
+				controls_state = 6
+				controls_state = 34
+				has_full_control_of_state = 1098
+			}
+			NOT = { has_full_control_of_state = 42 }
+			NOT = { has_full_control_of_state = 50 }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 15
+	}
+	
+	option = {
+		add_war_support = -0.05
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.05
+		}
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+}
+
+# Падение стабильности если пала Австро-Венгрия
+country_event = {
+	id = germany.108
+	hidden = yes
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		has_global_flag = WWI_is_now
+		tag = GER
+		NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		has_global_flag = WWI_AUH_HAS_CAPITULATED
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		add_stability = -0.04
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.04
+		}
+		initiate_verification_of_the_popularity_of_coalitions = yes
+	}
+}
+
+# Смена правительства
+country_event = {
+	id = germany.117
+	title = germany.117.t
+	desc = germany.117.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	option = {
+		name = germany.117.a
+		add_popularity = {
+			ideology = conservatism
+			popularity = 0.1
+		}
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+		}
+		add_ideas = {
+			Maximilian_Zahringen_1
+			Ulrich_von_Brockdorff-Rantzau_2
+			Rudolf_Schwander_3
+		}
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+	
+	option = {
+		name = germany.117.b
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.05
+		}
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+	}
+}
+
+# Ноябрьская революция
+country_event = {
+	id = germany.140
+	title = germany.140.t
+	desc = germany.140.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_is_now
+		has_government = authoritarism
+		OR = {
+			has_war_with = FRA
+			has_war_with = ENG
+		}
+		OR = {
+			AND = {
+				has_war_with = FRA
+				FRA = { controls_state = 16 }
+			}
+			AND = {
+				NOT = {
+					has_war_with = FRA
+					FRA = { controls_state = 16 }
+				}
+				FRA = { is_puppet = yes }
+			}
+			AND = {
+				NOT = { has_war_with = FRA }
+				FRA = { is_puppet = no }
+			}
+			has_global_flag = WWI_GER_HAS_CAPITULATED
+		}
+		NOT = { has_country_flag = GER_monarchy_fall }
+		OR = {
+			check_variable = { summe_stab_n_ruling_coalition_pop < 0.65 }
+			AND = {
+				check_variable = { summe_stab_n_ruling_coalition_pop < 0.75 }
+				has_country_flag = GER_peace_negotiations_with_Entente
+			}
+			has_global_flag = WWI_GER_HAS_CAPITULATED
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 20
+		modifier = {
+			factor = 0.1
+			has_global_flag = WWI_AUH_HAS_CAPITULATED
+		}
+	}
+	
+	immediate = {
+		hidden_effect = {
+			add_threat = -30
+			if = { limit = { NOT = { has_country_flag = crisis_in_progress } } set_country_flag = crisis_in_progress }
+			if = {
+				limit = { NOT = { has_idea = mutiny_1 has_idea = mutiny_2 has_idea = mutiny_3 } }
+					add_ideas =  mutiny_1
+					country_event = stability.23
+				else_if = {
+					limit = { has_idea = mutiny_1 }
+						remove_ideas = mutiny_1
+						add_ideas =  mutiny_2
+				}
+				else_if = {
+					limit = { has_idea = mutiny_2 }
+						remove_ideas = mutiny_2
+						add_ideas =  mutiny_3
+				}
+				else_if = {
+					limit = { has_idea = mutiny_3 }
+						add_stability = -0.10
+						add_war_support = -0.20
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = germany.140.a
+		hidden_effect = {
+			end_puppet = GEO
+			end_puppet = AZR
+			end_puppet = ARM
+			end_puppet = KUB
+			end_puppet = DON
+			end_puppet = RVA
+			end_puppet = CRI
+		}
+		if = {
+			limit = { owns_state = 826 }
+			899 = { CONTROLLER = { transfer_state = 826 } }
+		}
+		if = {
+			limit = { owns_state = 902 }
+			826 = { CONTROLLER = { transfer_state = 902 } }
+		}
+		if = {
+			limit = { owns_state = 1342 }
+			902 = { CONTROLLER = { transfer_state = 1342 } }
+		}
+		if = {
+			limit = { owns_state = 233 }
+			1045 = { CONTROLLER = { transfer_state = 233 } }
+		}
+		if = {
+			limit = { owns_state = 917 }
+			233 = { CONTROLLER = { transfer_state = 917 } }
+		}
+		if = {
+			limit = { owns_state = 245 }
+			1346 = { CONTROLLER = { transfer_state = 245 } }
+		}
+		if = {
+			limit = { owns_state = 1044 }
+			245 = { CONTROLLER = { transfer_state = 1044 } }
+		}
+		if = {
+			limit = { owns_state = 218 }
+			1044 = { CONTROLLER = { transfer_state = 218 } }
+		}
+		if = {
+			limit = { owns_state = 228 }
+			218 = { CONTROLLER = { transfer_state = 228 } }
+		}
+		if = {
+			limit = { owns_state = 953 }
+			228 = { CONTROLLER = { transfer_state = 953 } }
+		}
+		if = {
+			limit = { owns_state = 1284 }
+			228 = { CONTROLLER = { transfer_state = 1284 } }
+		}
+		if = {
+			limit = { owns_state = 260 }
+			265 = { CONTROLLER = { transfer_state = 260 } }
+		}
+		if = {
+			limit = { owns_state = 240 }
+			221 = { CONTROLLER = { transfer_state = 240 } }
+		}
+		if = {
+			limit = { owns_state = 1347 }
+			240 = { CONTROLLER = { transfer_state = 1347 } }
+		}
+		if = {
+			limit = { owns_state = 220 }
+			240 = { CONTROLLER = { transfer_state = 220 } }
+		}
+		if = {
+			limit = { owns_state = 784 }
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						OWNER = { is_subject_of = ROOT }
+					}
+					OR = {
+						state = 784
+						state = 998
+						state = 95
+						state = 956
+						state = 97
+						state = 910
+						state = 1366
+						state = 814
+						state = 11
+						state = 189
+						state = 999
+						state = 815
+					}
+				}
+				LIT = { transfer_state = PREV }
+			}
+			GER = { LIT = { subjecting_script_with_transfer_parties_dominion = yes } }
+		}
+		if = {
+			limit = { any_owned_state = { region = 230 } CRI = { exists = no } }
+			every_state = {
+				limit = {
+					OR = {
+						is_owned_by = ROOT
+						OWNER = { is_subject_of = ROOT }
+					}
+					region = 230
+				}
+				CRI = { transfer_state = PREV }
+			}
+			CRI = { 
+				every_unit_leader = { limit = { OR = { has_id = 100002 has_id = 100001 } } set_nationality = REB } 
+				set_politics = {
+					ruling_party = market_liberalism
+				}
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.1
+				}
+				remove_ideas_with_trait = minister_flag_trait
+				set_country_flag = CRI_second_gov
+				load_focus_tree = Crimea_focus_tree
+				mark_focus_tree_layout_dirty = yes
+				add_stability = -0.05
+				add_ideas = CRI_red_partisans
+				RVA = { country_event = { id = rcw_crimea.39 days = 1 } }
+				if = {
+					limit = { NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED } }
+					FRA = { country_event = { id = rcw_crimea.40 days = 1 } }
+				}
+				remove_ideas = help_from_foreign_interventionists
+				if = {
+					limit = { has_idea = FRA_disjointed_government }
+					remove_ideas = FRA_disjointed_government
+				}
+				retire_ideology_leader = authoritarism
+				set_party_name = {
+					ideology = authoritarism
+					long_name = CRI_authoritarism_second_long
+					name = CRI_authoritarism_second
+				}
+				create_country_leader = { name = "Sergey Romanovskiy" desc = CRI_Sergey_Romanovskiy_desc picture = "gfx/leaders/CRI/portrait_Sergey_Romanovskiy.dds" ideology = authoritarism_ideology traits = { inexperienced_monarch } }
+				GER = { remove_from_array = { rcw_supported_states = FROM.id } }
+				TUR = { remove_from_array = { rcw_supported_states = FROM.id } }
+				AUH = { remove_from_array = { rcw_supported_states = FROM.id } }
+			}
+		}
+		if = {
+			limit = { owns_state = 809 }
+			12 = { OWNER = { transfer_state = 809 } }
+		}
+		if = {
+			limit = { owns_state = 1351 }
+			12 = { OWNER = { transfer_state = 1351 } }
+		}
+		if = {
+			limit = { owns_state = 1004 }
+			191 = { OWNER = { transfer_state = 1004 } }
+		}
+		if = {
+			limit = { owns_state = 1401 }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = BLR
+					NOT = { is_core_of = GER }
+				}
+				BLR = { transfer_state = PREV }
+			}
+			GER = { BLR = { subjecting_script_with_transfer_parties_dominion = yes } }
+		}
+		add_timed_idea = {
+			idea = disorganization_of_army
+			days = 730
+		}
+		add_war_support = -1
+		add_stability = -1
+		delete_unit_template_and_units = {
+			division_template = "Ersatz infanterie Division"
+		}
+		delete_unit_template_and_units = {
+			division_template = "Stoßtruppen Division"
+		}
+		delete_unit_template_and_units = {
+			division_template = "Schutztruppe Division"
+		}
+		add_war_support = -0.15
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.1
+		}
+		set_politics = {
+			ruling_party = social_democracy
+			elections_allowed = no
+		}
+		remove_ideas = GER_wartime_measures
+		remove_ideas = GER_vocational_training_schools
+		remove_ideas = GER_forced_labor
+		remove_ideas = GER_hindenburg_program
+		remove_ideas = GER_hindenburg_program_end
+		remove_ideas = general_staff
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+			remove_ideas_with_trait = military_minister_trait
+		}
+		add_ideas = {
+			Friedrich_Ebert_1
+			Ulrich_von_Brockdorff-Rantzau_2 #Hermann_Muller_2
+			Robert_Schmidt_3
+			Hugo_Preuss_4
+			disarmed_nation
+		}
+		set_country_flag = GER_monarchy_fall
+		set_country_flag = GER_november_revolution_start
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+		hidden_effect = { news_event = { id = news_n.100 hours = 12 } }
+		if = {
+			limit = { has_global_flag = WWI_ROM_HAS_CAPITULATED }
+			ROM = {
+				GER = { remove_resource_rights = 46 }
+					if  = {
+						limit = { owns_state = 81 }
+						81 = { set_demilitarized_zone = no }
+					}
+					if  = {
+						limit = { owns_state = 46 }
+						46 = { set_demilitarized_zone = no }
+					}
+					if  = {
+						limit = { owns_state = 1046 }
+						1046 = { set_demilitarized_zone = no }
+					}
+					if = {
+						limit = { owns_state = 77 }
+						77 = { set_demilitarized_zone = no }
+					}
+					if = {
+						limit = { owns_state = 1122 }
+						1122 = { set_demilitarized_zone = no }
+					}
+					if = {
+						limit = { owns_state = 972 }
+						972 = { set_demilitarized_zone = no }
+					}
+					if = {
+						limit = { owns_state = 1047 }
+						1047 = { set_demilitarized_zone = no }
+					}
+					if = {
+						limit = { owns_state = 1264 }
+						1264 = { set_demilitarized_zone = no }
+					}
+					clr_global_flag = WWI_ROM_HAS_CAPITULATED
+			}
+		}
+		if = {
+			limit = { OR = { has_country_flag = GER_peace_negotiations_with_Entente surrender_progress > 0.01 AND = { BEL = { has_war_with = ROOT has_capitulated = no } } } }
+			clr_country_flag = GER_peace_negotiations_with_Entente
+			country_event = { id = compiegne_armistice.4 days = 1 }
+		}
+	}
+}
+country_event = {
+	id = germany.141
+	title = germany.141.t
+	desc = germany.141.desc
+	picture = GFX_report_event_ger_november_revolution
+
+	is_triggered_only = yes
+	
+	trigger = {
+		NOT = { has_country_flag = GER_monarchy_fall }
+	}
+	
+	option = {
+		name = germany.141.a
+		add_war_support = -0.15
+		add_stability = -0.15
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.4
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.1
+		}
+		add_popularity = {
+			ideology = conservatism
+			popularity = 0.1
+		}
+		set_politics = {
+			ruling_party = conservatism
+			elections_allowed = no
+		}
+		remove_ideas = GER_wartime_measures
+		set_country_flag = GER_monarchy_fall
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+		hidden_effect = { news_event = { id = news_n.100 hours = 12 } } #новостной нужен другой
+		if = {
+			limit = {
+				has_global_flag = WWI_GER_HAS_CAPITULATED
+			}
+		}
+	}
+}
+
+country_event = {
+	id = germany.151
+	title = germany.151.t
+	desc = germany.151.desc
+	picture = GFX_report_event_ger_november_revolution
+	
+	trigger = {
+		tag = GER
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+		OR = {
+			has_country_flag = GER_monarchy_fall
+			has_country_flag = GER_monarchy_not_fall_in_weltkrieg
+		}
+	}
+	
+	fire_only_once = yes
+	
+	hidden = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		if = {
+			limit = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					has_government = social_liberalism
+				}
+			}
+			load_focus_tree = Germany_weltkrieg_L_nov_rev_focus
+		}
+		if = {
+			limit = {
+				OR = {
+					has_government = market_liberalism
+					has_government = conservatism
+					has_government = authoritarism
+				}
+			}
+			load_focus_tree = Germany_weltkrieg_L_kaisers_abdication_focus
+		}
+		if = {
+			limit = {
+				OR = {
+					has_government = despotism
+					has_government = fascism
+					has_government = national_syndicalism
+				}
+			}
+			load_focus_tree = Germany_weltkrieg_L_ultra_right_focus
+		}
+	}
+}
+#Ивент на занятие Германией Минска и создание создание плакатной БНР
+country_event = {
+	id = germany.152
+	title = germany.152.t
+	desc = germany.152.d
+	picture = GFX_BLR_Minsk
+	
+	trigger = {
+		tag = GER
+		controls_state = 206
+		OR = { has_war_with = RUS }
+		RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+	    name = germany.152.a
+        BLR = { 
+		set_state_controller = 206
+		set_state_owner = 206
+		}
+        GER = { BLR = { subjecting_script_with_transfer_parties_poster_government = yes } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+	    name = germany.152.b
+		set_state_controller = 206
+        BLR = { 
+		set_state_controller = 206
+		set_state_owner = 206
+		}
+        GER = { BLR = { subjecting_script_with_transfer_parties_poster_government = yes } }
+		ai_chance = {
+			factor = 0
+		}
+		BLR = { change_tag_from = GER }
+	}
+}

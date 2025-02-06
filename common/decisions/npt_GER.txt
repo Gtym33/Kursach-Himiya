@@ -1,0 +1,332 @@
+foreign_politics = {
+	treaty_of_brest_ger_ultimatum = {
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = GER
+		}
+
+		available = {
+			has_global_flag = brest_litovsk_negotiations
+			has_war_with = RUS
+			RUS = { NOT = { is_in_faction_with = ENG } }
+			OR = {
+				FRA = { has_capitulated = yes }
+				ENG = { has_capitulated = yes }
+				NOT = { has_war_with = FRA }
+			}
+			RUS = { surrender_progress > 0.1 }
+			NOT = { has_global_flag = brest_litovsk_negotiations_GER_UKR_peace }
+		}
+		visible = {
+			has_global_flag = brest_litovsk_negotiations
+			has_war_with = RUS
+		}
+		
+		ai_will_do = {
+			factor = 0
+		}
+		
+		complete_effect = {
+			RUS = { country_event = treaty_of_brest.13 }
+		}
+	}
+	
+	GER_ENG_peace_with_absolutly_dead_and_dishonor_to_ENG = {
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = GER
+		}
+
+		available = {
+			OR = { NOT = { has_war_with = RUS } RUS = { NOT = { is_in_faction_with = ENG } } }
+			has_war_with = ENG
+			OR = {
+				ENG = { has_capitulated = yes }
+				ENG = { surrender_progress > 0.05 }
+			}
+			OR = {
+				AND = {
+					ENG = { has_capitulated = yes }
+					FRA = { surrender_progress > 0.5 }
+				}
+				FRA = { has_capitulated = yes }
+				NOT = { has_war_with = FRA }
+			}
+		}
+		visible = {
+			has_global_flag = WWI_is_now
+			has_war_with = ENG
+			NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+		}
+		
+		days_remove = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		modifier = {
+			
+		}
+		
+		complete_effect = {
+			ENG = { country_event = { id = weltkrieg_frankfurt.1 days = 3 } }
+		}
+		
+		remove_effect = {
+			
+		}
+	}
+	GER_ENG_peace_with_honor_to_ENG = {
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = GER
+		}
+
+		available = {
+			OR = { NOT = { has_war_with = RUS } RUS = { NOT = { is_in_faction_with = ENG } } }
+			has_war_with = ENG
+			OR = {
+				FRA = { has_capitulated = yes }
+				FRA = { surrender_progress > 0.3 }
+				ENG = { has_capitulated = yes }
+				NOT = { has_war_with = FRA }
+			}
+		}
+		visible = {
+			has_global_flag = WWI_is_now
+			has_war_with = ENG
+			NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+		}
+		
+		days_remove = 10
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				date < 1918.1.1
+			}
+			modifier = {
+				factor = 0
+				ENG = { surrender_progress > 0 }
+			}
+		}
+		
+		modifier = {
+			
+		}
+		
+		complete_effect = {
+			ENG = { country_event = { id = weltkrieg_frankfurt.2 days = 3 } }
+		}
+		
+		remove_effect = {
+			
+		}
+	}
+	GER_ENG_peace_without_honor_to_GER = {
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = GER
+		}
+
+		available = {
+			OR = { NOT = { has_war_with = RUS } RUS = { NOT = { is_in_faction_with = ENG } } }
+			has_war_with = ENG
+			has_completed_focus = GER_peace_with_Entente
+			NOT = { has_country_flag = GER_peace_negotiations_with_Entente }
+		}
+		visible = {
+			has_global_flag = WWI_is_now
+			has_war_with = ENG
+			NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
+		}
+		
+		days_remove = 40
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_flag = WWI_GER_last_teutonic_advance
+			}
+			modifier = {
+				factor = 0
+				FRA = { surrender_progress > 0.03 }
+				date < 1918.5.1
+				has_war_support > 0.8
+				NOT = { has_country_flag = GER_monarchy_fall }
+			}
+			modifier = {
+				factor = 0
+				FRA = { surrender_progress > 0.3 }
+				has_war_support > 0.7
+				has_stability > 0.7
+				NOT = { has_country_flag = GER_monarchy_fall }
+			}
+			modifier = {
+				factor = 0
+				date < 1918.5.1
+				NOT = { has_country_flag = GER_monarchy_fall }
+			}
+			modifier = {
+				factor = 99999
+				has_country_flag = GER_monarchy_fall
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					ENG = { has_capitulated = yes }
+					FRA = { has_capitulated = yes }
+				}
+			}
+		}
+		
+		modifier = {
+			war_support_weekly = -0.01
+			social_democracy_drift = 0.01
+		}
+		
+		complete_effect = {
+			add_war_support = -0.05
+			if = {
+				limit = { OR = { FRA = { has_capitulated = yes surrender_progress > 0.1 } NOT = { has_war_with = FRA } } }
+				ENG = { country_event = { id = weltkrieg_frankfurt.3 days = 3 } }
+			}
+			else_if = {
+				limit = { USA = { has_war_with = GER } }
+				USA = { country_event = { id = compiegne_armistice.21 days = 3 } }
+			}
+			else = {
+				ENG = { country_event = { id = compiegne_armistice.21 days = 3 } }
+			}
+		}
+		
+		remove_effect = {
+			
+		}
+	}
+}
+
+GER_keep_BUL_dec_cat = {
+	GER_BUL_unite_progerman_opposition = {
+		icon = generic_army_support
+		visible = {
+			NOT = { has_country_flag = flag_GER_BUL_unite_progerman_opposition }
+		}
+		ai_will_do = {
+			factor = 999
+		}
+		
+		cost = 30
+		
+		days_remove = 60
+		
+		complete_effect = {}
+		remove_effect = {
+			set_country_flag = flag_GER_BUL_unite_progerman_opposition
+		}
+	}
+	GER_BUL_recrute_BUL_generals = {
+		icon = generic_army_support
+		available = {
+			has_country_flag = flag_GER_BUL_unite_progerman_opposition
+		}
+		visible = {
+			NOT = { has_country_flag = flag_GER_BUL_recrute_BUL_generals }
+		}
+		ai_will_do = {
+			factor = 999
+		}
+		
+		cost = 40
+		
+		days_remove = 60
+		
+		complete_effect = {}
+		remove_effect = {
+			random_list = {
+				80 = { set_country_flag = flag_GER_BUL_recrute_BUL_generals custom_effect_tooltip = GER_BUL_recrute_BUL_generals_success_tt }
+				20 = {
+					custom_effect_tooltip = GER_BUL_recrute_BUL_generals_failure_tt
+					clr_country_flag = GER_keep_BUL
+					clr_country_flag = flag_GER_BUL_recrute_BUL_generals
+					clr_country_flag = flag_GER_BUL_unite_progerman_opposition
+				}
+			}
+		}
+	}
+	GER_BUL_peaceful_progerman_coup = {
+		icon = generic_army_support
+		available = {
+			has_country_flag = flag_GER_BUL_recrute_BUL_generals
+		}
+		ai_will_do = {
+			factor = 999
+		}
+		
+		cost = 50
+		
+		days_remove = 60
+		
+		complete_effect = {}
+		remove_effect = {
+			clr_country_flag = GER_keep_BUL
+			clr_country_flag = flag_GER_BUL_recrute_BUL_generals
+			clr_country_flag = flag_GER_BUL_unite_progerman_opposition
+			random_list = {
+				60 = { BUL = { country_event = bulgaria.29 } }
+				40 = { }
+			}
+		}
+	}
+}
+
+political_actions = {
+
+	payment_on_hindenburg_programm = {
+
+		icon = generic_army_support
+
+		allowed = {
+			original_tag = GER
+		}
+
+		available = {
+			has_global_flag = WWI_is_now
+			has_war = yes
+		}
+		visible = {
+			has_idea = GER_hindenburg_program
+			NOT = { has_idea = GER_hindenburg_program_end }
+			has_variable = hindenburg_program_cost
+		}
+		
+		ai_will_do = {
+			factor = 999
+		}
+		
+		cost = 10
+		
+		days_remove = 25
+		
+		complete_effect = {}
+		
+		remove_effect = {
+			add_to_variable = {
+				var = hindenburg_program_cost
+				value = -1
+			}
+		}
+	}
+
+}

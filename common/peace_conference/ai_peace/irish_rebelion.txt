@@ -1,0 +1,82 @@
+# Scripted AI desire for peace actions.
+# See documentation.info file for more detailed scripting information.
+
+peace_ai_desires = {
+    # ENG want to expand their territory in IRE, not create puppets- So take states even if not cores, they _can_ be in the future, right.
+    ENG_want_to_conquer_IRE = {
+        peace_action_type = { take_states }
+        enable = {
+            ROOT = {
+                original_tag = ENG
+				has_country_flag = IRE_active_revolt
+            }
+            FROM.FROM.FROM = {
+                OR = {
+                    is_core_of = IRE
+                    is_core_of = NIR
+                }
+                any_neighbor_state = {
+                    OR = {
+                        is_owned_by = ROOT
+                        pc_is_state_claimed_by = ROOT.FROM
+                    }
+                }
+            }
+            FROM = {
+                tag = ROOT
+            }
+        }
+        ai_desire = 150
+    }
+    not_ENG_dont_want_to_conquer_IRE = {
+        peace_action_type = { take_states }
+        enable = {
+            any_other_country = {
+				original_tag = ENG
+                pc_is_on_same_side_as = ROOT
+				has_country_flag = IRE_active_revolt
+            }
+            FROM.FROM.FROM = {
+                OR = {
+                    is_core_of = IRE
+                    is_core_of = NIR
+                }
+                NOT = {
+                    any_neighbor_state = {
+                        OR = {
+                            is_owned_by = ROOT
+                            pc_is_state_claimed_by = ROOT.FROM
+                        }
+                    }
+                }
+            }
+            FROM = {
+                tag = ROOT
+            }
+            ROOT = {
+                NOT = { original_tag = ENG }
+            }
+        }
+        ai_desire = -150
+    }
+    ENG_dont_puppet_or_liberate_IRE = {
+        peace_action_type = { puppet force_government liberate }
+        enable = {
+			OR = {
+				ROOT = { original_tag = ENG has_country_flag = IRE_active_revolt }
+                any_other_country = {
+					original_tag = ENG
+					pc_is_on_same_side_as = ROOT
+					has_country_flag = IRE_active_revolt
+				}
+			}
+            FROM.FROM.FROM = {
+                OR = {
+                    is_core_of = IRE
+                    is_core_of = NIR
+                }
+            }
+        }
+        ai_desire = -200
+    }
+}

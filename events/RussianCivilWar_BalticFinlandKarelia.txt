@@ -1,0 +1,4203 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_bfk
+
+# Отделение Эстонии после революции
+country_event = {
+	id = rcw_bfk.1
+	title = rcw_bfk.1.t
+	desc = rcw_bfk.1.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = GER
+		controls_state = 812
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.1.a
+		add_political_power = 25
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.1.b
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				is_controlled_by = ROOT
+				is_core_of = EST
+			}
+			EST = { transfer_state = PREV }
+		}
+		EST = {
+			set_politics = { ruling_party = despotism }
+			#load_oob = EST_1917
+		}
+		EST = { inherit_technology = RUS }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Германский империализм, "Отношение к Эстонской государственности"
+country_event = {
+	id = rcw_bfk.2
+	title = rcw_bfk.2.t
+	desc = rcw_bfk.2.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = GER
+		NOT = { has_country_flag = GER_monarchy_fall has_global_flag = WWI_GER_HAS_CAPITULATED }
+		EST = { exists = yes is_subject = no NOT = { has_war_with = GER } }
+		any_country = {
+			is_neighbor_of = EST
+			OR = {
+				tag = GER
+				is_subject_of = GER
+				is_in_faction_with = GER
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.2.a
+		add_political_power = -25
+		EST = { country_event = rcw_bfk.4 }
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.2.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Начало формирование добровольческих отрядов эстонской армии
+country_event = {
+	id = rcw_bfk.3
+	title = rcw_bfk.3.t
+	desc = rcw_bfk.3.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = EST
+		is_subject = no
+		exists = yes
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 2
+	}
+	
+	option = {
+		name = rcw_bfk.3.a
+		remove_ideas_with_trait = mobilization_laws
+		add_ideas = volunteer_only
+		load_oob = EST_1917
+		country_event = { id = rcw_bfk.7 days = 14 }
+	}
+}
+
+# Германское вторжение в Эстонию
+country_event = {
+	id = rcw_bfk.4
+	title = rcw_bfk.4.t
+	desc = rcw_bfk.4.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.4.a
+		FROM = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = no
+			}
+		}
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.4.b
+		FROM = {
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Мобилизация в армию Эстонии
+country_event = {
+	id = rcw_bfk.7
+	title = rcw_bfk.7.t
+	desc = rcw_bfk.7.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.6.a
+		add_ideas = service_by_requirement
+		load_oob = EST_1918
+	}
+}
+
+# Финны отправляют помощь в Эстонию
+country_event = {
+	id = rcw_bfk.8
+	title = rcw_bfk.8.t
+	desc = rcw_bfk.8.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = FIN
+		has_global_flag = FIN_civil_war_end
+		NOT = { has_global_flag = RUS_civil_war_over }
+		is_subject = no
+		has_war = no
+		NOT = { has_government = radical_socialism has_government = communism has_government = social_democracy }
+		EST = {
+			exists = yes
+			NOT = { has_government = radical_socialism has_government = communism }
+			OR = {
+				has_civil_war = yes
+				AND = {
+					has_war_with = RUS
+					RUS = { has_country_flag = RUS_Oktober_revolution_fired }
+				}
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.8.b
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 999
+			}
+		}
+		send_equipment = {
+			type = infantry_equipment
+			amount = 1000
+			target = EST
+		}
+		ai_chance = {
+			factor = 999
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.8.c
+		add_political_power = -50
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Эстляндская трудовая коммуна (советская республика)
+country_event = {
+	id = rcw_bfk.9
+	title = rcw_bfk.9.t
+	desc = rcw_bfk.9.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RSR
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = EST
+		NOT = { any_other_country = { original_tag = EST is_subject_of = ROOT } }
+		NOT = { EST = { any_other_country = { original_tag = PREV has_war_with = PREV } } }
+		any_state = {
+			is_owned_by = EST
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.9.a
+		create_dynamic_country = {
+			original_tag = EST
+			save_global_event_target_as = EST_CW
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				create_country_leader = { name = "Jaan Anvelt" desc = EST_jaan_anvelt_DESC picture = "gfx/leaders/EST/Portrait_Jaan_Anvelt.dds" expire = "1935.1.1" ideology = leninism  traits = {  } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = EST
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = EST
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:EST_CW = { set_state_owner = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = EST
+				type = annex_everything
+			}
+			add_civil_war_target = EST
+			set_cosmetic_tag = EST_labor_commune
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:EST_CW } }
+				declare_war_on = {
+					target = event_target:EST_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:EST_CW } }
+				event_target:EST_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:EST_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = EST
+							is_owned_by = event_target:EST_CW
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = EST
+							}
+						}
+					}
+					set_state_province_controller = {
+						controller = event_target:EST_CW
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+				}
+			}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		EST = {
+			transfer_units_fraction= {
+				target = event_target:EST_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		clear_global_event_target = EST_CW
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.9.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Вступление Эстонии в войну с ЗДА на стороне Латвии ("Угроза с Юга")
+country_event = {
+	id = rcw_bfk.10
+	title = rcw_bfk.10.t
+	desc = rcw_bfk.10.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = EST
+		is_subject = no
+		LAT = { has_war_with = WVA }
+		NOT = { has_war_with = WVA has_war_with = LAT }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.10.a
+		declare_war_on = {
+			target = WVA
+			type = annex_everything
+		}
+		give_military_access = LAT
+		LAT = { give_military_access = EST }
+		reverse_add_opinion_modifier = { target = LAT modifier = EST_helps_LAT }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.10.b
+		add_popularity = { ideology = despotism popularity = -0.1 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Латвия беззащитна
+country_event = {
+	id = rcw_bfk.11
+	title = rcw_bfk.11.t
+	desc = rcw_bfk.11.d
+	picture = GFX_report_event_lat_latvia_in_danger
+	
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		tag = LAT
+		OR = {
+			has_war = yes
+			has_country_flag = WWI_post_german_russia_collaborators_has_no_army
+		}
+		has_army_manpower = {
+			size < 10000
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = rcw_bfk.11.a
+		division_template = {
+			name = "Militija"	# Infantry
+			regiments = {
+				militia = { x = 0 y = 0 }
+				militia = { x = 0 y = 1 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I Militija\" division_template = \"Militija\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Militija\" division_template = \"Militija\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		hidden_effect = {
+			random_list = {
+				70 = { country_event = { id = rcw_bfk.12 days = 7 } }
+				30 = {}
+			}
+		}
+		set_country_flag = LAT_1918_mil
+	}
+	
+	option = {
+		name = rcw_bfk.11.b
+		division_template = {
+			name = "Vācijas Landwehr"	# Infantry
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				militia = { x = 0 y = 2 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }		
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		add_ideas = LAT_german_mercenary
+		hidden_effect = {
+			country_event = { id = rcw_bfk.13 days = 14 }
+		}
+		set_country_flag = LAT_1918_ger
+		
+		create_corps_commander = { name = "Hans von Manteuffel-Szoege" id = 34101 portrait_path = "gfx/leaders/LAT/Portrait_Hans_von_Manteuffel-Szoege.dds" traits = { trait_reckless career_officer } skill = 1 attack_skill = 3 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+		create_corps_commander = { name = "Josef Bischoff" id = 34102 portrait_path = "gfx/leaders/LAT/Portrait_Josef_Bischoff.dds" traits = { infantry_officer inflexible_strategist } skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	}
+	
+	option = {
+		name = rcw_bfk.11.c
+		division_template = {
+			name = "Militija"	# Infantry
+			regiments = {
+				militia = { x = 0 y = 0 }
+				militia = { x = 0 y = 1 }
+			}
+		}
+		division_template = {
+			name = "Vācijas Landwehr"	# Infantry
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				militia = { x = 0 y = 2 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }		
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I Militija\" division_template = \"Militija\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Militija\" division_template = \"Militija\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"I Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		country_event = { id = rcw_bfk.12 days = 5 }
+		set_country_flag = LAT_1918_ger_mil
+		add_ideas = LAT_german_mercenary
+		create_corps_commander = { name = "Hans von Manteuffel-Szoege" id = 34101 portrait_path = "gfx/leaders/LAT/Portrait_Hans_von_Manteuffel-Szoege.dds" traits = { trait_reckless career_officer } skill = 1 attack_skill = 3 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+		create_corps_commander = { name = "Josef Bischoff" id = 34102 portrait_path = "gfx/leaders/LAT/Portrait_Josef_Bischoff.dds" traits = { infantry_officer inflexible_strategist } skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	}
+}
+
+# Бунт в войсках
+country_event = {
+	id = rcw_bfk.12
+	title = rcw_bfk.12.t
+	desc = rcw_bfk.12.d
+	picture = GFX_report_event_lat_bunt
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.12.a
+		add_political_power = -50
+		add_timed_idea = {
+			idea = mutiny_1
+			days = 3
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.12.b
+		add_political_power = -25
+		add_timed_idea = {
+			idea = mutiny_1
+			days = 7
+		}
+	}
+}
+
+# Социал-демократы покидают советы
+country_event = {
+	id = rcw_bfk.13
+	title = rcw_bfk.13.t
+	desc = rcw_bfk.13.d
+	picture = GFX_report_event_lat_sd_left_government
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.13.a
+		add_stability = -0.05
+		add_popularity = { ideology = social_democracy popularity = -0.1 }
+	}
+}
+
+# Угроза поражения Латвии
+country_event = {
+	id = rcw_bfk.14
+	title = rcw_bfk.14.t
+	desc = rcw_bfk.14.d
+	picture = GFX_report_event_lat_defeat_is_near
+	
+	trigger = {
+		tag = LAT
+		NOT = { has_global_flag = RUS_civil_war_over }
+		OR = { surrender_progress > 0.39 NOT = { controls_state = 808 } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.14.a
+		trigger = { has_country_flag = LAT_1918_mil }
+		division_template = {
+			name = "Vācijas Landwehr"	# Infantry
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				militia = { x = 0 y = 2 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }		
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		add_ideas = LAT_german_mercenary
+		hidden_effect = {
+			country_event = { id = rcw_bfk.13 days = 14 }
+		}
+		set_country_flag = LAT_1918_ger
+		create_corps_commander = { name = "Hans von Manteuffel-Szoege" id = 34101 portrait_path = "gfx/leaders/LAT/Portrait_Hans_von_Manteuffel-Szoege.dds" traits = { trait_reckless career_officer } skill = 1 attack_skill = 3 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+		create_corps_commander = { name = "Josef Bischoff" id = 34102 portrait_path = "gfx/leaders/LAT/Portrait_Josef_Bischoff.dds" traits = { infantry_officer inflexible_strategist } skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	}
+	
+	option = {
+		name = rcw_bfk.14.b
+		trigger = { has_country_flag = LAT_1918_ger }
+		division_template = {
+			name = "Militija"	# Infantry
+			regiments = {
+				militia = { x = 0 y = 0 }
+				militia = { x = 0 y = 1 }
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I Militija\" division_template = \"Militija\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Militija\" division_template = \"Militija\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+				owner = ROOT
+			}
+		}
+		hidden_effect = {
+			random_list = {
+				70 = { country_event = { id = rcw_bfk.12 days = 7 } }
+				30 = {}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.14.c
+		trigger = { has_country_flag = LAT_1918_ger_mil }
+		add_ideas = LAT_latvian_nationalism
+	}
+}
+
+# Угроза поражения Латвии (Германия) (Плачевная ситуация в Латвии)
+country_event = {
+	id = rcw_bfk.15
+	title = rcw_bfk.15.t
+	desc = rcw_bfk.15.d
+	picture = GFX_report_event_lat_defeat_is_near
+	
+	trigger = {
+		tag = GER
+		NOT = { has_global_flag = RUS_civil_war_over }
+		LAT = { surrender_progress > 0.59 }
+		LAT = { OR = { has_country_flag = LAT_1918_ger has_country_flag = LAT_1918_ger_mil } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.15.a
+		LAT = {
+			add_popularity = { ideology = authoritarism popularity = 0.1 }
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+		every_unit_leader = { limit = { OR = { has_id = 88169 } } set_nationality = LAT }
+	}
+	
+	#option = {
+		#name = rcw_bfk.15.b
+		#add_popularity = { ideology = fascism popularity = 0.03 }
+	#}
+}
+
+# Немецкий переворот в Латвии
+country_event = {
+	id = rcw_bfk.16
+	title = rcw_bfk.16.t
+	desc = rcw_bfk.16.d
+	picture = GFX_report_event_lat_german_coup
+	
+	trigger = {
+		tag = LAT
+		NOT = { has_government = authoritarism }
+		NOT = { has_country_flag = LAT_ger_gov }
+		OR = { has_idea = LAT_german_mercenary has_idea = LAT_latvian_nationalism }
+		authoritarism > 0.11
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.16.a
+		remove_ideas = LAT_latvian_nationalism
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_minister_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+		remove_ideas_with_trait = military_minister_trait
+		set_politics = { ruling_party = authoritarism }
+		set_country_flag = LAT_ger_gov
+		hidden_effect = {
+			remove_opinion_modifier = { target = EST modifier = EST_helps_LAT }
+			random_other_country = {
+				limit = { original_tag = EST NOT = { has_government = radical_socialism has_government = communism has_war_with = ROOT } }
+				country_event = { id = rcw_bfk.25 days = 2 }
+			}
+		}
+	}
+	
+}
+
+# Неблагонадёжная армия после переворота
+country_event = {
+	id = rcw_bfk.17
+	title = rcw_bfk.17.t
+	desc = rcw_bfk.17.d
+	picture = GFX_report_event_lat_army_in_disaster
+	
+	trigger = {
+		tag = LAT
+		has_government = authoritarism
+		controls_state = 808
+		controls_state = 809
+		has_civil_war = no
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.17.a
+		add_manpower = -4000
+		hidden_effect = {
+			random_list = {
+				90 = {
+					delete_unit_template_and_units = {
+						division_template = "Vācijas Landwehr"
+					}
+					set_politics = { ruling_party = despotism elections_allowed = no }
+					clr_country_flag = LAT_ger_gov
+					if = {
+						limit = { controls_state = 809 }
+						set_capital = { state = 809 }
+						start_civil_war = {
+							ruling_party = despotism
+							ideology = authoritarism
+							size = 0.1
+							capital = 12
+							states = { 190 810 12 12 1378 }
+							keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
+						}
+					}
+					else_if = {
+						limit = { controls_state = 12 }
+						set_capital = { state = 12 }
+						start_civil_war = {
+							ruling_party = despotism
+							ideology = authoritarism
+							size = 0.1
+							capital = 12
+							states = { 190 810 12 1378 }
+							keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
+						}
+					}
+					else = {
+						start_civil_war = {
+							ruling_party = despotism
+							ideology = authoritarism
+							size = 0.1
+							keep_unit_leaders_trigger = { NOT = { has_id = 88169 has_id = 34101 has_id = 34102 } }
+						}
+					}
+					set_country_flag = LAT_civil
+					random_other_country = {
+						limit = {
+							original_tag = LAT
+							has_government = authoritarism
+						}
+						save_global_event_target_as = LAT_CW
+						set_country_flag = LAT_ger_gov
+					}
+					event_target:LAT_CW = {
+						division_template = {
+							name = "Vācijas Landwehr"	# Infantry
+							regiments = {
+								infantry = { x = 0 y = 0 }
+								infantry = { x = 0 y = 1 }
+								militia = { x = 0 y = 2 }
+							}
+							support = {
+								recon = { x = 0 y = 0 }
+								engineer = { x = 0 y = 1 }		
+							}
+						}
+						capital_scope = {
+							create_unit = {
+								division = "name = \"I Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+								owner = PREV
+							}
+							create_unit = {
+								division = "name = \"II Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+								owner = PREV
+							}
+							create_unit = {
+								division = "name = \"III Vācijas Landwehr\" division_template = \"Vācijas Landwehr\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+								owner = PREV
+							}
+						}
+						set_country_flag = LAT_germanization
+						set_cosmetic_tag = LAT_landeswehr
+					}
+					every_country = {
+						limit = {
+							has_offensive_war_with = LAT
+							NOT = { has_war_with = event_target:LAT_CW }
+							NOT = { tag = GER tag = PRE tag = UBD is_subject_of = GER is_subject_of = PRE is_subject_of = UBD is_in_faction_with = GER is_in_faction_with = PRE is_in_faction_with = UBD }
+						}
+						declare_war_on = { target = event_target:LAT_CW type = annex_everything }
+					}
+					every_country = {
+						limit = {
+							has_defensive_war_with = LAT
+							NOT = { has_war_with = event_target:LAT_CW }
+							NOT = { tag = GER tag = PRE tag = UBD is_subject_of = GER is_subject_of = PRE is_subject_of = UBD is_in_faction_with = GER is_in_faction_with = PRE is_in_faction_with = UBD }
+						}
+						event_target:LAT_CW = { declare_war_on = { target = PREV type = annex_everything } }
+					}
+					every_country = {
+						limit = {
+							has_war_with = LAT
+							has_war_with = event_target:LAT_CW
+							OR = { tag = EST tag = LIT }
+							NOT = { has_government = radical_socialism has_government = communism }
+						}
+						white_peace = LAT
+					}
+					hidden_effect = { clear_global_event_target = LAT_CW }
+				}
+				10 = {
+					set_country_flag = LAT_germanization
+					if = {
+						limit = { EST = { exists = yes NOT = { has_government = communism has_government = radical_socialism } } }
+						EST = {
+							division_template = {
+								name = "Latvian exiles"	# Infantry
+								regiments = {
+									militia = { x = 0 y = 0 }
+									militia = { x = 0 y = 1 }
+									militia = { x = 0 y = 2 }
+									militia = { x = 0 y = 3 }
+								}
+								support = {
+									recon = { x = 0 y = 0 }
+								}
+								is_locked = yes
+								priority = 0
+							}
+							capital_scope = {
+								create_unit = {
+									division = "name = \"I Latvian exiles\" division_template = \"Latvian exiles\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+									owner = PREV
+								}
+								create_unit = {
+									division = "name = \"II Latvian exiles\" division_template = \"Latvian exiles\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+									owner = PREV
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		ai_chance = {
+			factor = 4
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.17.b
+		add_stability = -0.1
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Западная русская армия Ульманис
+country_event = {
+	id = rcw_bfk.18
+	title = rcw_bfk.18.t
+	desc = rcw_bfk.18.d
+	picture = GFX_report_event_lat_wva
+	
+	trigger = {
+		tag = LAT
+		has_country_flag = LAT_civil
+		has_civil_war = no
+		NOT = { has_global_flag = WVA_creature_in_MCW }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		trigger = {
+			any_state = {
+				OR = {
+					state = 190
+					state = 810
+				}
+				CONTROLLER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		name = rcw_bfk.18.a
+		add_political_power = 50
+		add_opinion_modifier = { target = NWA modifier = white_no_accept_LAT }
+		add_opinion_modifier = { target = RSS modifier = white_no_accept_LAT }
+		add_opinion_modifier = { target = RVA modifier = white_no_accept_LAT }
+		hidden_effect = {
+			WVA = {
+				inherit_technology = LAT
+				every_state = {
+					limit = {
+						OR = {
+							state = 190
+							state = 810
+						}
+						CONTROLLER = {
+							OR = {
+								tag = ROOT
+								is_subject_of = ROOT
+								is_in_faction_with = ROOT
+							}
+						}
+					}
+					WVA = { transfer_state = PREV }
+				}
+				every_state = {
+					limit = {
+						OR = {
+							is_core_of = EST
+							is_core_of = LAT
+							is_core_of = LIT
+						}
+					}
+					add_core_of = WVA
+				}
+				add_ideas = neutral_foreign_policy_law
+				division_template = {
+					name = "Pekhotnyy polk"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+					}
+					support = {
+						artillery = { x = 0 y = 0 }
+					}
+					priority = 1
+					is_locked = yes
+				}
+				190 = {
+					create_unit = {
+						division = "name = \"I Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = WVA
+						allow_spawning_on_enemy_provs = yes
+					}
+					create_unit = {
+						division = "name = \"II Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = WVA
+						allow_spawning_on_enemy_provs = yes
+					}
+					create_unit = {
+						division = "name = \"III Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = WVA
+						allow_spawning_on_enemy_provs = yes
+					}
+				}
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
+				every_country = {
+					limit = {
+						has_war_with = LAT
+						NOT = { tag = NWA tag = EST tag = LIT tag = POL }
+					}
+					PREV = {
+						declare_war_on = {
+							target = PREV
+							type = annex_everything
+						}
+					}
+				}
+				if = {
+					limit = { EST = { NOT = { has_war_with = ROOT has_war_with = WVA } is_subject = no } }
+					EST = { country_event = { id = rcw_bfk.10 days = 1 } }
+				}
+				hidden_effect = {
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes tag = HRB
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.18.b
+		country_event = { id = rcw_bfk.19 days = 35 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# ЗДА идёт на восток
+country_event = {
+	id = rcw_bfk.19
+	title = rcw_bfk.19.t
+	desc = rcw_bfk.19.d
+	picture = GFX_report_event_lat_wva
+	
+	is_triggered_only = yes
+	
+	immediate = { set_country_flag = LAT_Avalov_affair_fired }
+	
+	option = {
+		name = rcw_bfk.19.a
+		random_list = {
+			65 = {
+				WVA = {
+					inherit_technology = LAT
+					every_state = {
+						limit = {
+							OR = {
+								state = 190
+								state = 810
+								state = 808
+							}
+							CONTROLLER = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+						WVA = { transfer_state = PREV }
+					}
+					every_state = {
+						limit = {
+							OR = {
+								is_core_of = EST
+								is_core_of = LAT
+								is_core_of = LIT
+							}
+						}
+						add_core_of = WVA
+					}
+					add_ideas = neutral_foreign_policy_law
+					division_template = {
+						name = "Pekhotnyy polk"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+						}
+						priority = 1
+						is_locked = yes
+					}
+					190 = {
+						create_unit = {
+							division = "name = \"I Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+							owner = WVA
+							allow_spawning_on_enemy_provs = yes
+						}
+						create_unit = {
+							division = "name = \"II Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+							owner = WVA
+							allow_spawning_on_enemy_provs = yes
+						}
+						create_unit = {
+							division = "name = \"III Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+							owner = WVA
+							allow_spawning_on_enemy_provs = yes
+						}
+					}
+					declare_war_on = {
+						target = LAT
+						type = annex_everything
+					}
+					every_country = {
+						limit = {
+							has_war_with = LAT
+							NOT = { tag = NWA tag = EST tag = LIT tag = POL }
+						}
+						PREV = {
+							declare_war_on = {
+								target = PREV
+								type = annex_everything
+							}
+						}
+					}
+					if = {
+						limit = { EST = { NOT = { has_war_with = ROOT has_war_with = WVA } is_subject = no } }
+						EST = { country_event = { id = rcw_bfk.10 days = 1 } }
+					}
+					hidden_effect = {
+						every_country = {
+							limit = {
+								NOT = {
+									tag = PREV
+									is_any_former_russian_empire_country = yes
+									former_russian_empire_baltic_states_country = yes tag = HRB
+									has_war_with = PREV
+									is_in_faction_with = PREV
+								}
+							}
+							set_THIS_country_non_recognize_PREV = yes
+						}
+					}
+				}
+				modifier = {
+					factor = 0
+					NOT = {
+						any_state = {
+							OR = {
+								state = 190
+								state = 810
+								state = 808
+							}
+							CONTROLLER = {
+								OR = {
+									tag = ROOT
+									is_subject_of = ROOT
+									is_in_faction_with = ROOT
+								}
+							}
+						}
+					}
+				}
+			}
+			35 = {
+				WVA = {
+					every_unit_leader = {
+						set_nationality = NWA
+					}
+				}
+				NWA = {
+					add_popularity = { ideology = authoritarism popularity = 0.1 }
+					division_template = {
+						name = "Pekhotnyy polk"
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+						}
+						support = {
+							artillery = { x = 0 y = 0 }
+						}
+						priority = 1
+						is_locked = yes
+					}
+					190 = {
+						create_unit = {
+							division = "name = \"I Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+							owner = NWA
+							allow_spawning_on_enemy_provs = yes
+						}
+						create_unit = {
+							division = "name = \"II Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+							owner = NWA
+							allow_spawning_on_enemy_provs = yes
+						}
+						create_unit = {
+							division = "name = \"III Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+							owner = NWA
+							allow_spawning_on_enemy_provs = yes
+						}
+					}
+				}
+			}
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	option = {
+		trigger = {
+			any_state = {
+				state = 190
+				CONTROLLER = {
+					OR = {
+						tag = ROOT
+						is_subject_of = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+			}
+		}
+		name = rcw_bfk.19.b
+		WVA = {
+			inherit_technology = LAT
+			transfer_state = 190
+			every_state = {
+				limit = {
+					OR = {
+						is_core_of = EST
+						is_core_of = LAT
+						is_core_of = LIT
+					}
+				}
+				add_core_of = WVA
+			}
+			add_ideas = neutral_foreign_policy_law
+			division_template = {
+				name = "Pekhotnyy polk"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+				}
+				support = {
+					artillery = { x = 0 y = 0 }
+				}
+				priority = 1
+				is_locked = yes
+			}
+			190 = {
+				create_unit = {
+					division = "name = \"I Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = WVA
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"II Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = WVA
+					allow_spawning_on_enemy_provs = yes
+				}
+				create_unit = {
+					division = "name = \"III Pekhotnyy polk\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.7 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = WVA
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			declare_war_on = {
+				target = LAT
+				type = annex_everything
+			}
+			every_country = {
+				limit = {
+					has_war_with = LAT
+					NOT = { tag = NWA tag = EST tag = LIT tag = POL }
+				}
+				PREV = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			if = {
+				limit = { EST = { NOT = { has_war_with = ROOT has_war_with = WVA } is_subject = no } }
+				EST = { country_event = { id = rcw_bfk.10 days = 1 } }
+			}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Ландвер устанавливает свои порядки в Литве и Эстонии
+country_event = {
+	id = rcw_bfk.20
+	title = rcw_bfk.20.t
+	desc = rcw_bfk.20.d
+	picture = GFX_report_event_lat_niedra
+	
+	trigger = {
+		OR = {
+			original_tag = LAT
+			tag = LAT
+		}
+		has_government = authoritarism
+		has_country_flag = LAT_germanization
+		has_civil_war = no
+		OR = {
+			EST = { exists = yes }
+			LIT = { exists = yes }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.20.a
+		add_war_support = -0.05
+		add_stability = 0.05
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.20.b
+		every_state = {
+			limit = { is_core_of = EST }
+			add_claim_by = LAT
+		}
+		every_state = {
+			limit = { is_core_of = LIT }
+			add_claim_by = LAT
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.20.c
+		every_state = {
+			limit = { is_core_of = EST }
+			add_claim_by = LAT
+		}
+		every_state = {
+			limit = { is_core_of = LIT }
+			add_claim_by = LAT
+		}
+		if = {
+			limit = { EST = { exists = yes } }
+			declare_war_on = {
+				target = EST
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = { LIT = { exists = yes } }
+			declare_war_on = {
+				target = LIT
+				type = annex_everything
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Самоопределение Латышей на брестских мирных переговорах
+country_event = {
+	id = rcw_bfk.21
+	title = rcw_bfk.21.t
+	desc = rcw_bfk.21.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RUS
+		NOT = { has_country_flag = RUS_brest_peace_fired }
+		has_war_with = GER
+		has_country_flag = RUS_Oktober_revolution_fired
+		OR = {
+			has_idea = brest_negotiation_truce_Russia_and_allies
+			has_idea = brest_negotiation_truce_Central_powers
+		}
+		any_state = {
+			OR = {
+				state = 808
+				state = 190
+				state = 809
+				state = 1351
+				state = 810
+				state = 12
+			}
+			is_owned_by = ROOT
+			is_controlled_by = ROOT
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = rcw_bfk.21.a
+		every_state = {
+			limit = { is_core_of = LAT }
+			add_core_of = SLT
+		}
+		every_state = {
+			limit = {
+				is_core_of = SLT
+				is_owned_by = ROOT
+				is_controlled_by = ROOT
+			}
+			SLT = { transfer_state = PREV }
+		}
+		SLT = { add_ideas = neutral_foreign_policy_law give_military_access = RUS load_oob = SLT_1917 }
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.21.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Германский империализм
+country_event = {
+	id = rcw_bfk.22
+	title = rcw_bfk.22.t
+	desc = rcw_bfk.22.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = GER
+		COU = { exists = yes is_subject_of = GER }
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		SLT = { exists = yes is_subject = no NOT = { has_war_with = GER } }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.22.a
+		add_political_power = -25
+		declare_war_on = {
+			target = SLT
+			type = annex_everything
+		}
+	}
+	option = {
+		name = rcw_bfk.22.b
+		COU = { add_autonomy_score = { value = 100 localization = ind_points_100_for_COU } }
+	}
+}
+
+# Ландвер установил контроль над Прибалтикой
+country_event = {
+	id = rcw_bfk.23
+	title = rcw_bfk.23.t
+	desc = rcw_bfk.23.d
+	picture = GFX_report_event_lat_niedra
+	
+	trigger = {
+		OR = {
+			original_tag = LAT
+			tag = LAT
+		}
+		has_government = authoritarism
+		has_country_flag = LAT_germanization
+		AND = {
+			OR = {
+				EST = { is_subject_of = ROOT }
+				AND = { EST = { exists = no } controls_state = 812 }
+			}
+			OR = {
+				LIT = { is_subject_of = ROOT }
+				AND = { LIT = { exists = no } controls_state = 11 }
+			}
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.23.a
+		ai_chance = {
+			factor = 1
+		}
+		save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR
+		save_global_event_target_as = INTEGRATING_COUNTRY_MINOR
+		UBD = { save_global_event_target_as = UNITED_COUNTRY }
+		party_populatiry_addition_script_1 = yes
+		set_ruling_party_for_uniting_country_script = yes
+		UBD = {
+			transfer_state = 808
+			add_ideas = {
+				LAT_german_mercenary
+				UBD_separatism
+			}
+			create_country_leader = { name = "Andrievs Niedra" desc = "" picture = "gfx/leaders/LAT/Portrait_Andrevs_Niedra.dds" expire = "1965.1.1" ideology = authoritarism_ideology traits = { } }
+		}
+		country_event = { id = rcw_bfk.24 hours = 1 }
+	}
+	
+	option = {
+		name = rcw_bfk.23.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Ландвер установил контроль над Прибалтикой
+country_event = {
+	id = rcw_bfk.24
+	title = rcw_bfk.24.t
+	desc = rcw_bfk.24.d
+	picture = GFX_report_event_lat_niedra
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.24.a
+		event_target:UNITED_COUNTRY = {
+			set_popularities = {
+					radical_socialism = var:radical_socialism_party
+					communism = var:communism_party
+					social_democracy = var:social_democracy_party
+					social_liberalism = var:social_liberalism_party
+					market_liberalism = var:market_liberalism_party
+					conservatism = var:conservatism_party
+					authoritarism = var:authoritarism_party
+					despotism = var:despotism_party
+					fascism = var:fascism_party
+					national_syndicalism = var:national_syndicalism_party
+			}
+		}
+		THE_GREAT_TWO_COUNTRIES_INTERGRATION_SCRIPT = yes
+	}
+}
+
+# Параход "Саратов" (Эстония)
+country_event = {
+	id = rcw_bfk.25
+	title = rcw_bfk.25.t
+	desc = rcw_bfk.25.d
+	picture = GFX_report_event_lat_niedra
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.25.a
+		set_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		ai_chance = {
+			factor = 7
+		}
+	}
+	option = {
+		name = rcw_bfk.25.b
+		reverse_add_opinion_modifier = { target = FROM modifier = EST_is_friend_for_LAT_Niedra }
+		ai_chance = {
+			factor = 3
+		}
+	}
+}
+
+# Встреча с ландвером (Эстония)
+country_event = {
+	id = rcw_bfk.26
+	title = rcw_bfk.26.t
+	desc = rcw_bfk.26.d
+	picture = GFX_report_event_lat_niedra
+	
+	trigger = {
+		tag = EST
+		NOT = { has_war_with = LAT }
+		any_other_country = { original_tag = LAT has_government = authoritarism has_country_flag = LAT_ger_gov }
+		has_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		any_state = {
+			is_controlled_by = ROOT
+			NOT = { state = 811 }
+			any_neighbor_state = {
+				is_controlled_by = LAT
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.26.a
+		random_other_country = {
+			limit = { original_tag = LAT has_government = authoritarism has_country_flag = LAT_ger_gov }
+			ROOT = {
+				declare_war_on = {
+					target = PREV
+					type = annex_everything
+				}
+			}
+		}
+		ai_chance = {
+			factor = 3
+		}
+	}
+	option = {
+		name = rcw_bfk.26.b
+		hidden_effect = { country_event = { id = rcw_bfk.29 days = 14 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Возвращение Ульманиса (Латвия)
+country_event = {
+	id = rcw_bfk.27
+	title = rcw_bfk.27.t
+	desc = rcw_bfk.27.d
+	picture = GFX_report_event_lat_niedra
+	
+	trigger = {
+		tag = LAT
+		has_government = authoritarism
+		has_country_flag = LAT_ger_gov
+		OR = {
+			has_civil_war = yes
+			AND = {
+				has_war_with = EST
+				EST = { has_country_flag = EST_will_help_Ulmanism_to_retake_LAT }
+			}
+		}
+		OR = {
+			any_other_country = { controls_state = 808 }
+			any_other_country = { has_full_control_of_state = 12 }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.27.a
+		
+		remove_ideas = LAT_german_mercenary
+		every_unit_leader = {
+			limit = {
+				OR = {
+					has_id = 34101
+					has_id = 34102
+				}
+			}
+			set_nationality = REB
+		}
+		clr_country_flag = LAT_ger_gov
+		set_country_flag = LAT_civil
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.15
+		}
+		add_opinion_modifier = { target = FROM modifier = EST_helps_LAT }
+		reverse_add_opinion_modifier = { target = FROM modifier = EST_helps_LAT }
+		if = {
+			limit = { EST = { has_country_flag = EST_will_help_Ulmanism_to_retake_LAT } }
+			EST = {
+				white_peace = LAT
+				country_event = rcw_bfk.28
+			}
+		}
+		if = {
+			limit = {
+				any_other_country = {
+					original_tag = ROOT has_war_with = ROOT has_government = despotism
+				}
+			}
+			create_country_leader = { name = "Karlis Ulmanis" desc = "" picture = "gfx/leaders/LAT/Portrait_Karlis_Ulmanis.dds" expire = "1965.1.1" ideology = despotism_ideology traits = { } }
+			random_other_country = {
+				limit = { original_tag = ROOT has_war_with = ROOT has_government = despotism }
+				ROOT = {
+					annex_country = {
+						target = PREV
+						transfer_troops = yes
+					}
+				}
+				every_unit_leader = {
+					set_nationality = ROOT
+				}
+				remove_ideas = LAT_german_mercenary
+				if = {
+					limit = { is_ai = no ROOT = { is_ai = yes } }
+					ROOT = { change_tag_from = PREV }
+				}
+			}
+		}
+	}
+}
+
+# Возвращение Ульманиса (Эстония)
+country_event = {
+	id = rcw_bfk.28
+	title = rcw_bfk.28.t
+	desc = rcw_bfk.28.d
+	picture = GFX_report_event_lat_niedra
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.28.a
+		clr_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+	}
+}
+
+# скрытое объявление войны
+country_event = {
+	id = rcw_bfk.29
+	
+	trigger = {
+		tag = EST
+		NOT = { has_war_with = LAT }
+		any_other_country = { original_tag = LAT has_government = authoritarism has_country_flag = LAT_ger_gov }
+		has_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+	}
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		random_other_country = {
+			limit = { original_tag = LAT has_government = authoritarism has_country_flag = LAT_ger_gov }
+			ROOT = {
+				declare_war_on = {
+					target = PREV
+					type = annex_everything
+				}
+			}
+		}
+	}
+}
+
+
+# Литовская советская республика
+country_event = {
+	id = rcw_bfk.30
+	title = rcw_bfk.161.t
+	desc = rcw_bfk.161.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RSR
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = LIT
+		NOT = { any_other_country = { original_tag = LIT is_subject_of = ROOT } }
+		NOT = { LIT = { any_other_country = { original_tag = PREV has_war_with = PREV } } }
+		any_state = {
+			is_owned_by = LIT
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.9.a
+		create_dynamic_country = {
+			original_tag = LIT
+			save_global_event_target_as = LIT_CW
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				#create_country_leader
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LIT
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LIT
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:LIT_CW = { set_state_owner = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = LIT
+				type = annex_everything
+			}
+			add_civil_war_target = LIT
+			set_cosmetic_tag = LIT_sovrep
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
+				declare_war_on = {
+					target = event_target:LIT_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
+				event_target:LIT_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:LIT_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LIT
+							is_owned_by = event_target:LIT_CW
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LIT
+							}
+						}
+					}
+					set_state_province_controller = {
+						controller = event_target:LIT_CW
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+				}
+			}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		LIT = {
+			transfer_units_fraction= {
+				target = event_target:LIT_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		clear_global_event_target = LIT_CW
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.9.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Латвийская социалистическая советская республика
+country_event = {
+	id = rcw_bfk.31
+	title = rcw_bfk.31.t
+	desc = rcw_bfk.31.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RSR
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = LAT
+		NOT = { any_other_country = { original_tag = LAT is_subject_of = ROOT } }
+		NOT = { LAT = { any_other_country = { original_tag = PREV has_war_with = PREV } } }
+		any_state = {
+			is_owned_by = LAT
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.31.a
+		create_dynamic_country = {
+			original_tag = LAT
+			save_global_event_target_as = LAT_CW
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				create_country_leader = { name = "Peter Stuchka" desc = "" picture = "gfx/leaders/LAT/Portrait_Petr_Stuchka.dds" expire = "1965.1.1" ideology = leninism traits = { } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LAT
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LAT
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:LAT_CW = { set_state_owner = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = LAT
+				type = annex_everything
+			}
+			add_civil_war_target = LAT
+			set_cosmetic_tag = LAT_socsovrep
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:LAT_CW } }
+				declare_war_on = {
+					target = event_target:LAT_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:LAT_CW } }
+				event_target:LAT_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:LAT_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LAT
+							is_owned_by = event_target:LAT_CW
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LAT
+							}
+						}
+					}
+					set_state_province_controller = {
+						controller = event_target:LAT_CW
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+				}
+			}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+							has_war_with = PREV
+							is_in_faction_with = PREV
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		LAT = {
+			transfer_units_fraction= {
+				target = event_target:LAT_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		clear_global_event_target = LAT_CW
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.31.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+# Земельный вопрос
+country_event = {
+	id = rcw_bfk.32
+	title = rcw_bfk.32.t
+	desc = rcw_bfk.32.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		original_tag = LAT
+		has_government = communism
+		NOT = { has_global_flag = RUS_civil_war_over }
+		is_subject_of = RUS
+		controls_state = 808
+		has_war_with = LAT
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.32.a
+		add_popularity = {
+			ideology = communism
+			popularity = 0.05
+		}
+		add_political_power = -25
+		add_manpower = -2000
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_bfk.31.b
+		add_popularity = {
+			ideology = communism
+			popularity = -0.05
+		}
+		add_timed_idea = { idea = mutiny_1 days = 15 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+
+# Воззвание Северного корпуса
+country_event = {
+	id = rcw_bfk.100
+	title = rcw_bfk.100.t
+	desc = rcw_bfk.100.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.100.a
+	}
+	option = {
+		trigger = { is_ai = no NWA = { is_ai = yes } }
+		name = rcw_bfk.100.b
+		NWA = { change_tag_from = ROOT }
+	}
+}
+
+# Вывод немецких войск из Пскова
+country_event = {
+	id = rcw_bfk.101
+	title = rcw_bfk.101.t
+	desc = rcw_bfk.101.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		has_start_date < 1918.11.11
+		tag = GER
+		OR = { has_country_flag = GER_monarchy_fall has_global_flag = WWI_GER_HAS_CAPITULATED }
+		owns_state = 209
+		RUS = { has_country_flag = RUS_brest_peace_fired }
+		NOT = { has_war_with = RUS }
+		NOT = { has_war_with = UBD }
+		NOT = { has_global_flag = NWA_creature_in_MCW }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.101.a
+		every_state = {
+			limit = {
+				OR = {
+					region = 132
+					state = 1002
+				}
+				is_core_of = RUS
+			}
+			add_core_of = NWA
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					region = 132
+					state = 1002
+				}
+			}
+			NWA = { transfer_state = PREV }
+		}
+		if = {
+			limit = { NWA = { exists = yes } }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_country_flag = NWA_North_corps }
+		}
+		if = {
+			limit = { UBD = { exists = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					OR = {
+						is_core_of = LAT
+						state = 191
+						state = 13
+						state = 1004
+					}
+					OR = {
+						region = 37
+						state = 1002
+						state = 1004
+						state = 1351
+					}
+				}
+				UBD = { transfer_state = PREV }
+			}
+			else = {
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							is_core_of = LAT
+							state = 191
+							state = 13
+							state = 1004
+						}
+						OR = {
+							region = 37
+							state = 1002
+							state = 1004
+							state = 1351
+						}
+					}
+					LAT = { transfer_state = PREV }
+				}
+			}
+		}
+		NWA = {
+			inherit_technology = RUS
+			every_country = {
+				limit = {
+					NOT = {
+						tag = PREV
+						is_any_former_russian_empire_country = yes
+						former_russian_empire_baltic_states_country = yes tag = HRB
+						has_war_with = PREV
+						is_in_faction_with = PREV
+					}
+				}
+				set_THIS_country_non_recognize_PREV = yes
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+				producer = NWA
+			}
+		}
+		hidden_effect = { UBD = { country_event = rcw_bfk.100 } }
+		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
+	}
+	option = {
+		trigger = { is_ai = no }
+		name = rcw_bfk.101.b
+		every_state = {
+			limit = {
+				OR = {
+					region = 132
+					state = 1002
+				}
+				is_core_of = RUS
+			}
+			add_core_of = NWA
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					region = 132
+					state = 1004
+				}
+			}
+			NWA = { transfer_state = PREV }
+		}
+		if = {
+			limit = { NWA = { exists = yes } }
+			NWA = { set_cosmetic_tag = NWA_north_corps load_oob = NWA_north_corps set_country_flag = NWA_North_corps }
+		}
+		if = {
+			limit = { UBD = { exists = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					OR = {
+						is_core_of = LAT
+						state = 191
+						state = 13
+						state = 1004
+					}
+					OR = {
+						region = 37
+						state = 1002
+						state = 1004
+						state = 1351
+					}
+				}
+				UBD = { transfer_state = PREV }
+			}
+			else = {
+				every_state = {
+					limit = {
+						is_owned_by = ROOT
+						OR = {
+							is_core_of = LAT
+							state = 191
+							state = 13
+							state = 1004
+						}
+						OR = {
+							region = 37
+							state = 1002
+							state = 1004
+							state = 1351
+						}
+					}
+					LAT = { transfer_state = PREV }
+				}
+			}
+		}
+		NWA = {
+			inherit_technology = RUS
+			every_country = {
+				limit = {
+					NOT = {
+						tag = PREV
+						is_any_former_russian_empire_country = yes
+						former_russian_empire_baltic_states_country = yes tag = HRB
+						has_war_with = PREV
+						is_in_faction_with = PREV
+					}
+				}
+				set_THIS_country_non_recognize_PREV = yes
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+				producer = NWA
+			}
+		}
+		hidden_effect = { UBD = { country_event = rcw_bfk.100 } }
+		hidden_effect = { RUS = { country_event = rcw_bfk.102 } }
+		NWA = { change_tag_from = ROOT }
+	}
+}
+
+# Воззвание Северного корпуса
+country_event = {
+	id = rcw_bfk.102
+	title = rcw_bfk.102.t
+	desc = rcw_bfk.102.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.102.a
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = rcw_bfk.102.b
+		declare_war_on = {
+			target = NWA
+			type = annex_everything
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { is_ai = no NWA = { is_ai = yes } }
+		name = rcw_bfk.102.c
+		declare_war_on = {
+			target = NWA
+			type = annex_everything
+		}
+		NWA = { change_tag_from = ROOT }
+	}
+}
+
+# Принятие Северного корпуса на службу к эстонцам
+country_event = {
+	id = rcw_bfk.103
+	title = rcw_bfk.103.t
+	desc = rcw_bfk.103.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = NWA
+		NWA = { has_country_flag = NWA_North_corps }
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 7
+		modifier = {
+			factor = 5
+			OR = {
+				controls_state = 209
+				EST = { exists = no }
+			}
+		}
+	}
+	
+	option = {
+		trigger = { EST = { exists = yes } NOT = { has_war_with = EST has_global_flag = RUS_civil_war_over } }
+		name = rcw_bfk.103.a
+		EST = { country_event = rcw_bfk.104 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		trigger = { OR = { EST = { exists = no } has_war_with = EST has_global_flag = RUS_civil_war_over is_ai = no } }
+		name = rcw_bfk.103.b
+		drop_cosmetic_tag = yes
+		clr_country_flag = NWA_North_corps
+		add_manpower = 8000
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = rcw_bfk.104
+	title = rcw_bfk.104.t
+	desc = rcw_bfk.104.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.102.a
+		if = {
+			limit = { UBD = { exists = yes num_of_controlled_states < 4 } }
+			annex_country = {
+				target = UBD
+				transfer_troops = yes
+			}
+		}
+		add_political_power = -25
+		if = {
+			limit = { NWA = { controls_state = 209 } }
+			if = {
+				limit = { NWA = { has_war_with = RUS } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
+			}
+			give_military_access = NWA
+			NWA = { give_military_access = EST }
+			NWA = { drop_cosmetic_tag = yes }
+			NWA = { clr_country_flag = NWA_North_corps }
+		}
+		else_if = {
+			limit = {
+				OR = {
+					owns_state = 191
+					owns_state = 1004
+					NWA = {
+						OR = {
+							owns_state = 191
+							owns_state = 1004
+						}
+					}
+				}
+			}
+			NWA = {
+				transfer_state = 191
+				transfer_state = 1004
+			}
+			every_state = {
+				limit = {
+					is_owned_by = NWA
+					is_controlled_by = RUS
+				}
+				RUS = { set_state_owner = PREV }
+			}
+			if = {
+				limit = { RUS = { owns_state = 209 } }
+				RUS = { set_state_owner = 210 set_state_owner = 1015 }
+			}
+			EST = { NWA = { subjecting_script_with_transfer_parties_colony = yes } }
+		}
+		else = {
+			add_manpower = 8000
+			every_state = {
+				limit = {
+					is_owned_by = NWA
+					is_controlled_by = RUS
+				}
+				set_state_flag = will_annexed_by_RUS
+			}
+			annex_country = {
+				target = NWA
+				transfer_troops = yes
+			}
+			every_state = {
+				limit = {
+					has_state_flag = will_annexed_by_RUS
+				}
+				clr_state_flag = will_annexed_by_RUS
+				RUS = { set_state_owner = PREV }
+			}
+			EST = { change_tag_from = NWA }
+		}
+	}
+}
+
+# Формирование СЗА на территориях, оккупированных Эстонией у России
+country_event = {
+	id = rcw_bfk.105
+	title = rcw_bfk.105.t
+	desc = rcw_bfk.105.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = EST
+		has_war_with = RUS
+		NWA = { OR = { exists = no AND = { is_subject_of = ROOT has_country_flag = NWA_North_corps } } }
+		OR = {
+			controls_state = 209
+			NWA = { controls_state = 209 }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 10
+	}
+	
+	option = {
+		name = rcw_bfk.105.a
+		if = {
+			limit = { NWA = { exists = no } }
+			EST = {
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnyy polk"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Kavaleristskiy polk"
+				}
+			}
+			NWA = {
+				transfer_state = 209
+				if = {
+					limit = { EST = { has_war_with = RUS } NOT = { has_war_with = RUS} }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				load_oob = NWA_north_corps
+				clr_country_flag = NWA_North_corps
+				drop_cosmetic_tag = yes
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 1000
+					producer = NWA
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						region = 132
+						state = 1002
+					}
+					is_core_of = RUS
+				}
+				add_core_of = NWA
+			}
+			else = {
+				EST = { end_puppet = NWA }
+				NWA = {
+					declare_war_on = {
+						target = EST
+						type = annex_everything
+					}
+					clr_country_flag = NWA_North_corps
+					drop_cosmetic_tag = yes
+				}
+			}
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.105.b
+		if = {
+			limit = { NWA = { exists = no } }
+			EST = {
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnyy polk"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Kavaleristskiy polk"
+				}
+			}
+			NWA = {
+				transfer_state = 209
+				if = {
+					limit = { EST = { has_war_with = RUS } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				give_military_access = EST
+				EST = { give_military_access = NWA }
+				load_oob = NWA_north_corps
+				clr_country_flag = NWA_North_corps
+				drop_cosmetic_tag = yes
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 1000
+					producer = NWA
+				}
+			}
+			every_state = {
+				limit = {
+					OR = {
+						region = 132
+						state = 1002
+					}
+					is_core_of = RUS
+				}
+				add_core_of = NWA
+			}
+			else = {
+				EST = { end_puppet = NWA }
+				NWA = {
+					transfer_state = 209
+					give_military_access = EST
+					EST = { give_military_access = NWA }
+					clr_country_flag = NWA_North_corps
+					drop_cosmetic_tag = yes
+				}
+				every_state = {
+					limit = {
+						is_owned_by = NWA
+						OR = {
+							state = 191
+							state = 1004
+						}
+					}
+					EST = { transfer_state = PREV }
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_controlled_by = EST
+					is_controlled_by = NWA
+				}
+				NOT = { is_core_of = EST }
+				OR = {
+					region = 132
+					is_owned_by = RUS
+				}
+			}
+			NWA = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 999
+		}
+	}
+	
+	option = {
+		trigger = { is_ai = no NWA = { exists = no } }
+		name = rcw_bfk.105.c
+		EST = {
+			delete_unit_template_and_units = {
+				division_template = "Pekhotnyy polk"
+			}
+			delete_unit_template_and_units = {
+				division_template = "Kavaleristskiy polk"
+			}
+		}
+		NWA = {
+			transfer_state = 209
+			if = {
+				limit = { EST = { has_war_with = RUS } }
+				declare_war_on = {
+					target = RUS
+					type = annex_everything
+				}
+			}
+			give_military_access = EST
+			EST = { give_military_access = NWA }
+			load_oob = NWA_north_corps
+			clr_country_flag = NWA_North_corps
+			drop_cosmetic_tag = yes
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+				producer = NWA
+			}
+		}
+		every_state = {
+			limit = {
+				OR = {
+					region = 132
+					state = 1002
+				}
+				is_core_of = RUS
+			}
+			add_core_of = NWA
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_controlled_by = EST
+					is_controlled_by = NWA
+				}
+				NOT = { is_core_of = EST }
+				OR = {
+					region = 132
+					is_owned_by = RUS
+				}
+			}
+			NWA = { transfer_state = PREV }
+		}
+		NWA = { change_tag_from = EST }
+	}
+}
+
+# СЗА выбирает стратегию
+country_event = {
+	id = rcw_bfk.106
+	title = rcw_bfk.106.t
+	desc = rcw_bfk.106.d
+	picture = GFX_report_event_nwa_strategy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.106.a
+		hidden_effect = { remove_ideas = marching_army_idea }
+		hidden_effect = { remove_ideas = NWA_long_strategy }
+		if = {
+			limit = { NOT = { has_idea = NWA_fast_strategy } }
+			add_ideas = NWA_fast_strategy
+			else = {
+				effect_tooltip = {
+					add_ideas = NWA_fast_strategy
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.106.b
+		hidden_effect = { remove_ideas = marching_army_idea }
+		hidden_effect = { remove_ideas = NWA_fast_strategy }
+		if = {
+			limit = { NOT = { has_idea = NWA_long_strategy } }
+			add_ideas = NWA_long_strategy
+			else = {
+				effect_tooltip = {
+					add_ideas = NWA_long_strategy
+				}
+			}
+		}
+	}
+}
+
+# СЗА организует восстание aka "В тылу врага"
+country_event = {
+	id = rcw_bfk.107
+	title = rcw_bfk.107.t
+	desc = rcw_bfk.107.d
+	picture = GFX_report_event_nwa_mowas
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 29
+			}
+		}
+		name = rcw_bfk.107.a
+		send_equipment = {
+			type = infantry_equipment
+			amount = 29
+			target = REB
+		}
+		create_corps_commander = { name = "Nikolay Neklyudov" id = 77468 portrait_path = "gfx/leaders/RUS/Portrait_Nikolay_Neklyudov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+		load_oob = NWA_rice_officers
+		RSR = { country_event = rcw_bfk.125 }
+	}
+	
+	option = {
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 99
+			}
+		}
+		name = rcw_bfk.107.b
+		
+		add_political_power = -50
+		if = {
+			limit = {
+				RGR = { exists = no }
+			}
+				RGR = {
+					add_ideas = {
+						RGR_urban_rural_antogonism
+						RGR_power_decentralisation
+						RGR_supply_bonus
+					}
+					remove_ideas = {
+						RGR_consolidation_of_units_idea
+						RGR_fraternizing_with_proletariat_idea
+						RGR_red_banditry_idea
+						RGR_councils_without_communists_idea
+						RGR_working_peasantry_unions_idea
+						RGR_uprisings_coordination_idea
+						RGR_peasant_gatherings_idea
+						RGR_associations_of_veterans_idea
+						RGR_recruitment_officers_idea
+						RGR_single_headquarters_idea
+						RGR_peasant_army_idea
+						RGR_punitive_forces_idea
+						RGR_atamanshina_idea
+						RGR_forest_brothers_idea
+						RGR_deserters_collection_idea
+						RGR_free_cossackship_idea
+						RGR_cavalry_raiding_idea
+						RGR_voluntary_mobilization_idea
+					}
+					load_focus_tree = { tree = Russia_Green_rebels keep_completed = no }
+					set_politics = { ruling_party = radical_socialism elections_allowed = no }
+					division_template = {
+						name = "Pekhotnaya brigada"
+						regiments = {
+							militia = { x = 0 y = 0 }
+							militia = { x = 0 y = 1 }
+						}
+						is_locked = yes
+					}
+					division_template = {
+						name = "Kavaleriyskaya brigada"
+						regiments = {
+							irregular_cavalry = { x = 0 y = 0 }
+							irregular_cavalry = { x = 0 y = 1 }
+						}
+						is_locked = yes
+					}
+					every_country = {
+						limit = {
+							NOT = {
+								tag = PREV
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes tag = HRB
+								has_war_with = PREV
+								is_in_faction_with = PREV
+							}
+						}
+						set_THIS_country_non_recognize_PREV = yes
+					}
+				}
+			RUS = { set_country_flag = RGR_dont_exists }
+		}
+		send_equipment = {
+			type = infantry_equipment
+			amount = 100
+			target = RGR
+		}
+		RGR = { transfer_state = 244 load_oob = NWA_rice_people }
+		244 = { set_state_flag = RCW_green_state_revolt }
+		hidden_effect = {
+			if = {
+				limit = { RUS = { has_country_flag = RGR_dont_exists } }
+					every_country = {
+						limit = {
+							OR = {
+								any_country = {
+									is_main_former_russian_empire_country_without_other_triggers = yes
+									has_war_with = PREV
+								}
+								is_main_former_russian_empire_country_without_other_triggers = yes
+							}
+							NOT = { has_war_with = RGR }
+							is_subject = no
+							#NOT = { has_completed_focus = IZH_third_way }
+							NOT = { has_completed_focus = VLG_attraction_of_peasant_leaders }
+							OR = {
+								NOT = { has_completed_focus = RUS_attraction_of_peasant_leaders }
+								has_global_flag = RCW_green_Russian_SFSR_revolt_b
+							}
+							NOT = { tag = ROOT }
+						}
+						RGR = {
+							declare_war_on = { target = PREV type = annex_everything }
+						}
+					}
+			}
+		}
+		hidden_effect = { if = { limit = { RUS = { has_country_flag = RGR_dont_exists } } RUS = { country_event = { id = rcw_g.4 days = 60 random = 960 } clr_country_flag = RGR_dont_exists } } }
+	}
+	
+	option = {
+		trigger = {
+			has_equipment = {
+				infantry_equipment > 129
+			}
+		}
+		name = rcw_bfk.107.с
+		send_equipment = {
+			type = infantry_equipment
+			amount = 29
+			target = REB
+		}
+		create_corps_commander = { name = "Nikolay Neklyudov" id = 77468 portrait_path = "gfx/leaders/RUS/Portrait_Nikolay_Neklyudov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+		load_oob = NWA_rice_officers
+		RSR = { country_event = rcw_bfk.125 }
+		
+		add_political_power = -50
+		if = {
+			limit = {
+				RGR = { exists = no }
+			}
+				RGR = {
+					add_ideas = {
+						RGR_urban_rural_antogonism
+						RGR_power_decentralisation
+						RGR_supply_bonus
+					}
+					remove_ideas = {
+						RGR_consolidation_of_units_idea
+						RGR_fraternizing_with_proletariat_idea
+						RGR_red_banditry_idea
+						RGR_councils_without_communists_idea
+						RGR_working_peasantry_unions_idea
+						RGR_uprisings_coordination_idea
+						RGR_peasant_gatherings_idea
+						RGR_associations_of_veterans_idea
+						RGR_recruitment_officers_idea
+						RGR_single_headquarters_idea
+						RGR_peasant_army_idea
+						RGR_punitive_forces_idea
+						RGR_atamanshina_idea
+						RGR_forest_brothers_idea
+						RGR_deserters_collection_idea
+						RGR_free_cossackship_idea
+						RGR_cavalry_raiding_idea
+						RGR_voluntary_mobilization_idea
+					}
+					load_focus_tree = { tree = Russia_Green_rebels keep_completed = no }
+					set_politics = { ruling_party = radical_socialism elections_allowed = no }
+				}
+			RUS = { set_country_flag = RGR_dont_exists }
+		}
+		send_equipment = {
+			type = infantry_equipment
+			amount = 100
+			target = RGR
+		}
+		RGR = { transfer_state = 244 load_oob = NWA_rice_people }
+		244 = { set_state_flag = RCW_green_state_revolt }
+		hidden_effect = {
+			if = {
+				limit = { RUS = { has_country_flag = RGR_dont_exists } }
+				RGR = {
+					if = {
+						limit = { RUS = { exists = yes is_subject = no } }
+						declare_war_on = { target = RUS type = annex_everything }
+					}
+					if = {
+						limit = { RSS = { exists = yes is_subject = no } }
+						declare_war_on = { target = RSS type = annex_everything }
+					}
+					if = {
+						limit = { CCA = { exists = yes is_subject = no } }
+						declare_war_on = { target = CCA type = annex_everything }
+					}
+					if = {
+						limit = { SIB = { exists = yes is_subject = no } }
+						declare_war_on = { target = SIB type = annex_everything }
+					}
+					if = {
+						limit = { RVA = { exists = yes is_subject = no } }
+						declare_war_on = { target = RVA type = annex_everything }
+					}
+					if = {
+						limit = { DON = { exists = yes is_subject = no } }
+						declare_war_on = { target = DON type = annex_everything }
+					}
+					if = {
+						limit = { PRM = { exists = yes is_subject = no } }
+						declare_war_on = { target = PRM type = annex_everything }
+					}
+				}
+			}
+		}
+		hidden_effect = { if = { limit = { RUS = { has_country_flag = RGR_dont_exists } } RUS = { country_event = { id = rcw_g.4 days = 60 random = 960 } clr_country_flag = RGR_dont_exists } } }
+	}
+}
+
+# СЗА поддерживают Савинкова aka "Программа Савинкова"
+country_event = {
+	id = rcw_bfk.108
+	title = rcw_bfk.108.t
+	desc = rcw_bfk.108.d
+	picture = GFX_report_event_nwa_savinkov
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { NOT = { any_other_country = { has_country_leader = { name = "Boris Savinkov" ruling_only = yes } } } }
+		name = rcw_bfk.108.a
+		add_popularity = { ideology = national_syndicalism popularity = 0.10 }
+		add_stability = 0.05
+		add_war_support = 0.05
+		ai_chance = {
+			factor = 999
+		}
+		set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+		retire_country_leader = yes
+		create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Portrait_Boris_Savinkov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology  traits = { leader_of_dark_circles ideological_crusader political_activist political_dancer min_4_prince_of_terror eser_terrorist } }
+		drop_cosmetic_tag = yes
+		set_cosmetic_tag = NWA_PSK
+	}
+	
+	option = {
+		name = rcw_bfk.108.b
+		add_popularity = { ideology = national_syndicalism popularity = 0.10 }
+		add_stability = 0.05
+		add_war_support = 0.05
+		set_politics = { ruling_party = national_syndicalism elections_allowed = no }
+		drop_cosmetic_tag = yes
+	}
+}
+
+# СЗА признали финнов, если не всеросс или нет Колчака, погранконфликт с РСФСР за это признание
+country_event = {
+	id = rcw_bfk.109
+	title = rcw_bfk.109.t
+	desc = rcw_bfk.109.d
+	picture = GFX_report_event_nwa_strategy
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.109.a
+		add_popularity = { ideology = despotism popularity = 0.05 }
+		give_military_access = NWA
+		NWA = { give_military_access = FIN }
+		add_opinion_modifier = { target = NWA modifier = FIN_accept_NWA }
+		NWA = { add_opinion_modifier = { target = FIN modifier = FIN_accept_NWA } }
+		start_border_war = {
+			change_state_after_war = no
+			attacker = {
+				state = 146
+				num_provinces = 2
+				on_win = rcw_bfk.110
+				on_lose = rcw_bfk.111
+				on_cancel = rcw_bfk.112
+			}
+			
+			defender = {
+				state = 216
+				num_provinces = 4
+				on_win = rcw_bfk.111
+				on_lose = rcw_bfk.110
+				on_cancel = rcw_bfk.112
+			}
+		}
+		hidden_effect = { country_event = { id = rcw_bfk.112 days = 7 } }
+		hidden_effect = {
+			216 = {
+				create_unit = {
+					division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.3 start_equipment_factor = 1"
+					owner = RUS
+					prioritize_location = 9078
+				}
+			}
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						tag = ROOT
+						is_in_faction_with = ROOT
+						is_subject_of = ROOT
+					}
+				}
+				if = {
+					limit = {
+						is_in_array = {
+							array = unrecognized_states
+							value = FROM.id
+						}
+					}
+					FROM = {
+						THIS_country_will_be_recognized_by_PREV = yes
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.109.b
+		add_political_power = -30
+		add_opinion_modifier = { target = NWA modifier = FIN_no_accept_NWA }
+		NWA = { add_opinion_modifier = { target = FIN modifier = FIN_no_accept_NWA } }
+	}
+}
+
+# Перемога
+country_event = {
+	id = rcw_bfk.110
+	title = rcw_bfk.110.t
+	desc = rcw_bfk.110.d
+	picture = GFX_report_event_nwa_strategy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.110.a
+		if = {
+			limit = { owns_state = 216 }
+			add_political_power = -50
+			add_war_support = -0.02
+			FIN = {
+				transfer_state = 216
+			}
+		}
+	}
+}
+# Зрада
+country_event = {
+	id = rcw_bfk.111
+	title = rcw_bfk.111.t
+	desc = rcw_bfk.111.d
+	picture = GFX_report_event_nwa_strategy
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.111.a
+		if = {
+			limit = { owns_state = 216 }
+			add_political_power = 50
+			add_war_support = 0.02
+		}
+		if = {
+			limit = { NOT = { owns_state = 216 } }
+			add_political_power = -50
+			add_war_support = -0.02
+			RUS = {
+				transfer_state = 146
+			}
+		}
+	}
+}
+# Конец
+country_event = {
+	id = rcw_bfk.112
+	title = rcw_bfk.112.t
+	desc = rcw_bfk.112.d
+	picture = GFX_report_event_nwa_strategy
+	
+	hidden = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.112.a
+		cancel_border_war = {
+			attacker = 146
+			defender = 216
+		}
+	}
+}
+
+# СЗА взяли Петроград
+country_event = {
+	id = rcw_bfk.113
+	title = rcw_bfk.113.t
+	desc = rcw_bfk.113.d
+	picture = GFX_report_event_nwa_white_petrograd
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.113.a
+		trigger = { OVERLORD = { OR = { tag = RSS tag = SIB tag = RVA } } }
+		OVERLORD = {
+			ROOT = {
+				every_unit_leader = {
+					set_nationality = PREV
+				}
+			}
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.113.b
+		set_state_owner = 195
+		set_capital = { state = 195 }
+		add_stability = 0.10
+		add_war_support = 0.05
+		OVERLORD = { end_puppet = ROOT }
+		clr_country_flag = NWA_puppet
+		every_state = {
+			limit = {
+				OR = {
+					state = 1020
+					state = 1015
+					state = 209
+					state = 1017
+					state = 208
+					state = 1023
+					state = 1021
+					state = 195
+					state = 1019
+					state = 1048
+					state = 263
+					state = 244
+					state = 1016
+					state = 210
+					state = 1022
+					state = 1002
+					state = 1004
+				}
+			}
+			add_core_of = NWA
+		}
+		load_oob = NWA_Petrograd_junkers
+		remove_ideas = NWA_general_governorship
+	}
+	
+	option = {
+		name = rcw_bfk.113.c
+		trigger = { is_subject = no has_government = authoritarism }
+		set_state_owner = 195
+		set_capital = { state = 195 }
+		add_stability = 0.10
+		add_war_support = 0.05
+		add_popularity = { ideology = authoritarism popularity = 0.1 }
+		create_country_leader = { name = "Kirill Vladimirovich Romanov" desc = "" picture = "gfx/leaders/RUS/Portrait_Kirill_Vladimirovich.dds" expire = "1937.10.4" ideology = monarchism traits = { rouge_pretender inexperienced_imperialist } }
+		load_oob = NWA_Petrograd_junkers
+		remove_ideas = NWA_general_governorship
+		clr_country_flag = NWA_puppet
+	}
+}
+
+# Предложение СЗА об объединении
+country_event = {
+	id = rcw_bfk.121
+	title = rcw_bfk.121.t
+	desc = rcw_bfk.121.d
+	picture = GFX_report_event_nwa_white_petrograd
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.121.a
+		WVA = {
+			every_unit_leader = {
+				set_nationality = FROM
+			}
+		}
+		FROM = {
+			annex_country = {
+				target = WVA
+				transfer_troops = yes
+			}
+		}
+		ai_chance = {
+			factor = 3
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.121.b
+		add_opinion_modifier = { target = FROM modifier = WVA_dont_merge_with_NWA }
+		FROM = { add_opinion_modifier = { target = WVA modifier = WVA_dont_merge_with_NWA } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				FROM = { has_completed_focus = NWA_orientation_berlin }
+			}
+		}
+	}
+}
+
+# СЗА атакует Прибалтов aka Русская угроза
+country_event = {
+	id = rcw_bfk.122
+	title = rcw_bfk.122.t
+	desc = rcw_bfk.122.d
+	picture = GFX_report_event_nwa_white_petrograd
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.122.a
+		declare_war_on = {
+			target = NWA
+			type = annex_everything
+		}
+		add_war_support = 0.1
+		ai_chance = {
+			factor = 4
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.122.b
+		NWA = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = no
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 16
+				tag = LAT
+				OR = {
+					NOT = { controls_state = 808 }
+					surrender_progress > 0.2
+				}
+			}
+		}
+	}
+}
+
+# Выбор формы правления княжества
+country_event = {
+	id = rcw_bfk.123
+	title = rcw_bfk.123.t
+	desc = rcw_bfk.123.d
+	picture = GFX_report_event_nwa_white_petrograd
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = { initiate_verification_of_the_popularity_of_coalitions = yes }
+	}
+	
+	option = {
+		name = rcw_bfk.123.a
+		add_ideas = {
+			absolute_monarchy_gov_form
+			local_assembly_decisions_b_law
+			ban_all_parties_law
+		}
+		set_politics = {
+			ruling_party = authoritarism
+			elections_allowed = no
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.123.b
+		add_ideas = {
+			presidential_republic_gov_form
+			constitution_b_law
+			poliparty_system_law
+		}
+		elections_allowed_48 = yes
+		hold_election = ROOT
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+
+# Восстание в форте "Красная горка"
+country_event = {
+	id = rcw_bfk.125
+	title = rcw_bfk.125.t
+	desc = rcw_bfk.125.d
+	picture = GFX_report_event_nwa_krasnya_gorka
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.125.a
+	}
+}
+
+# Выбор правителя СЗА
+country_event = {
+	id = rcw_bfk.158
+	title = rcw_bfk.158.t
+	desc = {
+		text = rcw_bfk.158.d
+		trigger = {
+			tag = NWA
+		}
+	}
+	desc = {
+		text = rcw_bfk.158.d_1
+		trigger = {
+			NOT = { tag = NWA }
+		}
+	}
+	picture = GFX_report_event_nwa_yudenich_vs_rodzyanko
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = rcw_bfk.158.a
+		NWA = {
+			set_politics = { ruling_party = authoritarism }
+			every_unit_leader = { limit = { has_id = 77714 is_field_marshal = no } promote_leader = yes }
+			every_unit_leader = { limit = { has_id = 88173 is_field_marshal = yes } demote_leader = yes }
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.158.b
+		NWA = { set_politics = { ruling_party = despotism } }
+	}
+}
+
+# СЗА становится марионеткой РСС
+country_event = {
+	id = rcw_bfk.159
+	title = rcw_bfk.159.t
+	desc = rcw_bfk.159.d
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	trigger = {
+		tag = RSS
+		NWA = { has_country_flag = NWA_puppet }
+		NWA = { is_subject = no }
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	hidden = yes
+	
+	option = {
+		name = rcw_bfk.159.a
+		RSS = { NWA = { subjecting_script_with_transfer_parties_dominion = yes } }
+		country_event = { id = rcw_bfk.158 days = 1 }
+	}
+}
+
+# Экспедиционные войска СЗА
+country_event = {
+	id = rcw_bfk.160
+	title = rcw_bfk.160.t
+	desc = rcw_bfk.160.d
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.160.a
+		add_ai_strategy = {
+			type = send_volunteers_desire
+			id = NWA
+			value = 200
+		}
+		add_opinion_modifier = { target = NWA modifier = Entente_accept_NWA }
+		NWA = { add_ideas = help_from_foreign_interventionists }
+	}
+	
+	option = {
+		name = rcw_bfk.160.b
+		add_opinion_modifier = { target = NWA modifier = Entente_no_accept_NWA }
+	}
+}
+
+#Указ о создании литовской армии
+country_event = {
+	id = rcw_bfk.163
+	title = rcw_bfk.163.t
+	desc = rcw_bfk.163.d
+	
+	fire_only_once = yes
+	
+	picture = GFX_report_event_lit_lithuanian_army
+	
+	trigger = {
+		tag = LIT
+		exists = yes
+	}
+	
+	mean_time_to_happen = {
+		days = 180
+		modifier = {
+			factor = 0.02
+			is_subject = no
+			has_war = yes
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.163.a
+		add_ideas = {
+			LIT_nationalism
+		}
+		hidden_effect = {
+			country_event = { id = rcw_bfk.164 days = 28 }
+			country_event = { id = rcw_bfk.168 days = 83 }
+		}
+	}
+}
+
+#Поддержка Германии?
+country_event = {
+	id = rcw_bfk.164
+	title = rcw_bfk.164.t
+	desc = rcw_bfk.164.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_german_help_hand
+	
+	trigger = {
+		tag = LIT
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_bfk.164.a
+		add_political_power = -25
+		GER = { country_event = { id = rcw_bfk.165 days = 1 } }
+	}
+	option = {
+		name = rcw_bfk.164.b
+		add_political_power = 50
+	}
+}
+
+#Просьба из Литвы
+country_event = {
+	id = rcw_bfk.165
+	title = rcw_bfk.165.t
+	desc = rcw_bfk.165.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_german_help_hand
+	
+	trigger = {
+		tag = GER
+		NOT = {
+		    has_war_with = LIT
+		}
+	}
+	
+	option = {
+		name = rcw_bfk.165.a
+		ai_chance = {
+			factor = 1
+		}
+		army_experience = 10
+		LIT = { country_event = { id = rcw_bfk.166 days = 1 } }
+		add_manpower = -6500
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = 500
+			target = LIT
+		}
+	}
+	option = {
+		name = rcw_bfk.165.b
+		ai_chance = {
+			factor = 0
+		}
+        LIT = { country_event = { id = rcw_bfk.167 days = 1 } }
+	}
+}
+
+#Германские добровольцы
+country_event = {
+	id = rcw_bfk.166
+	title = rcw_bfk.166.t
+	desc = rcw_bfk.166.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_german_help_hand
+	
+	trigger = {
+		tag = LIT
+	}
+	
+	option = {
+		name = rcw_bfk.166.a
+		add_ideas = {
+			LIT_german_advisors
+		}
+		hidden_effect = {
+			division_template = {
+				name = "South Lithuanian Saxon Volunteer Brigade"
+				regiments = {
+					militia = { x = 0 y = 0 }
+				}
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I South Lithuanian Saxon Volunteer Brigade\" division_template = \"South Lithuanian Saxon Volunteer Brigade\" start_experience_factor = 0.4 start_equipment_factor = 1"
+				owner = ROOT
+			}
+		}
+	}
+}
+
+#Германия отказалась
+country_event = {
+	id = rcw_bfk.167
+	title = rcw_bfk.167.t
+	desc = rcw_bfk.167.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_german_help_hand
+	
+	trigger = {
+		tag = LIT
+	}
+	
+	option = {
+		name = rcw_bfk.167.a
+	}
+}
+
+#Первые добровольческие формирования (Литва)
+country_event = {
+	id = rcw_bfk.168
+	title = rcw_bfk.168.t
+	desc = rcw_bfk.168.d
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+	
+	picture = GFX_report_event_lit_mobilization
+	
+	trigger = {
+		tag = LIT
+	}
+	
+	option = {
+		name = rcw_bfk.168.a
+		hidden_effect = {
+			division_template = {
+				name = "Lithuanian Volunteers"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+				}
+			}
+			division_template = {
+				name = "Saxon Volunteer Regiment"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+				}
+				is_locked = yes
+			}
+		}
+		hidden_effect = {
+			country_event = { id = rcw_bfk.169 days = 38 }
+			country_event = { id = rcw_bfk.171 days = 88 }
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I Lithuanian Volunteers\" division_template = \"Lithuanian Volunteers\" start_experience_factor = 0.15 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Lithuanian Volunteers\" division_template = \"Lithuanian Volunteers\" start_experience_factor = 0.15 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"III Lithuanian Volunteers\" division_template = \"Lithuanian Volunteers\" start_experience_factor = 0.15 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"I Saxon Volunteer Regiment\" division_template = \"Saxon Volunteer Regiment\" start_experience_factor = 0.4 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Saxon Volunteer Regiment\" division_template = \"Saxon Volunteer Regiment\" start_experience_factor = 0.4 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"III Saxon Volunteer Regiment\" division_template = \"Saxon Volunteer Regiment\" start_experience_factor = 0.4 start_equipment_factor = 1"
+				owner = ROOT
+			}
+		}
+	}
+}
+
+#Всеобщая мобилизация
+country_event = {
+	id = rcw_bfk.169
+	title = rcw_bfk.169.t
+	desc = rcw_bfk.169.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_mobilization
+	
+	trigger = {
+		tag = LIT
+	}
+	
+	option = {
+		name = rcw_bfk.169.a
+		rise_mobilization_economy_law_war = yes
+		hidden_effect = {
+			country_event = { id = rcw_bfk.170 days = 59 }
+		}
+	}
+}
+
+#Итоги мобилизации
+country_event = {
+	id = rcw_bfk.170
+	title = rcw_bfk.170.t
+	desc = rcw_bfk.170.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_mobilization
+	
+	trigger = {
+		tag = LIT
+	}
+	
+	option = {
+		name = rcw_bfk.170.a
+		hidden_effect = {
+			division_template = {
+				name = "Lithuanian Militia"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+				}
+				is_locked = yes
+			}
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"I Lithuanian Militia\" division_template = \"Lithuanian Militia\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"II Lithuanian Militia\" division_template = \"Lithuanian Militia\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"III Lithuanian Militia\" division_template = \"Lithuanian Militia\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"IV Lithuanian Militia\" division_template = \"Lithuanian Militia\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"V Lithuanian Militia\" division_template = \"Lithuanian Militia\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = ROOT
+			}
+		}
+		
+		add_manpower = 5000
+		if = {
+			limit = {
+				NOT = {
+					has_idea = lack_of_officers_4
+					has_idea = lack_of_officers_3
+					has_idea = lack_of_officers_2
+					has_idea = lack_of_officers_1
+				}
+			}
+			custom_effect_tooltip = lack_of_officers_rise_1_tt
+			hidden_effect = { lack_of_officers_rise = yes }
+		}
+		hidden_effect = {
+			country_event = { id = rcw_bfk.172 days = 180 }
+		}
+	}
+}
+
+#Отбытие саксонцев
+country_event = {
+	id = rcw_bfk.171
+	title = rcw_bfk.171.t
+	desc = rcw_bfk.171.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_german_left_us
+	
+	trigger = {
+		tag = LIT
+	}
+	
+	option = {
+		name = rcw_bfk.171.a
+		delete_unit_template_and_units = { division_template = "Saxon Volunteer Regiment" }
+	}
+}
+
+#Последняя волна мобилизации
+country_event = {
+	id = rcw_bfk.172
+	title = rcw_bfk.172.t
+	desc = rcw_bfk.172.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_lit_mobilization
+	
+	trigger = {
+		tag = LIT
+		has_war = yes
+	}
+	
+	option = {
+		name = rcw_bfk.172.a
+		remove_ideas = {
+			LIT_nationalism
+		}
+		
+		capital_scope = {
+			create_unit = {
+				division = "name = \"VI Lithuanian Militia\" division_template = \"Lithuanian Militia\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = ROOT
+			}
+			create_unit = {
+				division = "name = \"VII Lithuanian Militia\" division_template = \"Lithuanian Militia\" start_experience_factor = 0.1 start_equipment_factor = 1"
+				owner = ROOT
+			}
+		}
+		
+		set_division_template_lock = {
+			division_template = "Lithuanian Militia"
+			is_locked = no
+		}
+		
+		add_manpower = 10000
+		custom_effect_tooltip = lack_of_officers_rise_1_tt
+		add_stability = -0.02
+		add_war_support = -0.02
+		add_political_power = -25
+	}
+}
+
+
+# Распад мирный
+country_event = {
+	id = rcw_bfk.1918
+	title = rcw_bfk.1918.t
+	desc = rcw_bfk.1918.d
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = UBD
+		is_subject = no
+		LAT = { OR = { exists = no is_subject_of = UBD } }
+		EST = { OR = { exists = no is_subject_of = UBD } }
+		NOT = { has_country_flag = UBD_stability }
+		has_idea = UBD_separatism
+		OR = {
+			has_government = conservatism
+			has_government = authoritarism
+			has_government = despotism
+			has_government = fascism
+			has_government = national_syndicalism
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	# Играть за Латвию
+	option = {
+		name = rcw_bfk.1918.a
+		if = {
+			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 814 owns_state = 784 owns_state = 815 } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 190
+					state = 810
+					state = 808
+					state = 1378
+					state = 12
+					state = 809
+					state = 1351
+				}
+			}
+			LAT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 1393
+					state = 811
+					state = 812
+					state = 13
+					state = 813
+					state = 1003
+					state = 915
+					state = 1002
+				}
+			}
+			EST = { transfer_state = PREV }
+		}
+		if = {
+			limit = { UBD = { has_war_with = RUS } }
+			RUS = {
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
+			}
+		}
+		EST = { country_event = { id = rcw_bfk.1919 days = 15 } }
+		LAT = { change_tag_from = UBD }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	# Играть за Эстонию
+	option = {
+		name = rcw_bfk.1918.b
+		if = {
+			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 814 owns_state = 784 owns_state = 815 } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 190
+					state = 810
+					state = 808
+					state = 1378
+					state = 12
+					state = 809
+					state = 1351
+				}
+			}
+			LAT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 1393
+					state = 811
+					state = 812
+					state = 13
+					state = 813
+					state = 1003
+					state = 915
+					state = 1002
+				}
+			}
+			EST = { transfer_state = PREV }
+		}
+		if = {
+			limit = { UBD = { has_war_with = RUS } }
+			RUS = {
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
+			}
+		}
+		EST = { country_event = { id = rcw_bfk.1919 days = 15 } }
+		EST = { change_tag_from = UBD }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	
+	# Играть за Балтику (смэрт)
+	option = {
+		name = rcw_bfk.1918.b
+		if = {
+			limit = { OR = { LIT = { exists = yes } owns_state = 11 owns_state = 189 owns_state = 814 owns_state = 784 owns_state = 815 } }
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 190
+					state = 810
+					state = 808
+					state = 1378
+					state = 12
+					state = 809
+					state = 1351
+				}
+			}
+			LAT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				is_owned_by = ROOT
+				OR = {
+					state = 1393
+					state = 811
+					state = 812
+					state = 13
+					state = 813
+					state = 1003
+					state = 915
+					state = 1002
+				}
+			}
+			EST = { transfer_state = PREV }
+		}
+		if = {
+			limit = { UBD = { has_war_with = RUS } }
+			RUS = {
+				declare_war_on = {
+					target = EST
+					type = annex_everything
+				}
+				declare_war_on = {
+					target = LAT
+					type = annex_everything
+				}
+			}
+		}
+		EST = { country_event = { id = rcw_bfk.1919 days = 15 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# 
+country_event = {
+	id = rcw_bfk.1919
+	title = rcw_bfk.1919.t
+	desc = rcw_bfk.1919.d
+	picture = GFX_report_event_rcw_czech_uprising
+	
+	trigger = {
+		tag = EST
+		UBD = { exists = yes }
+	}
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.1919.a
+		annex_country = {
+			target = UBD
+			transfer_troops = yes
+		}
+		if = {
+			limit = { is_ai = yes UBD = { is_ai = no } }
+			change_tag_from = UBD
+		}
+	}
+}
+
+#Переговоры с Балтикой
+country_event = {
+	id = rcw_bfk.201
+	title = rcw_bfk.201.t
+	desc = rcw_bfk.201.desc
+	picture = GFX_report_event_soviet_finnish_pact
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_bfk.201.a
+		add_war_support = -0.02
+		add_stability = -0.03
+		add_political_power = -25
+	}
+	
+	option = {
+		name = rcw_bfk.201.b
+		white_peace = FROM
+	}
+}

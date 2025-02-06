@@ -1,0 +1,900 @@
+focus_tree = {
+	id = Russia_Volunteer_army_focus
+	
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = RVA
+		}
+	}
+	
+	continuous_focus_position = { x = 50 y = 850 }
+	
+	default = no
+
+	focus = {
+		id = RVA_white_light
+		icon = GFX_goal_RVA_white_light
+		cost = 1
+		ai_will_do = {
+			factor = 10
+		}
+		x = 8
+		y = 0
+		
+		completion_reward = {
+			add_ideas = RVA_white_light_idea
+		}
+	}
+	
+	focus = {
+		id = RVA_special_meeting
+		icon = GFX_goal_RVA_special_meeting
+		cost = 1
+		prerequisite = {
+			focus = RVA_white_light
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 8
+		y = 1
+		
+		completion_reward = {
+			add_political_power = -25
+			if = {
+				limit = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } }
+				remove_country_leader_trait = goal_in_politics
+			}
+		}
+	}
+	
+	focus = {
+		id = RVA_appeal_allies
+		icon = GFX_focus_ger_strike_at_the_source
+		cost = 4
+		available = {
+			ENG = { is_subject = no }
+			FRA = { is_subject = no }
+			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_GER_HAS_CAPITULATED }
+			NOT = {has_war_with = ENG has_war_with = USA has_war_with = FRA}
+		}
+		prerequisite = {
+			focus = RVA_special_meeting
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 8
+		y = 2
+		completion_reward = {
+			set_country_flag = rcw_country_asks_foreing_help
+			unlock_decision_category_tooltip = rcw_intervention_help_white_desisions
+			ENG = { country_event = { id = rcw.156 days = 1 } }
+			FRA = { country_event = { id = rcw.156 days = 1 } }
+			USA = { country_event = { id = rcw.156 days = 1 } }
+		}
+	}
+	
+	focus = {
+		id = RVA_mobilization
+		icon = GFX_goal_RVA_mobilization
+		cost = 5
+		prerequisite = {
+			focus = RVA_special_meeting
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 12
+		y = 2
+		
+		completion_reward = {
+			rise_2_mobilization_law = yes
+			add_manpower = 35000
+			custom_effect_tooltip = RVA_corps_mobilization_unlock
+			division_template = {
+				name = "Oblastnyye voyska"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 1 y = 0 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+				}
+				is_locked = yes
+			}
+			division_template = {
+				name = "Kazachya diviziya"		# Cavalry
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+				}
+				is_locked = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Krayevoy korpus\" division_template = \"Oblastnyye voyska\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Krayevoy korpus\" division_template = \"Oblastnyye voyska\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Krayevoy korpus\" division_template = \"Oblastnyye voyska\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Krayevoy korpus\" division_template = \"Oblastnyye voyska\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Krayevoy korpus\" division_template = \"Oblastnyye voyska\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Krayevoy korpus\" division_template = \"Oblastnyye voyska\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_volunteer_army
+				value = 2
+			}
+		}
+	}
+	
+	focus = {
+		id = RVA_osvag
+		icon = GFX_goal_RVA_osvag
+		cost = 5
+		available = {
+			has_completed_focus = RVA_governor_general
+		}
+		prerequisite = {
+			focus = RVA_mobilization
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 12
+		y = 3
+		
+		completion_reward = {
+			add_ideas = RVA_osvag_idea
+		}
+	}
+	
+	focus = {
+		id = RVA_repair_docks
+		icon = GFX_goal_RVA_repair_docks
+		cost = 3
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
+			has_completed_focus = RVA_governor_general
+		}
+		prerequisite = {
+			focus = RVA_mobilization
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 14
+		y = 3
+		completion_reward = {
+			add_ideas = RVA_repair_docks_idea
+		}
+	}
+	
+	focus = {
+		id = RVA_volunteer_fleet
+		icon = GFX_goal_RVA_volunteer_fleet
+		cost = 3
+		prerequisite = {
+			focus = RVA_repair_docks
+		}
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
+			has_global_flag = black_fleet_in_exile
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 14
+		y = 4
+		
+		completion_reward = {
+			clr_global_flag = black_fleet_in_exile
+			if = {
+				limit = { has_dlc = "Man the Guns" }
+				load_oob = RUS_1917_black_navy
+				else = {
+					load_oob = RUS_1917_black_navy_legacy
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = RVA_counterintelligence
+		icon = GFX_goal_RVA_counterintelligence
+		cost = 3
+		prerequisite = {
+			focus = RVA_osvag
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 12
+		y = 4
+		
+		completion_reward = {
+			remove_ideas = DON_distrust_of_cossacks
+			country_event = { id = rcw_dku.123 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_comission_of_oficers_rehabilitation
+		icon = GFX_goal_RVA_comission_of_oficers_rehabilitation
+		cost = 2
+		prerequisite = {
+			focus = RVA_osvag
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 10
+		y = 4
+		
+		completion_reward = {
+			add_command_power = 50
+			army_experience = 20
+		}
+	}
+	
+	focus = {
+		id = RVA_exposure_secret_organizations
+		icon = GFX_goal_RVA_exposure_secret_organizations
+		cost = 5
+		available = {
+			NOT = { has_country_flag = RVA_authoritarism_coup_fired }
+			NOT = { has_government = authoritarism }
+		}
+		prerequisite = {
+			focus = RVA_counterintelligence
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 15
+		y = 5
+		
+		completion_reward = {
+			if = {
+				limit = { has_idea = RVA_monarchist_organizations_idea }
+				remove_ideas = RVA_monarchist_organizations_idea
+			}
+			country_event = { id = rcw_dku.133 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_kuban_action
+		icon = GFX_goal_RVA_kuban_action
+		cost = 5
+		available = {
+			OR = {
+				has_idea = RVA_KUB_rada
+				has_idea = RVA_KUB_rada_1
+				has_idea = RVA_KUB_rada_2
+			}
+		}
+		prerequisite = {
+			focus = RVA_counterintelligence
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 13
+		y = 5
+		
+		completion_reward = {
+			add_political_power = 140
+			if = {
+				limit = { has_idea = RVA_KUB_rada }
+				remove_ideas = RVA_KUB_rada
+			}
+			if = {
+				limit = { has_idea = RVA_KUB_rada_1 }
+				remove_ideas = RVA_KUB_rada_1
+			}
+			if = {
+				limit = { has_idea = RVA_KUB_rada_2 }
+				remove_ideas = RVA_KUB_rada_2
+			}
+			add_stability = -0.05
+			add_war_support = -0.05
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_volunteer_army
+				value = 1
+			}
+		}
+	}
+	
+	focus = {
+		id = RVA_state_guard
+		icon = GFX_focus_ger_strike_at_the_source
+		cost = 5
+		prerequisite = {
+			focus = RVA_counterintelligence
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 11
+		y = 5
+		
+		completion_reward = {
+			add_ideas = RVA_state_guard_idea
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_volunteer_army
+				value = -1
+			}
+		}
+	}
+	
+	focus = {
+		id = RVA_courts_martial
+		icon = GFX_goal_RVA_courts_martial
+		cost = 5
+		prerequisite = {
+			focus = RVA_state_guard
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 11
+		y = 6
+		
+		completion_reward = {
+			add_ideas = RSS_militar_field_courts_idea
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_volunteer_army
+				value = 2
+			}
+		}
+	}
+	
+	focus = {
+		id = RVA_steel_discipline
+		icon = GFX_goal_RVA_steel_discipline
+		cost = 4
+		available = {
+			NOT = { has_country_flag = RVA_authoritarism_coup_fired }
+			NOT = { has_country_flag = RVA_free_agitation }
+		}
+		prerequisite = {
+			focus = RVA_courts_martial
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 11
+		y = 7
+		
+		completion_reward = {
+			if = {
+				limit = {
+					has_idea = RVA_bandit_army
+				}
+				remove_ideas = RVA_bandit_army
+				else = {
+					add_ideas = RVA_steel_discipline_idea
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = RVA_ROVS
+		icon = GFX_goal_RVA_ROVS
+		cost = 5
+		prerequisite = {
+			focus = RVA_counterintelligence
+		}
+		prerequisite = {
+			focus = RVA_comission_of_oficers_rehabilitation
+		}
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 100
+				NOT = { has_global_flag = RUS_civil_war_over }
+				219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				has_war = no
+				NOT = { has_completed_focus = RVA_white_party }
+			}
+		}
+		x = 8
+		y = 5
+		
+		completion_reward = {
+			add_ideas = RVA_ROVS_idea
+			hidden_effect = { set_party_name = { ideology = despotism long_name = RUS_fascism_kolchak_party_long name = RUS_fascism_kolchak_party } }
+		}
+	}
+	
+	focus = {
+		id = RVA_governor_general
+		icon = GFX_goal_RVA_governor_general
+		cost = 4
+		available = {
+			has_completed_focus = RVA_mobilization
+		}
+		prerequisite = {
+			focus = RVA_special_meeting
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 2
+		y = 2
+		
+		completion_reward = {
+			custom_effect_tooltip = RVA_governor_general_decisions_unlock
+		}
+	}
+	
+	focus = {
+		id = RVA_agricultural_solution
+		icon = GFX_goal_RVA_agricultural_solution
+		cost = 3
+		prerequisite = {
+			focus = RVA_governor_general
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 2
+		y = 3
+		
+		completion_reward = {
+			country_event = { id = rcw_dku.125 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_broad_powers_local_authorities
+		icon = GFX_goal_RVA_broad_powers_local_authorities
+		cost = 5
+		prerequisite = {
+			focus = RVA_governor_general
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = -1
+		y = 3
+		
+		completion_reward = {
+			add_ideas = local_assembly_decisions_b_law
+		}
+	}
+	
+	focus = {
+		id = RVA_restitution
+		icon = GFX_goal_RVA_restitution
+		cost = 3
+		
+		prerequisite = {
+			focus = RVA_governor_general
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = -3
+		y = 3
+		available = {
+			any_state = {
+				is_controlled_by = ROOT
+				is_core_of = ROOT
+				OR = {
+					industrial_complex > 0
+					arms_factory > 0
+				}
+			}
+		}
+		completion_reward = {
+			if = {
+				limit = { has_idea = control_of_field_commanders_law }
+				swap_ideas = {
+					remove_idea = control_of_field_commanders_law
+					add_idea = state_capitalism_law
+				}
+			}
+			custom_effect_tooltip = RVA_restitution_tt
+			add_stability = -0.07
+			random_state = {
+				limit = {
+					is_controlled_by = ROOT
+					is_core_of = ROOT
+					OR = {
+						industrial_complex > 0
+						arms_factory > 0
+					}
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_state = {
+				limit = {
+					is_controlled_by = ROOT
+					is_core_of = ROOT
+					OR = {
+						industrial_complex > 0
+						arms_factory > 0
+					}
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+					}
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_popularity = { ideology = market_liberalism popularity = 0.05 }
+		}
+	}
+	
+	focus = {
+		id = RVA_contacts_with_right_center
+		icon = GFX_goal_RVA_contacts_with_right_center
+		cost = 5
+		prerequisite = {
+			focus = RVA_governor_general
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 4
+		y = 3
+		
+		completion_reward = {
+			add_political_power = 35
+			RUS = { add_stability = -0.04 }
+			add_popularity = { ideology = conservatism popularity = 0.04 }
+		}
+	}
+	
+	focus = {
+		id = RVA_creation_union_of_salvation
+		icon = GFX_goal_RVA_creation_union_of_salvation
+		cost = 4
+		available = {
+			has_war_with = RUS
+			RUS = { OR = { has_government = communism has_government = radical_socialism } }
+			RUS = { controls_province = 6380 }
+			NVA = { NOT = { has_completed_focus = NVA_russian_vendee } }
+			NOT = { has_global_flag = SZRiS_mission_is_on }
+		}
+		prerequisite = {
+			focus = RVA_contacts_with_right_center
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 7
+		y = 4
+		
+		completion_reward = {
+			country_event = { id = rcw_dku.155 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_free_trade
+		icon = GFX_goal_RVA_free_trade
+		cost = 3
+		prerequisite = {
+			focus = RVA_restitution
+		}
+		bypass = {
+			has_idea = free_trade
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = -3
+		y = 4
+		
+		completion_reward = {
+			remove_ideas_with_trait = trade_laws
+			add_ideas = free_trade
+			add_popularity = { ideology = market_liberalism popularity = 0.05 }
+			hidden_effect = { country_event = { id = rcw_dku.124 days = 40 random_days = 20 } }
+		}
+	}
+	
+	focus = {
+		id = RVA_democratic_constitution
+		icon = GFX_goal_RVA_democratic_constitution
+		cost = 5
+		prerequisite = {
+			focus = RVA_broad_powers_local_authorities
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = -1
+		y = 4
+		
+		completion_reward = {
+			add_ideas = constitution_b_law
+			country_event = { id = rcw_dku.128 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_savinkov_mission
+		icon = GFX_goal_RVA_savinkov_mission
+		cost = 5
+		available = {
+			NOT = { any_other_country = { has_country_leader = { name = "Boris Savinkov" ruling_only = yes } } }
+			any_other_country = { NOT = { has_country_flag = Boris_Savinkov_dead } }
+			NOT = { has_country_flag = Boris_Savinkov_dead }
+			NVA = { NOT = { has_country_flag = Boris_Savinkov_dead } }
+			NVA = { exists = no }
+		}
+		prerequisite = {
+			focus = RVA_counterintelligence
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 9
+		y = 6
+		
+		completion_reward = {
+			custom_effect_tooltip = RVA_savinkov_missions_decisions_unlock
+		}
+	}
+	
+	focus = {
+		id = RVA_monarchist_press
+		icon = GFX_goal_RVA_monarchist_press
+		cost = 5
+		prerequisite = {
+			focus = RVA_contacts_with_right_center
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 5
+		y = 4
+		
+		completion_reward = {
+			country_event = { id = rcw_dku.130 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_azbuka
+		icon = GFX_goal_RVA_azbuka
+		cost = 4
+		prerequisite = {
+			focus = RVA_contacts_with_right_center
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 3
+		y = 4
+		
+		completion_reward = {
+			add_ideas = RVA_azbuka_idea
+			create_intelligence_agency = { name = "Azbuka" icon = "GFX_agency_logo_RVA_Azbuka" }
+		}
+	}
+	
+	focus = {
+		id = RVA_invitation_Nik_Nik
+		icon = GFX_goal_RVA_invitation_Nik_Nik
+		cost = 3
+		available = {
+			NOT = { has_country_flag = RVA_authoritarism_coup_suppose }
+			NOT = { any_country = { NOT = { tag = REB } any_unit_leader = { has_id = 76836 } } }
+			any_country = {
+				NOT = {
+					OR = {
+						has_country_leader = { name = "Nikolay Nikolaevich Romanov" ruling_only = yes }
+						has_country_leader = { name = "Nikolay III Romanov" ruling_only = yes }
+					}
+				}
+			}
+		}
+		prerequisite = {
+			focus = RVA_contacts_with_right_center
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 1
+		y = 4
+		
+		completion_reward = {
+			every_other_country = { clr_country_flag = Nikolay_Nikolayevich_Romanov_is_here }
+			set_country_flag = Nikolay_Nikolayevich_Romanov_is_here
+			hidden_effect = {
+				every_country = {
+					limit = { OR = { has_country_leader = { name = "Nikolay Nikolaevich Romanov" ruling_only = no } has_country_leader = { name = "Nikolay III Romanov" ruling_only = no } } }
+					retire_ideology_leader = authoritarism
+				}
+			}
+			if = {
+				limit = { NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue } }
+				create_country_leader = {
+					name = "Nikolay Nikolaevich Romanov"
+					desc = RUS_Nikolay_Nikolaevich_Romanov_DESC
+					picture = "gfx/leaders/RUS/Portrait_Grand_duke_Nikolay_Nikolaevich.dds"
+					ideology = monarchism
+					traits = { inexperienced_imperialist great_war_hero }
+				}
+			}
+			add_ideas = Nikolay_Nikolayevich_Romanov_army_chief
+			REB = { every_unit_leader = { limit = { has_id = 76836 } set_nationality = ROOT } }
+			every_unit_leader = { limit = { has_id = 76836 } promote_leader = yes }
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
+		}
+	}
+	
+	focus = {
+		id = RVA_white_party
+		icon = GFX_goal_RVA_white_party
+		cost = 4
+		prerequisite = {
+			focus = RVA_democratic_constitution
+			focus = RVA_azbuka
+			focus = RVA_monarchist_press
+			focus = RVA_creation_union_of_salvation
+			focus = RVA_free_trade
+		}
+		bypass = {
+			has_country_flag = RVA_authoritarism_coup_fired
+		}
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 100
+				NOT = { has_global_flag = RUS_civil_war_over }
+				219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				has_war = no
+				NOT = { has_completed_focus = RVA_ROVS }
+			}
+		}
+		x = 3
+		y = 5
+		
+		completion_reward = {
+			country_event = { id = rcw_dku.136 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_moscow_directive
+		icon = GFX_goal_RVA_moscow_directive
+		cost = 5
+		available = {
+			num_of_controlled_states > 19
+		}
+		prerequisite = {
+			focus = RVA_white_party
+			focus = RVA_ROVS
+		}
+		bypass = {
+			OR = {
+				has_war = no
+				RSR = { NOT = { controls_state = 219 } }
+			}
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		x = 6
+		y = 6
+		
+		completion_reward = {
+			add_timed_idea = { idea = RVA_moscow_directive_idea days = 56 }
+			drop_cosmetic_tag = yes
+		}
+	}
+	
+	focus = {
+		id = RVA_convening_military_council
+		icon = GFX_goal_RVA_convening_military_council
+		cost = 5
+		prerequisite = {
+			focus = RVA_moscow_directive
+		}
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 100
+				NOT = { has_global_flag = RUS_civil_war_over }
+				219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				has_war = no
+			}
+		}
+		x = 6
+		y = 7
+		
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = { has_country_flag = RVA_authoritarism_coup_fired }
+					OR = {
+						has_government = despotism
+						has_government = authoritarism
+					}
+				}
+				custom_effect_tooltip = RVA_convening_military_council_prompt
+			}
+			country_event = { id = rcw_dku.134 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = RVA_national_assembly
+		icon = GFX_goal_RVA_national_assembly
+		cost = 5
+		available = {
+			NOT = { has_global_flag = RUS_civil_war_over }
+			NOT = { has_global_flag = RCW_Allrussian_national_assembly }
+			219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			is_subject = no
+			has_war = no
+		}
+		prerequisite = {
+			focus = RVA_convening_military_council
+		}
+		ai_will_do = {
+			factor = 1000
+		}
+		x = 6
+		y = 8
+
+		completion_reward = {
+			if = {
+				limit = { 219 = { OWNER = { NOT = { tag = ROOT } check_variable = { num_owned_states < 2 } } } }
+				219 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = yes } } } }
+			}
+			else_if = { limit = { NOT = { owns_state = 219 } } transfer_state = 219 }
+			add_state_core = 219
+			set_capital = { state = 219 remember_old_capital = no }
+			country_event = rcw_all_rus_NA.1
+		}
+	}
+}

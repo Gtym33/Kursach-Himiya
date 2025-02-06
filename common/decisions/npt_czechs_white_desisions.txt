@@ -1,0 +1,246 @@
+czechs_white_desisions = {
+	#Присутствие чехословаков на передовой
+	czechs_white_desisions_avangarde = {
+		icon = generic_prepare_civil_war
+		
+		activation = { always = no }
+		available = {
+			always = no
+		}
+		cancel_trigger = {
+			has_country_leader = { name = "Radola Gaida" ruling_only = yes }
+		}
+		days_mission_timeout = 150
+		timeout_effect = {
+			set_country_flag = czechs_are_here
+			country_event = rcw_czechs.43
+		}
+	}
+	#Окончательный вывод легиона
+	czechs_white_des_out = {
+		icon = generic_prepare_civil_war
+		
+		activation = { always = no }
+		available = {
+			always = no
+		}
+		cancel_trigger = { 
+			OR = { 
+				has_country_flag = czechs_returned_back
+				has_country_flag = czech_gone
+				has_country_leader = { name = "Radola Gaida" ruling_only = yes }
+			}
+		}
+		days_mission_timeout = 485
+		timeout_effect = {
+			country_event = rcw_czechs.45
+		}
+	}
+	#Перевербовка легиона
+	czechs_white_des_recruit = {
+		icon = generic_prepare_civil_war
+		
+		cost = 150
+		fire_only_once = yes
+		available = {
+			NOT = { has_country_flag = czechs_razlozhenie }
+			NOT = { has_country_flag = tried_to_req }
+			NOT = { has_country_flag = czech_gone }
+			has_country_flag = czechs_mission_start
+			has_army_manpower = {
+				size > 90000
+			}
+			NOT = { has_country_flag = czech_kill_leader }
+		}
+		visible = { NOT = { has_active_mission = czechs_white_desisions_avangarde } }
+		complete_effect = {
+			country_event = rcw_czechs.46
+			set_country_flag = tried_to_req
+			set_variable = {
+				var = global.czech_answer_count
+				value = 0
+			}
+		}
+	}
+	#Возвращение легиона
+	czechs_returning = {
+		icon = generic_prepare_civil_war
+		
+		activation = { always = no }
+		available = {
+			always = no
+		}
+		cancel_trigger = { has_country_flag = czech_gone }
+		days_mission_timeout = 20
+		timeout_effect = {
+			country_event = rcw_czechs.48
+		}
+	}
+	#Запросить переподчинение легиона
+	czechs_white_request_req = {
+		icon = generic_prepare_civil_war
+		
+		cost = 150
+		fire_only_once = yes
+		available = {
+			NOT = { has_country_flag = czechs_razlozhenie }
+			NOT = { has_country_flag = tried_to_req }
+			NOT = { has_country_flag = czech_gone }
+			has_army_manpower = {
+				size > 90000
+			}
+			NOT = { has_country_flag = czech_kill_leader }
+			custom_trigger_tooltip = {
+				tooltip = antente_recognized_tt		
+				OR = {
+					ENG = {
+						NOT = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						
+					}	
+					FRA = {
+						NOT = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						
+					}
+					USA = {
+						NOT = {
+							is_in_array = {
+								array = unrecognized_states
+								value = ROOT.id
+							}
+						}
+						
+					}
+				}
+			}	
+		}
+		visible = { NOT = { has_active_mission = czechs_white_desisions_avangarde } }
+		complete_effect = {
+			ENG = { country_event = rcw_czechs.52 }
+			FRA = { country_event = rcw_czechs.52 }
+			USA = { country_event = rcw_czechs.52 }
+			hidden_effect = { country_event = { id = rcw_czechs.53 days = 4 } }
+			set_country_flag = tried_to_req
+			set_variable = {
+				var = global.czech_answer_count
+				value = 0
+			}
+		}
+	}
+	#Разоружение чехословаков
+	czechs_white_des_razoruzhenie = {
+		icon = generic_prepare_civil_war
+		cost = 150
+		fire_only_once = yes
+		available = {
+			has_country_flag = czechs_razlozhenie
+			NOT = { has_country_flag = czech_gone }
+			army_manpower_in_state = {
+				amount > 30000
+				state = var:capital
+			}
+		}
+		visible = { NOT = { has_active_mission = czechs_white_desisions_avangarde } }
+		complete_effect = {
+			country_event = rcw_czechs.67
+		}
+	}
+	#Удаление легиона
+	czechs_legion_delete_mission = {
+		icon = generic_prepare_civil_war	
+		activation = { always = no }
+		available = {
+			NOT = {
+				army_manpower_in_state = {
+					amount > 30000
+					state = var:capital
+				}
+			}
+		}
+		cancel_trigger = { has_country_flag = czech_gone }
+		days_mission_timeout = 45
+		is_good = no
+		complete_effect = {
+			country_event = rcw_czechs.69
+		}
+		timeout_effect = {
+			if = {
+				limit = { has_idea = czesch_white_gar }
+				remove_ideas = czesch_white_gar
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_2 }
+				remove_ideas = czesch_white_gar_2
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_3 }
+				remove_ideas = czesch_white_gar_3
+			}
+			if = {
+				limit = { has_idea = czesch_white_gar_4 }
+				remove_ideas = czesch_white_gar_4
+			}
+			if = {
+				limit = { 
+					OR = {
+						has_template = "Russian-Czeh Brigada" 
+						has_template = "Brigada Chekhoslovatskogo legiona" 
+						has_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+						has_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					}
+				}
+				delete_unit_template_and_units = {
+					division_template = "Russian-Czeh Brigada" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Dal'niy Vostok" 
+					disband = no
+				}
+				delete_unit_template_and_units = {
+					division_template = "Brigada Chekhoslovatskogo legiona Povolzh'e" 
+					disband = no
+				}
+			}
+			if = {
+				limit = { OR = { NOT = { has_idea = Radola_Gaida_army_chief } NOT = { tag = RSS tag = NRR } } }
+				every_unit_leader = { limit = { has_id = 92354 } set_nationality = REB } #Radola Gaida
+			}
+			every_unit_leader = { limit = { has_id = 92355 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88151 } set_nationality = REB }
+			every_unit_leader = { limit = { has_id = 88153 } set_nationality = REB }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_0
+				amount = 1500
+				producer = ROOT
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1
+				amount = 200
+				producer = ROOT
+			}
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = 10
+				producer = ROOT
+			}
+			add_stability = 0.2
+			add_war_support = 0.1
+			set_country_flag = czech_gone
+			clr_country_flag = czechs_mission_start 
+		}
+	}
+}

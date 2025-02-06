@@ -1,0 +1,2060 @@
+﻿focus_tree = {
+	id = Free_territory_focus
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = FRT
+		}
+	}
+	continuous_focus_position = { x = 30 y = 2000 }
+	
+	default = no
+
+	focus = {
+		id = FRT_convene_council
+		icon = GFX_goal_communist_discourse
+		cost = 0.2
+		available = {
+			#
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 0
+		completion_reward = {
+			remove_ideas = military_dictatorship_gov_form
+			add_ideas = soviet_republic_gov_form
+			add_ideas = FRT_nonparty_soviet_idea
+			add_political_power = 90
+		}
+	}
+	
+	focus = {
+		id = FRT_local_congress_of_soviets
+		icon = GFX_goal_manipulate_men
+		cost = 2
+		available = {
+			any_state = {
+   		 		is_controlled_by = FRT
+				OR = {
+					industrial_complex > 0
+					arms_factory > 0
+				}
+				NOT = { state = 965 }
+			}
+			num_of_controlled_states > 4
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		x = 8
+		y = 2
+		completion_reward = {
+			rise_Makhno_authority = yes
+			country_event = rcw_free_territory.7
+			hidden_effect = {
+				set_party_name = { ideology = radical_socialism long_name = FRT_radical_socialism_soviet_party_long name = FRT_radical_socialism_soviet_party }
+				set_party_name = { ideology = social_democracy long_name = FRT_social_democracy_soviet_party_long name = FRT_social_democracy_soviet_party }
+				set_party_name = { ideology = social_liberalism long_name = FRT_social_liberalism_soviet_party_long name = FRT_social_liberalism_soviet_party }
+			}
+			add_political_power = 30
+		}
+	}
+	
+	focus = {
+		id = FRT_all-ukrainian_congress_of_soviets
+		icon = GFX_focus_generic_military_academy
+		cost = 2
+		available = {
+			controls_state = 202
+			surrender_progress < 0.2
+			num_of_controlled_states > 10
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_countryside
+			focus = FRT_face_to_the_city
+		}
+		x = 8
+		y = 6
+		completion_reward = {
+			if = {
+				limit = { 202 = { owner = { tag = ROOT } is_capital = no } }
+				set_capital = { state = 202 }
+			}
+			if = {
+				limit = { 202 = { owner = { NOT = { tag = ROOT } } } }
+				set_state_owner = 202
+				set_capital = { state = 202 }
+			}
+			rise_Makhno_authority = yes
+			country_event = rcw_free_territory.8
+		}
+	}
+	
+	focus = {
+		id = FRT_quest_for_peace
+		icon = GFX_goal_generic_improve_relations
+		cost = 2
+		available = {
+			has_war = yes
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_all-ukrainian_congress_of_soviets
+		}
+		x = 8
+		y = 7
+		completion_reward = {
+			custom_effect_tooltip = FRT_quest_for_peace_tooltip
+		}
+	}
+	
+	focus = {
+		id = FRT_soviet_republic
+		icon = GFX_goal_communist_pride
+		cost = 2
+		available = {
+			RSR = { is_socialist_country = yes }
+			NOT = { has_war_with = RSR }
+			is_neighbor_of = RSR
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { has_idea = FRT_Makhno_very_high_authority_idea }
+			}
+			modifier = {
+				factor = 10
+				has_idea = FRT_Makhno_very_high_authority_idea
+			}
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_city
+		}
+		prerequisite = {
+			focus = FRT_all-ukrainian_congress_of_soviets
+		}
+		mutually_exclusive = {
+			focus = FRT_building_syndicalism
+		}
+		mutually_exclusive = {
+			focus = FRT_building_anarcho-capitalism
+		}
+		mutually_exclusive = {
+			focus = FRT_building_peasants_republic
+		}
+		x = 11
+		y = 8
+		completion_reward = {
+			effect_tooltip = {
+				add_ideas = parliamentary_republic_gov_form
+				add_ideas = constitution_b_law
+			}
+			if = {
+				limit = { has_idea = FRT_Makhno_very_high_authority_idea }
+				if = {
+					limit = {
+						any_other_country = {
+							OR = {
+								original_tag = USR
+								original_tag = UKR
+							}
+							is_socialist_country = yes
+						}
+					}
+					random_other_country = {
+						limit = {
+							OR = {
+								original_tag = USR
+								original_tag = UKR
+							}
+							is_socialist_country = yes
+						}
+						ROOT = { every_unit_leader = { set_nationality = PREV } }
+						annex_country = { target = ROOT transfer_troops = yes }
+						hidden_effect = {
+							if = {
+								limit = { has_country_leader = { name = "Nestor Makhno" ruling_only = yes } }
+								kill_country_leader = yes
+								create_country_leader = { name = "Nestor Makhno" desc = FRT_Nestor_Makhno_DESC picture = "gfx/leaders/FRT/Portrait_Nestor_Makhno_ancap.dds" ideology = leninism traits = { hedonist } }
+							}
+						}
+						set_politics = { ruling_party = communism }
+						if = { limit = { is_ai = yes ROOT = { is_ai = no } } change_tag_from = ROOT }
+					}
+					else = {
+						ROOT = { save_global_event_target_as = INTEGRATING_COUNTRY_MAJOR save_global_event_target_as = INTEGRATING_COUNTRY_MINOR initiate_verification_of_the_popularity_of_coalitions = yes capital_scope = { set_state_flag = new_capital } }
+						USR = { save_global_event_target_as = UNITED_COUNTRY }
+						USR = { inherit_technology = ROOT }
+						USR = { set_politics = { ruling_party = communism } create_country_leader = { name = "Nestor Makhno" desc = FRT_Nestor_Makhno_DESC picture = "gfx/leaders/FRT/Portrait_Nestor_Makhno_ancap.dds" ideology = leninism traits = { hedonist } } }
+						party_populatiry_addition_script_1 = yes
+						hidden_effect = { random_state = { limit = { is_owned_by = ROOT } USR = { transfer_state = PREV } } }
+						country_event = { id = rcw_free_territory.1918 hours = 1 }
+					}
+				}
+				else = {
+					country_event = { id = rcw_free_territory.13 hours = 1 }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_building_syndicalism
+		icon = GFX_goal_socialist_consolidation
+		cost = 5
+		available = {
+			NOT = { has_government = despotism }
+			NOT = { has_government = authoritarism }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_city
+		}
+		prerequisite = {
+			focus = FRT_all-ukrainian_congress_of_soviets
+		}
+		mutually_exclusive = {
+			focus = FRT_soviet_republic
+		}
+		mutually_exclusive = {
+			focus = FRT_building_anarcho-capitalism
+		}
+		mutually_exclusive = {
+			focus = FRT_building_peasants_republic
+		}
+		x = 9
+		y = 8
+		completion_reward = {
+			add_ideas = soviet_republic_gov_form
+			add_ideas = local_assembly_decisions_b_law
+		}
+	}
+	
+	focus = {
+		id = FRT_syndicates
+		icon = GFX_goal_state_control
+		cost = 5
+		available = {
+			has_completed_focus = FRT_workers_self-government
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_building_syndicalism
+		}
+		x = 9
+		y = 9
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = FRT_workers_self-government_idea
+				add_idea = FRT_syndicalist_unions
+			}
+			remove_ideas = FRT_civil_war_in_the_village_idea
+			remove_ideas = FRT_stratification_of_peasants_idea
+			clear_variable = angry_peasants
+			if = { limit = { has_idea = RGR_urban_rural_antogonism } remove_ideas = RGR_urban_rural_antogonism }
+		}
+	}
+	
+	focus = {
+		id = FRT_workers_self_defense
+		icon = GFX_goal_red_army
+		cost = 5
+		available = {
+			#
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_syndicates
+		}
+		x = 9
+		y = 10
+		completion_reward = {
+			remove_ideas = FRT_peasant_army_idea
+			remove_ideas = FRT_peasant_army_crisis_idea
+			add_ideas = FRT_black_guards
+			add_ideas = volunteer_only
+			if = { limit = { has_idea = FRT_Makhno_very_high_authority_idea } remove_ideas = FRT_Makhno_very_high_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_high_authority_idea } remove_ideas = FRT_Makhno_high_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_normal_authority_idea } remove_ideas = FRT_Makhno_normal_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_low_authority_idea } remove_ideas = FRT_Makhno_low_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_very_low_authority_idea } remove_ideas = FRT_Makhno_very_low_authority_idea }
+			if = { limit = { has_idea = FRT_black_cavalry_idea } remove_ideas = FRT_black_cavalry_idea }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders } remove_ideas = FRT_lack_of_control_of_field_commanders }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders_2 } remove_ideas = FRT_lack_of_control_of_field_commanders_2 }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 } remove_ideas = FRT_lack_of_control_of_field_commanders_3 }
+			if = { limit = { has_idea = FRT_enlargement_of_partisan_units_idea } remove_ideas = FRT_enlargement_of_partisan_units_idea }
+			if = { limit = { has_idea = FRT_operational_headquarters_idea } remove_ideas = FRT_operational_headquarters_idea }
+			if = { limit = { has_idea = FRT_boys_are_unhappy_idea } remove_ideas = FRT_boys_are_unhappy_idea }
+		}
+	}
+	
+	focus = {
+		id = FRT_building_anarcho-capitalism
+		icon = GFX_goal_loyality
+		cost = 5
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_all-ukrainian_congress_of_soviets
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_countryside
+		}
+		mutually_exclusive = {
+			focus = FRT_soviet_republic
+		}
+		mutually_exclusive = {
+			focus = FRT_building_syndicalism
+		}
+		mutually_exclusive = {
+			focus = FRT_building_peasants_republic
+		}
+		x = 7
+		y = 8
+		completion_reward = {
+			add_ideas = unitary_gov_terr
+			remove_ideas = FRT_workers_self-government_idea
+			remove_ideas = FRT_anarchist_party_idea
+			remove_ideas = FRT_nonparty_soviet_idea
+			country_event = rcw_free_territory.1488
+		}
+	}
+	
+	focus = {
+		id = FRT_economic_liberalization
+		icon = GFX_goal_free
+		cost = 5
+		available = {
+			#
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_building_anarcho-capitalism
+		}
+		x = 7
+		y = 9
+		completion_reward = {
+			remove_ideas = FRT_civil_war_in_the_village_idea
+			remove_ideas = FRT_stratification_of_peasants_idea
+			clear_variable = angry_peasants
+			add_ideas = RUS_exchange_in_kind_idea
+			add_ideas = RUS_prodnalog_idea
+			add_stability = 0.1
+			if = { limit = { has_idea = RGR_urban_rural_antogonism } remove_ideas = RGR_urban_rural_antogonism }
+		}
+	}
+	
+	focus = {
+		id = FRT_standing_army
+		icon = GFX_goal_rev_arm
+		cost = 5
+		available = {
+			#
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_economic_liberalization
+		}
+		x = 7
+		y = 10
+		completion_reward = {
+			remove_ideas = FRT_peasant_army_idea
+			remove_ideas = FRT_peasant_army_crisis_idea
+			army_experience = 10
+			rise_mobilization_law = yes
+			if = { limit = { has_idea = FRT_Makhno_very_high_authority_idea } remove_ideas = FRT_Makhno_very_high_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_high_authority_idea } remove_ideas = FRT_Makhno_high_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_normal_authority_idea } remove_ideas = FRT_Makhno_normal_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_low_authority_idea } remove_ideas = FRT_Makhno_low_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_very_low_authority_idea } remove_ideas = FRT_Makhno_very_low_authority_idea }
+			if = { limit = { has_idea = FRT_black_cavalry_idea } remove_ideas = FRT_black_cavalry_idea }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders } remove_ideas = FRT_lack_of_control_of_field_commanders }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders_2 } remove_ideas = FRT_lack_of_control_of_field_commanders_2 }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 } remove_ideas = FRT_lack_of_control_of_field_commanders_3 }
+			if = { limit = { has_idea = FRT_enlargement_of_partisan_units_idea } remove_ideas = FRT_enlargement_of_partisan_units_idea }
+			if = { limit = { has_idea = FRT_operational_headquarters_idea } remove_ideas = FRT_operational_headquarters_idea }
+			if = { limit = { has_idea = FRT_boys_are_unhappy_idea } remove_ideas = FRT_boys_are_unhappy_idea }
+		}
+	}
+	
+	focus = {
+		id = FRT_building_peasants_republic
+		icon = GFX_goal_peasant_rep
+		cost = 5
+		available = {
+			NOT = { has_government = despotism }
+			NOT = { has_government = authoritarism }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_all-ukrainian_congress_of_soviets
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_countryside
+		}
+		mutually_exclusive = {
+			focus = FRT_soviet_republic
+		}
+		mutually_exclusive = {
+			focus = FRT_building_anarcho-capitalism
+		}
+		mutually_exclusive = {
+			focus = FRT_building_syndicalism
+		}
+		x = 5
+		y = 8
+		completion_reward = {
+			clear_variable = angry_peasants
+			remove_ideas = FRT_peasant_army_crisis_idea
+			add_ideas = FRT_peasant_army_idea
+		}
+	}
+	
+	focus = {
+		id = FRT_raskulachivaniye
+		icon = GFX_goal_red_terror
+		cost = 5
+		available = {
+			#
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_building_peasants_republic
+		}
+		x = 5
+		y = 9
+		completion_reward = {
+			remove_ideas = FRT_stratification_of_peasants_idea
+			remove_ideas = FRT_civil_war_in_the_village_idea
+			peasant_and_land_and_bread_question_fall = yes
+			add_war_support = 0.1
+			add_stability = -0.1
+			add_ideas = peasant_communities_property
+		}
+	}
+	
+	focus = {
+		id = FRT_dissolve_boys
+		icon = GFX_goal_last_man
+		cost = 5
+		available = {
+			has_war = no
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_raskulachivaniye
+		}
+		x = 5
+		y = 10
+		completion_reward = {
+			add_ideas = soviet_republic_gov_form
+			add_ideas = local_assembly_decisions_b_law
+			add_ideas = volunteer_only
+			if = { limit = { has_idea = FRT_Makhno_very_high_authority_idea } remove_ideas = FRT_Makhno_very_high_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_high_authority_idea } remove_ideas = FRT_Makhno_high_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_normal_authority_idea } remove_ideas = FRT_Makhno_normal_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_low_authority_idea } remove_ideas = FRT_Makhno_low_authority_idea }
+			if = { limit = { has_idea = FRT_Makhno_very_low_authority_idea } remove_ideas = FRT_Makhno_very_low_authority_idea }
+			if = { limit = { has_idea = FRT_black_cavalry_idea } remove_ideas = FRT_black_cavalry_idea }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders } remove_ideas = FRT_lack_of_control_of_field_commanders }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders_2 } remove_ideas = FRT_lack_of_control_of_field_commanders_2 }
+			if = { limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 } remove_ideas = FRT_lack_of_control_of_field_commanders_3 }
+			if = { limit = { has_idea = FRT_enlargement_of_partisan_units_idea } remove_ideas = FRT_enlargement_of_partisan_units_idea }
+			if = { limit = { has_idea = FRT_operational_headquarters_idea } remove_ideas = FRT_operational_headquarters_idea }
+			if = { limit = { has_idea = FRT_boys_are_unhappy_idea } remove_ideas = FRT_boys_are_unhappy_idea }
+		}
+	}
+	
+	focus = {
+		id = FRT_independent_lands
+		icon = GFX_goal_hand
+		cost = 5
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_standing_army
+			focus = FRT_dissolve_boys
+			focus = FRT_workers_self_defense
+		}
+		x = 8
+		y = 11
+		completion_reward = {
+			if = {
+				limit = { NOT = { has_completed_focus = FRT_dissolve_boys } }
+				remove_ideas = FRT_freedom_territory_idea
+				delete_Makhno_authority = yes
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = FRT_freedom_territory_idea
+					add_idea = FRT_freedom_territory_idea_1
+				}
+			}
+			hidden_effect = { delete_FRT_CW_ideas = yes }
+			if = {
+				limit = { 202 = { owner = { tag = ROOT } is_capital = no } }
+				set_capital = { state = 202 }
+			}
+			country_event = rcw_free_territory.101
+		}
+	}
+	
+	focus = {
+		id = FRT_introduction_of_commandants
+		icon = GFX_goal_commandant
+		cost = 2
+		available = {
+			any_state = {
+   		 		is_controlled_by = FRT
+				OR = {
+					industrial_complex > 0
+					arms_factory > 0
+				}
+				NOT = { state = 965 }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		x = -2
+		y = 1
+		completion_reward = {
+			unlock_decision_category_tooltip = rcw_FRT_commandant_decisions
+			add_ideas = emergency_laws_b_law
+			remove_ideas = RGR_urban_rural_antogonism
+			add_political_power = 90
+		}
+	}
+	
+	focus = {
+		id = FRT_recruitment_of_volunteers
+		icon = GFX_goal_fascist_lads
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			add_ideas = RGR_voluntary_mobilization_idea
+			rise_mobilization_law = yes
+		}
+	}
+	
+	focus = {
+		id = FRT_black_cavalry
+		icon = GFX_goal_skull_sabre
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_recruitment_of_volunteers
+		}
+		x = 0
+		y = 2
+		completion_reward = {
+			add_ideas = FRT_black_cavalry_idea
+			division_template = {
+				name = "Otryad Makhno"		# Cavalry
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+					cavalry = { x = 1 y = 0 }
+					cavalry = { x = 1 y = 1 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+				}
+				is_locked = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Otryad Makhno\" division_template = \"Otryad Makhno\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_freemen
+		icon = GFX_goal_conscription_act
+		cost = 2
+		available = {
+			has_completed_focus = FRT_local_congress_of_soviets
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_black_cavalry
+		}
+		mutually_exclusive = {
+			focus = FRT_fight_against_partisans
+		}
+		x = -1
+		y = 3
+		completion_reward = {
+			add_war_support = 0.1
+			add_ideas = FRT_freemen_idea
+			custom_effect_tooltip = wartime_officers_rise_1_tt
+			hidden_effect = {
+				wartime_officers_rise = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_deserters_collection
+		icon = GFX_goal_RGR_deserters_collection
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_freemen
+		}
+		x = -5
+		y = 4
+		completion_reward = {
+			add_ideas = RGR_deserters_collection_idea
+			add_stability = -0.05
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_free_cossackship
+		icon = GFX_goal_RGR_cavalry_raiding
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_freemen
+		}
+		x = -7
+		y = 4
+		completion_reward = {
+			add_ideas = RGR_free_cossackship_idea
+			add_stability = -0.05
+			add_popularity = { ideology = national_syndicalism popularity = 0.05 }
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Povstancheskaya kavaleriyskaya brigada\" division_template = \"Povstancheskaya kavaleriyskaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_mobilization_of_the_crimean_tatars
+		icon = GFX_goal_burn
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_freemen
+		}
+		x = -9
+		y = 4
+		completion_reward = {
+			every_state = {
+				limit = { is_core_of = CRI }
+				add_core_of = ROOT
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Polk krymskikh tatar\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_establish_a_council_of_revolutionary_rebels
+		icon = GFX_goal_guerilla_warfare
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_freemen
+		}
+		x = -3
+		y = 4
+		completion_reward = {
+			add_ideas = RGR_consolidation_of_units_idea
+			create_corps_commander = { name = "Leontiy Khristovoy" id = 77459 portrait_path = "gfx/leaders/FRT/Portrait_Leontiy_Khristovoy.dds" traits = { skilled_staffer organizer } skill = 2 attack_skill = 3 defense_skill = 2 planning_skill = 3 logistics_skill = 3 }
+			add_popularity = { ideology = national_syndicalism popularity = 0.05 }
+			custom_effect_tooltip = wartime_officers_rise_1_tt
+			hidden_effect = {
+				wartime_officers_rise = yes
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Povstancheskaya kavaleriyskaya brigada\" division_template = \"Povstancheskaya kavaleriyskaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya kavaleriyskaya brigada\" division_template = \"Povstancheskaya kavaleriyskaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_enlargement_of_partisan_units
+		icon = GFX_goal_black_army
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_establish_a_council_of_revolutionary_rebels
+		}
+		x = -3
+		y = 5
+		completion_reward = {
+			add_ideas = FRT_enlargement_of_partisan_units_idea
+			rise_mobilization_law = yes
+			army_experience = 10
+				set_division_template_lock = {
+   					division_template = "Brigada povstancheskogo opolcheniya"
+   					is_locked = no
+				}
+				set_division_template_lock = {
+   					division_template = "Povstancheskaya kavaleriyskaya brigada"
+   					is_locked = no
+				}
+				set_division_template_lock = {
+   					division_template = "Povstancheskaya pekhotnaya brigada"
+   					is_locked = no
+				}
+				division_template = {
+					name = "Povstancheskaya diviziya"	# Militia
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+						militia = { x = 1 y = 1 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+						engineer = { x = 0 y = 1 }
+					}
+				}
+				division_template = {
+					name = "Povstancheskaya kavaleriyskaya diviziya"		# Cavalry
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+						#engineer = { x = 0 y = 1 }
+					}
+				}
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Povstancheskaya diviziya\" division_template = \"Povstancheskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Povstancheskaya diviziya\" division_template = \"Povstancheskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Povstancheskaya diviziya\" division_template = \"Povstancheskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Povstancheskaya diviziya\" division_template = \"Povstancheskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Povstancheskaya kavaleriyskaya diviziya\" division_template = \"Povstancheskaya kavaleriyskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Povstancheskaya kavaleriyskaya diviziya\" division_template = \"Povstancheskaya kavaleriyskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Povstancheskaya kavaleriyskaya diviziya\" division_template = \"Povstancheskaya kavaleriyskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Povstancheskaya kavaleriyskaya diviziya\" division_template = \"Povstancheskaya kavaleriyskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+		}
+	
+	focus = {
+		id = FRT_organization_of_the_operational_headquarters
+		icon = GFX_goal_RGR_single_headquarters
+		cost = 2
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_enlargement_of_partisan_units
+		}
+		x = -3
+		y = 6
+		completion_reward = {
+			add_ideas = FRT_operational_headquarters_idea
+			add_popularity = { ideology = authoritarism popularity = 0.05 }
+			army_experience = 30
+		}
+	}
+	
+	focus = {
+		id = FRT_fight_against_partisans
+		icon = GFX_goal_purge_dissenters
+		cost = 2
+		available = {
+			has_government = despotism
+			has_completed_focus = FRT_local_congress_of_soviets
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_black_cavalry
+		}
+		mutually_exclusive = {
+			focus = FRT_freemen
+		}
+		x = 1
+		y = 3
+		completion_reward = {
+			down_Makhno_authority = yes
+			add_ideas = FRT_boys_are_unhappy_idea
+			if = {
+				limit = { has_idea = FRT_lack_of_control_of_field_commanders }
+				swap_ideas = {
+					remove_idea = FRT_lack_of_control_of_field_commanders
+					add_idea = FRT_lack_of_control_of_field_commanders_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = FRT_lack_of_control_of_field_commanders_2 }
+				swap_ideas = {
+					remove_idea = FRT_lack_of_control_of_field_commanders_2
+					add_idea = FRT_lack_of_control_of_field_commanders_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 }
+				remove_ideas = FRT_lack_of_control_of_field_commanders_3
+			}
+			army_experience = 30
+			set_division_template_lock = {
+   				division_template = "Brigada povstancheskogo opolcheniya"
+   				is_locked = no
+			}
+			set_division_template_lock = {
+   				division_template = "Povstancheskaya kavaleriyskaya brigada"
+   				is_locked = no
+			}
+			set_division_template_lock = {
+   				division_template = "Povstancheskaya pekhotnaya brigada"
+   				is_locked = no
+			}
+			division_template = {
+				name = "Povstancheskaya diviziya"	# Militia
+					regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 0 y = 1 }
+					militia = { x = 1 y = 0 }
+					militia = { x = 1 y = 1 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+				}
+			}
+			division_template = {
+				name = "Povstancheskaya kavaleriyskaya diviziya"		# Cavalry
+				regiments = {
+					cavalry = { x = 0 y = 0 }
+					cavalry = { x = 0 y = 1 }
+					cavalry = { x = 1 y = 0 }
+					cavalry = { x = 1 y = 1 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					#engineer = { x = 0 y = 1 }
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Povstancheskaya diviziya\" division_template = \"Povstancheskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya diviziya\" division_template = \"Povstancheskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya diviziya\" division_template = \"Povstancheskaya diviziya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_mobilization_of_officers
+		icon = GFX_goal_officers_command
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_fight_against_partisans
+		}
+		x = 1
+		y = 4
+		completion_reward = {
+			army_experience = 50
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+			down_Makhno_authority = yes
+			add_ideas = RGR_recruitment_officers_idea
+			add_war_support = -0.1
+			custom_effect_tooltip = lack_of_officers_fall_2_tt
+			hidden_effect = {
+				lack_of_officers_fall = yes
+				lack_of_officers_fall = yes
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_copying_army_structure
+		icon = GFX_goal_military_attache
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_mobilization_of_officers
+		}
+		x = 1
+		y = 5
+		completion_reward = {
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Povstancheskaya pekhotnaya brigada\" division_template = \"Povstancheskaya pekhotnaya brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+			add_command_power = 200
+			add_war_support = -0.1
+			if = {
+				limit = { has_idea = FRT_lack_of_control_of_field_commanders }
+				swap_ideas = {
+					remove_idea = FRT_lack_of_control_of_field_commanders
+					add_idea = FRT_lack_of_control_of_field_commanders_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = FRT_lack_of_control_of_field_commanders_2 }
+				swap_ideas = {
+					remove_idea = FRT_lack_of_control_of_field_commanders_2
+					add_idea = FRT_lack_of_control_of_field_commanders_3
+				}
+			}
+			else_if = {
+				limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 }
+				remove_ideas = FRT_lack_of_control_of_field_commanders_3
+			}
+			custom_effect_tooltip = lack_of_officers_fall_2_tt
+			hidden_effect = {
+				lack_of_officers_fall = yes
+				lack_of_officers_fall = yes
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_forced_mobilization
+		icon = GFX_goal_rolling_purges
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_copying_army_structure
+		}
+		x = 1
+		y = 6
+		completion_reward = {
+			down_Makhno_authority = yes
+			rise_2_mobilization_law = yes
+			#remove_ideas = FRT_peasant_army_idea
+			#remove_ideas = FRT_peasant_army_crisis_idea
+			add_stability = -0.1
+			add_war_support = -0.1
+		}
+	}
+	
+	focus = {
+		id = FRT_read_a_lesson_to_Shus
+		icon = GFX_goal_RGR_fraternizing_with_proletariat
+		cost = 2
+		available = {
+			has_country_leader = { name = "Nestor Makhno" ruling_only = yes }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_freemen
+			focus = FRT_fight_against_partisans
+		}
+		bypass = {
+			NOT = { has_country_leader = { name = "Nestor Makhno" ruling_only = yes } }
+		}
+		x = -1
+		y = 4
+		completion_reward = {
+			hidden_effect = {
+				if = {
+					limit = { OR = { has_idea = FRT_Makhno_low_authority_idea has_idea = FRT_Makhno_very_low_authority_idea } }
+					country_event = { id = rcw_free_territory.1 hours = 4 }
+				}
+				else_if = {
+					limit = { has_idea = FRT_lack_of_control_of_field_commanders }
+					swap_ideas = {
+						remove_idea = FRT_lack_of_control_of_field_commanders
+						add_idea = FRT_lack_of_control_of_field_commanders_2
+					}
+				}
+				else_if = {
+					limit = { has_idea = FRT_lack_of_control_of_field_commanders_2 }
+					swap_ideas = {
+						remove_idea = FRT_lack_of_control_of_field_commanders_2
+						add_idea = FRT_lack_of_control_of_field_commanders_3
+					}
+				}
+				else_if = {
+					limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 }
+					remove_ideas = FRT_lack_of_control_of_field_commanders_3
+				}
+				else = {
+					add_command_power = 20
+				}
+			}
+			effect_tooltip = {
+				if = {
+					limit = { has_idea = FRT_lack_of_control_of_field_commanders }
+					swap_ideas = {
+						remove_idea = FRT_lack_of_control_of_field_commanders
+						add_idea = FRT_lack_of_control_of_field_commanders_2
+					}
+				}
+				else_if = {
+					limit = { has_idea = FRT_lack_of_control_of_field_commanders_2 }
+					swap_ideas = {
+						remove_idea = FRT_lack_of_control_of_field_commanders_2
+						add_idea = FRT_lack_of_control_of_field_commanders_3
+					}
+				}
+				else_if = {
+					limit = { has_idea = FRT_lack_of_control_of_field_commanders_3 }
+					remove_ideas = FRT_lack_of_control_of_field_commanders_3
+				}
+				else = {
+					add_command_power = 20
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_support_the_orthodox_church
+		icon = GFX_goal_orthodoxy
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_secularization
+		}
+		x = 11
+		y = 1
+		completion_reward = {
+			add_popularity = { ideology = fascism popularity = 0.05 }
+			add_ideas = YUG_idea_orthodox_church_support
+		}
+	}
+	
+	focus = {
+		id = FRT_secularization
+		icon = GFX_goal_orthodox_orgy
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_support_the_orthodox_church
+		}
+		x = 13
+		y = 1
+		completion_reward = {
+			add_popularity = { ideology = radical_socialism popularity = 0.05 }
+			add_political_power = 30
+		}
+	}
+	
+	focus = {
+		id = FRT_limit_pogroms
+		icon = GFX_goal_dark_questions
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_a_blind_eye_to_massacres
+		}
+		x = 6
+		y = 1
+		completion_reward = {
+			add_popularity = { ideology = radical_socialism popularity = -0.10 }
+			add_political_power = -25
+			remove_ideas = FRT_pogroms_idea
+			add_war_support = -0.10
+			add_stability = 0.10
+			add_to_variable = { var = angry_workers value = -1 }
+			custom_effect_tooltip = FRT_angry_workers_minus_1_tt
+		}
+	}
+	
+	focus = {
+		id = FRT_a_blind_eye_to_massacres
+		icon = GFX_goal_pogroms
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_limit_pogroms
+		}
+		x = 4
+		y = 1
+		completion_reward = {
+			add_stability = -0.10
+			add_war_support = 0.10
+			add_to_variable = { var = angry_workers value = 1 }
+			custom_effect_tooltip = FRT_angry_workers_plus_1_tt
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+			add_political_power = 30
+		}
+	}
+	
+	focus = {
+		id = FRT_blow_up_prisons
+		icon = GFX_goal_blow_prison
+		cost = 2
+		available = {
+			NOT = { has_completed_focus = FRT_independent_lands }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_a_blind_eye_to_massacres
+			focus = FRT_limit_pogroms
+		}
+		mutually_exclusive = {
+			focus = FRT_save_prisons
+		}
+		x = 6
+		y = 2
+		completion_reward = {
+			remove_ideas = FRT_lack_of_police_idea
+			add_stability = -0.05
+			add_ideas = FRT_prisoners_collection_idea
+			add_to_variable = { var = angry_workers value = 1 }
+			custom_effect_tooltip = FRT_angry_workers_plus_1_tt
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+			add_political_power = 30
+		}
+	}
+	
+	focus = {
+		id = FRT_save_prisons
+		icon = GFX_goal_law_and_order
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_a_blind_eye_to_massacres
+			focus = FRT_limit_pogroms
+		}
+		mutually_exclusive = {
+			focus = FRT_blow_up_prisons
+		}
+		x = 4
+		y = 2
+		completion_reward = {
+			remove_ideas = FRT_lack_of_police_idea
+			add_stability = 0.05
+			add_popularity = { ideology = radical_socialism popularity = -0.05 }
+		}
+	}
+	
+	focus = {
+		id = FRT_capture_of_german_weapons
+		icon = GFX_goal_generic_small_arms
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		x = 3
+		y = 3
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_great_war
+				amount = 1000
+				producer = GER
+			}
+			add_equipment_to_stockpile = {
+				type = field_guns_equipment_1_5
+				amount = 150
+				producer = GER
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment_1_5
+				amount = 150
+				producer = GER
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_requisitions_confiscations_expropriations
+		icon = GFX_goal_requisition
+		cost = 2
+		available = {
+			NOT = { has_country_flag = FRT_workers_council }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		x = 2
+		y = 1
+		completion_reward = {
+			rise_Makhno_authority = yes
+			if = {
+				limit = { has_idea = FRT_barter }
+				swap_ideas = {
+					remove_idea = FRT_barter
+					add_idea = FRT_barter_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = FRT_barter_2 }
+				swap_ideas = {
+					remove_idea = FRT_barter_2
+					add_idea = FRT_barter_3
+				}
+			}
+			add_to_variable = { var = angry_workers value = 1 }
+			custom_effect_tooltip = FRT_angry_workers_plus_1_tt
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_great_war
+				amount = 1000
+				producer = RUS
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_looting_cities
+		icon = GFX_goal_destroy_state
+		cost = 2
+		available = {
+			NOT = { has_country_flag = FRT_workers_council }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_requisitions_confiscations_expropriations
+		}
+		x = 2
+		y = 2
+		completion_reward = {
+			rise_Makhno_authority = yes
+			if = {
+				limit = { has_idea = FRT_barter }
+				swap_ideas = {
+					remove_idea = FRT_barter
+					add_idea = FRT_barter_2
+				}
+			}
+			else_if = {
+				limit = { has_idea = FRT_barter_2 }
+				swap_ideas = {
+					remove_idea = FRT_barter_2
+					add_idea = FRT_barter_3
+				}
+			}
+			add_to_variable = { var = angry_workers value = 1 }
+			custom_effect_tooltip = FRT_angry_workers_plus_1_tt
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_great_war
+				amount = 1000
+				producer = RUS
+			}
+			add_political_power = 30
+		}
+	}
+	
+	focus = {
+		id = FRT_anti_partisanship
+		icon = GFX_goal_antiparty
+		cost = 2
+		available = {
+			NOT = { has_country_leader = { name = "Pyotr Arshinov" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Marusya Nikiforova" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Grigoriy Yatsenko" ruling_only = yes } }
+			NOT = { has_country_leader = { name = "Leontiy Khristovoy" ruling_only = yes } }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_collaboration_with_anarchists
+		}
+		x = 10
+		y = 2
+		completion_reward = {
+			add_ideas = ban_all_parties_law
+		}
+	}
+	
+	focus = {
+		id = FRT_collaboration_with_anarchists
+		icon = GFX_goal_black_skull
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_anti_partisanship
+		}
+		x = 12
+		y = 2
+		completion_reward = {
+			add_political_power = 60
+			add_popularity = { ideology = social_democracy popularity = 0.05 }
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_establish_anarchist_media
+		icon = GFX_goal_press
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_collaboration_with_anarchists
+		}
+		x = 13
+		y = 3
+		completion_reward = {
+			add_ideas = FRT_anarchist_media
+		}
+	}
+	
+	focus = {
+		id = FRT_one-party_system
+		icon = GFX_goal_centralize_power
+		cost = 2
+		available = {
+			#
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_collaboration_with_anarchists
+		}
+		x = 11
+		y = 3
+		completion_reward = {
+			add_ideas = allow_one_party_law
+			set_party_name = { ideology = radical_socialism long_name = UKR_radical_socialism_party_long name = UKR_radical_socialism_party }
+		}
+	}
+	
+	focus = {
+		id = FRT_cult_of_batyka
+		icon = GFX_goal_generic_demand_territory
+		cost = 2
+		available = {
+			has_country_leader = { name = "Nestor Makhno" ruling_only = yes }
+			has_idea = FRT_Makhno_very_high_authority_idea
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_establish_anarchist_media
+		}
+		x = 13
+		y = 4
+		completion_reward = {
+			add_war_support = 0.05
+			add_country_leader_trait = anarchist_zeal
+			add_political_power = 30
+		}
+	}
+	
+	focus = {
+		id = FRT_create_counterintelligence
+		icon = GFX_goal_spy
+		cost = 2
+		available = {
+			has_completed_focus = FRT_one-party_system
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_collaboration_with_anarchists
+		}
+		x = 15
+		y = 3
+		completion_reward = {
+			create_intelligence_agency = { name = "Counterintelligence" icon = "GFX_agency_logo_RUS_okhranka" }
+			add_ideas = FRE_black_terror_idea
+		}
+	}
+	
+	focus = {
+		id = FRT_propaganda_in_squads
+		icon = GFX_goal_commis
+		cost = 2
+		available = {
+			NOT = { has_completed_focus = FRT_independent_lands }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_create_counterintelligence
+		}
+		prerequisite = {
+			focus = FRT_establish_anarchist_media
+		}
+		x = 15
+		y = 4
+		completion_reward = {
+			add_ideas = FRT_anarchist_party_idea
+		}
+	}
+	
+	focus = {
+		id = FRT_create_a_school_in_gulyay_pole
+		icon = GFX_goal_book
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_establish_anarchist_media
+		}
+		x = 17
+		y = 4
+		completion_reward = {
+			literacy_law_rise = yes
+		}
+	}
+	
+	focus = {
+		id = FRT_attempt_on_lenin
+		icon = GFX_goal_backstab
+		cost = 2
+		available = {
+			NOT = { has_country_leader = { name = "Marusya Nikiforova" ruling_only = yes } }
+			RSR = { is_socialist_country = yes }
+			NOT = { has_war_with = RSR }
+			is_neighbor_of = RSR
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_create_counterintelligence
+		}
+		x = 16
+		y = 5
+		completion_reward = {
+			add_political_power = -200
+			country_event = rcw_free_territory.9
+		}
+	}
+	
+	focus = {
+		id = FRT_freedom_for_all
+		icon = GFX_goal_boring_bills
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_establish_anarchist_media
+		}
+		mutually_exclusive = {
+			focus = FRT_nationalist_rhetoric
+		}
+		x = 12
+		y = 5
+		completion_reward = {
+			swap_ideas = {
+    			remove_idea = FRT_refugees_idea
+   			 	add_idea = FRT_refugees_2_idea
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_nationalist_rhetoric
+		icon = GFX_goal_national_rith
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_establish_anarchist_media
+		}
+		mutually_exclusive = {
+			focus = FRT_freedom_for_all
+		}
+		x = 14
+		y = 5
+		completion_reward = {
+			add_popularity = { ideology = national_syndicalism popularity = 0.10 }
+			add_ideas = FRT_nationalist_rhetoric_idea
+		}
+	}
+	
+	focus = {
+		id = FRT_face_to_the_countryside
+		icon = GFX_goal_agriculture2
+		cost = 2
+		available = {
+			has_country_flag = FRT_peasants_council
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_local_congress_of_soviets
+		}
+		mutually_exclusive = {
+			focus = FRT_face_to_the_city
+		}
+		x = 7
+		y = 4
+		completion_reward = {
+			add_popularity = { ideology = market_liberalism popularity = 0.2 }
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Brigada povstancheskogo opolcheniya\" division_template = \"Brigada povstancheskogo opolcheniya\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+			add_political_power = 60
+		}
+	}
+	
+	focus = {
+		id = FRT_organize_handicraft_workshops
+		icon = GFX_goal_generic_construct_mil_factory
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_countryside
+		}
+		x = 6
+		y = 5
+		completion_reward = {
+			add_offsite_building = { type = industrial_complex level = 2 }
+		}
+	}
+	
+	focus = {
+		id = FRT_collection_of_gunsmith
+		icon = GFX_goal_gunsmith
+		cost = 2
+		available = {
+			NOT = { has_completed_focus = FRT_independent_lands }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_organize_handicraft_workshops
+		}
+		x = 6
+		y = 6
+		completion_reward = {
+			add_offsite_building = { type = arms_factory level = 2 }
+			add_ideas = FRT_collection_of_gunsmith_idea
+		}
+	}
+	
+	focus = {
+		id = FRT_face_to_the_city
+		icon = GFX_goal_sity
+		cost = 2
+		available = {
+			has_country_flag = FRT_workers_council
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_one-party_system
+		}
+		prerequisite = {
+			focus = FRT_local_congress_of_soviets
+		}
+		mutually_exclusive = {
+			focus = FRT_face_to_the_countryside
+		}
+		x = 9
+		y = 4
+		completion_reward = {
+			rise_labor_legislation = yes
+			add_political_power = 60
+		}
+	}
+	
+	focus = {
+		id = FRT_creating_monetary_system
+		icon = GFX_goal_pile_of_money
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_face_to_the_city
+		}
+		x = 10
+		y = 5
+		completion_reward = {
+			if = {
+				limit = { has_idea = FRT_barter }
+				remove_ideas = FRT_barter
+			}
+			else_if = {
+				limit = { has_idea = FRT_barter_2 }
+				remove_ideas = FRT_barter_2
+			}
+			else_if = {
+				limit = { has_idea = FRT_barter_3 }
+				remove_ideas = FRT_barter_3
+			}
+			add_ideas = hyper_inflation_1
+		}
+	}
+	
+	focus = {
+		id = FRT_workers_self-government
+		icon = GFX_goal_generic_national_unity
+		cost = 2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_creating_monetary_system
+		}
+		x = 10
+		y = 6
+		completion_reward = {
+			add_ideas = workers_control_law
+			add_ideas = FRT_workers_self-government_idea
+		}
+	}
+	
+	focus = {
+		id = FRT_neutrality_with_nationalists
+		icon = GFX_goal_risky_deal
+		cost = 2
+		available = {
+			is_neighbor_of = UKR
+			is_puppet = no
+			UKR = { NOT = { is_socialist_country = yes } has_country_flag = UKR_white has_capitulated = no is_puppet = no has_civil_war = no }
+			UKR = { surrender_progress > 0.09 }
+			any_country	 = {
+				has_war_with = UKR
+				NOT = { tag = FRT }
+			}
+			any_country	 = {
+				has_war_with = FRT
+				NOT = { tag = UKR }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		x = 16
+		y = 1
+		completion_reward = {
+			UKR = { country_event = { id = rcw_free_territory.14 days = 1 } }
+		}
+	}
+	
+	focus = {
+		id = FRT_compromise_with_bolsheviks
+		icon = GFX_goal_international
+		cost = 2
+		available = {
+			RSR = { is_socialist_country = yes exists = yes }
+			NOT = { has_war_with = RSR }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_compromise_with_whites
+		}
+		x = 18
+		y = 1
+		completion_reward = {
+			country_event = { id = rcw_free_territory.23 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = FRT_to_leave
+		icon = GFX_goal_leavy_sov
+		cost = 2
+		available = {
+			is_subject = yes
+		}
+		ai_will_do = {
+			factor = 0
+		}
+		prerequisite = {
+			focus = FRT_compromise_with_bolsheviks
+		}
+		x = 18
+		y = 2
+		completion_reward = {
+			OVERLORD = {
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_compromise_with_whites
+		icon = GFX_goal_compromisse_whites
+		cost = 2
+		available = {
+			any_country = {
+				has_war_with = FRT
+				has_war_with = RSR
+				is_neighbor_of = FRT
+				OR = { tag = CRI tag = DON tag = RVA tag = KUB tag = CCA AND = { tag = UKR has_country_flag = UKR_white } }
+				NOT = { is_socialist_country = yes }
+			}
+		}
+		ai_will_do = {
+			factor = 0
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		mutually_exclusive = {
+			focus = FRT_compromise_with_bolsheviks
+		}
+		x = 20
+		y = 1
+		completion_reward = {
+			every_country = {
+				limit = {
+					has_war_with = FRT
+					is_neighbor_of = FRT
+					OR = { tag = CRI tag = DON tag = RVA tag = KUB tag = CCA AND = { tag = UKR has_country_flag = UKR_white } }
+					NOT = { is_socialist_country = yes }
+					OR = {
+						is_faction_leader = yes
+						AND = { is_in_faction = no is_subject = no }
+					}
+				}
+				country_event = { id = rcw_free_territory.15 days = 1 }
+			}
+		}
+	}
+	
+	focus = {
+		id = FRT_destabilization_ukrainian_bolsheviks
+		icon = GFX_goal_anti_commi
+		cost = 2
+		available = {
+			USR = { exists = yes has_capitulated = no is_neighbor_of = FRT NOT = { has_war_with = FRT } }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = FRT_convene_council
+		}
+		x = 22
+		y = 1
+		completion_reward = {
+			custom_effect_tooltip = FRT_destabilization_ukrainian_bolsheviks_decisions_unlock
+		}
+	}
+}

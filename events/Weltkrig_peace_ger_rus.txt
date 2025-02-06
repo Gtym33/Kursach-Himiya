@@ -1,0 +1,703 @@
+﻿###########################
+# German Events
+###########################
+
+add_namespace = ger_rus_peace
+
+
+# Мир с Россией
+country_event = {
+	id = ger_rus_peace.19
+	title = ger_rus_peace.19.t
+	desc = ger_rus_peace.19.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	hidden = yes
+	
+	trigger = {
+		has_global_flag = WWI_is_now
+		tag = GER
+		has_war_with = RUS
+		NOT = { has_global_flag = WWI_RUS_HAS_CAPITULATED }
+		RUS = {
+			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
+			surrender_progress > 0.5
+		}
+	}
+	option = {
+		RUS = { country_event = treaty_of_brest.41 add_ideas = neutral_foreign_policy_law }
+	}
+}
+# Мир с Россией
+country_event = {
+	id = ger_rus_peace.20
+	title = ger_rus_peace.20.t
+	desc = ger_rus_peace.20.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		always = no
+		tag = GER
+		has_war_with = RUS
+		has_global_flag = WWI_is_now
+		NOT = { has_global_flag = WWI_RUS_HAS_CAPITULATED }
+		NOT = { has_idea = brest_negotiation_truce_Central_powers }
+		RUS = {
+			NOT = { has_country_flag = RUS_Oktober_revolution_fired }
+			NOT = { has_country_flag = RUS_brest_peace_fired }
+			OR = {
+				has_capitulated = yes
+				surrender_progress > 0.5
+				AND = {
+					surrender_progress > 0.35
+					has_global_flag = RUS_Kornilov_civil_war
+				}
+				AND = {
+					surrender_progress > 0.35
+					has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+				}
+				OR = {
+					AND = {
+						NOT = { controls_state = 219 }
+						NOT = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war }
+					}
+					#AND = {
+						#RUS = { NOT = { capital_scope = { is_controlled_by = RUS } } }
+						#has_global_flag = RUS_monarchy_Petrograd_commune_civil_war
+					#}
+				}
+			}
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 0
+	}
+	
+	option = {
+		name = ger_rus_peace.20.a
+		add_political_power = -25
+		if = {
+			limit = { FIN = { is_puppet_of = RUS } }
+			FIN = {
+				RUS = { end_puppet = FIN }
+				hidden_effect = {
+					set_politics = {
+						ruling_party = conservatism
+						elections_allowed = no
+					}
+					set_popularities = {
+							radical_socialism = 0
+							communism = 15
+							social_democracy = 40
+							social_liberalism = 13
+							market_liberalism = 12
+							conservatism = 12
+							authoritarism = 0
+							despotism = 8
+							fascism = 0
+							national_syndicalism = 0
+					}
+					drop_cosmetic_tag = yes
+					set_cosmetic_tag = FIN_white
+					leave_faction = yes
+					add_ideas = neutral_foreign_policy_law
+					every_country = {
+						limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG tag = TUR is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS tag = SNS is_in_faction_with = TRG tag = TRG is_in_faction_with = OAF tag = OAF is_in_faction_with = TUR AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } }
+						white_peace = FIN
+					}
+				}
+			}
+		}
+		
+		if = {
+			limit = { ROM = { exists = yes has_capitulated = no } }
+			every_state = {
+				limit = {
+					is_owned_by = RUS
+					region = 235
+				}
+				ROM = { transfer_state = PREV }
+			}
+			else_if = {
+				limit = { ROM = { exists = yes has_capitulated = yes } }
+				every_state = {
+					limit = {
+						is_owned_by = RUS
+						region = 235
+					}
+					ROM = { set_state_owner = PREV }
+				}
+			}
+			else_if = {
+				limit = { ROM = { exists = no } }
+				every_state = { limit = { is_owned_by = RUS OR = { is_core_of = ROM is_core_of = MOL } } MOL = { transfer_state = PREV } }
+			}
+		}
+		set_global_flag = WWI_RUS_HAS_CAPITULATED
+		if = {
+			limit = { NOT = { has_global_flag = RUS_Kornilov_civil_war } }
+			country_event = ger_rus_peace.22
+		}
+		if = {
+			limit = { TUR = { has_war_with = RUS is_in_faction_with = GER } GEO = { exists = no } }
+			TUR = { country_event = ger_rus_peace.23 }
+		}
+		country_event = ger_rus_peace.24
+		country_event = ger_rus_peace.25
+		country_event = ger_rus_peace.30
+		every_country = {
+			limit = { controls_state = 137 has_war_with = RUS is_in_faction_with = GER }
+			country_event = ger_rus_peace.27
+		}
+		RUS = {
+			leave_faction = yes
+			add_ideas = neutral_foreign_policy_law
+			end_puppet = UKR
+			if = {
+				limit = { OR = { NOT = { has_global_flag = RUS_Kornilov_civil_war } NOT = { has_global_flag = RUS_monarchy_Petrograd_commune_civil_war } } }
+				delete_unit_template_and_units = {
+					division_template = "Kazach'ya brigada"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Gvardeyskaya Pekhotnaya Diviziya"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Kavaleriyskaya Diviziya"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Belaya Gvardiya"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Udarnaya diviziya"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1899 goda"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1900 goda"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1901 goda"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1902 goda"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1903 goda"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1904-1907 godov"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1908-1909 godov"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1910-1912 godov"
+				}
+				delete_unit_template_and_units = {
+					division_template = "Pekhotnaya Diviziya priziva 1913-1915 godov"
+				}
+				division_template = {
+					name = "Kavaleriyskaya Diviziya"		# Cavalry
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+						engineer = { x = 0 y = 1 }
+						field_guns = { x = 0 y = 2 }
+					}
+					is_locked = no
+				}
+			}
+		}
+		RUS = {
+			if = {
+				limit = { any_country = { original_tag = TUR exists = yes } }
+				every_state = {
+					limit = { is_owned_by = ROOT is_core_of = TUR is_on_continent = asia NOT = { state = 341 state = 949 state = 797 } }
+					random_country = {
+						limit = { original_tag = TUR exists = yes }
+						transfer_state = PREV
+					}
+				}
+			}
+			if = {
+				limit = { any_country = { original_tag = BUL exists = yes } }
+				every_state = {
+					limit = { is_owned_by = ROOT is_core_of = BUL is_on_continent = europe }
+					random_country = {
+						limit = { original_tag = BUL exists = yes }
+						transfer_state = PREV
+					}
+				}
+			}
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER tag = GER } }
+			white_peace = RUS
+		}
+		every_country = {
+			limit = { OR = { is_in_faction_with = GER tag = GER } has_war_with = RUS }
+			white_peace = RUS
+		}
+		if = {
+			limit = { OR = { has_global_flag = RUS_Kornilov_civil_war has_global_flag = RUS_monarchy_Petrograd_commune_civil_war } }
+			every_country = {
+				limit = { has_war_with = RUS has_war_with = GER is_any_former_russian_empire_country = yes }
+				white_peace = GER
+			}
+		}
+		every_country = {
+			limit = { is_puppet_of = RUS }
+			RUS = { end_puppet = PREV }
+		}
+	}
+}
+#Украина
+country_event = {
+	id = ger_rus_peace.22
+	title = ger_rus_peace.22.t
+	desc = ger_rus_peace.22.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Оставить независимую Украину на правом берегу и на левом чуть-чуть
+#	option = {
+#		name = ger_rus_peace.22.b
+#		
+#		every_state = {
+#			limit = {
+#				NOT = { is_core_of = POL }
+#				OR = {
+#					is_core_of = UKR
+#					AND = { is_core_of = BLR is_claimed_by = UKR }
+#				}
+#				is_owned_by = RUS
+#				NOT = { state = 904 state = 1165 state = 957 state = 218 state = 1044 state = 228 state = 953 state = 1284 state = 918 state = 954 state = 958 state = 1286 state = 1367 state = 227 state = 221 state = 1285 state = 225 state = 960 state = 916 state = 923 state = 224 state = 241 }
+#			}
+#			UKR = { transfer_state = PREV }
+#		}
+#		GER = { country_event = ger_rus_peace.26 }
+#		
+#		ai_chance = {
+#			factor = 1
+#			modifier = {
+#				factor = 0
+#				RUS = { NOT = { has_country_flag = RUS_monarchy_not_fall } }
+#			}
+#		}
+#	}
+
+	#Оставить независимую Украину в максимальных границах
+	option = {
+		name = ger_rus_peace.22.b
+		add_political_power = -25
+		every_state = {
+			limit = {
+				NOT = { is_core_of = POL }
+				OR = {
+					is_core_of = UKR
+					AND = { is_core_of = BLR is_claimed_by = UKR }
+					AND = { is_core_of = RUS is_claimed_by = UKR }
+				}
+				is_owned_by = RUS
+				NOT = { state = 904 state = 1165 state = 218 state = 1044 state = 228 state = 953 state = 1284 state = 954 state = 960 state = 224 state = 241 }
+			}
+			UKR = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OR = { state = 953 state = 1284 state = 954 state = 240 state = 960 }
+			}
+			UKR = { transfer_state = PREV }
+		}
+		GER = { country_event = ger_rus_peace.26 }
+		
+	}
+}
+#Карс и Закавказье
+country_event = {
+	id = ger_rus_peace.23
+	title = ger_rus_peace.23.t
+	desc = ger_rus_peace.23.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Забрать себе Карс
+	option = {
+		name = ger_rus_peace.23.b
+		if = { limit = { RUS = { owns_state = 1375 } } transfer_state = 1375 }
+		if = { limit = { RUS = { owns_state = 1376 } } transfer_state = 1376 }
+		if = { limit = { RUS = { owns_state = 1227 } } transfer_state = 1227 }
+		add_political_power = -25
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_stability > 0.3
+			}
+		}
+	}
+	#Забрать себе Карс и Армению
+	option = {
+		name = ger_rus_peace.23.c
+		if = { limit = { RUS = { owns_state = 1375 } } transfer_state = 1375 }
+		if = { limit = { RUS = { owns_state = 1376 } } transfer_state = 1376 }
+		if = { limit = { RUS = { owns_state = 1227 } } transfer_state = 1227 }
+		if = { limit = { RUS = { owns_state = 230 } } transfer_state = 230 }
+		if = { limit = { RUS = { owns_state = 1412 } } transfer_state = 1412 }
+		if = { limit = { RUS = { owns_state = 1413 } } transfer_state = 1413 }
+		if = { limit = { RUS = { owns_state = 931 } } transfer_state = 931 }
+		add_political_power = -100
+		add_stability = -0.02
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0.1
+				has_global_flag = RUS_Kornilov_civil_war
+			}
+			modifier = {
+				factor = 0
+				has_stability < 0.1
+			}
+			modifier = {
+				factor = 0.2
+				has_stability < 0.13
+			}
+			modifier = {
+				factor = 0.3
+				has_stability < 0.16
+			}
+			modifier = {
+				factor = 0.4
+				has_stability < 0.2
+			}
+			modifier = {
+				factor = 0.6
+				has_stability < 0.25
+			}
+			modifier = {
+				factor = 0.8
+				has_stability < 0.28
+			}
+			modifier = {
+				factor = 0.9
+				has_stability < 0.29
+			}
+		}
+	}
+	#Забрать себе Карс, Армению и сделать марионеткой Азербайджан
+	option = {
+		name = ger_rus_peace.23.c
+		if = { limit = { RUS = { owns_state = 1375 } } transfer_state = 1375 }
+		if = { limit = { RUS = { owns_state = 1376 } } transfer_state = 1376 }
+		if = { limit = { RUS = { owns_state = 1227 } } transfer_state = 1227 }
+		if = { limit = { RUS = { owns_state = 230 } } transfer_state = 230 }
+		if = { limit = { RUS = { owns_state = 1412 } } transfer_state = 1412 }
+		if = { limit = { RUS = { owns_state = 1413 } } transfer_state = 1413 }
+		if = { limit = { RUS = { owns_state = 931 } } transfer_state = 931 }
+		add_political_power = -100
+		add_stability = -0.03
+		RUS = {
+			release = AZR
+		}
+		puppet = AZR
+		set_autonomy = {
+			target = AZR
+			autonomy_state = autonomy_dominion
+		}
+		AZR = { white_peace = RUS }
+		ai_chance = {
+			factor = 99
+			modifier = {
+				factor = 0
+				has_global_flag = RUS_Kornilov_civil_war
+			}
+			modifier = {
+				factor = 0
+				has_stability < 0.1
+			}
+			modifier = {
+				factor = 0.2
+				has_stability < 0.13
+			}
+			modifier = {
+				factor = 0.3
+				has_stability < 0.16
+			}
+			modifier = {
+				factor = 0.4
+				has_stability < 0.2
+			}
+			modifier = {
+				factor = 0.6
+				has_stability < 0.25
+			}
+			modifier = {
+				factor = 0.8
+				has_stability < 0.28
+			}
+			modifier = {
+				factor = 0.9
+				has_stability < 0.29
+			}
+		}
+	}
+}
+#Польша
+country_event = {
+	id = ger_rus_peace.24
+	title = ger_rus_peace.24.t
+	desc = ger_rus_peace.24.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Отдать Австро-Венгрии
+	option = {
+		name = ger_rus_peace.24.b
+		every_state = {
+			limit = { NOT = { is_core_of = LIT } is_core_of = POL is_owned_by = RUS }
+			AUH = { transfer_state = PREV }
+		}
+		add_political_power = -25
+		ai_chance = {
+			factor = 50
+		}
+	}
+	#Аннексировать
+	option = {
+		name = ger_rus_peace.24.c
+		every_state = {
+			limit = { NOT = { is_core_of = LIT } is_core_of = POL is_owned_by = RUS }
+			GER = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				has_stability < 0.3
+			}
+			modifier = {
+				factor = 0.25
+				has_stability < 0.2
+			}
+			modifier = {
+				factor = 0
+				has_stability < 0.1
+			}
+		}
+	}
+}
+#Прибалтика
+country_event = {
+	id = ger_rus_peace.25
+	title = ger_rus_peace.25.t
+	desc = ger_rus_peace.25.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Взять Литву и Курляндию с Ригой
+	option = {
+		name = ger_rus_peace.25.a
+		every_state = {
+			limit = { is_core_of = LIT is_owned_by = RUS }
+			GER = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = { OR = { is_core_of = COU state = 808 } is_owned_by = RUS }
+			GER = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+	#Взять всю Прибалтику
+	option = {
+		name = ger_rus_peace.25.b
+		every_state = {
+			limit = { is_core_of = LIT is_owned_by = RUS }
+			GER = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = { OR = { is_core_of = UBD is_core_of = LAT is_core_of = EST is_core_of = COU } is_owned_by = RUS }
+			GER = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Беларусь
+country_event = {
+	id = ger_rus_peace.26
+	title = ger_rus_peace.26.t
+	desc = ger_rus_peace.26.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Оставить России
+	option = {
+		name = ger_rus_peace.26.a
+		ai_chance = {
+			factor = 0
+		}
+		
+		hidden_effect = {
+	     	RUS = { 
+	  	        set_state_owner = 206 
+		        set_state_controller = 206
+		    }
+		}
+	}
+	#Выделить марионеточное правительство
+	option = {
+		name = ger_rus_peace.26.b
+		every_state = {
+			limit = { is_owned_by = RUS NOT = { is_core_of = POL } NOT = { is_core_of = LIT } OR = { is_core_of = BLR AND = { is_core_of = RUS is_claimed_by = BLR } } }
+			BLR = { transfer_state = PREV }
+		}
+		puppet = BLR
+		set_autonomy = {
+			target = BLR
+			autonomy_state = autonomy_puppet
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Крым
+country_event = {
+	id = ger_rus_peace.27
+	title = ger_rus_peace.27.t
+	desc = ger_rus_peace.27.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	#Аннексировать
+	option = {
+		name = ger_rus_peace.27.a
+		every_state = {
+			limit = { is_core_of = CRI is_owned_by = RUS }
+			ROOT = { transfer_state = PREV }
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { tag = TUR tag = ROM tag = BUL }
+			}
+		}
+	}
+	#Сделать марионеткой Крым
+	option = {
+		name = ger_rus_peace.27.c
+		every_state = {
+			limit = { is_core_of = CRI is_owned_by = RUS }
+			CRI = { transfer_state = PREV }
+		}
+		puppet = CRI
+		set_autonomy = {
+			target = CRI
+			autonomy_state = autonomy_colony
+		}
+		CRI = { white_peace = RUS }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#Германия садит марионеток в Москве.
+#country_event = {
+#	id = ger_rus_peace.30
+#	title = ger_rus_peace.30.t
+#	desc = ger_rus_peace.30.desc
+#	picture = GFX_report_event_germany_civil_war_soldiers
+#
+#	is_triggered_only = yes
+#	
+#	#Поставить Кирилла
+#	option = {
+#		name = ger_rus_peace.30.a
+#		add_political_power = 25
+#		RUS = {
+#		create_country_leader = {
+#		name = "Kirill Vladimirovich"
+#		desc = ""
+#		picture = "gfx/leaders/RUS/Portrait_Kirill_Vladimirovich.dds"
+#		expire = "1937.10.4"
+#		ideology = authoritarism_ideology
+#		traits = { }
+#		}
+#		set_politics = {ruling_party = authoritarism}
+#		set_cosmetic_tag = RUS_MONARCHY
+#		country_event = rcw.202
+#		country_event = rcw.200
+#		}
+#		ai_chance = {
+#			factor = 1
+#		}
+#	}
+#	#Поставить Маннергейма
+#	option = {
+#		name = ger_rus_peace.30.b
+#		RUS = {
+#		create_country_leader = { name = "Carl Mannerheim" desc = FIN_Carl_Mannerheim_desc picture = "gfx/leaders/FIN/Portrait_Carl_Mannerheim.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = {  } }
+#		set_politics = {ruling_party = authoritarism}
+#		country_event = rcw.202
+#		country_event = rcw.200
+#		}
+#		ai_chance = {
+#			factor = 0
+#		}
+#	}
+#	
+#	#Поставить Краснова
+#	option = {
+#		name = ger_rus_peace.30.c
+#		RUS = {
+#		create_country_leader = { name = "Pyotr Krasnov" desc = RUS_Pyotr_Krasnov_desc picture = "gfx/leaders/RUS/Portrait_Pyotr_Krasnov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { like_GER warmonger_old_general min_1_traditionalist } }
+#		set_politics = {ruling_party = authoritarism}
+#		country_event = rcw.202
+#		country_event = rcw.200
+#		}
+#		ai_chance = {
+#			factor = 0
+#		}
+#	}
+#	
+#	#Поставить Келлера
+#	option = {
+#		name = ger_rus_peace.30.e
+#		RUS = {
+#		create_country_leader = { name = "Pyotr Krasnov" desc = RUS_Pyotr_Krasnov_desc picture = "gfx/leaders/RUS/Portrait_Pyotr_Krasnov.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { like_GER warmonger_old_general min_1_traditionalist } }
+#		set_politics = {ruling_party = authoritarism}
+#
+#		country_event = rcw.202
+#		country_event = rcw.200
+#		}
+#		ai_chance = {
+#			factor = 0
+#		}
+#	}
+#}

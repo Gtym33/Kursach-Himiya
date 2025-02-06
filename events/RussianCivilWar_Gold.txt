@@ -1,0 +1,564 @@
+﻿###########################
+# Russian Civil War Gold Events
+###########################
+
+add_namespace = rcwgold
+
+# Золото республики
+country_event = {
+	id = rcwgold.1
+	title = rcwgold.1.t
+	desc = rcwgold.1.desc
+	fire_only_once = yes
+	picture = GFX_report_event_RUS_gold
+	
+	trigger = {
+		tag = RUS
+		has_country_flag = RUS_kazan_gold
+		NOT = {
+			249 = {
+				is_fully_controlled_by = RUS
+			}
+			651 = {
+				is_controlled_by = RUS
+			}
+			251 = {
+				is_controlled_by = RUS
+			}
+			239 = {
+				is_controlled_by = RUS
+			}
+		}
+	}
+
+	option = {
+		name = rcwgold.1.a
+		trigger = {
+			252 = {
+				is_controlled_by = RUS
+			}
+		}
+		activate_mission = evacuation_of_gold
+	}
+	option = {
+		name = rcwgold.1.b
+	}
+}
+#Успешная эвакуация золота
+country_event = {
+	id = rcwgold.2
+	title = rcwgold.2.t
+	desc = rcwgold.2.desc
+	fire_only_once = yes
+	is_triggered_only = yes
+
+	option = {
+		name = rcwgold.2.a
+		clr_country_flag = RUS_kazan_gold
+		clr_country_flag = RUS_novgorod_gold
+		set_country_flag = RUS_all_gold_in_novgorod
+	}
+}
+#Трофеи не поддаются подсчёту
+country_event = {
+	id = rcwgold.3
+	title = rcwgold.3.t
+	desc = rcwgold.3.desc
+	fire_only_once = yes
+	picture = GFX_report_event_RUS_gold
+	
+	trigger = {
+		is_former_russian_empire_russian_country = yes
+		NOT = {
+			original_tag = RGR
+			original_tag = RUS
+		}
+		249 = {
+			is_controlled_by = ROOT
+		}
+		RUS = {
+			has_country_flag = RUS_kazan_gold
+		}
+	}
+
+	option = {
+		name = rcwgold.3.a
+		RUS = {
+			clr_country_flag = RUS_kazan_gold
+		}
+		subtract_from_variable = {
+			var = RUS.gold_reserve_var
+			value = 3
+		}
+		add_to_variable = {
+			var = ROOT.gold_reserve_var
+			value = 3
+		}
+		russian_cw_set_gold_reserve_idea = yes
+		unlock_decision_category_tooltip = russian_gold_category
+	}
+}
+#Госбанк Нижнего Новгорода
+country_event = {
+	id = rcwgold.4
+	title = rcwgold.4.t
+	desc = rcwgold.4.desc
+	fire_only_once = yes
+	picture = GFX_report_event_RUS_gold
+	
+	trigger = {
+		is_former_russian_empire_russian_country = yes
+		NOT = {
+			original_tag = RGR
+			original_tag = RUS
+		}
+		252 = {
+			is_controlled_by = ROOT
+		}
+		RUS = {
+			OR = {
+				has_country_flag = RUS_novgorod_gold
+				has_country_flag = RUS_all_gold_in_novgorod
+			}
+		}
+	}
+
+	option = {
+		name = rcwgold.4.a
+		if = {
+			limit = {
+				RUS = {
+					has_country_flag = RUS_novgorod_gold
+				}
+			}
+			subtract_from_variable = {
+				var = RUS.gold_reserve_var
+				value = 2
+			}
+			add_to_variable = {
+				var = ROOT.gold_reserve_var
+				value = 2
+			}
+		}
+		else_if = {
+			limit = {
+				RUS = {
+					has_country_flag = RUS_all_gold_in_novgorod
+				}
+			}
+			subtract_from_variable = {
+				var = RUS.gold_reserve_var
+				value = 5
+			}
+			add_to_variable = {
+				var = ROOT.gold_reserve_var
+				value = 5
+			}
+		}
+		russian_cw_set_gold_reserve_idea = yes
+		RUS = {
+			clr_country_flag = RUS_novgorod_gold
+			clr_country_flag = RUS_all_gold_in_novgorod
+		}
+		unlock_decision_category_tooltip = russian_gold_category
+	}
+}
+
+#Коррупция в правительстве
+country_event = {
+	id = rcwgold.5
+	title = rcwgold.5.t
+	desc = rcwgold.5.desc
+	is_triggered_only = yes
+
+	option = {
+		name = rcwgold.5.a
+		rise_government_corruption = yes
+	}
+}
+
+#Предложение о кредитах
+country_event = {
+	id = rcwgold.6
+	title = rcwgold.6.t
+	desc = rcwgold.6.desc
+	is_triggered_only = yes
+
+	option = {
+		name = rcwgold.6.a
+		add_political_power = 100
+		#Кредит не добавится к долгам, потому что под залог золота. Зато Россия потеряет золото
+		#if = {
+		#	limit = { NOT = { has_variable = global.RUS_credit_pay } }
+		#	set_variable = { global.RUS_credit_pay = 0 }
+		#}
+		#add_to_variable = { global.RUS_credit_pay = 1 }
+		if = {
+			limit = { ROOT = { original_tag = ENG } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_ENG
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = RAJ } }
+			add_ideas = Entente_credit_for_Russia_RAJ
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_RAJ
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = FRA } }
+			add_ideas = Entente_credit_for_Russia_FRA
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_FRA
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = BEL } }
+			add_ideas = Entente_credit_for_Russia_BEL
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_BEL
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = SAF } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_SAF
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = AST } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_AST
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = USA } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_USA
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = JAP } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_JAP
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = MAN } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_MAN
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = FNG } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_FNG
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = SWE } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_SWE
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = FIN } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_FIN
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = ITA } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_ITA
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = SER } }
+			add_ideas = Entente_credit_for_Russia_SER
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = GRE } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_GRE
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = GRR } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_GRR
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = ROM } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_ROM
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = GER } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_GER
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = PRE } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_PRE
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = AUH } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_AUH
+			}
+		}
+		else_if = {
+			limit = { ROOT = { original_tag = TUR } }
+			event_target:gold_loan_country = {
+				add_ideas = Entente_credit_for_Russia_TUR
+			}
+		}
+	}
+}
+
+#Маршрут эвакуации запаса
+country_event = {
+	id = rcwgold.7
+	title = rcwgold.7.t
+	desc = rcwgold.7.desc
+	is_triggered_only = yes
+	
+    immediate = {
+		hidden_effect = {
+			random_neighbor_country = {
+				limit = {
+					is_former_russian_empire_russian_country = yes
+					has_war_with = RUS
+				}
+				save_global_event_target_as = country_to_send_gold_1
+			}
+			random_neighbor_country = {
+				limit = {
+					is_former_russian_empire_russian_country = yes
+					has_war_with = RUS
+					NOT = {
+						original_tag = event_target:country_to_send_gold_1
+					}
+				}
+				save_global_event_target_as = country_to_send_gold_2
+			}
+			random_neighbor_country = {
+				limit = {
+					is_former_russian_empire_russian_country = yes
+					has_war_with = RUS
+					NOT = {
+						original_tag = event_target:country_to_send_gold_1
+						original_tag = event_target:country_to_send_gold_2
+					}
+				}
+				save_global_event_target_as = country_to_send_gold_3
+			}
+			random_neighbor_country = {
+				limit = {
+					is_former_russian_empire_russian_country = yes
+					has_war_with = RUS
+					NOT = {
+						original_tag = event_target:country_to_send_gold_1
+						original_tag = event_target:country_to_send_gold_2
+						original_tag = event_target:country_to_send_gold_3
+					}
+				}
+				save_global_event_target_as = country_to_send_gold_4
+			}			
+		}
+    }
+
+	option = {
+		name = rcwgold.7.a
+        trigger = {
+            any_other_country = {
+				has_event_target = country_to_send_gold_1
+			}
+        }
+		event_target:country_to_send_gold_1 = {
+			save_global_event_target_as = chosen_country_to_send_gold
+		}
+		clear_global_event_target = country_to_send_gold_1
+		clear_global_event_target = country_to_send_gold_2
+		clear_global_event_target = country_to_send_gold_3
+		clear_global_event_target = country_to_send_gold_4
+		clr_country_flag = gold_evacuation_country_choose
+		activate_mission = evacuation_of_gold_to_other_country
+	}
+	option = {
+		name = rcwgold.7.b
+        trigger = {
+            any_other_country = {
+				has_event_target = country_to_send_gold_2
+			}
+        }
+		event_target:country_to_send_gold_2 = {
+			save_global_event_target_as = chosen_country_to_send_gold
+		}
+		clear_global_event_target = country_to_send_gold_1
+		clear_global_event_target = country_to_send_gold_2
+		clear_global_event_target = country_to_send_gold_3
+		clear_global_event_target = country_to_send_gold_4
+		clr_country_flag = gold_evacuation_country_choose
+		activate_mission = evacuation_of_gold_to_other_country
+	}
+	option = {
+		name = rcwgold.7.c
+        trigger = {
+            any_other_country = {
+				has_event_target = country_to_send_gold_3
+			}
+        }
+		event_target:country_to_send_gold_3 = {
+			save_global_event_target_as = chosen_country_to_send_gold
+		}
+		clear_global_event_target = country_to_send_gold_1
+		clear_global_event_target = country_to_send_gold_2
+		clear_global_event_target = country_to_send_gold_3
+		clear_global_event_target = country_to_send_gold_4
+		clr_country_flag = gold_evacuation_country_choose
+		activate_mission = evacuation_of_gold_to_other_country
+	}
+	option = {
+		name = rcwgold.7.d
+        trigger = {
+            any_other_country = {
+				has_event_target = country_to_send_gold_4
+			}
+        }
+		event_target:country_to_send_gold_4 = {
+			save_global_event_target_as = chosen_country_to_send_gold
+		}
+		clear_global_event_target = country_to_send_gold_1
+		clear_global_event_target = country_to_send_gold_2
+		clear_global_event_target = country_to_send_gold_3
+		clear_global_event_target = country_to_send_gold_4
+		clr_country_flag = gold_evacuation_country_choose
+		activate_mission = evacuation_of_gold_to_other_country
+	}
+}
+
+#Доставка золота
+country_event = {
+	id = rcwgold.8
+	title = rcwgold.8.t
+	desc = rcwgold.8.desc
+	is_triggered_only = yes
+
+	option = {
+		name = rcwgold.8.a
+		russian_cw_set_gold_reserve_idea = yes
+		unlock_decision_category_tooltip = russian_gold_category
+	}
+}
+
+#Возвращение золотого запаса
+country_event = {
+	id = rcwgold.9
+	title = rcwgold.9.t
+	desc = rcwgold.9.desc
+	is_triggered_only = yes
+
+	option = {
+		name = rcwgold.9.a
+	}
+}
+
+#Золото государства
+country_event = {
+	id = rcwgold.10
+	title = rcwgold.10.t
+	desc = rcwgold.10.desc
+	picture = GFX_report_event_RUS_gold
+	
+	trigger = {
+		is_former_russian_empire_russian_country = yes
+		check_variable = {
+			ROOT.gold_reserve_var > 0
+		}
+		has_global_flag = RUS_civil_war_over
+		OR = {
+			has_idea = gold_reserve_1
+			has_idea = gold_reserve_2
+			has_idea = gold_reserve_3
+			has_idea = gold_reserve_4
+			has_idea = gold_reserve_5
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 7
+	}
+	
+	immediate = {
+		hidden_effect = {
+			remove_ideas = {
+				gold_reserve_1
+				gold_reserve_2
+				gold_reserve_3
+				gold_reserve_4
+				gold_reserve_5
+			}
+			set_country_flag = RUS_gold_reserve_checked
+		}
+	}
+
+	option = {
+		name = rcwgold.10.a
+        trigger = {
+			check_variable = {
+				ROOT.gold_reserve_var = 5
+			}
+        }
+		custom_effect_tooltip = all_gold_tt
+		add_political_power = 100
+		add_stability = 0.05
+	}
+	
+	option = {
+		name = rcwgold.10.b
+        trigger = {
+			check_variable = {
+				ROOT.gold_reserve_var = 4
+			}
+        }
+		custom_effect_tooltip = almost_all_gold_tt
+	}
+	
+	option = {
+		name = rcwgold.10.c
+        trigger = {
+			check_variable = {
+				ROOT.gold_reserve_var = 3
+			}
+        }
+		add_ideas = no_gold_1
+	}
+	
+	option = {
+		name = rcwgold.10.d
+        trigger = {
+			check_variable = {
+				ROOT.gold_reserve_var = 2
+			}
+        }
+		add_ideas = no_gold_2
+	}
+	
+	option = {
+		name = rcwgold.10.e
+        trigger = {
+			check_variable = {
+				ROOT.gold_reserve_var = 1
+			}
+        }
+		add_ideas = no_gold_3
+	}
+}

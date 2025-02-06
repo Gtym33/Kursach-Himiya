@@ -1,0 +1,2734 @@
+russian_cw_cap_script_cycle_0 = {
+	if = {
+		limit = {
+			any_state = { is_owned_by = event_target:caped_country is_in_home_area = no any_neighbor_state = { OWNER = { has_war_with = event_target:caped_country has_country_flag = caping_country } } }
+		}
+		russian_cw_cap_script_cycle_1 = yes
+	}
+}
+russian_cw_cap_script_cycle_1 = {
+	random_state = {
+		limit = {
+			is_owned_by = event_target:caped_country
+			is_in_home_area = no
+			any_neighbor_state = { OWNER = { has_war_with = event_target:caped_country has_country_flag = caping_country } }
+		}
+		random_neighbor_state = {
+			limit = { OWNER = { has_war_with = event_target:caped_country has_country_flag = caping_country } }
+			set_state_flag = cap_transfered_state
+			OWNER = { transfer_state = PREV.PREV }
+		}
+	}
+	russian_cw_cap_script_cycle_0 = yes
+}
+
+russian_cw_cap_script_cycle_2 = {
+	if = {
+		limit = {
+			any_state = { is_owned_by = event_target:caped_country any_neighbor_state = { OWNER = { has_war_with = event_target:caped_country has_country_flag = caping_country } } }
+		}
+		russian_cw_cap_script_cycle_3 = yes
+	}
+}
+russian_cw_cap_script_cycle_3 = {
+	random_state = {
+		limit = {
+			is_owned_by = event_target:caped_country
+			any_neighbor_state = { OWNER = { has_war_with = event_target:caped_country has_country_flag = caping_country } }
+		}
+		random_neighbor_state = {
+			limit = { OWNER = { has_war_with = event_target:caped_country has_country_flag = caping_country } }
+			set_state_flag = cap_transfered_state
+			OWNER = { transfer_state = PREV.PREV }
+		}
+	}
+	russian_cw_cap_script_cycle_2 = yes
+}
+
+russian_cw_cap_script_cycle_4 = {
+	if = {
+		limit = {
+			any_state = { is_owned_by = event_target:caped_country any_neighbor_state = { CONTROLLER = { has_war_with = event_target:caped_country has_country_flag = caping_country } } }
+		}
+		russian_cw_cap_script_cycle_5 = yes
+	}
+}
+russian_cw_cap_script_cycle_5 = {
+	random_state = {
+		limit = {
+			is_owned_by = event_target:caped_country
+			any_neighbor_state = { CONTROLLER = { has_war_with = event_target:caped_country has_country_flag = caping_country } }
+		}
+		random_neighbor_state = {
+			limit = { CONTROLLER = { has_war_with = event_target:caped_country has_country_flag = caping_country } }
+			set_state_flag = cap_transfered_state
+			CONTROLLER = { transfer_state = PREV.PREV }
+		}
+	}
+	russian_cw_cap_script_cycle_4 = yes
+}
+
+russian_cw_cap_script_cycle_6 = {
+	if = {
+		limit = {
+			any_state = { is_owned_by = event_target:caped_country }
+		}
+		russian_cw_cap_script_cycle_7 = yes
+	}
+}
+russian_cw_cap_script_cycle_7 = {
+	random_state = {
+		limit = {
+			is_owned_by = event_target:caped_country
+		}
+		set_state_flag = cap_transfered_state
+		random_country = {
+			limit = { has_war_with = event_target:caped_country has_country_flag = caping_country }
+			transfer_state = PREV
+		}
+	}
+	russian_cw_cap_script_cycle_6 = yes
+}
+
+russian_cw_cap_script = {
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = {
+				OR = {
+					is_any_former_russian_empire_country = yes
+					former_russian_empire_baltic_states_country = yes
+					former_russian_empire_polish_region_country = yes
+					original_tag = FIN
+					AND = {
+						has_global_flag = WWI_is_now
+						OR = {
+							AND = {
+								NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+								OR = { original_tag = GER is_in_faction_with = GER }
+							}
+							AND = {
+								NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+								OR = { original_tag = AUH is_in_faction_with = AUH }
+							}
+							AND = {
+								NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+								OR = { original_tag = TUR is_in_faction_with = TUR }
+							}
+						}
+					}
+					AND = {
+						is_subject = yes
+						OVERLORD = {
+							OR = {
+								is_any_former_russian_empire_country = yes
+								former_russian_empire_baltic_states_country = yes
+								former_russian_empire_polish_region_country = yes
+								original_tag = FIN
+								AND = {
+									has_global_flag = WWI_is_now
+									OR = {
+										AND = {
+											NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+											OR = { original_tag = GER is_in_faction_with = GER }
+										}
+										AND = {
+											NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+											OR = { original_tag = AUH is_in_faction_with = AUH }
+										}
+										AND = {
+											NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+											OR = { original_tag = TUR is_in_faction_with = TUR }
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			set_country_flag = caping_country
+		}
+	}
+	if = {
+		limit = { event_target:caped_country = { tag = RGR } }
+		every_state = {
+			limit = { is_core_of = RGR }
+			remove_core_of = RGR
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_Russian_SFSR_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_Russian_state value = -2 }
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_Russian_state_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_Russian_state value = -2 }
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_CoMotCA_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_CoMotCA value = -2 }
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_Siberia_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_Siberia value = -2 }
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_Eastern_Union_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_Eastern_Union value = -2 }
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_Romanovs_restoration_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_Romanovs_restoration value = -2 }
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_Russian_volunteer_army_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_Russian_volunteer_army value = -2 }
+		}
+		if = {
+			limit = { has_global_flag = RCW_green_Muscovy_revolt_b }
+			add_to_variable = { var = global.RCW_green_var_Muscovy value = -2 }
+		}
+		clr_global_flag = RCW_green_Russian_SFSR_revolt_b
+		clr_global_flag = RCW_green_Russian_state_revolt_b
+		clr_global_flag = RCW_green_CoMotCA_revolt_b
+		clr_global_flag = RCW_green_Siberia_revolt_b
+		clr_global_flag = RCW_green_Eastern_Union_revolt_b
+		clr_global_flag = RCW_green_Romanovs_restoration_revolt_b
+		clr_global_flag = RCW_green_Russian_volunteer_army_revolt_b
+		clr_global_flag = RCW_green_Muscovy_revolt_b
+	}
+	event_target:caped_country = {
+		every_other_country = { limit = { is_subject_of = PREV } PREV = { end_puppet = PREV } }
+	}
+	if = {
+		limit = { event_target:caped_country = { is_in_faction = yes } }
+		leave_faction = yes
+	}
+	event_target:caped_country = {
+		remove_all_Brigada_Chekhoslovatskogo_legiona = yes
+		remove_all_foreing_locked_templates_from_liberated_country = yes
+		delete_unit = {
+			disband = yes
+		}
+	}
+	if = {
+		limit = {
+			event_target:caped_country = { any_other_country = { original_tag = PREV has_war_with = PREV } }
+		}
+		event_target:caped_country = {
+			random_enemy_country = {
+				limit = { original_tag = PREV }
+				event_target:caped_country = {
+					transfer_units_fraction = {
+						target = PREV
+						size = 0
+						stockpile_ratio = 1
+						army_ratio = 0
+						navy_ratio = 1
+						air_ratio = 0.5
+						keep_unit_leaders_trigger = { always = yes }
+					}
+				}
+			}
+		}
+	}
+	if = {
+		limit = { event_target:caping_country = { is_subject = no } }
+		event_target:caped_country = {
+			transfer_units_fraction = {
+				target = event_target:caping_country
+				size = 0
+				stockpile_ratio = 1
+				army_ratio = 0
+				navy_ratio = 1
+				air_ratio = 0.5
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		else = {
+			event_target:caping_country = {
+				OVERLORD = {
+					event_target:caped_country = {
+						transfer_units_fraction = {
+							target = PREV
+							size = 0
+							stockpile_ratio = 1
+							army_ratio = 0
+							navy_ratio = 1
+							air_ratio = 0.5
+							keep_unit_leaders_trigger = { always = yes }
+						}
+					}
+				}
+			}
+		}
+	}
+	event_target:caped_country = {
+		if = {
+			limit = {
+				NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+				event_target:caping_country = {
+					OR = {
+						is_in_faction_with = AUH
+						is_subject_of = AUH
+						original_tag = AUH
+					}
+				}
+			}
+			every_owned_state = {
+				limit = {
+					OR = {
+						region = 240
+						region = 235
+					}
+					NOT = { state = 919 }
+				}
+				AUH = { transfer_state = PREV }
+			}
+		}
+	}
+	event_target:caped_country = {
+		if = {
+			limit = {
+				NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+				event_target:caping_country = {
+					OR = {
+						is_in_faction_with = GER
+						is_subject_of = GER
+						original_tag = GER
+					}
+				}
+			}
+			random_owned_state = {
+				GER = { transfer_state = PREV }
+			}
+			every_owned_state = {
+				limit = {
+					OR = {
+						region = 240
+						region = 235
+						region = 135
+						region = 230
+						region = 239
+						state = 240
+					}
+				}
+				GER = { transfer_state = PREV }
+			}
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { original_tag = event_target:caped_country }
+			every_state = {
+				limit = { is_owned_by = event_target:caped_country is_core_of = PREV CONTROLLER = { OR = { tag = PREV.PREV is_subject_of = PREV.PREV is_in_faction_with = PREV.PREV any_other_country = { has_subject = PREV controls_state = PREV.PREV } } } }
+				set_state_flag = cap_transfered_state
+				transfer_state_to = PREV
+			}
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country NOT = { is_subject = yes any_other_country = { is_main_former_russian_empire_country = yes has_subject = PREV } } }
+			every_state = {
+				limit = {
+					is_owned_by = event_target:caped_country
+					is_controlled_by = PREV
+				}
+				set_state_flag = cap_transfered_state
+				transfer_state_to = PREV
+			}
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country NOT = { is_main_former_russian_empire_country = yes } is_subject = yes OVERLORD = { is_main_former_russian_empire_country = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = event_target:caped_country
+					is_core_of = PREV
+					CONTROLLER = { OR = { tag = event_target:caped_country NOT = { has_war_with = PREV.PREV } PREV = { is_subject_of = PREV } } }
+				}
+				set_state_flag = cap_transfered_state
+				transfer_state_to = PREV
+			}
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country NOT = { is_main_former_russian_empire_country = yes } is_subject = yes OVERLORD = { is_main_former_russian_empire_country = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = event_target:caped_country
+					NOT = { is_core_of = PREV }
+					is_core_of = PREV.OVERLORD
+					CONTROLLER = { OR = { tag = event_target:caped_country NOT = { has_war_with = PREV.PREV } PREV = { is_subject_of = PREV } } }
+				}
+				set_state_flag = cap_transfered_state
+				transfer_state_to = PREV.OVERLORD
+			}
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country NOT = { is_main_former_russian_empire_country = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = event_target:caped_country
+					is_core_of = PREV
+					CONTROLLER = { OR = { tag = event_target:caped_country NOT = { has_war_with = PREV.PREV } } }
+				}
+				set_state_flag = cap_transfered_state
+				transfer_state_to = PREV
+			}
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country is_subject = yes OVERLORD = { is_main_former_russian_empire_country = yes } }
+			every_state = {
+				limit = {
+					is_owned_by = event_target:caped_country
+					is_controlled_by = PREV
+				}
+				set_state_flag = cap_transfered_state
+				transfer_state_to = PREV
+			}
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country }
+			russian_cw_cap_script_cycle_0 = yes
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country }
+			russian_cw_cap_script_cycle_2 = yes
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country }
+			russian_cw_cap_script_cycle_4 = yes
+		}
+	}
+	event_target:caped_country = {
+		every_enemy_country = {
+			limit = { has_country_flag = caping_country }
+			russian_cw_cap_script_cycle_6 = yes
+		}
+	}
+	event_target:caped_country = { every_enemy_country = { white_peace = event_target:caped_country } }
+	random_enemy_country = {
+		limit = { is_subject = no }
+		annex_country = {
+			target = event_target:caped_country
+			transfer_troops = no
+		}
+	}
+	every_state = {
+		limit = {
+			has_state_flag = cap_transfered_state
+		}
+		clr_state_flag = cap_transfered_state
+	}
+	every_country = {
+		limit = { has_country_flag = caping_country }
+		clr_country_flag = caping_country
+	}
+}
+
+
+
+russian_cw_set_gold_reserve_idea = {
+	remove_ideas = {
+		gold_reserve_5
+		gold_reserve_4
+		gold_reserve_3
+		gold_reserve_2
+		gold_reserve_1
+	}
+	if = {
+		limit = {
+			check_variable = {
+				ROOT.gold_reserve_var = 5
+			}
+		}
+		add_ideas = gold_reserve_5
+	}
+	else_if = {
+		limit = {
+			check_variable = {
+				ROOT.gold_reserve_var = 4
+			}
+		}
+		add_ideas = gold_reserve_4
+	}
+	else_if = {
+		limit = {
+			check_variable = {
+				ROOT.gold_reserve_var = 3
+			}
+		}
+		add_ideas = gold_reserve_3
+	}
+	else_if = {
+		limit = {
+			check_variable = {
+				ROOT.gold_reserve_var = 2
+			}
+		}
+		add_ideas = gold_reserve_2
+	}
+	else_if = {
+		limit = {
+			check_variable = {
+				ROOT.gold_reserve_var = 1
+			}
+		}
+		add_ideas = gold_reserve_1
+	}
+}
+
+monarchy_fall = {
+	clr_country_flag = RUS_monarchy_not_fall
+	set_variable = { authoritarism_coalition = 0 }
+	set_variable = { despotism_coalition = 0 }
+	set_variable = { fascism_coalition = 0 }
+	213 = { set_state_name = "Murmansk" }
+	set_province_name = { id = 3134 name = "Murmansk" }
+	set_province_name = { id = 3787 name = "Spassk" }
+	set_province_name = { id = 13701 name = "Svobodnyy" }
+	clr_country_flag = RUS_duma_dissolved
+	clr_country_flag = RUS_monarchy_ultimatum_of_overtrow_fired
+	clr_country_flag = RUS_CMPC_arrested
+	clear_variable = RUS_otrecheniye
+	drop_cosmetic_tag = yes
+	set_cosmetic_tag = RUS_POST_MONARCHY
+	if = {
+		limit = { NOT = { has_country_flag = RUS_petrograd_soviet has_country_flag = RUS_Order_N_1 } }
+		country_event = russian_ovrthrw_of_mon.9
+	}
+	if = {
+		limit = { UKR = { exists = no } controls_state = 202 owns_state = 202 }
+		country_event = { id = ukraine.1 days = 2 }
+	}
+	add_ideas = {
+		presidential_republic_gov_form
+		emergency_laws_b_law
+	}
+	hidden_effect = {
+		remove_ideas = {
+			RUS_Dmitriy_II_idea
+			RUS_Nikolay_II_idea
+			RUS_Mikhail_II_idea
+			RUS_kult_of_holy_Rasputin
+			RUS_heavenly_mandate_idea
+			RUS_power_of_chernaya_sotnya
+			RUS_pravoslaviye_samoderzavie_narodost
+		}
+		#	remove_ideas = {
+		#		RUS_mon_on_w_mobile_cavalary_units_idea
+		#		RUS_empire_wings_idea
+		#		RSS_militar_field_courts_idea
+		#	}
+	}
+	
+	delete_unit_template_and_units = { division_template = "Belaya Gvardiya" }
+	
+	clr_country_flag = RUS_ovrtrw_mon_12_a
+	clr_country_flag = RUS_ovrtrw_mon_12_tsar_edet_v_stavku
+}
+remove_tsar_regime_unit_leaders = {
+	every_unit_leader = {
+		limit = {
+			OR = {
+				has_id = 76837
+				has_id = 77713
+				has_id = 77001
+				has_id = 77532
+				has_id = 77533
+				has_id = 77234
+				has_id = 76455
+				has_id = 77235
+				has_id = 77655
+				has_id = 77238
+				has_id = 77651
+				has_id = 77461
+			}
+		}
+		remove_unit_leader = yes
+	}
+	every_unit_leader = { limit = { OR = { has_id = 88157 } } set_nationality = BKL }
+	every_unit_leader = { limit = { OR = { has_id = 18702 } } set_nationality = DON }
+	
+	every_unit_leader = {
+		limit = {
+			OR = {
+				has_id = 77712
+				has_id = 76696
+				has_id = 77653
+				has_id = 77654
+				
+				has_id = 76836
+				has_id = 77410
+			}
+		}
+		set_nationality = REB
+	}
+	
+	every_unit_leader = { limit = { has_id = 77298 is_field_marshal = no } promote_leader = yes }
+	every_unit_leader = { limit = { has_id = 77657 is_field_marshal = no } promote_leader = yes }
+	every_unit_leader = { limit = { has_id = 77407 is_field_marshal = no } promote_leader = yes }
+	
+	if = {
+		limit = { NOT = { any_country = { any_unit_leader = { has_id = 77650 } } } }
+		create_corps_commander = { name = "Alexandr Krymov" id = 77650 portrait_path = "gfx/leaders/RUS/Portrait_Alexandr_Krymov.dds" traits = { cavalry_officer } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 3 }
+	}
+	if = {
+		limit = { NOT = { any_country = { any_unit_leader = { has_id = 78000 } } } }
+		create_corps_commander = { name = "Abram Dragomirov" id = 78000 portrait_path = "gfx/leaders/RUS/Portrait_Abram_Dragomirov.dds" traits = { old_guard skilled_staffer organisational_leader } skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 3 logistics_skill = 2 }
+	}
+}
+remove_white_unit_leaders = {
+	every_unit_leader = {
+		limit = {
+			OR = {
+				has_id = 76837
+				has_id = 77713
+				has_id = 77001
+				has_id = 77532
+				has_id = 77533
+				has_id = 77234
+				has_id = 76455
+				has_id = 77235
+				has_id = 77655
+				has_id = 77238
+				has_id = 77651
+				has_id = 77461
+			}
+		}
+		remove_unit_leader = yes
+	}
+	every_unit_leader = { limit = { OR = { has_id = 88157 } } set_nationality = BKL }
+	every_unit_leader = { limit = { OR = { has_id = 18702 } } set_nationality = DON }
+	
+	every_unit_leader = {
+		limit = {
+			OR = {
+				has_id = 77712
+				has_id = 76696
+				has_id = 77653
+				has_id = 77654
+				
+				has_id = 76836
+				has_id = 77410
+			}
+		}
+		set_nationality = REB
+	}
+	
+	every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77650 has_id = 77474 } } set_nationality = REB } #RVA
+	every_unit_leader = { limit = { OR = { has_id = 18702 has_id = 18701 } } set_nationality = DON }
+	every_unit_leader = { limit = { has_id = 77400 } set_nationality = REB } # Mikhail Diterihs
+	every_unit_leader = { limit = { has_id = 88147 } set_nationality = CCA } # Mikhail Hanjin
+	every_unit_leader = { limit = { has_id = 78000 } set_nationality = RVA } # Abram Dragomirov, see 10 strings up
+	
+
+	every_unit_leader = {
+		limit = {
+			OR = {
+				has_id = 77298
+				has_id = 76431
+				has_id = 77711
+				has_id = 77657
+				has_id = 77656
+				
+				has_id = 76323
+			}
+		}
+		remove_unit_leader = yes
+	}
+	every_unit_leader = { limit = { has_id = 77689 } set_nationality = RVA }
+	every_unit_leader = { limit = { has_id = 77714 } set_nationality = NWA }
+	every_unit_leader = { limit = { has_id = 76187 } set_nationality = REB }
+	every_unit_leader = { limit = { has_id = 77652 } set_nationality = REB }
+	every_unit_leader = { limit = { has_id = 77417 } set_nationality = REB }
+	every_unit_leader = { limit = { has_id = 77648 } set_nationality = REB }
+	every_unit_leader = { limit = { has_id = 77488 } set_nationality = UKR }
+	if = {
+		limit = { UKR = { exists = yes NOT = { has_government = radical_socialism has_government = communism } } }
+		every_unit_leader = { limit = { has_id = 77399 } set_nationality = UKR }
+		else = { every_unit_leader = { limit = { has_id = 77399 } set_nationality = RVA } }
+	}
+	
+	every_unit_leader = { limit = { OR = { has_id = 77649 } } set_nationality = REB } # Дроздовский
+	every_unit_leader = { limit = { OR = { has_id = 77407 } } set_nationality = REB }
+	every_unit_leader = { limit = { OR = { has_id = 77407 } } set_nationality = REB }
+	
+	every_unit_leader = { limit = { OR = { has_id = 77237 } } set_nationality = RVA }
+	
+	if = {
+		limit = { any_country = { NOT = { any_unit_leader = { has_id = 88162 } } } } create_corps_commander = { name = "Dmitriy Horvat" id = 88162  portrait_path = "gfx/leaders/RUS/Portrait_Dmitriy_Horvat.dds" traits = { } skill = 3 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+	}
+	if = {
+		limit = { any_country = { NOT = { any_unit_leader = { has_id = 77405 } } } } create_corps_commander = { name = "Vasiliy Flug" id = 77405  portrait_path = "gfx/leaders/PRM/Portrait_Vasiliy_Flug.dds" traits = { } skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	}
+	every_unit_leader = { limit = { OR = { has_id = 88162 has_id = 77405 } } set_nationality = PRM }
+	if = {
+		limit = { has_character = RUS_Alexandr_Kolchak }
+		RUS_Alexandr_Kolchak = {
+			retire = yes
+		}
+	}
+}
+bolsheviks_fleet = {
+			destroy_ships = {
+				type = destroyer
+				count = all
+			}
+			destroy_ships = {
+				type = ship_hull_light
+				count = all
+			}
+			destroy_ships = {
+				type = ship_hull_cruiser
+				count = all
+			}
+			destroy_ships = {
+				type = ship_hull_heavy
+				count = all
+			}
+			destroy_ships = {
+				type = ship_hull_carrier 
+				count = all
+			}
+			destroy_ships = {
+				type = ship_hull_submarine
+				count = all
+			}
+			destroy_ships = {
+				type = light_cruiser
+				count = all
+			}
+			set_global_flag = baltic_fleet_in_exile_prev
+			country_event = { id = rcw.11 days = 10 } #Черноморский флот в тумане
+			country_event = { id = rcw.12 days = 17 } #Сибирская флотилия на якоре
+}
+bolsheviks_victory = {
+			hidden_effect = {
+				if = {
+					limit = { has_global_flag = RUS_all_russian_constituent_assembly_ended }
+					clr_country_flag = RUS_all_russian_constituent_assembly_third_session_war
+					clr_country_flag = RUS_all_russian_constituent_assembly_third_session_peace
+				}
+				clr_global_flag = RUS_constituent_assembly_civil_war
+				every_country = {
+					limit = {
+						OR = {
+							tag = KHI
+							tag = BUK
+							tag = HRB
+						}
+						is_subject_of = ROOT
+						NOT = { has_government = radical_socialism has_government = communism }
+					}
+					ROOT = { end_puppet = PREV }
+					leave_faction = yes
+					if = {
+						limit = { has_war = yes }
+						every_country = {
+							limit = { OR = { tag = GER tag = AUH tag = SNS tag = TRG is_in_faction_with = GER is_in_faction_with = AUH is_in_faction_with = SNS tag = SNS is_in_faction_with = TRG tag = TRG is_in_faction_with = OAF tag = OAF AND = { is_in_faction_with = TUR NOT = { is_in_faction_with = ENG } } AND = { is_in_faction_with = BUL NOT = { is_in_faction_with = ENG } } } OR = { is_faction_leader = yes is_in_faction = no } }
+							white_peace = PREV
+						}
+					}
+				}
+				if = {
+					limit = { owns_state = 329 TAN = { exists = no } }
+					release = TAN
+				}
+			}
+			if = {
+				limit = { has_country_flag = RUS_occupated_PER_WWI }
+				if = {
+					limit = { NOT ={ has_war_with = TUR } }
+					every_state = {
+						limit = { is_owned_by = RUS is_core_of = PER NOT = { is_core_of = RUS } }
+						PER = { transfer_state = PREV }
+					}
+					else = {
+						every_state = {
+							limit = { is_owned_by = RUS is_core_of = PER NOT = { is_core_of = RUS } }
+							ENG = { transfer_state = PREV }
+						}
+					}
+				}
+				clr_country_flag = RUS_occupated_PER_WWI
+			}
+	delete_unit_template_and_units = {
+		division_template = "Kazach'ya brigada"
+	}
+	add_threat = -20
+	add_ideas = {
+		soviet_republic_gov_form
+		local_assembly_decisions_b_law
+	}
+	set_global_flag = RUS_civil_war_intervention_start
+	set_country_flag = { flag = RUS_dont_fire_CW_end days = 720 }
+			set_variable = { var = global.RUS_threat_of_intervention value = 0 }
+			if = {
+				limit = { NOT = { has_variable = global.Entente_support_limit } }
+				set_variable = { global.Entente_support_limit = 0 }
+			}
+			if = {
+				limit = { NOT = { has_variable = global.Entente_support_count } }
+				set_variable = { global.Entente_support_count = 0 }
+			}
+			
+	clr_country_flag = RUS_provisional_government_created
+	clr_country_flag = RUS_provisional_government_raskol
+	set_country_flag = RUS_Oktober_revolution_fired
+	load_focus_tree = Russia_Bolsheviks_focus
+	set_stability = 0
+	if = {
+		limit = { has_country_flag = RUS_Order_N_1 }
+		country_event = { id = rcw_bolsheviks.111 days = 3 }
+	}
+	clr_country_flag = RUS_Order_N_1
+	clr_country_flag = Kornilov_affair_near
+	clr_country_flag = RUS_Kornilov_civil_war_near
+	clr_country_flag = RUS_kornilov_eser_and_menysheviks_are_neutral
+	clr_country_flag = RUS_kornilov_eser_and_menysheviks_are_neutralized
+	clr_country_flag = RUS_kornilov_leftish_agitators_in_army
+	clear_variable = RUS_Kornilov_gov_stability
+	clear_variable = RUS_Kornilov_power
+	clear_variable = RUS_force_uses
+	delete_unit_template_and_units = { division_template = "Udarnaya Diviziya" }
+	if = {
+		limit = { has_country_flag = general_kornilov }
+		clr_country_flag = general_kornilov
+		set_country_flag = Kornilov_affair_fail
+	}
+	leave_faction = yes
+	add_ideas = neutral_foreign_policy_law
+	set_politics = {
+		ruling_party = communism
+		election_frequency = 60
+		elections_allowed = no
+	}
+	drop_cosmetic_tag = yes
+	set_cosmetic_tag = RSR
+	hidden_effect = {
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_minister_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+	}
+	add_ideas = {
+		Yakov_Sverdlov_1
+		Lev_Trotsky_2
+		Vyacheslav_Menzhinsky_3
+		Alexey_Rykov_4
+		Felix_Dzerjinsky_5
+		Lev_Trotsky_6
+		Nikolay_Krylenko_army_chief
+		
+		RUS_Order_N_1_4
+		disorganized_horse_breeding_idea
+		RUS_handicraft_period
+	}
+	set_country_flag = Felix_Dzerjinsky_in_office_forever
+	remove_ideas = {
+		RUS_dvoevlastie_1
+		RUS_dvoevlastie_2
+		RUS_dvoevlastie_3
+		RUS_dvoevlastie_4
+		RUS_Order_N_1_1
+		RUS_Order_N_1_2
+		RUS_Order_N_1_3
+		RUS_tyloviki
+		RUS_counterintelligence_service
+		RUS_total_militarisation
+		RUS_red_guards_provisional_government
+		RUS_main_economic_committee_idea
+		RUS_monopoly_law_idea
+	}
+	if = {
+		limit = { has_idea = tot_economic_mobilisation }
+		add_ideas = war_economy
+	}
+	add_ideas = workers_control_law
+	set_country_flag = railway_self_government
+	set_country_flag = RUS_soviet_power_set_workers_control #—делать ивент на декрет о рабочем контроле
+	add_ideas = limited_conscription
+	hidden_effect = {
+		ROOT = {
+			every_country = {
+				limit = {
+					NOT = {
+						tag = ROOT
+						has_government = communism
+						has_government = radical_socialism
+						has_government = social_democracy
+						is_any_former_russian_empire_country = yes
+						former_russian_empire_baltic_states_country = yes
+						tag = HRB
+						tag = FIN
+						has_war_with = ROOT
+						is_in_faction_with = ROOT
+					}
+				}
+				set_THIS_country_non_recognize_PREV = yes
+			}
+		}
+	}
+	every_country = {
+		limit = {
+			NOT = {
+				tag = ROOT
+				has_government = communism
+				has_government = radical_socialism
+				has_government = social_democracy
+				is_subject = yes
+				has_war_with = ROOT
+				is_in_faction_with = ROOT
+			}
+			OR = {
+				is_major = yes
+				is_faction_leader = yes
+				is_in_faction_with = FRA
+				is_in_faction_with = ENG
+				is_in_faction_with = USA
+				is_in_faction_with = JAP
+				tag = FRA
+				tag = ENG
+				tag = USA
+				tag = JAP
+			}
+		}
+		add_opinion_modifier = { target = RUS modifier = expropriation_of_capital }
+	}
+	every_country = {
+		limit = {
+			NOT = { has_war_with = ROOT }
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+			OR = {
+				tag = ENG
+				tag = FRA
+				tag = USA
+			}
+		}
+		add_opinion_modifier = {
+			target = RUS
+			modifier = RUS_entente_debt_cancellation
+		}
+	}
+	country_event = { id = rcw_dku.1 days = 1 }
+	diplomatic_relation = {
+		country = PER
+		relation = military_access
+		active = no
+	}
+	diplomatic_relation = {
+		country = AFG
+		relation = military_access
+		active = no
+	}
+	if = {
+		limit = { has_political_power < 0 }
+		set_political_power = 0
+	}
+	create_template_Krasnaya_Gvardiya = yes
+	if = {
+		limit = { 13 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT tag = EST tag = LAT tag = UBD } } } }
+		set_province_name = { id = 3152 name = "Tallinn" }
+	}
+	if = {
+		limit = { 191 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT tag = EST tag = LAT tag = UBD } } } }
+		set_province_name = { id = 9221 name = "Tartu" }
+		191 = { set_state_name = "Tartu" }
+	}
+	if = {
+		limit = { 1417 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT tag = AZR tag = ARM tag = GEO tag = TUR } } } }
+		set_province_name = { id = 11674 name = "Ganja" }
+		1417 = { set_state_name = "Ganja" }
+	}
+	
+	set_country_flag = RUS_Bukharin_gen_red_of_Pravda
+	
+		if = {
+			limit = { has_country_flag = RUS_Central_Rada_early_dissolve UKR = { exists = no } controls_state = 202 owns_state = 202 }
+			clr_country_flag = RUS_Central_Rada_early_dissolve
+			country_event = { id = ukraine.-7 days = 2 }
+		}
+		if = {
+			limit = { UKR = { exists = yes is_subject_of = ROOT has_capitulated = no controls_state = 202 } }
+			end_puppet = UKR
+			remove_from_faction = UKR
+			UKR = {
+				load_focus_tree = Ukraine_after_october_focus
+				country_event = { id = ukraine.-13 days = 1 }
+				remove_ideas = UKR_samostiyniki_vs_autonomists
+				remove_ideas = UKR_free_cossaks
+				add_to_war = { targeted_alliance = RUS enemy = GER }
+				add_to_war = { targeted_alliance = RUS enemy = AUH }
+				add_ideas = neutral_foreign_policy_law
+				add_ideas = {
+					UKR_friction_with_polish_communities
+					UKR_lack_of_a_clear_social_program
+					UKR_weak_state_suppression_apparatus
+				}
+				if = {
+					limit = { NOT = { has_completed_focus = UKR_solve_interethnic_problems } }
+					add_ideas = UKR_friction_with_jewish_communities
+				}
+			}
+		}
+	
+	if = {
+		limit = { has_country_flag = RUS_July_crisis_gov_of_bolsheviks_n_others }
+		activate_soviet_power_right = yes
+		set_country_flag = homogeneous_socialist_government
+		hidden_effect = {
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+		}
+		add_ideas = {
+			Yakov_Sverdlov_1
+			Irakly_Tsereteli_2
+			Viktor_Chernov_3
+			Alexey_Rykov_4
+			Felix_Dzerjinsky_5
+			Lev_Trotsky_army_chief
+		}
+		set_country_flag = Felix_Dzerjinsky_in_office_forever
+		add_ideas = {
+			poliparty_system_law
+		}
+		add_ideas = RUS_weak_state_suppression_apparatus_1
+		else = {
+			activate_soviet_power_center = yes
+			add_ideas = RUS_weak_state_suppression_apparatus
+			remove_ideas = RUS_damage_to_police_and_special_services
+			country_event = { id = rcw_bolsheviks.21 days = 6 }
+		}
+	}
+	if = {
+		limit = { has_idea = military_ministry_corruption_1 }
+		remove_ideas = military_ministry_corruption_1
+	}
+	if = {
+		limit = { has_idea = military_ministry_corruption_2 }
+		remove_ideas = military_ministry_corruption_2
+	}
+	if = {
+		limit = { has_idea = military_ministry_corruption_3 }
+		remove_ideas = military_ministry_corruption_3
+	}
+	if = {
+		limit = { has_idea = military_ministry_corruption_4 }
+		remove_ideas = military_ministry_corruption_4
+	}
+	if = {
+		limit = { has_idea = military_ministry_corruption_5 }
+		remove_ideas = military_ministry_corruption_5
+	}
+}
+activate_soviet_power_center = {
+	hidden_effect = {
+		set_country_flag = RUS_flag_soviet_power
+		set_variable = { var = Trotskiy_power value = 0 }
+		
+		set_variable = { var = total_members_of_central_committee value = 21 }
+		
+		set_variable = { var = decist_faction_CC value = 0 }
+		set_variable = { var = left_faction_CC value = 11 }
+		set_variable = { var = moderate_faction_CC value = 5 }
+		set_variable = { var = right_faction_CC value = 0 }
+		
+		if = {
+			limit = { surrender_progress > 0.3 }
+			add_to_variable = { var = left_faction_CC value = -2 }
+		}
+		check_overlap_of_CC_n_CEC_deputies_add = yes
+		
+		set_frame_of_CC_n_CEC = yes
+		
+		set_variable = { decist_faction_party_compositon = 0 }
+		set_variable = { left_faction_party_compositon = 40 }
+		set_variable = { center_faction_party_compositon = 35 }
+		set_variable = { moderate_faction_party_compositon = 25 }
+		set_variable = { right_faction_party_compositon = 0 }
+		
+		check_overlap_of_party_composition = yes
+		
+		set_variable = { Vladimir_Lenin_fact = 3 }
+		set_variable = { Leonid_Serebryakov_fact = 3 }
+		set_variable = { Yakov_Sverdlov_fact = 3 }
+		set_variable = { Alexey_Rykov_fact = 2 }
+		set_variable = { Nikolay_Bukharin_fact = 2 }
+		set_variable = { Lev_Trotsky_fact = 2 }
+		set_variable = { Ephraim_Sklyansky_fact = 2 }
+		set_variable = { Iosif_Stalin_fact = 4 }
+		set_variable = { Timofey_Sapronov_fact = 1 }
+		set_variable = { N_Osinskiy_fact = 1 }
+		set_variable = { Grigoriy_Zinoviev_fact = 4 }
+		set_variable = { Alexandra_Kollontai_fact = 1 }
+		set_variable = { Felix_Dzerjinsky_fact = 2 }
+		set_variable = { Sergo_Ordzhonikidze_fact = 4 }
+		set_variable = { Alexandr_Shlyapnikov_fact = 1 }
+		set_variable = { Pavel_Dybenko_fact = 1 }
+		set_variable = { Kliment_Voroshilov_fact = 2 }
+		set_variable = { Mikhail_Tukhachevsky_fact = 2 }
+		set_variable = { Leonid_Krasin_fact = 5 }
+		set_variable = { David_Ryazanov_fact = 5 }
+	}
+}
+activate_soviet_power_right = {
+	hidden_effect = {
+		set_country_flag = RUS_flag_soviet_power
+		set_variable = { var = Trotskiy_power value = 0 }
+		
+		set_variable = { var = total_members_of_central_committee value = 21 }
+		
+		set_variable = { var = decist_faction_CC value = 0 }
+		set_variable = { var = left_faction_CC value = 8 }
+		set_variable = { var = moderate_faction_CC value = 8 }
+		set_variable = { var = right_faction_CC value = 0 }
+		
+		if = {
+			limit = { surrender_progress > 0.3 }
+			add_to_variable = { var = left_faction_CC value = -2 }
+		}
+		check_overlap_of_CC_n_CEC_deputies_add = yes
+		
+		set_frame_of_CC_n_CEC = yes
+		
+		set_variable = { decist_faction_party_compositon = 0 }
+		set_variable = { left_faction_party_compositon = 20 }
+		set_variable = { center_faction_party_compositon = 35 }
+		set_variable = { moderate_faction_party_compositon = 35 }
+		set_variable = { right_faction_party_compositon = 10 }
+		
+		check_overlap_of_party_composition = yes
+		
+		set_variable = { Vladimir_Lenin_fact = 3 }
+		set_variable = { Leonid_Serebryakov_fact = 3 }
+		set_variable = { Yakov_Sverdlov_fact = 3 }
+		set_variable = { Alexey_Rykov_fact = 2 }
+		set_variable = { Nikolay_Bukharin_fact = 2 }
+		set_variable = { Lev_Trotsky_fact = 2 }
+		set_variable = { Ephraim_Sklyansky_fact = 2 }
+		set_variable = { Iosif_Stalin_fact = 4 }
+		set_variable = { Timofey_Sapronov_fact = 1 }
+		set_variable = { N_Osinskiy_fact = 1 }
+		set_variable = { Grigoriy_Zinoviev_fact = 4 }
+		set_variable = { Alexandra_Kollontai_fact = 1 }
+		set_variable = { Felix_Dzerjinsky_fact = 2 }
+		set_variable = { Sergo_Ordzhonikidze_fact = 4 }
+		set_variable = { Alexandr_Shlyapnikov_fact = 1 }
+		set_variable = { Pavel_Dybenko_fact = 1 }
+		set_variable = { Kliment_Voroshilov_fact = 2 }
+		set_variable = { Mikhail_Tukhachevsky_fact = 2 }
+		set_variable = { Leonid_Krasin_fact = 5 }
+		set_variable = { David_Ryazanov_fact = 5 }
+	}
+}
+bolsheviks_fall = {
+	add_ideas = {
+		presidential_republic_gov_form
+		emergency_laws_b_law
+	}
+	set_global_flag = RUS_civil_war_intervention_start
+			set_variable = { var = global.RUS_threat_of_intervention value = 0 }
+			
+	clr_country_flag = RUS_provisional_government_created
+	clr_country_flag = RUS_Oktober_revolution_fired
+	load_focus_tree = Russia_Republic_focus
+	clr_country_flag = RUS_Order_N_1
+	#clr_country_flag = Kornilov_affair_near #будет удаляться после конца выступления Керенского-Краснова, только Керенского-Краснова-Корнилова
+	clr_country_flag = RUS_Kornilov_civil_war_near
+	clr_country_flag = RUS_kornilov_eser_and_menysheviks_are_neutral
+	clr_country_flag = RUS_kornilov_eser_and_menysheviks_are_neutralized
+	clr_country_flag = RUS_kornilov_leftish_agitators_in_army
+	clear_variable = RUS_Kornilov_gov_stability
+	clear_variable = RUS_Kornilov_power
+	clear_variable = RUS_force_uses
+	if = {
+		limit = { has_country_flag = general_kornilov }
+		clr_country_flag = general_kornilov
+		set_country_flag = Kornilov_affair_fail
+	}
+	
+	dismantle_faction = yes
+	leave_faction = yes
+	add_ideas = neutral_foreign_policy_law
+	set_politics = {
+		ruling_party = conservatism
+		election_frequency = 60
+		elections_allowed = no
+	}
+	drop_cosmetic_tag = yes
+	hidden_effect = {
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_minister_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+	}
+	remove_ideas = {
+		RUS_dvoevlastie_1
+		RUS_dvoevlastie_2
+		RUS_dvoevlastie_3
+		RUS_dvoevlastie_4
+		RUS_Order_N_1_1
+		RUS_Order_N_1_2
+		RUS_Order_N_1_3
+		RUS_counterintelligence_service
+		RUS_total_militarisation
+		RUS_red_guards_provisional_government
+		RUS_main_economic_committee_idea
+		RUS_monopoly_law_idea
+		RUS_red_guards
+		RUS_weak_state_suppression_apparatus
+		RUS_weak_state_suppression_apparatus_1
+		RUS_trudovaya_povinnost_idea
+		RUS_prodrazverstka_idea
+		RUS_prodnalog_idea
+		RUS_centralized_economy_planning
+		RUS_labor_armies
+		RUS_labor_armies_1
+		RUS_novalue_foreing_trade_currency_idea
+		RUS_cooperatives_idea
+		RUS_trusts_and_syndicates_idea
+		RUS_new_red_army_idea
+		RUS_vsevobuch_idea
+		RUS_military_commissars_idea
+		RUS_fight_against_deserters_idea
+		RUS_red_cavalry_idea
+		RUS_no_mercy_to_deserters_idea
+		RUS_replacement_of_councils
+		RUS_dissolution_of_trade_unions_idea
+		RUS_avenging_sword_of_the_revolution_idea
+		RUS_VChK_is_controlled_by_the_NKVD_idea
+		RUS_VChK_is_controlled_by_the_VTSIK_idea
+		RUS_economic_collapse_of_the_left_idea
+		RUS_bolsheviks_vs_left_esser
+		RUS_kombeds_idea
+		RUS_degenerate_kombeds
+		RUS_stuffing_of_spent_cartridges
+		RUS_handicraft_period
+		RUS_jews_and_latvians
+	}
+	clr_country_flag = RUS_flag_soviet_power
+	clr_country_flag = discussion_adjust_composition_of_delegations
+	clr_country_flag = demands_of_Kronstadt_sailors_accepted
+	clr_country_flag = railway_self_government
+	clr_country_flag = railway_militia
+	clr_country_flag = war_communism
+	clr_country_flag = war_communism_abolished
+	clr_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
+	clr_country_flag = RUS_RKP_b_VIII_decist_war_plan
+	if = {
+		limit = { has_idea = tot_economic_mobilisation }
+		add_ideas = war_economy
+	}
+	add_ideas = limited_conscription
+	every_country = {
+		limit = {
+			has_opinion_modifier = expropriation_of_capital
+		}
+		remove_opinion_modifier = { target = RUS modifier = expropriation_of_capital }
+		RUS = { remove_opinion_modifier = { target = PREV modifier = expropriation_of_capital } }
+	}
+	every_country = {
+		limit = {
+			has_opinion_modifier = unrecognized_state_rel
+		}
+		remove_opinion_modifier = { target = RUS modifier = unrecognized_state_rel } remove_opinion_modifier = { target = RUS modifier = unrecognized_state_embargo }
+		RUS = { remove_opinion_modifier = { target = PREV modifier = unrecognized_state_rel } remove_opinion_modifier = { target = PREV modifier = unrecognized_state_embargo } }
+	}
+}
+remove_one_priziv_from_army = {
+	if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1899 goda" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1899 goda" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1900 goda" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1900 goda" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1901 goda" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1901 goda" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1902 goda" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1902 goda" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1903 goda" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1903 goda" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1904-1907 godov" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1904-1907 godov" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1908-1909 godov" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1908-1909 godov" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1910-1912 godov" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1910-1912 godov" }
+	}
+	else_if = {
+		limit = { has_template = "Pekhotnaya Diviziya priziva 1913-1915 godov" }
+		delete_unit_template_and_units = { division_template = "Pekhotnaya Diviziya priziva 1913-1915 godov" }
+	}
+}
+add_red_unit_leaders = {
+	#create_field_marshal = {  name = "Lev Trotsky"
+	#	id = 19170
+	#	portrait_path = "gfx/leaders/SOV/Portrait_Lev_Trotsky_military.dds"
+	#	traits = { politically_connected media_personality }
+	#	skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 2
+	#	} “еперь по фокусу RUS_WPRA
+		
+	create_field_marshal = {  name = "Joachim Vacetis"
+		id = 19171
+		portrait_path = "gfx/leaders/SOV/Portrait_Joachim_Vacetis.dds"
+		traits = { inflexible_strategist }
+		skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 3
+		}
+	
+	create_field_marshal = {
+		name = "Sergey Kamenev"
+		id = 19172
+		portrait_path = "gfx/leaders/SOV/Portrait_Sergey_Kamenev.dds"
+		traits = { inflexible_strategist trickster }
+		skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 3
+		}
+		
+	create_field_marshal = {
+		name = "Mikhail Muravyov"
+		id = 77426
+		portrait_path = "gfx/leaders/SOV/Portrait_Mikhail_Muravyov.dds"
+		traits = { politically_connected media_personality infantry_officer infantry_leader trickster }
+		skill = 2 attack_skill = 3 defense_skill = 2 planning_skill = 2 logistics_skill = 2
+		}
+		
+	if = {
+		limit = { KRN = { any_unit_leader = { has_id = 19173 } } } every_unit_leader = { limit = { has_id = 19173 } remove_unit_leader_trait = politically_connected set_nationality = ROOT }
+		else = {
+			create_corps_commander = {
+				name = "Pavel Dybenko"
+				id = 19173
+				portrait_path = "gfx/leaders/SOV/Portrait_Pavel_Dybenko.dds"
+				traits = { naval_invader trait_reckless }
+				skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+		}
+	}
+	
+	create_corps_commander = {
+		name = "Semyon Budyonny"
+		id = 19174
+		portrait_path = "gfx/leaders/SOV/Portrait_Semyon_Budyonny.dds"
+		traits = { cavalry_officer trickster }
+		skill = 2 attack_skill = 4 defense_skill = 2 planning_skill = 2 logistics_skill = 4 }
+	create_corps_commander = {
+		name = "Alexandr Egorov"
+		id = 19175
+		portrait_path = "gfx/leaders/SOV/Portrait_Alexandr_Egorov.dds"
+		traits = { infantry_officer }
+		skill = 2 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Kliment Voroshilov"
+		id = 19176
+		portrait_path = "gfx/leaders/SOV/Portrait_Kliment_Voroshilov.dds"
+		traits = { trickster }
+		skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Grigoriy Kulik"
+		id = 19177
+		portrait_path = "gfx/leaders/SOV/Portrait_Grigoriy_Kulik.dds"
+		traits = { bearer_of_artillery }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	if = {
+		limit = { KRN = { any_unit_leader = { has_id = 19178 } } } every_unit_leader = { limit = { has_id = 19178 } set_nationality = ROOT }
+		else = {
+			create_corps_commander = {
+				name = "Anatoly Zhelyznikov"
+				id = 19178
+				portrait_path = "gfx/leaders/SOV/Portrait_Anatoly_Zhelyznikov.dds"
+				traits = { trickster }
+				skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 1 logistics_skill = 2 }
+		}
+	}
+	create_corps_commander = {
+		name = "Semyon Timoshenko"
+		id = 19179
+		portrait_path = "gfx/leaders/SOV/Portrait_Semyon_Timoshenko.dds"
+		traits = {  }
+		skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Yefim Schadenko"
+		id = 19180
+		portrait_path = "gfx/leaders/SOV/Portrait_Yefim_Schadenko.dds"
+		traits = {  }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 1 logistics_skill = 2 }
+	
+	create_corps_commander = {
+		name = "Oka Gorodovikov"
+		id = 19181
+		portrait_path = "gfx/leaders/SOV/Portrait_Oka_Gorodovikov.dds"
+		traits = { cavalry_officer }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Alexandr Borchaninov"
+		id = 19182
+		portrait_path = "gfx/leaders/SOV/Portrait_Alexandr_Borchaninov.dds"
+		traits = {  }
+		skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 1 }
+	
+	create_corps_commander = {
+		name = "Fridrihs Kalnins"
+		id = 19183
+		portrait_path = "gfx/leaders/SOV/Portrait_Fridrihs_Kalnins.dds"
+		traits = { infantry_officer }
+		skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = {
+		name = "Jan Latsis"
+		id = 19184
+		portrait_path = "gfx/leaders/SOV/Portrait_Jan_Latsis.dds"
+		traits = { old_guard  }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	
+	create_corps_commander = {
+		name = "Alexandr Samoylo"
+		id = 19186
+		portrait_path = "gfx/leaders/SOV/Portrait_Alexandr_Samoylo.dds"
+		traits = { old_guard }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Vladimir Olderogge"
+		id = 19187
+		portrait_path = "gfx/leaders/SOV/Portrait_Vladimir_Olderogge.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Mikhail Tukhachevsky"
+		id = 19188
+		portrait_path = "gfx/leaders/SOV/Portrait_Mikhail_Tukhachevsky.dds"
+		traits = { }
+		skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 2 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Sergey Lazo"
+		id = 19189
+		portrait_path = "gfx/leaders/SOV/Portrait_Sergey_Lazo.dds"
+		traits = { trickster }
+		skill = 1 attack_skill = 2 defense_skill = 3 planning_skill = 1 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Gaya Dmitrievich Gai"
+		id = 19190
+		portrait_path = "gfx/leaders/SOV/Portrait_Gaya_Dmitrievich_Gai.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 1 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Vasiliy Chapaev"
+		id = 19191
+		portrait_path = "gfx/leaders/SOV/Portrait_Vasiliy_Chapaev.dds"
+		traits = { trickster trait_reckless cavalry_officer }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 4 logistics_skill = 2 }
+	
+	create_corps_commander = {
+		name = "Mikhail Levandovsky"
+		id = 19192
+		portrait_path = "gfx/leaders/SOV/Portrait_Mikhail_Levandovsky.dds"
+		traits = { trickster brilliant_strategist infantry_officer }
+		skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Pyotr Slaven"
+		id = 19193
+		portrait_path = "gfx/leaders/SOV/Portrait_Pyotr_Slaven.dds"
+		traits = { old_guard }
+		skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+	if = {
+		limit = { KRN = { any_unit_leader = { has_id = 19194 } } } every_unit_leader = { limit = { has_id = 19194 } set_nationality = ROOT }
+		else = {
+			create_corps_commander = {
+				name = "Iosif Stalin"
+				id = 19194
+				portrait_path = "gfx/leaders/SOV/Portrait_Iosif_Stalin.dds"
+				traits = { trickster }
+				skill = 1 attack_skill = 1 defense_skill = 3 planning_skill = 2 logistics_skill = 3 }
+		}
+	}
+	if = {
+		limit = { KRN = { any_unit_leader = { has_id = 19195 } } } every_unit_leader = { limit = { has_id = 19195 } set_nationality = ROOT }
+		else = {
+			create_corps_commander = {
+				name = "Konstantin Eremeev"
+				id = 19195
+				portrait_path = "gfx/leaders/SOV/Portrait_Konstantin_Eremeev.dds"
+				traits = { organizer media_personality }
+				skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 1 logistics_skill = 2 }
+		}
+	}
+	create_corps_commander = {
+		name = "Vladimir Azin"
+		id = 19196
+		portrait_path = "gfx/leaders/SOV/Portrait_Vladimir_Azin.dds"
+		traits = { trickster trait_reckless }
+		skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 1 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Pavel Sytin"
+		id = 19197
+		portrait_path = "gfx/leaders/SOV/Portrait_Pavel_Sytin.dds"
+		traits = { inflexible_strategist }
+		skill = 2 attack_skill = 2 defense_skill = 3 planning_skill = 2 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Dmitriy Zhloba"
+		id = 19198
+		portrait_path = "gfx/leaders/SOV/Portrait_Dmitriy_Zhloba.dds"
+		traits = { trait_reckless }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 2 }
+	
+	create_corps_commander = {
+		name = "Ivan Sorokin"
+		id = 19199
+		portrait_path = "gfx/leaders/KUB/Portrait_Ivan_Sorokin.dds"
+		traits = { cavalry_officer }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Alexey Avtonomov"
+		id = 19200
+		portrait_path = "gfx/leaders/KUB/Portrait_Alexey_Avtonomov.dds"
+		traits = { career_officer }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Anatoliy Gekker"
+		id = 19201
+		portrait_path = "gfx/leaders/SOV/Portrait_Anatoliy_Gekker.dds"
+		traits = {  }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 3 }
+	
+	create_corps_commander = {
+		name = "Dmitriy Nadyozhny"
+		id = 19202
+		portrait_path = "gfx/leaders/SOV/Portrait_Dmitriy_Nadyozhny.dds"
+		traits = { trickster }
+		skill = 2 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Dmitri Parsky"
+		id = 19203
+		portrait_path = "gfx/leaders/SOV/Portrait_Dmitri_Parsky.dds"
+		traits = { trickster bearer_of_artillery }
+		skill = 2 attack_skill = 3 defense_skill = 3 planning_skill = 4 logistics_skill = 3 }
+	
+	create_corps_commander = {
+		name = "Vladimir Antonov-Ovseenko"
+		id = 19204
+		portrait_path = "gfx/leaders/SOV/Portrait_Vladimir_Antonov-Ovseenko.dds"
+		traits = { trickster }
+		skill = 2 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
+	create_corps_commander = {
+		name = "Nikolay Chors"
+		id = 19205
+		portrait_path = "gfx/leaders/SOV/Portrait_Nikolay_Chors.dds"
+		traits = { trickster trait_reckless }
+		skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 1 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Grigoriy Kotovsky"
+		id = 19206
+		portrait_path = "gfx/leaders/SOV/Portrait_Grigoriy_Kotovsky.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 2 }
+	create_corps_commander = {
+		name = "Boris Shaposhnikov"
+		id = 19207
+		portrait_path = "gfx/leaders/SOV/Portrait_Boris_Shaposhnikov.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 3 logistics_skill = 3 }
+	
+	create_corps_commander = {
+		name = "Mikhail Frunze"
+		id = 19208
+		portrait_path = "gfx/leaders/SOV/Portrait_Mikhail_Frunze.dds"
+		traits = { trickster inflexible_strategist brilliant_strategist }
+		skill = 1 attack_skill = 4 defense_skill = 3 planning_skill = 4 logistics_skill = 4 }
+	create_corps_commander = {
+		name = "Vasily Shorin"
+		id = 19209
+		portrait_path = "gfx/leaders/SOV/Portrait_Vasily_Shorin.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+	
+	create_corps_commander = {
+		name = "Vasiliy Bluher"
+		id = 19210
+		portrait_path = "gfx/leaders/SOV/Portrait_Vasiliy_Bluher.dds"
+		traits = { }
+		skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 3 }
+	
+	#19211 - это Дзержинский
+	
+	create_corps_commander = {
+		name = "Avgust Kork"
+		id = 77445
+		portrait_path = "gfx/leaders/SOV/Portrait_Avgust_Kork.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		
+	create_corps_commander = {
+		name = "Iyeronim Uborevich"
+		id = 77450
+		portrait_path = "gfx/leaders/SOV/Portrait_Iyeronim_Uborevich.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		
+	create_corps_commander = {
+		name = "Alexandr Sedyakin"
+		id = 77451
+		portrait_path = "gfx/leaders/SOV/Portrait_Alexandr_Sedyakin.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 1 logistics_skill = 2 }
+		
+	create_corps_commander = {
+		name = "Boris Feldman"
+		id = 77452
+		portrait_path = "gfx/leaders/SOV/Portrait_Boris_Feldman.dds"
+		traits = { }
+		skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+		
+	create_corps_commander = {
+		name = "Iona Yakir"
+		id = 77453
+		portrait_path = "gfx/leaders/SOV/Portrait_Iona_Yakir.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+		
+	create_corps_commander = {
+		name = "Nikolay Semonov"
+		id = 77454
+		portrait_path = "gfx/leaders/SOV/Portrait_Nikolay_Semonov.dds"
+		traits = { }
+		skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		
+	create_corps_commander = {
+		name = "Pyotr Solodukhin"
+		id = 87455
+		portrait_path = "gfx/leaders/SOV/Portrait_Pyotr_Solodukhin.dds"
+		traits = { trait_reckless }
+		skill = 1 attack_skill = 1 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		
+	create_corps_commander = {
+		name = "Nikolay Kashirin"
+		id = 87456
+		portrait_path = "gfx/leaders/SOV/Portrait_Nikolay_Kashirin.dds"
+		traits = { cavalry_officer guerilla_fighter }
+		skill = 2 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
+		
+	
+	create_corps_commander = { #Донской красный казак
+		name = "Filipp Mironov"
+		id = 28001
+		portrait_path = "gfx/leaders/SOV/Portrait_Filipp_Mironov.dds"
+		traits = { old_guard trickster cavalry_officer cavalry_leader commando }
+		skill = 2 attack_skill = 3 defense_skill = 1 planning_skill = 2 logistics_skill = 3 }
+	create_corps_commander = { #Донской красный казак
+		name = "Grigoriy Kolpakov"
+		id = 28002
+		portrait_path = "gfx/leaders/SOV/Portrait_Grigoriy_Kolpakov.dds"
+		traits = { cavalry_officer }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+	create_corps_commander = { #Донской красный казак
+		name = "Fyodor Podtyolkov"
+		id = 28003
+		portrait_path = "gfx/leaders/DON/Portrait_Fyodor_Podtyolkov.dds"
+		traits = { cavalry_leader media_personality }
+		skill = 1 attack_skill = 3 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+	create_corps_commander = { #Донской красный казак
+		name = "Mikhail Krivoshlykov"
+		id = 28004
+		portrait_path = "gfx/leaders/SOV/Portrait_Mikhail_Krivoshlykov.dds"
+		traits = { trait_cautious }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+	create_corps_commander = { #Донской красный казак
+		name = "Boris Dumenko"
+		id = 28005
+		portrait_path = "gfx/leaders/SOV/Portrait_Boris_Dumenko.dds"
+		traits = { trickster cavalry_leader brilliant_strategist }
+		skill = 1 attack_skill = 2 defense_skill = 1 planning_skill = 2 logistics_skill = 2 }
+
+	if = {
+		limit = { KRN = { any_unit_leader = { has_id = 29002 } } } every_unit_leader = { limit = { has_id = 29002 } set_nationality = ROOT }
+	}
+	if = {
+		limit = { KRN = { any_unit_leader = { has_id = 29003 } } } every_unit_leader = { limit = { has_id = 29003 } set_nationality = ROOT }
+	}
+}
+
+add_left_esser_unit_leaders = {
+	create_corps_commander = { name = "Dmitriy Magerovsky" id = 77434 portrait_path = "gfx/leaders/RGR/Portrait_Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Semyon Kotlyarevsky" id = 77435 portrait_path = "gfx/leaders/RGR/Portrait_Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Ivan Nudiga" id = 77436 portrait_path = "gfx/leaders/RGR/Portrait_Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Grigoriy Oreshkin" id = 77437 portrait_path = "gfx/leaders/RGR/Portrait_Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Sergey Mikhailov" id = 77438 portrait_path = "gfx/leaders/RGR/Portrait_Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 } #Я (Д. Ю. Ладыгин) не уверен в имени этого человека
+	create_corps_commander = { name = "Pavel Lazimir" id = 77439 portrait_path = "gfx/leaders/SOV/Portrait_Pavel_Lazimir.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 } #Я (Д. Ю. Ладыгин) не уверен был ли он на момент восстания левым эсером
+	create_corps_commander = { name = "Yakov Fishman" id = 77440 portrait_path = "gfx/leaders/SOV/Portrait_Yakov_Fishman.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Yuriy Sablin" id = 77441 portrait_path = "gfx/leaders/SOV/Portrait_Yuriy_Sablin.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Vasiliy Likhobadin" id = 77442 portrait_path = "gfx/leaders/RGR/Portrait_Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Sergey Mstislavskiy" id = 77443 portrait_path = "gfx/leaders/SOV/Portrait_Sergey_Mstislavskiy.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Prosh Proshyan" id = 77444 portrait_path = "gfx/leaders/SOV/Portrait_Prosh_Proshyan.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	FRT = { every_unit_leader = { limit = {	OR = { has_id = 77423 } } set_nationality = ROOT } }
+}
+
+add_socialist_comissars_unit_leaders = {
+	create_field_marshal = { name = "Evgeny Rogovsky" id = 77491 portrait_path = "gfx/leaders/RGR/Portrait_Military_Revolutionary_Committee.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Vladimir Voitinsky" id = 77492 portrait_path = "gfx/leaders/RUS/Portrait_Vladimir_Voitinsky.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Victor Shklovsky" id = 77493 portrait_path = "gfx/leaders/RUS/Portrait_Victor_Shklovsky.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Boris Moiseenko" id = 77494 portrait_path = "gfx/leaders/RUS/Portrait_Boris_Moiseenko.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	if = {
+		limit = { RUS = { NOT = { has_country_flag = Kornilov_affair_fail } } }
+		create_corps_commander = { name = "Fyodor Linde" id = 77495 portrait_path = "gfx/leaders/RUS/Portrait_Fyodor_Linde.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	}
+	create_corps_commander = { name = "Fyodor Stepun" id = 77496 portrait_path = "gfx/leaders/RUS/Portrait_Fyodor_Stepun.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Vladimir Stankevich" id = 77497 portrait_path = "gfx/leaders/RUS/Portrait_Vladimir_Stankevich.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Maximilian Filonenko" id = 77498 portrait_path = "gfx/leaders/RUS/Portrait_Maximilian_Filonenko.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Sergey Kaplun" id = 77499 portrait_path = "gfx/leaders/RUS/Portrait_Sergey_Kaplun.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Alexandr Troyanovsky" id = 77500 portrait_path = "gfx/leaders/RUS/Portrait_Alexandr_Troyanovsky.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Nikolay Pakhomov" id = 77501 portrait_path = "gfx/leaders/RUS/Portrait_Nikolay_Pakhomov.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Vasily Sher" id = 77502 portrait_path = "gfx/leaders/RUS/Portrait_Vasily_Sher.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+	create_corps_commander = { name = "Mikhail Romm" id = 77503 portrait_path = "gfx/leaders/RUS/Portrait_Mikhail_Romm.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 1 logistics_skill = 1 }
+}
+
+spawn_red_guard_in_state = {
+	create_unit = {
+		division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+		owner = ROOT
+	}
+}
+
+spawn_red_guard_in_state_CONTROLLER = {
+	create_unit = {
+		division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+		owner = CONTROLLER
+	}
+}
+
+spawn_krasnoarmeyskaya_brigada_in_state = {
+	if = {
+		limit = { ROOT = { has_completed_focus = RUS_red_volunteer_army } }
+		create_unit = {
+			division = "name = \"Krasnoarmeyskaya Brigada\" division_template = \"Krasnoarmeyskaya Brigada\" start_experience_factor = 0.2 start_equipment_factor = 1"
+			owner = ROOT
+		}
+		else = {
+			create_unit = {
+				division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.15 start_equipment_factor = 1"
+				owner = ROOT
+			}
+		}
+	}
+}
+
+spawn_red_neirfront_militia_in_state  = {
+	create_unit = {
+		division = "name = \"Krasnaya Gvardiya\" division_template = \"Krasnaya Gvardiya\" start_experience_factor = 0.15 start_equipment_factor = 1"
+		owner = ROOT
+	}
+}
+
+spawn_krasnoarmeyskaya_brigada = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER is_subject_of = GER OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER is_subject_of = GER OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				create_unit = {
+					division = "name = \"Krasnoarmeyskaya Brigada\" division_template = \"Krasnoarmeyskaya Brigada\" start_experience_factor = 0.15 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnoarmeyskaya Brigada\" division_template = \"Krasnoarmeyskaya Brigada\" start_experience_factor = 0.15 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+		}
+}
+
+spawn_red_guard_on_german_front = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_owned_by = RUS
+					is_core_of = RUS
+					is_controlled_by = RUS
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				spawn_red_guard_in_state = yes
+			}
+			else = {
+				capital_scope = {
+					spawn_red_guard_in_state = yes
+				}
+			}
+		}
+}
+
+spawn_krasnoarmeyskaya_brigada_on_german_front = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_owned_by = RUS
+					is_core_of = RUS
+					is_controlled_by = RUS
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				create_unit = {
+					division = "name = \"Krasnoarmeyskaya Brigada\" division_template = \"Krasnoarmeyskaya Brigada\" start_experience_factor = 0.15 start_equipment_factor = 1"
+					owner = RUS
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnoarmeyskaya Brigada\" division_template = \"Krasnoarmeyskaya Brigada\" start_experience_factor = 0.15 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
+		}
+}
+
+spawn_red_guard_zavesa = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				create_unit = {
+					division = "name = \"Krasnoarmeyskaya Diviziya\" division_template = \"Krasnoarmeyskaya Zavesa\" start_experience_factor = 0.1 start_equipment_factor = 1"
+					owner = RUS
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnoarmeyskaya Diviziya\" division_template = \"Krasnoarmeyskaya Zavesa\" start_experience_factor = 0.1 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
+		}
+}
+
+spawn_krasnoarmeyskaya_diviziya = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { CONTROLLER = { has_war_with = RUS OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { CONTROLLER = { has_war_with = RUS OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } }
+				}
+				create_unit = {
+					division = "name = \"Krasnoarmeyskaya Diviziya\" division_template = \"Krasnoarmeyskaya Diviziya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnoarmeyskaya Diviziya\" division_template = \"Krasnoarmeyskaya Diviziya\" start_experience_factor = 0.1 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+		}
+}
+
+spawn_krasnoarmeyskaya_diviziya_on_german_front = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_owned_by = RUS
+					is_core_of = RUS
+					is_controlled_by = RUS
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				create_unit = {
+					division = "name = \"Krasnoarmeyskaya Diviziya\" division_template = \"Krasnoarmeyskaya Diviziya\" start_experience_factor = 0.15 start_equipment_factor = 1"
+					owner = RUS
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Krasnoarmeyskaya Diviziya\" division_template = \"Krasnoarmeyskaya Diviziya\" start_experience_factor = 0.15 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
+		}
+}
+
+spawn_shtrafbat = {
+		if = {
+			limit = { NOT = { has_template = "Shtrafbat"  } }
+			division_template = {
+				name = "Shtrafbat"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+				is_locked = yes
+			}
+		}
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_owned_by = RUS
+					is_core_of = RUS
+					is_controlled_by = RUS
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER is_subject_of = GER OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { has_war_with = ROOT OR = { tag = GER is_subject_of = GER OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				create_unit = {
+					division = "name = \"Shtrafbat\" division_template = \"Shtrafbat\" start_experience_factor = 0.15 start_equipment_factor = 1"
+					owner = RUS
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Shtrafbat\" division_template = \"Shtrafbat\" start_experience_factor = 0.15 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
+		}
+}
+
+spawn_white_guard_on_front = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				create_unit = {
+					division = "name = \"Belaya Gvardiya\" division_template = \"Belaya Gvardiya\" start_experience_factor = 0.8 start_equipment_factor = 1"
+					owner = RUS
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Belaya Gvardiya\" division_template = \"Belaya Gvardiya\" start_experience_factor = 0.8 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
+		}
+}
+
+spawn_udarniki_on_front = {
+		if = {
+			limit = {
+				any_state = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+			}
+			random_state = {
+				limit = {
+					NOT = { has_state_category = wasteland }
+					is_on_continent = europe
+					is_owned_by = ROOT
+					is_core_of = ROOT
+					is_controlled_by = ROOT
+					is_in_home_area = yes
+					any_neighbor_state = { NOT = { is_controlled_by = ROOT } CONTROLLER = { OR = { has_war_with = ROOT tag = GER is_subject_of = GER } NOT = { OR = { is_former_russian_empire_russian_settled_non_cossack_country = yes former_russian_empire_cossack_country = yes } } } }
+				}
+				create_unit = {
+					division = "name = \"Udarnaya Diviziya\" division_template = \"Udarnaya Diviziya\" start_experience_factor = 0.8 start_equipment_factor = 1"
+					owner = RUS
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"Udarnaya Diviziya\" division_template = \"Udarnaya Diviziya\" start_experience_factor = 0.8 start_equipment_factor = 1"
+						owner = RUS
+					}
+				}
+			}
+		}
+}
+
+spawn_right_units_in_CCA_CW_cycle = {
+	if = {
+		limit = { check_variable = { CCA_CW_right_forces_temp > 0 } }
+		add_to_temp_variable = { CCA_CW_right_forces_temp = -1 }
+		spawn_right_units_in_CCA_CW_cycle_1 = yes
+	}
+}
+spawn_right_units_in_CCA_CW_cycle_1 = {
+	random_state = {
+		limit = { is_controlled_by = event_target:CCA_CW_right }
+		create_unit = {
+			division = "name = \"Monarhicheskaya Brigada\" division_template = \"Monarhicheskaya Brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+			owner = event_target:CCA_CW_right
+		}
+	}
+	spawn_right_units_in_CCA_CW_cycle = yes
+}
+spawn_eser_units_in_CCA_CW_cycle = {
+	if = {
+		limit = { check_variable = { CCA_CW_eser_forces_temp > 0 } }
+		add_to_temp_variable = { CCA_CW_eser_forces_temp = -1 }
+		spawn_eser_units_in_CCA_CW_cycle_1 = yes
+	}
+}
+spawn_eser_units_in_CCA_CW_cycle_1 = {
+	random_owned_state = {
+		limit = { is_controlled_by = event_target:CCA_CW_eser }
+		create_unit = {
+			division = "name = \"Narodnoarmeyskaya Brigada\" division_template = \"Narodnoarmeyskaya Brigada\" start_experience_factor = 0.5 start_equipment_factor = 1 start_manpower_factor = 1"
+			owner = event_target:CCA_CW_eser
+		}
+	}
+	spawn_eser_units_in_CCA_CW_cycle = yes
+}
+
+choose_opp_mission_eser = {
+	hidden_effect = {
+		random_list = {
+			10 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_surveillance_of_right_generals
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_surveillance_of_right_generals_opp
+				}
+				activate_mission = CCA_surveillance_of_right_generals_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_reassignment_of_right_generals
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_reassignment_of_right_generals_opp
+				}
+				modifier = {
+					factor = 0
+					NOT = { has_country_flag = flag_surveillance_of_right_generals }
+				}
+				activate_mission = CCA_reassignment_of_right_generals_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_Kappel_kicked
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_Kappel_arrested
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_kick_Kappel_opp
+				}
+				activate_mission = CCA_kick_Kappel_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_investigate_military_conspiracy
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_investigate_military_conspiracy_opp
+				}
+				activate_mission = CCA_investigate_military_conspiracy_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_Kappel_kicked
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_Kappel_arrested
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_arrest_Kappel_opp
+				}
+				activate_mission = CCA_arrest_Kappel_opp
+			}
+			10 = {
+				modifier = {
+					factor = 0
+					NOT = { has_country_flag = flag_surveillance_of_right_generals }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_military_conspiracy_exposed
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_expose_military_conspiracy_opp
+				}
+				activate_mission = CCA_expose_military_conspiracy_opp
+			}
+			7 = {
+				modifier = {
+					factor = 0
+					NOT = { has_country_flag = flag_surveillance_of_right_generals }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_recruitment_of_conspirators
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_recruitment_of_conspirators_opp
+				}
+				activate_mission = CCA_recruitment_of_conspirators_opp
+			}
+			10 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_propagandize_unloyal_units
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_propagandize_unloyal_units_opp
+				}
+				activate_mission = CCA_propagandize_unloyal_units_opp
+			}
+			6 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_disband_unloyal_units
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_disband_unloyal_units_opp
+				}
+				activate_mission = CCA_disband_unloyal_units_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_form_party_workers_units
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_form_party_workers_units_opp
+				}
+				activate_mission = CCA_form_party_workers_units_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_arm_foreigners
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_arm_foreigners_opp
+				}
+				activate_mission = CCA_arm_foreigners_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					OR = {
+						has_war_with = OCH
+						has_country_flag = flag_call_to_OCH_cossacks
+						has_equipment = {
+							infantry_equipment < 500
+						}
+					}
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_call_to_OCH_cossacks_opp
+				}
+				activate_mission = CCA_call_to_OCH_cossacks_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					OR = {
+						has_country_flag = flag_enlist_support_of_czech_national_council
+						NOT = { has_country_flag = flag_military_conspiracy_exposer }
+						NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+					}
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_enlist_support_of_czech_national_council_opp
+				}
+				activate_mission = CCA_enlist_support_of_czech_national_council_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_honor_czech_generals
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_honor_czech_generals_opp
+				}
+				activate_mission = CCA_honor_czech_generals_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_form_russko_czech_units
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_form_russko_czech_units_opp
+				}
+				activate_mission = CCA_form_russko_czech_units_opp
+			}
+			8 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_Entente_diplomatic_guarantees_CW_dec
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_Entente_diplomatic_guarantees_CW_dec_opp
+				}
+				activate_mission = CCA_Entente_diplomatic_guarantees_CW_dec_opp
+			}
+		}
+	}
+}
+
+choose_opp_mission_right = {
+	hidden_effect = {
+		random_list = {
+			200 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_encrypt_correspondence
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_encrypt_correspondence_opp
+				}
+				modifier = {
+					factor = 0
+					NOT = { has_country_flag = flag_progress_investigate_military_conspiracy }
+				}
+				activate_mission = CCA_encrypt_correspondence_opp
+			}
+			200 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_prepare_new_government
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_prepare_new_government_opp
+				}
+				activate_mission = CCA_prepare_new_government_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					OR = {
+						has_country_flag = flag_delay_rebellion
+						check_variable = { CCA_CW_right_forces > 8 }
+					}
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_delay_rebellion_opp
+				}
+				activate_mission = CCA_delay_rebellion_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					OR = {
+						has_country_flag = flag_strike_first
+						check_variable = { CCA_CW_right_forces < 9 }
+					}
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_strike_first_opp
+				}
+				activate_mission = CCA_strike_first_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_monarchist_propaganda
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_monarchist_propaganda_opp
+				}
+				activate_mission = CCA_monarchist_propaganda_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_persecution_of_socialists_in_army
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_persecution_of_socialists_in_army_opp
+				}
+				activate_mission = CCA_persecution_of_socialists_in_army_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_change_location_of_warehouses
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_change_location_of_warehouses_opp
+				}
+				activate_mission = CCA_change_location_of_warehouses_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_cult_of_white_generals
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_cult_of_white_generals_opp
+				}
+				activate_mission = CCA_cult_of_white_generals_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_monarchist_shock_troopers
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_monarchist_shock_troopers_opp
+				}
+				activate_mission = CCA_monarchist_shock_troopers_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_create_underground_among_cossacks
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_create_underground_among_cossacks_opp
+				}
+				activate_mission = CCA_create_underground_among_cossacks_opp
+			}
+			10 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_prepare_reserve_headquarters
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_prepare_reserve_headquarters_opp
+				}
+				activate_mission = CCA_prepare_reserve_headquarters_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					has_country_flag = flag_propaganda_on_front
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_propaganda_on_front_opp
+				}
+				activate_mission = CCA_propaganda_on_front_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_sow_discord_between_czechs_n_gov
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_sow_discord_between_czechs_n_gov_opp
+				}
+				activate_mission = CCA_sow_discord_between_czechs_n_gov_opp
+			}
+			20 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_promise_czechs_return_to_home
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_promise_czechs_return_to_home_opp
+				}
+				activate_mission = CCA_promise_czechs_return_to_home_opp
+			}
+			10 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_panslav_czechs_propaganda
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_panslav_czechs_propaganda_opp
+				}
+				activate_mission = CCA_panslav_czechs_propaganda_opp
+			}
+			13 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_enlist_support_of_Gaida
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_enlist_support_of_Gaida_opp
+				}
+				activate_mission = CCA_enlist_support_of_Gaida_opp
+			}
+			7 = {
+				modifier = {
+					factor = 0
+					NOT = { has_any_of_Brigada_Chekhoslovatskogo_legiona = yes }
+				}
+				modifier = {
+					factor = 0
+					has_country_flag = flag_anticzechs_provocations
+				}
+				modifier = {
+					factor = 0
+					has_active_mission = CCA_anticzechs_provocations_opp
+				}
+				activate_mission = CCA_anticzechs_provocations_opp
+			}
+		}
+	}
+}
+
+initiate_verification_of_bread_regions_bolsheviks_control = {
+	set_variable = {
+		var = global.bolsheviks_control_of_bread_regions
+		value = 0
+	}
+	every_country = {
+		limit = {
+			OR = {
+				has_government = communism
+				has_government = radical_socialism
+				has_government = social_democracy
+			}
+			NOT = { has_war_with = RUS }
+		}
+		if = { limit = { 200 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 217 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 218 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 234 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 235 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 238 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 245 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 251 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 265 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 401 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+		if = { limit = { 814 = { is_controlled_by = PREV } } add_to_variable = { var = global.bolsheviks_control_of_bread_regions value = 1 } }
+	}
+	divide_variable = {
+		var = global.bolsheviks_control_of_bread_regions
+		value = 11
+	}
+}
+
+rise_Makhno_authority = {
+	if = {
+		limit = { has_idea = FRT_Makhno_very_low_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_very_low_authority_idea
+			add_idea = FRT_Makhno_low_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_low_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_low_authority_idea
+			add_idea = FRT_Makhno_normal_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_normal_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_normal_authority_idea
+			add_idea = FRT_Makhno_high_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_high_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_high_authority_idea
+			add_idea = FRT_Makhno_very_high_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_very_high_authority_idea }
+		add_stability = 0.05
+		add_war_support = 0.05
+		add_political_power = 50
+	}
+}
+
+down_Makhno_authority = {
+	if = {
+		limit = { has_idea = FRT_Makhno_low_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_low_authority_idea
+			add_idea = FRT_Makhno_very_low_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_normal_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_normal_authority_idea
+			add_idea = FRT_Makhno_low_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_high_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_high_authority_idea
+			add_idea = FRT_Makhno_normal_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_very_high_authority_idea }
+		swap_ideas = {
+			remove_idea = FRT_Makhno_very_high_authority_idea
+			add_idea = FRT_Makhno_high_authority_idea
+		}
+	}
+	else_if = {
+		limit = { has_idea = FRT_Makhno_very_low_authority_idea }
+		add_stability = -0.05
+		add_war_support = -0.05
+		add_political_power = -50
+	}
+}
+
+delete_Makhno_authority = {
+	remove_ideas = {
+		FRT_Makhno_very_low_authority_idea
+		FRT_Makhno_low_authority_idea
+		FRT_Makhno_normal_authority_idea
+		FRT_Makhno_high_authority_idea
+		FRT_Makhno_very_high_authority_idea
+	}
+}
+
+delete_FRT_CW_ideas = {
+	remove_ideas = {
+		FRT_black_cavalry_idea
+		FRT_marching_army
+		FRT_nonparty_soviet_idea
+		FRT_anarchist_party_idea
+		FRT_workers_self-government_idea
+		FRT_syndicalist_unions
+		FRE_black_terror_idea
+		FRT_black_guards
+		FRT_barter
+		FRT_barter_2
+		FRT_barter_3
+		FRT_lack_of_control_of_field_commanders
+		FRT_lack_of_control_of_field_commanders_2
+		FRT_lack_of_control_of_field_commanders_3
+		FRT_enlargement_of_partisan_units_idea
+		FRT_operational_headquarters_idea
+		FRT_boys_are_unhappy_idea 
+		FRT_refugees_idea
+		FRT_refugees_2_idea
+		FRT_freemen_idea
+		FRT_anarchist_media
+		FRT_nationalist_rhetoric_idea
+		FRT_pogroms_idea
+		FRT_collection_of_gunsmith_idea
+		FRT_prisoners_collection_idea
+		FRT_winning_class_idea
+		FRT_lack_of_police_idea
+	}
+}

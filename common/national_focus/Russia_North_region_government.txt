@@ -1,0 +1,1243 @@
+focus_tree = {
+	id = Russia_North_region_government_focus
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = NRR
+		}
+	}
+	default = no
+	continuous_focus_position = { x = 0 y = 15 }
+	#Определение курса
+	focus = {
+		id = NRR_choose_course
+		icon = GFX_NRR_choose_course
+		cost = 0.2
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 0
+		select_effect = {
+			set_variable = {
+				var = NRR_discontent_of_gov
+				value = 0
+			}
+			set_variable = {
+				var = NRR_legitimacy_of_gov
+				value = 3
+			}
+			country_event = { id = rcw_nrr.19 days = 1 }
+		}
+		completion_reward = {
+			country_event = rcw_nrr.18
+		}
+	}
+	#Очистка советов
+	focus = {
+		id = NRR_clear_soviets
+		icon = GFX_NRR_clear_soviets
+		cost = 1
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_choose_course
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 13
+		y = 2
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_war_support = 0.02
+			add_popularity = {
+				ideology = communism
+				popularity = -0.05
+			}
+			add_to_variable = {
+				var = NRR.NRR_legitimacy_of_gov
+				value = 1
+			}
+		}
+	}
+	#Российская Народная армия
+	focus = {
+		id = NRR_roosiyskaya_people_army
+		icon = GFX_NRR_roosiyskaya_people_army
+		cost = 2
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_choose_course
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 1
+		select_effect = {
+			
+		}
+		completion_reward = {
+			country_event = rcw_nrr.21
+		}
+	}
+	#Северная мобилизация
+	focus = {
+		id = NRR_north_mobilisation
+		icon = GFX_NRR_north_mobilisation
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_roosiyskaya_people_army
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 2
+		select_effect = {
+			country_event = { id = rcw_nrr.22 days = 10 }
+		}
+		completion_reward = {
+			if = {
+				limit = { has_country_flag = NRR_failed_coup }
+				country_event = rcw_nrr.28 #Катастрофичная мобилизация
+				clr_country_flag = NRR_failed_coup
+			}
+			else_if = {
+				limit = { has_country_flag = NRR_compromise }
+				country_event = rcw_nrr.30 #Итоги мобилизации
+				clr_country_flag = NRR_compromise
+			}
+			else = { country_event = rcw_nrr.29 } #Неудачная мобилизация
+		}
+	}
+	#Упрочнение Верховного управления 
+	focus = {
+		id = NRR_str_verkh_upravlenia
+		icon = GFX_NRR_str_verkh_upravlenia
+		cost = 2
+		available = {
+			has_country_flag = NRR_VUSO
+		}
+		prerequisite = {
+			focus = NRR_north_mobilisation
+		}
+		prerequisite = {
+			focus = NRR_clear_soviets
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 11
+		y = 4
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_stability = 0.12
+			country_event = { id = rcw_nrr.31 days = 50 }
+			if = {
+				limit = { NOT = { has_active_mission = Briish_go_home_2 } NOT = { has_global_flag = WWI_GER_sieg_im_Weltkrieg } }
+				country_event = { id = rcw_nrr.32 days = 60 }
+			}
+			else = { }
+			country_event = { id = rcw_nrr.43 days = 180 }
+		}
+	}
+	#Реорганизация генерал-губернаторства
+	focus = {
+		id = NRR_reorg_gen_gub
+		icon = GFX_NRR_reorg_gen_gub
+		cost = 1
+		available = {
+			has_country_flag = NRR_VPSO
+		}
+		prerequisite = {
+			focus = NRR_north_mobilisation
+		}
+		prerequisite = {
+			focus = NRR_clear_soviets
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 3
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_stability = 0.04
+			if = {
+				limit = { has_government = social_liberalism }
+				add_ideas = Boris_Durov_6
+				add_ideas = Boris_Durov_army_chief
+				add_ideas = Sergey_Samarin_high_command
+			}
+			else_if = {
+				limit = { has_government = market_liberalism }
+				add_ideas = Alexandr_Muruzi_high_command
+			}
+		}
+	}
+	#Областное правительство 
+	focus = {
+		id = NRR_obl_gov
+		icon = GFX_NRR_obl_gov
+		cost = 3
+		available = {
+			has_country_flag = NRR_VPSO
+		}
+		prerequisite = {
+			focus = NRR_reorg_gen_gub
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 4
+		select_effect = {
+			
+		}
+		completion_reward = {
+			drop_cosmetic_tag = yes
+			add_stability = 0.05
+			add_political_power = 50
+			rise_pol_loyalty = yes
+			if = {
+				limit = { has_government = market_liberalism }
+				add_ideas = Nikolay_Startsev_1
+				add_ideas = Nikolay_Startsev_2
+				add_ideas = Evgeny_Semenov_3
+				add_ideas = Maximillian_Filonenko_4
+				add_ideas = Sergey_Gorodetskiy_5
+				add_ideas = Georgiy_Chaplin_6
+			}
+			if = {
+				limit = { has_government = social_liberalism }
+				add_ideas = Nikolay_Chaikovskiy_1
+				add_ideas = Nikolay_Chaikovskiy_2
+				add_ideas = Nikolay_Medofiev_3
+				add_ideas = Sergey_Gorodetskiy_5
+				if = {
+					limit = {
+						OR = {
+							AND = {
+								CCA = {
+									exists = yes 
+									NOT = { has_country_flag = DON_CCA_fired }
+								} 
+							}
+							SIB = { exists = yes }
+							RSS = { exists = yes }
+						}
+					}
+					country_event = rcw_nrr.33
+				}
+			}
+			country_event = { id = rcw_nrr.31 days = 20 }
+			if = {
+				limit = { NOT = { has_active_mission = Briish_go_home_2 } NOT = { has_global_flag = WWI_GER_sieg_im_Weltkrieg } }
+				country_event = { id = rcw_nrr.32 days = 30 }
+			}
+			else = { }
+			country_event = { id = rcw_nrr.34 days = 150 }
+		}
+	}
+	#Демократические полки 
+	focus = {
+		id = NRR_democratic_soldaten
+		icon = GFX_NRR_democratic_soldaten
+		cost = 4
+		available = {
+			has_government = social_liberalism
+			has_completed_focus = NRR_officers
+		}
+		prerequisite = {
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 18
+		y = 5
+		select_effect = {
+			country_event = { id = rcw_nrr.36 days = 7 }
+		}
+		completion_reward = {
+			country_event = rcw_nrr.37
+		}
+	}
+	#Обращение к офицерам
+	focus = {
+		id = NRR_officers
+		icon = GFX_NRR_officers
+		cost = 1
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_str_verkh_upravlenia
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			country_event = { id = rcw_nrr.38 days = 21 }
+			if = {
+				limit = {  
+					has_country_flag = NRR_VPSO
+					has_government = social_liberalism
+				}
+				country_event = { id = rcw_nrr.39 days = 86 }
+			}
+			else = { country_event = { id = rcw_nrr.41 days = 86 } }
+			country_event = { id = rcw_nrr.40 days = 63 }
+		}
+	}
+	#Ужесточение дисциплины 
+	focus = {
+		id = NRR_disciplina
+		icon = GFX_NRR_disciplina
+		cost = 2
+		available = {
+			OR = {
+				NOT = { has_country_flag = NRR_VPSO }
+				AND = {
+					NOT = { has_government = social_liberalism }
+					has_country_flag = NRR_VPSO 
+				}
+				AND = {
+					has_government = social_liberalism
+					has_country_flag = NRR_VPSO 
+					has_completed_focus = NRR_democratic_soldaten
+				}
+			}
+		}
+		prerequisite = {
+			focus = NRR_officers
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 17
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			if = {
+				limit = { has_idea = OCH_low_discipline_idea }
+				remove_ideas = OCH_low_discipline_idea
+			}
+			add_ideas = RSS_militar_field_courts_idea
+			add_war_support = -0.03
+		}
+	}
+	#Северные стрелковые бригады
+	focus = {
+		id = NRR_north_brigades
+		icon = GFX_NRR_north_brigades
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_disciplina
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 17
+		y = 7
+		select_effect = {
+			set_variable = {
+				var = NRR_north_brigade_des
+				value = 0
+			}
+			set_variable = {
+				var = NRR_prisoners_brigade_des
+				value = 0
+			}
+			division_template = {
+				name = "Severnaya Stralkovaya Brigada" 
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+				}
+				support = {
+					artillery = { x = 0 y = 0 }
+				}
+				is_locked = no
+			}
+		}
+		completion_reward = {
+			low_allies_inf = yes
+			rise_mobilization_law = yes
+			unlock_decision_category_tooltip = NRR_north_brigades_des_cat
+		}
+	}
+	#Вербовка военнопленных 
+	focus = {
+		id = NRR_prisoners
+		icon = GFX_NRR_prisoners
+		cost = 4
+		available = {
+			OR = {
+				NOT = { has_country_flag = NRR_VPSO }
+				AND = {
+					NOT = { has_government = social_liberalism }
+					has_country_flag = NRR_VPSO 
+				}
+				AND = {
+					has_government = social_liberalism
+					has_country_flag = NRR_VPSO 
+					has_completed_focus = NRR_democratic_soldaten
+				}
+			}
+		}
+		prerequisite = {
+			focus = NRR_officers
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_manpower = 14000
+			add_timed_idea = { idea = NRR_manpower_from_front days = 200 }
+		}
+	}
+	#Дисциплинарные части  
+	focus = {
+		id = NRR_shtrafbat
+		icon = GFX_NRR_shtrafbat
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_prisoners
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 15
+		y = 7
+		select_effect = {
+			
+		}
+		completion_reward = {
+			division_template = {
+				name = "Disciplinarniy Batalyon" 
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					penal_battalion = { x = 0 y = 1 }
+				}
+				support = {
+				}
+				is_locked = yes
+			}
+			capital_scope = {
+				create_unit = {  division = "name = \"Disciplinarniy Batalyon\" division_template = \"Disciplinarniy Batalyon\" start_experience_factor = 0.5 start_equipment_factor = 1"  owner = ROOT count = 2 }
+			}
+		}
+	}
+	#Национальное ополчение   
+	focus = {
+		id = NRR_national_militia
+		icon = GFX_NRR_national_militia
+		cost = 4
+		available = {
+			OR = {
+				NOT = { has_country_flag = NRR_VPSO }
+				AND = {
+					NOT = { has_government = social_liberalism }
+					has_country_flag = NRR_VPSO 
+				}
+				AND = {
+					has_government = social_liberalism
+					has_country_flag = NRR_VPSO 
+					has_completed_focus = NRR_democratic_soldaten
+				}
+			}
+		}
+		prerequisite = {
+			focus = NRR_officers
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 13
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_ideas = NRR_local_militia
+		}
+	}
+	#Мобилизация в ополчение  
+	focus = {
+		id = NRR_mobilisation_in_militia
+		icon = GFX_NRR_mobilisation_in_militia
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_national_militia
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 13
+		y = 7
+		select_effect = {
+			
+		}
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = NRR_local_militia
+				add_idea = NRR_tyloviki
+			}
+		}
+	}
+	#Партизанское движение   
+	focus = {
+		id = NRR_partisans
+		icon = GFX_NRR_partisans
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_officers
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 8
+		select_effect = {
+			
+		}
+		completion_reward = {
+			unlock_decision_tooltip = {
+				decision = NRR_sabotage_behind_enemy_lines_decision
+				show_effect_tooltip = yes
+				show_modifiers = no
+			}
+		}
+	}
+	#Вербовочные конторы    
+	focus = {
+		id = NRR_contors
+		icon = GFX_NRR_contors
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_officers
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 16
+		y = 8
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_ideas = NRR_manpower_contors
+		}
+	}
+	#Работа с послами    
+	focus = {
+		id = NRR_ambassadors
+		icon = GFX_NRR_ambassadors
+		cost = 2
+		available = {
+			has_idea = NRR_ambassador_capital_idea
+		}
+		prerequisite = {
+			focus = NRR_str_verkh_upravlenia
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 13
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			ITA = { country_event = rcw.156 }
+			FRA = { country_event = rcw.156 }
+			ENG = { country_event = rcw.156 }
+			USA = { country_event = rcw.156 }
+		}
+	}
+	#Реорганизация земств    
+	focus = {
+		id = NRR_zemstva
+		icon = GFX_NRR_zemstva
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_str_verkh_upravlenia
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 7
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_timed_idea = {
+				idea = DON_democratic_reforms
+				days = 70
+			}
+		}
+	}
+	#Земельная реформа     
+	focus = {
+		id = NRR_reform
+		icon = GFX_NRR_reform
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_str_verkh_upravlenia
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 9
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			if = {
+				limit = { has_government = social_liberalism }
+				country_event = rcw_nrr.45
+			}
+			else = { country_event = rcw_nrr.46 }
+		}
+	}	
+	#Денежная реформа     
+	focus = {
+		id = NRR_reform_money
+		icon = GFX_NRR_reform_money
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_str_verkh_upravlenia
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 11
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			country_event = rcw_nrr.48
+		}
+	}	
+	#Поощрение кооперации      
+	focus = {
+		id = NRR_cooperation
+		icon = GFX_NRR_cooperation
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_reform
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 9
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_ideas = RSS_peasant_cooperation
+		}
+	}	
+	#Выборы на освобождённых землях    
+	focus = {
+		id = NRR_elections
+		icon = GFX_NRR_elections
+		cost = 4
+		available = {
+			has_completed_focus = NRR_str_verkh_upravlenia
+		}
+		prerequisite = {
+			focus = NRR_zemstva
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 7
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			unlock_decision_category_tooltip = RSS_state_elections_decisions 
+		}
+	}
+	#Наследник Временного Всероссийского   
+	focus = {
+		id = NRR_allrussia_gov
+		icon = GFX_NRR_allrussia_gov
+		cost = 4
+		available = {
+			OR = {
+				controls_state = 195
+				controls_state = 219
+			}
+		}
+		prerequisite = {
+			focus = NRR_elections
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 7
+		y = 7
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_political_power = 150
+			add_stability = 0.1
+			if = {
+				limit = { has_idea = NRR_loyal_pol_idea }
+				remove_ideas = NRR_loyal_pol_idea
+			}
+			if = {
+				limit = { has_idea = NRR_half_loyal_pol_idea }
+				remove_ideas = NRR_half_loyal_pol_idea
+			}
+			if = {
+				limit = { has_idea = NRR_oppose_pol_idea }
+				remove_ideas = NRR_oppose_pol_idea
+			}
+			add_timed_idea = {
+				idea = OCH_wide_offensive_idea
+				days = 30
+			}
+			set_cosmetic_tag = NAG
+			add_ideas = federal_gov_terr
+			if = {
+				limit = { 
+					OR = {
+						is_puppet = yes
+						is_subject = yes
+					}	
+				}
+				OVERLORD = { end_puppet = ROOT }
+			}
+			if = {
+				limit = { controls_state = 219 }
+				219 = { add_core_of = NRR }
+			}
+			if = {
+				limit = { controls_state = 195 }
+				195 = { add_core_of = NRR }
+				797 = {
+					add_core_of = ROOT
+				}
+				1048 = {
+					add_core_of = ROOT
+				}
+				1021 = {
+					add_core_of = ROOT
+				}
+				1023 = {
+					add_core_of = ROOT
+				}
+				1019 = {
+					add_core_of = ROOT
+				}
+				1022 = {
+					add_core_of = ROOT
+				}
+				1042 = {
+					add_core_of = ROOT
+				}
+				1048 = {
+					add_core_of = ROOT
+				}
+				208 = {
+					add_core_of = ROOT
+				}
+			}
+			if = {
+				limit = { NOT = { controls_state = 219  } }
+				set_capital = {
+					state = 195 
+					remember_old_capital = no
+				}
+			}
+			else = {
+				set_capital = {
+					state = 219 
+					remember_old_capital = no
+				}
+			}
+		}
+	}
+	#Демократическая смычка   
+	focus = {
+		id = NRR_democratic_smychka
+		icon = GFX_NRR_democratic_smychka
+		cost = 4
+		available = {
+			NVA = { NOT = { has_completed_focus = NVA_russian_vendee } }
+		}
+		prerequisite = {
+			focus = NRR_allrussia_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 6
+		y = 8
+		select_effect = {
+			
+		}
+		completion_reward = {
+			country_event = rcw_nrr.50
+			if = {
+				limit = { has_idea = NRR_popular_gen_gub }
+				remove_ideas = NRR_popular_gen_gub
+			}
+		}
+	}
+	#Дипломатические обращения    
+	focus = {
+		id = NRR_obrasheniya
+		icon = GFX_NRR_obrasheniya
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_allrussia_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 8
+		y = 8
+		select_effect = {
+			
+		}
+		completion_reward = {
+			unlock_decision_category_tooltip = NRR_dilomatic_note 
+		}
+	}
+	#Советы общественности    
+	focus = {
+		id = NRR_soviet_to_peoples
+		icon = GFX_NRR_soviet_to_peoples
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_str_verkh_upravlenia
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 20
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_ideas = NRR_soviety
+		}
+	}
+	#Контролирование рабочих     
+	focus = {
+		id = NRR_labor_control
+		icon = GFX_NRR_labor_control
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_soviet_to_peoples
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 19
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.15
+			}
+			add_ideas = RSS_must_work
+			if = {
+				limit = { has_idea = collapse_of_railway_system_5 }
+				remove_ideas = collapse_of_railway_system_5
+				add_ideas = collapse_of_railway_system_4
+			}
+			else_if = {
+				limit = { has_idea = collapse_of_railway_system_4 }
+				remove_ideas = collapse_of_railway_system_4
+				add_ideas = collapse_of_railway_system_3
+			}
+			else_if = {
+				limit = { has_idea = collapse_of_railway_system_3 }
+				remove_ideas = collapse_of_railway_system_3
+				add_ideas = collapse_of_railway_system_2
+			}
+			else_if = {
+				limit = { has_idea = collapse_of_railway_system_2 }
+				remove_ideas = collapse_of_railway_system_2
+				add_ideas = collapse_of_railway_system_1
+			}
+			else_if = {
+				limit = { has_idea = collapse_of_railway_system_1 }
+				remove_ideas = collapse_of_railway_system_1
+			}
+		}
+	}
+	#Развитие местных промыслов    
+	focus = {
+		id = NRR_local_promysl
+		icon = GFX_NRR_local_promysl
+		cost = 5
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_obl_gov
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 22
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_political_power = -45
+			add_stability = 0.08
+			add_offsite_building = { type = industrial_complex level = 1 }
+		}
+	}
+	#Земско-городское совещание     
+	focus = {
+		id = NRR_zemgor
+		icon = GFX_NRR_zemgor
+		cost = 7
+		available = {
+			has_completed_focus = NRR_obl_gov
+			has_country_flag = NRR_workers_demands
+		}
+		prerequisite = {
+			focus = NRR_soviet_to_peoples
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			country_event =  rcw_nrr.60
+		}
+	}
+	#Железная рука?     
+	focus = {
+		id = NRR_hand
+		icon = GFX_NRR_hand
+		cost = 3
+		available = {
+			
+		}
+		bypass = { has_government = despotism }
+		prerequisite = {
+			focus = NRR_zemgor
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 21
+		y = 7
+		select_effect = {
+			
+		}
+		completion_reward = {
+			country_event = rcw_nrr.63
+		}
+	}
+	#Всеобщая милитаризация   
+	focus = {
+		id = NRR_all_mobilisation
+		icon = GFX_NRR_all_mobilisation
+		cost = 4
+		available = {
+			has_government = despotism
+		}
+		prerequisite = {
+			focus = NRR_hand
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 20
+		y = 8
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_ideas = NRR_militarisation
+		}
+	}
+	#Генерал-губернаторства
+	focus = {
+		id = NRR_gengub
+		icon = GFX_NRR_gengub
+		cost = 4
+		available = {
+			
+		}
+		prerequisite = {
+			focus = NRR_hand
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 22
+		y = 8
+		select_effect = {
+			
+		}
+		completion_reward = {
+			unlock_decision_category_tooltip = rcw_RVA_governor_general_decisions
+		}
+	}
+	#Переговоры с финнами 
+	focus = {
+		id = NRR_FIN_negotiations
+		icon = GFX_NRR_FIN_negotiations
+		cost = 3
+		available = {
+			FIN = {
+				exists = yes
+				NOT = { has_war_with = RUS }
+				NOT = { has_war_with = NRR }
+				NOT = { has_government = communism }
+				NOT = { has_government = radical_socialism }
+				NOT = { has_government = social_democracy }
+			}
+			has_war_with = RUS
+		}
+		prerequisite = {
+			focus = NRR_obl_gov
+			focus = NRR_str_verkh_upravlenia
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 24
+		y = 5
+		select_effect = {
+			
+		}
+		completion_reward = {
+			if = {
+				limit = { has_idea = NRR_FIN_legion_idea }
+				remove_ideas = NRR_FIN_legion_idea
+			}
+			if = {
+				limit = { is_puppet = yes }
+				OVERLORD = { country_event = rcw_nrr.64 }
+			}
+			else = { FIN = { country_event = rcw_nrr.67 } }
+		}
+	}
+	#Распаковка запасов 
+	focus = {
+		id = NRR_warehouses
+		icon = GFX_NRR_warehouses
+		cost = 3
+		available = {
+			has_country_flag = NRR_intervention
+			controls_state = 214
+			controls_state = 213
+			OR = {
+				controls_state = 351
+				controls_state = 1090
+				controls_state = 1076
+			}
+		}
+		prerequisite = {
+			focus = NRR_obl_gov
+			focus = NRR_str_verkh_upravlenia
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 25
+		y = 6
+		select_effect = {
+			
+		}
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_0
+				amount = 8000
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = support_equipment_1
+				amount = 1500
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment_1
+				amount = 400
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = field_guns_equipment_1
+				amount = 400
+				producer = ENG
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment
+				amount = 400
+				producer = ENG
+			}
+			if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+				remove_ideas = foodstuffs_supply_crisis_5
+				add_ideas = foodstuffs_supply_crisis_4
+			}
+			else_if = {
+				limit = { has_idea = foodstuffs_supply_crisis_4 }
+				remove_ideas = foodstuffs_supply_crisis_4
+				add_ideas = foodstuffs_supply_crisis_3
+			}
+			else_if = {
+				limit = { has_idea = foodstuffs_supply_crisis_3 }
+				remove_ideas = foodstuffs_supply_crisis_3
+				add_ideas = foodstuffs_supply_crisis_2
+			}
+			else_if = {
+				limit = { has_idea = foodstuffs_supply_crisis_2 }
+				remove_ideas = foodstuffs_supply_crisis_2
+				add_ideas = foodstuffs_supply_crisis_1
+			}
+		}
+	}
+	#Эвакуация
+	focus = {
+		id = NRR_evac
+		icon = GFX_NRR_evac
+		cost = 4
+		available = {
+			NOT = { has_country_flag = NRR_intervention }
+			has_country_flag = NRR_can_evac
+			RUS = { surrender_progress < 0.3 }
+			OR = {
+				SIB = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+				NWA = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+				RVA = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+				DON = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+				CCA = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+				RSS = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+				PRM = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+				BKL = { exists = yes NOT = { has_government = radical_socialism has_government = communism } }
+			}
+		}
+		prerequisite = {
+			focus = NRR_obl_gov
+			focus = NRR_str_verkh_upravlenia
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 23
+		y = 6
+		select_effect = {
+			country_event = { id = rcw_nrr.95 days = 1 }
+			country_event = { id = rcw_nrr.96 days = 20 }
+			hidden_effect = {
+				if = {
+					limit = { 
+						OR = {
+							has_any_of_Brigada_Chekhoslovatskogo_legiona = yes
+							has_idea = czesch_white_gar
+							has_idea = czesch_white_gar_2
+							has_idea = czesch_white_gar_3
+							has_idea = czesch_white_gar_4
+						}
+					}
+					if = { limit = { NRR = { exists = yes } } NRR = { country_event = { id = rcw_czechs.45 days = 7 } } }
+				}	
+			}
+		}
+		completion_reward = {
+			country_event = rcw_nrr.97
+		}
+	}
+}

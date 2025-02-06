@@ -1,0 +1,5902 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_rss_esser
+
+# Срыв съезда членов учредительного собрания
+country_event = {
+	id = rcw_rss_esser.0
+	title = rcw_rss_esser.0.t
+	desc = {
+		text = rcw_rss_esser.0.desc_nocheh
+		trigger = {
+			NOT = {
+				has_any_of_Brigada_Chekhoslovatskogo_legiona = yes
+			}
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.0.desc_cheh
+		trigger = {
+			has_any_of_Brigada_Chekhoslovatskogo_legiona = yes
+		}
+	}
+	picture = GFX_report_event_rus_dispersa_of_the_constituent_assembly	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_esser.0.a
+		add_stability = -0.05
+		hidden_effect = {
+			if = {
+				limit = {
+					AND = {
+						check_variable = { directory_balance < 2 }
+					}
+				}
+				RSS_esser_coup_script = yes
+				every_unit_leader = { limit = { OR = { has_id = 77404 } } set_nationality = REB }
+				country_event = { id = rcw_rss_esser.52 days = 2 }
+			}
+			else_if = {
+				limit = {
+					check_variable = { directory_balance > 1 }
+				}
+				hidden_effect = {
+					set_global_flag = RSS_civil_war_eser_coup
+					remove_all_Brigada_Chekhoslovatskogo_legiona_no_disband_with_flags = yes
+					country_event = { id = rcw_rss_esser.1 }
+				}
+			}
+			set_variable = {
+				var = RSS_army_independence
+				value = 0
+			}
+			set_variable = {
+				var = RSS_police_power
+				value = 0
+			}
+			set_cosmetic_tag = RSS_esser
+			remove_ideas = SIB_right_oficers
+			every_state = {
+				limit = { 
+					NOT = { CONTROLLER = { original_tag = RSS } }
+					is_core_of = RSS
+				}
+				remove_core_of = RSS
+			}
+			every_state = {
+				limit = { 
+					OR = {
+						is_core_of = SIB
+						is_core_of = CCA
+					}
+				}
+				add_core_of = RSS
+			}
+		}
+	}
+} 
+#Раскол восточного фронта
+country_event = {
+	id = rcw_rss_esser.1
+	title = rcw_rss_esser.1.t
+	desc = rcw_rss_esser.1.desc
+	#picture = GFX_	
+	is_triggered_only = yes
+	
+	immediate = {
+		ROOT = { save_global_event_target_as = RSS_esser }
+		hidden_effect = {
+			start_civil_war = {
+				ideology = despotism
+				size = 0.3
+				keep_unit_leaders = { 88149 88148 88168 88152 88155 78406 88166 77411 88156 92354 92355 88151 88153 }
+			}
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+				}
+				save_global_event_target_as = RSS_right
+			}
+			event_target:RSS_esser = {
+				custom_effect_tooltip = lack_of_officers_rise_3_tt
+				hidden_effect = { lack_of_officers_rise = yes lack_of_officers_rise = yes lack_of_officers_rise = yes }
+				RSS_esser_coup_script = yes
+				every_unit_leader = { limit = { OR = { has_id = 77404 has_id = 77406 has_id = 92346 has_id = 92347 has_id = 92348 has_id = 92349 has_id = 92350 has_id = 92351 has_id = 92353 has_id = 92358 has_id = 92359 has_id = 92360 has_id = 88150 has_id = 77400 } } set_nationality = event_target:RSS_right }
+				respawn_che_RSS = yes			
+			}
+			event_target:RSS_right = {
+				every_unit_leader = { limit = { OR = { has_id = 88149 has_id = 88148 has_id = 88168 has_id = 88152 has_id = 88155 has_id = 78406 has_id = 88166 has_id = 77411 has_id = 88156 has_id = 92354 has_id = 92355 has_id = 88151 has_id = 88153 } } set_nationality = event_target:RSS_esser }
+				load_focus_tree = Russia_Russian_state_Kolchak_focus
+				create_country_leader = { name = "Voennoe Pravitelstvo" desc = "" picture = "gfx/leaders/SIB/Portrait_Directory.dds" expire = "1935.4.30" ideology = despotism_ideology traits = {  } }
+				if = {
+					limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism } } }
+					declare_war_on = {
+						target = RUS
+						type = annex_everything
+					}
+				}
+				every_state = {
+					limit = {
+						has_state_category = wasteland 
+						is_controlled_by = ROOT
+					}
+					teleport_armies = {
+						to_state = capital
+					}
+				}
+			}
+			clear_global_event_target = RSS_esser
+			clear_global_event_target = RSS_right
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.1.a
+		clear_variable = directory_balance
+	}
+	
+}
+#Возвращение Чернова
+country_event = {
+	id = rcw_rss_esser.2
+	title = rcw_rss_esser.2.t
+	desc = rcw_rss_esser.2.desc
+	picture = GFX_report_event_RSS_Chernov	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.2.a
+		set_country_flag = Viktor_Chernov_is_here
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.03
+		}
+		hidden_effect = {
+			retire_ideology_leader = social_liberalism
+			create_country_leader = { name = "Victor Chernov" desc = RUS_Victor_Chernov_DESC picture = "gfx/leaders/RUS/Portrait_Victor_Chernov.dds" expire = "1935.1.1" ideology = narodnichestvo traits = { soc_lib_reformer economist } }
+			if = {
+				limit = { NOT = { has_country_flag = RSS_left_dir_orenburg } }
+				create_country_leader = { name = "Nikolay Avksentev" desc = "RUS_Nikolay_Avksentev_DESC" picture = "gfx/leaders/RUS/Portrait_Nikolay_Avksentev.dds" expire = "1935.4.30" ideology = narodnichestvo traits = { editor leftist_freemason doctor_of_philosophy goal } }
+			}
+		}
+	}
+}
+#Авксентьев сложил полномочия 
+country_event = {
+	id = rcw_rss_esser.3
+	title = rcw_rss_esser.3.t
+	desc = rcw_rss_esser.3.desc
+	picture = GFX_report_event_rss_new_government	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.3.a
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.04
+		}
+		set_party_name = {
+			ideology = market_liberalism
+			long_name = RSS_esser_1_market_liberalism_party_long
+			name = RSS_esser_1_market_liberalism_party
+		}
+		hidden_effect = {
+			retire_ideology_leader = social_liberalism
+			create_country_leader = { name = "Nikolay Avksentev" desc = "RUS_Nikolay_Avksentev_DESC" picture = "gfx/leaders/RUS/Portrait_Nikolay_Avksentev.dds" expire = "1935.4.30" ideology = market_liberalism_ideology traits = { editor leftist_freemason doctor_of_philosophy goal } }
+		}
+	}
+}
+#Особая позиция редакции "Народа"
+country_event = {
+	id = rcw_rss_esser.4
+	title = rcw_rss_esser.4.t
+	desc = {
+		text = rcw_rss_esser.4.desc_Volski
+		trigger = { NOT = { any_country = { has_country_flag = Vladimir_Volsky_dead } } }
+	}
+	desc = {
+		text = rcw_rss_esser.4.desc_VolskiDead
+		trigger = { any_country = { has_country_flag = Vladimir_Volsky_dead } }
+	}
+	picture = GFX_report_event_RSS_paper	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.4.a
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.04
+		}
+		set_party_name = {
+			ideology = radical_socialism
+			long_name = RSS_esser_1_radical_socialism_party_long
+			name = RSS_esser_1_radical_socialism_party
+		}
+		set_party_name = {
+			ideology = social_liberalism
+			long_name = RSS_esser_1_social_liberalism_party_long
+			name = RSS_esser_1_social_liberalism_party
+		}
+		hidden_effect = {
+			if = { 
+				limit = { NOT = { any_country = { has_country_flag = Vladimir_Volsky_dead } } }
+				create_country_leader = { name = "Vladimir Volskiy" desc = "" picture = "gfx/leaders/RUS/Portrait_Vladimir_Volsky.dds" expire = "1937.10.4" ideology = agrarian_communism traits = { min_1_happy_amateur figurehead_president silent_workhorse } }
+			}			
+		}
+	}
+}
+#Главнокомандующий народной армией
+country_event = {
+	id = rcw_rss_esser.5
+	title = rcw_rss_esser.5.t	
+	desc = {
+		text = rcw_rss_esser.5.desc_mahin
+		trigger = { 
+			AND = {
+				has_unit_leader = 88166 
+				NOT = { has_unit_leader = 92354 }
+			}
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.5.desc_gaida
+		trigger = { 
+			AND = {
+				has_unit_leader = 92354
+				NOT = { has_unit_leader = 88166 }
+			}
+		} 
+	}
+	desc = {
+		text = rcw_rss_esser.5.desc_no
+		trigger = { 
+			AND = {
+				NOT = { has_unit_leader = 92354 }
+				NOT = { has_unit_leader = 88166 }
+			}
+		} 
+	}
+	desc = {
+		text = rcw_rss_esser.5.desc_both
+		trigger = { 
+			AND = {
+				has_unit_leader = 92354
+				has_unit_leader = 88166
+			}
+		} 
+	}
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			add_dynamic_modifier = { modifier = RSS_army_chief_dm }
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.5.a
+		add_ideas = { Vasiliy_Boldyrev_army_chief }
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		every_unit_leader = { limit = { has_id = 88152 	} promote_leader = yes }
+	}
+	option = {
+		name = rcw_rss_esser.5.b
+		trigger = { has_unit_leader = 88166 }
+		add_war_support = 0.03
+		add_ideas = { Fyodor_Makhin_army_chief }
+		every_unit_leader = { limit = { has_id = 88166 	} promote_leader = yes }
+	}
+	option = {
+		name = rcw_rss_esser.5.c
+		trigger = { has_unit_leader = 92354 }
+		add_ideas = { Radola_Gaida_army_chief }
+		every_unit_leader = { limit = { has_id = 92354 	} promote_leader = yes }
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 2
+		}
+	}
+} 
+#Перепутье народничества
+country_event = {
+	id = rcw_rss_esser.6
+	title = rcw_rss_esser.6.t	
+	desc = rcw_rss_esser.6.desc
+	
+	picture = GFX_report_event_RSS_crossroads	
+	is_triggered_only = yes
+	
+	immediate = { 
+		set_country_flag = RSS_esser_party_struggle_is_on 
+		hidden_effect = {
+			add_dynamic_modifier = { modifier = RSS_party_antagonism_dynamic_modifier }
+			RSS_update_party_antagonism = yes
+		}
+		set_variable = {
+			var = RSS_party_antagonism
+			value = 2
+		}
+		set_variable = {
+			var = RSS_patry_activity_count
+			value = 0
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.6.a
+		set_country_flag = RSS_esser_choose_market_lib_side
+		hidden_effect = {
+			random_list = {			#Опозиция максималистов
+				50 = { activate_mission = rad_soc_programm_against_right_ai_mission }
+				50 = { activate_mission = rad_soc_programm_against_moderate_ai_mission }
+			}
+			moderate_makes_move_ai = yes #Оппозиция умеренных
+		} 
+	}
+	option = {
+		name = rcw_rss_esser.6.b
+		set_country_flag = RSS_esser_choose_rad_soc_side
+		hidden_effect = {
+			random_list = {			#Опозиция правых
+				50 = { activate_mission = market_lib_programm_against_maximalist_ai_mission }
+				50 = { activate_mission = market_lib_programm_against_moderate_ai_mission }
+			}
+			moderate_makes_move_ai = yes #Оппозиция умеренных 
+		}
+		
+	}
+	option = {
+		name = rcw_rss_esser.6.c
+		set_country_flag = RSS_esser_choose_soc_lib_side
+		hidden_effect = {
+			random_list = {			#Опозиция максималистов
+				50 = { activate_mission = rad_soc_programm_against_right_ai_mission }
+				50 = { activate_mission = rad_soc_programm_against_moderate_ai_mission }
+			}
+			random_list = {			#Опозиция правых
+				50 = { activate_mission = market_lib_programm_against_maximalist_ai_mission }
+				50 = { activate_mission = market_lib_programm_against_moderate_ai_mission }
+			}
+		}
+		
+	}
+} 
+#Вопрос государтсвенной власти
+country_event = {
+	id = rcw_rss_esser.7
+	title = rcw_rss_esser.7.t	
+	desc = {
+		text = rcw_rss_esser.7.desc_rad_soc
+		trigger = { has_country_flag = rad_cos_ultimatum }
+	}
+	desc = {
+		text = rcw_rss_esser.7.desc_market_lib
+		trigger = { has_country_flag = market_lib_ultimatum }
+	}
+	picture = GFX_report_event_RSS_government	
+	is_triggered_only = yes
+	
+	immediate = { 
+		clr_country_flag = RSS_esser_party_struggle_is_on 
+		hidden_effect = {
+			remove_dynamic_modifier = { modifier = RSS_party_antagonism_dynamic_modifier }
+		}
+		
+	}
+	
+	option = {
+		name = rcw_rss_esser.7.a
+		trigger = { has_country_flag = rad_cos_ultimatum }
+		clr_country_flag = rad_cos_ultimatum
+		add_stability = -0.1
+		set_politics = {
+			ruling_party = radical_socialism
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.07
+		}
+		set_party_name = {
+			ideology = social_liberalism
+			long_name = RSS_esser_social_liberalism_party_lose_long
+			name = RSS_esser_social_liberalism_party_lose
+		}
+	}
+	option = {
+		name = rcw_rss_esser.7.b
+		trigger = { has_country_flag = market_lib_ultimatum }
+		clr_country_flag = market_lib_ultimatum
+		add_stability = -0.1
+		set_politics = {
+			ruling_party = market_liberalism
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.07
+		}
+		set_party_name = {
+			ideology = social_liberalism
+			long_name = RSS_esser_social_liberalism_party_lose_long
+			name = RSS_esser_social_liberalism_party_lose
+		}
+	}
+} 
+#Ответ на продовольственный шантаж
+country_event = {
+	id = rcw_rss_esser.8
+	title = rcw_rss_esser.8.t	
+	desc = {
+		text = rcw_rss_esser.8.desc_good
+		trigger = { has_country_flag = bread_good_answer }
+	}
+	desc = {
+		text = rcw_rss_esser.8.desc_middle
+		trigger = { has_country_flag = bread_middle_answer }
+	}
+	desc = {
+		text = rcw_rss_esser.8.desc_bad
+		trigger = { has_country_flag = bread_bad_answer }
+	}
+	picture = GFX_report_event_cca_bread	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.8.a
+		if = { limit = { has_country_flag = bread_good_answer }
+			if = {
+				limit = { has_country_flag = rad_soc_did_blackmail }
+				clr_country_flag = rad_soc_did_blackmail
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.07
+				}
+			}
+			if = {
+				limit = { has_country_flag = market_lib_did_blackmail }
+				clr_country_flag = market_lib_did_blackmail
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.07
+				}
+			}
+			clr_country_flag = bread_good_answer
+		}
+		else_if = { limit = { has_country_flag = bread_middle_answer }
+			if = {
+				limit = { has_country_flag = rad_soc_did_blackmail }
+				clr_country_flag = rad_soc_did_blackmail
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.04
+				}
+			}
+			if = {
+				limit = { has_country_flag = market_lib_did_blackmail }
+				clr_country_flag = market_lib_did_blackmail
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.04
+				}
+			}
+			clr_country_flag = bread_good_answer
+			random_list = {
+				60 = {}
+				40 = { 
+					custom_effect_tooltip = bread_rise_up
+					rise_foodstuffs_supply_crisis = yes 
+				}
+			}
+			clr_country_flag = bread_middle_answer
+		}
+		else_if = { limit = { has_country_flag = bread_bad_answer }
+			add_stability = -0.05
+			rise_foodstuffs_supply_crisis = yes
+			custom_effect_tooltip = bread_rise_up
+			clr_country_flag = bread_bad_answer
+		}
+	}
+} 
+#Шантаж представителей СТК
+country_event = {
+	id = rcw_rss_esser.9
+	title = rcw_rss_esser.9.t	
+	desc = {
+		text = rcw_rss_esser.9.desc_rad_soc
+		trigger = { has_country_flag = rad_soc_did_blackmail }
+	}
+	desc = {
+		text = rcw_rss_esser.9.desc_market_lib
+		trigger = { has_country_flag = market_lib_did_blackmail }
+	}
+	picture = GFX_report_event_cca_bread	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.9.a
+		if = {
+			limit = { has_country_flag = rad_soc_did_blackmail }
+			clr_country_flag = rad_soc_did_blackmail
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.07
+			}
+		}
+		if = {
+			limit = { has_country_flag = market_lib_did_blackmail }
+			clr_country_flag = market_lib_did_blackmail
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.07
+			}
+		}
+	}
+	option = {
+		name = rcw_rss_esser.9.b
+		if = {
+			limit = { has_country_flag = rad_soc_did_blackmail }
+			clr_country_flag = rad_soc_did_blackmail
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.04
+			}
+		}
+		if = {
+			limit = { has_country_flag = market_lib_did_blackmail }
+			clr_country_flag = market_lib_did_blackmail
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.04
+			}
+		}
+		random_list = {
+			60 = {}
+			40 = { 
+				custom_effect_tooltip = bread_rise_up
+				rise_foodstuffs_supply_crisis = yes 
+			}
+		}
+	}
+	option = {
+		name = rcw_rss_esser.9.c
+		add_stability = -0.05
+		rise_foodstuffs_supply_crisis = yes
+		custom_effect_tooltip = bread_rise_up
+	}
+} 
+#Неслучайная встреча 
+country_event = {
+	id = rcw_rss_esser.10
+	title = rcw_rss_esser.10.t	
+	desc = {
+		text = rcw_rss_esser.10.desc_mahin
+		trigger = { has_idea = Fyodor_Makhin_army_chief }
+	}
+	desc = {
+		text = rcw_rss_esser.10.desc_gaida
+		trigger = { has_idea = Radola_Gaida_army_chief }
+	}
+	desc = {
+		text = rcw_rss_esser.10.desc_boldyrev
+		trigger = { has_idea = Vasiliy_Boldyrev_army_chief }
+	}
+	picture = GFX_report_event_RSS_supreme_commander
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.10.a
+		trigger = { has_country_flag = rad_soc_did_conversation }
+		if = {
+			limit = { has_idea = Fyodor_Makhin_army_chief }
+			random_list = {
+				25 = { country_event = { id = rcw_rss_esser.11 } }
+				75 = { country_event = { id = rcw_rss_esser.12 } }
+			}
+		}
+		else_if = {
+			limit = { has_idea = Radola_Gaida_army_chief }
+			random_list = {
+				70 = { country_event = { id = rcw_rss_esser.11 } }
+				30 = { country_event = { id = rcw_rss_esser.12 } }
+			}
+		}
+		else_if = {
+			limit = { has_idea = Vasiliy_Boldyrev_army_chief }
+			random_list = {
+				10 = { country_event = { id = rcw_rss_esser.11 } }
+				90 = { country_event = { id = rcw_rss_esser.12 } }
+			}
+		}
+	}
+	option = {
+		name = rcw_rss_esser.10.b
+		trigger = { has_country_flag = market_lib_did_conversation }
+		if = {
+			limit = { has_idea = Fyodor_Makhin_army_chief }
+			random_list = {
+				25 = { country_event = { id = rcw_rss_esser.28 } }
+				75 = { country_event = { id = rcw_rss_esser.12 } }
+			}
+		}
+		else_if = {
+			limit = { has_idea = Radola_Gaida_army_chief }
+			random_list = {
+				70 = { country_event = { id = rcw_rss_esser.28 } }
+				30 = { country_event = { id = rcw_rss_esser.12 } }
+			}
+		}
+		else_if = {
+			limit = { has_idea = Vasiliy_Boldyrev_army_chief }
+			random_list = {
+				60 = { country_event = { id = rcw_rss_esser.28 } }
+				40 = { country_event = { id = rcw_rss_esser.12 } }
+			}
+		}
+	}
+	option = {
+		name = rcw_rss_esser.10.c
+		random_list = {
+			15 = { country_event = { id = rcw_rss_esser.12 } }
+			75 = {}
+		}
+	}
+} 
+#Главнокомандующий наш (Максималисты)
+country_event = {
+	id = rcw_rss_esser.11
+	title = rcw_rss_esser.11.t	
+	desc = rcw_rss_esser.11.desc
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.11.a
+		if = {
+			limit = { has_idea = Fyodor_Makhin_army_chief }
+			set_country_flag = rad_soc_Mahin_army_chief_recruted
+		}
+		else_if = {
+			limit = { has_idea = Radola_Gaida_army_chief }
+			set_country_flag = rad_soc_Gaida_army_chief_recruted
+		}
+		else_if = {
+			limit = { has_idea = Vasiliy_Boldyrev_army_chief }
+			set_country_flag = rad_soc_Boldyrev_army_chief_recruted
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.03
+			}
+		}
+	}
+
+} 
+#Главнокомандующий в ярости
+country_event = {
+	id = rcw_rss_esser.12
+	title = rcw_rss_esser.12.t	
+	desc = rcw_rss_esser.12.desc
+	picture = GFX_report_event_RSS_supreme_commander
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.12.a
+		random_list = {
+			60 = { country_event = { id = rcw_rss_esser.13 } }
+			40 = { country_event = { id = rcw_rss_esser.14 } }
+		}
+	}
+	option = {
+		name = rcw_rss_esser.12.b
+		country_event = { id = rcw_rss_esser.14 } 
+	}
+} 
+#Убийство главнокомандующего
+country_event = {
+	id = rcw_rss_esser.13
+	title = rcw_rss_esser.13.t	
+	desc = {
+		text = rcw_rss_esser.13.desc_mahin
+		trigger = { has_idea = Fyodor_Makhin_army_chief }
+	}
+	desc = {
+		text = rcw_rss_esser.13.desc_gaida
+		trigger = { has_idea = Radola_Gaida_army_chief }
+	}
+	desc = {
+		text = rcw_rss_esser.13.desc_boldyrev
+		trigger = { has_idea = Vasiliy_Boldyrev_army_chief }
+	}
+	picture = GFX_report_event_RSS_supreme_commander
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.13.a
+		add_war_support = -0.05
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 1
+		}	
+		if = {
+			limit = { has_idea = Fyodor_Makhin_army_chief }
+			set_country_flag = Fyodor_Makhin_dead
+			remove_ideas = { Fyodor_Makhin_army_chief }
+			every_unit_leader = { limit = { has_id = 88166 } remove_unit_leader = yes }
+		}
+		else_if = {
+			limit = { has_idea = Radola_Gaida_army_chief }
+			set_country_flag = Radola_Gaida_dead
+			remove_ideas = { Radola_Gaida_army_chief }
+			every_unit_leader = { limit = { has_id = 92354 } remove_unit_leader = yes }
+		}
+		else_if = {
+			limit = { has_idea = Vasiliy_Boldyrev_army_chief }
+			set_country_flag = Vasiliy_Boldyrev_dead
+			remove_ideas = { Vasiliy_Boldyrev_army_chief }
+			every_unit_leader = { limit = { has_id = 88152 } remove_unit_leader = yes }
+		}
+		country_event = { id = rcw_rss_esser.15 }
+	}
+}
+#Неудачная вербовка
+country_event = {
+	id = rcw_rss_esser.14
+	title = rcw_rss_esser.14.t	
+	desc = {
+		text = rcw_rss_esser.14.desc_rad_soc
+		trigger = { has_country_flag = rad_soc_did_conversation }
+	}
+	desc = {
+		text = rcw_rss_esser.14.desc_market_lib
+		trigger = { has_country_flag = market_lib_did_conversation }
+	}
+	picture = GFX_report_event_RSS_supreme_commander
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.14.a
+		trigger = { has_country_flag = rad_soc_did_conversation }
+		add_stability = -0.05
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.03
+		}
+		set_country_flag = rad_soc_failed_conversation
+	}
+	option = {
+		name = rcw_rss_esser.14.b
+		trigger = { has_country_flag = market_lib_did_conversation }
+		add_stability = -0.05
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.03
+		}
+		set_country_flag = market_lib_failed_conversation
+	}
+}
+#Обезглавленая армия
+country_event = {
+	id = rcw_rss_esser.15
+	title = rcw_rss_esser.15.t	
+	desc = rcw_rss_esser.15.desc
+	picture = GFX_report_event_RSS_supreme_commander
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.15.a #Болдырев
+		trigger = { has_unit_leader = 88152 }
+		add_ideas = { Vasiliy_Boldyrev_army_chief }
+	}
+	option = {
+		name = rcw_rss_esser.15.b #Гайда
+		trigger = { has_unit_leader = 92354 }
+		add_ideas = { Radola_Gaida_army_chief }
+		every_unit_leader = { limit = { has_id = 92354 	} promote_leader = yes }
+	}
+	option = {
+		name = rcw_rss_esser.15.c #Махин
+		trigger = { 
+			AND = {
+				has_unit_leader = 88166 
+				NOT = { has_country_flag = Mahin_protests_error }
+			}
+		}
+		add_ideas = { Fyodor_Makhin_army_chief }
+		every_unit_leader = { limit = { has_id = 88166 	} promote_leader = yes }
+	}
+	option = {
+		name = rcw_rss_esser.15.d #Пепеляев
+		trigger = { has_unit_leader = 92347 }
+		add_ideas = { Anatoly_Pepelyaev_army_chief }
+		every_unit_leader = { limit = { has_id = 92347 	} promote_leader = yes }
+	}
+}
+#Протест командования 
+country_event = {
+	id = rcw_rss_esser.16
+	title = rcw_rss_esser.16.t	
+	desc = rcw_rss_esser.16.desc
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.16.a 
+		add_political_power = -40
+	}
+	option = {
+		name = rcw_rss_esser.16.b 
+		add_command_power = -25
+		country_event = { id = rcw_rss_esser.15 }
+		set_country_flag = Mahin_protests_error
+		every_unit_leader = { limit = { has_id = 88166 	} demote_leader = yes }
+	}
+}
+#Дело военной организации народовцев 
+country_event = {
+	id = rcw_rss_esser.17
+	title = rcw_rss_esser.17.t	
+	desc = rcw_rss_esser.17.desc
+	picture = GFX_report_event_RSS_arrest
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { RSS_party_antagonism > 6 } }
+				country_event = { id = rcw_rss_esser.29 days = 3 }
+			}
+			else_if = {
+				limit = { 
+					check_variable = { RSS_party_antagonism < 7 } 
+					OR = {
+						AND = {
+								has_country_flag = rad_soc_Mahin_army_chief_recruted
+								has_idea = Fyodor_Makhin_army_chief
+							}
+							AND = {
+								has_country_flag = rad_soc_Gaida_army_chief_recruted
+								has_idea = Radola_Gaida_army_chief
+							}
+							AND = {
+								has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+								has_idea = Vasiliy_Boldyrev_army_chief
+							}
+					}
+				}
+				country_event = { id = rcw_rss_esser.30 days = 3 }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.17.a 
+		add_political_power = -30
+		add_stability = -0.05
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.07
+		}
+		remove_ideas_with_trait = radical_socialist_counselor
+		set_country_flag = rad_soc_banned
+		add_ideas = RSS_ban_left
+	}
+	option = {
+		name = rcw_rss_esser.17.b 
+		add_political_power = -10
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.03
+		}
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		clr_country_flag = rad_soc_prepared_warehouse
+		clr_country_flag = rad_soc_created_secret_web
+	}
+	option = {
+		name = rcw_rss_esser.17.c
+		add_political_power = -20
+		retire_ideology_leader = radical_socialism
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.03
+		}
+		clr_country_flag = rad_soc_prepared_warehouse
+		clr_country_flag = rad_soc_created_secret_web
+	}
+}
+#Переговоры с партией народной свободы
+country_event = {
+	id = rcw_rss_esser.18
+	title = rcw_rss_esser.18.t	
+	desc = rcw_rss_esser.18.desc
+	picture = GFX_report_event_och_direktoria	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.18.a 
+		set_country_flag = market_lib_coalition_with_cadets
+	}
+	
+}
+#Программа демократического меньшинства
+country_event = {
+	id = rcw_rss_esser.19
+	title = rcw_rss_esser.19.t	
+	desc = rcw_rss_esser.19.desc
+	picture = GFX_report_event_och_direktoria	
+	is_triggered_only = yes
+	
+	immediate = { set_country_flag = RSS_cadets_esser_united }
+	
+	option = {
+		name = rcw_rss_esser.19.a 
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.05
+		}
+	}
+	option = {
+		name = rcw_rss_esser.19.b 
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+	}	
+}
+#Представитель коалиции 
+country_event = {
+	id = rcw_rss_esser.20
+	title = rcw_rss_esser.20.t	
+	desc = rcw_rss_esser.20.desc
+	picture = GFX_report_event_och_direktoria
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.20.a 
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+	}
+	option = {
+		name = rcw_rss_esser.20.b 
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+		create_country_leader = { name = "Vladimir Vinogradov" desc = "RUS_Vladimir_Vinogradov_DESC" picture = "gfx/leaders/RUS/Portrait_Vladimir_Vinogradov.dds" expire = "1932.12.03" ideology = market_liberalism_ideology traits = { silent_workhorse } }
+	}
+	option = {
+		name = rcw_rss_esser.20.c 
+		trigger = { has_country_flag = Sergey_Maslov_is_here }
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+		create_country_leader = { name = "Sergey Maslov" desc = "RUS_Sergey_Maslov_DESC" picture = "gfx/leaders/RUS/Portrait_Sergey_Maslov.dds" expire = "1932.12.03" ideology = market_liberalism_ideology traits = { ideological_crusader economist editor } }
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { party_popularity_100@market_liberalism < 15 } }
+				country_event = { id = rcw_rss_esser.21 }
+			}
+		}
+	}	
+}
+#Маслов требует активных действий
+country_event = {
+	id = rcw_rss_esser.21
+	title = rcw_rss_esser.21.t	
+	desc = rcw_rss_esser.21.desc
+	picture = GFX_report_event_och_direktoria	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.21.a 
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.05
+		}
+		add_stability = -0.04
+	}	
+}
+#Дело военной организации правых 
+country_event = {
+	id = rcw_rss_esser.22
+	title = rcw_rss_esser.22.t	
+	desc = rcw_rss_esser.22.desc
+	picture = GFX_report_event_RSS_arrest
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { RSS_party_antagonism > 6 } }
+				country_event = { id = rcw_rss_esser.29 days = 3 }
+			}
+			else_if = {
+				limit = { 
+					check_variable = { RSS_party_antagonism < 7 } 
+					OR = {
+						AND = {
+							has_country_flag = market_lib_Mahin_army_chief_recruted
+							has_idea = Fyodor_Makhin_army_chief
+						}
+						AND = {
+							has_country_flag = market_lib_Gaida_army_chief_recruted
+							has_idea = Radola_Gaida_army_chief
+						}
+						AND = {
+							has_country_flag = market_lib_Boldyrev_army_chief_recruted
+							has_idea = Vasiliy_Boldyrev_army_chief
+						}
+					}
+				}
+				country_event = { id = rcw_rss_esser.30 days = 3 }
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.22.a 
+		add_political_power = -30
+		add_stability = -0.05
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.07
+		}
+		remove_ideas_with_trait = market_liberal_counselor
+		set_country_flag = market_lib_banned
+		add_ideas = RSS_ban_right
+	}
+	option = {
+		name = rcw_rss_esser.22.b 
+		add_political_power = -10
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.03
+		}
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		clr_country_flag = market_lib_created_secret_web 
+		clr_country_flag = market_lib_prepared_warehouse
+	}
+	option = {
+		name = rcw_rss_esser.22.c
+		add_political_power = -20
+		retire_ideology_leader = market_liberalism
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.03
+		}
+		clr_country_flag = market_lib_created_secret_web
+		clr_country_flag = market_lib_prepared_warehouse
+	}
+}
+#Вооруженная демонстрация 
+country_event = {
+	id = rcw_rss_esser.23
+	title = rcw_rss_esser.23.t	
+	desc = {
+		text = rcw_rss_esser.23.desc_rad_soc
+		trigger = { has_country_flag = rad_soc_arrest_gov }
+	}
+	desc = {
+		text = rcw_rss_esser.23.desc_market_lib
+		trigger = { has_country_flag = market_lib_arrest_gov }
+	}
+	picture = GFX_report_event_RSS_demonstration	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.23.a 
+		trigger = { has_country_flag = rad_soc_arrest_gov }
+		set_politics = {
+			ruling_party = radical_socialism
+		}
+		remove_ideas_with_trait = social_liberal_counselor
+		clr_country_flag = RSS_esser_party_struggle_is_on
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.05
+		}
+		add_stability = -0.04
+	}
+	option = {
+		name = rcw_rss_esser.23.b 
+		trigger = { has_country_flag = market_lib_arrest_gov }
+		set_politics = {
+			ruling_party = market_liberalism
+		}
+		remove_ideas_with_trait = social_liberal_counselor
+		clr_country_flag = RSS_esser_party_struggle_is_on
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.05
+		}
+		add_stability = -0.04
+	}
+}
+#Результат обысков (Максималисты)
+country_event = {
+	id = rcw_rss_esser.24
+	title = rcw_rss_esser.24.t	
+	desc = {
+		text = rcw_rss_esser.24.desc_1
+		trigger = { has_country_flag = RSS_result_1 }
+	}
+	desc = {
+		text = rcw_rss_esser.24.desc_2
+		trigger = { has_country_flag = RSS_result_2 }
+	}
+	picture = GFX_report_event_RSS_arrest	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.24.a 
+		trigger = { has_country_flag = RSS_result_1 }
+		clr_country_flag = RSS_result_1
+		add_stability = -0.04
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.04
+		}
+	}
+	option = {
+		name = rcw_rss_esser.24.b 
+		trigger = { has_country_flag = RSS_result_2 }
+		clr_country_flag = RSS_result_2
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		set_country_flag = can_arest_rad_soc_opposition
+	}
+}
+#Результат обысков (правые)
+country_event = {
+	id = rcw_rss_esser.25
+	title = rcw_rss_esser.25.t	
+	desc = {
+		text = rcw_rss_esser.25.desc_1
+		trigger = { has_country_flag = RSS_result_1 }
+	}
+	desc = {
+		text = rcw_rss_esser.25.desc_2
+		trigger = { has_country_flag = RSS_result_2 }
+	}
+	picture = GFX_report_event_RSS_arrest
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.25.a 
+		trigger = { has_country_flag = RSS_result_1 }
+		clr_country_flag = RSS_result_1
+		add_stability = -0.04
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.04
+		}
+	}
+	option = {
+		name = rcw_rss_esser.25.b 
+		trigger = { has_country_flag = RSS_result_2 }
+		clr_country_flag = RSS_result_2
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		set_country_flag = can_arest_market_lib_opposition
+	}
+}
+#Арест террористов  (Максималисты)
+country_event = {
+	id = rcw_rss_esser.26
+	title = rcw_rss_esser.26.t	
+	desc = rcw_rss_esser.26.desc
+	picture = GFX_report_event_RSS_arrest
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.26.a 
+		set_country_flag = rad_soc_banned
+		add_ideas = RSS_ban_left
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.07
+		}
+	}	
+}
+#Арест террористов  (Правые)
+country_event = {
+	id = rcw_rss_esser.27
+	title = rcw_rss_esser.27.t	
+	desc = rcw_rss_esser.27.desc
+	picture = GFX_report_event_RSS_arrest
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.27.a 
+		set_country_flag = market_lib_banned
+		add_ideas = RSS_ban_right
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.07
+		}
+	}	
+}
+#Главнокомандующий наш (Правые)
+country_event = {
+	id = rcw_rss_esser.28
+	title = rcw_rss_esser.28.t	
+	desc = rcw_rss_esser.28.desc
+	picture = GFX_report_event_RSS_supreme_commander
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.28.a
+		if = {
+			limit = { has_idea = Fyodor_Makhin_army_chief }
+			set_country_flag = market_lib_Mahin_army_chief_recruted
+		}
+		else_if = {
+			limit = { has_idea = Radola_Gaida_army_chief }
+			set_country_flag = market_lib_Gaida_army_chief_recruted
+		}
+		else_if = {
+			limit = { has_idea = Vasiliy_Boldyrev_army_chief }
+			set_country_flag = market_lib_Boldyrev_army_chief_recruted
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.03
+			}
+		}
+	}
+
+} 
+#Главнокомандующий не подчиняется 
+country_event = {
+	id = rcw_rss_esser.29
+	title = rcw_rss_esser.29.t	
+	desc = rcw_rss_esser.29.desc
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.29.a
+		custom_effect_tooltip = event29_a
+		hidden_effect = {
+			if = { #максималисты
+				limit = {
+					check_variable = { party_popularity_100@radical_socialism > 25 }
+					OR = {
+						AND = {
+							has_country_flag = rad_soc_Mahin_army_chief_recruted
+							has_idea = Fyodor_Makhin_army_chief
+						}
+						AND = {
+							has_country_flag = rad_soc_Gaida_army_chief_recruted
+							has_idea = Radola_Gaida_army_chief
+						}
+						AND = {
+							has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+							has_idea = Vasiliy_Boldyrev_army_chief
+						}
+					}
+				}
+				set_country_flag = rad_soc_uprising
+				country_event = { id = rcw_rss_esser.32 }
+			}
+			else_if = { #правые
+				limit = {
+					check_variable = { party_popularity_100@market_liberalism > 25 }
+					OR = {
+						AND = {
+							has_country_flag = market_lib_Mahin_army_chief_recruted
+							has_idea = Fyodor_Makhin_army_chief
+						}
+						AND = {
+							has_country_flag = market_lib_Gaida_army_chief_recruted
+							has_idea = Radola_Gaida_army_chief
+						}
+						AND = {
+							has_country_flag = market_lib_Boldyrev_army_chief_recruted
+							has_idea = Vasiliy_Boldyrev_army_chief
+						}
+					}
+				}
+				set_country_flag = market_lib_uprising
+				country_event = { id = rcw_rss_esser.32 }
+			}
+			else = { country_event = { id = rcw_rss_esser.31 } }
+		}
+	}
+	option = {
+		name = rcw_rss_esser.29.b
+		custom_effect_tooltip = event29_b
+		hidden_effect = {
+			if = {
+				limit = { check_variable = { RSS_army_independence > 7 } }
+				country_event = { id = rcw_rss_eser_rep.17 }
+			}
+			else_if = { 
+				limit = { check_variable = { RSS_army_independence < 8 } }
+				add_to_variable = {
+					var = RSS_army_independence
+					value = 2
+				}
+				country_event = { id = rcw_rss_esser.43 }
+			}
+		}
+	}
+
+} 
+#Бегство главнокомандующего 
+country_event = {
+	id = rcw_rss_esser.30
+	title = rcw_rss_esser.30.t	
+	desc = rcw_rss_esser.30.desc
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.30.a
+		if = {
+			limit = { 
+				OR = { 
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Fyodor_Makhin_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Radola_Gaida_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 92354 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Vasiliy_Boldyrev_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88152 } } set_nationality = REB }
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = -1
+		}
+		if = {
+			limit = { NOT = { has_country_flag = did_clean_officers } }
+			set_country_flag = did_clean_officers
+		}
+		add_timed_idea = {
+			idea = officers_purged
+			days = 35
+		}
+		country_event = { id = rss_eser_tech.5 days = 35 }
+		add_popularity = {
+			ideology = fascism
+			popularity = -0.04
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -0.04
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.04
+		}
+	}
+	option = {
+		name = rcw_rss_esser.30.b
+		if = {
+			limit = { 
+				OR = { 
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Fyodor_Makhin_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Radola_Gaida_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 92354 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Vasiliy_Boldyrev_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88152 } } set_nationality = REB }
+		}
+		add_political_power = -60
+		add_to_variable = {
+			var = RSS_army_independence
+			value = -1
+		}
+	}
+
+} 
+#Преступники бежали
+country_event = {
+	id = rcw_rss_esser.31
+	title = rcw_rss_esser.31.t	
+	desc = rcw_rss_esser.31.desc
+	picture = GFX_report_event_RSS_supreme_commander		
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.31.a
+		add_political_power = -20
+	}
+}
+#Восстание боевой организации
+country_event = {
+	id = rcw_rss_esser.32
+	title = rcw_rss_esser.32.t	
+	desc = rcw_rss_esser.32.desc
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.32.a
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 1
+		}
+		RSS_civil_war_script = yes
+	}
+	option = {
+		name = rcw_rss_esser.32.b
+		if = {
+			limit = { has_country_flag = rad_soc_uprising }
+			set_country_flag = rad_soc_arrest_gov
+			country_event = { id = rcw_rss_esser.23 }
+		}
+		else_if = {
+			limit = { has_country_flag = market_lib_uprising }
+			set_country_flag = market_lib_arrest_gov
+			country_event = { id = rcw_rss_esser.23 }
+		}
+	}
+	option = {
+		name = rcw_rss_esser.32.c
+		country_event = { id = rcw_rss_esser.33 days = 1}
+	}
+}
+#Положение в столице
+country_event = {
+	id = rcw_rss_esser.33
+	title = rcw_rss_esser.33.t	
+	desc = rcw_rss_esser.33.desc
+	picture = GFX_report_event_RSS_rebellion	
+	is_triggered_only = yes
+	
+	immediate = {
+		set_variable = {
+			var = RSS_capital_fight_var
+			value = 5
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.33.a
+		add_to_variable = {
+			var = RSS_police_power
+			value = 1
+		}
+		country_event = { id = rcw_rss_esser.34 days = 1 }
+	}
+	option = {
+		name = rcw_rss_esser.33.b
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 1
+		}
+		country_event = { id = rcw_rss_esser.34 days = 1 }
+	}
+	option = {
+		name = rcw_rss_esser.33.b
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = 1
+		}
+		country_event = { id = rcw_rss_esser.34 days = 1 }
+	}
+}
+#Наша тактика
+country_event = {
+	id = rcw_rss_esser.34
+	title = rcw_rss_esser.34.t	
+	desc = rcw_rss_esser.34.desc
+	picture = GFX_report_event_RSS_rebellion	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.34.a
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = 2
+		}
+		country_event = { id = rcw_rss_esser.35 days = 1 }
+	}
+	option = {
+		name = rcw_rss_esser.34.b
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = -1
+		}
+		country_event = { id = rcw_rss_esser.35 days = 1 }
+	}
+}
+#Железная дорога 
+country_event = {
+	id = rcw_rss_esser.35
+	title = rcw_rss_esser.35.t	
+	desc = rcw_rss_esser.35.desc
+	picture = GFX_report_event_RSS_rebellion	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.35.a
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = 2
+		}
+		country_event = { id = rcw_rss_esser.36 days = 1 }
+	}
+	option = {
+		name = rcw_rss_esser.35.b
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = -1
+		}
+		capital_scope = {
+			damage_building = {
+				type = infrastructure
+				damage = 0.2
+			}
+		}
+		country_event = { id = rcw_rss_esser.36 days = 1 }
+	}
+}
+#Провокации на улицах 
+country_event = {
+	id = rcw_rss_esser.36
+	title = rcw_rss_esser.36.t	
+	desc = rcw_rss_esser.36.desc
+	picture = GFX_report_event_RSS_rebellion	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.36.a
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = 1
+		}
+		country_event = { id = rcw_rss_esser.37 days = 1 }
+	}
+	option = {
+		name = rcw_rss_esser.36.b
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = 2
+		}
+		country_event = { id = rcw_rss_esser.37 days = 1 }
+	}
+	option = {
+		name = rcw_rss_esser.36.c
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = -1
+		}
+		add_stability = -0.05
+		country_event = { id = rcw_rss_esser.37 days = 1 }
+	}
+}
+#Дом 
+country_event = {
+	id = rcw_rss_esser.37
+	title = rcw_rss_esser.37.t	
+	desc = rcw_rss_esser.37.desc
+	picture = GFX_report_event_RSS_rebellion	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.37.a
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = 1
+		}
+		if = {
+			limit = { check_variable = { RSS_capital_fight_var < 3 } }
+			country_event = { id = rcw_rss_esser.38 }
+		}
+		else_if = {
+			limit = { check_variable = { RSS_capital_fight_var > 7 } }
+			country_event = { id = rcw_rss_esser.38 }
+		}
+		else = {
+			RSS_civil_war_script = yes
+		}
+	}
+	option = {
+		name = rcw_rss_esser.37.b
+		add_to_variable = {
+			var = RSS_capital_fight_var
+			value = -1
+		}
+		add_stability = -0.03
+		capital_scope = {
+			damage_building = {
+				type = infrastructure
+				damage = 0.1
+			}
+		}
+		if = {
+			limit = { check_variable = { RSS_capital_fight_var < 3 } }
+			country_event = { id = rcw_rss_esser.38 }
+		}
+		else_if = {
+			limit = { check_variable = { RSS_capital_fight_var > 7 } }
+			country_event = { id = rcw_rss_esser.38 }
+		}
+		else = {
+			RSS_civil_war_script = yes
+		}
+	}
+}
+#Восстание остановлено 
+country_event = {
+	id = rcw_rss_esser.38
+	title = rcw_rss_esser.38.t	
+	desc = rcw_rss_esser.38.desc
+	picture = GFX_report_event_RSS_rebellion	
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = rcw_rss_esser.38.a
+		add_political_power = 40
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+		if = {
+			limit = { has_country_flag = rad_soc_uprising }
+			set_country_flag = rad_soc_banned
+			add_ideas = RSS_ban_left
+		}
+		else_if = {
+			limit = { has_country_flag = market_lib_uprising }
+			set_country_flag = market_lib_banned
+			add_ideas = RSS_ban_right
+		}
+	}
+
+}
+#Дерево эсеров победившим эсерам 
+country_event = {
+	id = rcw_rss_esser.39
+	title = rcw_rss_esser.39.t	
+	desc = rcw_rss_esser.39.desc
+	picture = GFX_report_event_RSS_right_turn
+	fire_only_once = yes 
+	
+	trigger = {
+		original_tag = RSS
+		has_civil_war = no
+		has_country_flag = RSS_rebel_esers
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	immediate = {drop_cosmetic_tag = yes}
+	
+	option = {
+		name = rcw_rss_esser.39.a
+		load_focus_tree = { tree = Russia_Russian_state_left_directory_focus keep_completed = yes }
+		set_cosmetic_tag = RSS_esser
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Раскрытие военной организации народовцев 
+country_event = {
+	id = rcw_rss_esser.40
+	title = rcw_rss_esser.40.t	
+	desc = rcw_rss_esser.40.desc
+	picture = GFX_report_event_RSS_arrest
+	is_triggered_only = yes
+	
+	immediate = {
+		if = {
+			limit = { check_variable = { RSS_party_antagonism > 6 } }
+			random_list = {
+				70 = { set_country_flag = chief_reb_res_1 }
+				30 = { set_country_flag = chief_reb_res_2 }
+			}
+			country_event = { id = rcw_rss_esser.44 days = 3 }
+		}
+		else_if = {
+			limit = { 
+				check_variable = { RSS_party_antagonism < 7 } 
+				OR = {
+					AND = {
+						has_country_flag = rad_soc_Mahin_army_chief_recruted
+						has_idea = Fyodor_Makhin_army_chief
+					}
+					AND = {
+						has_country_flag = rad_soc_Gaida_army_chief_recruted
+						has_idea = Radola_Gaida_army_chief
+					}
+					AND = {
+						has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+						has_idea = Vasiliy_Boldyrev_army_chief
+					}
+				}
+			}
+			random_list = {
+				50 = { set_country_flag = chief_run_res_1 }
+				50 = { set_country_flag = chief_run_res_2 }
+			}
+			country_event = { id = rcw_rss_esser.42 days = 3 }
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.40.a 
+		trigger = { has_country_flag = rs_res_1 }
+		add_political_power = -30
+		add_stability = -0.05
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.07
+		}
+		remove_ideas_with_trait = radical_socialist_counselor
+		set_country_flag = rad_soc_banned
+		add_ideas = RSS_ban_left
+		clr_country_flag = rs_res_1
+	}
+	option = {
+		name = rcw_rss_esser.40.b 
+		trigger = { has_country_flag = rs_res_2 }
+		add_political_power = -10
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.03
+		}
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		clr_country_flag = rs_res_2
+		clr_country_flag = rad_soc_created_secret_web 
+		clr_country_flag = rad_soc_prepared_warehouse
+	}
+	option = {
+		name = rcw_rss_esser.40.c
+		trigger = { has_country_flag = rs_res_3 }
+		add_political_power = -20
+		retire_ideology_leader = radical_socialism
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.03
+		}
+		clr_country_flag = rs_res_3
+		clr_country_flag = rad_soc_created_secret_web 
+		clr_country_flag = rad_soc_prepared_warehouse
+	}
+}
+#Раскрытие военной организации правых
+country_event = {
+	id = rcw_rss_esser.41
+	title = rcw_rss_esser.41.t	
+	desc = rcw_rss_esser.41.desc
+	picture = GFX_report_event_RSS_arrest
+	is_triggered_only = yes
+	
+	immediate = {
+		if = {
+			limit = { check_variable = { RSS_party_antagonism > 6 } }
+			random_list = {
+				70 = { set_country_flag = chief_reb_res_1 }
+				30 = { set_country_flag = chief_reb_res_2 }
+			}
+			country_event = { id = rcw_rss_esser.44 days = 3 }
+		}
+		else_if = {
+			limit = { 
+				check_variable = { RSS_party_antagonism < 7 } 
+				OR = {
+					AND = {
+						has_country_flag = market_lib_Mahin_army_chief_recruted
+						has_idea = Fyodor_Makhin_army_chief
+					}
+					AND = {
+						has_country_flag = market_lib_Gaida_army_chief_recruted
+						has_idea = Radola_Gaida_army_chief
+					}
+					AND = {
+						has_country_flag = market_lib_Boldyrev_army_chief_recruted
+						has_idea = Vasiliy_Boldyrev_army_chief
+					}
+				}
+			}
+			random_list = {
+				50 = { set_country_flag = chief_run_res_1 }
+				50 = { set_country_flag = chief_run_res_2 }
+			}
+			country_event = { id = rcw_rss_esser.42 days = 3 }
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.41.a 
+		trigger = { has_country_flag = ml_res_1 }
+		add_political_power = -30
+		add_stability = -0.05
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.07
+		}
+		remove_ideas_with_trait = market_liberal_counselor
+		set_country_flag = market_lib_banned
+		add_ideas = RSS_ban_right
+		clr_country_flag = ml_res_1
+	}
+	option = {
+		name = rcw_rss_esser.41.b 
+		trigger = { has_country_flag = ml_res_2 }
+		add_political_power = -10
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.03
+		}
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		clr_country_flag = ml_res_2
+		clr_country_flag = market_lib_created_secret_web 
+		clr_country_flag = market_lib_prepared_warehouse
+	}
+	option = {
+		name = rcw_rss_esser.41.c
+		trigger = { has_country_flag = ml_res_3 }
+		add_political_power = -20
+		retire_ideology_leader = market_liberalism
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.03
+		}
+		clr_country_flag = ml_res_3
+		clr_country_flag = market_lib_created_secret_web 
+		clr_country_flag = market_lib_prepared_warehouse
+	}
+	
+}
+#Бегство главнокомандующего (ИИ)
+country_event = {
+	id = rcw_rss_esser.42
+	title = rcw_rss_esser.42.t	
+	desc = rcw_rss_esser.42.desc
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.42.a
+		trigger = { has_country_flag = chief_run_res_1 }
+		if = {
+			limit = { 
+				OR = { 
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Fyodor_Makhin_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Radola_Gaida_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 92354 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Vasiliy_Boldyrev_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88152 } } set_nationality = REB }
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = -1
+		}
+		if = {
+			limit = { has_country_flag = did_clean_officers }
+			set_country_flag = did_clean_officers
+		}
+		add_timed_idea = {
+			idea = officers_purged
+			days = 35
+		}
+		country_event = { id = rss_eser_tech.5 days = 35 }
+		add_popularity = {
+			ideology = fascism
+			popularity = -0.04
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -0.04
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.04
+		}
+	}
+	option = {
+		name = rcw_rss_esser.42.b
+		trigger = { has_country_flag = chief_run_res_2 }
+		if = {
+			limit = { 
+				OR = { 
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Fyodor_Makhin_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Radola_Gaida_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 92354 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Vasiliy_Boldyrev_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88152 } } set_nationality = REB }
+		}
+		add_political_power = -60
+		add_to_variable = {
+			var = RSS_army_independence
+			value = -1
+		}
+	}
+
+} 
+#Преступники захвачены в ставке
+country_event = {
+	id = rcw_rss_esser.43
+	title = rcw_rss_esser.43.t	
+	desc = rcw_rss_esser.43.desc
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.43.a
+		if = {
+			limit = { 
+				OR = { 
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Fyodor_Makhin_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Radola_Gaida_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 92354 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Vasiliy_Boldyrev_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88152 } } set_nationality = REB }
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = -2
+		}
+		if = {
+			limit = { NOT = { has_country_flag = did_clean_officers } }
+			set_country_flag = did_clean_officers
+		}
+		add_timed_idea = {
+			idea = officers_purged
+			days = 35
+		}
+		country_event = { id = rss_eser_tech.5 days = 35 }
+		if = {
+			limit = { 
+				OR = {
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+				}
+			}
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { 
+				OR = {
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				}
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = -0.04
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -0.04
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.04
+		}
+	}
+	option = {
+		name = rcw_rss_esser.43.b
+		if = {
+			limit = { 
+				OR = { 
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Fyodor_Makhin_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88166 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Radola_Gaida_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 92354 } } set_nationality = REB }
+		}
+		else_if = {
+			limit = {
+				OR = { 
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				} 
+			}
+			remove_ideas = { Vasiliy_Boldyrev_army_chief }
+			every_unit_leader = { limit = { OR = { has_id = 88152 } } set_nationality = REB }
+		}
+		if = {
+			limit = { 
+				OR = {
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+				}
+			}
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { 
+				OR = {
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				}
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+		}
+		add_political_power = -60
+		add_to_variable = {
+			var = RSS_army_independence
+			value = -1
+		}
+	}
+	option = {
+		name = rcw_rss_esser.43.c
+		add_political_power = -60
+	}
+
+} 
+#Главнокомандующий не подчинился правительству 
+country_event = {
+	id = rcw_rss_esser.44
+	title = rcw_rss_esser.44.t
+	
+	desc = {
+		text = rcw_rss_esser.44.desc_1
+		trigger = { has_country_flag = chief_reb_res_1 }
+	}
+	desc = {
+		text = rcw_rss_esser.44.desc_2
+		trigger = { has_country_flag = chief_reb_res_2 }
+	}
+	
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.44.a
+		if = {
+			limit = { has_country_flag = chief_reb_res_1 }
+			country_event = { id = rcw_rss_esser.45 }
+			clr_country_flag = chief_reb_res_1
+		}
+		else_if = {
+			limit = { has_country_flag = chief_reb_res_2 }
+			country_event = { id = rcw_rss_esser.46 }
+			clr_country_flag = chief_reb_res_2
+		}
+		
+	}
+}
+#Главнокомандующий не подчинился правительству - При предъявлении доказательств
+country_event = {
+	id = rcw_rss_esser.45
+	title = rcw_rss_esser.45.t
+	
+	desc = {
+		text = rcw_rss_esser.45.desc_1
+		trigger = { 
+			OR = {
+				AND = {
+					NOT = {
+						has_country_flag = rad_soc_Mahin_army_chief_recruted
+						has_country_flag = rad_soc_Gaida_army_chief_recruted
+						has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+						has_country_flag = market_lib_Mahin_army_chief_recruted
+						has_country_flag = market_lib_Gaida_army_chief_recruted
+						has_country_flag = market_lib_Boldyrev_army_chief_recruted 
+					}
+				}
+				OR = {
+					AND = {
+						OR = {
+							has_country_flag = rad_soc_Mahin_army_chief_recruted
+							has_country_flag = rad_soc_Gaida_army_chief_recruted
+							has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+						}
+						check_variable = { party_popularity_100@radical_socialism < 25 }
+					}
+					AND = {
+						OR = {
+							has_country_flag = market_lib_Mahin_army_chief_recruted
+							has_country_flag = market_lib_Gaida_army_chief_recruted
+							has_country_flag = market_lib_Boldyrev_army_chief_recruted 
+						}
+						check_variable = { party_popularity_100@market_liberalism < 25 }
+					}
+				}
+			}
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.45.desc_2
+		trigger = {
+			OR = {
+				AND = {
+					OR = {
+						has_country_flag = rad_soc_Mahin_army_chief_recruted
+						has_country_flag = rad_soc_Gaida_army_chief_recruted
+						has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+					}
+					check_variable = { party_popularity_100@radical_socialism > 24.99 }
+				}
+				AND = {
+					OR = {
+						has_country_flag = market_lib_Mahin_army_chief_recruted
+						has_country_flag = market_lib_Gaida_army_chief_recruted
+						has_country_flag = market_lib_Boldyrev_army_chief_recruted 
+					}
+					check_variable = { party_popularity_100@market_liberalism > 24.99 }
+				}
+			} 
+		}
+	}
+	
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.45.a
+		trigger = { 
+			OR = {
+				AND = {
+					NOT = {
+						has_country_flag = rad_soc_Mahin_army_chief_recruted
+						has_country_flag = rad_soc_Gaida_army_chief_recruted
+						has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+						has_country_flag = market_lib_Mahin_army_chief_recruted
+						has_country_flag = market_lib_Gaida_army_chief_recruted
+						has_country_flag = market_lib_Boldyrev_army_chief_recruted 
+					}
+				}
+				OR = {
+					AND = {
+						OR = {
+							has_country_flag = rad_soc_Mahin_army_chief_recruted
+							has_country_flag = rad_soc_Gaida_army_chief_recruted
+							has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+						}
+						check_variable = { party_popularity_100@radical_socialism < 25 }
+					}
+					AND = {
+						OR = {
+							has_country_flag = market_lib_Mahin_army_chief_recruted
+							has_country_flag = market_lib_Gaida_army_chief_recruted
+							has_country_flag = market_lib_Boldyrev_army_chief_recruted 
+						}
+						check_variable = { party_popularity_100@market_liberalism < 25 }
+					}
+				}
+			}
+		}
+	}
+	option = {
+		name = rcw_rss_esser.45.b
+		trigger = {
+			OR = {
+				has_country_flag = rad_soc_Mahin_army_chief_recruted
+				has_country_flag = rad_soc_Gaida_army_chief_recruted
+				has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+			}
+			has_country_flag = RSS_esser_choose_market_lib_side
+		}
+		if = {
+			limit = { check_variable = { party_popularity_100@radical_socialism > 35 } }
+			set_country_flag = rad_soc_arrest_gov
+			country_event = {id = rcw_rss_esser.23}
+		}
+		else = {
+			set_country_flag = rad_soc_uprising
+			RSS_civil_war_script = yes
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 1
+		}
+	}
+	option = {
+		name = rcw_rss_esser.45.c
+		trigger = {
+			OR = {
+				has_country_flag = market_lib_Mahin_army_chief_recruted
+				has_country_flag = market_lib_Gaida_army_chief_recruted
+				has_country_flag = market_lib_Boldyrev_army_chief_recruted 
+			}
+			has_country_flag = RSS_esser_choose_rad_soc_side
+		}
+		if = {
+			limit = { check_variable = { party_popularity_100@market_liberalism > 35 } }
+			set_country_flag = market_lib_arrest_gov
+			country_event = {id = rcw_rss_esser.23}
+		}
+		else = {
+			set_country_flag = market_lib_uprising
+			RSS_civil_war_script = yes
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 1
+		}
+	}
+	option = {
+		name = rcw_rss_esser.45.d
+		trigger = {
+			OR = {
+				has_country_flag = rad_soc_Mahin_army_chief_recruted
+				has_country_flag = rad_soc_Gaida_army_chief_recruted
+				has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+			}
+			has_country_flag = RSS_esser_choose_rad_soc_side
+		}
+		if = {
+			limit = { check_variable = { party_popularity_100@radical_socialism > 35 } }
+			set_country_flag = rad_soc_arrest_gov
+			country_event = {id = rcw_rss_esser.23}
+		}
+		else = {
+			country_event = { id = rcw_rss_esser.47 }
+		}
+	}
+	option = {
+		name = rcw_rss_esser.45.f
+		trigger = {
+			OR = {
+				has_country_flag = market_lib_Mahin_army_chief_recruted
+				has_country_flag = market_lib_Gaida_army_chief_recruted
+				has_country_flag = market_lib_Boldyrev_army_chief_recruted 
+			}
+			has_country_flag = RSS_esser_choose_market_lib_side
+		}
+		if = {
+			limit = { check_variable = { party_popularity_100@market_liberalism > 35 } }
+			set_country_flag = market_lib_arrest_gov
+			country_event = {id = rcw_rss_esser.23}
+		}
+		else = {
+			country_event = { id = rcw_rss_esser.47 }
+		}
+	}
+}
+#Главнокомандующий не подчинился правительству - При окуржении ставки
+country_event = {
+	id = rcw_rss_esser.46
+	title = rcw_rss_esser.46.t
+	
+	desc = {
+		text = rcw_rss_esser.46.desc_1
+		trigger = { 
+			check_variable = { RSS_army_independence > 7 }
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.46.desc_2
+		trigger = {
+			check_variable = { RSS_army_independence < 8 }
+		}
+	}
+	
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	
+	
+	option = {
+		name = rcw_rss_esser.46.a
+		trigger = { 
+			check_variable = { RSS_army_independence > 7 }
+		}
+		country_event = { id = rcw_rss_eser_rep.17 }
+	}
+	option = {
+		name = rcw_rss_esser.46.b
+		trigger = {
+			check_variable = { RSS_army_independence < 8 }
+		}
+		if = {
+			limit = {
+				OR = {
+					has_country_flag = rad_soc_Mahin_army_chief_recruted
+					has_country_flag = rad_soc_Gaida_army_chief_recruted
+					has_country_flag = rad_soc_Boldyrev_army_chief_recruted
+				}
+			}
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_country_flag = market_lib_Mahin_army_chief_recruted
+					has_country_flag = market_lib_Gaida_army_chief_recruted
+					has_country_flag = market_lib_Boldyrev_army_chief_recruted
+				}
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+		}
+	}
+}
+#Марш на столицу
+country_event = {
+	id = rcw_rss_esser.47
+	title = rcw_rss_esser.47.t	
+	desc = rcw_rss_esser.47.desc
+	
+	picture = GFX_report_event_RSS_supreme_commander	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_esser.47.a
+		trigger = { has_political_power > 69 }
+		add_political_power = -70
+		if = {
+			limit = { has_country_flag = RSS_esser_choose_rad_soc_side }
+			set_country_flag = rad_soc_arrest_gov
+			country_event = {id = rcw_rss_esser.23}
+		}
+		else_if = {
+			limit = { has_country_flag = RSS_esser_choose_market_lib_side }
+			set_country_flag = market_lib_arrest_gov
+			country_event = {id = rcw_rss_esser.23}
+		}
+	}
+	option = {
+		name = rcw_rss_esser.47.b
+		RSS_civil_war_script = yes
+	}
+} 
+#Запрет съезда максималистов
+country_event = {
+	id = rcw_rss_esser.48
+	title = rcw_rss_esser.48.t	
+	desc = rcw_rss_esser.48.desc
+	
+	picture = GFX_report_event_RSS_crossroads	
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			add_to_variable = {
+				var = RSS_party_antagonism
+				value = 1
+			}
+			RSS_update_party_antagonism = yes
+			if = {
+				limit = { has_country_flag = RSS_esser_choose_rad_soc_side }
+				clr_country_flag = rad_soc_supporters_congress
+			}
+			else_if = {
+				limit = { has_country_flag = RSS_esser_choose_market_lib_side }
+				remove_mission = rad_soc_supporters_congress_ai_mission
+				rad_soc_makes_move_ai = yes
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.48.a
+	}
+
+} 
+#Запрет съезда правых
+country_event = {
+	id = rcw_rss_esser.49
+	title = rcw_rss_esser.49.t	
+	desc = rcw_rss_esser.49.desc
+	
+	picture = GFX_report_event_RSS_crossroads	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			add_to_variable = {
+				var = RSS_party_antagonism
+				value = 1
+			}
+			RSS_update_party_antagonism = yes
+			if = {
+				limit = { has_country_flag = RSS_esser_choose_market_lib_side }
+				clr_country_flag = market_lib_supporters_congress
+			}
+			else_if = {
+				limit = { has_country_flag = RSS_esser_choose_rad_soc_side }
+				remove_mission = market_lib_supporters_congress_ai_mission
+				market_lib_makes_move_ai = yes
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_rss_esser.49.a
+	}
+
+} 
+#Конец фракционной борьбы
+country_event = {
+	id = rcw_rss_esser.50
+	title = rcw_rss_esser.50.t	
+	desc = rcw_rss_esser.50.desc
+	picture = GFX_report_event_RSS_crossroads
+	fire_only_once = yes 
+	
+	trigger = {
+		has_country_flag = RSS_esser_party_struggle_is_on
+		has_country_flag = market_lib_banned
+		has_country_flag = rad_soc_banned
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	immediate = {set_country_flag = soc_lib_won}
+	
+	option = {
+		name = rcw_rss_esser.50.a
+		clr_country_flag = RSS_esser_party_struggle_is_on
+		add_political_power = 50
+		add_stability = 0.05
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Авксентьев и Нация
+country_event = {
+	id = rcw_rss_esser.51
+	title = rcw_rss_esser.51.t	
+	desc = rcw_rss_esser.51.desc
+	picture = GFX_report_event_rss_new_government
+	fire_only_once = yes 
+	
+	trigger = {
+		has_country_flag = RSS_esser_party_struggle_is_on
+		has_country_flag = market_lib_choose_program
+		has_country_leader = {
+			name = "Nikolay Avksentev" 
+			ruling_only = no
+		} 
+	}
+	
+	mean_time_to_happen = { days = 35 }
+	
+	immediate = {
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+	}
+	
+	option = {
+		name = rcw_rss_esser.51.a
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Атаманы Волков и Красильников
+country_event = {
+	id = rcw_rss_esser.52
+	title = rcw_rss_esser.52.t	
+	desc = rcw_rss_esser.52.desc
+	
+	picture = GFX_report_event_RSS_right_turn	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_esser.52.a
+		add_ideas = RSS_white_underground_work
+		every_unit_leader = { limit = { has_id = 92359 } set_nationality = REB }
+	}
+}
+#Резня 
+country_event = {
+	id = rcw_rss_esser.53
+	title = rcw_rss_esser.53.t	
+	desc = rcw_rss_esser.53.desc
+	fire_only_once = yes
+	picture = GFX_report_event_RSS_crossroads	
+	
+	trigger = { 
+		OR = {
+			AND = {
+				has_idea = moderate_faction_assassinations
+				has_idea = right_faction_assassinations
+			}
+			AND = {
+				has_idea = moderate_faction_assassinations
+				has_idea = maximalist_faction_assassinations
+			}
+			AND = {
+				has_idea = right_faction_assassinations
+				has_idea = maximalist_faction_assassinations
+			}
+		}
+	}
+	mean_time_to_happen = { days = 1 }
+	
+	option = {
+		name = rcw_rss_esser.53.a
+		add_political_power = -50
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.03
+		}
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.03
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+	}
+} 
+#Грамота максималистов
+country_event = {
+	id = rcw_rss_esser.54
+	title = rcw_rss_esser.54.t	
+	desc = rcw_rss_esser.54.desc
+	
+	picture = GFX_report_event_RSS_paper	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_esser.54.a
+		
+	}
+} 
+#Партийная цензура
+country_event = {
+	id = rcw_rss_esser.55
+	title = rcw_rss_esser.55.t	
+	desc = rcw_rss_esser.55.desc
+	
+	picture = GFX_report_event_RSS_paper	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_esser.55.a
+		
+	}
+} 
+#Серьезное обвинение 
+country_event = {
+	id = rcw_rss_esser.56
+	title = rcw_rss_esser.56.t	
+	desc = rcw_rss_esser.56.desc
+	
+	picture = GFX_report_event_RSS_paper		
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_esser.56.a
+
+	}
+
+} 
+#Демократия прямого действия
+country_event = {
+	id = rcw_rss_esser.57
+	title = rcw_rss_esser.57.t	
+	desc = {
+		text = rcw_rss_esser.57.desc_sl
+		trigger = {
+			has_idea = moderate_faction_assassinations
+			check_variable = { party_popularity_100@social_liberalism < 1 }
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.57.desc_rs
+		trigger = {
+			has_idea = maximalist_faction_assassinations
+			check_variable = { party_popularity_100@radical_socialism < 1 }
+		}
+	}
+	desc = {
+		text = rcw_rss_esser.57.desc_ml
+		trigger = {
+			has_idea = right_faction_assassinations
+			check_variable = { party_popularity_100@market_liberalism < 1 }
+		}
+	}
+	
+	trigger = {
+		has_country_flag = RSS_esser_party_struggle_is_on
+		OR = {
+			AND = {
+				has_idea = moderate_faction_assassinations
+				check_variable = { party_popularity_100@social_liberalism < 1 }
+			}
+			AND = {
+				has_idea = maximalist_faction_assassinations
+				check_variable = { party_popularity_100@radical_socialism < 1 }
+			}
+			AND = {
+				has_idea = right_faction_assassinations
+				check_variable = { party_popularity_100@market_liberalism < 1 }
+			}
+		}
+	}	
+	
+	picture = GFX_report_event_RSS_paper		
+	mean_time_to_happen = { days = 7 }
+	fire_only_once = no
+	option = {
+		name = rcw_rss_esser.57.a
+		add_timed_idea = {
+			idea = left_esser_terror_idea
+			days = 270
+		}
+		if = {
+			limit = {
+				has_idea = moderate_faction_assassinations
+				check_variable = { party_popularity_100@social_liberalism < 1 }
+			}
+			clr_country_flag = RSS_esser_party_struggle_is_on
+			if = {
+				limit = { check_variable = { party_popularity_100@radical_socialism > party_popularity_100@market_liberalism } }
+				set_politics = { ruling_party = radical_socialism }
+				set_party_name = {
+					ideology = social_liberalism
+					long_name = RSS_esser_social_liberalism_party_lose_long
+					name = RSS_esser_social_liberalism_party_lose
+				}
+			}
+			if = {
+				limit = { check_variable = { party_popularity_100@market_liberalism > party_popularity_100@radical_socialism } }
+				set_politics = { ruling_party = market_liberalism }
+				set_party_name = {
+					ideology = social_liberalism
+					long_name = RSS_esser_social_liberalism_party_lose_long
+					name = RSS_esser_social_liberalism_party_lose
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_idea = maximalist_faction_assassinations
+				check_variable = { party_popularity_100@radical_socialism < 1 }
+			}
+			set_country_flag = rad_soc_banned
+			remove_ideas = maximalist_faction_assassinations
+		}
+		else_if = {
+			limit = {
+				has_idea = right_faction_assassinations
+				check_variable = { party_popularity_100@market_liberalism < 1 }
+			}
+			set_country_flag = market_lib_banned
+			remove_ideas = right_faction_assassinations
+		}
+	}
+
+} 
+#Запрет фракционной борьбы
+country_event = {
+	id = rcw_rss_esser.58
+	title = rcw_rss_esser.58.t	
+	desc = rcw_rss_esser.58.desc
+	
+	picture = GFX_report_event_RSS_paper		
+	is_triggered_only = yes
+	immediate = { set_country_flag = soc_lib_won }
+	option = {
+		name = rcw_rss_esser.58.a
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+		clr_country_flag = RSS_esser_party_struggle_is_on
+	}
+
+} 
+#Debug
+country_event = {
+	id = rcw_rss_esser.120
+	title = rcw_rss_esser.120.t	
+	desc = rcw_rss_esser.120.desc
+	
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_esser.120.a
+		set_country_flag = rad_soc_uprising
+		set_country_flag = rad_soc_Mahin_army_chief_recruted
+	}
+	option = {
+		name = rcw_rss_esser.120.b
+		set_country_flag = market_lib_uprising
+		set_country_flag = market_lib_Mahin_army_chief_recruted
+	}
+	option = {
+		name = rcw_rss_esser.120.c
+		clr_country_flag = rad_soc_uprising
+		clr_country_flag = rad_soc_Mahin_army_chief_recruted
+		clr_country_flag = market_lib_uprising
+		clr_country_flag = market_lib_Mahin_army_chief_recruted
+	}
+} 
+#################
+#Дальше по древу#
+#################
+
+add_namespace = rcw_rss_eser_rep
+
+#Все решили без нас
+country_event = {
+	id = rcw_rss_eser_rep.1
+	title = rcw_rss_eser_rep.1.t	
+	desc = rcw_rss_eser_rep.1.desc
+	
+	picture = GFX_report_event_RSS_republic	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.1.a
+		trigger = { NOT = { has_government = despotism } }
+		RSS = { add_opinion_modifier = { target = ROOT modifier = RSS_approved_rep } }
+		ai_chance = {
+			base = 10
+			factor = 3
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.1.b
+		ai_chance = {
+			base = 10
+			factor = 5
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.1.c
+		RSS = { add_opinion_modifier = { target = ROOT modifier = RSS_not_rep } }
+		if = {
+			limit = { is_subject_of = RSS }
+			RSS = { end_puppet = ROOT }
+		}
+		RSS = { 
+			create_wargoal = {
+				type = annex_everything
+				target = ROOT
+			}
+		}
+		RSS = { country_event = { id = rcw_rss_eser_rep.2 } }
+
+		ai_chance = {
+			base = 10
+			modifier = { has_government = despotism factor = 2 }
+			modifier = { has_government = authoritarism factor = 2 }
+			modifier = { has_government = social_liberalism factor = 0 }
+			factor = 5
+		}
+	}
+} 
+
+#[Страна] выражает протест
+country_event = {
+	id = rcw_rss_eser_rep.2
+	title = rcw_rss_eser_rep.2.t	
+	desc = rcw_rss_eser_rep.2.desc
+	
+	picture = GFX_report_event_RSS_republic		
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.2.a
+	}
+
+} 
+#Рейд народной милиции
+country_event = {
+	id = rcw_rss_eser_rep.3
+	title = rcw_rss_eser_rep.3.t	
+	desc = rcw_rss_eser_rep.3.desc
+	
+	picture = GFX_report_event_RSS_milicia	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.3.a
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_0
+			amount = 500
+			producer = RSS
+		}	
+    add_equipment_to_stockpile = {
+			type = support_equipment_1
+			amount = 50
+			producer = RSS
+		}
+	}
+} 
+#Демобилизация регулярной армии
+country_event = {
+	id = rcw_rss_eser_rep.4
+	title = rcw_rss_eser_rep.4.t	
+	desc = rcw_rss_eser_rep.4.desc
+	
+	picture = GFX_report_event_RSS_milicia	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.4.a
+		add_war_support = 0.07
+		custom_effect_tooltip = RSS_half_demobil
+		hidden_effect = {
+			911 = { OWNER = { set_country_flag = owner_of_911 } }
+			REB = {
+				set_state_owner = 911
+			}
+			every_unit_leader = {
+				set_unit_leader_flag = RSS_irregular_army_generals
+			}
+			transfer_units_fraction ={
+				target = REB
+				size = 0.5
+				keep_unit_leaders_trigger = {
+					has_unit_leader_flag = RSS_irregular_army_generals
+				}
+			}
+			random_country = {
+				limit = { has_country_flag = owner_of_911 }
+				annex_country = {
+					target = REB
+					transfer_troops = no
+				}
+			}
+			every_unit_leader = {
+				clr_unit_leader_flag = RSS_irregular_army_generals
+			}
+		}
+	}
+} 
+#Подготовка обращения
+country_event = {
+	id = rcw_rss_eser_rep.5
+	title = rcw_rss_eser_rep.5.t	
+	desc = {
+		text = rcw_rss_eser_rep.5_desc_pre_assembly
+		trigger = { NOT = { has_global_flag = RCW_Allrussian_national_assembly } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.5_desc_after_assembly
+		trigger = { has_global_flag = RCW_Allrussian_national_assembly }
+	}
+	
+	picture = GFX_report_event_RSS_krestiane	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.5.a
+		trigger = { OR = { has_government = radical_socialism has_government = social_liberalism } }
+		add_stability = 0.06
+		add_war_support = 0.05
+		add_political_power = 40
+		peasant_and_land_and_bread_question_fall = yes
+		unlock_national_focus = RSS_agrarian_reform_esser
+	}
+	option = {
+		name = rcw_rss_eser_rep.5.b
+		add_stability = 0.04
+		add_war_support = 0.03
+		if = {
+			limit = { has_country_flag = RSS_esser_party_struggle_is_on }
+			add_to_variable = {
+				var = RSS_party_antagonism
+				value = 1
+			}
+			RSS_update_party_antagonism = yes
+		}
+		set_country_flag = declare_instant_reform
+	}
+	option = {
+		name = rcw_rss_eser_rep.5.c
+		add_stability = 0.02
+		add_political_power = 15
+		set_country_flag = declare_planned_reform
+	}
+	option = {
+		name = rcw_rss_eser_rep.5.d
+		trigger = { NOT = { has_government = radical_socialism } NOT = { has_global_flag = RCW_Allrussian_national_assembly } }
+		add_stability = 0.05
+		add_war_support = -0.04
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.04
+		}
+		unlock_national_focus = RSS_agrarian_reform_esser
+	}
+} 
+#Планомерная(скоротечная) реформа
+country_event = {
+	id = rcw_rss_eser_rep.6
+	
+	title = {
+		text = rcw_rss_eser_rep.6.t_planned
+		trigger = { has_country_flag = declare_planned_reform }
+	}
+	title = {
+		text = rcw_rss_eser_rep.6.t_instant
+		trigger = { has_country_flag = declare_instant_reform }
+	}
+	
+	desc = {
+		text = rcw_rss_eser_rep.6.desc_planned 
+		trigger = { has_country_flag = declare_planned_reform }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.6.desc_instant 
+		trigger = { has_country_flag = declare_instant_reform }
+	}
+	
+	picture = GFX_report_event_RSS_krestiane	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.6.a
+		trigger = { has_country_flag = declare_planned_reform }
+		add_timed_idea = {
+			idea = RSS_agrarian_commisison
+			days = 728
+		}
+		hidden_effect = { country_event = { id = rss_eser_tech.2 days = 728} }
+		custom_effect_tooltip = comisison_tooltip
+	}
+	option = {
+		name = rcw_rss_eser_rep.6.b
+		trigger = { has_country_flag = declare_instant_reform }
+		add_timed_idea = {
+			idea = peasant_and_land_and_bread_question_reformation_period
+			days = 150
+		}
+		hidden_effect = { country_event = { id = rss_eser_tech.2 days = 150} }
+		custom_effect_tooltip = comisison_tooltip
+	}
+} 
+#Съезд трудовых коллективов 
+country_event = {
+	id = rcw_rss_eser_rep.7
+	
+	title = rcw_rss_eser_rep.7.t
+	
+	desc = {
+		text = rcw_rss_eser_rep.7.desc_soc
+		trigger = { OR = { has_government = radical_socialism has_government = social_liberalism } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.7.desc_right
+		trigger = { NOT = { OR = { has_government = radical_socialism has_government = social_liberalism } } }
+	}
+	
+	picture = GFX_report_event_RSS_congress	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.7.a
+		set_country_flag = RSS_STK_open
+		add_ideas = RSS_STK
+	}
+	option = {
+		name = rcw_rss_eser_rep.7.b
+		trigger = { OR = { has_government = radical_socialism has_government = social_liberalism } }
+		set_country_flag = RSS_STK_open
+		add_ideas = soviet_republic_gov_form
+		add_ideas = RSS_STK
+	}
+} 
+#Просьба офицеров
+country_event = {
+	id = rcw_rss_eser_rep.8
+	title = rcw_rss_eser_rep.8.t
+	desc = rcw_rss_eser_rep.8.desc
+	
+	picture = GFX_report_event_RSS_officer
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.8.a
+		add_political_power = 10
+		add_war_support = -0.04
+	}
+	option = {
+		name = rcw_rss_eser_rep.8.b
+		trigger = { check_variable = { RSS_party_antagonism > 2 } }
+		hidden_effect = { lack_of_officers_fall = yes }	
+		custom_effect_tooltip = RSS_officer_fall_1
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.03
+		}
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.03
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.8.c
+		trigger = { 
+			NOT = { has_idea = Fyodor_Makhin_army_chief } 
+			check_variable = { RSS_party_antagonism > 3 }
+		} 
+		hidden_effect = { lack_of_officers_fall = yes }	
+		custom_effect_tooltip = RSS_officer_fall_1
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 2
+		}
+		add_political_power = -25
+	}
+}
+#Знамена ударников
+country_event = {
+	id = rcw_rss_eser_rep.9
+	title = rcw_rss_eser_rep.9.t
+	desc = rcw_rss_eser_rep.9.desc
+	
+	picture = GFX_report_event_RSS_udarniki
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.9.a
+		add_war_support = -0.04
+	}
+	option = {
+		name = rcw_rss_eser_rep.9.b
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.04
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.9.c
+		trigger = { NOT = { has_idea = Fyodor_Makhin_army_chief } } 
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.04
+		}
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 2
+		}
+	}
+} 
+#Армия разбегается
+country_event = {
+	id = rcw_rss_eser_rep.10
+	title = rcw_rss_eser_rep.10.t
+	desc = rcw_rss_eser_rep.10.desc
+	
+	picture = GFX_report_event_RSS_solders	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.10.a
+		add_to_variable = {
+			var = global.RCW_green_var_Russian_state
+			value = 3
+		}
+		add_war_support = -0.07
+		add_political_power = -35
+		custom_effect_tooltip = RSS_officer_rise_2
+		hidden_effect = { 
+			lack_of_officers_rise = yes
+			lack_of_officers_rise = yes
+		}
+		
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.03
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.03
+		}
+		add_timed_idea = {
+			idea = disorganization_of_army
+			days = 30
+		}
+	}
+} 
+#Ресурсы для резервного фронта 
+country_event = {
+	id = rcw_rss_eser_rep.11
+	title = rcw_rss_eser_rep.11.t
+	desc = rcw_rss_eser_rep.11.desc
+	
+	picture = GFX_report_event_RSS_udarniki	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.11.a
+		add_to_variable = {
+			var = RSS_army_independence
+			value = 2
+		}
+		add_dynamic_modifier = { modifier = RSS_reserve_front }
+	}
+}
+#Прибытие комиссара всероссийского правительства 
+country_event = {
+	id = rcw_rss_eser_rep.12
+	title = rcw_rss_eser_rep.12.t
+	desc = rcw_rss_eser_rep.12.desc
+	
+	picture = GFX_report_event_RSS_republic	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.12.a
+		add_war_support = 0.04
+		hidden_effect = {
+			every_owned_state = {
+				limit = { is_capital = no NOT = { is_fully_controlled_by = OWNER } }
+				set_state_flag = transfered_state
+				set_state_owner_to = FROM
+			}
+		}
+		FROM = { ROOT = { subjecting_script_with_transfer_parties_semi_independent = yes } }
+		hidden_effect = {
+			every_state = {
+				limit = { has_state_flag = transfered_state }
+				clr_state_flag = transfered_state
+				set_state_owner_to = ROOT
+			}
+		}
+		ai_chance = {
+			base = 10
+			factor = 5
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.12.b
+		FROM = { country_event = { id = rcw_rss_eser_rep.13 } }
+		add_political_power = 15
+		add_opinion_modifier = { target = ROOT modifier = RSS_no_comissar }
+		ai_chance = {
+			base = 10
+			modifier = { has_government = despotism factor = 2 }
+			modifier = { has_government = authoritarism factor = 2 }
+			factor = 5
+		}
+	}
+} 
+#[Страна] высылает нашего комиссара 
+country_event = {
+	id = rcw_rss_eser_rep.13
+	title = rcw_rss_eser_rep.13.t
+	desc = rcw_rss_eser_rep.13.desc
+	
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.13.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+} 
+#Выборы в регионе
+state_event = {
+	id = rcw_rss_eser_rep.14
+	title = rcw_rss_eser_rep.14.t
+	desc = rcw_rss_eser_rep.14.desc
+	
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	immediate = {
+		CONTROLLER = {
+			set_temp_variable = { soc_lib_popularity_comp = party_popularity_100@social_liberalism }
+			set_temp_variable = { rad_soc_popularity = party_popularity_100@radical_socialism }
+			set_temp_variable = { market_lib_popularity = party_popularity_100@market_liberalism }
+			set_temp_variable = { soc_con_popularity = party_popularity_100@conservatism }
+			set_temp_variable = { soc_dem_popularity = party_popularity_100@social_democracy }
+			set_temp_variable = { nat_synd_popularity = party_popularity_100@national_syndicalism }
+			set_temp_variable = { despotism_popularity = party_popularity_100@despotism }
+			set_temp_variable = { authoritarism_popularity = party_popularity_100@authoritarism }
+			set_temp_variable = { fascism_popularity = party_popularity_100@fascism }
+		}
+		add_to_temp_variable = { soc_lib_popularity_comp = compliance }
+		random_list = {
+			rad_soc_popularity = { set_state_flag = rad_soc_win }
+			soc_lib_popularity_comp = { set_state_flag = soc_lib_win }
+			market_lib_popularity= { set_state_flag = market_lib_win }
+			soc_con_popularity = { set_state_flag = soc_con_win }
+			soc_dem_popularity = { set_state_flag = soc_dem_win }
+			nat_synd_popularity = { set_state_flag = nat_synd_win }
+			despotism_popularity = { set_state_flag = despotism_win }
+			authoritarism_popularity = { set_state_flag = authoritarism_win }
+			fascism_popularity = { set_state_flag = fascism_win }
+		}
+		CONTROLLER = { country_event = { id = rcw_rss_eser_rep.15 } }
+	}
+	option = {
+		name = rcw_rss_eser_rep.14.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+} 
+country_event = {
+	id = rcw_rss_eser_rep.15
+	title = rcw_rss_eser_rep.15.t
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_rad_soc
+		trigger = { FROM = { has_state_flag = rad_soc_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_soc_lib
+		trigger = { FROM = { has_state_flag = soc_lib_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_market_lib
+		trigger = { FROM = { has_state_flag = market_lib_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_soc_con
+		trigger = { FROM = { has_state_flag = soc_con_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_soc_dem
+		trigger = { FROM = { has_state_flag = soc_dem_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_nat_synd
+		trigger = { FROM = { has_state_flag = nat_synd_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_despotism
+		trigger = { FROM = { has_state_flag = despotism_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_authoritarism
+		trigger = { FROM = { has_state_flag = authoritarism_win } }
+	}
+	desc = {
+		text = rcw_rss_eser_rep.15_desc_fascism
+		trigger = { FROM = { has_state_flag = fascism_win } }
+	}
+	
+	picture = GFX_report_event_RSS_republic	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.15.a
+		trigger = { FROM = { has_state_flag = rad_soc_win } }
+		FROM = { clr_state_flag = rad_soc_win }
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.b
+		trigger = { FROM = { has_state_flag = soc_lib_win } }
+		FROM = { clr_state_flag = soc_lib_win }
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.c
+		trigger = { FROM = { has_state_flag = market_lib_win } }
+		FROM = { clr_state_flag = market_lib_win }
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.d
+		trigger = { FROM = { has_state_flag = soc_con_win } }
+		FROM = { clr_state_flag = soc_con_win }
+		add_popularity = {
+			ideology = conservatism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.e
+		trigger = { FROM = { has_state_flag = soc_dem_win } }
+		FROM = { clr_state_flag = soc_dem_win }
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.f
+		trigger = { FROM = { has_state_flag = nat_synd_win } }
+		FROM = { clr_state_flag = nat_synd_win }
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.g
+		trigger = { FROM = { has_state_flag = despotism_win } }
+		FROM = { clr_state_flag = despotism_win }
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.h
+		trigger = { FROM = { has_state_flag = authoritarism_win } }
+		FROM = { clr_state_flag = authoritarism_win }
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.15.y
+		trigger = { FROM = { has_state_flag = fascism_win } }
+		FROM = { clr_state_flag = fascism_win }
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.006
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+} 
+#Прекращение мытарств
+country_event = {
+	id = rcw_rss_eser_rep.16
+	title = rcw_rss_eser_rep.16.t
+	desc = rcw_rss_eser_rep.16.desc
+
+	picture = GFX_report_event_RSS_solders	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.16.a
+		ai_chance = {
+			factor = 1
+		}
+		custom_effect_tooltip = RSS_half_demobil
+		hidden_effect = {
+			REB = {
+				set_state_owner = 911
+			}
+			every_unit_leader = {
+				set_unit_leader_flag = uniting_countries_flag
+			}
+			transfer_units_fraction ={
+				target = REB
+				size = 0.5
+				keep_unit_leaders_trigger = {
+					has_unit_leader_flag = uniting_countries_flag
+				}
+			}
+			annex_country = {
+				target = REB
+				transfer_troops = no
+			}
+			every_unit_leader = {
+				clr_unit_leader_flag = uniting_countries_flag
+			}
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.16.b
+		ai_chance = {
+			factor = 1
+		}
+		RSS = { annex_country = { target = RGR transfer_troops = yes } }
+		every_state = { limit = { is_core_of = RGR }
+			add_core_of = RSS
+		}
+		RGR = { every_unit_leader = { set_nationality = RSS } }
+		RSS = { change_tag_from = ROOT }
+	}
+} 
+#Армия делает ход 
+country_event = {
+	id = rcw_rss_eser_rep.17
+	title = rcw_rss_eser_rep.17.t	
+	desc = rcw_rss_eser_rep.17.desc
+	picture = GFX_report_event_RSS_strelok
+	fire_only_once = yes 
+	
+	trigger = {
+		has_country_flag = RSS_esser_party_struggle_is_on
+		NOT = { has_country_flag = RSS_army_coup }
+		NOT = { has_country_flag = RSS_eser_militia_takes_power }
+		check_variable = { RSS_army_independence > 5 }
+		check_variable = { RSS_party_antagonism > 6 }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	immediate = {
+		clr_country_flag = RSS_esser_party_struggle_is_on 
+		hidden_effect = {
+			remove_dynamic_modifier = { modifier = RSS_party_antagonism_dynamic_modifier }
+		}
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.17.a	
+		ai_chance = {
+			factor = 1
+		}
+		retire_ideology_leader = social_liberalism
+		retire_ideology_leader = radical_socialism
+		retire_ideology_leader = market_liberalism
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.15
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = -0.04
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.04
+		}
+		add_political_power = 50
+		set_politics = { ruling_party = national_syndicalism }
+		set_country_flag = RSS_army_coup
+		if = {
+			limit = { has_idea = Radola_Gaida_army_chief }
+			create_country_leader = { name = "Radola Gaida" desc = "" picture = "gfx/leaders/CZE/Portrait_Radola_Gaida.dds" expire = "1935.4.30" ideology = national_syndicalism_ideology traits = { adventurer goal_in_politics goal } }
+			country_event = { id = rcw_rss_eser_rep.43 days = 7 }
+		}
+		else_if = {
+			limit = { has_idea = Fyodor_Makhin_army_chief }
+			create_country_leader = { name = "Fyodor Makhin" desc = "" picture = "gfx/leaders/RUS/Portrait_Fyodor_Makhin.dds" expire = "1935.4.30" ideology = national_syndicalism_ideology traits = { revolutionary_general } }
+		}
+	}	
+}
+#Правый поворот
+country_event = {
+	id = rcw_rss_eser_rep.18
+	title = rcw_rss_eser_rep.18.t	
+	desc = rcw_rss_eser_rep.18.desc
+	picture = GFX_report_event_RSS_right_turn
+	fire_only_once = yes 
+	
+	trigger = {
+		has_country_flag = RSS_esser_coup_hapenned
+		NOT = { has_country_flag = RSS_eser_right_coup }
+		has_idea = RSS_atamanshina
+		NOT = { has_completed_focus = RSS_dobeyte_vizhivshyh }
+		NOT = { has_completed_focus = RSS_unification_cavalry_inpection }
+		NOT = { has_government = despotism }
+		NOT = { has_government = authoritarism }
+		NOT = { has_government = fascism }
+		NOT = { has_country_flag = RSS_from_OCH }
+		check_variable = { party_popularity_100@authoritarism > 14.99 }
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	immediate = {
+		set_country_flag = RSS_eser_right_coup_cv
+		hidden_effect = {
+			remove_ideas = RSS_atamanshina
+			remove_ideas = RSS_white_underground_work
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.15
+			}
+		}
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.18.a	
+		ai_chance = {
+			factor = 1
+		}
+		
+		hidden_effect = {
+			
+			ROOT = { save_global_event_target_as = RSS_esser }
+			start_civil_war = {
+				ideology = authoritarism
+				size = 0.3
+				keep_unit_leaders = { 88149 88148 88168 88152 88155 78406 88166 77411 88156 92354 92355 88151 88153 }
+				states = all
+				states_filter = { 
+					if = {
+						limit = { any_state = { region = 151 is_controlled_by = ROOT } }
+						region = 151 
+						NOT = { has_state_category = wasteland }
+						is_capital = no
+						is_core_of = ROOT
+					}
+					else_if = {
+						limit = { any_state = { region = 149 is_controlled_by = ROOT }}
+						region = 149 
+						NOT = { has_state_category = wasteland }
+						is_capital = no
+						is_core_of = ROOT
+					}
+					else = {
+						is_controlled_by = ROOT
+						is_core_of = ROOT
+						AND = {
+							NOT = { region = 230 }
+							NOT = { region = 237 }
+							NOT = { region = 150 }
+							NOT = { region = 231 }
+							NOT = { region = 234 }
+							NOT = { region = 133 }
+							NOT = { region = 132 }
+							NOT = { region = 131 }
+							NOT = { region = 130 region = 239 region = 240 }
+							NOT = { region = 40 }
+							NOT = { region = 14 }
+							NOT = { region = 233 }
+						}
+						
+					}
+				}
+			}
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+				}
+				save_global_event_target_as = RSS_EVA_et
+			}
+			event_target:RSS_esser = {
+				custom_effect_tooltip = lack_of_officers_rise_3_tt
+				hidden_effect = { lack_of_officers_rise = yes lack_of_officers_rise = yes lack_of_officers_rise = yes }
+				every_unit_leader = { limit = { OR = { has_id = 92346 has_id = 92348 has_id = 92350 has_id = 92351 has_id = 92353 has_id = 92359 has_id = 92360 has_id = 88150 has_id = 77400 } } set_nationality = event_target:RSS_EVA_et }
+			}
+			event_target:RSS_EVA_et = {
+				every_unit_leader = { limit = { OR = { has_id = 88149 has_id = 88148 has_id = 88168 has_id = 88152 has_id = 88155 has_id = 78406 has_id = 88166 has_id = 77411 has_id = 88156 has_id = 92354 has_id = 92355 has_id = 88151 has_id = 88153 } } set_nationality = event_target:RSS_esser }
+				set_cosmetic_tag = RSS_EVA
+				add_ideas = EVA_low_discipline_idea
+				add_ideas = {
+					military_dictatorship_gov_form
+					unitary_gov_terr
+					decrees_of_ruler_b_law
+					poliparty_system_law
+					neutral_foreign_policy_law
+				}
+				create_country_leader = { name = "Voennoe Pravitelstvo" desc = "" picture = "gfx/leaders/SIB/Portrait_Directory.dds" expire = "1935.4.30" ideology = authoritarism_ideology traits = { military_government_trait } }
+				set_popularities = {
+					authoritarism = 50
+					despotism = 35
+					fascism = 5
+					conservatism = 5
+					national_syndicalism = 5
+				}
+				#if = {
+				#	limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism } } }
+				#	declare_war_on = {
+				#		target = RUS
+				#		type = annex_everything
+				#	}
+				#}
+				every_state = {
+					limit = {
+						has_state_category = wasteland 
+						is_controlled_by = event_target:RSS_EVA_et
+					}
+					teleport_armies = {
+						to_state = capital
+					}
+				}
+				REB = { every_unit_leader = { limit = { has_id = 92359 } set_nationality = event_target:RSS_EVA_et } }
+				load_focus_tree = Russian_state_eser_civil_war_focus
+				load_oob = RSS_EVA_army
+			}
+			every_country = {
+				limit = { NOT = { OR = { tag = RSS tag = RVA tag = NVA tag = NWA } } NOT = { has_war_with = event_target:RSS_EVA_et } has_war_with = event_target:RSS_esser }
+				event_target:RSS_EVA_et = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			event_target:RSS_esser = {
+				if = {
+					limit = { 
+						OR = {
+							has_completed_focus = RSS_dobeyte_vizhivshyh
+							has_completed_focus = RSS_democratization_redemocratization
+							has_completed_focus = RSS_police_rear_battalions
+							has_country_flag = did_clean_officers
+						} 
+					}
+				}
+				else = {
+					country_event = { id = rcw_rss_eser_rep.20 days = 5 }
+				}
+			}
+		}
+		event_target:RSS_EVA_et = { change_tag_from = ROOT }
+		clear_global_event_target = RSS_esser
+		clear_global_event_target = RSS_EVA_et
+	}
+	option = {
+		name = rcw_rss_eser_rep.18.b
+		
+		hidden_effect = {
+			ROOT = { save_global_event_target_as = RSS_esser }
+			start_civil_war = {
+				ideology = authoritarism
+				size = 0.3
+				keep_unit_leaders = { 88149 88148 88168 88152 88155 78406 88166 77411 88156 92354 92355 88151 88153 }
+				states = all
+				states_filter = { 
+					if = {
+						limit = { any_state = { region = 151 is_controlled_by = ROOT } }
+						region = 151 
+						NOT = { has_state_category = wasteland }
+						is_capital = no
+						is_core_of = ROOT
+					}
+					else_if = {
+						limit = { any_state = { region = 149 is_controlled_by = ROOT }}
+						region = 149 
+						NOT = { has_state_category = wasteland }
+						is_capital = no
+						is_core_of = ROOT
+					}
+					else = {
+						is_controlled_by = ROOT
+						is_core_of = ROOT
+						AND = {
+							NOT = { region = 230 }
+							NOT = { region = 237 }
+							NOT = { region = 150 }
+							NOT = { region = 231 }
+							NOT = { region = 234 }
+							NOT = { region = 133 }
+							NOT = { region = 132 }
+							NOT = { region = 131 }
+							NOT = { region = 130 region = 239 region = 240 }
+							NOT = { region = 40 }
+							NOT = { region = 14 }
+							NOT = { region = 233 }
+						}
+						
+					}
+				}
+			}
+			random_other_country = {
+				limit = {
+					original_tag = ROOT
+				}
+				save_global_event_target_as = RSS_EVA_et
+			}
+			event_target:RSS_esser = {
+				custom_effect_tooltip = lack_of_officers_rise_3_tt
+				hidden_effect = { lack_of_officers_rise = yes lack_of_officers_rise = yes lack_of_officers_rise = yes }
+				every_unit_leader = { limit = { OR = { has_id = 92346 has_id = 92348 has_id = 92350 has_id = 92351 has_id = 92353 has_id = 92359 has_id = 92360 has_id = 88150 has_id = 77400 } } set_nationality = event_target:RSS_EVA_et }
+			}
+			event_target:RSS_EVA_et = {
+				every_unit_leader = { limit = { OR = { has_id = 88149 has_id = 88148 has_id = 88168 has_id = 88152 has_id = 88155 has_id = 78406 has_id = 88166 has_id = 77411 has_id = 88156 has_id = 92354 has_id = 92355 has_id = 88151 has_id = 88153 } } set_nationality = event_target:RSS_esser }
+				set_cosmetic_tag = RSS_EVA
+				add_ideas = EVA_low_discipline_idea
+				add_ideas = {
+					military_dictatorship_gov_form
+					unitary_gov_terr
+					decrees_of_ruler_b_law
+					poliparty_system_law
+					neutral_foreign_policy_law
+				}
+				create_country_leader = { name = "Voennoe Pravitelstvo" desc = "" picture = "gfx/leaders/SIB/Portrait_Directory.dds" expire = "1935.4.30" ideology = authoritarism_ideology traits = { military_government_trait } }
+				set_popularities = {
+					authoritarism = 50
+					despotism = 35
+					fascism = 5
+					conservatism = 5
+					national_syndicalism = 5
+				}
+				#if = {
+				#	limit = { RUS = { exists = yes OR = { has_government = radical_socialism has_government = communism } } }
+				#	decla1re_war_on = {
+				#		target = RUS
+				#		type = annex_everything
+				#	}
+				#}
+				every_state = {
+					limit = {
+						has_state_category = wasteland 
+						is_controlled_by = event_target:RSS_EVA_et
+					}
+					teleport_armies = {
+						to_state = capital
+					}
+				}
+				REB = { every_unit_leader = { limit = { has_id = 92359 } set_nationality = event_target:RSS_EVA_et } }
+				load_focus_tree = Russian_state_eser_civil_war_focus
+				load_oob = RSS_EVA_army
+			}
+			every_country = {
+				limit = { NOT = { OR = { tag = RSS tag = RVA tag = NVA tag = NWA } } NOT = { has_war_with = event_target:RSS_EVA_et } has_war_with = event_target:RSS_esser }
+				event_target:RSS_EVA_et = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			event_target:RSS_esser = {
+				if = {
+					limit = { 
+						OR = {
+							has_completed_focus = RSS_dobeyte_vizhivshyh
+							has_completed_focus = RSS_democratization_redemocratization
+							has_completed_focus = RSS_police_rear_battalions
+							has_country_flag = did_clean_officers
+						} 
+					}
+				}
+				else = {
+					country_event = { id = rcw_rss_eser_rep.20 days = 5 }
+				}
+			}
+		}
+		clear_global_event_target = RSS_esser
+		clear_global_event_target = RSS_EVA_et
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Победа над социалистами 
+country_event = {
+	id = rcw_rss_eser_rep.19
+	title = rcw_rss_eser_rep.19.t	
+	desc = rcw_rss_eser_rep.19.desc
+	picture = GFX_report_event_RSS_right_turn
+	fire_only_once = yes 
+	
+	trigger = {
+		original_tag = RSS
+		has_civil_war = no
+		OR = {
+			has_cosmetic_tag = EVA_tsarist
+			has_cosmetic_tag = RSS_EVA
+		}
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.19.a
+		if = {
+			limit = { 
+				OCH = {
+					has_country_flag = RSS_reaction_rebels_support
+					has_country_leader = {
+						character = OCH_Alexandr_Dutov
+						ruling_only = yes
+					}
+				}
+			}
+			if = { 
+				limit = { 
+					OCH = { is_ai = no } 
+				} 
+				change_tag_from = OCH
+			}
+			annex_country = {
+				target = OCH
+				transfer_troops = yes
+			}
+			OCH = { OCH_Alexandr_Dutov = { set_nationality = ROOT } }
+			remove_country_leader_role = {
+				character = OCH_Alexandr_Dutov
+				ideology = despotism_ideology
+			}
+			remove_country_leader_role = {
+				character = OCH_Alexandr_Dutov
+				ideology = conservatism_ideology
+			}
+			add_country_leader_role = {
+				character = OCH_Alexandr_Dutov
+				promote_leader = yes
+				country_leader = {
+					desc = OCH_Alexandr_Dutov_desc
+					ideology = despotism_ideology
+					expire = "1965.1.1.1"
+					traits = { warmonger_old_general ataman_of_revolution dictator ataman_of_all_cossacks }
+				}
+			}
+			set_party_name = {
+				ideology = despotism 
+				long_name = OCH_despotism_party_long 
+				name = OCH_despotism_party
+			}
+			set_politics = { ruling_party = despotism }
+		}
+		if = {
+			limit = { 
+				BKL = {
+					has_country_flag = RSS_reaction_rebels_support
+					has_country_leader = { character = BKL_Grigoriy_Semyonov ruling_only = yes }
+				}
+			}
+			BKL = { BKL_Grigoriy_Semyonov = { set_nationality = ROOT } }
+			if = {
+				limit = {
+					BKL = { is_ai = no }
+				}
+				change_tag_from = BKL
+			}
+			annex_country = {
+				target = BKL
+				transfer_troops = yes
+			}
+			set_party_name = { 
+				ideology = despotism 
+				long_name = BKL_despotism_party_long 
+				name = BKL_despotism_party
+			}
+			set_politics = { ruling_party = despotism }
+		}
+		if = {
+			limit = { 
+				BKL = {
+					has_country_flag = RSS_reaction_rebels_support
+					has_country_leader = {
+						name = "Roman Fyodorovich von Ungern-Sternberg" 
+						ruling_only = yes
+					}
+				}
+			}
+			if = { 
+				limit = { 
+					BKL = { is_ai = no } 
+				} 
+				change_tag_from = BKL
+			}
+			annex_country = {
+				target = BKL
+				transfer_troops = yes
+			}
+			create_country_leader = {
+				name = "Roman Fyodorovich von Ungern-Sternberg" desc = "RUS_Roman_Fedorovich_von_Ungern-Sternberg_DESC"
+				picture = "gfx/leaders/RUS/Portrait_Roman_Fyodorovich_von_Ungern-Sternberg.dds" 
+				expire = "1965.1.1" 
+				ideology = despotism_ideology
+				traits = { spirit_of_genghis warmonger }
+			}
+			set_party_name = { 
+				ideology = despotism 
+				long_name = BKL_despotism_party_long 
+				name = BKL_despotism_party
+			}
+			set_politics = { ruling_party = despotism }
+		}
+		load_focus_tree = Russia_Russian_state_Kolchak_focus
+		drop_cosmetic_tag = yes
+		hidden_effect = { set_cosmetic_tag = EVA_color }
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Раскол армии 
+country_event = {
+	id = rcw_rss_eser_rep.20
+	title = rcw_rss_eser_rep.20.t	
+	desc = rcw_rss_eser_rep.20.desc
+	picture = GFX_report_event_RSS_solders
+	is_triggered_only = yes
+
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = { save_global_event_target_as = RSS_esser }
+			random_other_country = {
+				limit = {original_tag = ROOT}
+				save_global_event_target_as = RSS_EVA
+			}
+		}
+		
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.20.a
+		if = {
+			limit = {
+				has_stability > 0.4
+				NOT = { has_idea = mutiny_1 }
+				NOT = { has_idea = mutiny_2 }
+				NOT = { has_idea = mutiny_3 }
+				NOT = { has_country_flag = crisis_in_progress }
+			}
+			add_ideas = mutiny_1
+			set_country_flag = crisis_in_progress
+		}
+		else = {
+			every_unit_leader = {
+				set_unit_leader_flag = RSS_irregular_army_generals
+			}
+			transfer_units_fraction ={
+				target = event_target:RSS_EVA
+				size = 0.4
+				keep_unit_leaders_trigger = {
+					has_unit_leader_flag = RSS_irregular_army_generals
+				}
+			}
+			every_unit_leader = {
+				clr_unit_leader_flag = RSS_irregular_army_generals
+			}
+		}
+		clear_global_event_target = RSS_esser
+		clear_global_event_target = RSS_EVA
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Милиция восстанавливает порядок
+country_event = {
+	id = rcw_rss_eser_rep.21
+	title = rcw_rss_eser_rep.21.t	
+	desc = rcw_rss_eser_rep.21.desc
+	
+	picture = GFX_report_event_RSS_demonstration	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.21.a
+		add_stability = 0.05
+		add_to_variable = {
+			var = RSS_party_antagonism
+			value = 1
+		}
+		RSS_update_party_antagonism = yes
+		custom_effect_tooltip = RSS_reduce_antagonosm
+		if = {
+			limit = { has_idea = moderate_faction_assassinations }
+			remove_ideas = moderate_faction_assassinations
+		}
+		if = {
+			limit = { has_idea = right_faction_assassinations }
+			remove_ideas = right_faction_assassinations
+		}
+		if = {
+			limit = { has_idea = maximalist_faction_assassinations }
+			remove_ideas = maximalist_faction_assassinations
+		}
+		add_ideas = emergency_laws_b_law
+		if = {
+			limit = { has_active_mission = rad_soc_question_of_power_ai_mission }
+			remove_mission = rad_soc_question_of_power_ai_mission
+			rad_soc_makes_move_ai = yes
+		}
+		if = {
+			limit = { has_active_mission = market_lib_question_of_power_ai_mission }
+			remove_mission = market_lib_question_of_power_ai_mission
+			market_lib_makes_move_ai = yes
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.21.b
+		country_event = { id = rcw_rss_eser_rep.22 }
+	}
+} 
+#Милиция берет власть
+country_event = {
+	id = rcw_rss_eser_rep.22
+	title = rcw_rss_eser_rep.22.t	
+	desc = rcw_rss_eser_rep.22.desc
+	
+	picture = GFX_report_event_RSS_demonstration	
+	is_triggered_only = yes
+	
+	immediate = {
+		clr_country_flag = RSS_esser_party_struggle_is_on 
+		set_country_flag = RSS_eser_militia_takes_power
+		hidden_effect = {
+			remove_dynamic_modifier = { modifier = RSS_party_antagonism_dynamic_modifier }
+		}
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.22.a
+		add_ideas = emergency_laws_b_law
+		create_country_leader = { name = "Evgeniy Rogovskiy" desc = "" picture = "gfx/leaders/RSS_esser/Portrait_Evgeniy_Rogovskiy.dds" expire = "1935.4.30" ideology = narodnichestvo traits = { leftist_freemason eser_terrorist } }
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+		set_politics = {
+			ruling_party = social_liberalism
+		}
+		hidden_effect = {
+			add_country_leader_trait = republic_protector	
+		}
+	}
+} 
+#Дедушка Чернов 
+country_event = {
+	id = rcw_rss_eser_rep.23
+	title = rcw_rss_eser_rep.23.t	
+	desc = rcw_rss_eser_rep.23.desc
+	picture = GFX_report_event_RSS_Chernov 
+	fire_only_once = yes 
+	
+	trigger = {
+		has_global_flag = RUS_civil_war_over
+		NOT = { has_country_flag = RSS_esser_party_struggle_is_on }
+		has_country_flag = soc_lib_won
+		has_country_leader = {
+			name = "Victor Chernov" 
+			ruling_only = yes
+		} 
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	immediate = {set_country_flag = Chernov_can_write_constructive_socialism}
+	
+	option = {
+		name = rcw_rss_eser_rep.23.a	
+		add_country_leader_trait = indisputable_party_authority
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Русский социализм
+country_event = {
+	id = rcw_rss_eser_rep.24
+	title = rcw_rss_eser_rep.24.t	
+	desc = rcw_rss_eser_rep.24.desc
+	picture = GFX_report_event_rss_new_government
+	fire_only_once = yes 
+	
+	trigger = {
+		NOT = { has_country_flag = RSS_esser_party_struggle_is_on }
+		OR = {
+			has_completed_focus = RSS_labor_control
+			has_completed_focus = RSS_ministry_of_labor
+		}
+		has_country_leader = {
+			name = "Nikolay Avksentev" 
+			ruling_only = yes
+		} 
+	}
+	
+	mean_time_to_happen = { days = 1 }
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.24.a
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.25 }
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.24.b
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.03
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Партия Русского социализма
+country_event = {
+	id = rcw_rss_eser_rep.25
+	title = rcw_rss_eser_rep.25.t	
+	desc = rcw_rss_eser_rep.25.desc
+	picture = GFX_report_event_rss_new_government
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.25.a
+		if = {
+			limit = { has_completed_focus = RSS_labor_control }
+			set_party_name = {
+				ideology = national_syndicalism
+				long_name = RSS_eser_united_people_party_long
+				name = RSS_eser_united_people_party
+			}
+			hidden_effect = {
+				retire_ideology_leader = market_liberalism
+				set_politics = { ruling_party = national_syndicalism }
+			}
+			create_country_leader = { name = "Nikolay Avksentev" desc = "RUS_Nikolay_Avksentev_DESC" picture = "gfx/leaders/RUS/Portrait_Nikolay_Avksentev.dds" expire = "1935.4.30" ideology = national_syndicalism_ideology traits = { editor leftist_freemason doctor_of_philosophy goal flame_nationalist } }
+			set_temp_variable = { RSS_ml_popularity = party_popularity@market_liberalism }
+			multiply_temp_variable = { RSS_ml_popularity = 0.75 }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = RSS_ml_popularity
+			}
+			multiply_temp_variable = { RSS_ml_popularity = -1 }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = RSS_ml_popularity
+			}
+			add_political_power = -150
+		}
+		else_if = {
+			limit = { has_completed_focus = RSS_ministry_of_labor }
+			set_party_name = {
+				ideology = fascism
+				long_name = RSS_eser_united_people_party_long
+				name = RSS_eser_united_people_party
+			}
+			hidden_effect = {
+				retire_ideology_leader = market_liberalism
+				set_politics = { ruling_party = fascism }
+			}
+			create_country_leader = { name = "Nikolay Avksentev" desc = "RUS_Nikolay_Avksentev_DESC" picture = "gfx/leaders/RUS/Portrait_Nikolay_Avksentev.dds" expire = "1935.4.30" ideology = fascism_ideology traits = { editor leftist_freemason doctor_of_philosophy goal flame_nationalist } }
+			set_temp_variable = { RSS_ml_popularity = party_popularity@market_liberalism }
+			multiply_temp_variable = { RSS_ml_popularity = 0.75 }
+			add_popularity = {
+				ideology = fascism
+				popularity = RSS_ml_popularity
+			}
+			multiply_temp_variable = { RSS_ml_popularity = -1 }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = RSS_ml_popularity
+			}
+			add_political_power = -100
+			country_event = { id = rcw_rss_eser_rep.61 days = 2 }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.25.b
+			if = {
+			limit = { has_completed_focus = RSS_labor_control }
+			set_party_name = {
+				ideology = national_syndicalism
+				long_name = RSS_eser_nat_socialism_party_long
+				name = RSS_eser_nat_socialism_party
+			}
+			retire_ideology_leader = market_liberalism
+			create_country_leader = { name = "Nikolay Avksentev" desc = "RUS_Nikolay_Avksentev_DESC" picture = "gfx/leaders/RUS/Portrait_Nikolay_Avksentev.dds" expire = "1935.4.30" ideology = national_syndicalism_ideology traits = { editor leftist_freemason doctor_of_philosophy goal flame_nationalist } }
+			set_politics = { ruling_party = national_syndicalism }
+			set_temp_variable = { RSS_ml_popularity = party_popularity@market_liberalism }
+			multiply_temp_variable = { RSS_ml_popularity = 0.5 }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = RSS_ml_popularity
+			}
+			multiply_temp_variable = { RSS_ml_popularity = -1 }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = RSS_ml_popularity
+			}
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.05
+			}
+			add_stability = -0.05
+		}
+		else_if = {
+			limit = { has_completed_focus = RSS_ministry_of_labor }
+			set_party_name = {
+				ideology = fascism
+				long_name = RSS_eser_nat_socialism_party_long
+				name = RSS_eser_nat_socialism_party
+			}
+			retire_ideology_leader = market_liberalism
+			create_country_leader = { name = "Nikolay Avksentev" desc = "RUS_Nikolay_Avksentev_DESC" picture = "gfx/leaders/RUS/Portrait_Nikolay_Avksentev.dds" expire = "1935.4.30" ideology = fascism_ideology traits = { editor leftist_freemason doctor_of_philosophy goal flame_nationalist } }
+			set_politics = { ruling_party = fascism }
+			set_temp_variable = { RSS_ml_popularity = party_popularity@market_liberalism }
+			multiply_temp_variable = { RSS_ml_popularity = 0.5 }
+			add_popularity = {
+				ideology = fascism
+				popularity = RSS_ml_popularity
+			}
+			multiply_temp_variable = { RSS_ml_popularity = -1 }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = RSS_ml_popularity
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.05
+			}
+			add_stability = -0.05
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Вопрос национального самоопределения 
+country_event = {
+	id = rcw_rss_eser_rep.26
+	title = rcw_rss_eser_rep.26.t	
+	desc = rcw_rss_eser_rep.26.desc
+	picture = GFX_report_event_rss_new_government
+	fire_only_once = no 
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.26.a
+		add_war_support = 0.07
+		custom_effect_tooltip = CCA_national_autonomies_tooltip
+		set_country_flag = RSS_autonomies_granted
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.26.b
+		add_ideas = RSS_inorodci
+		add_political_power = -25
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Дело генерала Каппеля 
+country_event = {
+	id = rcw_rss_eser_rep.27
+	title = rcw_rss_eser_rep.27.t	
+	desc = rcw_rss_eser_rep.27.desc
+	picture = GFX_report_event_RSS_delo_cappel
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {	}
+	
+	option = {
+		name = rcw_rss_eser_rep.27.a
+		every_unit_leader = { limit = { has_id = 88150 } remove_unit_leader = yes }
+		set_country_flag = Vladimir_Kappel_dead
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.03
+		}
+		add_war_support = -0.04
+		add_command_power = -20
+		add_to_variable = {
+			var = RSS_killed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.27.b
+		every_unit_leader = { limit = { has_id = 88150 	} set_nationality = REB }
+		set_country_flag = Vladimir_Kappel_dismissed
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.01
+		}
+		add_war_support = -0.02
+		add_to_variable = {
+			var = RSS_dismissed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.27.c
+		add_political_power = -5
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Дело генерала Дитерихса 
+country_event = {
+	id = rcw_rss_eser_rep.28
+	title = rcw_rss_eser_rep.28.t	
+	desc = rcw_rss_eser_rep.28.desc
+	picture = GFX_report_event_RSS_delo_diterihs
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {
+
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.28.a
+		every_unit_leader = { limit = { has_id = 77400 } remove_unit_leader = yes }
+		set_country_flag = Mikhail_Diterikhs_dead
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.03
+		}
+		add_war_support = -0.04
+		add_command_power = -20
+		add_to_variable = {
+			var = RSS_killed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.28.b
+		every_unit_leader = { limit = { has_id = 77400 	} set_nationality = REB }
+		set_country_flag = Mikhail_Diterikhs_dismissed
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.01
+		}
+		add_war_support = -0.02
+		add_to_variable = {
+			var = RSS_dismissed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.28.c
+		add_political_power = -5
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Дело генерала Ханжина 
+country_event = {
+	id = rcw_rss_eser_rep.29
+	title = rcw_rss_eser_rep.29.t	
+	desc = rcw_rss_eser_rep.29.desc
+	picture = GFX_report_event_RSS_delo_hanzin
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.29.a
+		every_unit_leader = { limit = { has_id = 88147 } remove_unit_leader = yes }
+		set_country_flag = Mikhail_Hanjin_dead
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.03
+		}
+		add_war_support = -0.04
+		add_command_power = -20
+		add_to_variable = {
+			var = RSS_killed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.29.b
+		every_unit_leader = { limit = { has_id = 88147 	} set_nationality = REB }
+		set_country_flag = Mikhail_Hanjin_dismissed
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.01
+		}
+		add_war_support = -0.02
+		add_to_variable = {
+			var = RSS_dismissed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.29.c
+		add_political_power = -5
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Дело адмирала Колчака
+country_event = {
+	id = rcw_rss_eser_rep.30
+	title = rcw_rss_eser_rep.30.t	
+	desc = rcw_rss_eser_rep.30.desc
+	picture = GFX_report_event_RSS_delo_kolchak
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.30.a
+		every_unit_leader = { limit = { has_id = 76649 } remove_unit_leader = yes }
+		set_country_flag = Alexandr_Kolchak_dead
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.05
+		}
+		add_war_support = -0.06
+		add_command_power = -40
+		add_to_variable = {
+			var = RSS_killed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.30.b
+		every_unit_leader = { limit = { has_id = 76649 } set_nationality = REB }
+		set_country_flag = Alexandr_Kolchak_dismissed
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.04
+		}
+		add_war_support = -0.04
+		add_to_variable = {
+			var = RSS_dismissed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.30.c
+		add_political_power = -10
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Дело Сахарова
+country_event = {
+	id = rcw_rss_eser_rep.31
+	title = rcw_rss_eser_rep.31.t	
+	desc = rcw_rss_eser_rep.31.desc
+	picture = GFX_report_event_RSS_delo_saharov
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {
+		
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.31.a
+		RUS_Konstantin_Sakharov = { set_character_flag = dead_flag }
+		retire_character = RUS_Konstantin_Sakharov
+		add_popularity = {
+			ideology = fascism
+			popularity = -0.03
+		}
+		add_war_support = -0.04
+		add_command_power = -20
+		add_to_variable = {
+			var = RSS_killed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.31.b
+		RUS_Konstantin_Sakharov = { set_character_flag = dismissed_flag }
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.01
+		}
+		add_war_support = -0.02
+		add_to_variable = {
+			var = RSS_dismissed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.31.c
+		add_political_power = -5
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Дело Родиона Гайды 
+country_event = {
+	id = rcw_rss_eser_rep.32
+	title = rcw_rss_eser_rep.32.t	
+	desc = rcw_rss_eser_rep.32.desc
+	picture = GFX_report_event_RSS_delo_gaida
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {
+		
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.32.a
+		every_unit_leader = { limit = { has_id = 92354 } set_nationality = REB }
+		set_country_flag = Radola_Gaida_dismissed
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.01
+		}
+		add_war_support = -0.02
+		add_to_variable = {
+			var = RSS_dismissed_generals
+			value = 1
+		}
+		add_to_variable = {
+			var = RSS_officers_fear
+			value = 1
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.32.b
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Бегство офицеров
+country_event = {
+	id = rcw_rss_eser_rep.33
+	title = rcw_rss_eser_rep.33.t	
+	desc = rcw_rss_eser_rep.33.desc
+	picture = GFX_report_event_RSS_arrest
+	fire_only_once = yes
+	trigger = { 
+		OR = {
+			check_variable = { RSS_officers_fear > 3 }
+			check_variable = { RSS_dismissed_generals > 4 }
+			check_variable = { RSS_killed_generals > 2 }
+		}
+	}
+	mean_time_to_happen = { days = 10 }
+	immediate = { }
+	
+	option = {
+		name = rcw_rss_eser_rep.33.a
+		custom_effect_tooltip = RSS_officer_rise_1
+		hidden_effect = { lack_of_officers_rise = yes }
+	}
+}
+#Царский конвой
+country_event = {
+	id = rcw_rss_eser_rep.34
+	title = rcw_rss_eser_rep.34.t	
+	desc = rcw_rss_eser_rep.34.desc
+	picture = GFX_report_event_RSS_gaida_convoy
+	fire_only_once = yes
+	
+	trigger = { 
+		original_tag = RSS 
+		has_idea = Radola_Gaida_army_chief
+	}
+	mean_time_to_happen = { days = 40 }
+	immediate = { }
+	
+	option = {
+		name = rcw_rss_eser_rep.34.a
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.02
+		}
+	}
+}
+#Переговоры с красными 
+country_event = {
+	id = rcw_rss_eser_rep.35
+	title = rcw_rss_eser_rep.35.t	
+	desc = rcw_rss_eser_rep.35.desc
+	picture = GFX_report_event_RSS_negotiation
+	fire_only_once = yes
+	
+	trigger = { 
+		original_tag = RSS 
+		has_government = radical_socialism 
+		has_war_with = RUS
+		RUS = { surrender_progress < 0.7 }
+		OR = {
+			RUS = { has_government = radical_socialism }
+			RUS = { has_government = communism }
+		}
+	}
+	mean_time_to_happen = { days = 1 }
+	immediate = { }
+	
+	option = {
+		name = rcw_rss_eser_rep.35.a
+		country_event = { id = rcw_rss_eser_rep.36 }
+	}
+	option = {
+		name = rcw_rss_eser_rep.35.b
+		trigger = { RUS = { has_government = communism } }
+	}
+}
+#Отправка парламентёров 
+country_event = {
+	id = rcw_rss_eser_rep.36
+	title = rcw_rss_eser_rep.36.t	
+	desc = rcw_rss_eser_rep.36.desc
+	picture =GFX_report_event_RSS_negotiation
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.36.a
+		RUS = { country_event = { id = rcw_rss_eser_rep.37 days = 1 } }
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Прибытие парламентёров 
+country_event = {
+	id = rcw_rss_eser_rep.37
+	title = rcw_rss_eser_rep.37.t	
+	desc = rcw_rss_eser_rep.37.desc
+	picture = GFX_report_event_RSS_negotiation
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.37.a
+		RSS = { country_event = { id = rcw_rss_eser_rep.38 days = 1 } }
+		ai_chance = {
+			factor = 1
+		}
+	}	
+	option = {
+		name = rcw_rss_eser_rep.37.b
+		trigger = { has_government = radical_socialism }
+		RSS = { country_event = { id = rcw_rss_eser_rep.39 days = 1 } } 
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Пренебрежительный отказ 
+country_event = {
+	id = rcw_rss_eser_rep.38
+	title = rcw_rss_eser_rep.38.t	
+	desc = rcw_rss_eser_rep.37.desc
+	picture = GFX_report_event_RSS_negotiation
+	fire_only_once = yes 
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.38.a
+		add_war_support = 0.05
+		add_political_power = -50
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.05
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}	
+}
+#Предложение левых эсеров
+country_event = {
+	id = rcw_rss_eser_rep.39
+	title = rcw_rss_eser_rep.39.t
+	desc = rcw_rss_eser_rep.39.desc
+ 
+	picture = GFX_report_event_RSS_negotiation
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.39.a
+		RUS = { country_event = { id = rcw_rss_eser_rep.41 days = 1 } }
+	}
+	option = {
+		name = rcw_rss_eser_rep.39.b
+		RUS = { country_event = { id = rcw_rss_eser_rep.40 days = 1 } }
+		add_popularity = { ideology = social_liberalism popularity = -0.05 }
+		add_popularity = { ideology = radical_socialism popularity = -0.05 }
+	}
+}
+#Предложение отвергнуто
+country_event = {
+	id = rcw_rss_eser_rep.40
+	title = rcw_rss_eser_rep.40.t
+	desc = rcw_rss_eser_rep.40.desc
+
+	picture = GFX_report_event_RSS_negotiation
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.40.a
+		add_popularity = { ideology = social_liberalism popularity = -0.05 }
+		add_popularity = { ideology = radical_socialism popularity = -0.05 }
+	}
+}
+#Предложение принято
+country_event = {
+	id = rcw_rss_eser_rep.41
+	title = rcw_rss_eser_rep.41.t
+	desc = rcw_rss_eser_rep.41.desc
+
+	picture = GFX_report_event_RSS_negotiation
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.41.a
+		RSS = { 
+			every_unit_leader = { set_nationality = RUS }
+			set_temp_variable = { RSS_rs_popularity = party_popularity@radical_socialism }
+			multiply_temp_variable = { RSS_rs_popularity = 0.5 }
+		}
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = RSS.RSS_rs_popularity
+		}
+		annex_country = { target = RSS transfer_troops = yes }
+		add_ideas = two_party_system_law
+		if = { limit = { is_ai = yes RSS = { is_ai = no } } RUS = { change_tag_from = RSS } }
+		news_event = rcw_don_cca_news.2
+	}
+}
+#Б.Б.И.Г.Г
+country_event = {
+	id = rcw_rss_eser_rep.42
+	title = rcw_rss_eser_rep.42.t	
+	desc = rcw_rss_eser_rep.42.desc
+	picture = GFX_report_event_RSS_gaida_bbigg
+	fire_only_once = yes
+	
+	trigger = { 
+		original_tag = RSS 
+		has_idea = Radola_Gaida_army_chief
+		OR = {
+			has_completed_focus = RSS_salvic_legionnaires
+			has_completed_focus = RSS_unification_new_stormtroopers
+		}
+	}
+	mean_time_to_happen = { days = 1 }
+	immediate = { }
+	
+	option = {
+		name = rcw_rss_eser_rep.42.a
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		division_template = { 
+			name = "B.B.I.G.G." 
+			regiments = { 
+				infantry = { x = 0 y = 0 } 
+				infantry = { x = 0 y = 1 } 
+				infantry = { x = 1 y = 0 } 
+				infantry = { x = 1 y = 1 } 
+				infantry = { x = 2 y = 0 } 
+				infantry = { x = 2 y = 1 } 
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }
+				artillery = { x = 0 y = 2 }
+			}
+			is_locked = yes 
+		}
+		capital_scope = {
+			create_unit = { 
+				division = "name = \"Besmertnaya Brigada Imeni Generala Gajdy\" division_template = \"B.B.I.G.G.\" start_experience_factor = 0.15 start_equipment_factor = 1" owner = ROOT  
+			}
+		}
+	}
+}
+#Сложности перевода
+country_event = {
+	id = rcw_rss_eser_rep.43
+	title = rcw_rss_eser_rep.43.t
+	desc = rcw_rss_eser_rep.43.desc
+
+	picture = GFX_report_event_RSS_gaida_translation_difficulties
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {
+		set_variable = { Gajda_army_inf = 3 }
+		set_variable = { Gajda_eser_inf = 1 }
+		set_variable = { Gajda_chekh_inf = 1 }
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.43.a
+		country_event = { id = rcw_rss_eser_rep.44 days = 1 }
+	}
+}
+#Соотечественники 
+country_event = {
+	id = rcw_rss_eser_rep.44
+	title = rcw_rss_eser_rep.44.t
+	desc = rcw_rss_eser_rep.44.desc
+
+	picture = GFX_report_event_RSS_gaida_compatriots
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.44.a
+		add_to_variable = {
+			var = Gajda_army_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.45 days = 1 }
+	}
+	option = {
+		name = rcw_rss_eser_rep.44.b
+		add_to_variable = {
+			var = Gajda_eser_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.45 days = 1 }
+	}
+	option = {
+		name = rcw_rss_eser_rep.44.c
+		add_to_variable = {
+			var = Gajda_chekh_inf
+			value = 1
+		}
+		hidden_effect = { lack_of_officers_fall = yes }
+		custom_effect_tooltip = RSS_officer_fall_1
+		country_event = { id = rcw_rss_eser_rep.45 days = 1 }
+	}
+}
+#Лояльность губерний
+country_event = {
+	id = rcw_rss_eser_rep.45
+	title = rcw_rss_eser_rep.45.t
+	desc = rcw_rss_eser_rep.45.desc
+
+	picture = GFX_report_event_RSS_gaida_1
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.45.a
+		trigger = { has_completed_focus = RSS_unification_gen_gov }
+		add_to_variable = {
+			var = Gajda_army_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.46 days = 1 }
+	}
+	option = {
+		name = rcw_rss_eser_rep.45.b
+		trigger = { has_completed_focus = RSS_gov_com }
+		add_to_variable = {
+			var = Gajda_eser_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.46 days = 1 }
+	}
+	option = {
+		name = rcw_rss_eser_rep.45.c
+		add_to_variable = {
+			var = Gajda_chekh_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.46 days = 1 }
+	}
+}
+#Специальные органы
+country_event = {
+	id = rcw_rss_eser_rep.46
+	title = rcw_rss_eser_rep.46.t
+	desc = rcw_rss_eser_rep.46.desc
+
+	picture = GFX_report_event_RSS_arrest
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.46.a
+		add_to_variable = {
+			var = Gajda_army_inf
+			value = 1
+		}
+		add_ideas = RVA_single_counterintelligence
+		country_event = { id = rcw_rss_eser_rep.47 days = 1 }
+	}
+	option = {
+		name = rcw_rss_eser_rep.46.b
+		add_to_variable = {
+			var = Gajda_eser_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.47 days = 1 }
+	}
+	option = {
+		name = rcw_rss_eser_rep.46.c
+		add_to_variable = {
+			var = Gajda_chekh_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		country_event = { id = rcw_rss_eser_rep.47 days = 1 }
+	}
+}
+#Первый советник
+country_event = {
+	id = rcw_rss_eser_rep.47
+	title = rcw_rss_eser_rep.47.t
+	desc = rcw_rss_eser_rep.47.desc
+
+	picture = GFX_report_event_RSS_first_counsellor
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.47.a
+		add_to_variable = {
+			var = Gajda_chekh_inf
+			value = 1
+		}
+		add_political_power = 20
+		hidden_effect = { country_event = { id = rcw_rss_eser_rep.48 days = 14 } }
+	}
+	option = {
+		name = rcw_rss_eser_rep.47.b
+		add_to_variable = {
+			var = Gajda_eser_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.03
+		}
+		hidden_effect = { country_event = { id = rcw_rss_eser_rep.48 days = 14 } }
+	}
+	option = {
+		name = rcw_rss_eser_rep.47.c
+		add_to_variable = {
+			var = Gajda_army_inf
+			value = 1
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.03
+		}
+		hidden_effect = { country_event = { id = rcw_rss_eser_rep.48 days = 14 } }
+	}
+}
+#Небольшой кризис
+country_event = {
+	id = rcw_rss_eser_rep.48
+	title = rcw_rss_eser_rep.48.t
+	desc = rcw_rss_eser_rep.48.desc
+
+	picture = GFX_report_event_RSS_solders
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.48.a
+		if = {
+			limit = { check_variable = { Gajda_chekh_inf > 2 } }
+			add_to_variable = {
+				var = Gajda_army_inf
+				value = 1
+			}
+		}
+		if = {
+			limit = { 
+				OR = {
+					check_variable = { Gajda_army_inf > 5 }
+					check_variable = {
+						var = Gajda_eser_inf
+						value = 4
+						compare = equals
+					}
+				}
+			}
+			country_event = { id = rcw_rss_eser_rep.49 days = 1 }
+		}
+		else_if = {
+			limit = { check_variable = { Gajda_eser_inf > 4 } }
+			country_event = { id = rcw_rss_eser_rep.50 days = 1 }
+		}
+		else = {
+			country_event = { id = rcw_rss_eser_rep.51 days = 1 }
+		}
+	}
+}
+#Последний день авантюриста 
+country_event = {
+	id = rcw_rss_eser_rep.49
+	title = rcw_rss_eser_rep.49.t
+	desc = rcw_rss_eser_rep.49.desc
+
+	picture = GFX_report_event_RSS_gaida_last_day_adventurer
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.49.a
+		retire_country_leader = yes
+		remove_ideas = { Radola_Gaida_army_chief }
+		every_unit_leader = { limit = { OR = { has_id = 92354 has_id = 88153 has_id = 92355 } } set_nationality = REB }
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -0.1
+		}
+		set_politics = { ruling_party = despotism }
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.1
+		}
+		create_country_leader = { name = "Sergey Wojciechowski" desc = "" picture = "gfx/leaders/CZE/Portrait_Sergey_Wojciechowski.dds" expire = "1948.4.15" ideology = despotism_ideology traits = { warmonger min_1_pokrovsky dislikes_germany } }
+		remove_all_Brigada_Chekhoslovatskogo_legiona_no_disband = yes
+	}
+}
+#Последний день диктатора
+country_event = {
+	id = rcw_rss_eser_rep.50
+	title = rcw_rss_eser_rep.50.t
+	desc = rcw_rss_eser_rep.50.desc
+
+	picture = GFX_report_event_RSS_gaida_last_day_dictator
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.50.a
+		kill_country_leader = yes
+		remove_ideas = { Radola_Gaida_army_chief }
+		every_unit_leader = { limit = { OR = { has_id = 88153 has_id = 92355 } } set_nationality = REB }
+		every_unit_leader = { limit = { has_id = 92354 } remove_unit_leader = yes }
+		set_country_flag = Radola_Gaida_dead
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = -0.1
+		}
+		set_politics = { ruling_party = social_liberalism }
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.1
+		}
+		create_country_leader = { name = "Nikolay Kalashnikov" desc = "" picture = "gfx/leaders/SIB/Portrait_Nikolay_Kalashnikov.dds" expire = "1948.4.15" ideology = narodnichestvo traits = { backroom_backstabber eser_terrorist political_commisar } }
+		remove_all_Brigada_Chekhoslovatskogo_legiona_no_disband = yes
+	}
+}
+#Оформление режима
+country_event = {
+	id = rcw_rss_eser_rep.51
+	title = rcw_rss_eser_rep.51.t
+	desc = rcw_rss_eser_rep.51.desc
+
+	picture = GFX_report_event_RSS_gaida_compatriots
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.51.a
+		if = {
+			limit = { 
+				check_variable = {
+					var = Gajda_army_inf
+					value = 5
+					compare = equals
+				}
+			}
+			remove_country_leader_trait = goal
+		}
+		if = {
+			limit = {
+				check_variable = {
+					var = Gajda_eser_inf
+					value = 3
+					compare = equals
+				}
+			}
+			remove_country_leader_trait = goal_in_politics
+		}
+		if = {
+			limit = { check_variable = { Gajda_chekh_inf > 2 } }
+			add_country_leader_trait = chech_variag
+		}
+	}
+}
+#Особый союзник
+country_event = {
+	id = rcw_rss_eser_rep.52
+	title = rcw_rss_eser_rep.52.t
+	desc = rcw_rss_eser_rep.52.desc
+
+	picture = GFX_report_event_RSS_special_ally
+	fire_only_once = yes
+	is_triggered_only = no
+	trigger = {
+		has_country_leader = {
+			name = "Vasiliy Boldyrev" 
+			ruling_only = yes
+		} 
+		has_war = yes
+		NOT = { has_war_with = JAP }
+		NOT = { 219 = { is_controlled_by = RSS } }
+	}
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.52.a
+		add_political_power = -25
+		JAP = { country_event = { id = rcw_rss_eser_rep.53 } }
+		add_country_leader_trait = loves_JAP
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.52.b
+		add_political_power = -50
+		JAP = { country_event = { id = rcw_rss_eser_rep.54 } }
+		add_country_leader_trait = loves_JAP
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Приветствие генерала Болдырева 
+country_event = {
+	id = rcw_rss_eser_rep.53
+	title = rcw_rss_eser_rep.53.t
+	desc = rcw_rss_eser_rep.53.desc
+
+	picture = GFX_report_event_RSS_bolderev
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.53.a
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.53.b
+		trigger = { 
+			is_in_array = {
+				array = JAP.unrecognized_states
+				value = ROOT.id
+			}
+		}
+		add_opinion_modifier = {
+			target = RSS
+			modifier = JAP_Boldyrev_g
+		}
+		FROM = { THIS_country_will_be_recognized_by_PREV = yes }
+		FROM = { country_event = rcw.205 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Генерал Болдырев взывает о помощи
+country_event = {
+	id = rcw_rss_eser_rep.54
+	title = rcw_rss_eser_rep.54.t
+	desc = rcw_rss_eser_rep.54.desc
+
+	picture = GFX_report_event_RSS_bolderev
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.54.a
+	}
+	option = {
+		name = rcw_rss_eser_rep.54.b
+		trigger = { 
+			is_in_array = {
+				array = JAP.unrecognized_states
+				value = ROOT.id
+			}
+		}
+		add_opinion_modifier = {
+			target = RSS
+			modifier = JAP_Boldyrev_g
+		}
+		FROM = { THIS_country_will_be_recognized_by_PREV = yes }
+		FROM = { country_event = rcw.205 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_rss_eser_rep.54.c
+		if = {
+			limit = {
+				is_in_array = {
+					array = JAP.unrecognized_states
+					value = ROOT.id
+				}
+			}
+			FROM = { THIS_country_will_be_recognized_by_PREV = yes }
+		}
+		add_to_array = { rcw_supported_states = FROM.id }
+		add_political_power = -30
+		add_ai_strategy = {
+			type = send_volunteers_desire
+			id = RSS
+			value = 200
+		}
+		add_ai_strategy = {
+			type = befriend
+			id = RSS
+			value = 200
+		}
+		FROM = { country_event = rcw_rss_eser_rep.55 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Ободряющий ответ
+country_event = {
+	id = rcw_rss_eser_rep.55
+	title = rcw_rss_eser_rep.55.t
+	desc = rcw_rss_eser_rep.55.desc
+
+	picture = GFX_report_event_RSS_special_ally
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	immediate = {}
+	
+	option = {
+		name = rcw_rss_eser_rep.55.a
+		add_war_support = 0.04
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.03
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Муравьёв просится командиром в Директорию
+country_event = {
+	id = rcw_rss_eser_rep.56
+	title = rcw_rss_eser_rep.56.t
+	desc = rcw_rss_eser_rep.56.desc
+	picture = GFX_report_event_sov_felix_VCHK
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.56.a
+		trigger = { NOT = { has_government = radical_socialism } }
+		declare_war_on = {
+			target = VLG
+			type = annex_everything
+		}
+	}
+	
+	option = {
+		name = rcw_rss_eser_rep.56.b
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.1
+		}
+		VLG = { every_unit_leader = { limit = { OR = { has_id = 77426 } } set_nationality = RSS } }
+		annex_country = { target = VLG transfer_troops = yes }
+		every_state = {
+			limit = {
+				is_core_of = VLG
+			}
+			remove_core_of = VLG
+		}
+	}
+}
+
+# Разгром профсоюзов
+country_event = {
+	id = rcw_rss_eser_rep.61
+	title = rcw_rss_eser_rep.61.t
+	desc = rcw_rss_eser_rep.61.desc
+	picture = GFX_report_event_rss_new_government
+	fire_only_once = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_rss_eser_rep.61.a
+		low_labor_legislation = yes
+	}
+}
+
+############
+#Тех.Ивенты#
+############
+
+add_namespace = rss_eser_tech
+#Для мобилизации иррегуляров
+country_event = {
+	id = rss_eser_tech.1
+	title = rss_eser_tech.1.t	
+	desc = rss_eser_tech.1.desc
+	hidden = yes
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = { 
+		spawn_irregular_army_script = yes
+	}
+	
+	option = {
+		name = rss_eser_tech.1.a	
+	}
+} 
+#По окончанию реформ
+country_event = {
+	id = rss_eser_tech.2
+	title = rss_eser_tech.2.t	
+	desc = rss_eser_tech.2.desc
+	hidden = yes
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = {
+		if = {
+			limit = { has_country_flag = declare_planned_reform }
+			add_ideas = cooperative_land_ownership
+			clr_country_flag = declare_planned_reform
+		}
+		else_if = {
+			limit = { has_country_flag = declare_instant_reform }
+			add_ideas = peasant_communities_property
+			clr_country_flag = declare_instant_reform
+		}
+		remove_ideas = peasant_and_land_and_bread_question_0_25
+		remove_ideas = peasant_and_land_and_bread_question_0_5
+		remove_ideas = peasant_and_land_and_bread_question
+	}
+	
+	option = {
+		name = rss_eser_tech.2.a
+	}
+} 
+#для подсчета двизий иррегуляров 
+country_event = {
+	id = rss_eser_tech.3
+	title = rss_eser_tech.3.t	
+	desc = rss_eser_tech.3.desc
+	hidden = yes
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = {
+		set_variable = { var = RSS_civ_fact_div_count value = num_of_civilian_factories }
+		multiply_variable = { var = RSS_civ_fact_div_count value = 3 } #кол-во с фабрик
+		set_variable = { var = RSS_mil_fact_div_count value = num_of_military_factories }
+		multiply_variable = { var = RSS_mil_fact_div_count value = 3 } #кол-во с заводов
+		set_variable = { var = RSS_max_fact_div_count value = 0 }
+		add_to_variable = { var = RSS_max_fact_div_count value = RSS_civ_fact_div_count } 
+		add_to_variable = { var = RSS_max_fact_div_count value = RSS_mil_fact_div_count } #всего
+		set_variable = { var = RSS_civ_fact_recruit_count value = 7000 }
+		multiply_variable = { var = RSS_civ_fact_recruit_count value = RSS_civ_fact_div_count } #Людей для заполнения фабрик
+		set_variable = { var = RSS_mil_fact_recruit_count value = 10333 }
+		multiply_variable = { var = RSS_mil_fact_recruit_count value = RSS_mil_fact_div_count } #Людей для заполнения военных заводов
+		set_variable = { var = RSS_allowed_civ_div_count value = manpower }
+		divide_variable = { var = RSS_allowed_civ_div_count value = RSS_civ_fact_recruit_count } #Сколько дивизий будет заполнено фабричных
+		set_variable = { var = RSS_manpower_count value = manpower }
+		subtract_from_variable = { var = RSS_manpower_count value = RSS_civ_fact_recruit_count }
+		set_variable = { var = RSS_allowed_mil_div_count value = RSS_manpower_count }
+		divide_variable = { var = RSS_allowed_mil_div_count value = RSS_mil_fact_recruit_count } #Сколько дивизий будет заполнено военных 
+		set_variable = { var = RSS_max_allowed_div_count value = 0 }
+		add_to_variable = { var = RSS_max_allowed_div_count value = RSS_allowed_civ_div_count } 
+		add_to_variable = { var = RSS_max_allowed_div_count value = RSS_allowed_mil_div_count } #всего доступно
+		country_event = { id = rss_eser_tech.3 days = 10 }
+	}
+	option = {
+		name = rss_eser_tech.3.a
+	}
+} 
+#для перезапуска восстаний
+state_event = {
+	id = rss_eser_tech.4
+	title = rss_eser_tech.4.t	
+	desc = rss_eser_tech.4.desc
+	hidden = yes
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = {
+		clr_state_flag = eser_rebels_called
+	}
+	option = {
+		name = rss_eser_tech.4.a
+	}
+}
+#Повышение нехватки офицеров после чисток
+country_event = {
+	id = rss_eser_tech.5
+	title = rss_eser_tech.5.t	
+	desc = rss_eser_tech.5.desc
+	hidden = yes
+	picture = GFX_debug_test	
+	is_triggered_only = yes
+	fire_only_once = yes
+	immediate = {
+		lack_of_officers_rise = yes
+	}
+	option = {
+		name = rss_eser_tech.5.a
+	}
+} 
+#Снятие трейта с роговского при конце гв
+country_event = {
+	id = rss_eser_tech.6
+	title = rss_eser_tech.6.t	
+	desc = rss_eser_tech.6.desc
+	hidden = yes
+	picture = GFX_debug_test	
+	fire_only_once = yes
+
+	trigger = { 
+		has_country_leader_with_trait = republic_protector
+		has_global_flag = RUS_civil_war_over
+	}
+	mean_time_to_happen = { days = 1 }
+	immediate = { remove_country_leader_trait = republic_protector }
+
+	option = {
+		name = rss_eser_tech.6.a
+	}
+}
+#Шанс запрета съезда
+country_event = {
+	id = rss_eser_tech.7
+	title = rss_eser_tech.7.t	
+	desc = rss_eser_tech.7.desc
+	hidden = yes
+	picture = GFX_debug_test
+	
+	trigger = { 
+		OR = {
+			AND = {
+				has_country_flag = RSS_esser_choose_rad_soc_side
+				OR = {
+					has_country_flag = rad_soc_supporters_congress
+					has_active_mission = market_lib_supporters_congress_ai_mission
+				}
+			}
+			AND = {
+				has_country_flag = RSS_esser_choose_market_lib_side
+				OR = {
+					has_country_flag = market_lib_supporters_congress
+					has_active_mission = rad_soc_supporters_congress_ai_mission
+				}
+			}
+		}
+	}
+	mean_time_to_happen = { days = 20 }
+	immediate = { }
+	
+	option = {
+		name = rss_eser_tech.7.a
+		random_list = {
+			40 = {
+				if = {
+					limit = { 
+						OR = {
+							has_country_flag = rad_soc_supporters_congress
+							has_active_mission = rad_soc_supporters_congress_ai_mission
+						}
+						check_variable = { party_popularity_100@social_liberalism > 5 }
+					}
+					country_event = { id = rcw_rss_esser.48 }
+				}
+				else_if = {
+					limit = { 
+						OR = {
+							has_country_flag = market_lib_supporters_congress
+							has_active_mission = market_lib_supporters_congress_ai_mission
+						}
+						check_variable = { party_popularity_100@social_liberalism > 5 }
+					}
+					country_event = { id = rcw_rss_esser.49 }
+				}
+				else = {}
+			}
+			60 = {}
+		}
+	}
+}
+	

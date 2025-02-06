@@ -1,0 +1,1840 @@
+focus_tree = {
+	id = Siberia_focus
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = SIB
+		}
+	}
+	default = no
+	
+	focus = {
+		id = SIB_siberian_army
+		icon = GFX_goal_SIB_siberian_army
+		cost = 8
+		ai_will_do = {
+			factor = 1
+		}
+		x = 14
+		y = 0
+		completion_reward = {
+			load_oob = "SIB_mob"
+			add_timed_idea = { idea = SIB_siberian_army_idea days = 730 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_1
+				amount = 3000
+				producer = RUS
+			}
+			rise_2_mobilization_law = yes
+			army_experience = 50
+			add_to_variable = {
+				var = global.RCW_green_var_Siberia
+				value = 2
+			}
+		}
+	}
+	
+	#Ветка фокусов на интервенцию
+	
+	focus = {
+		id = SIB_usa_intervention
+		icon = GFX_goal_SIB_intervention
+		cost = 4
+		available = {
+			ENG = {is_subject = no}
+			FRA = {is_subject = no}
+			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_GER_HAS_CAPITULATED }
+			NOT = {has_war_with = ENG has_war_with = USA has_war_with = FRA}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_siberian_army
+		}
+		mutually_exclusive = {
+			focus = SIB_jap_intervention
+		}
+		x = 17
+		y = 1
+		completion_reward = {
+			set_country_flag = rcw_country_asks_foreing_help
+			unlock_decision_category_tooltip = rcw_intervention_help_white_desisions
+			add_ideas = help_from_foreign_interventionists
+			ENG = { country_event = { id = rcw.156 days = 1 } }
+			FRA = { country_event = { id = rcw.156 days = 1 } }
+			USA = { country_event = { id = rcw.156 days = 1 } }
+			ITA = { country_event = { id = rcw.156 days = 1 } }
+		}
+	}
+	focus = {
+		id = SIB_usa_order
+		icon = GFX_goal_SIB_usa_help
+		cost = 4
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_usa_intervention
+		}
+		relative_position_id = SIB_usa_intervention
+		x = 0
+		y = 1
+		completion_reward = {
+			country_event = { id = rcw.162 days = 1 }
+		}
+	}
+	focus = {
+		id = SIB_liberty_loan
+		icon = GFX_goal_money
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_usa_order
+		}
+		relative_position_id = SIB_usa_order
+		x = 0
+		y = 1
+		completion_reward = {
+			set_country_flag = flag_SIB_liberty_loan
+			add_timed_idea = { idea = SIB_liberty_loan_idea days = 730 }
+			add_opinion_modifier = {
+				target = USA
+				modifier = opinion_SIB_liberty_loan
+			}
+			reverse_add_opinion_modifier = {
+				target = USA
+				modifier = opinion_SIB_liberty_loan
+			}
+		}
+	}
+
+	focus = {
+		id = SIB_jap_intervention
+		icon = GFX_goal_SIB_three_dogovor
+		cost = 3
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			OR = {
+				has_war_with = JAP
+				JAP = { exists = no }
+				JAP = { has_capitulated = yes }
+			}
+		}
+		prerequisite = {
+			focus = SIB_siberian_army
+		}
+		mutually_exclusive = {
+			focus = SIB_usa_intervention
+		}
+		relative_position_id = SIB_usa_intervention
+		x = 2
+		y = 0
+		completion_reward = {
+			set_country_flag = rcw_country_asks_foreing_help
+			unlock_decision_category_tooltip = rcw_intervention_help_white_desisions
+			JAP = {
+				if = {
+					limit = { BKL = { exists = yes NOT = { has_war_with = ROOT is_subject_of = ROOT } } }
+					country_event = { id = rcw_usfev.79 days = 1 }
+				}
+				give_military_access = SIB
+				add_opinion_modifier = {
+					target = SIB
+					modifier = SIB_JAP
+				}
+			}
+			give_military_access = JAP
+			if = {
+				limit = { PRM = { is_subject_of = SIB } }
+				PRM = {
+					give_military_access = JAP
+				}
+				JAP = {
+					give_military_access = PRM
+				}
+			}
+			add_ideas = help_from_foreign_interventionists
+			
+			JAP = { add_to_array = { rcw_supported_states = ROOT.id } }
+			JAP = { ROOT = { THIS_country_will_be_semi_recognized_by_PREV = yes } }
+		}
+	}
+	focus = {
+		id = SIB_tokio
+		icon = GFX_goal_SIB_transbaikal_jap_mission
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			OR = {
+				has_war_with = JAP
+				JAP = { exists = no }
+				JAP = { has_capitulated = yes }
+			}
+		}
+		prerequisite = {
+			focus = SIB_jap_intervention
+		}
+		relative_position_id = SIB_jap_intervention
+		x = 0
+		y = 1
+		completion_reward = {
+			country_event = { id = rcw_usfev.86 days = 1 }
+			#add_ideas = SIB_tokio
+			add_political_power = -150
+		}
+	}
+	focus = {
+		id = SIB_manchuria
+		icon = GFX_goal_SIB_manchuria
+		cost = 5
+		prerequisite = {
+			focus = SIB_tokio
+		}
+		available = {
+			HRB = { OR = { exists = no is_subject_of = ROOT is_subject = no } NOT = { has_war_with = ROOT } }
+			1034 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			951 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { tag = ROOT is_subject_of = ROOT AND = { is_subject = no OR = { tag = HRB tag = BKL } } } } }
+			1193 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { tag = ROOT is_subject_of = ROOT AND = { is_subject = no OR = { tag = HRB tag = BKL } } } } }
+			952 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { tag = ROOT is_subject_of = ROOT AND = { is_subject = no OR = { tag = HRB tag = BKL } } } } }
+			1209 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { tag = ROOT is_subject_of = ROOT AND = { is_subject = no OR = { tag = HRB tag = BKL } } } } }
+			1216 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { tag = ROOT is_subject_of = ROOT AND = { is_subject = no OR = { tag = HRB tag = BKL } } } } }
+			950 = { CONTROLLER = { NOT = { has_war_with = ROOT } OR = { tag = ROOT is_subject_of = ROOT AND = { is_subject = no OR = { tag = HRB tag = BKL } } } } }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		relative_position_id = SIB_tokio
+		x = 0
+		y = 1
+		completion_reward = {
+			country_event = { id = rcw_usfev.88 days = 1 }
+		}
+	}
+	#focus = {
+	#	id = SIB_disarmament_Czech
+	#	icon = GFX_goal_SIB_Disarmament_of_Czechs
+	#	cost = 10
+	#	available = {
+	#		NOT = { has_government = social_liberalism }
+	#		has_any_of_Brigada_Chekhoslovatskogo_legiona = yes
+	#	}
+	#	ai_will_do = {
+	#		factor = 1
+	#	}
+	#	prerequisite = {
+	#		focus = SIB_tokio
+	#	}
+	#	relative_position_id = SIB_tokio
+	#	x = 2
+	#	y = 1
+	#	completion_reward = {
+	#		country_event = { id = rcw_usfev.74 days = 1 }
+	#	}
+	#}
+	
+	#Натиск на реакцию
+	
+	focus = {
+		id = SIB_pressure_on_reaction
+		icon = GFX_goal_SIB_pressure_on_reaction
+		cost = 5
+		available = {
+			NOT = {
+				has_government = market_liberalism
+				has_government = conservatism
+				has_government = authoritarism
+				has_government = despotism
+				has_government = fascism
+				has_government = national_syndicalism
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_siberian_army
+		}
+		mutually_exclusive = {
+			focus = SIB_pressure_on_CoMotCA
+		}
+		x = 9
+		y = 1
+		completion_reward = {
+		add_stability = -0.15
+		add_popularity = { ideology = conservatism popularity = -0.15 }
+		add_popularity = { ideology = market_liberalism popularity = -0.15 }
+		add_popularity = { ideology = social_liberalism popularity = -0.05 }
+		set_politics = { ruling_party = social_liberalism }
+		}
+	}
+	focus = {
+		id = SIB_cooperative_meeting
+		icon = GFX_goal_SIB_kooparativen
+		cost = 5
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_pressure_on_reaction
+		}
+		relative_position_id = SIB_pressure_on_reaction
+		x = 2
+		y = 1
+		completion_reward = {
+			add_political_power = 100
+			add_stability = 0.05
+			add_ideas = SIB_cooperative_meeting_idea
+		}
+	}
+	focus = {
+		id = SIB_land_fund
+		icon = GFX_goal_SIB_sib_fond
+		cost = 5
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_pressure_on_reaction
+		}
+		relative_position_id = SIB_pressure_on_reaction
+		x = 0
+		y = 1
+		completion_reward = {
+			peasant_and_land_and_bread_question_fall = yes
+			add_timed_idea = { idea = peasant_and_land_and_bread_question_reformation_period days = 360 }
+			add_popularity = { ideology = social_liberalism popularity = 0.1 }
+			add_stability = 0.05
+		}
+	}
+	
+	focus = {
+		id = SIB_police_reform
+		icon = GFX_goal_SIB_militsia
+		cost = 5
+		prerequisite = {
+			focus = SIB_eastern_conference
+			focus = SIB_land_fund
+		}
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		relative_position_id = SIB_land_fund
+		x = 2
+		y = 1
+		completion_reward = {
+			add_stability = 0.05
+			add_popularity = { ideology = communism popularity = -0.05 }
+			add_popularity = { ideology = radical_socialism popularity = -0.05 }
+			add_ideas = SIB_police_reform_idea
+			remove_ideas = CRI_damage_to_police_and_special_services
+			add_to_variable = {
+				var = global.RCW_green_var_Siberia
+				value = -1
+			}
+		}
+	}
+	focus = {
+		id = SIB_suppression_of_atamanshina
+		icon = GFX_goal_RGR_atamanshina
+		cost = 4
+		available = {
+			has_idea = RSS_atamanshina
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_police_reform
+		}
+		relative_position_id = SIB_police_reform
+		x = 0
+		y = 1
+		completion_reward = {
+			remove_ideas = RSS_atamanshina
+			
+			#Alexey Grishin-Almazov
+			if = {
+				limit = { NOT = { tag = SCH } NOT = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = yes } } }
+				every_unit_leader = { limit = { has_id = 92345 } set_nationality = SCH }
+				if = {
+					limit = { has_country_leader = { name = "Alexey Grishin-Almazov" ruling_only = no } }
+					retire_ideology_leader = despotism
+				}
+			}
+			#Alexey Grishin-Almazov
+			if = {
+				limit = { NOT = { tag = PRM } NOT = { has_country_leader = { name = "Ivan Kalmykov" ruling_only = yes } } }
+				every_unit_leader = { limit = { has_id = 88161 } set_nationality = PRM }
+			}
+			#Mikhail Diterihs
+			if = {
+				limit = { NOT = { tag = PRM } NOT = { has_country_leader = { name = "Mikhail Diterihs" ruling_only = yes } } }
+				every_unit_leader = { limit = { has_id = 77400 } set_nationality = PRM }
+				if = {
+					limit = { has_country_leader = { name = "Mikhail Diterihs" ruling_only = no } }
+					if = {
+						limit = { tag = RSS }
+						retire_ideology_leader = conservatism
+						else = {
+							retire_ideology_leader = authoritarism
+						}
+					}
+				}
+			}
+			#Dmitriy Horvat
+			if = {
+				limit = { NOT = { tag = PRM } NOT = { has_country_leader = { name = "Dmitriy Horvat" ruling_only = yes } } }
+				every_unit_leader = { limit = { has_id = 88162 } set_nationality = PRM }
+				if = {
+					limit = { has_country_leader = { name = "Dmitriy Horvat" ruling_only = no } }
+					retire_ideology_leader = conservatism
+				}
+			}
+			#Vasiliy Flug
+			if = {
+				limit = { NOT = { tag = PRM } }
+				every_unit_leader = { limit = { has_id = 77405 } set_nationality = PRM }
+			}
+			
+			#Grigoriy Semyonov
+			if = {
+				limit = { NOT = { tag = BKL } NOT = { has_country_leader = { character = BKL_Grigoriy_Semyonov ruling_only = yes } } }
+				BKL_Grigoriy_Semyonov = { set_nationality = BKL }
+			}
+			#Roman Fyodorovich von Ungern-Sternberg
+			if = {
+				limit = { NOT = { tag = BKL } NOT = { has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = yes } } }
+				every_unit_leader = { limit = { has_id = 77402 } set_nationality = BKL }
+				if = {
+					limit = { has_country_leader = { name = "Roman Fyodorovich von Ungern-Sternberg" ruling_only = no } }
+					retire_ideology_leader = authoritarism
+				}
+			}
+			#Leonid Skipetrov
+			if = {
+				limit = { NOT = { tag = BKL } }
+				every_unit_leader = { limit = { has_id = 77403 } set_nationality = BKL }
+			}
+			
+			#hidden_effect = { country_event = { id = rcw_usfev.146 hours = 1 } }
+		}
+	}
+	
+	focus = {
+		id = SIB_trade_unionism
+		icon = GFX_goal_SIB_planting
+		cost = 5
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_land_fund
+		}
+		relative_position_id = SIB_land_fund
+		x = 0
+		y = 1
+		completion_reward = {
+			add_stability = 0.05
+			add_ideas = SIB_trade_unionism_idea
+			remove_ideas = SIB_transsib
+		}
+	}
+	focus = {
+		id = SIB_equalization_of_nationalities
+		icon = GFX_goal_SIB_avtonomi
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_trade_unionism
+		}
+		relative_position_id = SIB_trade_unionism
+		x = 0
+		y = 1
+		completion_reward = {
+			add_stability = 0.02
+			puppet = KAZ
+			release_autonomy = {
+				target = KAZ
+				autonomy_state = autonomy_dominion
+				freedom_level = 0.1
+			}
+			every_state = {
+				limit = {
+					OR = {
+						state = 402
+						state = 1396
+						state = 1397
+						state = 404
+						state = 1395
+						state = 881
+						state = 583
+						state = 882
+						state = 590
+					}
+					OR = {
+						is_owned_by = SIB
+						is_controlled_by = SIB
+						is_owned_by = CCA
+						is_controlled_by = CCA
+						is_owned_by = RUS
+						is_controlled_by = RUS
+					}
+				}
+				KAZ = { set_state_owner = PREV }
+			}
+			if = {
+				limit = { controls_state = 651 }
+				release_autonomy = {
+					target = BSK
+					autonomy_state = autonomy_puppet
+					freedom_level = 0.5
+				}
+				BSK = { load_oob = BSK_1918_CCA_autonomy }
+			}
+			if = {
+				limit = { controls_state = 249 }
+				release_autonomy = {
+					target = TAT
+					autonomy_state = autonomy_puppet
+					freedom_level = 0.5
+				}
+				TAT = { load_oob = TAT_1918_CCA_autonomy }
+			}
+		}
+	}
+	
+	#Давление на Комитет
+	
+	focus = {
+		id = SIB_pressure_on_CoMotCA
+		icon = GFX_goal_SIB_pressure_on_CoMotCA
+		cost = 5
+		prerequisite = {
+			focus = SIB_siberian_army
+		}
+		mutually_exclusive = {
+			focus = SIB_pressure_on_reaction
+		}
+		available = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+				has_government = social_liberalism
+			}
+			CCA = { owns_state = 572 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			OR = {
+				has_war_with = CCA
+				CCA = { exists = no }
+				CCA = { has_focus_tree = His_Imperial_Majesty_Military_Committee_focus }
+				is_subject = yes
+				572 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT original_tag = URL original_tag = OCH } } }
+			}
+		}
+		x = 14
+		y = 1
+		completion_reward = {
+			country_event = { id = rcw_usfev.43 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = SIB_eastern_conference
+		icon = GFX_goal_SIB_conference
+		cost = 3
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			OR = {
+				has_government = conservatism
+				has_government = despotism
+				has_government = authoritarism
+				has_government = fascism
+				has_government = national_syndicalism
+			}
+		}
+		prerequisite = {
+			focus = SIB_pressure_on_CoMotCA
+		}
+		relative_position_id = SIB_pressure_on_CoMotCA
+		x = 0
+		y = 1
+		completion_reward = {
+			country_event = { id = rcw_usfev.132 days = 1 }
+		}
+	}
+	
+	focus = {
+		id = SIB_russian_politburo
+		icon = GFX_goal_SIB_russian_politburo
+		cost = 4
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+		}
+		prerequisite = {
+			focus = SIB_eastern_conference
+			focus = SIB_land_fund
+		}
+		relative_position_id = SIB_eastern_conference
+		x = -1
+		y = 1
+		completion_reward = {
+			add_ideas = SIB_russian_politburo_idea
+		}
+	}
+	focus = {
+		id = SIB_centralisation_of_east
+		icon = GFX_goal_generic_demand_territory
+		cost = 7
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+		}
+		prerequisite = {
+			focus = SIB_russian_politburo
+		}
+		relative_position_id = SIB_russian_politburo
+		x = 0
+		y = 1
+		completion_reward = {
+			custom_effect_tooltip = SIB_centralisation_of_east_decisions_unlock
+		}
+	}
+	
+	focus = {
+		id = SIB_general_staff_courses
+		icon = GFX_goal_military_government
+		cost = 7
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+		}
+		prerequisite = {
+			focus = SIB_eastern_conference
+		}
+		relative_position_id = SIB_eastern_conference
+		x = 1
+		y = 1
+		completion_reward = {
+			hidden_effect = {
+				lack_of_officers_fall = yes
+				lack_of_officers_fall = yes
+			}
+			custom_effect_tooltip = lack_of_officers_fall_2_tt
+		}
+	}
+	focus = {
+		id = SIB_christian_war_units
+		icon = GFX_goal_christian_democracy
+		cost = 5
+		prerequisite = {
+			focus = SIB_general_staff_courses
+		}
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		relative_position_id = SIB_general_staff_courses
+		x = 0
+		y = 1
+		completion_reward = {
+			division_template = {
+				name = "Khristianskaya Brigada"	# Militia
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+				}
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+				}
+				priority = 0
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"1-ya Khristianskaya Brigada\" division_template = \"Khristianskaya Brigada\" start_experience_factor = 0.05 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"2-ya Khristianskaya Brigada\" division_template = \"Khristianskaya Brigada\" start_experience_factor = 0.05 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"3-ya Khristianskaya Brigada\" division_template = \"Khristianskaya Brigada\" start_experience_factor = 0.05 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"4-ya Khristianskaya Brigada\" division_template = \"Khristianskaya Brigada\" start_experience_factor = 0.05 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"5-ya Khristianskaya Brigada\" division_template = \"Khristianskaya Brigada\" start_experience_factor = 0.05 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+				create_unit = {
+					division = "name = \"6-ya Khristianskaya Brigada\" division_template = \"Khristianskaya Brigada\" start_experience_factor = 0.05 start_equipment_factor = 1 start_manpower_factor = 1"
+					owner = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SIB_siberian_ca
+		icon = GFX_goal_generic_national_unity
+		cost = 10
+		available = {
+			NOT = { has_government = authoritarism }
+			NOT = { has_government = despotism }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_centralisation_of_east
+			focus = SIB_equalization_of_nationalities
+		}
+		mutually_exclusive = {
+			focus = SIB_antibolshevik_crusade
+		}
+		x = 13
+		y = 5
+		completion_reward = {
+			#create_faction = siberian_axis
+			add_political_power = -100
+			add_stability = 0.07
+			country_event = rcw_usfev.68
+		}
+	}
+	focus = {
+		id = SIB_autonomous_siberia
+		icon = GFX_goal_SIB_armistice_with_Moscow
+		cost = 10
+		prerequisite = {
+			focus = SIB_siberian_ca
+		}
+		mutually_exclusive = {
+			focus = SIB_new_russian_capital_is_Siberia
+		}
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		relative_position_id = SIB_siberian_ca
+		x = -3
+		y = 1
+		completion_reward = {
+			add_ideas = SIB_autonomous_siberia
+			set_country_flag = SIB_want_to_be_autonomous
+		}
+	}
+	focus = {
+		id = SIB_moscow_peace
+		icon = GFX_goal_anschluss
+		cost = 10
+		prerequisite = {
+			focus = SIB_autonomous_siberia
+		}
+		available = {
+			has_war_with = RSR
+			controls_state = 653
+			controls_state = 572
+			OR = {
+				AND = {
+					controls_state = 251
+					controls_state = 651
+					controls_state = 652
+					OR = {
+						has_political_power > 149
+						has_idea = russia_in_ruins_idea
+					}
+				}
+				AND = {
+					controls_state = 651
+					controls_state = 652
+					OR = {
+						has_political_power > 99
+						has_idea = russia_in_ruins_idea
+					}
+					NOT = { controls_state = 251 }
+				}
+				AND = {
+					OR = {
+						has_political_power > 49
+						has_idea = russia_in_ruins_idea
+					}
+					NOT = { controls_state = 251 controls_state = 651 controls_state = 652 }
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				NOT = { has_idea = russia_in_ruins_idea }
+			}
+		}
+		bypass = {
+			NOT = { has_war_with = RUS }
+		}
+		relative_position_id = SIB_autonomous_siberia
+		x = 0
+		y = 1
+		completion_reward = {
+			drop_cosmetic_tag = yes
+			RUS = { country_event = { id = rcw_usfev.50 days = 0 } }
+		}
+	}
+	focus = {
+		id = SIB_new_russian_capital_is_Siberia
+		icon = GFX_goal_SIB_new_capital
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_siberian_ca
+		}
+		mutually_exclusive = {
+			focus = SIB_autonomous_siberia
+		}
+		relative_position_id = SIB_siberian_ca
+		x = 0
+		y = 1
+		completion_reward = {
+			set_cosmetic_tag = CCA_russian_federation
+			add_ideas = SIB_new_russian_capital_is_Siberia_idea
+		}
+	}
+	focus = {
+		id = SIB_omsk_defend
+		icon = GFX_goal_SIB_fortified_locality
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_new_russian_capital_is_Siberia
+		}
+		available = {
+			has_full_control_of_state = 571
+		}
+		relative_position_id = SIB_new_russian_capital_is_Siberia
+		x = 0
+		y = 1
+		completion_reward = {
+		571 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+			custom_effect_tooltip = SIB_omsk_defend_tt
+			hidden_effect = {
+				571 = {
+					add_building_construction = {
+						type = bunker
+						level = 7
+						instant_build = yes
+						province = 10696
+					}
+					add_building_construction = {
+						type = bunker
+						level = 3
+						instant_build = yes
+						province = 1709
+					}
+					add_building_construction = {
+						type = bunker
+						level = 3
+						instant_build = yes
+						province = 1800
+					}
+					add_building_construction = {
+						type = bunker
+						level = 3
+						instant_build = yes
+						province = 4700
+					}
+					add_building_construction = {
+						type = bunker
+						level = 1
+						instant_build = yes
+						province = 10626
+					}
+					add_building_construction = {
+						type = bunker
+						level = 1
+						instant_build = yes
+						province = 12546
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = SIB_allrussian_assembly
+		icon = GFX_goal_RSS_nathion_sobranie
+		cost = 5
+		available = {
+			NOT = { has_global_flag = RUS_civil_war_over }
+			NOT = { has_global_flag = RCW_Allrussian_national_assembly }
+			219 = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			is_subject = no
+			has_war = no
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_omsk_defend
+			focus = SIB_annex_BKL
+		}
+		relative_position_id = SIB_omsk_defend
+		x = 1
+		y = 1
+		completion_reward = {
+			if = {
+				limit = { 219 = { OWNER = { NOT = { tag = ROOT } check_variable = { num_owned_states < 2 } } } }
+				219 = { OWNER = { ROOT = { annex_country = { target = PREV transfer_troops = yes } } } }
+			}
+			else_if = { limit = { NOT = { owns_state = 219 } } transfer_state = 219 }
+			add_state_core = 219
+			set_capital = { state = 219 remember_old_capital = no }
+			country_event = rcw_all_rus_NA.1
+		}
+	}
+
+	focus = {
+		id = SIB_end_of_civilwar
+		icon = GFX_goal_generic_alliance
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_omsk_defend
+			focus = SIB_moscow_peace
+			focus = SIB_annex_BKL
+		}
+		relative_position_id = SIB_omsk_defend
+		x = -1
+		y = 1
+		completion_reward = {
+			add_to_variable = {
+				var = global.RCW_green_var_Siberia
+				value = -2
+			}
+			add_timed_idea = {
+				idea = CCA_end_of_civilwar
+				days = 720
+			}
+		}
+	}
+	focus = {
+		id = SIB_transsib_expansion
+		icon = GFX_goal_generic_construct_infrastructure
+		cost = 20
+		available = {
+			NOT = { has_idea = confederal_gov_terr }
+			controls_state = 1279
+			controls_state = 1260
+			controls_state = 571
+			controls_state = 570
+			controls_state = 569
+			controls_state = 568
+			controls_state = 567
+			controls_state = 566
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_end_of_civilwar
+		}
+		relative_position_id = SIB_end_of_civilwar
+		x = -1
+		y = 1
+		bypass = {
+			all_owned_state = {
+				OR = {
+					NOT = {
+						state = 1279
+						state = 1260
+						state = 571
+						state = 570
+						state = 569
+						state = 568
+						state = 567
+						state = 566
+					}
+					free_building_slots = {
+						building = infrastructure
+						size < 1
+					}
+				}
+			}
+		}
+		completion_reward = {
+			every_state = {
+				limit = {
+					OR = {
+						state = 1279
+						state = 1260
+						state = 571
+						state = 570
+						state = 569
+						state = 568
+						state = 567
+						state = 566
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	focus = {
+		id = SIB_quotas_for_russian_immigrants
+		icon = GFX_goal_SIB_frontierman
+		cost = 10
+		available = {
+			has_war = no
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_end_of_civilwar
+		}
+		relative_position_id = SIB_end_of_civilwar
+		x = 1
+		y = 1
+		completion_reward = {
+			add_stability = -0.2
+			add_war_support = 0.1
+			add_ideas = SIB_quotas_for_russian_immigrants_idea
+			add_to_variable = {
+				var = global.RCW_green_var_Siberia
+				value = 2
+			}
+		}
+	}
+	focus = {
+		id = SIB_new_siberian_schools
+		icon = GFX_goal_book
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_quotas_for_russian_immigrants
+		}
+		bypass = {
+			NOT = {
+				has_idea = no_literacy
+				has_idea = cities_low_literacy
+				has_idea = cities_averange_literacy
+				has_idea = cities_averange_education
+			}
+		}
+		relative_position_id = SIB_quotas_for_russian_immigrants
+		x = 0
+		y = 1
+		completion_reward = {
+			custom_effect_tooltip = SIB_peoples_education_focus_tt
+		}
+	}
+	focus = {
+		id = SIB_eastern_universities
+		icon = GFX_goal_generic_scientific_exchange
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_new_siberian_schools
+		}
+		relative_position_id = SIB_new_siberian_schools
+		x = 0
+		y = 1
+		completion_reward = {
+			#add_research_slot = 1
+			add_ideas = SIB_eastern_universities_idea
+			add_tech_bonus = {
+				bonus = 0.5
+				uses = 2
+				category = industry
+			}
+		}
+	}
+	focus = {
+		id = SIB_industrialisation
+		icon = GFX_goal_SIB_sib_industry
+		cost = 20
+		available = {
+			NOT = { has_idea = confederal_gov_terr }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_transsib_expansion
+		}
+		prerequisite = {
+			focus = SIB_quotas_for_russian_immigrants
+		}
+		relative_position_id = SIB_transsib_expansion
+		x = 0
+		y = 1
+
+		complete_tooltip = {
+			every_state = {
+				limit = { has_state_flag = SOV_industrial_complex_effort_2ic }
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+			every_state = {
+				limit = { has_state_flag = SOV_industrial_complex_effort_1ic }
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			every_state = {
+				limit = { has_state_flag = SOV_arms_factory_effort_1ar }
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+		completion_reward = {
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+						}
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+					set_state_flag = SOV_industrial_complex_effort_2ic
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+						}
+						NOT = { has_state_flag = SOV_industrial_complex_effort_2ic }
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					set_state_flag = SOV_industrial_complex_effort_1ic
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+						}
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+					set_state_flag = SOV_arms_factory_effort_1ar
+				}
+			hidden_effect = {
+				every_state = {
+					limit = { has_state_flag = SOV_industrial_complex_effort_2ic }
+					clr_state_flag = SOV_industrial_complex_effort_2ic
+				}
+				every_state = {
+					limit = { has_state_flag = SOV_industrial_complex_effort_1ic }
+					clr_state_flag = SOV_industrial_complex_effort_1ic
+				}
+				every_state = {
+					limit = { has_state_flag = SOV_arms_factory_effort_1ar }
+					clr_state_flag = SOV_arms_factory_effort_1ar
+				}
+			}
+		}
+	}
+	focus = {
+		id = SIB_foodstuff_supply_autarky
+		icon = GFX_goal_agriculture2
+		cost = 10
+		prerequisite = {
+			focus = SIB_industrialisation
+		}
+		available = {
+			controls_state = 579
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		relative_position_id = SIB_industrialisation
+		x = -2
+		y = 1
+		completion_reward = {
+			add_ideas = SIB_siberian_bread_idea
+		}
+	}
+	focus = {
+		id = SIB_oil_exploration
+		icon = GFX_goal_generic_oil_refinery
+		cost = 10
+		prerequisite = {
+			focus = SIB_industrialisation
+		}
+		available = {
+			controls_state = 403
+			controls_state = 568
+			controls_state = 577
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		relative_position_id = SIB_industrialisation
+		x = 0
+		y = 1
+		completion_reward = {
+			add_resource = {
+				type = oil
+				amount = 5
+				state = 577
+			}
+			add_resource = {
+				type = oil
+				amount = 5
+				state = 403
+			}
+			add_resource = {
+				type = aluminium
+				amount = 2
+				state = 568
+			}
+		}
+	}
+	focus = {
+		id = SIB_transsib_oil
+		icon = GFX_goal_SIB_oil
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_oil_exploration
+		}
+		relative_position_id = SIB_oil_exploration
+		x = 0
+		y = 1
+		completion_reward = {
+			capital_scope = {
+				add_building_construction = {
+					type = fuel_silo
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = SIB_antibolshevik_crusade
+		icon = GFX_goal_SIB_antibolshevik_crusade
+		cost = 10
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			has_war = no
+		}
+		prerequisite = {
+			focus = SIB_centralisation_of_east
+			focus = SIB_christian_war_units
+		}
+		mutually_exclusive = {
+			focus = SIB_siberian_ca
+		}
+		x = 15
+		y = 5
+		completion_reward = {
+		add_popularity = { ideology = communism popularity = -0.1 }
+		add_popularity = { ideology = radical_socialism popularity = -0.1 }
+		add_popularity = { ideology = authoritarism popularity = 0.1 }
+		add_popularity = { ideology = despotism popularity = 0.15 }
+		add_popularity = { ideology = fascism popularity = 0.1 }
+				add_timed_idea = {
+					idea = SIB_antibolshevik_crusade_idea
+					days = 93
+				}
+		}
+
+	}
+	focus = {
+		id = SIB_russian_washington
+		icon = GFX_goal_SIB_new_Washington
+		cost = 3
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			has_character = RUS_Alexandr_Kolchak
+		}
+		prerequisite = {
+			focus = SIB_antibolshevik_crusade
+		}
+		mutually_exclusive = {
+			focus = SIB_independent_tsardom
+		}
+		x = 3
+		y = 1
+		relative_position_id = SIB_antibolshevik_crusade
+		completion_reward = {
+			country_event = { id = rcw_usfev.133 days = 1 }
+		}
+	}
+	focus = {
+		id = SIB_united_and_indivisible
+		icon = GFX_goal_SIB_united_and_indivisible
+		cost = 10
+		prerequisite = {
+			focus = SIB_russian_washington
+		}
+		available = {
+			CCA = { exists = no }
+			RSS = { exists = no }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 0
+		y = 1
+		relative_position_id = SIB_russian_washington
+		
+		completion_reward = {
+			country_event = rcw_usfev.1916
+		}
+
+	}
+#	focus = {
+#		id = SIB_ungern
+#		icon = GFX_goal_SIB_ungern
+#		cost = 5
+#		available = {
+#			OR = {
+#				any_unit_leader = { has_id = 77402 }
+#				BKL = {is_subject_of = SIB any_unit_leader = { has_id = 77402 } }
+#			}
+#		}
+#		ai_will_do = {
+#			factor = 1
+#		}
+#		prerequisite = {
+#			focus = SIB_antibolshevik_crusade
+#		}
+#		mutually_exclusive = {
+#			focus = SIB_christian_war_units
+#			focus = SIB_russian_washington
+#		}
+#		x = 17
+#		y = 6
+#		completion_reward = {
+#			create_faction = siberian_blood_purge
+#			set_country_flag = Ungren_SIB
+#			MON = { add_ideas = neutral_foreign_policy_law }
+#			TAN = {
+#				load_oob = SIB_Ungern
+#				hidden_effect = { add_offsite_building = { type = arms_factory level = 1 } }
+#				create_country_leader = {
+#					name = "Roman Fedorovich von Ungern-Sternberg" desc = "RUS_Roman_Fedorovich_von_Ungern-Sternberg_DESC"
+#					picture = "gfx/leaders/RUS/Portrait_Roman_Fedorovich_von_Ungern-Sternberg.dds"
+#					expire = "1965.1.1"
+#					ideology = despotism_ideology
+#					traits = { spirit_of_genghis warmonger_old_general }
+#				}
+#
+#				set_politics = {
+#					ruling_party = despotism
+#				}
+#				set_popularities = {
+#					despotism = 100
+#				}
+#				declare_war_on = {
+#					target = MON
+#					type = annex_everything
+#				}
+#			}
+#			country_event = { id = rcw_usfev.58 days = 1 }
+#		}
+#
+#	}
+#	focus = {
+#		id = SIB_idel-ural
+#		icon = GFX_goal_generic_military_sphere
+#		cost = 10
+#		ai_will_do = {
+#			factor = 1
+#		}
+#		prerequisite = {
+#			focus = SIB_kyrgyz_horde
+#		}
+#		x = 17
+#		y = 9
+#		completion_reward = {
+#			puppet = BSK
+#			release_autonomy = {
+#				target = BSK
+#				autonomy_state = autonomy_dominion
+#				freedom_level = 0.1
+#			}
+#			BSK = {
+#				set_state_owner = 652
+#				set_state_owner = 651
+#				set_state_owner = 1299
+#				set_state_owner = 249
+#				set_politics = {ruling_party = despotism}
+#				load_oob = "CCA_autonomy"
+#				load_oob = "CCA_autonomy"
+#				load_oob = "CCA_autonomy"
+#			}
+#		}
+#	}
+#	focus = {
+#		id = SIB_uiguria
+#		icon = GFX_goal_molotov_ribbentrop_pact
+#		cost = 10
+#		ai_will_do = {
+#			factor = 1
+#		}
+#		prerequisite = {
+#			focus = SIB_agreement_with_khiva
+#		}
+#		x = 15
+#		y = 9
+#		completion_reward = {
+#			CHI = {
+#				end_puppet = SIK
+#			}
+#			SIK = {
+#				add_to_faction = siberian_blood_purge
+#				start_civil_war = {
+#					ruling_party = authoritarism
+#					ideology = despotism
+#					size = 0.1
+#				}
+#			}
+#		}
+#	}
+#	focus = {
+#		id = SIB_to_the_last_sea
+#		icon = GFX_goal_generic_occupy_states_ongoing_war
+#		cost = 10
+#		ai_will_do = {
+#			factor = 1
+#		}
+#		prerequisite = {
+#			focus = SIB_idel-ural
+#			focus = SIB_uiguria
+#		}
+#		x = 16
+#		y = 10
+#		completion_reward = {
+#			set_country_flag = SIB_SEA
+#			country_event = { id = rcw_usfev.61 days = 1 }
+#			add_timed_idea = {
+#				idea = SIB_to_the_last_sea_idea
+#				days = 1095
+#			}
+#			every_country = {
+#				limit = {
+#					OR = {
+#						tag = BSK
+#						tag = TAN
+#						tag = SIK
+#					}
+#					NOT = { has_war_with = ROOT }
+#					has_war_with = RUS
+#				}
+#				add_timed_idea = {
+#					idea = SIB_to_the_last_sea_idea
+#					days = 1095
+#				}
+#			}
+#		}
+#	}
+	
+	focus = {
+		id = SIB_independent_tsardom
+		icon = GFX_goal_SIB_tsardom
+		cost = 10
+		prerequisite = {
+			focus = SIB_antibolshevik_crusade
+		}
+		mutually_exclusive = {
+			focus = SIB_russian_washington
+		}
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		x = 0
+		y = 1
+		relative_position_id = SIB_antibolshevik_crusade
+		completion_reward = {
+			country_event = { id = rcw_usfev.89 days = 1 }
+		}
+	}
+	focus = {
+		id = SIB_annex_BKL
+		icon = GFX_goal_SIB_Zabaikalie
+		cost = 5
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			OR = {
+				has_war_with = BKL
+				BKL = { exists = no }
+				BKL = { has_capitulated = yes }
+				BKL = { is_subject_of = ROOT }
+			}
+		}
+		prerequisite = {
+			focus = SIB_independent_tsardom
+		}
+		relative_position_id = SIB_independent_tsardom
+		x = 0
+		y = 1
+		completion_reward = {
+			BKL = {
+				country_event = { id = rcw_usfev.47 days = 1 }
+			}
+		}
+	}
+	focus = {
+		id = SIB_baikal_castle
+		icon = GFX_goal_SIB_Baikal
+		cost = 10
+		prerequisite = {
+			focus = SIB_omsk_defend
+			focus = SIB_moscow_peace
+			focus = SIB_annex_BKL
+		}
+		relative_position_id = SIB_annex_BKL
+		x = 1
+		y = 1
+		available = {
+			has_full_control_of_state = 1207
+			has_full_control_of_state = 565
+			has_full_control_of_state = 566
+			has_full_control_of_state = 1208
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			1207 = {
+				add_building_construction = {
+					type = bunker
+					level = 4
+					instant_build = yes
+					province = 7828
+				}
+			}
+			565 = {
+				add_building_construction = {
+					type = bunker
+					level = 4
+					instant_build = yes
+					province = 12575
+				}
+			}
+			566 = {
+				add_building_construction = {
+					type = bunker
+					level = 4
+					instant_build = yes
+					province = 10524
+				}
+				add_building_construction = {
+					type = bunker
+					level = 4
+					instant_build = yes
+					province = 1762
+				}
+			}
+			1208 = {
+				add_building_construction = {
+					type = bunker
+					level = 4
+					instant_build = yes
+					province = 4837
+				}
+			}
+		}
+	}
+	focus = {
+		id = SIB_mongolian_mission
+		icon = GFX_goal_generic_cavalry
+		cost = 10
+		available = {
+			owns_state = 564
+			MON = { exists = yes owns_state = 330 }
+			NOT = { has_war_with = MON }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_baikal_castle
+		}
+		bypass = {
+			OR = {
+				MON = { is_subject_of = SIB }
+				AND = {
+					566 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+					330 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+					970 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+				}
+			}
+		}
+		relative_position_id = SIB_baikal_castle
+		x = -1
+		y = 1
+		completion_reward = {
+			country_event = rcw_usfev.91
+		}
+	}
+	focus = {
+		id = SIB_transmongolian_road
+		icon = GFX_goal_generic_construct_civilian
+		cost = 20
+		prerequisite = {
+			focus = SIB_mongolian_mission
+		}
+		relative_position_id = SIB_mongolian_mission
+		x = 0
+		y = 1
+		available = {
+			566 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+			330 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+			970 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		select_effect = {
+			add_timed_idea = { idea = SIB_transmongolian_road_building_idea days = 140 }
+		}
+		completion_reward = {
+			566 = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			330 = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			if = {
+				limit = { 612 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } } } }
+				970 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+				612 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+				else = {
+					970 = {
+						add_building_construction = {
+							type = infrastructure
+							level = 2
+							instant_build = yes
+						}
+					}
+				}
+			}
+		}
+	}
+	#focus = {
+	#	id = SIB_southwestern_strategy
+	#	icon = GFX_goal_generic_more_territorial_claims
+	#	cost = 10
+	#	available = {
+	#	}
+	#	ai_will_do = {
+	#		factor = 1
+	#	}
+	#	prerequisite = {
+	#		focus = SIB_transmongolian_road
+	#	}
+	#	relative_position_id = SIB_transmongolian_road
+	#	x = 0
+	#	y = 1
+	#	completion_reward = {
+	#	}
+	#}
+	
+	focus = {
+		id = SIB_pressure_on_PRM
+		icon = GFX_goal_generic_military_deal
+		cost = 5
+		available = {
+			any_country = {
+				OR = {
+					tag = ROOT
+					is_subject_of = ROOT
+				}
+				is_neighbor_of = PRM
+			}
+			PRM = { OR = { is_subject = no is_subject_of = ROOT } }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		bypass = {
+			owns_state = 408
+		}
+		prerequisite = {
+			focus = SIB_omsk_defend
+			focus = SIB_moscow_peace
+			focus = SIB_annex_BKL
+		}
+		relative_position_id = SIB_baikal_castle
+		x = 1
+		y = 1
+		completion_reward = {
+			if = {
+				limit = { PRM = { is_subject_of = ROOT } }
+				PRM = { add_autonomy_score = { value = -700 localization = SIB_pressure_on_PRM_autonomy_tt } }
+				else = {
+					PRM = { country_event = rcw_usfev.90 }
+				}
+			}
+		}
+	}
+	focus = {
+		id = SIB_recovery_of_primorian_ports
+		icon = GFX_goal_generic_construct_naval_dockyard
+		cost = 10
+		available = {
+			controls_state = 408
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = SIB_pressure_on_PRM
+		}
+		relative_position_id = SIB_pressure_on_PRM
+		x = 0
+		y = 1
+		completion_reward = {
+			408 = {
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	#focus = {
+	#	id = SIB_firsh_siberian_fleet
+	#	icon = GFX_goal_generic_navy_battleship
+	#	cost = 10
+	#	available = {
+	#	}
+	#	ai_will_do = {
+	#		factor = 1
+	#	}
+	#	prerequisite = {
+	#		focus = SIB_recovery_of_primorian_ports
+	#	}
+	#	relative_position_id = SIB_recovery_of_primorian_ports
+	#	x = 0
+	#	y = 1
+	#	completion_reward = {
+	#	}
+	#}
+}

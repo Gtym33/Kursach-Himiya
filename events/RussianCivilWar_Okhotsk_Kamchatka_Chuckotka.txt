@@ -1,0 +1,80 @@
+﻿###########################
+# Russian Civil War Events
+###########################
+
+add_namespace = rcw_kamokhchu
+
+# Переворот в Петропавловском порте и Анадыре
+country_event = {
+	id = rcw_kamokhchu.1
+	title = rcw_kamokhchu.1.t
+	desc = rcw_kamokhchu.1.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+
+	trigger = {
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_start_date < 1918.7.2
+		OR = { original_tag = RSR is_subject_of = RSR }
+		SIB = { has_war_with = ROOT }
+		1354 = { OWNER = { OR = { is_subject_of = ROOT tag = ROOT tag = FER } } }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_kamokhchu.1.a
+		random_other_country = {
+			limit = { original_tag = SIB has_war_with = ROOT }
+			every_state = {
+				limit = {
+					OWNER = {
+						OR = {
+							tag = ROOT
+							has_subject = ROOT
+							is_subject_of = ROOT
+						}
+					}
+					OR = {
+						state = 555
+						region = 90
+						state = 1354
+						state = 637
+						state = 822
+						state = 1400
+					}
+				}
+				PREV = { transfer_state = PREV }
+			}
+			hidden_effect = { country_event = rcw_kamokhchu.2 }
+		}
+	}
+}
+# Переворот в Петропавловском порте и Анадыре оповещение
+country_event = {
+	id = rcw_kamokhchu.2
+	title = rcw_kamokhchu.2.t
+	desc = rcw_kamokhchu.2.desc
+
+	picture = GFX_report_event_amur_blagoveshensk
+
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_kamokhchu.2.a
+		hidden_effect = {
+			division_template = {
+				name = "Otryad Opolcheniya"	# Militia
+				regiments = {
+					militia = { x = 0 y = 0 }
+				}
+				priority = 0
+			}
+		}
+		load_oob = SIB_Kamchatka
+	}
+}

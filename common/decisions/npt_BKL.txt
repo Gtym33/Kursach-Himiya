@@ -1,0 +1,501 @@
+foreign_politics = {
+	AMR_horvat_collaborate = {
+		allowed = {
+			original_tag = AMR
+		}
+		visible = {
+			AMR = { has_government = social_liberalism }
+			PRM = { has_country_leader = { name = "Dmitriy Horvat" ruling_only = yes } }
+		}
+		fire_only_once = yes
+		icon = generic_army_support
+		cost = 5
+		complete_effect = {
+			PRM = { add_stability = 0.02 }
+			PRM = { AMR = { subjecting_script_with_transfer_parties_dominion = yes } }
+		}
+	}
+	BKL_AMR_intervention = {
+		allowed = {
+			original_tag = BKL
+		}
+		visible = {
+			OR = {
+				has_government = despotism
+				has_government = conservatism
+			}
+			AMR = { is_subject = no has_government = social_liberalism 408 = { NOT = { is_core_of = PREV } } }
+		}
+		available = {
+			has_completed_focus = BKL_far_eastern_army
+		}
+
+		fire_only_once = yes
+		icon = generic_army_support
+		cost = 50
+
+		complete_effect = {
+			AMR = { country_event = rcw_amrprm.14 }
+		}
+	}
+	BKL_strike_to_SIB_separatists = {
+		allowed = {
+			original_tag = BKL
+		}
+		visible = {
+			is_subject = no
+			NOT = { has_war_with = SIB }
+			has_completed_focus = BKL_confrontation_to_the_siberian_government
+		}
+		available = {
+			is_neighbor_of = SIB
+			SIB = { has_completed_focus = SIB_autonomous_siberia }
+		}
+		icon = generic_political_discourse
+		fire_only_once = yes
+		complete_effect = {
+			every_state = {
+				limit = {
+					is_core_of = SIB
+					NOT = { is_core_of = ROOT }
+				}
+				add_claim_by = ROOT
+			}
+			declare_war_on = {
+				target = SIB
+				type = annex_everything
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	BKL_REO_integrate_PRM = {
+		allowed = {
+			original_tag = BKL
+		}
+		visible = {
+			PRM = { is_subject_of = ROOT }
+		}
+		available = {
+			has_completed_focus = BKL_ussuri_and_amur_cossacks
+			has_completed_focus = BKL_government_of_the_REO
+		}
+		visible = {
+			OR = {
+				has_focus_tree = Transbaikal_white_cossaks_focus
+				has_focus_tree = Transbaikal_white_cossaks_late_focus
+			}
+		}
+		icon = generic_political_discourse
+		fire_only_once = yes
+		cost = 100
+		days_remove = 60
+		remove_effect = {
+			annex_country = {
+				target = PRM
+				transfer_troops = yes
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	BKL_eser_retreate_to_west = {
+		allowed = {
+			original_tag = BKL
+		}
+		visible = {
+			NOT = { has_global_flag = RUS_civil_war_over }
+			has_focus_tree = Transbaikal_Chita_eser_focus
+			has_civil_war = yes
+			any_other_country = {
+				OR = {
+					tag = SIB
+					tag = RSS
+				}
+				NOT = {
+					has_government = radical_socialism
+					has_government = communism
+					has_war_with = ROOT
+				}
+				is_neighbor_of = ROOT
+			}
+		}
+		available = {
+			surrender_progress > 0.5
+			num_of_controlled_states < 2
+			any_other_country = {
+				OR = {
+					ROOT = { is_subject_of = PREV }
+					AND = {
+						OR = {
+							tag = MON
+							tag = SIB
+							tag = RSS
+						}
+						NOT = {
+							has_government = radical_socialism
+							has_government = communism
+							has_war_with = ROOT
+						}
+					}
+				}
+				is_neighbor_of = ROOT
+			}
+		}
+		icon = generic_political_discourse
+		fire_only_once = yes
+		days_remove = 5
+		remove_effect = {
+			random_other_country = {
+				limit = {
+					OR = {
+						ROOT = { is_subject_of = PREV }
+						AND = {
+							OR = {
+								tag = RSS
+								tag = SIB
+							}
+							NOT = {
+								has_government = radical_socialism
+								has_government = communism
+								has_war_with = ROOT
+							}
+						}
+					}
+				}
+				ROOT = {
+					transfer_units_fraction= {
+						target = PREV
+						size = 1
+						stockpile_ratio = 1
+						army_ratio = 1
+						navy_ratio = 1
+						air_ratio = 1
+						keep_unit_leaders_trigger = {
+							always = no
+						}
+					}
+				}
+				if = {
+					limit = { is_ai = yes ROOT = { is_ai = no } }
+					change_tag_from = ROOT
+				}
+			}
+			random_other_country = {
+				limit = { original_tag = BKL }
+				annex_country = {
+					target = ROOT
+					transfer_troops = yes
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+}
+political_actions = {
+	BKL_call_BYA_migrants = {
+		allowed = {
+			original_tag = BKL
+		}
+		available = {
+			has_completed_focus = BKL_call_of_foreigners
+			controls_state = 564
+		}
+		visible = {
+			OR = {
+				has_focus_tree = Transbaikal_white_cossaks_focus
+				has_focus_tree = Transbaikal_white_cossaks_late_focus
+			}
+		}
+		icon = generic_army_support
+		cost = 50
+		days_remove = 60
+		modifier = {
+			weekly_manpower = 200
+			national_syndicalism_drift = 0.05
+		}
+		fire_only_once = yes
+		remove_effect = {
+			564 = {
+				create_unit = {
+					division = "name = \"Tsagan tsagdy\" division_template = \"Tsagan tsagdy\" start_experience_factor = 0.1 start_equipment_factor = 1"
+					owner = ROOT
+				}
+			}
+			custom_effect_tooltip = BKL_call_of_foreigners_tt
+			set_country_flag = flag_BKL_call_BYA_migrants
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	BKL_reform_BYA_units = {
+		allowed = {
+			original_tag = BKL
+		}
+		available = {
+			has_completed_focus = BKL_okazachivanie
+			has_country_flag = flag_BKL_call_BYA_migrants
+			NOT = { command_power < 15 }
+		}
+		visible = {
+			OR = {
+				has_focus_tree = Transbaikal_white_cossaks_focus
+				has_focus_tree = Transbaikal_white_cossaks_late_focus
+			}
+		}
+		icon = generic_army_support
+		cost = 15
+		days_remove = 20
+		fire_only_once = yes
+		complete_effect = {
+			add_command_power = -15
+		}
+		remove_effect = {
+			set_division_template_lock = {
+				division_template  = "Tsagan tsagdy"
+				is_locked = no
+			}
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+	BKL_create_ZKL = {
+		allowed = {
+			original_tag = BKL
+		}
+		available = {
+			any_state = {
+				NOT = { is_owned_by = ROOT }
+				is_core_of = ZKL
+				ROOT = { has_full_control_of_state = PREV }
+			}
+			has_equipment = {
+				infantry_equipment > 399
+			}
+		}
+		visible = {
+			OR = {
+				has_focus_tree = Transbaikal_white_cossaks_focus
+				has_focus_tree = Transbaikal_white_cossaks_late_focus
+			}
+		}
+		icon = generic_prepare_civil_war
+		cost = 20
+		fire_only_once = yes
+		complete_effect = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = -400
+			}
+			every_state = {
+				limit = {
+					NOT = { is_owned_by = ROOT }
+					is_core_of = ZKL
+					ROOT = { has_full_control_of_state = PREV }
+				}
+				ZKL = {
+					transfer_state = PREV
+				}
+			}
+			ZKL = {
+				division_template = {
+					name = "Ukrainskoye opolcheniye"
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+						militia = { x = 1 y = 0 }
+						militia = { x = 1 y = 1 }
+					}
+					is_locked = no
+				}
+				random_owned_state = {
+					create_unit = {
+						division = "name = \"Ukrainskoye opolcheniye\" division_template = \"Ukrainskoye opolcheniye\" start_experience_factor = 0.05 start_equipment_factor = 1"
+						owner = ZKL
+					}
+					create_unit = {
+						division = "name = \"Ukrainskoye opolcheniye\" division_template = \"Ukrainskoye opolcheniye\" start_experience_factor = 0.05 start_equipment_factor = 1"
+						owner = ZKL
+					}
+				}
+			}
+			puppet = ZKL
+		}
+		ai_will_do = {
+			factor = 100
+		}
+	}
+}
+
+rcw_BKL_coup_in_PRM_decisions = {
+	
+	
+	send_troops_to_PRM = {
+		available = {
+			has_manpower > 999
+		}
+		icon = generic_industry
+		cost = 100
+		fire_only_once = yes
+		
+		days_remove = 15
+		
+		complete_effect = {
+			add_manpower = -1000
+		}
+		remove_effect = {
+			PRM = {
+				add_stability = -0.1
+			}
+		}
+	}
+	take_support_from_PRM_cossacks = {
+		available = {
+			has_completed_focus = BKL_ussuri_and_amur_cossacks
+		}
+		icon = generic_industry
+		cost = 75
+		fire_only_once = yes
+		
+		days_remove = 90
+		
+		complete_effect = {
+			add_manpower = -1000
+		}
+		remove_effect = {
+			PRM = {
+				add_stability = -0.05
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.05
+				}
+			}
+		}
+	}
+	politactivities_in_PRM = {
+		available = {
+		}
+		icon = generic_industry
+		cost = 150
+		fire_only_once = yes
+		
+		complete_effect = {
+			PRM = {
+				add_timed_idea = { idea = politactivities_in_PRM_idea days = 90 }
+			}
+		}
+	}
+	call_JAP_support_for_PRM = {
+		available = {
+			NOT = { has_stability < 0.4 }
+			NOT = { has_war_support < 0.4 }
+			controls_state = 563
+			controls_state = 564
+		}
+		visible = {
+			JAP = {
+				NOT = { has_war_with = ROOT }
+				NOT = { has_government = radical_socialism }
+				NOT = { has_government = communism }
+			}
+		}
+		icon = generic_industry
+		cost = 150
+		fire_only_once = yes
+		
+		complete_effect = {
+			add_stability = -0.1
+			PRM = {
+				add_stability = -0.1
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.15
+				}
+			}
+		}
+	}
+	send_eq_to_ukranians_of_PRM = {
+		available = {
+			ZKL = { exists = no }
+			has_equipment = {
+				infantry_equipment > 149
+			}
+		}
+		icon = generic_industry
+		cost = 0
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		complete_effect = {
+			PRM = {
+				add_stability = -0.05
+			}
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = -150
+			}
+		}
+	}
+	pressure_by_authority_to_PRM = {
+		available = {
+			PRM = { is_subject = no }
+		}
+		visible = {
+			is_subject = yes
+			OVERLORD = {
+				OR = {
+					tag = RSS
+					tag = SIB
+					tag = CCA
+					tag = RVA
+				}
+			}
+		}
+		icon = generic_industry
+		cost = 75
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		complete_effect = {
+			PRM = {
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.1
+				}
+			}
+		}
+	}
+	coup_in_PRM = {
+		available = {
+			strength_ratio = {
+				tag = PRM
+				ratio > 1.5
+			}
+			is_neighbor_of = PRM
+			controls_state = 563
+			PRM = {
+				has_stability < 0.4
+				despotism > 0.3
+			}
+		}
+		icon = generic_industry
+		cost = 150
+		fire_only_once = yes
+		
+		days_remove = 60
+		
+		complete_effect = {
+			PRM = {
+				country_event = rcw_usfev.352
+			}
+		}
+	}
+}

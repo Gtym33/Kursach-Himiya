@@ -1,0 +1,154 @@
+﻿###########################
+# Spanish Events
+###########################
+
+add_namespace = spain
+
+# Rif War
+country_event = {
+	id = spain.1
+	title = spain.1.t
+	desc = spain.1.d
+	picture = GFX_report_event_spain_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		OR = {
+			has_government = market_liberalism
+			has_government = conservatism
+			has_government = authoritarism
+			has_government = despotism
+		}
+		RIF = { exists = no }
+		date > 1920.1.1
+	}
+
+	mean_time_to_happen = {
+		days = 523
+		modifier = {
+			factor = 0.5
+			surrender_progress > 0.2
+		}
+		modifier = {
+			factor = 0.7
+			surrender_progress > 0.1
+		}
+		modifier = {
+			factor = 0.7
+			has_political_power < 0
+		}
+		modifier = {
+			factor = 0.25
+			has_army_manpower = { size < 40000 }
+		}
+	}
+	
+	option = { # Release
+		name = spain.1.a
+		trigger = { is_ai = no }
+		release = RIF
+		RIF = { load_oob = RIF_war }
+		if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.15
+			}
+		}
+		if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.15
+			}
+		}
+		add_political_power = -50
+	}
+	option = { # Declare war
+		name = spain.1.b
+		release = RIF
+		declare_war_on = {
+			target = RIF
+			type = annex_everything
+		}
+		RIF = { load_oob = RIF_war }
+		#news_event
+	}
+}
+
+# Rif win
+country_event = {
+	id = spain.2
+	title = spain.2.t
+	desc = spain.2.d
+	picture = GFX_report_event_spain_civil_war_soldiers
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SPR
+		RIF = {
+			has_full_control_of_state = 290
+			has_full_control_of_state = 743
+		}
+	}
+
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	option = { # Release
+		name = unfortunate
+		trigger = { is_ai = no }
+		release = RIF
+		RIF = { load_oob = RIF_war }
+		if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.35
+			}
+		}
+		if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = -0.35
+			}
+		}
+		if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.35
+			}
+		}
+		if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.35
+			}
+		}
+		add_political_power = -100
+		white_peace = RIF
+		RIF = { transfer_state = 290 transfer_state = 743 }
+		#news_event
+	}
+}

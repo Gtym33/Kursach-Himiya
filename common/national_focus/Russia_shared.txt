@@ -1,0 +1,381 @@
+#####################
+# Economic Focuses
+#####################
+
+	shared_focus = {
+		id = RUS_main_economic_committee
+		icon = GFX_focus_generic_the_giant_wakes
+		cost = 3
+		available = {
+			
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0.1
+				has_focus_tree = Russia_Monarchy_focus
+				NOT = { has_completed_focus = RUS_mon_on_w_Great_Zemsky_Sobor }
+				NOT = { has_completed_focus = RUS_mon_on_w_military_dictatorship }
+			}
+		}
+		x = 0
+		y = 0
+		offset = {
+			x = 2
+			y = 3
+			trigger = {
+				has_focus_tree = Russia_Provisional_government_focus
+			}
+		}
+		offset = {
+			x = 20
+			y = 0
+			trigger = {
+				has_focus_tree = Russia_Monarchy_focus
+			}
+		}
+		completion_reward = {
+			add_stability = 0.015
+			add_timed_idea = {
+				idea = RUS_main_economic_committee_idea
+				days = 730
+			}
+		}
+	}
+
+	shared_focus = {
+		id = RUS_economic_regulation
+		icon = GFX_goal_generic_national_unity
+		cost = 3
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_main_economic_committee
+		}
+		mutually_exclusive = {
+			focus = RUS_support_military-industrial_committees
+		}
+		bypass = {
+			OR = {
+				has_idea = mixed_economy_law
+				has_idea = state_capitalism_law
+			}
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0.1
+				NOT = { has_country_flag = RUS_monarchy_not_fall }
+				NOT = { has_completed_focus = RUS_declare_republic }
+				NOT = { has_completed_focus = RUS_all_power_to_Soviets }
+			}
+			modifier = {
+				factor = 0.1
+				has_country_flag = general_kornilov
+				NOT = { has_completed_focus = RUS_war_to_victorious_end }
+			}
+		}
+		relative_position_id = RUS_main_economic_committee
+		x = -1
+		y = 1
+		completion_reward = {
+			if = {
+				limit = { has_idea = mixed_economy_law }
+				add_ideas = state_capitalism_law
+			}
+			else_if = {
+				limit = { has_idea = interventionalism_law }
+				add_ideas = mixed_economy_law
+			}
+			else_if = {
+				limit = { has_idea = laissez_faire_law }
+				add_ideas = interventionalism_law
+			}
+			else_if = {
+				limit = { has_idea = corporatocracy_law }
+				add_ideas = interventionalism_law
+			}
+			if = {
+				limit = { OR = { has_idea = undisturbed_isolation has_idea = isolation } }
+				add_ideas = civilian_economy
+			}
+		}
+	}
+
+	shared_focus = {
+		id = RUS_monopoly_law
+		icon = GFX_goal_generic_oil_refinery
+		cost = 3
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_economic_regulation
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0.1
+				NOT = { has_country_flag = RUS_monarchy_not_fall }
+				NOT = { has_completed_focus = RUS_declare_republic }
+				NOT = { has_completed_focus = RUS_all_power_to_Soviets }
+			}
+			modifier = {
+				factor = 0.1
+				has_country_flag = general_kornilov
+				NOT = { has_completed_focus = RUS_war_to_victorious_end }
+			}
+		}
+		relative_position_id = RUS_main_economic_committee
+		x = -1
+		y = 2
+		completion_reward = {
+			add_timed_idea = {
+				idea = RUS_monopoly_law_idea
+				days = 730
+			}
+		}
+	}
+
+	shared_focus = {
+		id = RUS_trade_regulation
+		icon = GFX_goal_generic_trade_gov_regulation
+		cost = 3
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_monopoly_law
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0.1
+				NOT = { has_country_flag = RUS_monarchy_not_fall }
+				NOT = { has_completed_focus = RUS_declare_republic }
+				NOT = { has_completed_focus = RUS_all_power_to_Soviets }
+			}
+			modifier = {
+				factor = 0.1
+				has_country_flag = general_kornilov
+				NOT = { has_completed_focus = RUS_war_to_victorious_end }
+			}
+		}
+		relative_position_id = RUS_main_economic_committee
+		x = -1
+		y = 3
+		completion_reward = {
+			add_political_power = 70
+			if = {
+				limit = { has_idea = limited_exports }
+				add_ideas = closed_economy
+			}
+			else_if = {
+				limit = { has_idea = export_focus }
+				add_ideas = limited_exports
+			}
+			else_if = {
+				limit = { has_idea = free_trade }
+				add_ideas = export_focus
+			}
+		}
+	}
+
+	shared_focus = {
+		id = RUS_non_bolsheviks_prodrazvyorstka
+		icon = GFX_goal_RUS_non_bolsheviks_prodrazvyorstka
+		cost = 3
+		available = {
+			has_country_flag = RUS_foodstuffs_supply_crisis_flag
+		}
+		cancel_if_invalid = yes
+		prerequisite = {
+			focus = RUS_trade_regulation
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		relative_position_id = RUS_trade_regulation
+		x = -1
+		y = 1
+		completion_reward = {
+			add_ideas = RUS_prodrazverstka_idea
+		}
+	}
+
+	shared_focus = {
+		id = RUS_support_military-industrial_committees
+		icon = GFX_goal_generic_construct_mil_factory
+		cost = 3
+		available = {
+			NOT = {
+				has_idea = mixed_economy_law
+				has_idea = state_capitalism_law
+				has_idea = war_economy
+				has_idea = tot_economic_mobilisation
+			}
+		}
+		prerequisite = {
+			focus = RUS_main_economic_committee
+		}
+		mutually_exclusive = {
+			focus = RUS_economic_regulation
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0
+				NOT = { has_government = conservatism has_government = authoritarism }
+			}
+		}
+		relative_position_id = RUS_main_economic_committee
+		x = 1
+		y = 1
+		completion_reward = {
+			random_owned_controlled_state  = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state  = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state  = {
+				limit = {
+					industrial_complex > 0
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	shared_focus = {
+		id = RUS_lead_the_speculation
+		icon = GFX_goal_generic_positive_trade_relations
+		cost = 3
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_support_military-industrial_committees
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		relative_position_id = RUS_main_economic_committee
+		x = 1
+		y = 3
+		completion_reward = {
+			if = {
+				limit = { has_idea = export_focus }
+				add_ideas = free_trade
+			}
+			else_if = {
+				limit = { has_idea = limited_exports }
+				add_ideas = export_focus
+			}
+			else_if = {
+				limit = { has_idea = closed_economy }
+				add_ideas = limited_exports
+				else = {
+					add_political_power = 15
+				}
+			}
+			if = {
+				limit = { has_idea = planed_economy_law }
+				add_ideas = state_capitalism_law
+			}
+			else_if = {
+				limit = { has_idea = state_capitalism_law }
+				add_ideas = interventionalism_law
+				else = {
+					add_political_power = 15
+				}
+			}
+			if = {
+				limit = { OR = { has_idea = undisturbed_isolation has_idea = isolation } }
+				add_ideas = civilian_economy
+			}
+		}
+	}
+
+	shared_focus = {
+		id = RUS_I_ORDER_TO_WORK_SKOT
+		icon = GFX_focus_generic_tank_production
+		cost = 3
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_trade_regulation
+			focus = RUS_lead_the_speculation
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		relative_position_id = RUS_main_economic_committee
+		x = 0
+		y = 4
+		completion_reward = {
+			rise_mobilization_economy_law_war = yes
+		}
+	}
+	
+	shared_focus = {
+		id = RUS_I_ORDER_TO_SERVE_SKOT
+		icon = GFX_goal_generic_secret_weapon
+		cost = 3
+		available = {
+			
+		}
+		prerequisite = {
+			focus = RUS_I_ORDER_TO_WORK_SKOT
+		}
+		cancel_if_invalid = yes
+		ai_will_do = {
+			factor = 10
+		}
+		relative_position_id = RUS_main_economic_committee
+		x = 0
+		y = 5
+		completion_reward = {
+			rise_mobilization_law = yes
+		}
+	}
