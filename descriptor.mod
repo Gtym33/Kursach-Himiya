@@ -9,8 +9,7 @@ tags={
 	"Technologies"
 }
 picture="thumbnail.png"
-version="1.15.*"
-supported_version="1.15.*"
+version="1.16.*"
+supported_version="1.16.*"
 replace_path = "gfx/loadingscreens"
 replace_path = "history/countries"
-remote_file_id="1285457891"
