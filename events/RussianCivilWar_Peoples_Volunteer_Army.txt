@@ -1,0 +1,786 @@
+add_namespace = rcw_pva
+
+country_event = {
+	id = rcw_pva.1
+	title = rcw_pva.1.t
+	desc = rcw_pva.1.d
+	picture = GFX_report_event_001
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.1.a
+		custom_effect_tooltip = PVA_bulak_leaders
+		add_political_power = 30
+		add_ideas = BLR_weak_idea
+		complete_national_focus = PVA_provozglachenie_bel_gos
+		add_ideas = Pavel_Pavlovich_Aleksyuk_1
+		load_focus_tree = Peoples_Volunteer_Army_tree
+		hidden_effect = {
+			country_event = { id = rcw_pva.16 days = 30 }
+		}
+		ai_chance = {
+		    base = 0
+		}
+		remove_ideas = marching_army_idea
+	}
+	option = {
+	    name = rcw_pva.1.b
+		custom_effect_tooltip = PVA_belak_not_belarus
+		add_political_power = 30
+		complete_national_focus = PVA_russ_front_belarus
+		hidden_effect = {
+			country_event = { id = rcw_pva.16 days = 30 }
+		}
+		ai_chance = {
+		    base = 10
+		}
+	}
+}
+country_event = { #Ивент на случай если булак балаховичу не удасца занять Мозырь
+	id = rcw_pva.2
+	title = rcw_pva.2.t
+	desc = rcw_pva.2.d
+	picture = GFX_report_event_001
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.2.a
+		every_country = {
+			PVA = { every_unit_leader = { limit = { OR = { has_id = 88174 } } set_nationality = POL } }
+		}
+		RUS = {
+		    set_state_owner = 94
+		    set_state_owner = 922
+		}
+        delete_unit_template_and_units = {
+            division_template = "Kavaleristskiy otryad"
+            disband = yes
+        }
+        delete_unit_template_and_units = {
+            division_template = "Pekhotnyy polk"
+            disband = yes
+        }
+        delete_unit_template_and_units = {
+            division_template = "Krestyanskaya diviziya"
+            disband = yes
+        }
+        remove_ideas = marching_army_idea
+		RUS = { annex_country = { target = PVA transfer_troops = no } }
+	}
+}
+country_event = {
+	id = rcw_pva.3
+	title = rcw_pva.3.t
+	desc = rcw_pva.3.d
+	picture = GFX_report_event_001
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.2.a
+        country_event = { id = rcw_pva.4 days = 5 }
+	}
+}
+country_event = {
+	id = rcw_pva.4
+	title = rcw_pva.4.t
+	desc = rcw_pva.4.d
+	picture = GFX_report_event_001
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.4.a
+		add_stability = 0.05
+		custom_effect_tooltip = PVA_prisnanie_savinkova
+		set_country_flag = PVA_savinkov_priznal_blr
+	}
+}
+country_event = {
+	id = rcw_pva.5
+	title = rcw_pva.5.t
+	desc = rcw_pva.5.d
+	picture = GFX_report_event_001
+	
+	trigger = {
+	    has_completed_focus = PVA_zahvat_mozyr
+		NOT = { any_other_country = { has_country_leader = { name = "Boris Savinkov" ruling_only = yes } } }
+		any_other_country = { NOT = { has_country_flag = Boris_Savinkov_dead } }
+		NOT = { has_country_flag = Boris_Savinkov_dead }
+		NVA = { NOT = { has_country_flag = Boris_Savinkov_dead } }
+		NVA = { exists = no }
+	}
+	
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	fire_only_once = yes
+
+	option = {
+	    name = rcw_pva.5.a
+		set_country_flag = PVA_vorvrachenie_savinkova
+		every_country = {
+		    remove_ideas = Boris_Savinkov_1
+		    remove_ideas = Boris_Savinkov_4
+		    remove_ideas = Boris_Savinkov_6
+		    remove_ideas = Boris_Savinkov_army_chief
+		}		
+		every_country = {
+			NVA = { every_unit_leader = { limit = { OR = { has_id = 77501 } } set_nationality = PVA } }
+		}
+        create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Portrait_Boris_Savinkov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology  traits = { leader_of_dark_circles ideological_crusader political_activist political_dancer min_4_prince_of_terror eser_terrorist } }
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.2
+		}
+		set_party_name = {
+			ideology = national_syndicalism
+			long_name = PVA_russian_polit_comitett_long
+			name = PVA_russian_polit_comitett
+		}
+		add_ideas = Boris_Savinkov_4
+		add_ideas = Boris_Savinkov_6
+		add_ideas = Boris_Savinkov_army_chief
+	}
+}
+country_event = { #Ивент для польши, для поставки оружия
+	id = rcw_pva.6
+	title = rcw_pva.6.t
+	desc = rcw_pva.6.d
+	picture = GFX_report_event_001
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.6.a
+        PVA = { country_event = rcw_pva.7 } #Согласие
+		ai_chance = {
+		    base = 100
+		}
+	}
+	option = {
+	    name = rcw_pva.6.b
+        PVA = { country_event = rcw_pva.8 } #Отказ
+		ai_chance = {
+		    base = 0
+		}
+	}
+}
+country_event = { #Согласие
+	id = rcw_pva.7
+	title = rcw_pva.7.t
+	desc = rcw_pva.7.d
+	picture = GFX_report_event_001
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.7.a
+        set_country_flag = PVA_pol_army_supports
+		unlock_decision_tooltip = PVA_pol_army_support_decs
+		add_opinion_modifier = {
+            target = POL
+            modifier = BLR_Ylychenie_otnocheniy
+        }
+		hidden_effect = {
+		    division_template = {
+			    name = "Polskya Brigade"
+			    regiments = {
+				    infantry = { x = 0 y = 0 }
+				    infantry = { x = 0 y = 1 }
+				    infantry = { x = 1 y = 0 }
+			    }
+			    support = {
+				    engineer = { x = 0 y = 0 }
+			    }
+			    is_locked = yes
+		    }
+		}
+	}
+}
+country_event = { #Отказ
+	id = rcw_pva.8
+	title = rcw_pva.8.t
+	desc = rcw_pva.8.d
+	picture = GFX_report_event_001
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.8.a
+	}
+}
+country_event = { #Люди
+	id = rcw_pva.9
+	title = rcw_pva.9.t
+	desc = rcw_pva.9.d
+	picture = GFX_report_event_rcw_int_infequip_arrived
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.9.a
+		set_temp_variable = { a1 = random }
+		set_temp_variable = { b1 = random }
+		set_temp_variable = { c1 = random }
+		set_temp_variable = { d1 = random }
+		multiply_temp_variable = { a1 = 10000 }
+		multiply_temp_variable = { b1 = 5000 }
+		multiply_temp_variable = { c1 = 1000 }
+		multiply_temp_variable = { d1 = 100 }
+		
+		set_temp_variable = { f1 = a1 }
+		add_to_temp_variable = { f1 = b1 }
+		add_to_temp_variable = { f1 = c1 }
+		add_to_temp_variable = { f1 = d1 }
+		clamp_temp_variable = { var = f1 min = 100 max = 10000 }
+		round_temp_variable = f1
+		
+		add_manpower = f1
+	}
+}
+country_event = { #нефть
+	id = rcw_pva.10
+	title = rcw_pva.10.t
+	desc = rcw_pva.10.d
+	picture = GFX_report_event_rcw_int_infequip_arrived
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.10.a
+		modifier = {
+			factor = 0
+			fuel_ratio > 0.5
+		}
+		set_temp_variable = { a1 = random }
+		set_temp_variable = { b1 = random }
+		set_temp_variable = { c1 = random }
+		set_temp_variable = { d1 = random }
+		multiply_temp_variable = { a1 = 2500 }
+		multiply_temp_variable = { b1 = 500 }
+		multiply_temp_variable = { c1 = 250 }
+		multiply_temp_variable = { d1 = 25 }
+	
+		set_temp_variable = { f1 = a1 }
+		add_to_temp_variable = { f1 = b1 }
+		add_to_temp_variable = { f1 = c1 }
+		add_to_temp_variable = { f1 = d1 }
+		clamp_temp_variable = { var = f1 min = 100 max = 7500 }
+		round_temp_variable = f1
+	
+		add_fuel = f1
+	}
+}
+country_event = { #оружие
+	id = rcw_pva.11
+	title = rcw_pva.11.t
+	desc = rcw_pva.11.d
+	picture = GFX_report_event_rcw_int_infequip_arrived
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.11.a
+		set_temp_variable = { a1 = random }
+		set_temp_variable = { b1 = random }
+		set_temp_variable = { c1 = random }
+	    set_temp_variable = { d1 = random }
+		multiply_temp_variable = { a1 = 300 }
+		multiply_temp_variable = { b1 = 200 }
+		multiply_temp_variable = { c1 = 100 }
+		multiply_temp_variable = { d1 = 50 }
+	
+		set_temp_variable = { f1 = a1 }
+		add_to_temp_variable = { f1 = b1 }
+		add_to_temp_variable = { f1 = c1 }
+		add_to_temp_variable = { f1 = d1 }
+		clamp_temp_variable = { var = f1 min = 100 max = 1200 }
+		round_temp_variable = f1
+
+		add_equipment_to_stockpile = {
+		    type = infantry_equipment
+		    amount = f1
+		}
+	}
+}
+country_event = { #дивизию
+	id = rcw_pva.12
+	title = rcw_pva.12.t
+	desc = rcw_pva.12.d
+	picture = GFX_report_event_polish_army
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.12.a
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Polskya Brigade\" division_template = \"Polskya Brigade\" start_experience_factor = 0.2"
+				owner = PVA
+			}
+		}
+	}
+}
+country_event = { #доп оснощение
+	id = rcw_pva.13
+	title = rcw_pva.13.t
+	desc = rcw_pva.13.d
+	picture = GFX_report_event_rcw_int_infequip_arrived
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.13.a
+		set_temp_variable = { a1 = random }
+		set_temp_variable = { b1 = random }
+		set_temp_variable = { c1 = random }
+	    set_temp_variable = { d1 = random }
+		multiply_temp_variable = { a1 = 80 }
+		multiply_temp_variable = { b1 = 80 }
+		multiply_temp_variable = { c1 = 50 }
+		multiply_temp_variable = { d1 = 10 }
+		
+		set_temp_variable = { f1 = a1 }
+		add_to_temp_variable = { f1 = b1 }
+		add_to_temp_variable = { f1 = c1 }
+		add_to_temp_variable = { f1 = d1 }
+		clamp_temp_variable = { var = f1 min = 20 max = 150 }
+		round_temp_variable = f1
+
+		add_equipment_to_stockpile = {
+			type = support_equipment
+			amount = f1
+		}
+	}
+}
+country_event = { #арта
+	id = rcw_pva.14
+	title = rcw_pva.14.t
+	desc = rcw_pva.14.d
+	picture = GFX_report_event_rcw_int_infequip_arrived
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.14.a
+		set_temp_variable = { a1 = random }
+		set_temp_variable = { b1 = random }
+		set_temp_variable = { c1 = random }
+	    set_temp_variable = { d1 = random }
+		multiply_temp_variable = { a1 = 50 }
+		multiply_temp_variable = { b1 = 50 }
+		multiply_temp_variable = { c1 = 20 }
+		multiply_temp_variable = { d1 = 10 }
+		
+		set_temp_variable = { f1 = a1 }
+		add_to_temp_variable = { f1 = b1 }
+		add_to_temp_variable = { f1 = c1 }
+		add_to_temp_variable = { f1 = d1 }
+		clamp_temp_variable = { var = f1 min = 20 max = 100 }
+		round_temp_variable = f1
+
+		add_equipment_to_stockpile = {
+			type = artillery_equipment_1_5
+			amount = f1
+		}
+	}
+}
+country_event = {
+	id = rcw_pva.15
+	title = rcw_pva.15.t
+	desc = rcw_pva.15.d
+	picture = GFX_report_event_rcw_int_infequip_arrived
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.15.a
+        add_war_support = 0.05
+	}
+}
+country_event = {
+	id = rcw_pva.16
+	title = rcw_pva.16.t
+	desc = rcw_pva.16.d
+	picture = GFX_report_event_military_planning
+	
+	is_triggered_only = yes
+	
+	fire_only_once = yes
+
+	option = {
+	    name = rcw_pva.16.a
+		random_unit_leader = {
+		    limit = { has_id = 88174 }
+		    add_timed_unit_leader_trait = {
+			    trait = wounded
+			    days = 30
+		    }
+		}
+        random_list = {
+			seed = random
+			60 = {
+			   custom_effect_tooltip = PVA_bulak_schiv
+			}
+			30 = {
+			    custom_effect_tooltip = PVA_bulak_umiraet
+				hidden_effect = {
+			    country_event = { id = rcw_pva.17 days = 20 }
+				}
+			}
+		}
+	}
+}
+country_event = {
+	id = rcw_pva.17
+	title = rcw_pva.17.t
+	desc = rcw_pva.17.d
+	picture = GFX_BLR_bulak
+	
+	is_triggered_only = yes
+
+	option = {
+	    name = rcw_pva.17.a #Юзеф Балахович
+		set_country_flag = Stanislav_Bulak-Balakhovich_deas
+		kill_country_leader = yes
+		remove_unit_leader = 88174
+        add_war_support = -0.1
+		add_stability = -0.05
+        create_country_leader = {
+	        name = "Jozef Balakhovich"
+	        desc = "PVA_Jozef_Balakhovich_DESC"
+	        picture = GFX_Portrait_Jozef_Balakhovich
+	        expire = "1965.1.1"
+	        ideology = despotism_ideology
+	        traits = { 
+			    partisan_raider
+				warmonger
+	        }
+        }
+		hidden_effect = {
+        create_country_leader = {
+	        name = "Jozef Balakhovich"
+	        desc = "PVA_Jozef_Balakhovich_DESC"
+	        picture = GFX_Portrait_Jozef_Balakhovich
+	        expire = "1965.1.1"
+	        ideology = authoritarism_ideology
+	        traits = { 
+			    partisan_raider
+				warmonger
+	        }
+        }
+		}
+	}
+	option = {
+	    name = rcw_pva.17.b # Пермикин
+		set_country_flag = Stanislav_Bulak-Balakhovich_deas
+		kill_country_leader = yes
+		remove_unit_leader = 88174
+        add_war_support = -0.1
+		add_stability = -0.05
+		trigger = {
+		    has_completed_focus = PVA_union_army_permikin
+		}
+        create_country_leader = {
+	        name = "Boris Permikin"
+	        desc = "PVA_Boris_Permikin_DESC"
+	        picture = GFX_Portrait_Boris_Permikin
+	        expire = "1965.1.1"
+	        ideology = despotism_ideology
+	        traits = { 
+			    warmonger_old_general
+	        }
+        }
+	}
+	option = {
+	    name = rcw_pva.17.c # Мыколя дзямидов
+		set_country_flag = Stanislav_Bulak-Balakhovich_deas
+		kill_country_leader = yes
+		remove_unit_leader = 88174
+        add_war_support = -0.1
+		add_stability = -0.05
+		trigger = {
+		    has_completed_focus = PVA_form_bel_army
+		}
+		add_popularity = { ideology = national_syndicalism popularity = 0.2 }
+        create_country_leader = {
+	        name = "Nikolai Demidov"
+	        desc = "PVA_Nikolai_Demidov_DESC"
+	        picture = GFX_Portrait_Nikolai_Demidov
+	        expire = "1965.1.1"
+	        ideology = national_syndicalism_ideology
+	        traits = { 
+			    nationalist_symbol
+	        }
+        }
+        set_politics = {
+            ruling_party = national_syndicalism
+            elections_allowed = no
+            last_election = "1925.12.17"
+            election_frequency = 48
+            long_name = PVA_party_national_edinstva_long
+            name = PVA_party_national_edinstva
+        }
+        set_party_name = {
+            ideology = national_syndicalism
+            long_name = PVA_party_national_edinstva_long
+            name = PVA_party_national_edinstva
+        }
+		set_cosmetic_tag = PVA_bel_populism
+		load_focus_tree = Peoples_Volunteer_Army_Nikolai_tree
+	}
+	option = {
+	    name = rcw_pva.17.e #Краёвцы
+		set_country_flag = Stanislav_Bulak-Balakhovich_deas
+		kill_country_leader = yes
+		remove_unit_leader = 88174
+        add_war_support = -0.1
+		add_stability = -0.05
+		trigger = {
+		    has_completed_focus = PVA_konservativ_pravitelstvo
+		}
+        create_country_leader = {
+	        name = "Edward Woyniłłowicz"
+	        desc = "BLR_Edward_Woyniłłowicz_DESC"
+	        picture = GFX_Portrait_Edward_Woynillowicz
+	        expire = "1965.1.1"
+	        ideology = conservatism_ideology
+	        traits = { 
+	        }
+        }
+        set_politics = {
+            ruling_party = conservatism
+            elections_allowed = no
+            last_election = "1922.12.17"
+            election_frequency = 48
+            long_name = BLR_krajowcy_party_long
+            name = BLR_krajowcy_party
+        }
+	}
+	option = {
+	    name = rcw_pva.17.f #Борис Савинков
+		set_country_flag = Stanislav_Bulak-Balakhovich_deas
+		kill_country_leader = yes
+		remove_unit_leader = 88174
+        add_war_support = -0.1
+		add_stability = -0.05
+		load_focus_tree = Peoples_Volunteer_Army_Savinkov_tree
+		trigger = {
+		    has_completed_focus = PVA_russ_front_belarus
+			has_country_flag = PVA_vorvrachenie_savinkova
+		}
+        set_politics = {
+            ruling_party = national_syndicalism
+            elections_allowed = no
+            last_election = "1922.12.17"
+            election_frequency = 48
+            long_name = PVA_russian_polit_comitette_long
+            name = PVA_russian_polit_comitette
+        }
+	}
+}
+country_event = {
+	id = rcw_pva.18
+	title = rcw_pva.18.t
+	desc = rcw_pva.18.desc
+    picture = GFX_report_event_nva_mobolisation
+	is_triggered_only = yes
+	
+    option = {
+		name = rcw_pva.18.a 
+		ai_chance = {
+			factor = 2
+		}
+		add_ideas = limited_conscription
+		add_ideas = NVA_voluntary_mobilisation_idea
+		add_to_variable = {
+			var = nastroenie_krestyan
+			value = 1
+		}
+		division_template = {
+			name = "Mobilizovannaya Pekhota"
+		    regiments = {
+				infantry = { x = 0 y = 0 }
+			}
+			priority = 0
+		}
+		every_owned_state = {
+			create_unit = {
+				division = "name = \"Mobilizovannaya Pekhota\" division_template = \"Mobilizovannaya Pekhota\" start_experience_factor = 0.1 start_equipment_factor = 1" count = 2 owner = PVA
+			}
+		}
+	}	 
+	option = {
+	    name = rcw_pva.18.b
+		ai_chance = {
+			factor = 1
+		}
+	    add_stability = -0.1
+		add_war_support = -0.1
+		add_ideas = extensive_conscription
+		add_to_variable = {
+			var = global.RCW_green_var_Russia
+			value = 3
+		}
+		add_to_variable = {
+			var = nastroenie_krestyan
+			value = -1
+		}
+		division_template = {
+			name = "Mobilizovannaya Pekhota"
+		    regiments = {
+				infantry = { x = 0 y = 0 }
+			}
+			priority = 0
+		}
+		every_owned_state = {
+			create_unit = {
+				division = "name = \"Mobilizovannaya Pekhota\" division_template = \"Mobilizovannaya Pekhota\" start_experience_factor = 0.1 start_equipment_factor = 1" count = 2 owner = PVA
+			}
+		}
+	}
+}
+country_event = {
+	id = rcw_pva.19
+	title = rcw_pva.19.t
+	desc = rcw_pva.19.desc
+	picture = GFX_NVA_army_pride
+	fire_only_once = yes 
+	is_triggered_only = yes
+	option = {
+		name = rcw_pva.19.a
+		division_template = {
+			name = "Gvardiya"	
+			regiments = {
+				stormtroopers = { x = 0 y = 0 }
+				stormtroopers = { x = 1 y = 0 }
+				stormtroopers = { x = 2 y = 0 }
+				stormtroopers = { x = 0 y = 1 }
+				stormtroopers = { x = 1 y = 1 }
+				stormtroopers = { x = 2 y = 1 }
+				artillery_brigade = { x = 3 y = 0 }
+			}
+			support = {
+				artillery = { x = 0 y = 0 }
+				recon = { x = 0 y = 1 }
+				field_guns = { x = 0 y = 2 }
+			}
+			is_locked = no
+		}
+		capital_scope = {
+			create_unit = { division = "name = \"Gvardiya\" division_template = \"Gvardiya\" start_experience_factor = 1 start_equipment_factor = 1" count = 2 owner = PVA  }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_pva.19.b
+		division_template = {
+			name = "Gvardiya"	
+			regiments = {
+				stormtroopers = { x = 0 y = 0 }
+				stormtroopers = { x = 1 y = 0 }
+				stormtroopers = { x = 2 y = 0 }
+				stormtroopers = { x = 0 y = 1 }
+			}
+			support = {
+				artillery = { x = 0 y = 0 }
+				recon = { x = 0 y = 1 }
+				field_guns = { x = 0 y = 2 }
+			}
+			is_locked = no
+		}
+		capital_scope = {
+			create_unit = { division = "name = \"Gvardiya\" division_template = \"Gvardiya\" start_experience_factor = 1 start_equipment_factor = 1" count = 4 owner = PVA  }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+country_event = {
+	id = rcw_pva.20
+	title = rcw_pva.20.t
+	desc = rcw_pva.20.desc
+	picture = GFX_report_event_nva_negotiations_with_rva
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_pva.20.a
+		trigger = {
+			has_country_leader = {
+				name = "Boris Savinkov"  
+				ruling_only = yes
+			} 
+		}
+		ai_chance = {
+			factor = 1
+		}
+		RVA = { country_event = { id = rcw_pva.21 days = 1 } }
+	}
+	
+	option = {
+		name = rcw_pva.20.b
+		ai_chance = {
+			factor = 3
+		}
+	}
+	
+	option = {
+		name = rcw_pva.20.c
+		ai_chance = {
+			factor = 2
+		}
+		RVA = { annex_country = { target = NVA transfer_troops = yes } }
+		every_state = { limit = { is_core_of = PVA }
+			add_core_of = RVA
+		}
+		PVA = { every_unit_leader = { set_nationality = RVA } }
+		RVA = { change_tag_from = ROOT }
+	}
+}
+country_event = {
+	id = rcw_pva.21
+	title = rcw_pva.21.t
+	desc =  {
+		text = rcw_pva.21.desc
+	}
+	picture = GFX_report_event_nva_negotiations_with_rva
+	is_triggered_only = yes
+	option = {
+		name = rcw_pva.21.a
+		ai_chance = {
+			factor = 1
+		}
+		set_politics = { ruling_party = national_syndicalism }
+		create_country_leader = { name = "Boris Savinkov" desc = RUS_Boris_Savinkov_DESC picture = "gfx/leaders/RUS/Portrait_Boris_Savinkov.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology  traits = { leader_of_dark_circles ideological_crusader political_activist political_dancer min_4_prince_of_terror eser_terrorist } }
+		set_party_name = {
+			ideology = national_syndicalism
+			long_name = PVA_russian_polit_comitette_long
+			name = PVA_russian_polit_comitette
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.2
+		}
+		RVA = { annex_country = { target = PVA transfer_troops = yes } }
+		every_state = { limit = { is_core_of = PVA }
+			add_core_of = RVA
+		}
+		PVA = { every_unit_leader = { set_nationality = RVA } }
+		RVA = { change_tag_from = ROOT }
+	}	
+	
+	option = {
+		name = rcw_pva.21.b
+		PVA = { country_event = { id = rcw_nva.16 days = 1 } }
+		ai_chance = {
+			factor = 2
+		}
+	}
+}
