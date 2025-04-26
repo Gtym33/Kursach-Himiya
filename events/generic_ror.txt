@@ -1,0 +1,4262 @@
+﻿###########################
+#Система случайных событий#
+###########################
+
+add_namespace = generic_ror
+
+# Верховный закон
+country_event = {
+	id = generic_ror.1
+	title = generic_ror.1.t
+	desc = generic_ror.1.desc
+	picture = GFX_report_event_generic_ror_1
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.1.a
+		add_timed_idea = {
+			idea = GEN_contitutionalists_movement
+			days = 280
+		}
+	}
+	option = {
+		name = generic_ror.1.b
+		add_timed_idea = {
+			idea = GEN_anticontitutionalists_movement
+			days = 280
+		}
+	}
+}
+# Закон и социализм
+country_event = {
+	id = generic_ror.2
+	title = generic_ror.2.t
+	desc = generic_ror.2.desc
+	picture = GFX_report_event_generic_ror_2
+	immediate = {
+		set_variable = { ruling_party_popularity_change = 0.05 } #иначе подсказка показывает, что популярность вырастет на 0 процентов
+	}
+	is_triggered_only = yes
+	fire_only_once = no
+	option = {
+		name = generic_ror.2.a
+		add_timed_idea = {
+			idea = GEN_workers_rights_movement
+			days = 280
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.2.b
+		trigger = { NOT = { has_idea = ban_all_parties_law } }
+		add_timed_idea = {
+			idea = GEN_legal_workers_rights_movement
+			days = 280
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.2.c
+		trigger = {
+			NOT = { has_government = social_democracy }
+			NOT = { has_government = social_liberalism }
+		}
+		add_timed_idea = {
+			idea = GEN_national_workers_movement
+			days = 280
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.2.d
+		add_political_power = -150
+		#set_variable = { ruling_party_popularity_change = 0.05 }
+		add_ruling_party_popularity = yes
+		clear_variable = ruling_party_popularity_change
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.03
+		}
+		rise_labor_legislation = yes
+	}
+}
+# Слабая промышленность
+country_event = {
+	id = generic_ror.3
+	title = generic_ror.3.t
+	desc = generic_ror.3.desc
+	picture = GFX_report_event_generic_ror_3
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.3.a
+		add_timed_idea = {
+			idea = GEN_industrialisation
+			days = 360
+		}
+	}
+	option = {
+		name = generic_ror.3.b
+		trigger = {
+			OR = {
+				AND = {
+					has_idea = feudal_economy_law
+					check_variable = { authoritarian_and_conservatism_parties_summa > 0.3 }
+				}
+				AND = {
+					has_idea = control_of_field_commanders_law
+					despotism > 0.3
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_idea = feudal_economy_law
+				OR = {
+					authoritarism > 0.3
+					conservatism > 0.3
+				}
+			}
+			add_timed_idea = {
+				idea = GEN_modernisation_propaganda
+				days = 280
+			}
+		}
+		if = {
+			limit = {
+				has_idea = control_of_field_commanders_law
+				despotism > 0.3
+			}
+			add_timed_idea = {
+				idea = GEN_modernisation_propaganda_2
+				days = 280
+			}
+		}
+	}
+	option = {
+		name = generic_ror.3.c
+		
+	}
+}
+# Слабое сельское хозяйство
+country_event = {
+	id = generic_ror.4
+	title = generic_ror.4.t
+	desc = generic_ror.4.desc
+	picture = GFX_report_event_generic_ror_4
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.4.a
+		if = {
+			limit = {
+				OR = {
+					has_idea = no_agricultural_mechanization
+					has_idea = steel_agricultural_tools
+				}
+			}
+			set_country_flag = GEN_upgrade_machanisation_allowed_des_flag
+			unlock_decision_tooltip = GEN_upgrade_machanisation_allowed_des
+		}
+		if = {
+			limit = {
+				OR = {
+					has_idea = individual_homesteads
+					has_idea = landlordism
+					has_idea = peasant_communities_property
+				}
+			}
+			if = {
+				limit = {
+					has_idea = peasant_communities_property
+					NOT = { has_idea = peasant_and_land_and_bread_question_0_25 }
+					NOT = { has_idea = peasant_and_land_and_bread_question_0_5 }
+					NOT = { has_idea = peasant_and_land_and_bread_question }
+				}
+				add_ideas = peasant_and_land_and_bread_question_0_25
+			}
+			if = {
+				limit = {
+					has_idea = landlordism
+					NOT = { has_idea = peasant_and_land_and_bread_question_0_25 }
+					NOT = { has_idea = peasant_and_land_and_bread_question_0_5 }
+					NOT = { has_idea = peasant_and_land_and_bread_question }
+				}
+				add_ideas = peasant_and_land_and_bread_question_0_5
+			}
+			if = {
+				limit = {
+					has_idea = individual_homesteads
+					NOT = { has_idea = peasant_and_land_and_bread_question_0_25 }
+					NOT = { has_idea = peasant_and_land_and_bread_question_0_5 }
+					NOT = { has_idea = peasant_and_land_and_bread_question }
+				}
+				add_ideas = peasant_and_land_and_bread_question
+			}
+			country_event = { id = generic_ror.6 days = 70 }
+		}
+	}
+}
+# Требования либерализации
+country_event = {
+	id = generic_ror.5
+	title = generic_ror.5.t
+	desc = generic_ror.5.desc
+	picture = GFX_report_event_generic_ror_5
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.5.a
+		add_political_power = 50
+		add_timed_idea = {
+			idea = GEN_weak_trade
+			days = 480
+		}
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.04
+		}
+		add_stability = -0.03
+	}
+	option = {
+		name = generic_ror.5.b
+		add_political_power = -50
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.04
+		}
+		if = {
+			limit = {
+				has_idea = closed_economy
+			}
+			remove_ideas = closed_economy
+			add_ideas = autarkic_economy
+		}
+		if = {
+			limit = {
+				has_idea = autarkic_economy
+			}
+			remove_ideas = autarkic_economy
+			add_ideas = limited_exports
+		}
+		if = {
+			limit = {
+				has_idea = limited_exports
+			}
+			remove_ideas = limited_exports
+			add_ideas = export_focus
+		}
+		if = {
+			limit = {
+				has_idea = export_focus
+			}
+			remove_ideas = export_focus
+			add_ideas = free_trade
+		}
+	}
+}
+# Крестьянские нужды
+country_event = {
+	id = generic_ror.6
+	title = generic_ror.6.t
+	desc = generic_ror.6.desc
+	picture = GFX_report_event_generic_ror_6
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.6.a
+		trigger = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+		}
+		add_timed_idea = {
+			idea = GEN_support_landlords
+			days = 360
+		}
+	}
+	option = {
+		name = generic_ror.6.b
+		add_timed_idea = {
+			idea = GEN_agrarian_movements
+			days = 360
+		}
+	}
+}
+# Развитие армии
+country_event = {
+	id = generic_ror.7
+	title = generic_ror.7.t
+	desc = generic_ror.7.desc
+	picture = GFX_report_event_generic_ror_7
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.7.a
+		add_war_support = 0.05
+	}
+	option = {
+		name = generic_ror.7.b
+		trigger = {
+			OR = {
+				has_idea = cities_averange_literacy
+				has_idea = cities_averange_education
+				has_idea = low_literacy_in_countryside
+				has_idea = mass_literacy
+				has_idea = mass_education
+			}
+		}
+		add_tech_bonus = {
+			bonus = 0.5
+			uses = 1
+			category = land_doctrine
+		}
+		add_tech_bonus = {
+			bonus = 0.5
+			uses = 1
+			category = infantry_tech
+		}
+	}
+	option = {
+		name = generic_ror.7.c
+		army_experience = 5
+		add_command_power = 15
+	}
+	option = {
+		name = generic_ror.7.d
+		add_timed_idea = {
+			idea = GEN_army_in_politics
+			days = 280
+		}
+	}
+	option = {
+		name = generic_ror.7.e
+		trigger = { num_of_civilian_factories > 5  }
+		add_timed_idea = {
+			idea = GEN_military_concerns_support
+			days = 280
+		}
+	}
+}
+# Размежевание границ
+country_event = {
+	id = generic_ror.8
+	title = generic_ror.8.t
+	desc = generic_ror.8.desc
+	picture = GFX_report_event_generic_ror_8
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.8.a
+		add_timed_idea = {
+			idea = GEN_revanshism_propaganda
+			days = 360
+		}
+	}
+	option = {
+		name = generic_ror.8.b
+		add_political_power = -50
+		add_war_support = -0.05
+	}
+}
+# Сохранение спокойствия
+country_event = {
+	id = generic_ror.9
+	title = generic_ror.9.t
+	desc = generic_ror.9.desc
+	picture = GFX_report_event_generic_ror_9
+	immediate = {
+		set_variable = { ruling_party_popularity_change = 0.05 }
+	}
+	is_triggered_only = yes
+	fire_only_once = no
+	option = {
+		name = generic_ror.9.a
+		trigger = {
+			has_idea = neutral_foreign_policy_law
+			threat > 0.3
+		}
+		add_timed_idea = {
+			idea = GEN_not_popular_neutrality
+			days = 720
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.9.b
+		add_political_power = 25
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.9.c
+		trigger = { 
+			has_idea = peacekeeping_law
+		}
+		add_war_support = 0.05
+		set_variable = { ruling_party_popularity_change = 0.05 }
+		add_ruling_party_popularity = yes 
+		clear_variable = ruling_party_popularity_change
+	}
+}
+# Стремление к большему
+country_event = {
+	id = generic_ror.10
+	title = generic_ror.10.t
+	desc = generic_ror.10.desc
+	picture = GFX_report_event_generic_ror_10
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.10.a
+		add_war_support = 0.05
+		add_political_power = 25
+	}
+}
+# Протекция метрополии
+country_event = {
+	id = generic_ror.11
+	title = generic_ror.11.t
+	desc = generic_ror.11.desc
+	picture = GFX_report_event_generic_ror_11
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.11.a
+		trigger = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = fascism
+				has_government = national_syndicalism
+			}
+		}
+		add_timed_idea = {
+			idea = GEN_strict_puppet_control
+			days = 720
+		}
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			country_event = { id = generic_ror.14 days = 1 }
+		}
+	}
+	option = {
+		name = generic_ror.11.b
+		trigger = {
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = fascism
+				has_government = national_syndicalism
+			}
+		}
+		add_political_power = -50
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			add_autonomy_score = { value = -300 }
+			if = {
+				limit = { overlord = { has_government = radical_socialism } }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { overlord = { has_government = communism } }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { overlord = { has_government = fascism } }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.05
+				}
+			}
+			if = {
+				limit = { overlord = { has_government = national_syndicalism } }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.05
+				}
+			}
+		}
+	}
+	option = {
+		name = generic_ror.11.c
+		add_timed_idea = {
+			idea = GEN_loose_puppet_control
+			days = 720
+		}
+		every_country = {
+			limit = { is_subject_of = ROOT }
+			add_timed_idea = {
+				idea = GEN_metropoly_dont_care
+				days = 720
+			}
+		}
+	}
+	option = {
+		name = generic_ror.11.d
+		add_political_power = -25
+	}
+}
+# Права земель
+country_event = {
+	id = generic_ror.12
+	title = generic_ror.12.t
+	desc = generic_ror.12.desc
+	picture = GFX_report_event_generic_ror_12
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.12.a
+		add_political_power = -15
+		every_owned_state = {
+			limit = { NOT = { is_core_of = ROOT } }
+			add_resistance = 5
+		}
+	}
+	option = {
+		name = generic_ror.12.b
+		add_timed_idea = {
+			idea = GEN_federalisation_disc
+			days = 360
+		}
+	}
+}
+# Опасность сепаратизма
+country_event = {
+	id = generic_ror.13
+	title = generic_ror.13.t
+	desc = generic_ror.13.desc
+	picture = GFX_report_event_generic_ror_13
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = {
+		set_variable = { ruling_party_popularity_change = 0.04 } 
+	}
+	option = {
+		name = generic_ror.13.a
+		trigger = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+		}
+		add_timed_idea = {
+			idea = GEN_separatism
+			days = 480
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.03
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.13.b
+		trigger = {
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+			}
+		}
+		add_timed_idea = {
+			idea = GEN_separatism
+			days = 480
+		}
+		add_political_power = -50
+		add_stability = -0.05
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = -0.01
+		}
+		add_popularity = {
+			ideology = conservatism
+			popularity = -0.01
+		}
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.01
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = -0.01
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = -0.01
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.13.c
+		trigger = {
+			NOT = {
+				has_idea = absolute_monarchy_gov_form
+				has_idea = ban_all_parties_law
+			}
+		}
+		add_timed_idea = {
+			idea = GEN_separatism
+			days = 480
+		}
+		add_political_power = -100
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.03
+		}
+		every_owned_state = {
+			limit = { NOT = { is_core_of = ROOT } }
+			add_compliance = 10
+		}
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.13.d
+		add_timed_idea = {
+			idea = GEN_separatism
+			days = 480
+		}
+		add_political_power = -100
+		add_ruling_party_popularity = yes
+		clear_variable = ruling_party_popularity_change
+	}
+}
+# Жесткие меры
+country_event = {
+	id = generic_ror.14
+	title = generic_ror.14.t
+	desc = generic_ror.14.desc
+	picture = GFX_report_event_generic_ror_14
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = {
+		set_variable = { ruling_party_popularity_change = -0.05 } 
+	}
+	option = {
+		name = generic_ror.14.a
+		add_political_power = 50
+		add_ruling_party_popularity = yes
+		clear_variable = ruling_party_popularity_change
+	}
+	option = {
+		name = generic_ror.14.b
+		clear_variable = ruling_party_popularity_change
+		add_timed_idea = {
+			idea = GEN_quiet_resistance
+			days = 720
+		}
+	}
+}
+# Новый порядок в Европе
+country_event = {
+	id = generic_ror.15
+	title = generic_ror.15.t
+	desc = generic_ror.15.desc
+	picture = GFX_report_event_generic_ror_15
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.15.a
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.03
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.01
+		}
+		add_popularity = {
+			ideology = conservatism
+			popularity = 0.01
+		}
+	}
+	option = {
+		name = generic_ror.15.b
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.01
+		}
+	}
+	option = {
+		name = generic_ror.15.c
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.01
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.02
+		}
+	}
+	
+}
+# Победа свободного мира
+country_event = {
+	id = generic_ror.16
+	title = generic_ror.16.t
+	desc = generic_ror.16.desc
+	picture = GFX_report_event_generic_ror_16
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.16.a
+		add_popularity = {
+			ideology = social_liberalism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = market_liberalism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.01
+		}
+	}
+	option = {
+		name = generic_ror.16.b
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = communism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = social_democracy
+			popularity = 0.01
+		}
+	}
+	option = {
+		name = generic_ror.16.c
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.02
+		}
+		add_popularity = {
+			ideology = national_syndicalism
+			popularity = 0.01
+		}
+	}
+}
+# Задержка чрезвычайного положения
+country_event = {
+	id = generic_ror.17
+	title = generic_ror.17.t
+	desc = generic_ror.17.desc
+	picture = GFX_report_event_generic_ror_17
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.17.a
+		trigger = {
+			OR = {
+				has_idea = absolute_monarchy_gov_form
+				has_idea = limited_monarchy_gov_form
+				has_idea = military_dictatorship_gov_form
+			}
+		}
+		add_political_power = -40
+		add_ideas = decrees_of_ruler_b_law
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.01
+		}
+		add_popularity = {
+			ideology = despotism
+			popularity = 0.01
+		}
+	}
+	option = {
+		name = generic_ror.17.b
+		trigger = {
+			OR = {
+				has_idea = confederal_gov_terr
+				has_idea = soviet_republic_gov_form
+			}
+		}
+		add_ideas = local_assembly_decisions_b_law
+		add_stability = 0.03
+	}
+	option = {
+		name = generic_ror.17.c
+		add_political_power = 15
+		add_ideas = uncodified_constitution_b_law
+	}
+	option = {
+		name = generic_ror.17.d
+		trigger = {
+			 has_stability < 0.4
+		}
+		add_political_power = 25
+	}
+
+}
+# Конституционный референдум
+country_event = {
+	id = generic_ror.18
+	title = generic_ror.18.t
+	desc = generic_ror.18.desc
+	picture = GFX_report_event_generic_ror_18
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = {
+	
+	}
+	option = {
+		name = generic_ror.18.a
+		trigger = {
+			AND = { 
+				check_variable = { var = var:highest_party_ideology@exclude_ruling_party value = token:social_liberalism compare = not_equals } 
+				check_variable = { var = var:highest_party_ideology@exclude_ruling_party value = token:market_liberalism compare = not_equals } 
+			}
+		}
+		if = {
+			limit = {
+				check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
+			}
+			set_politics = {
+				ruling_party = market_liberalism
+				elections_allowed = yes
+			}
+		}
+		if = {
+			limit = {
+				check_variable = { party_popularity_100@social_liberalism > party_popularity_100@market_liberalism }
+			}
+			set_politics = {
+				ruling_party = social_liberalism
+				elections_allowed = yes
+			}
+		}
+		add_stability = -0.08
+		add_ideas = presidential_republic_gov_form
+		add_ideas = constitution_b_law
+		add_ideas = poliparty_system_law
+		custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+		hidden_effect = {
+			clear_variable = GEN_balance_constitutional_monarchy_republic
+			GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+			set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -30 }
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+	option = {
+		name = generic_ror.18.b
+		set_politics = {
+			ruling_party = var:highest_party_ideology
+		}
+		add_stability = -0.04
+		add_ideas = presidential_republic_gov_form
+		add_ideas = constitution_b_law
+		add_ideas = poliparty_system_law
+		custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+		hidden_effect = {
+			clear_variable = GEN_balance_constitutional_monarchy_republic
+			GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+			set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -50 }
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+}
+# Референдум о президентских полномочиях
+country_event = {
+	id = generic_ror.19
+	title = generic_ror.19.t
+	desc = generic_ror.19.desc
+	picture = GFX_report_event_generic_ror_19
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.19.a
+		add_ideas = military_dictatorship_gov_form
+		custom_effect_tooltip = GEN_balance_dictatorship_republic_balance_tt
+		hidden_effect = {
+			clear_variable = GEN_balance_presidential_rebuplic_parlament_republic
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			set_variable = { GEN_balance_dictatorship_republic = -30 }
+			GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			if = {
+				limit = {
+					has_stability < 0.65
+					has_stability > 0.49
+				}
+				random_list = {
+					15 = { country_event = generic_ror.20 }
+					85 = { }
+				}
+			}
+			if = {
+				limit = {
+					has_stability < 0.5
+					has_stability > 0.34
+				}
+				random_list = {
+					40 = { country_event = generic_ror.20 }
+					60 = { }
+				}
+			}
+			if = {
+				limit = {
+					has_stability < 0.35
+				}
+				random_list = {
+					70 = { country_event = generic_ror.20 }
+					30 = { }
+				}
+			}
+		}
+	}
+}
+# Сомнительный референдум
+country_event = {
+	id = generic_ror.20
+	title = generic_ror.20.t
+	desc = generic_ror.20.desc
+	picture = GFX_report_event_generic_ror_20
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.20.a
+		add_political_power = -30
+		if = {
+			limit = {
+				has_stability < 0.65
+				has_stability > 0.49
+			}
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = 5
+				tooltip = add_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+		if = {
+			limit = {
+				has_stability < 0.5
+				has_stability > 0.34
+			}
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+		if = {
+			limit = {
+				has_stability < 0.35
+			}
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = 20
+				tooltip = add_20_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+}
+# Инвестиции в будущее
+country_event = {
+	id = generic_ror.21
+	title = generic_ror.21.t
+	desc = generic_ror.21.desc
+	picture = GFX_report_event_generic_ror_21
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.21.a
+		trigger = {
+			NOT = { has_idea = no_legislation } 
+		}
+		low_labor_legislation = yes
+		add_stability = -0.03
+		if = {
+			limit = {
+				NOT = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+				}
+			}
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.01
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.01
+			}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.01
+			}
+		}
+	}
+	option = {
+		name = generic_ror.21.b
+		trigger = {
+			NOT = { has_idea = civilian_economy } 
+		}
+		low_mobilization_economy_law = yes
+		add_war_support = -0.03
+	}
+	option = {
+		name = generic_ror.21.c
+		trigger = {
+			NOT = { has_idea = free_trade } 
+		}
+		rise_export_law = yes
+		add_political_power = -40
+	}
+}
+# Роспуск парламента 
+country_event = {
+	id = generic_ror.22
+	title = generic_ror.22.t
+	desc = generic_ror.22.desc
+	picture = GFX_report_event_generic_ror_22
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.22.a
+		if = {
+			limit = {
+				has_stability > 0.74
+			}	
+			add_stability = -0.05
+			add_political_power = -50
+			if = {
+				limit = { has_government = radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.07
+				}
+			}
+			else_if = {
+				limit = { has_government = national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.07
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_stability < 0.75
+				has_stability > 0.44
+			}
+			country_event = generic_ror.23
+		}
+		if = {
+			limit = {
+				has_stability < 0.45
+				has_stability > 0.29
+			}
+			random_list = {
+				35 = {
+					country_event = generic_ror.24
+				}
+				65 = {
+					country_event = generic_ror.23
+				}
+			}
+		}
+		if = {
+			limit = {
+				has_stability < 0.3
+			}
+			country_event = generic_ror.24
+		}
+	}
+	
+}
+# Недовольство парламента
+country_event = {
+	id = generic_ror.23
+	title = generic_ror.23.t
+	desc = generic_ror.23.desc
+	picture = GFX_report_event_generic_ror_23
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.23.a
+		add_political_power = -50
+		add_stability = -0.05
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+		}
+	}
+}
+# Парламентский мятеж
+country_event = {
+	id = generic_ror.24
+	title = generic_ror.24.t
+	desc = generic_ror.24.desc
+	picture = GFX_report_event_generic_ror_24
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.24.a
+		add_stability = -0.05
+		add_political_power = -150
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.1
+			}
+		}
+		add_to_variable = { 
+			var = GEN_balance_presidential_rebuplic_parlament_republic  
+			value = 35
+			tooltip = add_35_to_bop_var_tt 
+		}
+		hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+	}
+	option = {
+		name = generic_ror.24.b
+		add_stability = -0.1
+		country_event = generic_ror.25
+	}
+}
+# Противостояние в столице
+country_event = {
+	id = generic_ror.25
+	title = generic_ror.25.t
+	desc = generic_ror.25.desc
+	picture = GFX_report_event_generic_ror_25
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.25.a
+		trigger = { has_stability > 0.2 }
+		country_event = { id = generic_ror.26 days = 3 }
+	}
+	option = {
+		name = generic_ror.25.b
+		country_event = { id = generic_ror.27 days = 7 }
+	}
+}
+# Подавление парламентского мятежа
+country_event = {
+	id = generic_ror.26
+	title = generic_ror.26.t
+	desc = generic_ror.26.desc
+	picture = GFX_report_event_generic_ror_26
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.26.a
+		add_stability = -0.07
+		add_popularity = {
+			ideology = var:highest_party_ideology@exclude_ruling_party
+			popularity = -0.05
+		}
+		add_popularity = {
+			ideology = var:highest_party_ideology@exclude_ruling_party
+			popularity = -0.05
+		}
+		add_to_variable = { 
+			var = GEN_balance_presidential_rebuplic_parlament_republic  
+			value = -60
+			tooltip = remove_60_to_bop_var_tt 
+		}
+		hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+	}
+	option = {
+		name = generic_ror.26.b
+		add_political_power = -30
+		add_to_variable = { 
+			var = GEN_balance_presidential_rebuplic_parlament_republic  
+			value = -40
+			tooltip = remove_40_to_bop_var_tt 
+		}
+		hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+	}
+
+}
+# Бегство президента
+country_event = {
+	id = generic_ror.27
+	title = generic_ror.27.t
+	desc = generic_ror.27.desc
+	picture = GFX_report_event_generic_ror_27
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.27.a
+		retire_country_leader = yes
+		add_stability = -0.05
+		add_political_power = -30
+		set_politics = {
+			ruling_party = var:highest_party_ideology@exclude_ruling_party
+		}
+		add_to_variable = { 
+			var = GEN_balance_presidential_rebuplic_parlament_republic  
+			value = 80
+			tooltip = add_80_to_bop_var_tt 
+		}
+		hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+	}
+
+}
+# Отстранение президента
+country_event = {
+	id = generic_ror.28
+	title = generic_ror.28.t
+	desc = generic_ror.28.desc
+	picture = GFX_report_event_generic_ror_28
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.28.a
+		retire_country_leader = yes
+		add_political_power = -50
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+		}
+	}
+
+}
+# Провозглашение Советской Республики
+country_event = {
+	id = generic_ror.29
+	title = generic_ror.29.t
+	desc = generic_ror.29.desc
+	picture = GFX_report_event_generic_ror_29
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.29.a
+		add_ideas = soviet_republic_gov_form
+		custom_effect_tooltip = GEN_balance_parlament_republic_soviets_balance_tt
+		hidden_effect = {
+			clear_variable = GEN_balance_presidential_rebuplic_parlament_republic
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			set_variable = { GEN_balance_parlament_republic_soviets = -90 }
+			GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes
+			if = {
+				limit = {
+					has_stability < 0.5
+					check_variable = { right_parties_summa > 0.15 }
+				}
+				country_event = generic_ror.30 
+			}
+			if = {
+				limit = {
+					has_stability > 0.45
+					NOT = { has_idea = constitution_b_law }
+				}
+				country_event = generic_ror.31
+			}
+		}
+	}
+
+}
+# Реакционные выступления
+country_event = {
+	id = generic_ror.30
+	title = generic_ror.30.t
+	desc = generic_ror.30.desc
+	picture = GFX_report_event_generic_ror_30
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.30.a
+		add_stability = -0.04
+		if = {
+			limit = { has_stability < 0.4 }
+			country_event = generic_ror.32
+		}
+		else = {
+			add_timed_idea = {
+				idea = GEN_anti_soviet_opposition
+				days = 90
+			}
+		}
+	}
+	option = {
+		name = generic_ror.30.b
+		add_stability = -0.05
+		add_timed_idea = {
+			idea = GEN_socialist_terror
+			days = 70
+		}
+		if = {
+			limit = { has_stability < 0.4 }
+			country_event = generic_ror.32
+		}
+	}
+}
+# Проект советской конституции
+country_event = {
+	id = generic_ror.31
+	title = generic_ror.31.t
+	desc = generic_ror.31.desc
+	picture = GFX_report_event_generic_ror_31
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.31.a
+		add_ideas = constitution_b_law
+		add_stability = 0.04
+		add_political_power = 15
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.04
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = 0.04
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.04
+			}
+		}
+	}
+}
+# Антисоветский мятеж
+country_event = {
+	id = generic_ror.32
+	title = generic_ror.32.t
+	desc = generic_ror.32.desc
+	picture = GFX_report_event_generic_ror_32
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = {
+		
+	}
+	option = {
+		name = generic_ror.32.a
+		add_stability = -0.15
+		add_war_support = -0.1
+		ROOT = { save_global_event_target_as = GEN_left }
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@despotism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = despotism
+				size = var:party_popularity@despotism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = authoritarism
+				size = var:party_popularity@authoritarism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = conservatism
+				size = var:party_popularity@conservatism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = national_syndicalism
+				size = var:party_popularity@national_syndicalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@fascism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = fascism
+				size = var:party_popularity@fascism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = market_liberalism
+				size = var:party_popularity@market_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@market_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = social_liberalism
+				size = var:party_popularity@social_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		event_target:GEN_left = {
+			if = {
+				limit = { event_target:GEN_right = { has_government = despotism } }
+				add_popularity = {
+					ideology = despotism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = authoritarism } }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = national_syndicalism } }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = fascism } }
+				add_popularity = {
+					ideology = fascism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = conservatism } }
+				add_popularity = {
+					ideology = conservatism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = market_liberalism } }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+		}
+		event_target:GEN_right = {
+			if = {
+				limit  = {
+					OR = {
+						has_government = despotism
+						has_government = authoritarism
+						has_government = fascism
+						has_government = national_syndicalism
+					}
+				}
+				add_ideas = military_dictatorship_gov_form
+				custom_effect_tooltip = GEN_balance_dictatorship_republic_balance_tt
+				set_variable = { GEN_balance_dictatorship_republic = -90 }
+				GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit  = {
+					OR = {
+						has_government = market_liberalism
+						has_government = social_liberalism
+						has_government = conservatism
+					}
+				}
+				add_ideas = presidential_republic_gov_form
+				custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+				set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -25 }
+				GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			#change_tag_from = event_target:GEN_left
+		}
+		clear_global_event_target = GEN_left
+		clear_global_event_target = GEN_right
+	}
+	option = {
+		name = generic_ror.32.b
+		add_stability = -0.15
+		add_war_support = -0.1
+		ROOT = { save_global_event_target_as = GEN_left }
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@despotism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = despotism
+				size = var:party_popularity@despotism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = authoritarism
+				size = var:party_popularity@authoritarism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = conservatism
+				size = var:party_popularity@conservatism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = national_syndicalism
+				size = var:party_popularity@national_syndicalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@fascism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = fascism
+				size = var:party_popularity@fascism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = market_liberalism
+				size = var:party_popularity@market_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@market_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = social_liberalism
+				size = var:party_popularity@social_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		event_target:GEN_left = {
+			if = {
+				limit = { event_target:GEN_right = { has_government = despotism } }
+				add_popularity = {
+					ideology = despotism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = authoritarism } }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = national_syndicalism } }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = fascism } }
+				add_popularity = {
+					ideology = fascism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = conservatism } }
+				add_popularity = {
+					ideology = conservatism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = market_liberalism } }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+		}
+		event_target:GEN_right = {
+			if = {
+				limit  = {
+					OR = {
+						has_government = despotism
+						has_government = authoritarism
+						has_government = fascism
+						has_government = national_syndicalism
+					}
+				}
+				add_ideas = military_dictatorship_gov_form
+				custom_effect_tooltip = GEN_balance_dictatorship_republic_balance_tt
+				set_variable = { GEN_balance_dictatorship_republic = -90 }
+				GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit  = {
+					OR = {
+						has_government = market_liberalism
+						has_government = social_liberalism
+						has_government = conservatism
+					}
+				}
+				add_ideas = presidential_republic_gov_form
+				custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+				set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -25 }
+				GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5 
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			change_tag_from = event_target:GEN_left
+		}
+		clear_global_event_target = GEN_left
+		clear_global_event_target = GEN_right
+	}
+
+}
+# Плавная демократизация
+country_event = {
+	id = generic_ror.33
+	title = generic_ror.33.t
+	desc = generic_ror.33.desc
+	picture = GFX_report_event_generic_ror_33
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.33.a
+		add_ideas = presidential_republic_gov_form
+		add_ideas = uncodified_constitution_b_law
+		custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+		hidden_effect = {
+			clear_variable = GEN_balance_dictatorship_republic
+			GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -80 }
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+}
+# Установление парламентской республики
+country_event = {
+	id = generic_ror.34
+	title = generic_ror.34.t
+	desc = generic_ror.34.desc
+	picture = GFX_report_event_generic_ror_34
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.34.a
+		add_ideas = parliamentary_republic_gov_form
+		custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+		hidden_effect = {
+			clear_variable = GEN_balance_parlament_republic_soviets
+			GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes
+			set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = 80 }
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+}
+# Законодательство о выборах
+country_event = {
+	id = generic_ror.35
+	title = generic_ror.35.t
+	desc = generic_ror.35.desc
+	picture = GFX_report_event_generic_ror_35
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.35.a
+		country_event = { id = generic_ror.36 days = 30 }
+		country_event = { id = generic_ror.37 days = 1 }
+	}
+	option = {
+		name = generic_ror.35.b
+		country_event = { id = generic_ror.36 days = 90 }
+		country_event = { id = generic_ror.37 days = 1 }
+	}
+	option = {
+		name = generic_ror.35.c
+		country_event = { id = generic_ror.36 days = 180 }
+		country_event = { id = generic_ror.37 days = 1 }
+	}
+	option = {
+		name = generic_ror.35.d
+		country_event = { id = generic_ror.36 days = 360 }
+		country_event = { id = generic_ror.37 days = 1 }
+	}
+}
+# Начало выборов
+country_event = {
+	id = generic_ror.36
+	title = generic_ror.36.t
+	desc = generic_ror.36.desc
+	picture = GFX_report_event_generic_ror_36
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.36.a
+		country_event = { id = generic_ror.41 days = 5 }
+	}
+	option = {
+		name = generic_ror.36.b
+		trigger = {
+			check_variable = { party_polularity@ruling_party < highest_party_popularity@exclude_ruling_party }
+		}
+		add_political_power = -50
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.03
+			}
+		}
+		else_if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.03
+			}
+		}
+		random_list = {
+			25 = {
+				country_event = { id = generic_ror.38 days = 3 }
+			}
+			75 = {
+				country_event = { id = generic_ror.39 days = 3 }
+			}
+		}
+	}
+	option = {
+		name = generic_ror.36.c
+		trigger = {
+			OR = {
+				has_idea = military_dictatorship_gov_form
+				has_idea = allow_one_party_law
+				has_idea = soviet_republic_gov_form
+				has_idea = limited_monarchy_gov_form
+			}
+		}
+		add_political_power = -150
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = 0.1
+			}
+		}
+		if = {
+			limit = {
+				OR = {
+					has_stability < 0.4
+					ruling_party_popularity_less_35 = yes
+				}
+			}
+			country_event = { id = generic_ror.40 days = 3 }
+		}
+	}
+}
+# Периодичность выборов
+country_event = {
+	id = generic_ror.37
+	title = generic_ror.37.t
+	desc = generic_ror.37.desc
+	picture = GFX_report_event_generic_ror_37
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.37.a
+		trigger = {
+			OR = { 
+				has_idea = confederal_gov_terr
+				has_idea = soviet_republic_gov_form
+			}
+		}
+		if = {
+			limit = { has_government = radical_socialism }
+			set_politics = { 
+				ruling_party = radical_socialism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			set_politics = { 
+				ruling_party = communism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = social_democracy }
+			set_politics = { 
+				ruling_party = social_democracy
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = social_liberalism }
+			set_politics = { 
+				ruling_party = social_liberalism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = market_liberalism }
+			set_politics = { 
+				ruling_party = market_liberalism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = conservatism }
+			set_politics = { 
+				ruling_party = conservatism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = despotism }
+			set_politics = { 
+				ruling_party = despotism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = authoritarism }
+			set_politics = { 
+				ruling_party = authoritarism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = fascism }
+			set_politics = { 
+				ruling_party = fascism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+		if = {
+			limit = { has_government = national_syndicalism }
+			set_politics = { 
+				ruling_party = national_syndicalism
+				elections_allowed = yes
+				election_frequency = 12 
+			}
+		}
+	}
+	option = {
+		name = generic_ror.37.b
+		if = {
+			limit = { has_government = radical_socialism }
+			set_politics = { 
+				ruling_party = radical_socialism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			set_politics = { 
+				ruling_party = communism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = social_democracy }
+			set_politics = { 
+				ruling_party = social_democracy
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = social_liberalism }
+			set_politics = { 
+				ruling_party = social_liberalism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = market_liberalism }
+			set_politics = { 
+				ruling_party = market_liberalism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = conservatism }
+			set_politics = { 
+				ruling_party = conservatism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = despotism }
+			set_politics = { 
+				ruling_party = despotism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = authoritarism }
+			set_politics = { 
+				ruling_party = authoritarism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = fascism }
+			set_politics = { 
+				ruling_party = fascism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+		if = {
+			limit = { has_government = national_syndicalism }
+			set_politics = { 
+				ruling_party = national_syndicalism
+				elections_allowed = yes
+				election_frequency = 36 
+			}
+		}
+	}
+	option = {
+		name = generic_ror.37.c
+		if = {
+			limit = { has_government = radical_socialism }
+			set_politics = { 
+				ruling_party = radical_socialism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			set_politics = { 
+				ruling_party = communism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = social_democracy }
+			set_politics = { 
+				ruling_party = social_democracy
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = social_liberalism }
+			set_politics = { 
+				ruling_party = social_liberalism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = market_liberalism }
+			set_politics = { 
+				ruling_party = market_liberalism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = conservatism }
+			set_politics = { 
+				ruling_party = conservatism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = despotism }
+			set_politics = { 
+				ruling_party = despotism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = authoritarism }
+			set_politics = { 
+				ruling_party = authoritarism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = fascism }
+			set_politics = { 
+				ruling_party = fascism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+		if = {
+			limit = { has_government = national_syndicalism }
+			set_politics = { 
+				ruling_party = national_syndicalism
+				elections_allowed = yes
+				election_frequency = 48 
+			}
+		}
+	}
+	option = {
+		name = generic_ror.37.d
+		if = {
+			limit = { has_government = radical_socialism }
+			set_politics = { 
+				ruling_party = radical_socialism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			set_politics = { 
+				ruling_party = communism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = social_democracy }
+			set_politics = { 
+				ruling_party = social_democracy
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = social_liberalism }
+			set_politics = { 
+				ruling_party = social_liberalism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = market_liberalism }
+			set_politics = { 
+				ruling_party = market_liberalism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = conservatism }
+			set_politics = { 
+				ruling_party = conservatism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = despotism }
+			set_politics = { 
+				ruling_party = despotism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = authoritarism }
+			set_politics = { 
+				ruling_party = authoritarism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = fascism }
+			set_politics = { 
+				ruling_party = fascism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+		if = {
+			limit = { has_government = national_syndicalism }
+			set_politics = { 
+				ruling_party = national_syndicalism
+				elections_allowed = yes
+				election_frequency = 60 
+			}
+		}
+	}
+	option = {
+		name = generic_ror.37.e
+		trigger = {
+			OR = {
+				has_idea = limited_monarchy_gov_form
+				has_idea = military_dictatorship_gov_form
+				has_idea = presidential_republic_gov_form
+			}
+		}
+		add_political_power = -50
+		if = {
+			limit = { has_government = radical_socialism }
+			set_politics = { 
+				ruling_party = radical_socialism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = communism }
+			set_politics = { 
+				ruling_party = communism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = social_democracy }
+			set_politics = { 
+				ruling_party = social_democracy
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = social_liberalism }
+			set_politics = { 
+				ruling_party = social_liberalism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = market_liberalism }
+			set_politics = { 
+				ruling_party = market_liberalism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = conservatism }
+			set_politics = { 
+				ruling_party = conservatism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = despotism }
+			set_politics = { 
+				ruling_party = despotism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = authoritarism }
+			set_politics = { 
+				ruling_party = authoritarism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = fascism }
+			set_politics = { 
+				ruling_party = fascism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+		if = {
+			limit = { has_government = national_syndicalism }
+			set_politics = { 
+				ruling_party = national_syndicalism
+				elections_allowed = yes
+				election_frequency = 84 
+			}
+		}
+	}
+	
+}
+# Возмущение выборными махинациями
+country_event = {
+	id = generic_ror.38
+	title = generic_ror.38.t
+	desc = generic_ror.38.desc
+	picture = GFX_report_event_generic_ror_38
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.38.a
+		add_political_power = -150
+		add_stability = -0.05
+		country_event = { id = generic_ror.41 days = 3 }
+	}
+	option = {
+		name = generic_ror.38.b
+		add_political_power = -50
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.1
+			}
+		}
+		else_if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.1
+			}
+		}
+		country_event = { id = generic_ror.41 days = 3 }
+	}
+
+}
+# Махинации остались незамеченными
+country_event = {
+	id = generic_ror.39
+	title = generic_ror.39.t
+	desc = generic_ror.39.desc
+	picture = GFX_report_event_generic_ror_39
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.39.a
+		country_event = { id = generic_ror.41 days = 3 }
+	}
+
+}
+# Профанация выборов
+country_event = {
+	id = generic_ror.40
+	title = generic_ror.40.t
+	desc = generic_ror.40.desc
+	picture = GFX_report_event_generic_ror_40
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.40.a
+		add_stability = -0.1
+		country_event = { id = generic_ror.41 days = 3 }
+	}
+	option = {
+		name = generic_ror.40.b
+		add_political_power = -120
+		add_stability = -0.03
+		country_event = { id = generic_ror.41 days = 3 }
+	}
+}
+# Итоги выборов
+country_event = {
+	id = generic_ror.41
+	title = generic_ror.41.t
+	desc = generic_ror.41.desc
+	picture = GFX_report_event_generic_ror_41
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.41.a
+		set_politics = {
+			ruling_party = var:highest_party_ideology
+			elections_allowed = yes
+		}
+		if = {
+			limit = {
+				has_idea = parliamentary_republic_gov_form
+			}
+			add_political_power = 200
+			remove_ideas_with_trait = head_of_government_trait
+			remove_ideas_with_trait = foreign_minister_trait
+			remove_ideas_with_trait = economy_minister_trait
+			remove_ideas_with_trait = security_minister_trait
+			remove_ideas_with_trait = head_of_intel_trait
+			remove_ideas_with_trait = military_minister_trait
+		}
+		if = {
+			limit = {
+				has_idea = two_party_system_law
+			}
+			if = {
+				limit = { has_government = radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.1
+				}
+			}
+			else_if = {
+				limit = { has_government = national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.1
+				}
+			}
+			add_popularity = {
+				ideology = var:highest_party_ideology@exclude_ruling_party
+				popularity = 0.1
+			}
+		}
+	}
+
+}
+# Наши кандидаты
+country_event = {
+	id = generic_ror.42
+	title = generic_ror.42.t
+	desc = generic_ror.42.desc
+	picture = GFX_report_event_generic_ror_42
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	immediate = { set_country_flag = GEN_can_support_ideology_in_this_election_cycle_flag }
+	option = {
+		name = generic_ror.42.a
+		country_event = { id = generic_ror.43 days = 1 }
+	}
+	option = {
+		name = generic_ror.42.b
+		country_event = { id = generic_ror.44 days = 1 }
+	}
+	option = {
+		name = generic_ror.42.c
+		country_event = { id = generic_ror.45 days = 1 }
+	}
+	option = {
+		name = generic_ror.42.d
+		country_event = { id = generic_ror.46 days = 1 }
+	}
+}
+# Главная партия социализма
+country_event = {
+	id = generic_ror.43
+	title = generic_ror.43.t
+	desc = generic_ror.43.desc
+	picture = GFX_report_event_generic_ror_43
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.43.a
+		set_country_flag = GEN_election_support_radical_socialism
+	}
+	option = {
+		name = generic_ror.43.b
+		set_country_flag = GEN_election_support_social_democracy
+	}
+	option = {
+		name = generic_ror.43.c
+		set_country_flag = GEN_election_support_communism
+	}
+}
+# Либеральные кандидаты
+country_event = {
+	id = generic_ror.44
+	title = generic_ror.44.t
+	desc = generic_ror.44.desc
+	picture = GFX_report_event_generic_ror_44
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.44.a
+		set_country_flag = GEN_election_support_social_liberalism
+	}
+	option = {
+		name = generic_ror.44.b
+		set_country_flag = GEN_election_support_market_liberalism
+	}
+}
+# Ставка на патернализм
+country_event = {
+	id = generic_ror.45
+	title = generic_ror.45.t
+	desc = generic_ror.45.desc
+	picture = GFX_report_event_generic_ror_45
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.45.a
+		set_country_flag = GEN_election_support_conservatism
+	}
+	option = {
+		name = generic_ror.45.b
+		set_country_flag = GEN_election_support_despotism
+	}
+	option = {
+		name = generic_ror.45.c
+		set_country_flag = GEN_election_support_authoritarism
+	}
+}
+# Наши национальные союзники
+country_event = {
+	id = generic_ror.46
+	title = generic_ror.46.t
+	desc = generic_ror.46.desc
+	picture = GFX_report_event_generic_ror_46
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.46.a
+		set_country_flag = GEN_election_support_fascism
+	}
+	option = {
+		name = generic_ror.46.b
+		set_country_flag = GEN_election_support_national_syndicalism
+	}
+}
+# Начало проблем
+country_event = {
+	id = generic_ror.47
+	title = generic_ror.47.t
+	desc = { 
+		text = generic_ror.47.desc_monarchy
+		trigger = {
+			OR = {
+				has_variable = GEN_balance_absolute_constitutional_monarchy
+				has_variable = GEN_balance_constitutional_monarchy_republic
+			}
+		}
+	}
+	desc = { 
+		text = generic_ror.47.desc_disctator
+		trigger = {
+			has_variable = GEN_balance_dictatorship_republic
+		}
+	}
+	desc = { 
+		text = generic_ror.47.desc_rebuplic
+		trigger = {
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+	}
+	picture = GFX_report_event_generic_ror_47
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.47.a
+		add_stability = -0.03
+		add_political_power = -30
+		country_event = { id = generic_ror.48 days = 15 }
+	}
+}
+# Разрастание кризиса
+country_event = {
+	id = generic_ror.48
+	title = generic_ror.48.t
+	desc = generic_ror.48.desc
+
+	picture = GFX_report_event_generic_ror_48
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.48.a
+		trigger = {
+			OR = {
+				has_variable = GEN_balance_absolute_constitutional_monarchy
+				has_variable = GEN_balance_constitutional_monarchy_republic
+			}
+		}
+		add_stability = -0.05
+		add_political_power = -50
+		if = {
+			limit = { NOT = { has_country_flag = crisis_in_progress } }
+			set_country_flag = crisis_in_progress
+			add_ideas = mutiny_1
+			country_event = stability.23
+		}
+		if = {
+			limit = { NOT = { has_country_flag = crisis_in_progress } }
+			set_country_flag = crisis_solution_in_progress
+			add_ideas = strikes_1
+			country_event = stability.22
+		}
+		country_event = { id = generic_ror.49 days = 15 }
+	}
+	option = {
+		name = generic_ror.48.b
+		trigger = {
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		add_stability = -0.05
+		add_political_power = -50
+		if = {
+			limit = { NOT = { has_country_flag = crisis_in_progress } }
+			set_country_flag = crisis_in_progress
+			add_ideas = mutiny_1
+			country_event = stability.23
+		}
+		if = {
+			limit = { NOT = { has_country_flag = crisis_in_progress } }
+			set_country_flag = crisis_solution_in_progress
+			add_ideas = strikes_1
+			country_event = stability.22
+		}
+		country_event = { id = generic_ror.49 days = 15 }
+	}
+	option = {
+		name = generic_ror.48.c
+		trigger = {
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		add_stability = -0.05
+		add_political_power = -50
+		if = {
+			limit = { NOT = { has_country_flag = crisis_in_progress } }
+			set_country_flag = crisis_in_progress
+			add_ideas = mutiny_1
+			country_event = stability.23
+		}
+		if = {
+			limit = { NOT = { has_country_flag = crisis_in_progress } }
+			set_country_flag = crisis_solution_in_progress
+			add_ideas = strikes_1
+			country_event = stability.22
+		}
+		country_event = { id = generic_ror.49 days = 15 }
+	}
+}
+# Революция\Передача власти
+country_event = {
+	id = generic_ror.49
+	title = {
+		text = generic_ror.49.t
+		trigger = { NOT = { has_variable = GEN_balance_parlament_republic_soviets } }
+	}
+	title = {
+		text = generic_ror.49.t_soviet
+		trigger = { has_variable = GEN_balance_parlament_republic_soviets }
+	}
+	desc = { 
+		text = generic_ror.49.desc_monarchy
+		trigger = {
+			OR = {
+				has_variable = GEN_balance_absolute_constitutional_monarchy
+				has_variable = GEN_balance_constitutional_monarchy_republic
+			}
+		}
+	}
+	desc = { 
+		text = generic_ror.49.desc_disctator
+		trigger = {
+			has_variable = GEN_balance_dictatorship_republic
+		}
+	}
+	desc = { 
+		text = generic_ror.49.desc_rebuplic
+		trigger = {
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+	}
+	desc = { 
+		text = generic_ror.49.desc_soviet
+		trigger = {
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+	}
+	picture = GFX_report_event_generic_ror_49
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.49.a
+		trigger = {
+			OR = {
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:communism }
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:radical_socialism }
+			}
+			#NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+		}
+		set_politics = {
+			ruling_party = var:highest_party_ideology@exclude_ruling_party
+			elections_allowed = yes
+		}
+		add_popularity = {
+			ideology = var:highest_party_ideology
+			popularity = 0.1
+		}
+		add_ideas = soviet_republic_gov_form
+		add_ideas = local_assembly_decisions_b_law
+		add_ideas = poliparty_system_law
+		add_political_power = 50
+		add_stability = 0.05
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_minister_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+		remove_ideas_with_trait = military_minister_trait
+		custom_effect_tooltip = GEN_balance_parlament_republic_soviets_balance_tt
+		hidden_effect = {
+			if = {
+				limit = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+				clear_variable = GEN_balance_absolute_constitutional_monarchy
+				GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_constitutional_monarchy_republic }
+				clear_variable = GEN_balance_constitutional_monarchy_republic
+				GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+				clear_variable = GEN_balance_presidential_rebuplic_parlament_republic
+				GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_dictatorship_republic }
+				clear_variable = GEN_balance_dictatorship_republic
+				GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			set_variable = { GEN_balance_parlament_republic_soviets = -50 }
+			GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes
+		}
+		
+	}
+	option = {
+		name = generic_ror.49.b
+		trigger = {
+			OR = {
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:social_liberalism }
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:market_liberalism }
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:conservatism }
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:social_democracy }
+			}
+			#NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+		}
+		set_politics = {
+			ruling_party = var:highest_party_ideology@exclude_ruling_party
+			elections_allowed = yes
+		}
+		add_popularity = {
+			ideology = var:highest_party_ideology
+			popularity = 0.1
+		}
+		add_ideas = parliamentary_republic_gov_form
+		add_ideas = uncodified_constitution_b_law
+		add_ideas = poliparty_system_law
+		add_political_power = 50
+		add_stability = 0.05
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_minister_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+		remove_ideas_with_trait = military_minister_trait
+		custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+		hidden_effect = {
+			if = {
+				limit = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+				clear_variable = GEN_balance_absolute_constitutional_monarchy
+				GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_constitutional_monarchy_republic }
+				clear_variable = GEN_balance_constitutional_monarchy_republic
+				GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_parlament_republic_soviets }
+				clear_variable = GEN_balance_parlament_republic_soviets
+				GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_dictatorship_republic }
+				clear_variable = GEN_balance_dictatorship_republic
+				GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = 25 }
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+	option = {
+		name = generic_ror.49.c
+		trigger = {
+			check_variable = { highest_party_ideology@exclude_ruling_party = token:despotism }
+			#NOT = { has_variable = GEN_balance_dictatorship_republic }
+		}
+		set_politics = {
+			ruling_party = var:highest_party_ideology@exclude_ruling_party
+			#elections_allowed = yes
+		}
+		add_popularity = {
+			ideology = var:highest_party_ideology
+			popularity = 0.1
+		}
+		add_ideas = military_dictatorship_gov_form
+		add_ideas = emergency_laws_b_law
+		add_ideas = poliparty_system_law
+		add_political_power = 70
+		add_stability = 0.05
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_minister_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+		remove_ideas_with_trait = military_minister_trait
+		custom_effect_tooltip = GEN_balance_dictatorship_republic_balance_tt
+		hidden_effect = {
+			if = {
+				limit = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+				clear_variable = GEN_balance_absolute_constitutional_monarchy
+				GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_constitutional_monarchy_republic }
+				clear_variable = GEN_balance_constitutional_monarchy_republic
+				GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_parlament_republic_soviets }
+				clear_variable = GEN_balance_parlament_republic_soviets
+				GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+				clear_variable = GEN_balance_presidential_rebuplic_parlament_republic
+				GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			set_variable = { GEN_balance_dictatorship_republic = -25 }
+			GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+	option = {
+		name = generic_ror.49.d
+		trigger = {
+			OR = {
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:fascism }
+				check_variable = { highest_party_ideology@exclude_ruling_party = token:national_syndicalism }
+			}
+		}
+		set_politics = {
+			ruling_party = var:highest_party_ideology@exclude_ruling_party
+			elections_allowed = yes
+		}
+		add_popularity = {
+			ideology = var:highest_party_ideology
+			popularity = 0.1
+		}
+		add_ideas = military_dictatorship_gov_form
+		add_ideas = emergency_laws_b_law
+		add_ideas = poliparty_system_law
+		add_political_power = 70
+		add_stability = 0.05
+		remove_ideas_with_trait = head_of_government_trait
+		remove_ideas_with_trait = foreign_minister_trait
+		remove_ideas_with_trait = economy_minister_trait
+		remove_ideas_with_trait = security_minister_trait
+		remove_ideas_with_trait = head_of_intel_trait
+		remove_ideas_with_trait = military_minister_trait
+		custom_effect_tooltip = GEN_balance_dictatorship_republic_balance_tt
+		hidden_effect = {
+			if = {
+				limit = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+				clear_variable = GEN_balance_absolute_constitutional_monarchy
+				GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_constitutional_monarchy_republic }
+				clear_variable = GEN_balance_constitutional_monarchy_republic
+				GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_parlament_republic_soviets }
+				clear_variable = GEN_balance_parlament_republic_soviets
+				GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+				clear_variable = GEN_balance_presidential_rebuplic_parlament_republic
+				GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			set_variable = { GEN_balance_dictatorship_republic = -25 }
+			GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+}
+# Активность антисоветских групп
+country_event = {
+	id = generic_ror.50
+	title = generic_ror.50.t
+	desc = generic_ror.50.desc
+
+
+	picture = GFX_report_event_generic_ror_50
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.50.a
+		if = {
+			limit = { has_government = radical_socialism }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = communism }
+			add_popularity = {
+				ideology = communism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = social_democracy }
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = social_liberalism }
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = market_liberalism }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = conservatism }
+			add_popularity = {
+				ideology = conservatism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = authoritarism }
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = despotism }
+			add_popularity = {
+				ideology = despotism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = fascism }
+			add_popularity = {
+				ideology = fascism
+				popularity = -0.05
+			}
+		}
+		else_if = {
+			limit = { has_government = national_syndicalism }
+			add_popularity = {
+				ideology = national_syndicalism
+				popularity = -0.05
+			}
+		}
+		add_political_power = -50
+		add_timed_idea = {
+			idea = GEN_anti_soviet_opposition
+			days = 35
+		}
+		country_event = { id = generic_ror.51 days = 15 }
+	}
+}
+# Дезорганизация советской власти
+country_event = {
+	id = generic_ror.51
+	title = generic_ror.51.t
+	desc = generic_ror.51.desc
+
+
+	picture = GFX_report_event_generic_ror_51
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.51.a
+		add_stability = -0.07
+		add_political_power = -70
+		country_event = { id = generic_ror.52 days = 15 }
+	}
+}
+# Момент истины
+country_event = {
+	id = generic_ror.52
+	title = generic_ror.52.t
+	desc = generic_ror.52.desc
+
+
+	picture = GFX_report_event_generic_ror_52
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = generic_ror.52.a
+		trigger = {
+			OR = {
+				has_stability > 0.4
+				ruling_party_popularity_less_05 = yes
+			}
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+				has_government = social_liberalism
+			}
+		}
+		add_stability = -0.15
+		add_political_power = -100
+		country_event = { id = generic_ror.49 days = 3 }
+	}
+	option = {
+		name = generic_ror.52.b
+		trigger = {
+			has_stability < 0.41
+			NOT = { ruling_party_popularity_less_05 = yes }
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+				has_government = social_liberalism
+			}
+		}
+		ROOT = { save_global_event_target_as = GEN_left }
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@despotism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = despotism
+				size = var:party_popularity@despotism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = authoritarism
+				size = var:party_popularity@authoritarism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = conservatism
+				size = var:party_popularity@conservatism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = national_syndicalism
+				size = var:party_popularity@national_syndicalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@fascism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = fascism
+				size = var:party_popularity@fascism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = market_liberalism
+				size = var:party_popularity@market_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@market_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = social_liberalism
+				size = var:party_popularity@social_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		event_target:GEN_left = {
+			if = {
+				limit = { event_target:GEN_right = { has_government = despotism } }
+				add_popularity = {
+					ideology = despotism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = authoritarism } }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = national_syndicalism } }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = fascism } }
+				add_popularity = {
+					ideology = fascism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = conservatism } }
+				add_popularity = {
+					ideology = conservatism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = market_liberalism } }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+		}
+		event_target:GEN_right = {
+			if = {
+				limit  = {
+					OR = {
+						has_government = despotism
+						has_government = authoritarism
+						has_government = fascism
+						has_government = national_syndicalism
+					}
+				}
+				add_ideas = military_dictatorship_gov_form
+				custom_effect_tooltip = GEN_balance_dictatorship_republic_balance_tt
+				set_variable = { GEN_balance_dictatorship_republic = -90 }
+				GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit  = {
+					OR = {
+						has_government = market_liberalism
+						has_government = social_liberalism
+						has_government = conservatism
+					}
+				}
+				add_ideas = presidential_republic_gov_form
+				custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+				set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -25 }
+				GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			change_tag_from = event_target:GEN_left
+		}
+		clear_global_event_target = GEN_left
+		clear_global_event_target = GEN_right
+	}
+	option = {
+		name = generic_ror.52.c
+		trigger = {
+			has_stability < 0.41
+			NOT = { ruling_party_popularity_less_05 = yes }
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+				has_government = social_liberalism
+			}
+		}
+		ROOT = { save_global_event_target_as = GEN_left }
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@despotism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@despotism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = despotism
+				size = var:party_popularity@despotism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@authoritarism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = authoritarism
+				size = var:party_popularity@authoritarism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@conservatism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = conservatism
+				size = var:party_popularity@conservatism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@national_syndicalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = national_syndicalism
+				size = var:party_popularity@national_syndicalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@fascism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@market_liberalism }
+					check_variable = { party_popularity_100@fascism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = fascism
+				size = var:party_popularity@fascism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@market_liberalism > party_popularity_100@social_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = market_liberalism
+				size = var:party_popularity@market_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		if = {
+			limit = {
+				AND = {
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@despotism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@authoritarism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@national_syndicalism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@fascism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@conservatism }
+					check_variable = { party_popularity_100@social_liberalism > party_popularity_100@market_liberalism }
+				}
+			}
+			start_civil_war = {
+				ideology = social_liberalism
+				size = var:party_popularity@social_liberalism
+				save_global_event_target_as = GEN_right 
+			}
+		}
+		event_target:GEN_left = {
+			if = {
+				limit = { event_target:GEN_right = { has_government = despotism } }
+				add_popularity = {
+					ideology = despotism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = authoritarism } }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = national_syndicalism } }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = fascism } }
+				add_popularity = {
+					ideology = fascism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = conservatism } }
+				add_popularity = {
+					ideology = conservatism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = { event_target:GEN_right = { has_government = market_liberalism } }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -1
+				}
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+		}
+		event_target:GEN_right = {
+			if = {
+				limit  = {
+					OR = {
+						has_government = despotism
+						has_government = authoritarism
+						has_government = fascism
+						has_government = national_syndicalism
+					}
+				}
+				add_ideas = military_dictatorship_gov_form
+				custom_effect_tooltip = GEN_balance_dictatorship_republic_balance_tt
+				set_variable = { GEN_balance_dictatorship_republic = -90 }
+				GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit  = {
+					OR = {
+						has_government = market_liberalism
+						has_government = social_liberalism
+						has_government = conservatism
+					}
+				}
+				add_ideas = presidential_republic_gov_form
+				custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+				set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -25 }
+				GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+			if = {
+				limit = {
+					NOT = { has_template = "Militia" }
+				}
+				division_template = {
+					name = "Militia" 
+					is_locked = no
+					regiments = {
+						militia = { x = 0 y = 0 }
+						militia = { x = 0 y = 1 }
+					}
+				}
+			}
+			capital_scope = {
+				create_unit = {
+					division = "name = \"Militia\" division_template = \"Militia\" start_manpower_factor = 1 start_experience_factor = 0" 
+					owner = ROOT
+					count = 5
+					allow_spawning_on_enemy_provs = yes
+				}
+			}
+			#change_tag_from = event_target:GEN_left
+		}
+		clear_global_event_target = GEN_left
+		clear_global_event_target = GEN_right
+	}
+	option = {
+		name = generic_ror.52.d
+		trigger = {
+			has_stability < 0.41
+			NOT = {
+				OR = {
+					has_government = radical_socialism
+					has_government = communism
+					has_government = social_democracy
+					has_government = social_liberalism
+				}
+			}
+		}
+		add_ideas = parliamentary_republic_gov_form
+		custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+		hidden_effect = {
+			clear_variable = GEN_balance_parlament_republic_soviets
+			GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes
+			set_variable = { GEN_balance_presidential_rebuplic_parlament_republic = -25 }
+			GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes
+		}
+	}
+}
+
+
+
+
+

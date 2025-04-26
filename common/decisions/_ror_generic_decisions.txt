@@ -1,0 +1,3901 @@
+GEN_election_cycle_ges_cat = {
+	#Разрешить выборы
+	GEN_election_allow_des = {
+
+		visible = { 
+			#OR = {
+			#	has_variable = GEN_balance_constitutional_monarchy_republic
+			#	has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+			#	has_variable = GEN_balance_parlament_republic_soviets
+			#}
+			has_elections = no
+		}
+		
+		available = {
+			OR = {
+				has_idea = limited_monarchy_gov_form
+				has_idea = presidential_republic_gov_form
+				has_idea = parliamentary_republic_gov_form
+				has_idea = soviet_republic_gov_form
+			}
+			NOT = { has_idea = ban_all_parties_law }
+		}
+		cost = 50
+		#days_remove = 7
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				OR = {
+					has_government = conservatism
+					has_government = market_liberalism
+					has_government = social_liberalism
+					has_government = social_democracy
+				}
+				factor = 100
+			}
+		}
+		complete_effect = {
+			country_event = generic_ror.35
+		}
+	}
+	#Запретить выборы
+	GEN_election_forbid_des = {
+
+		visible = { 
+			has_elections = yes
+		}
+		
+		available = {
+			OR = {
+				has_idea = decrees_of_ruler_b_law
+				has_idea = emergency_laws_b_law
+				has_idea = military_dictatorship_gov_form
+				has_idea = allow_one_party_law
+				has_idea = scraping_the_barrel
+			}
+			NOT = { has_idea = ban_all_parties_law }
+		}
+		cost = 50
+		#days_remove = 7
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				OR = {
+					has_government = despotism
+					has_government = authoritarism
+					has_government = fascism
+				}
+				factor = 100
+			}
+		}
+		complete_effect = {
+			if = {
+				limit = { has_government = radical_socialism }
+				set_politics = { 
+					ruling_party = radical_socialism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = communism }
+				set_politics = { 
+					ruling_party = communism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = social_democracy }
+				set_politics = { 
+					ruling_party = social_democracy
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = social_liberalism }
+				set_politics = { 
+					ruling_party = social_liberalism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = market_liberalism }
+				set_politics = { 
+					ruling_party = market_liberalism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = conservatism }
+				set_politics = { 
+					ruling_party = conservatism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = despotism }
+				set_politics = { 
+					ruling_party = despotism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = authoritarism }
+				set_politics = { 
+					ruling_party = authoritarism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = fascism }
+				set_politics = { 
+					ruling_party = fascism
+					elections_allowed = no 
+				}
+			}
+			if = {
+				limit = { has_government = national_syndicalism }
+				set_politics = { 
+					ruling_party = national_syndicalism
+					elections_allowed = no 
+				}
+			}
+		}
+	}
+	#Поменять периодичность выборов
+	GEN_change_election_period_des = {
+
+		visible = { 
+			has_elections = yes
+		}
+		
+		available = {
+			#has_elections = yes
+		}
+		cost = 150
+		#days_remove = 7
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			country_event = generic_ror.35
+		}
+	}
+	#Выбор партии для поддержки в избирательной кампании
+	GEN_choose_party_to_support_des = {
+
+		visible = { 
+		}
+		
+		available = {
+			has_elections = yes
+			NOT = { has_country_flag = GEN_can_support_ideology_in_this_election_cycle_flag }
+		}
+		cost = 100
+		#days_remove = 7
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			country_event = generic_ror.42
+		}
+	}
+	#Искать спонсоров для партии
+	GEN_seek_sponsors_des = {
+
+		visible = { 
+			NOT = { has_country_flag = GEN_did_seek_sponsors_this_election_cycle }
+			OR = {
+				has_country_flag = GEN_election_support_radical_socialism
+				has_country_flag = GEN_election_support_social_democracy
+				has_country_flag = GEN_election_support_communism
+				has_country_flag = GEN_election_support_social_liberalism
+				has_country_flag = GEN_election_support_market_liberalism
+				has_country_flag = GEN_election_support_conservatism
+				has_country_flag = GEN_election_support_despotism
+				has_country_flag = GEN_election_support_authoritarism
+				has_country_flag = GEN_election_support_fascism
+				has_country_flag = GEN_election_support_national_syndicalism
+			}
+		}
+		
+		available = {
+			has_elections = yes
+			
+		}
+		cost = 50
+		days_remove = 120
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		remove_effect = {
+			set_country_flag = GEN_did_seek_sponsors_this_election_cycle
+			if = {
+				limit = { has_country_flag = GEN_election_support_radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.01
+				}
+			}
+		}
+	}
+	#Развивать региональные ячейки
+	GEN_support_regions_des = {
+
+		visible = { 
+			NOT = { has_country_flag = GEN_did_support_regions_this_election_cycle }
+			OR = {
+				has_country_flag = GEN_election_support_radical_socialism
+				has_country_flag = GEN_election_support_social_democracy
+				has_country_flag = GEN_election_support_communism
+				has_country_flag = GEN_election_support_social_liberalism
+				has_country_flag = GEN_election_support_market_liberalism
+				has_country_flag = GEN_election_support_conservatism
+				has_country_flag = GEN_election_support_despotism
+				has_country_flag = GEN_election_support_authoritarism
+				has_country_flag = GEN_election_support_fascism
+				has_country_flag = GEN_election_support_national_syndicalism
+			}
+		}
+		
+		available = {
+			has_elections = yes
+			
+		}
+		cost = 100
+		days_remove = 150
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		remove_effect = {
+			set_country_flag = GEN_did_support_regions_this_election_cycle
+			if = {
+				limit = { has_country_flag = GEN_election_support_radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.01
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.01
+				}
+			}
+		}
+	}
+	#Вложить деньги в массовую кампанию
+	GEN_mass_campaign_des = {
+
+		visible = { 
+			NOT = { has_country_flag = GEN_did_mass_campaign_this_election_cycle }
+			OR = {
+				has_country_flag = GEN_election_support_radical_socialism
+				has_country_flag = GEN_election_support_social_democracy
+				has_country_flag = GEN_election_support_communism
+				has_country_flag = GEN_election_support_social_liberalism
+				has_country_flag = GEN_election_support_market_liberalism
+				has_country_flag = GEN_election_support_conservatism
+				has_country_flag = GEN_election_support_despotism
+				has_country_flag = GEN_election_support_authoritarism
+				has_country_flag = GEN_election_support_fascism
+				has_country_flag = GEN_election_support_national_syndicalism
+			}
+		}
+		
+		available = {
+			has_elections = yes
+			
+		}
+		cost = 200
+		days_remove = 70
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		remove_effect = {
+			set_country_flag = GEN_did_mass_campaign_this_election_cycle
+			if = {
+				limit = { has_country_flag = GEN_election_support_radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.03
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.03
+				}
+			}
+		}
+	}
+	#Протестовать против непопулярных законов
+	GEN_protest_not_popular_laws_des = {
+
+		visible = { 
+			check_variable = { GEN_protest_not_popular_laws_des_var < 3 }
+			OR = {
+				has_country_flag = GEN_election_support_radical_socialism
+				has_country_flag = GEN_election_support_social_democracy
+				has_country_flag = GEN_election_support_communism
+				has_country_flag = GEN_election_support_social_liberalism
+				has_country_flag = GEN_election_support_market_liberalism
+				has_country_flag = GEN_election_support_conservatism
+				has_country_flag = GEN_election_support_despotism
+				has_country_flag = GEN_election_support_authoritarism
+				has_country_flag = GEN_election_support_fascism
+				has_country_flag = GEN_election_support_national_syndicalism
+			}
+		}
+		
+		available = {
+			has_elections = yes
+			
+		}
+		cost = 70
+		days_remove = 50
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			if = {
+				limit = { NOT = { has_variable = GEN_protest_not_popular_laws_des_var } }
+				set_variable = { GEN_protest_not_popular_laws_des_var = 0 }
+			}
+		}
+		remove_effect = {
+			add_to_variable = {
+				var = GEN_protest_not_popular_laws_des_var
+				value = 1
+			}
+			add_stability = -0.03
+			if = {
+				limit = { has_country_flag = GEN_election_support_radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.02
+				}
+			}
+		}
+	}
+	#Провести акции в крупных городах
+	GEN_rally_in_cities_des = {
+
+		visible = { 
+			OR = {
+				has_country_flag = GEN_election_support_radical_socialism
+				has_country_flag = GEN_election_support_social_democracy
+				has_country_flag = GEN_election_support_communism
+				has_country_flag = GEN_election_support_social_liberalism
+				has_country_flag = GEN_election_support_market_liberalism
+				has_country_flag = GEN_election_support_conservatism
+				has_country_flag = GEN_election_support_despotism
+				has_country_flag = GEN_election_support_authoritarism
+				has_country_flag = GEN_election_support_fascism
+				has_country_flag = GEN_election_support_national_syndicalism
+			}
+		}
+		
+		available = {
+			has_elections = yes
+			
+		}
+		cost = 200
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			if = {
+				limit = { has_country_flag = GEN_election_support_radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.02
+				}
+			}
+		}
+	}
+	#Запустить партийную прессу
+	GEN_set_party_press_des = {
+
+		visible = { 
+			NOT = { has_idea = GEN_party_press_radical_socialism	}
+			NOT = { has_idea = GEN_party_press_social_democracy	}
+			NOT = { has_idea = GEN_party_press_communism	}
+			NOT = { has_idea = GEN_party_press_social_liberalism	}
+			NOT = { has_idea = GEN_party_press_market_liberalism	}
+			NOT = { has_idea = GEN_party_press_conservatism	}
+			NOT = { has_idea = GEN_party_press_despotism	}
+			NOT = { has_idea = GEN_party_press_authoritarism	}
+			NOT = { has_idea = GEN_party_press_fascism	}
+			NOT = { has_idea = GEN_party_press_national_syndicalism }	
+			OR = {
+				has_country_flag = GEN_election_support_radical_socialism
+				has_country_flag = GEN_election_support_social_democracy
+				has_country_flag = GEN_election_support_communism
+				has_country_flag = GEN_election_support_social_liberalism
+				has_country_flag = GEN_election_support_market_liberalism
+				has_country_flag = GEN_election_support_conservatism
+				has_country_flag = GEN_election_support_despotism
+				has_country_flag = GEN_election_support_authoritarism
+				has_country_flag = GEN_election_support_fascism
+				has_country_flag = GEN_election_support_national_syndicalism
+			}			
+		}
+		
+		available = {
+			has_elections = yes
+			
+		}
+		cost = 200
+		days_remove = 35
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		
+		remove_effect = {
+			if = {
+				limit = { has_country_flag = GEN_election_support_radical_socialism }
+				add_timed_idea = {
+					idea = GEN_party_press_radical_socialism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_democracy }
+				add_timed_idea = {
+					idea = GEN_party_press_social_democracy
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_communism }
+				add_timed_idea = {
+					idea = GEN_party_press_communism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_liberalism }
+				add_timed_idea = {
+					idea = GEN_party_press_social_liberalism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_market_liberalism }
+				add_timed_idea = {
+					idea = GEN_party_press_market_liberalism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_conservatism }
+				add_timed_idea = {
+					idea = GEN_party_press_conservatism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_despotism }
+				add_timed_idea = {
+					idea = GEN_party_press_despotism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_authoritarism }
+				add_timed_idea = {
+					idea = GEN_party_press_authoritarism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_fascism }
+				add_timed_idea = {
+					idea = GEN_party_press_fascism
+					days = 360
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_national_syndicalism }
+				add_timed_idea = {
+					idea = GEN_party_press_national_syndicalism
+					days = 360
+				}
+			}
+		}
+	}
+	#Участвовать в уличных столкновениях
+	GEN_street_fight_des = {
+
+		visible = { 
+			OR = {
+				has_country_flag = GEN_election_support_radical_socialism
+				has_country_flag = GEN_election_support_social_democracy
+				has_country_flag = GEN_election_support_communism
+				has_country_flag = GEN_election_support_social_liberalism
+				has_country_flag = GEN_election_support_market_liberalism
+				has_country_flag = GEN_election_support_conservatism
+				has_country_flag = GEN_election_support_despotism
+				has_country_flag = GEN_election_support_authoritarism
+				has_country_flag = GEN_election_support_fascism
+				has_country_flag = GEN_election_support_national_syndicalism
+			}
+		}
+		
+		available = {
+			has_elections = yes
+			has_stability < 0.35
+		}
+		cost = 100
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = -0.04
+			if = {
+				limit = { has_country_flag = GEN_election_support_radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.02
+				}
+			}
+			if = {
+				limit = { has_country_flag = GEN_election_support_national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.02
+				}
+			}
+		}
+	}
+}
+economy_decisions = {
+	#Улучшение условий механизации
+	GEN_upgrade_machanisation_allowed_des = {
+
+		visible = { 
+			OR = {
+				has_idea = no_agricultural_mechanization
+				has_idea = steel_agricultural_tools
+				has_idea = steel_agricultural_tools
+			}
+		}
+		
+		available = {
+			has_country_flag = GEN_upgrade_machanisation_allowed_des_flag
+			NOT = {
+				has_idea = peasant_communities_property
+				has_idea = feudal_economy_law
+			}
+			num_of_civilian_factories > 15 
+			#NOT = { has_idea = GEN_improved_agricultural_mechanisation }
+		}
+		cost = 200
+		days_remove = 720
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			add_timed_idea = {
+				idea = GEN_improved_agricultural_mechanisation
+				days = 720
+			}
+		}
+		remove_effect = {
+			rise_agriculture_development_law = yes
+		}
+	}			
+}
+
+GEN_political_balance_des_cat = {
+	#1.Абсолютная монархия – Конституционная монархия
+	#Укрепить власть монарха
+	GEN_rise_monarch_power_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			ruling_party_popularity_above_35 = yes
+		}
+		cost = 100
+		days_remove = 100
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = -20 
+				tooltip = remove_20_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}	
+	#Закрепить лояльность армии монарху
+	GEN_army_loyalty_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			command_power > 9
+		}
+		cost = 50
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			add_command_power = -10
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = -10 
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.03
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Подтвердить права аристократии
+	GEN_aristocracy_rights_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = -10 
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			add_stability = -0.03
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}	
+	#Поддержать крупных землевладельцев
+	GEN_support_landlords_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			OR = {
+				has_idea = small_farms
+				has_idea = landlordism
+			}
+		}
+		cost = 50
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = -10 
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			add_stability = -0.03
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}	
+	#Подтвердить связь трона и предпринимателей
+	GEN_support_bourjua_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			NOT = { 
+				has_idea = closed_economy 
+				has_idea = control_of_field_commanders_law 
+				has_idea = feudal_economy_law 
+				has_idea = corporatocracy_law 
+				has_idea = planed_economy_law 
+			}
+		}
+		cost = 100
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = -10 
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}	
+	#Получить поддержку от религиозного сословия
+	GEN_religion_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = -5 
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}	
+	#Передать монарху законодательную власть
+	GEN_give_law_rights_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			monarchy_balance_power_between_n100_p25 = yes
+			NOT = { has_idea = decrees_of_ruler_b_law }
+		}
+		cost = 150
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = -15 
+				tooltip = remove_15_to_bop_var_tt 
+			}
+			add_ideas = decrees_of_ruler_b_law
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Установить абсолютную монархию
+	GEN_set_absolute_monarch_des = {
+
+		visible = { 
+			NOT = { has_idea = absolute_monarchy_gov_form }
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			NOT = {
+				has_idea = constitution_b_law
+				has_idea = uncodified_constitution_b_law
+				has_idea = local_assembly_decisions_b_law
+			}
+			monarchy_balance_power_between_n100_n75 = yes
+		}
+		cost = 300
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_ideas = absolute_monarchy_gov_form
+		}
+	}
+	#Распределить полномочия монарха
+	GEN_give_up_power_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 100
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = 20 
+				tooltip = add_20_to_bop_var_tt 
+			}
+			add_stability = 0.02
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Принять прогрессивные законы
+	GEN_take_progressive_laws_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			
+		}
+		cost = 50
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = 5
+				tooltip = add_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Ослабить цензуру
+	GEN_low_cencorship_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			
+		}
+		cost = 25
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = 5
+				tooltip = add_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Обещать реформы
+	GEN_promise_reform_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			
+		}
+		cost = 50
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.01
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Закрепить верховенство права
+	GEN_law_above_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			OR = {
+				has_idea = decrees_of_ruler_b_law
+				has_idea = emergency_laws_b_law
+			}
+			monarchy_balance_power_between_n75_p100 = yes
+		}
+		cost = 150
+		days_remove = 100
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_absolute_constitutional_monarchy  
+				value = 25
+				tooltip = add_25_to_bop_var_tt 
+			}
+			add_ideas = uncodified_constitution_b_law
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Установить конституционную монархию
+	GEN_set_constitutional_monarch_des = {
+
+		visible = { 
+			NOT = { has_idea = limited_monarchy_gov_form }
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			OR = {
+				has_idea = uncodified_constitution_b_law
+				has_idea = constitution_b_law
+				has_idea = emergency_laws_b_law
+			}
+			monarchy_balance_power_between_n25_p100 = yes
+		}
+		cost = 250
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_ideas = limited_monarchy_gov_form
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.05
+			}
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.03
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.03
+			}
+		}
+	}
+	#Начать борьбу с монархией
+	GEN_fight_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_absolute_constitutional_monarchy
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+        }
+		available = {
+			has_idea = limited_monarchy_gov_form
+			authoritarism < 0.5
+			monarchy_balance_power_between_p75_p100 = yes
+		}
+		cost = 25
+		days_remove = 25
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			custom_effect_tooltip = GEN_balance_constitutional_monarchy_republic_balance_tt
+			hidden_effect = {
+				clear_variable = GEN_balance_absolute_constitutional_monarchy
+				GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes
+				set_variable = { GEN_balance_constitutional_monarchy_republic = -50 }
+				GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+			}
+		}
+	}
+	
+	#2.Конституционная монархия – Президентская республика
+	#Установить промонархический курс
+	GEN_set_promonarch_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			constitutional_balance_power_between_n100_n85 = yes
+			authoritarism > 0.15
+			has_stability > 0.45
+		}
+		cost = 70
+		days_remove = 25
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			custom_effect_tooltip = GEN_balance_absolute_constitutional_monarchy_balance_tt
+			hidden_effect = {
+				clear_variable = GEN_balance_constitutional_monarchy_republic 
+				GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes
+				set_variable = { GEN_balance_absolute_constitutional_monarchy = -50 }
+				GEN_absolute_constitutional_monarchy_UPDATE_MODIFIER_SCRIPT = yes
+			}
+		}
+	}
+	#Поддержать промонархические партии
+	GEN_support_auth_parties_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 150
+		days_remove = 90
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = -10
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = 0.02
+			}
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Поддержать консерваторов
+	GEN_support_conservative_parties_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 120
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = conservatism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Усилить лояльность парламента монарху
+	GEN_add_loyalty_to_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 100
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			add_stability = 0.01
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Преследовать оппозицию
+	GEN_supress_opposition_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 100
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			add_stability = -0.04
+			add_popularity = {
+				ideology = var:highest_party_ideology@exclude_ruling_party
+				popularity = -0.03
+			}
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Увеличить цензы
+	GEN_increase_censorship_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 250
+		days_remove = 150
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = -25
+				tooltip = remove_25_to_bop_var_tt 
+			}
+			add_stability = -0.08
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Махинации на выборах
+	GEN_parlament_machinations_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			NOT = { has_idea = ban_all_parties_law }
+		}
+		cost = 150
+		days_remove = 300
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = -10
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Снизить авторитет короны
+	GEN_lower_crown_authority_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 100
+		days_remove = 90
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = 7
+				tooltip = add_7_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = authoritarism
+				popularity = -0.02
+			}
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Распространять либеральную прессу
+	GEN_liberal_press_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 150
+		days_remove = 120
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = 7
+				tooltip = add_7_to_bop_var_tt 
+			}
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.02
+			}
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Либерализовать законодательство
+	GEN_liberate_laws_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			
+		}
+		cost = 200
+		days_remove = 150
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			add_stability = 0.04
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Связать вождей парламента и «улицу»
+	GEN_connect_parlament_and_street_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			has_stability < 0.65
+		}
+		cost = 50
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_constitutional_monarchy_republic  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			add_stability = -0.05
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.01
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.01
+			}
+			hidden_effect = { GEN_constitutional_monarchy_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Потребовать конституционный референдум
+	GEN_referendum_const_monarch_des = {
+
+		visible = { 
+			has_variable = GEN_balance_constitutional_monarchy_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			authoritarism < 0.3
+			constitutional_balance_power_between_p75_p100 = yes
+		}
+		cost = 100
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			country_event = generic_ror.18
+		}
+	}
+	#Свергнуть монархию
+	GEN_destroy_monarch_des = {
+
+		activation = {
+			NOT = { has_country_flag = GEN_coup_in_progress }
+			OR = {
+				has_variable = GEN_balance_absolute_constitutional_monarchy
+				has_variable = GEN_balance_constitutional_monarchy_republic
+			}
+			OR = {
+				AND = {
+					has_stability < 0.25
+					ruling_party_popularity_less_30 = yes
+				}
+				AND = {
+					has_stability < 0.5
+					ruling_party_popularity_less_15 = yes
+				}
+			}
+			has_civil_war = no
+		}
+		is_good = no
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_absolute_constitutional_monarchy }
+            NOT = { has_variable = GEN_balance_constitutional_monarchy_republic }
+        }
+		available = {
+			OR = {
+				AND = {
+					has_stability > 0.25
+					ruling_party_popularity_above_30 = yes
+				}
+				AND = {
+					has_stability > 0.5
+					ruling_party_popularity_above_15 = yes
+				}
+			}
+		}
+		days_mission_timeout = 35
+		selectable_mission = no
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		timeout_effect  = {
+			country_event = generic_ror.47
+			set_country_flag = {
+				flag = GEN_coup_in_progress
+				days = 100
+				value = 1
+			}
+		}
+	}
+	
+	#3.Военная диктатура – Президентская республика
+	#Поддержать культ Вождя
+	GEN_ruler_cult_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		cost = 200
+		days_remove = 200
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = -7
+				tooltip = remove_7_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			if = {
+				limit = { has_government = radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.03
+				}
+			}
+			else_if = {
+				limit = { has_government = national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.03
+				}
+			}
+		}
+	}
+	#Передать командирам чрезвычайные права
+	GEN_give_commanders_economy_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			has_stability < 0.35
+			ruling_party_popularity_above_25 = yes
+			NOT = { has_idea = control_of_field_commanders_law }
+		}
+		cost = 50
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_ideas = control_of_field_commanders_law
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = -25
+				tooltip = remove_25_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Инспектировать лояльные части
+	GEN_inspection_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			command_power > 20
+			has_army_experience > 5
+		}
+		cost = 150
+		days_remove = 150
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_command_power = -20
+			army_experience = -5
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Цензурировать прессу
+	GEN_censorship_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		cost = 100
+		days_remove = 100
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = -0.02
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Преследовать оппозицию
+	GEN_supress_opposition_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		cost = 100
+		days_remove = 50
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = -0.04
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			add_popularity = {
+				ideology = var:highest_party_ideology@exclude_ruling_party
+				popularity = -0.03
+			}
+		}
+	}
+	#Усилить надзор тайной полиции
+	GEN_secret_police_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		cost = 250
+		days_remove = 200
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = 0.03
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = -10
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.01
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = -0.01
+			}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = -0.01
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = -0.01
+			}
+		}
+	}
+	#Пойти на сделку с либералами
+	GEN_trade_with_liberals_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		cost = 100
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = 0.03
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = 7
+				tooltip = add_7_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			add_popularity = {
+				ideology = market_liberalism
+				popularity = 0.02
+			}
+			add_popularity = {
+				ideology = social_liberalism
+				popularity = 0.02
+			}
+		}
+	}
+	#Ослабить внутренний контроль
+	GEN_loose_control_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		modifier = {
+            stability_weekly = -0.003
+        }
+		cost = 10
+		days_remove = 300
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_political_power = 15
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Выказать благожелательность социалистам
+	GEN_support_socialists_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		cost = 120
+		days_remove = 90
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = 0.02
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = 0.01
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.01
+			}
+			add_popularity = {
+				ideology = social_democracy
+				popularity = 0.02
+			}
+		}
+	}
+	#Расширить полномочия гражданских властей
+	GEN_more_civillian_power_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			
+		}
+		cost = 150
+		days_remove = 150
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_war_support = 0.02
+			add_to_variable = { 
+				var = GEN_balance_dictatorship_republic  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_dictatorship_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Демократизировать режим
+	GEN_democratisation_dictator_des = {
+
+		visible = { 
+			has_variable = GEN_balance_dictatorship_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			has_stability > 0.65
+		}
+		cost = 100
+		days_remove = 49
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			custom_effect_tooltip = GEN_dictatorship_to_republic_tt
+			country_event = generic_ror.33
+		}
+	}
+	#Свергнуть диктатуру
+	GEN_destroy_dictator_des = {
+
+		activation = {
+			NOT = { has_country_flag = GEN_coup_in_progress }
+			has_variable = GEN_balance_dictatorship_republic
+			OR = {
+				AND = {
+					has_stability < 0.25
+					ruling_party_popularity_less_30 = yes
+				}
+				AND = {
+					has_stability < 0.5
+					ruling_party_popularity_less_15 = yes
+				}
+			}
+			has_civil_war = no
+		}
+		is_good = no
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_dictatorship_republic }
+        }
+		available = {
+			OR = {
+				AND = {
+					has_stability > 0.25
+					ruling_party_popularity_above_30 = yes
+				}
+				AND = {
+					has_stability > 0.5
+					ruling_party_popularity_above_15 = yes
+				}
+			}
+		}
+		days_mission_timeout = 35
+		selectable_mission = no
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		timeout_effect  = {
+			country_event = generic_ror.47
+			set_country_flag = {
+				flag = GEN_coup_in_progress
+				days = 100
+				value = 1
+			}
+		}
+	}
+	
+	#4.Президентская республика – Парламентская республика
+	#Наделить президента особыми полномочиями
+	GEN_give_president_power_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			ruling_party_popularity_above_55 = yes
+			republic_balance_power_between_n100_n85 = yes
+		}
+		cost = 50
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			country_event = generic_ror.19
+			custom_effect_tooltip = GEN_republic_dictatorship_tt
+		}
+	}
+	#Усилить полномочия президента
+	GEN_add_president_power_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 30
+		days_remove = 56
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = -0.02
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Пропагандировать культ президента
+	GEN_cult_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			if = {
+				limit = { has_government = radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.02
+				}
+			}
+			else_if = {
+				limit = { has_government = national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = 0.02
+				}
+			}
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Совершить президентскую поездку по стране
+	GEN_ride_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 35
+		days_re_enable = 300
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = 0.05
+			add_war_support = 0.03
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = -3
+				tooltip = remove_3_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Произвести давление на парламент
+	GEN_push_parlament_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			republic_balance_power_between_n100_0 = yes
+		}
+		cost = 40
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = -0.07
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = -10
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Усилить позицию президента связями в бизнесе 
+	GEN_bussines_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 10
+		days_remove = 56
+		days_re_enable = 360
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			if = {
+				limit = {
+					NOT = { has_government = market_liberalism }
+				}
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = 0.03
+				}
+			}
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = -10
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			if = {
+				limit = {
+					OR = {
+						NOT = { has_idea = no_legislation } 
+						NOT = { has_idea = civilian_economy } 
+						NOT = { has_idea = free_trade } 
+					}
+				}
+				country_event = generic_ror.21
+			}
+		}
+	}
+	#Поддержать авторитет президента в армии
+	GEN_army_authority_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 55
+		days_remove = 56
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.02
+			}
+			add_war_support = 0.01
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = -5
+				tooltip = remove_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Установить президентскую республику
+	GEN_set_presidential_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+			NOT = { has_idea = presidential_republic_gov_form }
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			has_idea = parliamentary_republic_gov_form
+			republic_balance_power_between_n100_n10 = yes
+		}
+		cost = 250
+		days_remove = 56
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_ideas = presidential_republic_gov_form
+		}
+	}
+	#Распустить парламент
+	GEN_disable_parlament_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			republic_balance_power_between_n100_p25 = yes
+			ruling_party_not_most_popular = yes
+		}
+		cost = 100
+		days_remove = 14
+		days_re_enable = 180
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = -25
+				tooltip = remove_25_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			country_event = generic_ror.22
+		}
+	}
+	#Усилить полномочия парламента
+	GEN_power_parlament_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 56
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = 5
+				tooltip = add_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Умиротворить парламентскую оппозицию
+	GEN_lower_parlament_opposition_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = 5
+				tooltip = add_5_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			random_list = {
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = radical_socialism }
+						}
+						add_popularity = {
+							ideology = radical_socialism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = communism }
+						}
+						add_popularity = {
+							ideology = communism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = social_democracy }
+						}
+						add_popularity = {
+							ideology = social_democracy
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = social_liberalism }
+						}
+						add_popularity = {
+							ideology = social_liberalism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = market_liberalism }
+						}
+						add_popularity = {
+							ideology = market_liberalism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = conservatism }
+						}
+						add_popularity = {
+							ideology = conservatism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = despotism }
+						}
+						add_popularity = {
+							ideology = despotism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = authoritarism }
+						}
+						add_popularity = {
+							ideology = authoritarism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = fascism }
+						}
+						add_popularity = {
+							ideology = fascism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+				10 = {
+					if = {
+						limit = {
+							NOT = {	has_government = national_syndicalism }
+						}
+						add_popularity = {
+							ideology = national_syndicalism
+							popularity = 0.02
+						}
+					}
+					else = {
+						add_popularity = {
+							ideology = var:highest_party_ideology@exclude_ruling_party
+							popularity = 0.02
+						}
+					}
+				}
+			}
+		}
+	}
+	#Критиковать президентскую власть
+	GEN_critique_president_power_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			
+		}
+		cost = 40
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = 3
+				tooltip = add_3_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			add_stability = -0.01
+			if = {
+				limit = { has_government = radical_socialism }
+				add_popularity = {
+					ideology = radical_socialism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = communism }
+				add_popularity = {
+					ideology = communism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = social_democracy }
+				add_popularity = {
+					ideology = social_democracy
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = social_liberalism }
+				add_popularity = {
+					ideology = social_liberalism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = market_liberalism }
+				add_popularity = {
+					ideology = market_liberalism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = conservatism }
+				add_popularity = {
+					ideology = conservatism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = authoritarism }
+				add_popularity = {
+					ideology = authoritarism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = despotism }
+				add_popularity = {
+					ideology = despotism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = fascism }
+				add_popularity = {
+					ideology = fascism
+					popularity = -0.01
+				}
+			}
+			else_if = {
+				limit = { has_government = national_syndicalism }
+				add_popularity = {
+					ideology = national_syndicalism
+					popularity = -0.01
+				}
+			}
+		}
+	}
+	#Начать импичмент президента
+	GEN_start_impichment_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			ruling_party_popularity_less_20 = yes
+			has_stability < 0.6
+			republic_balance_power_between_n60_p100 = yes
+		}
+		cost = 40
+		days_remove = 28
+		days_re_enable = 360
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_presidential_rebuplic_parlament_republic  
+				value = 30
+				tooltip = add_30_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_presidential_rebuplic_parlament_republic_UPDATE_MODIFIER_SCRIPT = yes }
+			country_event = generic_ror.28
+		}
+	}
+	#Объявить власть советов
+	GEN_soviet_power_president_republic_des = {
+
+		visible = { 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			left_parties_summa_above_40 = yes
+			OR = {
+				has_government = radical_socialism
+				has_government = communism
+				has_government = social_democracy
+			}
+		}
+		cost = 40
+		days_remove = 14
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			country_event = generic_ror.29
+		}
+	}
+	#Свергнуть республику
+	GEN_destroy_republic_des = {
+
+		activation = {
+			NOT = { has_country_flag = GEN_coup_in_progress } 
+			has_variable = GEN_balance_presidential_rebuplic_parlament_republic
+			OR = {
+				AND = {
+					has_stability < 0.25
+					ruling_party_popularity_less_30 = yes
+					liberal_parties_summa_less_30 = yes
+				}
+				AND = {
+					has_stability < 0.5
+					ruling_party_popularity_less_15 = yes
+				}
+			}
+			has_civil_war = no
+		}
+		is_good = no
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_presidential_rebuplic_parlament_republic }
+        }
+		available = {
+			OR = {
+				AND = {
+					has_stability > 0.25
+					ruling_party_popularity_above_30 = yes
+					liberal_parties_summa_above_30 = yes
+				}
+				AND = {
+					has_stability > 0.5
+					ruling_party_popularity_above_15 = yes
+				}
+			}
+		}
+		days_mission_timeout = 35
+		selectable_mission = no
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		timeout_effect  = {
+			country_event = generic_ror.47
+			set_country_flag = {
+				flag = GEN_coup_in_progress
+				days = 100
+				value = 1
+			}
+		}
+	}
+	
+	
+	#5.Парламентская республика – Советская республика
+	#Переход к парламентскому правлению
+	GEN_give_parlament_power_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		cost = 150
+		days_remove = 28
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			country_event = generic_ror.34
+			custom_effect_tooltip = GEN_balance_presidential_rebuplic_parlament_republic_balance_tt
+		}
+	}
+	#Ослабить полномочия советов
+	GEN_less_power_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		cost = 70
+		days_remove = 56
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = -0.02
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = -10
+				tooltip = remove_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Пропаганда централизма
+	GEN_centralism_propaganda_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		cost = 50
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_popularity = {
+				ideology = radical_socialism
+				popularity = -0.01
+			}
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = -4
+				tooltip = remove_4_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Повышение центрального контроля за производствами
+	GEN_more_production_controll_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		modifier = {
+			production_factory_efficiency_gain_factor = -0.1
+		}
+		cost = 60
+		days_remove = 49
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = -7
+				tooltip = remove_7_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Поиск поддержки у патерналистских сил
+	GEN_seek_despotism_support_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		cost = 40
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_popularity = {
+				ideology = despotism
+				popularity = 0.01
+			}
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = -4
+				tooltip = remove_4_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Нарастить полномочия советов
+	GEN_more_power_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		cost = 80
+		days_remove = 56
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Ослабить центральное руководство
+	GEN_less_central_power_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		cost = 60
+		days_remove = 49
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_stability = -0.02
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Перетрясти постоянные органы власти
+	GEN_quake_central_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		cost = 100
+		days_remove = 35
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Поддержать производственное самоуправление
+	GEN_support_selfgov_soviet_des = {
+
+		visible = { 
+			has_variable = GEN_balance_parlament_republic_soviets
+		}
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			
+		}
+		modifier = {
+			production_factory_efficiency_gain_factor = -0.1
+		}
+		cost = 50
+		days_remove = 70
+		days_re_enable = 1
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		remove_effect = {
+			add_to_variable = { 
+				var = GEN_balance_parlament_republic_soviets  
+				value = 10
+				tooltip = add_10_to_bop_var_tt 
+			}
+			hidden_effect = { GEN_parlament_republic_soviets_UPDATE_MODIFIER_SCRIPT = yes }
+		}
+	}
+	#Свержение советской республики
+	GEN_destroy_soviet_des = {
+
+		activation = {
+			NOT = { has_country_flag = GEN_coup_in_progress }
+			has_variable = GEN_balance_parlament_republic_soviets
+			OR = {
+				AND = {
+					has_stability < 0.25
+					ruling_party_popularity_less_25 = yes
+					left_parties_summa_less_30 = yes
+				}
+				AND = {
+					has_stability < 0.5
+					ruling_party_popularity_less_15 = yes
+				}
+			}
+			has_civil_war = no
+		}
+		is_good = no
+		cancel_trigger = {
+            NOT = { has_variable = GEN_balance_parlament_republic_soviets }
+        }
+		available = {
+			OR = {
+				AND = {
+					has_stability > 0.25
+					ruling_party_popularity_above_25 = yes
+					left_parties_summa_above_30 = yes
+				}
+				AND = {
+					has_stability > 0.5
+					ruling_party_popularity_above_15 = yes
+				}
+			}
+		}
+		days_mission_timeout = 35
+		selectable_mission = no
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	has_stability < 0.56
+			#	factor = 0
+			#}
+		}
+		complete_effect = {
+			
+		}
+		timeout_effect  = {
+			country_event = generic_ror.50
+			set_country_flag = {
+				flag = GEN_coup_in_progress
+				days = 100
+				value = 1
+			}
+		}
+	}
+}
