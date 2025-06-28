@@ -737,14 +737,14 @@ country_event = {
 				country_event = rcw_catc.115
 			}
 			ai_chance = {
-			factor = 30
-		}
+			    factor = 30
+		    }
 		}
 		
 		option = {
 			name = rcw_catc.114.b
 			ai_chance = {
-				factor = 70
+				factor = 10
 				}
 			}
 		}
@@ -756,8 +756,22 @@ country_event = {
 			fire_only_once = yes
 			option = {
 				name = rcw_catc.115.a
-				create_faction = TRK_UNION 
-				CPG = { add_to_faction = BUK }
+                BUK = {
+				    declare_war_on = {
+                        target = RUS
+                        type = annex_everything
+                    }
+				}
+                diplomatic_relation = {
+                    country = CPG
+                    relation = military_access
+                    active = yes
+                }
+                diplomatic_relation = {
+                    country = CPG
+                    relation = non_aggression_pact
+                    active = yes
+                }
 
 			}
 		}
@@ -781,7 +795,21 @@ country_event = {
 				        }
                     }
 			    }
-
+			}
+			option = {
+				name = rcw_catc.116.b
+				add_political_power = -25
+				add_timed_idea = { id = CPG_rost_turk_naz days = 480 }
+				custom_effect_tooltip = CPG_form_vseturk_tt
+			    hidden_effect = {
+			        every_controlled_state = { 
+                        create_unit = {
+					        division = "name = \"Ashabadskiy polk\" division_template = \"Zakaspiyskaya brigada opolcheniya\" start_experience_factor = 0.0 start_equipment_factor = 1"
+					        owner = CPG
+					        count = 1
+				        }
+                    }
+			    }
 			}
 		}
 		country_event = {
@@ -1056,5 +1084,171 @@ country_event = {
 		add_stability = -0.05
 		add_ideas = foodstuffs_supply_crisis_2
 		add_ideas = collapse_of_railway_system_2 
+	}
+}
+country_event = {
+	id = rcw_catc.127
+	title = rcw_catc.127.t
+	desc = rcw_catc.127.d
+	
+	is_triggered_only = yes
+	picture = GFX_CRI_crimea_army
+	option = { # присоединение
+		name = rcw_catc.127.a
+		ai_chance = {
+			factor = 1
+		}
+		if = { limit = { is_subject = yes } OVERLORD = { end_puppet = ROOT } }
+		leave_faction = yes
+		if = {
+			limit = { FROM = { NOT = { is_faction_leader = yes } } }
+			FROM = { leave_faction = yes create_faction = south_of_russia }
+		}
+		FROM = { add_to_faction = ROOT }
+		hidden_effect = {
+			every_other_country = {
+				limit = { has_war_with = ROOT NOT = { has_war_with = FROM } }
+				FROM = {
+					add_to_war = {
+						targeted_alliance = ROOT
+						enemy = HUN
+						hostility_reason = asked_to_join
+					}
+				}
+			}
+		}
+		if = {
+			limit = { has_idea = neutral_foreign_policy_law }
+			add_ideas = realpolitic_policy_law
+		}
+		clr_country_flag = RVA_union_refuse
+		FROM = {
+			puppet = ROOT
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_dominion
+			}
+		}
+	}
+	option = { # чего чего?
+		name = rcw_catc.127.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.128
+	title = rcw_catc.128.t
+	desc = rcw_catc.128.d
+	
+	is_triggered_only = yes
+	
+	picture = GFX_report_event_generic_riot
+	
+	trigger = {
+	    has_stability < 0.6
+		fascism > 0.07
+		surrender_progress < 0.7
+	}
+	
+	option = {
+		name = rcw_catc.128.a
+        start_civil_war = {
+            ruling_party = fascism_ideology
+            ideology = fascism
+            size = 0.6
+            capital = 1388
+            states = {
+                1388
+            }
+            keep_political_leader = yes
+            keep_political_party_members = yes
+            add_ideas = military_dictatorship_gov_form
+		    add_ideas = decrees_of_ruler_b_law
+		    add_ideas = dominant_party_system_law
+		    add_ideas = realpolitic_policy_law
+            create_country_leader = {
+			    name = "Serdar Ovezbaev"
+			    desc = "CPG_Serdar_Ovezbaev_DESC"
+			    picture = GFX_Portrait_Serdar_Ovezbaev
+			    expire = "1965.1.1"
+			    ideology = fascism_ideology
+			    traits = { 
+				    army_organizator flame_nationalist
+			    }
+		    }
+			set_cosmetic_tag = CPG_fascism
+		    set_party_name = {
+			    ideology = fascism
+			    long_name = CPG_fascism_party_long
+			    name = CPG_fascism_party
+		    }
+			add_civil_war_target = CPG
+			hidden_effect = {
+			    remove_ideas = CPG_army_poor_army_1
+				remove_ideas = CPG_army_poor_army
+			}
+			load_focus_tree = Transcaspian_government_fascism_focus
+        }
+		set_country_flag = CPG_tersk_revolution
+		remove_ideas = CPG_rost_turk_naz
+			random_other_country = {
+                limit = { original_tag = ROOT }
+                ROOT = {
+		            every_unit_leader = { limit = { OR = { has_id = 88146 has_id = 88145 has_id = 88157 has_id = 88158 } } set_nationality = PREV }
+		        }
+				every_unit_leader = { limit = { OR = { has_id = 88159 has_id = 88161 has_id = 88162 has_id = 88163 } } set_nationality = ROOT }
+		    }
+	}
+	option = {
+		name = rcw_catc.128.b
+        start_civil_war = {
+            ruling_party = fascism_ideology
+            ideology = fascism
+            size = 0.6
+            capital = 1388
+            states = {
+                1388
+            }
+            keep_political_leader = yes
+            keep_political_party_members = yes
+            add_ideas = military_dictatorship_gov_form
+		    add_ideas = decrees_of_ruler_b_law
+		    add_ideas = dominant_party_system_law
+		    add_ideas = realpolitic_policy_law
+            create_country_leader = {
+			    name = "Serdar Ovezbaev"
+			    desc = "CPG_Serdar_Ovezbaev_DESC"
+			    picture = GFX_Portrait_Serdar_Ovezbaev
+			    expire = "1965.1.1"
+			    ideology = fascism_ideology
+			    traits = { 
+				    army_organizator flame_nationalist
+			    }
+		    }
+			set_cosmetic_tag = CPG_fascism
+		    set_party_name = {
+			    ideology = fascism
+			    long_name = CPG_fascism_party_long
+			    name = CPG_fascism_party
+		    }
+			add_civil_war_target = CPG
+			hidden_effect = {
+			    remove_ideas = CPG_army_poor_army_1
+				remove_ideas = CPG_army_poor_army
+			}
+			load_focus_tree = Transcaspian_government_fascism_focus
+        }
+		remove_ideas = CPG_rost_turk_naz
+		set_country_flag = CPG_tersk_revolution
+			random_other_country = {
+                limit = { original_tag = ROOT }
+                ROOT = {
+		            every_unit_leader = { limit = { OR = { has_id = 88146 has_id = 88145 has_id = 88157 has_id = 88158 } } set_nationality = PREV }
+		        }
+				every_unit_leader = { limit = { OR = { has_id = 88159 has_id = 88161 has_id = 88162 has_id = 88163 } } set_nationality = ROOT }
+		    }
+			PREV = { change_tag_from = CPG }
 	}
 }
