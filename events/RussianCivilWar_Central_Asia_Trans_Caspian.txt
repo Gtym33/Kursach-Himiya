@@ -560,26 +560,22 @@ country_event = {
 
 	option = {
 		name = rcw_catc.105.a
-		    trigger = {
-			    country_exists = RVA
-		    }
-		    RVA = {
-			    country_event =  rcw_catc.106
-		    }
+		trigger = {
+			country_exists = RVA
 	    }
-		option = {
-			name = rcw_catc.105.b
-			trigger = {
-				OR = {
-				country_exists = SIB
-				country_exists = RSS
-				}
+		RVA = {
+			country_event =  rcw_catc.106
+		}
+	}
+	option = {
+		name = rcw_catc.105.b
+		    IF = {
+			    limit = { country_exists = SIB }
+				SIB = { country_event = rcw_catc.107 }
 			}
-			SIB = {
-				country_event =  rcw_catc.107
-			}
-			RSS = {
-				country_event =  rcw_catc.107
+		    IF = {
+			    limit = { country_exists = RSS }
+				RSS = { country_event =  rcw_catc.107 }
 			}
 		}
 		option = {
@@ -1244,6 +1240,13 @@ country_event = {
 			load_focus_tree = Transcaspian_government_fascism_focus
 			declare_war_on = { target = RUS type = take_state_focus }
 			declare_war_on = { target = TRK type = take_state_focus }
+			capital_scope = { 
+                create_unit = {
+					division = "name = \"Turkmenskaya konnica\" division_template = \"Turkmenskaya konnica\" start_experience_factor = 0.0 start_equipment_factor = 1"
+					owner = FROM
+					count = 5
+				}
+            }
         }
 		set_country_flag = CPG_tersk_revolution
 		remove_ideas = CPG_rost_turk_naz
@@ -1260,6 +1263,10 @@ country_event = {
 		            PREV = { change_tag_from = CPG }
 		        }
 		    }
+		delete_unit_template_and_units = {
+			division_template = "Turkmenskaya konnica"
+			disband = yes
+		}
 	}
 	option = {
 		name = rcw_catc.128.b
@@ -1301,6 +1308,13 @@ country_event = {
 			load_focus_tree = Transcaspian_government_fascism_focus
 			declare_war_on = { target = RUS type = take_state_focus }
 			declare_war_on = { target = TRK type = take_state_focus }
+			capital_scope = { 
+                create_unit = {
+					division = "name = \"Turkmenskaya konnica\" division_template = \"Turkmenskaya konnica\" start_experience_factor = 0.0 start_equipment_factor = 1"
+					owner = FROM
+					count = 5
+				}
+            }
         }
 		remove_ideas = CPG_rost_turk_naz
 		set_country_flag = CPG_tersk_revolution
@@ -1311,6 +1325,10 @@ country_event = {
 		        }
 				every_unit_leader = { limit = { OR = { has_id = 88159 has_id = 88161 has_id = 88162 has_id = 88163 } } set_nationality = ROOT }
 		    }
+		delete_unit_template_and_units = {
+			division_template = "Turkmenskaya konnica"
+			disband = yes
+		}
 	}
 }
 country_event = {
@@ -1765,6 +1783,17 @@ country_event = { #победа оппозиции
 	        name = CPG_despotism_party
 		}
 		unlock_decision_tooltip = CPG_pribitie_kornilova
+		delete_unit_template_and_units = {
+			division_template = "british division"
+			disband = yes
+		}
+		delete_unit_template_and_units = {
+			division_template = "Colonial Troops"
+			disband = yes
+		}
+        every_country = {
+			CPG = { every_unit_leader = { limit = { OR = { has_id = 88160 } } set_nationality = ENG } }
+		}
 	}
 }
 country_event = {
@@ -1923,5 +1952,107 @@ country_event = { #Ивент добравольцам
 	option = {
 		name = rcw_catc.154.a
 		
+	}
+}
+country_event = {
+	id = rcw_catc.155
+	title = rcw_catc.155.t
+	desc = rcw_catc.155.d 
+	
+	picture = GFX_report_event_cpg_turk
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = { #Поможем тюрским братьям
+		name = rcw_catc.155.a
+        add_opinion_modifier = { target = FROM modifier = BLR_Ylychenie_otnocheniy }
+		FROM = { country_event = { id = rcw_catc.156 days = 1 } }
+		country_event = { id = rcw_catc.157 days = 7 }
+		FROM = { THIS_country_will_be_recognized_by_PREV = yes }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = { #Пока русские помогают нам - эта авантюра недопустима 
+		name = rcw_catc.155.b
+		trigger = {
+			TRR = {
+				has_country_leader = {
+			       name = "Mustafa Kemal Paşa"
+			        ruling_only = yes
+		        }
+		        has_government = national_syndicalism
+				has_idea = TRR_Sov_mil_advisors
+			}
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.156
+	title = rcw_catc.156.t
+	desc = rcw_catc.156.d 
+	
+	picture = GFX_report_event_tur_3
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.156.a
+        add_war_support = 0.07
+	}
+}
+country_event = {
+	id = rcw_catc.157
+	title = rcw_catc.157.t
+	desc = rcw_catc.157.d 
+	
+	picture = GFX_report_event_cpg_bunt_army
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.157.a
+		add_political_power = -40
+        add_manpower = -500
+		CPG = { country_event = rcw_catc.158 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = rcw_catc.157.b
+        ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.158
+	title = rcw_catc.158.t
+	desc = rcw_catc.158.d 
+	
+	picture = GFX_report_event_tur_3
+	
+	is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.158.a
+		custom_effect_tooltip = lack_of_officers_fall_2_tt
+		lack_of_officers_fall = yes
+		lack_of_officers_fall = yes
+		ROOT = {
+		    send_equipment = {
+		        equipment = infantry_equipment
+		        amount = 200
+			    target = FROM
+		    }
+		}
 	}
 }
