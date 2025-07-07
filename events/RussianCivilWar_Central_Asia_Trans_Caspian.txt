@@ -170,6 +170,8 @@ country_event = {
 		has_global_flag = RUS_civil_war_intervention_start
 		is_former_russian_empire_russian_country = yes
 		NOT = { original_tag = RUS }
+		NOT = { original_tag = CPG }
+		NOT = { CPG = { is_puppet_of = from } }
 		TRK = { OR = { exists = no AND = { has_capitulated = yes has_war_with = ROOT } } }
 		is_subject = no
 		405 = {
@@ -722,7 +724,7 @@ country_event = {
 			ENG = {
 				country_event = {
 					id = rcw_catc.112
-					days = 7
+					days = 1
 				}
 			}
 		}
@@ -764,6 +766,7 @@ country_event = {
 			custom_effect_tooltip = CPG_effect_minus
 			custom_effect_tooltip = CPG_pomosh_no
 			SPG_set_buz_faction_values = yes
+			CPG_eng_vliyanie_eff = yes
 			CPG_reshenie_2_effect = yes
 		}
 	}
@@ -791,6 +794,7 @@ country_event = {
 				factor = 0
 			}
 		}
+	}
 		country_event = {
 			id = rcw_catc.115
 			title = rcw_catc.115.t
@@ -802,7 +806,7 @@ country_event = {
 				name = rcw_catc.115.a
                 BUK = {
 				    declare_war_on = {
-                        target = RUS
+                        target = TRK
                         type = annex_everything
                     }
 				}
@@ -816,7 +820,6 @@ country_event = {
                     relation = non_aggression_pact
                     active = yes
                 }
-
 			}
 		}
 		country_event = {
@@ -831,7 +834,7 @@ country_event = {
 				name = rcw_catc.116.a
 				custom_effect_tooltip = CPG_form_vseturk_tt
 			    hidden_effect = {
-			        every_controlled_state = { 
+			        every_controlled_state = {
                         create_unit = {
 					        division = "name = \"Turkmenskaya konnica\" division_template = \"Turkmenskaya konnica\" start_experience_factor = 0.0 start_equipment_factor = 1"
 					        owner = CPG
@@ -1409,6 +1412,19 @@ country_event = {
 			disband = yes
 		}
 		set_country_flag = CPG_eng_yes_poddanstvo
+		every_country = {
+		    CPG = { every_unit_leader = { limit = { OR = { has_id = 88160 } } set_nationality = ENG } }
+		}
+		remove_ideas = CPG_econom_sotr_eng
+		remove_ideas = CPG_jmo_with_british
+		ENG = { remove_ideas = CPG_econom_sotr_cpg }
+		hidden_effect = {
+		    remove_ideas = CPG_eng_vliyanie
+			remove_ideas = CPG_eng_vliyanie_1
+			remove_ideas = CPG_eng_vliyanie_2
+			remove_ideas = CPG_eng_vliyanie_3
+			remove_ideas = CPG_eng_vliyanie_4
+		}
 	}
 }
 country_event = {
@@ -1492,6 +1508,19 @@ country_event = {
 			disband = yes
 		}
 		set_country_flag = CPG_eng_yes_poddanstvo
+		remove_ideas = CPG_econom_sotr_eng
+		remove_ideas = CPG_jmo_with_british
+		ENG = { remove_ideas = CPG_econom_sotr_cpg }
+		every_country = {
+		    CPG = { every_unit_leader = { limit = { OR = { has_id = 88160 } } set_nationality = ENG } }
+		}
+		hidden_effect = {
+		    remove_ideas = CPG_eng_vliyanie
+			remove_ideas = CPG_eng_vliyanie_1
+			remove_ideas = CPG_eng_vliyanie_2
+			remove_ideas = CPG_eng_vliyanie_3
+			remove_ideas = CPG_eng_vliyanie_4
+		}
 	}
 }
 country_event = {
@@ -1508,6 +1537,7 @@ country_event = {
 		add_ideas = CPG_econom_sotr_eng
 		custom_effect_tooltip = CPG_effect_plus
 		SPG_set_buz_faction_values = yes
+		CPG_eng_vliyanie_eff = yes
 		CPG_reshenie_1_effect = yes
 		set_country_flag = CPG_econom_sotr
 	}
@@ -1790,6 +1820,9 @@ country_event = { #победа оппозиции
 			division_template = "Colonial Troops"
 			disband = yes
 		}
+        remove_ideas = CPG_econom_sotr_eng
+		remove_ideas = CPG_jmo_with_british
+		ENG = { remove_ideas = CPG_econom_sotr_cpg }
         every_country = {
 			CPG = { every_unit_leader = { limit = { OR = { has_id = 88160 } } set_nationality = ENG } }
 		}
@@ -2052,6 +2085,482 @@ country_event = {
 		        amount = 200
 			    target = FROM
 		    }
+		}
+	}
+}
+country_event = { #Британское вмешательство
+	id = rcw_catc.159
+	title = rcw_catc.159.t
+	desc = rcw_catc.159.d
+
+	picture = GFX_report_event_cpg_brit_vmeshatelstvo
+	
+	trigger = {
+	    has_stability < 0.5
+		NOT = { has_government = despotism }
+		custom_trigger_tooltip = {
+            tooltip = "Влияние британцев больше 59%"
+            check_variable = { CPG_skochko > 0.59 }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.159.a
+		add_political_power = -50
+		add_popularity = { ideology = from popularity = -0.1 }
+		add_popularity = { ideology = despotism popularity = 0.05 }
+	}
+}
+country_event = { #Англия требует жестких мер
+	id = rcw_catc.160
+	title = rcw_catc.160.t
+	desc = rcw_catc.160.d
+
+	picture = GFX_report_event_cpg_hestkie_meri
+	
+	trigger = {
+	    has_idea = CPG_revolutionary_fever
+		custom_trigger_tooltip = {
+            tooltip = "Влияние британцев больше 69%"
+            check_variable = { CPG_skochko > 0.69 }
+		}
+		communism > 0.05
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.160.a
+		trigger = {
+            OR = {
+                has_government = despotism
+                has_government = authoritarism
+			}
+		}
+		remove_ideas = CPG_revolutionary_fever
+		add_ideas = white_terror_idea
+	}
+	option = {
+		name = rcw_catc.160.b
+		custom_effect_tooltip = CPG_effect_minus
+		SPG_set_buz_faction_values = yes
+		CPG_eng_vliyanie_eff = yes
+		CPG_reshenie_2_effect = yes
+		add_war_support = -0.05
+		add_stability = -0.05
+	}
+}
+country_event = { #Экономические последствия интервенции
+	id = rcw_catc.161
+	title = rcw_catc.161.t
+	desc = rcw_catc.161.d
+
+	picture = GFX_report_event_cpg_econom_posledstvia
+	
+	trigger = {
+	    has_completed_focus = CPG_econom_sotr_eng
+	    custom_trigger_tooltip = {
+            tooltip = "Влияние британцев больше 79%"
+            check_variable = { CPG_skochko > 0.79 }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.161.a
+		swap_ideas = {
+		    remove_idea = interventionalism_law
+			add_idea = corporatocracy_law
+		}
+	}
+}
+country_event = { #Наше влияние в Закаспийской области
+	id = rcw_catc.162
+	title = rcw_catc.162.t
+	desc = rcw_catc.162.d
+
+	picture = GFX_report_event_cpg_vlast
+	
+	trigger = {
+	    is_puppet = no
+	    custom_trigger_tooltip = {
+            tooltip = "Влияние британцев больше 94%"
+            check_variable = { CPG_skochko > 0.94 }
+		}
+		OR = {
+		    has_army_manpower = { size < 30000 }
+			has_idea = russia_in_ruins_idea
+		}
+		has_war_with = RUS
+		num_of_controlled_states < 15
+		tag = ENG
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.162.a
+		add_political_power = -50
+		CPG = { country_event = rcw_catc.163 }
+	}
+	option = {
+		name = rcw_catc.162.b
+		CPG = {
+		    custom_effect_tooltip = CPG_effect_minus
+		    SPG_set_buz_faction_values = yes
+			CPG_eng_vliyanie_eff = yes
+		    CPG_reshenie_2_effect = yes
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.163
+	title = rcw_catc.163.t
+	desc = rcw_catc.163.d
+
+	picture = GFX_report_event_cpg_protectorat
+
+    is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.163.a
+		ai_chance = {
+			factor = 1
+		}
+        load_focus_tree = Transcaspian_government_britanian_focus
+        every_country = {
+		    ENG = { every_unit_leader = { limit = { OR = { has_id = 88160 } } set_nationality = CPG } }
+		}
+		create_country_leader = {
+			name = "Wilfrid Malleson"
+			desc = "CPG_Wilfrid Malleson_DESC"
+			picture = GFX_Portrait_Wilfrid_Malleson
+			expire = "1965.1.1"
+			ideology = despotism_ideology
+			traits = {
+				warmonger_old_general
+		    }
+		}
+		    set_politics = {
+			    ruling_party = despotism
+			    elections_allowed = no
+			    last_election = "1922.12.17"
+			    election_frequency = 48
+		    }
+		    add_popularity = {
+			    ideology = despotism
+			    popularity = 0.15
+		    }
+		    set_party_name = {
+			    ideology = despotism
+			    long_name = CPG_eng_party_long
+			    name = CPG_eng_party
+		    }
+			remove_ideas = CPG_army_poor_army
+			remove_ideas = CPG_army_poor_army_1
+			remove_ideas = CPG_weakness_of_central_government
+			remove_ideas = help_from_foreign_interventionists
+			remove_ideas = CPG_jmo_with_british
+			set_country_flag = CPG_eng_yes_poddanstvo
+			hidden_effect = {
+				country_event = { id = rcw_catc.120 days = 6 }
+		    }
+	}
+	option = {
+		name = rcw_catc.163.b
+		country_event = { id = rcw_catc.164 days = 1 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.164
+	title = rcw_catc.164.t
+	desc = rcw_catc.164.d
+
+	picture = GFX_report_event_cpg_ishod_eng
+
+    is_triggered_only = yes
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.164.a
+		add_war_support = -0.1
+		add_political_power = -50
+		every_country = {
+		    CPG = { every_unit_leader = { limit = { OR = { has_id = 88160 } } set_nationality = ENG } }
+		}
+		remove_ideas = help_from_foreign_interventionists
+		delete_unit_template_and_units = {
+			division_template = "british division"
+			disband = yes
+		}
+		delete_unit_template_and_units = {
+			division_template = "Colonial Troops"
+			disband = yes
+		}
+		set_country_flag = CPG_eng_yes_poddanstvo
+		remove_ideas = CPG_econom_sotr_eng
+		remove_ideas = CPG_jmo_with_british
+		ENG = { remove_ideas = CPG_econom_sotr_cpg }
+		hidden_effect = {
+		    remove_ideas = CPG_eng_vliyanie
+			remove_ideas = CPG_eng_vliyanie_1
+			remove_ideas = CPG_eng_vliyanie_2
+			remove_ideas = CPG_eng_vliyanie_3
+			remove_ideas = CPG_eng_vliyanie_4
+		}
+	}
+}
+country_event = { #Конец британской гегемонии
+	id = rcw_catc.165
+	title = rcw_catc.165.t
+	desc = rcw_catc.165.d
+
+	picture = GFX_report_event_cpg_eng_gegemon
+	
+	trigger = {
+	    NOT = { has_country_flag = WWI_is_now }
+		has_country_flag = WWI_GER_sieg_im_Weltkrieg
+		NOT = { has_country_flag = CPG_eng_yes_poddanstvo }
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_catc.165.a
+		set_country_flag = CPG_eng_yes_poddanstvo
+		remove_decision = CPG_british_vmeshatelstvo
+	}
+}
+country_event = {
+	id = rcw_catc.1661
+	title = rcw_catc.1661.t
+	desc = rcw.207.desc
+
+	picture = GFX_report_event_rcw_int_infequip_arrived
+
+    is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = rcw.207.a
+		RAJ = {
+		    send_equipment = {
+			    equipment = infantry_equipment
+			    mount = 200
+			    target = CPG
+		    }
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.1662
+	title = rcw_catc.1662.t
+	desc = rcw.207.desc
+
+	picture = GFX_report_event_rcw_int_infequip_arrived
+
+    is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = rcw.207.a
+		ENG = {
+		    send_equipment = {
+			    equipment = infantry_equipment
+			    mount = 200
+			    target = CPG
+		    }
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.1663
+	title = rcw_catc.1663.t
+	desc = rcw.208.desc
+
+	picture = GFX_report_event_rcw_int_fuel_arrived
+
+    is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = rcw.208.a
+		RAJ = { add_fuel = -500 }
+		add_fuel = 500
+	}
+}
+country_event = {
+	id = rcw_catc.1664
+	title = rcw_catc.1664.t
+	desc = rcw.241.desc
+	picture = GFX_report_event_rcw_int_credit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.241.a #Предоставим необходимые средства
+		ai_chance = {
+			factor = 1
+		}
+		CPG = { country_event = { id = rcw_catc.1665 days = 1 } }
+	}
+	option = {
+		name = rcw.241.b #Предложим действительно крупную сумму
+		add_political_power = -40
+		ai_chance = {
+			factor = 3
+		}
+		CPG = { country_event = { id = rcw_catc.1666 days = 1 } }
+		set_country_flag = rcw_int_flag_credit_big
+	}
+}
+country_event = {
+	id = rcw_catc.1665
+	title = rcw.242.t
+	desc = rcw.242.desc
+	picture = GFX_report_event_rcw_int_credit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.242.a
+		ENG = { country_event = rcw.244 }
+	}
+	option = {
+		name = rcw.242.b
+		add_political_power = 30
+		if = {
+			limit = { NOT = { has_variable = global.RUS_credit_pay } }
+			set_variable = { global.RUS_credit_pay = 0 }
+		}
+		add_to_variable = { global.RUS_credit_pay = 0.25 }
+		SPG_set_buz_faction_values = yes
+		CPG_eng_vliyanie_eff = yes
+	    CPG_reshenie_0_05_effect = yes
+	}
+}
+country_event = {
+	id = rcw_catc.1666
+	title = rcw.243.t
+	desc = rcw.243.desc
+	picture = GFX_report_event_rcw_int_credit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw.243.a #Нет, нам это не нужно
+		FROM = { country_event = rcw.244 }
+	}
+	option = {
+		name = rcw.243.b #Действительно крупные деньги обеспечат победу
+		add_political_power = 30
+		add_ideas = Entente_credit_for_Russia_ENG
+		SPG_set_buz_faction_values = yes
+		CPG_eng_vliyanie_eff = yes
+	    CPG_reshenie_0_05_effect = yes
+		if = {
+			limit = { NOT = { has_variable = global.RUS_credit_pay } }
+			set_variable = { global.RUS_credit_pay = 0 }
+		}
+		add_to_variable = { global.RUS_credit_pay = 1 }
+		if = {
+			limit = { FROM = { original_tag = ENG } }
+			add_ideas = Entente_credit_for_Russia_ENG
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.1667
+	title = rcw_catc.1667.t
+	desc = rcw.213.desc
+
+	picture = GFX_report_event_rcw_int_tanks_arrived
+
+    is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = rcw.213.a
+		ENG = {
+			send_equipment = {
+				equipment = artillery_equipment
+				amount = 36
+				target = CPG
+			}
+			send_equipment = {
+				equipment = field_guns_equipment
+				amount = 36
+				target = CPG
+			}
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.1668
+	title = rcw_catc.1667.t
+	desc = rcw.212.desc
+
+	picture = GFX_report_event_rcw_int_tanks_arrived
+
+    is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = rcw.212.a
+		ENG = {
+			send_equipment = {
+				equipment = motorized_equipment
+				amount = 40
+				target = CPG
+			}
+		}
+	}
+}
+country_event = {
+	id = rcw_catc.1670
+	title = rcw_catc.1667.t
+	desc = rcw.214.desc
+
+	picture = GFX_report_event_rcw_int_tanks_arrived
+
+    is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = rcw.214.a
+		ENG = {
+			send_equipment = {
+				equipment = light_tank_chassis
+				amount = 20
+				target = CPG
+			}
 		}
 	}
 }
