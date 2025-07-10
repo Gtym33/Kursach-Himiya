@@ -1,0 +1,483 @@
+﻿###########################
+# Agriculture Events
+###########################
+
+add_namespace = agriculture
+
+# Технический ивент на выбор погоды и шанс на болезни
+country_event = {
+	id = agriculture.0
+	hidden = yes
+	is_triggered_only = yes
+	immediate = {
+		random_list = {
+			1 = { country_event = agriculture.1 }
+			1 = { country_event = agriculture.2 }
+			1 = { country_event = agriculture.3 }
+		}
+		if = {
+			limit = {
+				NOT = { has_idea = agro_industrial_farms has_idea = agricultural_harvester }
+			}
+			random_list = {
+				1 = {
+					modifier = {
+						factor = 3
+						has_idea = no_agricultural_mechanization
+					}
+					modifier = {
+						factor = 2
+						has_idea = steel_agricultural_tools
+					}
+					modifier = {
+						factor = 1
+						has_idea = agricultural_tractor
+					}
+					country_event = { id = agriculture.4 days = 25 random_days = 10 }
+				}
+				1 = {
+					modifier = {
+						factor = 7
+						has_idea = no_agricultural_mechanization
+					}
+					modifier = {
+						factor = 8
+						has_idea = steel_agricultural_tools
+					}
+					modifier = {
+						factor = 9
+						has_idea = agricultural_tractor
+					}
+				}
+			}
+		}
+	}
+}
+# Погодные условия и прогноз на урожай
+country_event = {
+	id = agriculture.1
+	title = agriculture.1.t
+	desc = agriculture.1.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.1.a
+		set_country_flag = {
+			flag = agriculture_bad_weather_flag
+			days = 180
+			value = 1
+		}
+	}
+	option = {
+		trigger = { has_political_power > 74 }
+		name = agriculture.1.b
+		add_political_power = -150
+	}
+}
+country_event = {
+	id = agriculture.2
+	title = agriculture.1.t
+	desc = agriculture.2.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.2.a
+	}
+}
+country_event = {
+	id = agriculture.3
+	title = agriculture.1.t
+	desc = {
+		trigger = {
+			NOT = { has_idea = landlordism }
+			NOT = { has_idea = small_farms }
+			NOT = { has_idea = agrarian_corporations }
+			NOT = { has_idea = state_agricultural_property }
+		}
+		text = agriculture.3.desc
+	}
+	desc = {
+		trigger = { has_idea = landlordism }
+		text = agriculture.3.desc_1
+	}
+	desc = {
+		trigger = { has_idea = small_farms }
+		text = agriculture.3.desc_2
+	}
+	desc = {
+		trigger = { has_idea = agrarian_corporations }
+		text = agriculture.3.desc_3
+	}
+	desc = {
+		trigger = { has_idea = state_agricultural_property NOT = { has_idea = agricultural_harvester has_idea = agro_industrial_farms } }
+		text = agriculture.3.desc_4
+	}
+	desc = {
+		trigger = { has_idea = state_agricultural_property OR = { has_idea = agricultural_harvester has_idea = agro_industrial_farms } }
+		text = agriculture.3.desc_5
+	}
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.3.a
+		set_country_flag = {
+			flag = agriculture_good_weather_flag
+			days = 180
+			value = 1
+		}
+	}
+}
+# Болезни и вредители
+country_event = {
+	id = agriculture.4
+	title = agriculture.4.t
+	desc = agriculture.4.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		trigger = { NOT = { has_government = communism } }
+		name = agriculture.4.a
+		set_country_flag = {
+			flag = agriculture_pests_flag
+			days = 180
+			value = 1
+		}
+	}
+	option = {
+		trigger = { has_government = communism }
+		name = agriculture.4.a_1
+		set_country_flag = {
+			flag = agriculture_pests_flag
+			days = 180
+			value = 1
+		}
+	}
+	option = {
+		trigger = { has_political_power > 100 }
+		name = agriculture.4.b
+		add_political_power = -200
+	}
+}
+
+# Технический ивент на урожай
+country_event = {
+	id = agriculture.5
+	hidden = yes
+	is_triggered_only = yes
+	immediate = {
+		set_temp_variable = { agriculture_yield_var = 3 }
+		
+		if = {
+			limit = { has_idea = no_agricultural_mechanization OR = { has_idea = feudal_economy_law has_idea = control_of_field_commanders_law } }
+			add_to_temp_variable = { agriculture_yield_var = 1 }
+		}
+		if = {
+			limit = { has_idea = no_agricultural_mechanization }
+			add_to_temp_variable = { agriculture_yield_var = 1 }
+		}
+		if = {
+			limit = { has_idea = steel_agricultural_tools }
+			add_to_temp_variable = { agriculture_yield_var = 2 }
+		}
+		if = {
+			limit = { has_idea = agricultural_tractor }
+			add_to_temp_variable = { agriculture_yield_var = 3 }
+		}
+		if = {
+			limit = { has_idea = agricultural_harvester }
+			add_to_temp_variable = { agriculture_yield_var = 4 }
+		}
+		if = {
+			limit = { has_idea = agro_industrial_farms }
+			add_to_temp_variable = { agriculture_yield_var = 5 }
+		}
+		
+		if = {
+			limit = { OR = { has_idea = individual_homesteads has_idea = peasant_communities_property } }
+			add_to_temp_variable = { agriculture_yield_var = 1 }
+		}
+		if = {
+			limit = { OR = { has_idea = cooperative_land_ownership has_idea = landlordism has_idea = small_farms } }
+			add_to_temp_variable = { agriculture_yield_var = 2 }
+		}
+		if = {
+			limit = { OR = { has_idea = agrarian_corporations has_idea = state_agricultural_property } }
+			add_to_temp_variable = { agriculture_yield_var = 3 }
+		}
+		
+		if = {
+			limit = { has_idea = closed_economy }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		if = {
+			limit = { has_idea = free_trade has_war = no }
+			add_to_temp_variable = { agriculture_yield_var = 0 }
+		}
+		
+		if = {
+			limit = { has_idea = extensive_conscription }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		if = {
+			limit = { has_idea = all_adults_serve }
+			add_to_temp_variable = { agriculture_yield_var = -2 }
+		}
+		if = {
+			limit = { has_idea = scraping_the_barrel }
+			add_to_temp_variable = { agriculture_yield_var = -3 }
+		}
+		if = {
+			limit = { has_idea = woman_conscription_equality }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		
+		if = {
+			limit = { has_idea = civilian_economy }
+			add_to_temp_variable = { agriculture_yield_var = 0 }
+		}
+		if = {
+			limit = { has_idea = war_economy }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		if = {
+			limit = { has_idea = tot_economic_mobilisation }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		
+		if = {
+			limit = { OR = { has_idea = control_of_field_commanders_law has_idea = corporatocracy_law } }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		if = {
+			limit = { has_idea = planed_economy_law }
+			add_to_temp_variable = { agriculture_yield_var = 1 }
+		}
+		
+		if = {
+			limit = { has_idea = peasant_and_land_and_bread_question }
+			add_to_temp_variable = { agriculture_yield_var = -2 }
+		}
+		if = {
+			limit = { has_idea = peasant_and_land_and_bread_question_0_5 }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		if = {
+			limit = { has_idea = peasant_and_land_and_bread_question_0_25 }
+			add_to_temp_variable = { agriculture_yield_var = -0 }
+		}
+		
+		if = {
+			limit = { has_idea = monocultural_agriculture_bananas }
+			add_to_temp_variable = { agriculture_yield_var = -0 }
+		}
+		if = {
+			limit = { has_idea = monocultural_agriculture_pineapples }
+			add_to_temp_variable = { agriculture_yield_var = -0 }
+		}
+		if = {
+			limit = { has_idea = monocultural_agriculture_sugar }
+			add_to_temp_variable = { agriculture_yield_var = -0 }
+		}
+		if = {
+			limit = { has_idea = monocultural_agriculture_coffee }
+			add_to_temp_variable = { agriculture_yield_var = -0 }
+		}
+		
+		if = {
+			limit = { NOT = { has_stability > 0.05 has_idea = feudal_economy_law } }
+			add_to_temp_variable = { agriculture_yield_var = -3 }
+		}
+		else_if = {
+			limit = { NOT = { has_stability > 0.10 has_idea = feudal_economy_law } }
+			add_to_temp_variable = { agriculture_yield_var = -2 }
+		}
+		else_if = {
+			limit = { NOT = { has_stability > 0.20 has_idea = feudal_economy_law } }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		else_if = {
+			limit = { NOT = { has_stability > 0.30 has_idea = feudal_economy_law } }
+			add_to_temp_variable = { agriculture_yield_var = 0 }
+		}
+		else_if = {
+			limit = { NOT = { has_stability < 0.95 has_idea = feudal_economy_law } }
+			add_to_temp_variable = { agriculture_yield_var = 3 }
+		}
+		else_if = {
+			limit = { NOT = { has_stability < 0.90 has_idea = feudal_economy_law } }
+			add_to_temp_variable = { agriculture_yield_var = 2 }
+		}
+		else_if = {
+			limit = { NOT = { has_stability < 0.80 has_idea = feudal_economy_law } }
+			add_to_temp_variable = { agriculture_yield_var = 1 }
+		}
+		
+		if = {
+			limit = { has_country_flag = agriculture_labor_mobilization_flag }
+			add_to_temp_variable = { agriculture_yield_var = 1 }
+		}
+		if = {
+			limit = { has_country_flag = agriculture_good_weather_flag }
+			add_to_temp_variable = { agriculture_yield_var = 2 }
+		}
+		if = {
+			limit = { has_country_flag = agriculture_bad_weather_flag }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		if = {
+			limit = { has_country_flag = agriculture_pests_flag }
+			add_to_temp_variable = { agriculture_yield_var = -1 }
+		}
+		
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_5 }
+			add_to_temp_variable = { agriculture_yield_var = 3 }
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_4 }
+			add_to_temp_variable = { agriculture_yield_var = 2 }
+		}
+		if = {
+			limit = { has_idea = foodstuffs_supply_crisis_3 }
+			add_to_temp_variable = { agriculture_yield_var = 1 }
+		}
+		
+		
+		if = {
+			limit = { check_variable = { agriculture_yield_var > 11 } }
+			country_event = agriculture.10 #Сверхурожайность
+		}
+		else_if = {
+			limit = { check_variable = { agriculture_yield_var > 7 } }
+			country_event = agriculture.9 #Хороший урожай
+		}
+		else_if = {
+			limit = { check_variable = { agriculture_yield_var > 3 } }
+			country_event = agriculture.8 #Нормальный урожай
+		}
+		else_if = {
+			limit = { check_variable = { agriculture_yield_var > 1 } }
+			country_event = agriculture.7 #Плохой урожай
+		}
+		else = {
+			country_event = agriculture.6 #Потеря урожая
+		}
+	}
+}
+
+# Потеря урожая
+country_event = {
+	id = agriculture.6
+	title = agriculture.6.t
+	desc = agriculture.6.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.6.a
+		random_list = {
+			50 = { rise_foodstuffs_supply_crisis_2 = yes }
+			50 = { rise_foodstuffs_supply_crisis_3 = yes }
+		}
+		add_political_power = -50
+	}
+}
+# Плохой урожай
+country_event = {
+	id = agriculture.7
+	title = agriculture.7.t
+	desc = agriculture.7.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.7.a
+		if = {
+			limit = { NOT = { has_idea = foodstuffs_supply_crisis_4 has_idea = foodstuffs_supply_crisis_5 } }
+			rise_foodstuffs_supply_crisis = yes
+		}
+		add_political_power = -25
+	}
+}
+# Нормальный урожай
+country_event = {
+	id = agriculture.8
+	title = agriculture.8.t
+	desc = agriculture.8.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.8.a
+		if = {
+			limit = { OR = { has_idea = foodstuffs_supply_crisis_4 has_idea = foodstuffs_supply_crisis_5 } }
+			fall_foodstuffs_supply_crisis = yes
+		}
+	}
+}
+# Хороший урожай
+country_event = {
+	id = agriculture.9
+	title = agriculture.9.t
+	desc = agriculture.9.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.9.a
+		if = {
+			limit = {
+				OR = {
+					has_idea = foodstuffs_supply_crisis_1
+					has_idea = foodstuffs_supply_crisis_2
+					has_idea = foodstuffs_supply_crisis_3
+				}
+			}
+			fall_foodstuffs_supply_crisis = yes
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_idea = foodstuffs_supply_crisis_4
+					has_idea = foodstuffs_supply_crisis_5
+				}
+			}
+			fall_foodstuffs_supply_crisis_2 = yes
+		}
+		add_political_power = 15
+	}
+}
+# Сверхурожайность
+country_event = {
+	id = agriculture.10
+	title = agriculture.10.t
+	desc = agriculture.10.desc
+	picture = GFX_report_event_februrary_revolution
+	
+	option = {
+		name = agriculture.10.a
+		if = {
+			limit = {
+				OR = {
+					has_idea = foodstuffs_supply_crisis_1
+					has_idea = foodstuffs_supply_crisis_2
+					has_idea = foodstuffs_supply_crisis_3
+				}
+			}
+			fall_foodstuffs_supply_crisis_2 = yes
+		}
+		else_if = {
+			limit = {
+				OR = {
+					has_idea = foodstuffs_supply_crisis_4
+					has_idea = foodstuffs_supply_crisis_5
+				}
+			}
+			fall_foodstuffs_supply_crisis_3 = yes
+		}
+		else = {
+			add_ideas = foodstuffs_supply_overharvest_idea
+		}
+		if = {
+			limit = { has_idea = feudal_economy_law }
+			add_political_power = 110
+			else = { add_political_power = 70 }
+		}
+	}
+}
