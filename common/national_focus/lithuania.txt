@@ -334,7 +334,7 @@
 		available = {
 		    OR = {
 		        has_government = social_liberalism
-		        has_governmenty = social_democracy
+		        has_government = social_democracy
 			}
 		    has_country_flag = LIT_VIBORS
 		}
@@ -498,6 +498,10 @@
 			    owns_state = 784
 				POL = { owns_state = 784 }
 			}
+			OR = {
+			    controls_state = 784
+				POL = { controls_state = 784 }
+			}
 		}
 		x = 18
 		y = 8
@@ -505,6 +509,7 @@
 		    if = {
 			    limit = { owns_state = 784 }
 			    country_event = lithuania.29
+				set_country_flag = LIT_referen_vil
 		    }
 			if = {
 			    limit = { POL = { owns_state = 784 } }
@@ -1028,4 +1033,796 @@
 		    country_event = { id = lithuania.4 days = 1 }
 		}
 	}
+	
+	########################### Внешнеполитические фокусы #####################
+	
+	focus = {
+		id = LIT_predstavitelstvo_rubesh
+		icon = GFX_LIT_predstavitelstvo_rubesh
+		cost = 1.4
+		available = {
+		    is_puppet = no
+		}
+		x = 15
+		y = 11 
+        completion_reward = {
+		    add_political_power = 35
+		    add_ideas = LIT_pravit  
+		}
+	}
+    focus = {
+		id = LIT_tayna_parovozika
+		icon = GFX_LIT_tayna_parovozika
+		cost = 2.2
+		available = {
+		    country_exists = GER
+		    NOT = { has_war_with = GER }
+		}
+		prerequisite = {
+			focus = LIT_predstavitelstvo_rubesh
+		}	
+		x = 14
+		y = 12 
+        completion_reward = {
+		    country_event = { id = lithuania.75 days = 1 }
+		}
+	}
+    focus = {
+		id = LIT_nemts_dopomog
+		icon = GFX_LIT_nemts_dopomog
+		cost = 3
+		prerequisite = {
+			focus = LIT_tayna_parovozika
+		}
+        available = {
+		    NOT = { country_exists = WVA }
+			has_country_flag = LIT_tainy_union
+		}
+        bypass = {
+            country_exists = WVA
+			has_war_with = WVA
+        }		
+		x = 14
+		y = 13
+        completion_reward = {
+		    set_country_flag = LIT_nemts_dopomog
+		    custom_effect_tooltip = LIT_nemts_dopomog_tt
+		}
+	}
+    focus = {
+		id = LIT_germo_lit_dav
+		icon = GFX_LIT_germo_lit_dav
+		cost = 3.3
+		prerequisite = { 
+			focus = LIT_nemts_dopomog 	
+		}
+        prerequisite = {
+			focus = LIT_antipsheck
+		}
+        available = {
+		    country_exists = GER
+		    NOT = { has_war_with = GER }
+			is_neighbor_of = POL
+			is_puppet = no
+			country_exists = POL
+		    NOT = { has_war_with = POL }
+			POL = {
+			    OR = {
+			        owns_state = 784
+				    owns_state = 999
+				}
+			}
+			POL = {
+			    OR = {
+			        controls_state = 784
+				    controls_state = 999
+				}
+			}
+        }
+		x = 11
+		y = 14
+        completion_reward = {
+		    country_event = { id = lithuania.104 days = 1 }
+		}
+	}
+    focus = {
+		id = LIT_peregov
+		icon = GFX_LIT_peregov
+		cost = 2
+		prerequisite = {
+			focus = LIT_predstavitelstvo_rubesh
+		}	
+		available = {
+		    country_exists = POL
+		    POL = { is_puppet = no }
+		}
+        bypass = {
+            has_completed_focus = LIT_pol-lit_soper
+        }
+		x = 11
+		y = 12
+        completion_reward = {
+		    country_event = { id = lithuania.62 days = 1 }
+		}
+	}
+    focus = {
+		id = LIT_antipsheck
+		icon = GFX_LIT_antipsheck
+		cost = 2.2
+		prerequisite = {
+			focus = LIT_peregov
+		}
+        available = { 
+		    country_exists = POL
+		    POL = { is_puppet = no }
+			has_country_flag = LIT_otkaz
+		}
+		x = 10
+		y = 13
+        completion_reward = {
+		    add_war_support = 0.04
+			IF = {
+			    limit = { 
+				    has_government = social_democracy
+					has_government = social_liberalism
+					NOT = { has_idea = LIT_not_soper_s_pol }
+					has_idea = LIT_soper_s_pol
+				}
+				remove_ideas = LIT_soper_s_pol
+			}
+		    POL = {
+			    add_opinion_modifier = {
+                    target = LIT
+                    modifier = BLR_yhytshenie_otnocheniy
+                }
+			}
+		}
+	}
+    focus = {
+		id = LIT_soysi_dogov
+		icon = GFX_LIT_soysi_dogov
+		cost = 3
+		prerequisite = {
+			focus = LIT_peregov
+		}	
+		available = {
+		    country_exists = POL
+			is_puppet = no
+		    POL = { is_puppet = no has_opinion = { target = LIT value > 59 } }
+			NOT = { has_war_with = POL }
+		}
+		x = 12
+		y = 13
+        completion_reward = {
+		    country_event = { id = lithuania.92 days = 1 }
+		}
+	}
+    focus = {
+		id = LIT_russko_lit
+		icon = GFX_LIT_russko_lit
+		cost = 3.3
+		prerequisite = {
+			focus = LIT_antipsheck
+			focus = LIT_nemts_dopomog
+		}
+		available = {
+		    OR = {
+			    has_country_flag = LIT_bol_yes
+				has_country_flag = LIT_rss_yes
+			}
+		    OR = {
+			    country_exists = RUS
+			    country_exists = RSS
+			}
+			OR = {
+		        NOT = { has_war_with = RUS }
+				NOT = { has_war_with = RSS }
+			}
+			OR = {
+			    RUS = { is_neighbor_of = POL }
+				RSS = { is_neighbor_of = POL }
+			}
+			is_puppet = no
+			country_exists = POL
+		    NOT = { has_war_with = POL }
+			POL = {
+			    OR = {
+			        owns_state = 998
+				    owns_state = 95
+				}
+			}
+			POL = {
+			    OR = {
+			        controls_state = 998
+				    controls_state = 95
+				}
+			}
+			owns_state = 784
+			owns_state = 999
+		}
+		x = 9
+		y = 14
+        completion_reward = {
+		    country_event = { id = lithuania.112 days = 1 }
+		}
+	}
+	 focus = {
+		id = LIT_Litbel_use
+		icon = GFX_LIT_Litbel_use
+		cost = 2
+		prerequisite = {
+			focus = LIT_predstavitelstvo_rubesh
+		}	
+		available = {
+		    OR = { 
+			    country_exists = BLR
+				BLR = { is_government_in_exile = yes }
+			}
+		}
+		x = 8
+		y = 12
+        completion_reward = {
+		    add_political_power = 10
+		    BLR = {
+			    add_opinion_modifier = {
+                    target = LIT
+                    modifier = BLR_Ylychenie_otnocheniy
+                }
+		    }
+			add_opinion_modifier = {
+                target = BLR
+                modifier = BLR_Ylychenie_otnocheniy
+            }
+		}
+	}
+	focus = {
+		id = LIT_Litbel_beg
+		icon = GFX_LIT_Litbel_beg
+		cost = 3.3
+		available = {
+			BLR = { is_government_in_exile = yes is_puppet = no }
+		}
+		prerequisite = {
+			focus = LIT_Litbel_use
+		}	
+		x = 8
+		y = 13 
+        completion_reward = {
+		    custom_effect_tooltip = LIT_Litbel_beg_tt
+			set_country_flag = LIT_perebrosk_rada
+			hidden_effect = {
+			    division_template = {
+				    name = "Diviziya Opolcheniya"
+				    regiments = {
+		                militia = { x = 0 y = 0 }
+				    }
+					disband = yes
+			    }
+			    capital_scope = {
+				    create_unit = {
+				        division = "name = \"Belorusskij otryad opolcheniya\" division_template = \"Diviziya Opolcheniya\" start_experience_factor = 0.25 start_equipment_factor = 0.8 start_manpower_factor = 0.8 count = 4"
+				        owner = LIT
+                    }
+				}
+			    create_corps_commander = { name = "Hasan Konopacki" id = 78904 portrait_path = "gfx/leaders/BLR/Portrait_Hasan_Konopacki.dds" traits = { Adaptable } skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
+			}
+		}
+	}
+	 focus = {
+		id = LIT_podsos_ant
+		icon = GFX_LIT_podsos_ant
+		cost = 2.2
+		available = {
+		    ENG = { is_subject = no }
+			FRA = { is_subject = no }
+			USA = { is_subject = no }
+			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_GER_HAS_CAPITULATED }
+			NOT = {has_war_with = ENG has_war_with = USA has_war_with = FRA}
+		}
+		prerequisite = {
+			focus = LIT_predstavitelstvo_rubesh
+		}
+        mutually_exclusive = {
+            focus = LIT_podsos_bol
+		}		
+		x = 16
+		y = 12 
+        completion_reward = {
+		    set_country_flag = rcw_country_asks_foreing_help
+			unlock_decision_category_tooltip = rcw_intervention_help_white_desisions
+		    FRA = { country_event = rcw.201 }
+			ENG = { country_event = rcw.201 }
+			USA = { country_event = rcw.201 }
+		}
+	}	
+    focus = {
+		id = LIT_prib_sobaki
+		icon = GFX_LIT_prib_sobaki
+		cost = 2.2
+		prerequisite = {
+			focus = LIT_podsos_ant
+		}
+		available = {
+		    EST = {
+			    exists = yes
+		        NOT = { has_war_with = LIT }
+				is_subject = no
+				NOT = { 
+				    has_government = radical_socialism
+					has_government = communism
+				}
+			}
+			LAT = {
+			    exists = yes
+		        NOT = { has_war_with = LIT }
+				is_subject = no
+				NOT = { 
+				    has_government = radical_socialism
+					has_government = communism
+				}
+			}
+		}
+		x = 16
+		y = 13 
+        completion_reward = {
+		    EST = { country_event = { id = lithuania.81 days = 2 } }
+			LAT = { country_event = { id = lithuania.81 days = 1 } }
+		}
+    }
+	focus = {
+		id = LIT_total_def
+		icon = GFX_LIT_total_def
+		cost = 3.3
+		prerequisite = {
+			focus = LIT_prib_sobaki
+		}	
+		available = {
+		    EST = {
+			    exists = yes
+		        NOT = { has_war_with = LIT }
+				is_subject = no
+				NOT = { 
+				    has_government = radical_socialism
+					has_government = communism
+				}
+				has_opinion = { target = LIT value > 39 }
+			}
+			LAT = {
+			    exists = yes
+		        NOT = { has_war_with = LIT }
+				is_subject = no
+				NOT = { 
+				    has_government = radical_socialism
+					has_government = communism
+				}
+                has_opinion = { target = LIT value > 39 }
+			}
+		}
+		x = 16
+		y = 14 
+        completion_reward = {
+		    EST = { country_event = { id = lithuania.84 days = 2 } }
+			LAT = { country_event = { id = lithuania.84 days = 1 } }
+		}
+    }
+    focus = {
+		id = LIT_belyki
+		icon = GFX_LIT_belyki
+		cost = 2.3
+		available = {
+		    is_subject = no
+			has_war_with = RUS
+			OR = {
+			    RSS = {
+			        exists = yes
+				    NOT = { has_war_with = LIT }
+			    }
+				RVA = {
+			        exists = yes
+				    NOT = { has_war_with = LIT }
+			    }
+				NWA = {
+			        exists = yes
+				    NOT = { has_war_with = LIT }
+			    }
+			}
+		}
+		prerequisite = {
+			focus = LIT_podsos_ant
+		}
+		x = 19
+		y = 13
+        completion_reward = {
+		    IF = {
+			    limit = {
+				    RSS = {
+			            exists = yes
+				        NOT = { has_war_with = LIT }
+			        }
+				}
+				RSS = {
+			        add_opinion_modifier = {
+                        target = LIT
+                        modifier = BLR_Ylychenie_otnocheniy
+                    }
+		        }
+			    add_opinion_modifier = {
+                    target = RSS
+                    modifier = BLR_Ylychenie_otnocheniy
+                }
+			}
+		    IF = {
+			    limit = {
+				    RVA = {
+			            exists = yes
+				        NOT = { has_war_with = LIT }
+			        }
+				}
+				RVA = {
+			        add_opinion_modifier = {
+                        target = LIT
+                        modifier = BLR_Ylychenie_otnocheniy
+                    }
+		        }
+			    add_opinion_modifier = {
+                    target = RVA
+                    modifier = BLR_Ylychenie_otnocheniy
+                }
+			}
+		    IF = {
+			    limit = {
+				    NWA = {
+			            exists = yes
+				        NOT = { has_war_with = LIT }
+			        }
+				}
+				NWA = {
+			        add_opinion_modifier = {
+                        target = LIT
+                        modifier = BLR_Ylychenie_otnocheniy
+                    }
+		        }
+			    add_opinion_modifier = {
+                    target = NWA
+                    modifier = BLR_Ylychenie_otnocheniy
+                }
+			}
+		}
+    }
+	 focus = {
+		id = LIT_nezalish
+		icon = GFX_LIT_nezalish
+		cost = 3
+		prerequisite = {
+			focus = LIT_belyki
+		}
+		available = {
+		    is_subject = no
+			exists = yes
+			RSS = {
+			    exists = yes
+				NOT = { has_war_with = LIT }
+			}
+			has_war_with = RUS
+		}
+		bypass = {
+		    RSS = {
+			    OR = {
+			        exists = no
+			        has_war_with = LIT
+				}
+		    }
+		}
+		x = 18
+		y = 14
+        completion_reward = {
+		    RSS = { country_event = { id = lithuania.118 days = 1 } }
+		}
+    }
+	focus = {
+		id = LIT_dobarm
+		icon = GFX_LIT_dobarm
+		cost = 3
+		prerequisite = {
+			focus = LIT_belyki
+		}
+		available = {
+		    has_war_with = RUS
+		}
+		x = 20
+		y = 14
+        completion_reward = {
+		    create_corps_commander = { name = "Skompskij Osipovich" id = 88192 portrait_path = "gfx/leaders/RUS/Portrait_Skompskij_Osipovich.dds" traits = { old_guard Cavalry_Leader } skill = 3 attack_skill = 4 defense_skill = 2 planning_skill = 3 logistics_skill = 2 }
+			custom_effect_tooltip = LIT_white_gvardy_tt
+			hidden_effect = {
+            division_template = {
+			name = "White Gvardiya"	
+			    regiments = {
+				    infantry = { x = 0 y = 0 }
+				    infantry = { x = 0 y = 1 }
+			    }
+			    support = {
+				    artillery = { x = 0 y = 0 }
+				    recon = { x = 0 y = 1 }
+			    }
+			    is_locked = yes
+		    }
+		    capital_scope = {
+			    create_unit = { division = "name = \"1-yj belogvardejskij polk\" division_template = \"White Gvardiya\" start_experience_factor = 3 start_equipment_factor = 1" count = 1 owner = LIT  }
+		    }
+			}
+		}
+    }
+	focus = {
+		id = LIT_moscow_der
+		icon = GFX_LIT_moscow_der
+		cost = 1
+		prerequisite = {
+			focus = LIT_dobarm
+		}
+		prerequisite = {
+			focus = LIT_nezalish
+		}
+		available = {
+		    is_subject = no
+			exists = yes
+			has_war_with = RUS
+			OR = {
+			    RSS = {
+			        exists = yes
+				    NOT = { has_war_with = LIT }
+				    has_war_with = RUS
+				    has_idea = SIB_antibolshevik_crusade_idea
+			    }
+			    RVA = {
+			        exists = yes
+				    NOT = { has_war_with = LIT }
+				    has_war_with = RUS
+				    has_idea = RVA_moscow_directive_idea
+			    }
+			}
+			RUS = {
+			    OR = {
+				    has_government = radical_socialism
+					has_government = communism
+				}
+				exists = yes
+			}
+		}  
+		x = 19
+		y = 15
+        completion_reward = {
+		    add_timed_idea = { idea = LIT_moscow_directive_support days = 56 }
+			IF = {
+				    limit = {
+					    LAT = {
+			                OR = {
+				                has_government = radical_socialism
+					            has_government = communism
+				            }
+							has_war_with = LIT
+			            }
+			        }
+				add_timed_idea = { idea = LIT_moscow_directive_support_lat days = 56 }
+			}
+                IF = {
+				    limit = {
+					    EST = {
+			                OR = {
+				                has_government = radical_socialism
+					            has_government = communism
+				            }
+							has_war_with = LIT
+			            }
+			        }
+					add_timed_idea = { idea = LIT_moscow_directive_support_est days = 56 }
+				}
+		}
+    }
+	focus = {
+		id = LIT_podsos_bol
+		icon = GFX_LIT_podsos_bol
+		cost = 1
+		available = { 
+		    NOT = { has_war_with = RUS }
+		    NOT = { OR = { has_government = fascism has_government = authoritarism } }
+			RUS = {
+			    OR = {
+				    has_government = radical_socialism
+					has_government = communism
+				}
+				exists = yes
+			}
+		}
+		prerequisite = {
+			focus = LIT_predstavitelstvo_rubesh
+        }
+		mutually_exclusive = {
+            focus = LIT_podsos_ant
+		}
+		x = 22
+		y = 12
+        completion_reward = {
+		    RUS = { country_event = { id = lithuania.98 days = 1 } }
+		}
+    }
+	focus = {
+		id = LIT_antibol_ban
+		icon = GFX_LIT_antibol_ban
+		cost = 3
+		available = {
+		    has_country_flag = LIT_bol_yes
+		    NOT = { has_war_with = RUS }
+		    NOT = { has_completed_focus = LIT_represion_left_krylo }
+		    NOT = { OR = { has_government = fascism has_government = authoritarism } }
+			RUS = {
+			    OR = {
+				    has_government = radical_socialism
+					has_government = communism
+				}
+				exists = yes
+			}
+		    NOT = { has_war_with = RUS }
+		}
+		prerequisite = {
+			focus = LIT_podsos_bol
+		}
+		x = 21
+		y = 13
+        completion_reward = {
+		    add_political_power = 30
+		    add_popularity = {
+			    ideology = communism
+			    popularity = 0.05
+		    }
+			add_popularity = {
+			    ideology = radical_socialism
+			    popularity = 0.05
+		    }
+			add_popularity = {
+			    ideology = fascism
+			    popularity = -0.03
+		    }
+			add_popularity = {
+			    ideology = despotism
+			    popularity = -0.03
+		    }
+		    RUS = {
+			    add_opinion_modifier = {
+                    target = LIT
+                    modifier = BLR_Ylychenie_otnocheniy
+                }
+		    }
+		}
+    }
+	focus = {
+		id = LIT_bol_sovet
+		icon = GFX_LIT_bol_sovet
+		cost = 3
+		available = {
+		    has_country_flag = LIT_bol_yes
+		    NOT = { has_war_with = RUS }
+		    NOT = { OR = { has_government = fascism has_government = authoritarism } }
+			RUS = {
+			    OR = {
+				    has_government = radical_socialism
+					has_government = communism
+				}
+				exists = yes
+			}
+		    NOT = { has_war_with = RUS }
+		}
+		prerequisite = {
+			focus = LIT_podsos_bol
+		}
+		x = 23
+		y = 13
+        completion_reward = {
+		    RUS = { country_event = { id = lithuania.101 days = 1 } }
+		}
+    }
+	focus = {
+		id = LIT_dogovor
+		icon = GFX_LIT_dogovor
+		cost = 3.3
+		available = {
+		    NOT = { has_war_with = RUS }
+		    NOT = { OR = { has_government = fascism has_government = authoritarism } }
+			RUS = {
+			    OR = {
+				    has_government = radical_socialism
+					has_government = communism
+				}
+				exists = yes
+			}
+			RUS = { has_opinion = { target = LIT value > 29 } }
+		    NOT = { has_war_with = RUS }
+		}
+		prerequisite = {
+			focus = LIT_bol_sovet
+		}
+		prerequisite = {
+			focus = LIT_antibol_ban
+		}
+		x = 22
+		y = 14
+        completion_reward = {
+		    add_political_power = -20
+		    RUS = {
+		        diplomatic_relation = {
+                    country = LIT
+                    relation = guarantee
+                    active = yes
+                }
+			}
+		    add_popularity = {
+			    ideology = communism
+			    popularity = 0.03
+		    }
+			add_popularity = {
+			    ideology = radical_socialism
+			    popularity = 0.03
+		    }
+		    add_opinion_modifier = {
+                target = RUS
+                modifier = BLR_Ylychenie_otnocheniy
+            }
+		}
+    }
+	focus = {
+		id = LIT_polsko_sov
+		icon = GFX_LIT_polsko_sov
+		cost = 4
+		available = {
+		    NOT = { has_war_with = RUS }
+		    NOT = { OR = { has_government = fascism has_government = authoritarism } }
+			RUS = {
+			    OR = {
+				    has_government = radical_socialism
+					has_government = communism
+				}
+				exists = yes
+				has_opinion = { target = LIT value > 29 }
+			}
+		    NOT = { has_war_with = RUS }
+			POL = {
+			    exists = yes
+		        NOT = { has_war_with = LIT }
+				is_subject = no
+				has_war_with = RUS
+			}
+			NOT = { has_country_flag = POL_RUS_peace_fired }
+		}
+		prerequisite = {
+			focus = LIT_dogovor
+		}
+		x = 22
+		y = 15
+        completion_reward = {
+		    news_event = { id = news_n.1003 hours = 24 }
+		    add_war_support = 0.05
+		    RUS = {
+		        diplomatic_relation = {
+                    country = LIT
+                    relation = military_access
+                    active = yes
+                }
+				add_opinion_modifier = {
+                    target = LIT
+                    modifier = BLR_Ylychenie_otnocheniy
+                }
+			}
+			diplomatic_relation = {
+                country = RUS
+                relation = military_access
+                active = yes
+            }
+			declare_war_on = {
+                target = POL
+                type = annex_everything
+            }
+			add_state_claim = 998
+			add_state_claim = 95
+		}
+    }
 }
