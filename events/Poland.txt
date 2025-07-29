@@ -1,521 +1,5 @@
 ﻿add_namespace = poland
 
-# Объявление войны Белоруссии
-country_event = {
-	id = poland.0
-	title = poland.0.t
-	desc = poland.0.desc
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	trigger = {
-		has_start_date < 1919.01.01
-		tag = POL
-		is_subject = no
-		NOT = { has_war_with = BLR }
-		is_neighbor_of = BLR
-		has_army_size = { size > 1 }
-	}
-
-	mean_time_to_happen = {
-		days = 0
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		name = poland.0.a
-		declare_war_on = {
-			target = BLR
-			type = annex_everything
-		}
-		if = {
-			limit = { BLR = { has_war_with = RSR } }
-			declare_war_on = {
-				target = RSR
-				type = annex_everything
-			}
-		}
-	}
-}
-
-# Независимость Польши после поражения Германии в ПМВ
-country_event = {
-	id = poland.1
-	title = poland.1.t
-	desc = poland.1.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	fire_only_once = yes
-	
-	trigger = {
-		has_start_date < 1918.11.11
-		tag = POL
-		OR = {
-			has_global_flag = WWI_GER_HAS_CAPITULATED
-			GER = { has_country_flag = GER_monarchy_fall }
-		}
-		is_subject = no
-		NOT = { has_country_leader = { name = "Józef Pilsudski" } }
-	}
-
-	mean_time_to_happen = {
-		days = 0
-	}
-	
-	option = {
-		name = poland.1.a
-		drop_cosmetic_tag = yes
-		add_popularity = { ideology = authoritarism popularity = -1 }
-		if = {
-			limit = { has_country_leader = { name = "Hans Beseler" ruling_only = yes } }
-			retire_country_leader = yes
-		}
-		add_popularity = { ideology = social_democracy popularity = 0.1 }
-		set_politics = { ruling_party = despotism elections_allowed = no }
-		if = {
-			limit = { has_country_leader = { name = "Hans Beseler" ruling_only = yes } }
-			retire_country_leader = yes
-		}
-		create_country_leader = { name = "Józef Pilsudski" desc = POL_jozef_pilsudski_DESC picture = "gfx/leaders/POL/Portrait_Jusef_Pilsudsky.dds" expire = "1935.1.1" ideology = despotism_ideology  traits = {  } }
-		create_field_marshal = {  name = "Józef Pilsudski" id = 69053 portrait_path = "gfx/leaders/POL/Portrait_Jusef_Pilsudky_military.dds" traits = { politically_connected war_hero infantry_officer offensive_doctrine adaptable } skill = 3 attack_skill = 4 defense_skill = 3 planning_skill = 2 logistics_skill = 3 }
-		load_oob = POL_1917
-	}
-}
-
-# Захват ЗУНР
-country_event = {
-	id = poland.2
-	title = poland.2.t
-	desc = poland.2.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	fire_only_once = yes
-	
-	trigger = {
-		tag = POL
-		is_subject = no
-		OR = {
-			has_global_flag = WWI_GER_HAS_CAPITULATED
-			GER = { has_country_flag = GER_monarchy_fall }
-		}
-		GAL = { exists = yes is_subject = no }
-		has_army_size = { size > 1 }
-	}
-
-	mean_time_to_happen = {
-		days = 0
-	}
-	
-	option = {
-		name = poland.2.a
-		ai_chance = {
-			factor = 1
-		}
-		add_war_support = 0.05
-		add_popularity = { ideology = despotism popularity = 0.1 }
-		declare_war_on = {
-			target = GAL
-			type = annex_everything
-		}
-		hidden_effect = {
-			GAL = {
-				load_oob = GAL_defender
-			}
-		}
-	}
-	
-	option = {
-		name = poland.2.b
-		ai_chance = {
-			factor = 0
-		}
-		add_war_support = -0.1
-		add_popularity = { ideology = despotism popularity = -0.3 }
-	}
-}
-
-# ЗУНР отбилась
-country_event = {
-	id = poland.3
-	title = poland.3.t
-	desc = poland.3.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	fire_only_once = yes
-	
-	trigger = {
-		tag = POL
-		has_war_with = GAL
-		GAL = { is_puppet = no }
-		OR = {
-			NOT = {
-				controls_state = 10
-			}
-			has_capitulated = yes
-			surrender_progress > 0.4
-		}
-	}
-
-	mean_time_to_happen = {
-		days = 0
-	}
-	
-	option = {
-		name = poland.3.a
-		add_war_support = -0.3
-		every_country = {
-				limit = {
-					has_war_with = GAL
-					OR = {
-						tag = POL
-						is_in_faction_with = POL
-					}
-				}
-				white_peace = GAL
-		}
-	}
-	
-}
-
-# Конфликт с Литвой
-country_event = {
-	id = poland.4
-	title = poland.4.t
-	desc = poland.4.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	trigger = {
-		has_start_date < 1919.01.01
-		tag = POL
-		is_subject = no
-		is_neighbor_of = LIT
-		NOT = { has_war_with = LIT }
-		owns_state = 1001
-		LIT = { is_subject = no owns_state = 97 }
-		has_army_size = { size > 1 }
-	}
-
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	fire_only_once = yes
-	
-	option = {
-		name = poland.2.a
-		start_border_war = {
-			change_state_after_war = yes
-			attacker = {
-				state = 1001
-				num_provinces = 2
-				on_win = poland.6
-				on_lose = poland.5
-				on_cancel = poland.5
-			}
-			defender = {
-				state = 97
-				num_provinces = 3
-				on_win = poland.5
-				on_lose = poland.6
-				on_cancel = poland.5
-			}
-		}
-		ai_chance = {
-			factor = 100
-		}
-	}
-	option = {
-		name = poland.2.b
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-
-# Поражение (остановка)
-country_event = {
-	id = poland.5
-	title = poland.5.t
-	desc = poland.5.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	option = {
-		trigger = {
-			tag = POL
-			LIT = { is_neighbor_of = ROOT }
-		}
-		name = poland.5.a
-		declare_war_on = {
-			target = LIT
-			type = annex_everything
-		}
-		ai_chance = {
-			factor = 100
-		}
-	}
-	option = {
-		name = poland.5.b
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-# Промежуточная победа
-country_event = {
-	id = poland.6
-	title = poland.6.t
-	desc = poland.6.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = poland.6.a
-		if = {
-			limit = { tag = POL }
-			if = {
-				limit = { LIT = { owns_state = 910 } }
-				transfered_state = 910
-			}
-			start_border_war = {
-				change_state_after_war = yes
-				attacker = {
-					state = 97
-					num_provinces = 3
-					on_win = poland.7
-					on_lose = poland.5
-					on_cancel = poland.5
-				}
-				defender = {
-					state = 1442
-					num_provinces = 3
-					on_win = poland.5
-					on_lose = poland.7
-					on_cancel = poland.5
-				}
-			}
-		}
-	}
-}
-# Победа и переход в наступление на БНР
-country_event = {
-	id = poland.7
-	title = poland.7.t
-	desc = poland.7.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	option = {
-		trigger = {
-			tag = POL
-			BLR = { owns_state = 1056 }
-		}
-		name = poland.7.a
-		declare_war_on = {
-			target = BLR
-			type = annex_everything
-		}
-		ai_chance = {
-			factor = 100
-		}
-	}
-	option = {
-		name = poland.7.b
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-
-# Ультиматум Петлюре
-country_event = {
-	id = poland.8
-	title = poland.8.t
-	desc = poland.8.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	trigger = {
-		tag = POL
-		OR = {
-			has_global_flag = WWI_GER_HAS_CAPITULATED
-			GER = { has_country_flag = GER_monarchy_fall }
-		}
-		owns_state = 904
-		owns_state = 1165
-		NOT = { country_exists = GAL }
-		any_neighbor_country = {
-			original_tag = UKR
-			any_other_country = { NOT = { former_russian_empire_ukraine_country = yes } has_war_with = PREV }
-			surrender_progress > 0.5
-		}
-		has_army_size = { size > 1 }
-	}
-	
-	mean_time_to_happen = { days = 0 }
-	
-	fire_only_once = yes
-	
-	option = {
-		ai_chance = {
-			factor = 100
-		}
-		name = poland.8.a
-		random_other_country = {
-			limit = {
-				original_tag = UKR
-				is_neighbor_of = ROOT
-				any_other_country = { NOT = { former_russian_empire_ukraine_country = yes } has_war_with = PREV }
-				surrender_progress > 0.5
-			}
-			country_event = { id = poland.9 hours = 2 }
-		}
-	}
-	option = {
-		ai_chance = {
-			factor = 0
-		}
-		name = poland.8.b
-	}
-}
-# Ответ Польше (Украина)
-country_event = {
-	id = poland.9
-	title = poland.9.t
-	desc = poland.9.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	trigger = {
-		tag = UKR
-		is_subject = no
-	}
-	
-	is_triggered_only = yes
-	
-	option = {
-		trigger = { NOT = { has_country_flag = UKR_white has_government = communism has_government = radical_socialism } }
-		name = poland.9.a
-		add_stability = -0.01
-		every_state = {
-			limit = {
-				is_owned_by = ROOT
-				OR = {
-					is_core_of = FROM
-					is_claimed_by = FROM
-				}
-			}
-			FROM = { set_state_owner = PREV }
-			set_state_province_controller = {
-				controller = FROM
-				limit = { tag = ROOT }
-			}
-		}
-		every_country = {
-			limit = { has_war_with = ROOT NOT = { has_war_with = FROM } NOT = { tag = FROM } }
-			FROM = { declare_war_on = { target = PREV type = annex_everything } }
-			if = {
-				limit = { OR = { is_faction_leader = yes AND = { is_in_faction = no is_subject = no } } }
-				country_event = poland.21 # уведомление о том, что Польша взяла Украину
-			}
-		}
-		hidden_effect = {
-			every_owned_state = {
-				limit = { is_capital = no NOT = { is_fully_controlled_by = OWNER } }
-				set_state_flag = transfered_state
-				set_state_owner_to = FROM
-			}
-		}
-		FROM = { ROOT = { subjecting_script_with_transfer_parties_colony = yes } }
-		hidden_effect = {
-			every_state = {
-				limit = { has_state_flag = transfered_state }
-				clr_state_flag = transfered_state
-				set_state_owner_to = ROOT
-			}
-		}
-		ai_chance = {
-			factor = 100
-		}
-	}
-	option = {
-		name = poland.9.b
-		FROM = { country_event = { id = poland.10 days = 1 } }
-		ai_chance = {
-			factor = 0
-		}
-	}
-	option = {
-		name = poland.9.c
-		every_country = {
-			limit = {
-				former_russian_empire_ukraine_country = yes
-				NOT = { has_war_with = ROOT }
-			}
-			declare_war_on = {
-				target = FROM
-				type = annex_everything
-			}
-		}
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
-
-# Польша реагирует на неуступчивость Украины
-country_event = {
-	id = poland.10
-	title = poland.10.t
-	desc = poland.10.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	option = {
-		ai_chance = {
-			factor = 0
-		}
-		name = poland.10.a
-	}
-	option = {
-		ai_chance = {
-			factor = 100
-		}
-		name = poland.10.b
-		every_country = {
-			limit = {
-				former_russian_empire_ukraine_country = yes
-				NOT = { has_war_with = ROOT }
-			}
-			ROOT = {
-				declare_war_on = {
-					target = PREV
-					type = annex_everything
-				}
-			}
-		}
-		if = {
-			limit = { any_country = { former_russian_empire_ukraine_country = yes has_war_with = RUS } }
-			declare_war_on = {
-				target = RUS
-				type = annex_everything
-			}
-		}
-	}
-}
-
 # Польша или Россия предлагает другой стороне мир с большими уступками для Польши
 country_event = {
 	id = poland.11
@@ -2142,162 +1626,6 @@ country_event = {
 	}
 }
 
-# Холмщина и Подляшье
-country_event = {
-	id = poland.18
-	title = poland.18.t
-	desc = poland.18.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	trigger = {
-		tag = POL
-		OR = {
-			has_global_flag = WWI_GER_HAS_CAPITULATED
-			GER = { has_country_flag = GER_monarchy_fall }
-		}
-		owns_state = 92
-		any_neighbor_country = {
-			original_tag = UKR
-			owns_state = 904
-			owns_state = 1165
-		}
-		has_army_size = { size > 1 }
-	}
-	
-	mean_time_to_happen = { days = 0 }
-	
-	fire_only_once = yes
-	
-	option = {
-		ai_chance = {
-			factor = 100
-		}
-		name = poland.18.a
-		random_other_country = {
-			limit = {
-				original_tag = UKR
-				owns_state = 904
-				owns_state = 1165
-			}
-			country_event = { id = poland.19 hours = 2 }
-		}
-		transfer_state = 904
-		transfer_state = 1165
-	}
-	option = {
-		ai_chance = {
-			factor = 0
-		}
-		name = poland.18.b
-	}
-}
-# Холмщина и Подляшье
-country_event = {
-	id = poland.19
-	title = poland.19.t
-	desc = poland.19.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	option = {
-		ai_chance = {
-			factor = 100
-		}
-		name = poland.19.a
-	}
-	option = {
-		ai_chance = {
-			factor = 0
-		}
-		name = poland.19.b
-		FROM = {
-			declare_war_on = {
-				target = ROOT
-				type = annex_everything
-			}
-		}
-	}
-}
-
-# Оповещалка о переходе Украины в подданство Польши
-country_event = {
-	id = poland.21
-	title = poland.21.t
-	desc = poland.21.desc
-
-	picture = GFX_report_event_greece_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = poland.21.a
-		
-		ai_chance = {
-			factor = 1
-		}
-	}
-	option = {
-		name = poland.21.b
-		
-		every_state = {
-			limit = {
-				is_controlled_by = UKR
-				OR = {
-					is_core_of = UKR
-					is_claimed_by = UKR
-				}
-				OWNER = {
-					OR = {
-						tag = ROOT
-						is_in_faction_with = ROOT
-						is_subject_of = ROOT
-					}
-				}
-			}
-			UKR = { transfer_state = PREV }
-		}
-		every_state = {
-			limit = {
-				CONTROLLER = {
-					OR = {
-						tag = ROOT
-						is_in_faction_with = ROOT
-						is_subject_of = ROOT
-					}
-				}
-				OR = {
-					is_core_of = CONTROLLER
-					is_claimed_by = CONTROLLER
-					CONTROLLER = { OR = { former_russian_empire_ukraine_country = yes is_main_former_russian_empire_country = yes } }
-				}
-				is_owned_by = UKR
-			}
-			CONTROLLER = { transfer_state = PREV }
-		}
-		FROM = {
-			OVERLORD = {
-				ROOT = { THIS_white_peace_PREV_buffer = yes }
-			}
-		}
-		
-		ai_chance = {
-			factor = 4
-			modifier = {
-				factor = 0
-				tag = RUS
-			}
-			modifier = {
-				factor = 0
-				former_russian_empire_ukraine_country = yes
-			}
-		}
-	}
-}
-
-
 country_event = {
 	id = poland.22
 	title = poland.22.t
@@ -2329,7 +1657,10 @@ country_event = {
 		add_war_support = 0.03
 		add_popularity = { ideology = despotism popularity = 0.03 }
 		recruit_character = POL_Jusef_Pilsudsky
-		hidden_effect = { add_ideas = Jusef_Pilsudsky country_event = { id = poland.29 days = 40 } }
+		hidden_effect = {
+		    add_ideas = Jusef_Pilsudsky 
+            country_event = { id = poland.29 days = 40 }	
+        }
 	}
 }
 country_event = {
@@ -2387,6 +1718,7 @@ country_event = {
 	
 	trigger = {
 	    original_tag = RUS
+		NOT = { has_government = communism has_government = radical_socialism }
 	    has_country_flag = CA_wait
 		has_country_flag = POL_polsk_korp
 	}
@@ -2399,7 +1731,11 @@ country_event = {
 	
 	option = {
 		name = poland.26.a
-				create_corps_commander = {  name = "Józef Dowbor-Muśnicki" id = 88201 portrait_path = "gfx/leaders/POL/Portrait_Jozef_Dowbor-Musnicki.dds" traits = { Brilliant_Strategist Career_Officer Harsh_Leader Infantry_Leader Skilled_Staffer } skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 3 logistics_skill = 2 }
+		IF = {
+		    limit = { has_country_flag = POL_galler_in_RUS }
+			every_unit_leader = { limit = { has_id = 69002 } set_nationality = RUS }
+		}
+			create_corps_commander = {  name = "Józef Dowbor-Muśnicki" id = 88201 portrait_path = "gfx/leaders/POL/Portrait_Jozef_Dowbor-Musnicki.dds" traits = { Brilliant_Strategist Career_Officer Harsh_Leader Infantry_Leader Skilled_Staffer } skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 3 logistics_skill = 2 }
 			division_template = {
 				name = "1-j Polskij korpus"
 				regiments = {
@@ -2463,7 +1799,7 @@ country_event = {
 	
 	option = {
 		name = poland.27.a
-		POL = { country_event = { id = poland.29 days = 1 } }
+		POL = { country_event = { id = poland.28 days = 1 } }
 	}
 }
 country_event = {
@@ -2508,11 +1844,11 @@ country_event = {
 		NOT = { has_country_flag = GER_monarchy_fall }
 	}
 	is_triggered_only = yes
-	
+
 	option = {
 		name = poland.30.a
 		custom_effect_tooltip = POL_arest_pil_tt
-		set_country_flag = POL_arest_pil
+		POL = { set_country_flag = POL_arest_pil }
 		add_stability = -0.01
 		hidden_effect = { POL = { country_event = poland.32 } }
 		IF = {
@@ -2541,7 +1877,7 @@ country_event = {
 	title = poland.32.t
 	desc = poland.32.d
 
-	picture = GFX_report_event_pol_end_wgl
+	picture = GFX_report_event_pol_krizis_prisyagi
 	
 	is_triggered_only = yes
 	
@@ -2570,6 +1906,8 @@ country_event = {
 		add_stability = 0.03
 		add_ideas = POL_regent_sover
 		add_ideas = Jan_Kucharzewski
+		retire_ideology_leader = authoritarism
+		hidden_effect = { create_country_leader = { name = "Jan Kucharzewski" desc = POL_Jan_Kucharzewski_DESC picture = "gfx/leaders/POL/Portrait_Jan_Kucharzewski.dds" expire = "1935.1.1" ideology = monarchism traits = { powerless_servant } } }
 	}
 }
 country_event = {
@@ -2577,10 +1915,11 @@ country_event = {
 	title = poland.34.t
 	desc = poland.34.d
 
-	picture = GFX_CCA_status_ukrainians
+	picture = GFX_report_event_pol_holmshina
 	
 	trigger = {
 	    original_tag = POL
+		has_start_date < 1918.8.5
 	    UKR = { owns_state = 904 owns_state = 1165 }
 	}
 	
@@ -2593,7 +1932,10 @@ country_event = {
 	option = {
 		name = poland.34.a
 		GER = { country_event = poland.35 }
-		hidden_effect = { country_event = { id = poland.36 days = 1 } }
+		hidden_effect = { 
+		    country_event = { id = poland.36 days = 1 } 
+			country_event = { id = poland.40 days = 5 } 
+	    }
 		IF = {
 		    limit = { AUH = { exists = yes } }
 			AUH = { hidden_effect = { country_event = poland.37 } }
@@ -2610,7 +1952,7 @@ country_event = {
 	title = poland.35.t
 	desc = poland.35.d
 
-	picture = GFX_CCA_status_ukrainians
+	picture = GFX_report_event_pol_holmshina
 	
 	is_triggered_only = yes
 	
@@ -2630,6 +1972,10 @@ country_event = {
 	option = {
 		name = poland.36.a
 		add_political_power = -10
+		retire_ideology_leader = authoritarism
+		hidden_effect = { create_country_leader = { name = "Antoni Ponikowski" desc = POL_Antoni_Ponikowski_DESC picture = "gfx/leaders/POL/Portrait_Antoni_Ponikowski.dds" expire = "1935.1.1" ideology = monarchism traits = { powerless_servant } } }
+		hidden_effect = { country_event = { id = poland.46 days = 40 } }
+		add_ideas = Antoni_Ponikowski
 		remove_ideas = Jan_Kucharzewski
 	}
 }
@@ -2646,7 +1992,12 @@ country_event = {
 		name = poland.37.a
 		add_manpower = -1500
 		add_stability = -0.01
-		hidden_effect = { every_unit_leader = { limit = { has_id = 69002 } set_nationality = REB } GER =  { country_event = { id = poland.38 days = 40 } } }
+		set_country_flag = POL_galler_imposter
+		hidden_effect = { every_unit_leader = { limit = { has_id = 69002 } set_nationality = REB } }
+		IF = {
+		    limit = { RUS = { has_government = communism has_government = radical_socialism } }
+			hidden_effect = { GER = { country_event = { id = poland.38 days = 40 } } }
+		}
 	}
 }
 country_event = {
@@ -2668,12 +2019,13 @@ country_event = {
 	title = poland.39.t
 	desc = poland.39.d
 
-	picture = GFX_CCA_status_ukrainians
+	picture = GFX_report_event_pol_haller
 	
 	trigger = {
 	    original_tag = FRA
 	    has_country_flag = POL_galler_rezbit
 		has_war_with = GER
+		NOT = { has_country_flag = POL_galler_in_RUS }
 	}
 	
 	mean_time_to_happen = {
@@ -2686,5 +2038,363 @@ country_event = {
 		name = poland.39.a
 		every_unit_leader = { limit = { has_id = 69002 } set_nationality = FRA }
 		set_country_flag = POL_galler_on_FRA
+	}
+}
+country_event = {
+	id = poland.40 #Галлер предаёт Австрияк
+	title = poland.40.t
+	desc = poland.40.d
+
+	picture = GFX_report_event_pol_haller
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.40.a
+	}
+}
+country_event = {
+	id = poland.41 #Галлер переходит к нам
+	title = poland.41.t
+	desc = poland.41.d
+
+	picture = GFX_report_event_pol_polsk_korps
+	
+	trigger = {
+	    original_tag = RUS
+		NOT = { has_government = communism has_government = radical_socialism }
+	    has_country_flag = POL_galler_imposter
+		has_country_flag = POL_polsk_korp
+		NOT = { has_country_flag = POL_galler_rezbit }
+	}
+	
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.41.a
+        set_country_flag = POL_galler_in_RUS
+		custom_effect_tooltip = POL_galler_in_RUS_tt
+	}
+}
+country_event = {
+	id = poland.42 #Корпус Мусницкого
+	title = poland.42.t
+	desc = poland.42.d
+
+	picture = GFX_report_event_pol_polsk_korps
+	
+	trigger = {
+	    original_tag = RUS
+		OR = { has_government = communism has_government = radical_socialism }
+		has_country_flag = POL_polsk_korp
+	}
+	
+	mean_time_to_happen = {
+		days = 5
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.42.a
+        set_country_flag = POL_musnicki_pod_podozreniem
+	}
+}
+country_event = {
+	id = poland.43 #Мятеж Мусницкого
+	title = poland.43.t
+	desc = poland.43.d
+
+	picture = GFX_report_event_pol_myatesh_musnickogo
+	
+	trigger = {
+	    original_tag = RUS
+		has_start_date < 1918.8.5
+		OR = { has_government = communism has_government = radical_socialism }
+		OR = {
+		    GER = { controls_state = 206 }
+			BLR = { controls_state = 206 }
+			GER = { owns_state = 206 }
+			BLR = { owns_state = 206 }
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.43.a
+		add_stability = -0.01
+        hidden_effect = { GER = { country_event = poland.44 } POL = { country_event = poland.45 } }
+	}
+}
+country_event = {
+	id = poland.44 #Мятеж Мусницкого
+	title = poland.44.t
+	desc = poland.44.d
+
+	picture = GFX_report_event_pol_myatesh_musnickogo
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.44.a
+		set_country_flag = POL_myatesh_musnickog
+        custom_effect_tooltip = POL_myatesh_musnickogo_tt
+	}
+}
+country_event = {
+	id = poland.45 #Мятеж Мусницкого
+	title = poland.45.t
+	desc = poland.45.d
+
+	picture = GFX_report_event_pol_myatesh_musnickogo
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.45.a
+	}
+}
+country_event = {
+	id = poland.46 #Новое правительство
+	title = poland.46.t
+	desc = poland.46.d
+
+	picture = GFX_report_event_pol_pravit_yan
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.46.a
+		add_political_power = -10
+		retire_ideology_leader = authoritarism
+		hidden_effect = { create_country_leader = { name = "Jan Kantiy Stechkovsky" desc = POL_Antoni_Ponikowski_DESC picture = "gfx/leaders/POL/Portrait_Jan_Kantiy_Stechkovsky.dds" expire = "1935.1.1" ideology = monarchism traits = { powerless_servant } } }
+		add_ideas = Jan_Kantiy_Stechkovsky_1
+		remove_ideas = Antoni_Ponikowski
+	}
+}
+country_event = {
+	id = poland.47 #Польская просьба
+	title = poland.47.t
+	desc = poland.47.d
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.47.a
+		POL = { country_event = { id = poland.48 days = 1 } }
+		ai_chance = {
+			factor = 1
+			modifier = { factor = 2 has_opinion = { target = POL value > -1 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 19 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 29 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 49 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 69 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 79 } }
+			modifier = { factor = 5 has_opinion = { target = POL value > 89 } }
+			modifier = { factor = 5 has_opinion = { target = POL value > 99 } }
+			AUH = {
+                modifier = { factor = 1 has_opinion = { target = POL value > -1 } }
+			    modifier = { factor = 1 has_opinion = { target = POL value > 9 } }
+			    modifier = { factor = 1 has_opinion = { target = POL value > 19 } }
+			    modifier = { factor = 2 has_opinion = { target = POL value > 29 } }
+			    modifier = { factor = 2 has_opinion = { target = POL value > 49 } }
+			    modifier = { factor = 3 has_opinion = { target = POL value > 69 } }
+			    modifier = { factor = 3 has_opinion = { target = POL value > 79 } }
+			    modifier = { factor = 4 has_opinion = { target = POL value > 89 } }
+			    modifier = { factor = 4 has_opinion = { target = POL value > 99 } }
+			}
+		}
+	}
+	option = {
+		name = poland.47.b
+		add_stability = -0.03
+		POL = { add_opinion_modifier = { target = GER modifier = BLR_Ylychenie_otnocheniy } }
+		POL = { country_event = { id = poland.49 days = 1 } }
+		ai_chance = {
+			factor = 4
+			modifier = { factor = 1 has_stability < 0.4 }
+		}
+	}
+}
+country_event = {
+	id = poland.48 #Ответ Берлина нет
+	title = poland.48.t
+	desc = poland.48.d
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.48.a
+		IF = {
+		    limit = { has_country_leader = { name = "Jan Kantiy Stechkovsky" ruling_only = yes } }
+		    POL = { country_event = { id = poland.50 days = 1 } }
+		}
+	}
+}
+country_event = {
+	id = poland.49 #Ответ Берлина да
+	title = poland.49.t
+	desc = poland.49.d
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.49.a
+		
+	}
+}
+country_event = {
+	id = poland.50 #Стечковский подаёт в отставку
+	title = poland.50.t
+	desc = poland.50.d
+
+	picture = GFX_report_event_pol_pravit_yan
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.50.a
+		add_political_power = -10
+		retire_ideology_leader = authoritarism
+		hidden_effect = { create_country_leader = { name = "Jozef Svezhinsky" desc = POL_Antoni_Ponikowski_DESC picture = "gfx/leaders/POL/Portrait_Jozef_Svezhinsky.dds" expire = "1935.1.1" ideology = monarchism traits = { powerless_servant } } }
+		add_ideas = Jozef_Svezhinsky
+		remove_ideas = Jan_Kantiy_Stechkovsky_1
+	}
+}
+country_event = {
+	id = poland.51
+	title = poland.51.t
+	desc = poland.51.d
+
+	picture = GFX_report_event_pol_vozzvanie
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.51.a
+		add_stability = 0.03
+		add_war_support = 0.05
+		GER = { country_event = poland.52 }
+		set_country_flag = POL_vozzvanie_k_pol
+		mark_focus_tree_layout_dirty = yes
+		remove_ideas = POL_Kingdom_that_failed
+	}
+}
+country_event = {
+	id = poland.52
+	title = poland.52.t
+	desc = poland.52.d
+
+	picture = GFX_report_event_pol_vozzvanie
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.52.a
+		add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy }
+	}
+}
+country_event = {
+	id = poland.53
+	title = poland.53.t
+	desc = poland.53.d
+
+	picture = GFX_report_event_auh_crash_union
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.53.a
+		add_war_support = 0.03
+	}
+}
+country_event = {
+	id = poland.54
+	title = poland.54.t
+	desc = poland.54.d
+
+	picture = GFX_report_event_pol_left_prav
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.54.a
+		add_stability = -0.03
+		add_ideas = POL_left_prav
+		add_popularity = { ideology = social_democracy popularity = 0.05 }
+		add_popularity = { ideology = radical_socialism popularity = 0.05 }
+		add_popularity = { ideology = social_liberalism popularity = 0.03 }
+	}
+}
+country_event = {
+	id = poland.55
+	title = poland.55.t
+	desc = poland.55.d
+
+	picture = GFX_report_event_pol_left_prav
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.55.a
+		add_war_support = 0.05
+		set_country_flag = POL_pil_pribl
+		clr_country_flag = POL_arest_pil
+		add_popularity = { ideology = despotism popularity = 0.05 }
+		recruit_character = POL_Jusef_Pilsudsky
+	}
+}
+country_event = { #Начальник государства
+	id = poland.56
+	title = poland.56.t
+	desc = poland.56.d
+
+	picture = GFX_report_event_pol_nashalnik_gos
+	
+	trigger = {
+	    original_tag = POL
+		has_completed_focus = POL_podshinenie_pol_wermacht
+		has_completed_focus = POL_naznschenie_kom
+		has_completed_focus = POL_rasorush_auh_garr
+		has_completed_focus = POL_rasorush_ger_garr
+		has_completed_focus = POL_nazn_pil_glav_army
+		has_completed_focus = POL_smestit_bezeler
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.56.a
+		add_war_support = 0.05
+        add_popularity = { ideology = despotism popularity = 0.15 }
+		create_country_leader = { name = "Józef Pilsudski" desc = POL_Jusef_Pilsudsky_DESC picture = "gfx/leaders/POL/Portrait_Jusef_Pilsudsky.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { Chief_of_the_Polish_State nationalistic_freedom_fighter GER_supreme_leader } }
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		set_country_flag = POL_focus_tree_pilsudski
+		mark_focus_tree_layout_dirty = yes
+		remove_ideas = POL_left_prav
+		add_ideas = peasant_and_land_and_bread_question_0_5
 	}
 }
