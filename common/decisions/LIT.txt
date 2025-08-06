@@ -1,29 +1,1414 @@
 political_actions = {
-
-	LIT_move_capital_to_vilnius = {
-
+LIT_pereezd_korolya = {
+	icon = generic_monarchy
+	cost = 0
+	visible = {
+	    has_country_flag = LIT_korol_litva_1
+		NOT = { has_country_flag = LIT_nemci_pokidayt_lit }
+	}
+	remove_effect = {
+	    country_event = lithuania.2
+		set_country_flag = LIT_korol_litva
+	}
+	ai_will_do = {
+		factor = 0
+	}
+	days_remove = 20
+	fire_only_once = yes
+}
+LIT_nationalization = {
+	icon = border_war
+	cost = 40
+	visible = {
+	    has_completed_focus = LIT_litvinization_bel_zemly
+	}
+	available = {
+	    set_state_owner = 998
+		set_state_owner = 95
+	}
+	remove_effect = {
+	    add_state_core = 998
+		add_state_core = 95
+	}
+	ai_will_do = {
+		factor = 1
+	}
+	days_remove = 70
+	fire_only_once = yes
+}
+LIT_field_marshal_smetona = {
+    icon = generic_army_support
+	cost = 10
+	visible = {
+	    has_completed_focus = LIT_new_reshim
+	}
+	remove_effect = {
+	    create_field_marshal = { name = "Antanаs Smeton" id = 88189 portrait_path = "gfx/leaders/LIT/Portrait_Antanas_Smetona_military.dds" traits = { politically_connected } skill = 1 attack_skill = 1 defense_skill = 1 planning_skill = 2 logistics_skill = 1 }
+	}
+	ai_will_do = {
+		factor = 1
+	}
+	days_remove = 15
+	fire_only_once = yes
+}
+LIT_field_marshal_mindsugas = {
+    icon = generic_army_support
+	cost = 10
+	visible = {
+	    has_completed_focus = LIT_absolut_lit_mon
+	}
+	remove_effect = {
+	    create_field_marshal = { name = "Mindaugas II" id = 88190 portrait_path = "gfx/leaders/LIT/Portrait_Vilhelmas_Mindaugas_II_Urachas_Monarchy.dds" traits = { politically_connected Media_Personality Cavalry_Leader Fast_Planner } skill = 2 attack_skill = 4 defense_skill = 1 planning_skill = 3 logistics_skill = 2 }
+	}
+	ai_will_do = {
+		factor = 1
+	}
+	days_remove = 15
+	fire_only_once = yes
+}
+	LIT_litvinizations = {
+		icon = GFX_decision_generic_nationalism
+		allowed = { 
+			original_tag = LIT
+		}    
+		available = {
+		    always = no
+		}
+		activation = { 
+			original_tag = LIT
+			has_country_flag = LIT_litvinizati
+		}
+		cancel_if_not_visible = yes 
+		is_good = yes 
+		fire_only_once = yes                          
+		days_mission_timeout = 90
+		timeout_effect = {
+			add_stability = 0.06
+			swap_ideas = {
+			    remove_idea = LIT_litvin
+				add_idea = LIT_litvin_1
+			}
+		}
+	}
+}
+LIT_narodny_pogroms = {
+	LIT_time_based_war_escalation_mission = {   
+		icon = GFX_decision_generic_ignite_civil_war
+		allowed = { 
+			original_tag = LIT
+		}    
+	    available = {
+		    has_country_flag = LIT_end_pogroms_flag_2
+			has_country_flag = LIT_end_pogroms_flag
+	    }
+		activation = { 
+			original_tag = LIT
+			has_country_flag = LIT_narodny_pogroms_flag
+		}
+		visible = {
+		    NOT = { has_country_flag = LIT_end_pogroms_flag_2 }
+		}
+		cancel_if_not_visible = yes 
+		is_good = yes 
+		fire_only_once = no                            
+		days_mission_timeout = 25
+		timeout_effect = {
+			LIT_escalate_the_war_effect = yes 
+			add_to_variable = { LIT.LIT_escalation_time_increase_total = 1 }
+			if = {
+			    limit = { check_variable = { LIT.LIT_war_escalation_level > 2 } }
+				hidden_effect = {
+		            swap_ideas = {
+			            add_idea = LIT_torn_people_1
+			            remove_idea = LIT_torn_people
+		            }
+		            swap_ideas = {
+			            add_idea = LIT_torn_people_1
+			            remove_idea = LIT_torn_people_2
+		            }
+		            remove_ideas = disorganization_of_army
+			    }
+			}
+			if = {
+			    limit = { check_variable = { LIT.LIT_war_escalation_level > 3 } }
+				hidden_effect = {
+		            swap_ideas = {
+			            add_idea = LIT_torn_people_2
+			            remove_idea = LIT_torn_people_1
+		            }
+		            swap_ideas = {
+			            add_idea = LIT_torn_people_2
+			            remove_idea = LIT_torn_people_1
+		            }
+			        add_ideas = disorganization_of_army
+				}
+			}
+		}
+	}
+	LIT_end_pogrom = {  
+		icon = GFX_decision_generic_arrest
 		allowed = {
 			original_tag = LIT
+		}    
+	    visible = {
+		    has_country_flag = LIT_narodny_pogroms_flag
+		    NOT = { has_country_flag = LIT_end_pogroms_flag_2 }
+	    }
+		available = {
+			has_country_flag = LIT_end_pogroms_flag
+			check_variable = { LIT.LIT_war_escalation_level > 2 }
 		}
+        days_remove = 5		
+	    remove_effect = {
+		    set_country_flag = LIT_end_pogroms_flag_2
+	    }
+	}
+}
+LIT_nemci_pokidayt = {
+	LIT_nemci_pokidayt_mission = {
+		icon = GFX_decision_eng_blackshirt_march
+		allowed = { 
+			original_tag = LIT
+		}
+	    available = {
+            has_country_flag = LIT_nemci_yshli
+	    }
+		visible = {
+		    has_country_flag = LIT_nemci_pokidayt_lit
+			NOT = { has_country_flag = LIT_nemci_yshli }
+		}
+		activation = {
+		    has_country_flag = LIT_nemci_yshli
+		}
+		fire_only_once = yes
+		days_mission_timeout = 50
+		timeout_effect = {
+		    custom_effect_tooltip = LIT_nemci_pokidayt_mission_tt
+		    set_country_flag = LIT_nemci_yshli
+		}
+	}
+	LIT_vzaimodeistvie_s_korpu = {
+		icon = GFX_decision_generic_confiscation
+		allowed = { 
+			original_tag = LIT
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_vzaimodeistvie_s_korpus
+				has_completed_focus = LIT_occup_use
+			}
+		}
+		visible = {
+		    has_country_flag = LIT_nemci_pokidayt_lit
+			NOT = { has_country_flag = LIT_nemci_yshli }
+		}
+        days_remove = 9
+        cost = 15	
+	    remove_effect = {
+		    set_temp_variable = { a1 = random }
+		    set_temp_variable = { b1 = random }
+		    set_temp_variable = { c1 = random }
+	        set_temp_variable = { d1 = random }
+		    multiply_temp_variable = { a1 = 200 }
+		    multiply_temp_variable = { b1 = 100 }
+		    multiply_temp_variable = { c1 = 50 }
+		    multiply_temp_variable = { d1 = 10 }
+	
+		    set_temp_variable = { f1 = a1 }
+		    add_to_temp_variable = { f1 = b1 }
+		    add_to_temp_variable = { f1 = c1 }
+		    add_to_temp_variable = { f1 = d1 }
+		    clamp_temp_variable = { var = f1 min = 50 max = 300 }
+		    round_temp_variable = f1
+ 
+		    add_equipment_to_stockpile = {
+		        type = infantry_equipment
+		        amount = f1
+		    }
+		    set_temp_variable = { a1 = random }
+		    set_temp_variable = { b1 = random }
+		    set_temp_variable = { c1 = random }
+		    set_temp_variable = { d1 = random }
+		    multiply_temp_variable = { a1 = 2500 }
+		    multiply_temp_variable = { b1 = 500 }
+		    multiply_temp_variable = { c1 = 250 }
+		    multiply_temp_variable = { d1 = 25 }
+	
+		    set_temp_variable = { f1 = a1 }
+		    add_to_temp_variable = { f1 = b1 }
+		    add_to_temp_variable = { f1 = c1 }
+		    add_to_temp_variable = { f1 = d1 }
+		    clamp_temp_variable = { var = f1 min = 100 max = 7500 }
+		    round_temp_variable = f1
+	
+		    add_fuel = f1
+			
+		    set_temp_variable = { a1 = random }
+		    set_temp_variable = { b1 = random }
+		    set_temp_variable = { c1 = random }
+	        set_temp_variable = { d1 = random }
+		    multiply_temp_variable = { a1 = 50 }
+		    multiply_temp_variable = { b1 = 20 }
+		    multiply_temp_variable = { c1 = 10 }
+		    multiply_temp_variable = { d1 = 5 }
+		
+		    set_temp_variable = { f1 = a1 }
+		    add_to_temp_variable = { f1 = b1 }
+		    add_to_temp_variable = { f1 = c1 }
+		    add_to_temp_variable = { f1 = d1 }
+		    clamp_temp_variable = { var = f1 min = 10 max = 80 }
+		    round_temp_variable = f1
+
+		    add_equipment_to_stockpile = {
+			    type = support_equipment
+			    amount = f1
+		    }
+		    set_temp_variable = { a1 = random }
+		    set_temp_variable = { b1 = random }
+		    set_temp_variable = { c1 = random }
+	        set_temp_variable = { d1 = random }
+		    multiply_temp_variable = { a1 = 15 }
+		    multiply_temp_variable = { b1 = 10 }
+		    multiply_temp_variable = { c1 = 5 }
+		    multiply_temp_variable = { d1 = 1 }
+		
+		    set_temp_variable = { f1 = a1 }
+		    add_to_temp_variable = { f1 = b1 }
+		    add_to_temp_variable = { f1 = c1 }
+		    add_to_temp_variable = { f1 = d1 }
+		    clamp_temp_variable = { var = f1 min = 1 max = 30 }
+		    round_temp_variable = f1
+
+		    add_equipment_to_stockpile = {
+			    type = artillery_equipment_1_5
+			    amount = f1
+		    }
+			
+		    set_temp_variable = { a1 = random }
+		    set_temp_variable = { b1 = random }
+		    set_temp_variable = { c1 = random }
+	        set_temp_variable = { d1 = random }
+		    multiply_temp_variable = { a1 = 15 }
+		    multiply_temp_variable = { b1 = 10 }
+		    multiply_temp_variable = { c1 = 5 }
+		    multiply_temp_variable = { d1 = 1 }
+		
+		    set_temp_variable = { f1 = a1 }
+		    add_to_temp_variable = { f1 = b1 }
+		    add_to_temp_variable = { f1 = c1 }
+		    add_to_temp_variable = { f1 = d1 }
+		    clamp_temp_variable = { var = f1 min = 1 max = 30 }
+		    round_temp_variable = f1
+
+		    add_equipment_to_stockpile = {
+			    type = field_guns_equipment_1_5
+			    amount = f1
+		    }
+	    }
+	}
+	LIT_vzaimodeistvie_s_korpu_1 = {
+		icon = GFX_decision_generic_confiscation
+		allowed = { 
+			original_tag = LIT
+		}
+		available = {
+		    has_completed_focus = LIT_vzaimodeistvie_s_korpus
+		}
+		visible = {
+		    has_country_flag = LIT_nemci_pokidayt_lit
+			NOT = { has_country_flag = LIT_nemci_yshli }
+		}
+        days_remove = 12
+		cost = 20
+	    remove_effect = {
+		    set_temp_variable = { a1 = random }
+		    set_temp_variable = { b1 = random }
+		    set_temp_variable = { c1 = random }
+		    set_temp_variable = { d1 = random }
+		    multiply_temp_variable = { a1 = 3000 }
+		    multiply_temp_variable = { b1 = 1000 }
+		    multiply_temp_variable = { c1 = 500 }
+		    multiply_temp_variable = { d1 = 100 }
+		
+		    set_temp_variable = { f1 = a1 }
+		    add_to_temp_variable = { f1 = b1 }
+		    add_to_temp_variable = { f1 = c1 }
+		    add_to_temp_variable = { f1 = d1 }
+		    clamp_temp_variable = { var = f1 min = 100 max = 3000 }
+		    round_temp_variable = f1
+		
+		    add_manpower = f1
+	    }
+	}
+}
+
+LIT_fraikor = {
+	LIT_fraicor_pokidayt_lit = {   
+		icon = GFX_decision_eng_blackshirt_march
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    has_country_flag = LIT_freikor_lit
+		}
+		activation = {
+		    has_country_flag = LIT_freikor_lit
+		}
+	    available = {
+		    OR = {
+                has_country_flag = LIT_end_litvin_flag
+			    has_country_flag = LIT_fraikorps_ushli
+			}
+	    }
+		fire_only_once = yes
+		days_mission_timeout = 120
+		timeout_effect = {
+		    set_country_flag = LIT_fraikorps_ushli
+		    delete_unit_template_and_units = {
+                division_template = "South Lithuanian Saxon Volunteer Brigade"
+                disband = yes
+            }
+			delete_unit_template_and_units = {
+                division_template = "South Lithuanian Saxon Volunteer Division"
+                disband = yes
+            }
+			remove_ideas = LIT_german_advisors
+		}
+	}
+	LIT_new_freicor_divizion = {
+		icon = GFX_decision_generic_military
+		allowed = { 
+			original_tag = LIT
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_vraikor
+			    has_completed_focus = LIT_frycop
+			}
+			has_country_flag = LIT_freikor_lit
+		}
+		visible = {
+		    NOT = { has_country_flag = LIT_fraikorps_ushli }
+			NOT = { has_country_flag = sLIT_end_litvin_flag }
+		}
+		highlight_states = { highlight_state_targets = { state = 11 } }
+        days_remove = 20
+		cost = 10
+		fire_only_once = yes
+	    remove_effect = {
+		    capital_scope = {
+			    create_unit = {
+		            division = "name = \"21th Regiment of the South Lithuanian Saxon Volunteer Division\" division_template = \"South Lithuanian Saxon Volunteer Division\" start_experience_factor = 0.55 start_equipment_factor = 0.8"
+				    owner = LIT
+			    }
+			}
+			set_country_flag = LIT_new_freicor_divizion
+	    }
+	}
+	LIT_new_freicor_divizion_1 = {
+		icon = GFX_decision_generic_military
+		allowed = { 
+			original_tag = LIT
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_vraikor
+			    has_completed_focus = LIT_frycop
+			}
+			has_country_flag = LIT_freikor_lit
+		}
+		visible = {
+		    NOT = { has_country_flag = LIT_fraikorps_ushli }
+			NOT = { has_country_flag = sLIT_end_litvin_flag }
+		}
+        highlight_states = { highlight_state_targets = { state = 11 } }
+        days_remove = 20
+		cost = 10
+		fire_only_once = yes
+	    remove_effect = {
+		    capital_scope = {
+			    create_unit = {
+		            division = "name = \"22th Regiment of the South Lithuanian Saxon Volunteer Division\" division_template = \"South Lithuanian Saxon Volunteer Division\" start_experience_factor = 0.55 start_equipment_factor = 0.8"
+				    owner = LIT
+			    }
+			}
+			set_country_flag = LIT_new_freicor_divizion_1
+	    }
+	}
+	LIT_prodlit_pribivanie = {
+		icon = GFX_decision_generic_motorized
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    NOT = { has_country_flag = LIT_end_litvin_flag }
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    has_country_flag = LIT_freikor_lit
+		}
+        days_remove = 50
+		cost = 50
+		fire_only_once = no
+	    complete_effect = {
+			add_stability = -0.04
+			add_war_support = -0.03
+			add_days_mission_timeout = {
+				mission = LIT_fraicor_pokidayt_lit
+				days = 40
+			}
+	    }
+	}
+	LIT_uskorit_pribivanie = {
+		icon = GFX_decision_generic_motorized
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    NOT = { has_country_flag = LIT_end_litvin_flag }
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    has_country_flag = LIT_freikor_lit
+		}
+        days_remove = 20
+		cost = 15
+		fire_only_once = no
+	    complete_effect = {
+			add_stability = 0.03
+			add_days_mission_timeout = {
+				mission = LIT_fraicor_pokidayt_lit
+				days = -40
+			}
+	    }
+	}
+	LIT_litvin_fraikorps_18 = {
+		icon = GFX_decision_generic_reorganize_irregulars
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			has_country_flag = LIT_freikor_lit
+		}
+        days_remove = 20
+		cost = 15
+		fire_only_once = yes
+	    remove_effect = {
+			custom_effect_tooltip = LIT_litvin_fraikorps_18_tt
+			set_country_flag = LIT_litvin_fraikorps_18_flag
+	    }
+	}
+	LIT_litvin_fraikorps_19 = {
+		icon = GFX_decision_generic_reorganize_irregulars
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			has_country_flag = LIT_freikor_lit
+		}
+        days_remove = 20
+		cost = 15
+		fire_only_once = yes
+	    remove_effect = {
+			custom_effect_tooltip = LIT_litvin_fraikorps_19_tt
+			set_country_flag = LIT_litvin_fraikorps_19_flag
+	    }
+	}
+	LIT_litvin_fraikorps_20 = {
+		icon = GFX_decision_generic_reorganize_irregulars
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			has_country_flag = LIT_freikor_lit
+		}
+        days_remove = 20
+		cost = 15
+		fire_only_once = yes
+	    remove_effect = {
+			custom_effect_tooltip = LIT_litvin_fraikorps_20_tt
+			set_country_flag = LIT_litvin_fraikorps_20_flag
+	    }
+	}
+	LIT_litvin_fraikorps_21 = {
+		icon = GFX_decision_generic_reorganize_irregulars
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			has_country_flag = LIT_freikor_lit
+			has_country_flag = LIT_new_freicor_divizion
+		}
+        days_remove = 20
+		cost = 15
+		fire_only_once = yes
+	    remove_effect = {
+			custom_effect_tooltip = LIT_litvin_fraikorps_21_tt
+			set_country_flag = LIT_litvin_fraikorps_21_flag
+	    }
+	}
+	LIT_litvin_fraikorps_22 = {
+		icon = GFX_decision_generic_reorganize_irregulars
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			has_country_flag = LIT_freikor_lit
+			has_country_flag = LIT_new_freicor_divizion_1
+		}
+        days_remove = 20
+		cost = 15
+		fire_only_once = yes
+	    remove_effect = {
+			custom_effect_tooltip = LIT_litvin_fraikorps_22_tt
+			set_country_flag = LIT_litvin_fraikorps_22_flag
+	    }
+	}
+	LIT_end_litvin = {
+		icon = GFX_decision_generic_nationalism
+		allowed = { 
+			original_tag = LIT
+		}
+		visible = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			NOT = { has_country_flag = LIT_fraikorps_ushli }
+		}
+		available = {
+		    OR = {
+		        has_completed_focus = LIT_lit_deutsh_divizion
+			    has_completed_focus = LIT_litvin_ger_chyasti
+			}
+			has_country_flag = LIT_freikor_lit
+			has_country_flag = LIT_litvin_fraikorps_18_flag
+			has_country_flag = LIT_litvin_fraikorps_19_flag
+			has_country_flag = LIT_litvin_fraikorps_20_flag
+			has_country_flag = LIT_litvin_fraikorps_21_flag
+			has_country_flag = LIT_litvin_fraikorps_22_flag
+		}
+        days_remove = 30
+		cost = 20
+		fire_only_once = yes
+	    remove_effect = {
+            delete_unit_template_and_units = {
+                division_template = "South Lithuanian Saxon Volunteer Brigade"
+                disband = yes
+            }
+            delete_unit_template_and_units = {
+                division_template = "South Lithuanian Saxon Volunteer Division"
+                disband = yes
+            }
+		    division_template = {
+			    name = "Polk litovskoj divizii"
+			    regiments = {
+				    infantry = { x = 0 y = 0 }
+			    }
+			    is_locked = no
+		    }
+		    capital_scope = {
+			    create_unit = {
+				    division = "name = \"I polk litovskoj divizii\" division_template = \"Polk litovskoj divizii\" start_experience_factor = 0.75 start_equipment_factor = 1"
+				    owner = LIT
+			    }
+			    create_unit = {
+				    division = "name = \"II polk litovskoj divizii\" division_template = \"Polk litovskoj divizii\" start_experience_factor = 0.75 start_equipment_factor = 1"
+				    owner = LIT
+			    }
+			    create_unit = {
+				    division = "name = \"III polk litovskoj divizii\" division_template = \"Polk litovskoj divizii\" start_experience_factor = 0.75 start_equipment_factor = 1"
+				    owner = LIT
+			    }
+			    create_unit = {
+				    division = "name = \"IV polk litovskoj divizii\" division_template = \"Polk litovskoj divizii\" start_experience_factor = 0.75 start_equipment_factor = 1"
+				    owner = LIT
+			    }
+			    create_unit = {
+				    division = "name = \"V polk litovskoj divizii\" division_template = \"Polk litovskoj divizii\" start_experience_factor = 0.75 start_equipment_factor = 1"
+				    owner = LIT
+			    }
+				set_country_flag = LIT_end_litvin_flag
+		    }
+	    }
+	}
+}
+LIT_pay_armors = {
+	LIT_pokupka_vintovki = {
+		icon = GFX_decision_generic_industry
+		allowed = { 
+			original_tag = LIT
+		}
+		available = {
+		    GER = { is_subject = no }
+			NOT = { has_war_with = GER }
+            has_political_power > 30
+		}
+	    visible = {
+		    OR = {
+	            has_completed_focus = LIT_priobretenie_arms_ger
+			    has_completed_focus = LIT_buy_gers
+			}
+	    }
+        days_remove = 25
+		fire_only_once = no
+	    remove_effect = {
+			GER = { country_event = lithuania.40 }
+	    }
+	}
+	LIT_pokupka_art = {
+		icon = GFX_decision_ger_military_buildup
+		allowed = { 
+			original_tag = LIT
+		}
+	    visible = {
+	        OR = {
+	            has_completed_focus = LIT_priobretenie_arms_ger
+			    has_completed_focus = LIT_buy_gers
+			}
+	    }
+		available = {
+		    GER = { is_subject = no }
+			NOT = { has_war_with = GER }
+			has_political_power > 40
+		}
+        days_remove = 25
+		fire_only_once = no
+	    remove_effect = {
+			GER = { country_event = lithuania.43 }
+	    }
+	}
+	LIT_pokupka_pushki = {
+		icon = GFX_decision_ger_military_buildup
+		allowed = { 
+			original_tag = LIT
+		}
+	    visible = {
+	        OR = {
+	            has_completed_focus = LIT_priobretenie_arms_ger
+			    has_completed_focus = LIT_buy_gers
+			}
+	    }
+		available = {
+		    GER = { is_subject = no }
+			NOT = { has_war_with = GER }
+			has_political_power > 40
+		}
+        days_remove = 25
+		fire_only_once = no
+	    remove_effect = {
+			GER = { country_event = lithuania.45 }
+	    }
+	}
+	LIT_pokupka_mashins = {
+		icon = GFX_decision_generic_motorized
+		allowed = { 
+			original_tag = LIT
+		}
+	    visible = {
+	        OR = {
+	            has_completed_focus = LIT_priobretenie_arms_ger
+			    has_completed_focus = LIT_buy_gers
+			}
+	    }
+		available = {
+		    GER = { is_subject = no }
+			NOT = { has_war_with = GER }
+			has_political_power > 30
+		}
+        days_remove = 25
+		fire_only_once = no
+	    remove_effect = {
+			GER = { country_event = lithuania.49 }
+	    }
+	}
+	LIT_pokupka_gun_car = {
+		icon = GFX_decision_generic_tank
+		allowed = { 
+			original_tag = LIT
+		}
+	    visible = {
+	        OR = {
+	            has_completed_focus = LIT_priobretenie_arms_ger
+			    has_completed_focus = LIT_buy_gers
+			}
+	    }
+		available = {
+		    GER = { is_subject = no }
+			NOT = { has_war_with = GER }
+			has_political_power > 50
+		}
+        days_remove = 25
+		fire_only_once = no
+	    remove_effect = {
+			GER = { country_event = lithuania.47 }
+	    }
+	}
+	LIT_pokupka_toplivo = {
+		icon = GFX_decision_oil
+		allowed = { 
+			original_tag = LIT
+		}
+	    visible = {
+	        OR = {
+	            has_completed_focus = LIT_priobretenie_arms_ger
+			    has_completed_focus = LIT_buy_gers
+			}
+	    }
+		available = {
+		    GER = { is_subject = no }
+			NOT = { has_war_with = GER }
+			has_political_power > 10
+		}
+        days_remove = 25
+		fire_only_once = no
+	    remove_effect = {
+			GER = { country_event = lithuania.51 }
+	    }
+	}
+}
+LIT_partizans = {
+	LIT_povstan_998 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 998 }
+			RUS = { controls_state = 998 }
+			815 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 815 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 998
+				}
+				998 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			998 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+	LIT_povstan_95 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 95 }
+			RUS = { controls_state = 95 }
+			95 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 95 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 95
+				}
+				95 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			95 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+	LIT_povstan_956 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 956 }
+			RUS = { controls_state = 956 }
+			956 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 956 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 956
+				}
+				956 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			956 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+	LIT_povstan_97 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 97 }
+			RUS = { controls_state = 97 }
+			97 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 97 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 97
+				}
+				97 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			97 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+	LIT_povstan_910 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 910 }
+			RUS = { controls_state = 910 }
+			910 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 910 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 910
+				}
+				910 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			910 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+	LIT_povstan_96 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 96 }
+			RUS = { controls_state = 96 }
+			96 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 96 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 96
+				}
+				96 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			96 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+	LIT_povstan_1167 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 1167 }
+			RUS = { controls_state = 1167 }
+			1167 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 1167 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 1167
+				}
+				1167 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			1167 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+	LIT_povstan_1056 = {
+		icon = generic_civil_support
+		available = {
+			ROOT = { has_equipment = { infantry_equipment > 79 } }
+		}
+		visible = {
+		    NOT = { controls_state = 1056 }
+			RUS = { controls_state = 1056 }
+			1056 = {
+				NOT = { is_fully_controlled_by = ROOT }
+				CONTROLLER = { has_war_with = ROOT }
+			}
+		}
+	
+		cost = 25
+		days_remove = 14
+		highlight_states = { highlight_state_targets = { state = 1056 } }
+		fire_only_once = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 100
+				divisions_in_state = {
+					size > 4
+					state = 1056
+				}
+				1056 = {
+					CONTROLLER = { has_war_with = ROOT }
+				}
+			}
+		}
+		
+		complete_effect = {
+			
+			1056 = {
+				save_global_event_target_as = state_var 
+			}
+		}
+		remove_effect = {
+			custom_effect_tooltip = RSS_eser_uprising
+			hidden_effect = {
+				if = {
+					limit = {
+						event_target:state_var = { NOT = { is_fully_controlled_by = ROOT } } 
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -80
+					}
+					event_target:state_var = { 
+						spawn_eser_rebels_script = yes 
+					}
+					clear_global_event_target = state_var
+				}
+				else = { add_political_power = 35 }	
+			}
+		}
+	}
+}
+LIT_national_blr = {
+
+	LIT-national_blr_zemly_1167 = {
+
+		icon = generic_political_discourse
 
 		available = {
-			owns_state = 784
-			has_full_control_of_state = 784
+			1167 = {
+				is_fully_controlled_by = ROOT
+			}
 		}
+
+		cost = 40
+		days_remove = 35
+
+		highlight_states = { highlight_state_targets = { state = 1167 state = 95 state = 998 state = 96 state = 1056 state = 956 } }
 
 		ai_will_do = {
-			factor = 200
+			factor = 1000
 		}
 
+		remove_effect = {
+			1167 = {
+				add_core_of = ROOT
+			}
+			95 = {
+				add_core_of = ROOT
+			}
+			998 = {
+				add_core_of = ROOT
+			}
+			96 = {
+				add_core_of = ROOT
+			}
+			1056 = {
+				add_core_of = ROOT
+			}
+			956 = {
+				add_core_of = ROOT
+			}
+		}
+	}
+	LIT-national_blr_zemly_97 = {
+
+		icon = generic_political_discourse
+
+		available = {
+			1386 = {
+				is_fully_controlled_by = ROOT
+			}
+		}
 		visible = {
-			original_tag = LIT
-			has_full_control_of_state = 784
+		    has_completed_focus = LIT_litvin_zmagarov
+			has_completed_focus = LIT_Sutriuskinti_lenkus
 		}
 
-		complete_effect = {
-			set_capital = { state = 784 }
-			784 = { set_state_name = "Vilnius" }
-			set_province_name = { id = 3320 name = "Vilnius" }
+		cost = 25
+		days_remove = 35
+
+		highlight_states = { highlight_state_targets = { state = 97 state = 910 state = 1001 state = 1119 } }
+
+		ai_will_do = {
+			factor = 1000
+		}
+
+		remove_effect = {
+			97 = {
+				add_core_of = ROOT
+			}
+			910 = {
+				add_core_of = ROOT
+			}
+			1119 = {
+				add_core_of = ROOT
+			}
+			1001 = {
+				add_core_of = ROOT
+			}
+		}
+	}
+	LIT-national_blr_zemly_810 = {
+
+		icon = generic_political_discourse
+
+		available = {
+			810 = {
+				is_fully_controlled_by = ROOT
+			}
+		}
+		visible = {
+		    has_completed_focus = LIT_litvin_zmagarov
+			has_completed_focus = LIT_Claims_Livonia
+		}
+
+		cost = 20
+		days_remove = 35
+
+		highlight_states = { highlight_state_targets = { state = 1378 state = 810 state = 190 } }
+
+		ai_will_do = {
+			factor = 1000
+		}
+
+		remove_effect = {
+			1378 = {
+				add_core_of = ROOT
+			}
+			810 = {
+				add_core_of = ROOT
+			}
+			190 = {
+				add_core_of = ROOT
+			}
 		}
 	}
 }

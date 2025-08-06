@@ -1406,9 +1406,6 @@ country_event = {
 		name = belarus.56.a
 		set_country_flag = BLR_pol_verbyyt_bulak
 		POL = { country_event = belarus.57 }
-		hidden_effect = {
-			country_event = { id = belarus.58 days = 100 }
-		}
 	}
 }
 country_event = {
@@ -1484,15 +1481,20 @@ country_event = {
 	
 	picture = GFX_BLR_bulak_1
 	
-	is_triggered_only = yes
-	
 	trigger = {
 		tag = BLR
 		country_exists = POL
 		is_government_in_exile = yes
+		POL = { exists = yes }
+        has_country_flag = BLR_pol_verbyyt_bulak
+		BLR = { is_government_in_exile = yes }
 	}
 	
 	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 10
+	}
 	
 	option = {
 		name = belarus.58.a
@@ -1509,6 +1511,7 @@ country_event = {
 	picture = GFX_BLR_bulak_2
 	
 	trigger = {
+                POL = { exists = yes }
 		has_country_flag = POL_RUS_peace_fired
 		has_country_flag = BLR_event_do_pohoda_bulaka
 	}
@@ -1850,7 +1853,19 @@ country_event = {
 	
 	option = {
 		name = belarus.66.a
+		POL = {
+			add_opinion_modifier = {
+				target = BLR
+				modifier = BLR_Ylychenie_otnocheniy
+			}
+		}
+		add_opinion_modifier = {
+			target = POL
+			modifier = BLR_Ylychenie_otnocheniy
+		}
+		hidden_effect = {
 		white_peace = POL
+		}
 	}
 }
 country_event = {
@@ -1944,6 +1959,7 @@ country_event = {
 						has_opinion = {
 							target = BLR
 							value > 49
+							value > 30
 						}
 					}
 				}
@@ -1977,7 +1993,22 @@ country_event = {
 		name = belarus.68.c
 		POL = { country_event = belarus.71 }
 	}
-
+	option = {
+		trigger = {
+			has_completed_focus = BLR_Ivan_sereda
+			has_government = social_democracy
+			has_completed_focus = BLR_peregovor_warshawa
+			country_exists = POL
+			POL = {
+				has_opinion = {
+					target = BLR
+					value > 30
+				}
+			}
+		}
+		name = belarus.68.f
+		country_event = belarus.73
+	}
 	option = {
 		trigger = {
 			has_completed_focus = BLR_Ivan_sereda
@@ -2030,20 +2061,74 @@ country_event = {
 	}
 	option = {
 		name = belarus.71.b
-		
-	}
-}
-country_event = {
-	id = belarus.72
-	title = belarus.72.t
-	desc = belarus.72.d
-	picture = GFX_BLR_Vilno
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = belarus.72.a
-		
+        BLR = {
+		end_exile = yes
+		become_exiled_in = { target = POL legitimacy = 30 }
+		POL = { puppet = BLR }
+		POL = {
+			add_opinion_modifier = {
+				target = BLR
+				modifier = BLR_Ylychenie_otnocheniy
+			}
+		}
+		add_opinion_modifier = {
+			target = POL
+			modifier = BLR_Ylychenie_otnocheniy
+		}
+		set_party_name = {
+			ideology = social_democracy
+			long_name = BLR_rada_blr_party_long
+			name = BLR_rada_blr_party
+		}
+		set_party_name = {
+			ideology = conservatism
+			long_name = BLR_krajowcy_party_long
+			name = BLR_krajowcy_party
+		}
+		set_party_name = {
+			ideology = market_liberalism
+			long_name = BLR_belarus_rada_vilno_or_grodno_party_long
+			name = BLR_belarus_rada_vilno_or_grodno_party
+		}
+		set_party_name = {
+			ideology = social_liberalism
+			long_name = BLR_litovskya_intelegentia_party_long
+			name = BLR_litovskya_intelegentia_party
+		}
+		set_party_name = {
+			ideology = radical_socialism
+			long_name = BLR_eseri_intelegentia_party_long
+			name = BLR_eseri_intelegentia_party
+		}
+		set_cosmetic_tag = BLR_litbel
+		LIT = {
+			add_opinion_modifier = {
+				target = BLR
+				modifier = unrecognized_state_rel
+			}
+		}
+		add_opinion_modifier = {
+			target = LIT
+			modifier = unrecognized_state_rel
+		}
+		add_state_core = 1366
+		add_state_core = 814
+		add_state_core = 11
+		add_state_core = 784
+		add_state_core = 999
+		add_state_core = 815
+		add_state_core = 189
+		remove_ideas = BLR_proclaimed_idea
+		remove_ideas = BLR_proclaimed_idea_1
+		remove_ideas = BLR_proclaimed_idea_2
+		remove_ideas = BLR_proclaimed_idea_3
+		remove_ideas = BLR_polska_idea
+
+		swap_ideas = {
+			add_idea = federal_gov_terr
+			remove_idea = unitary_gov_terr
+		}
+		}
 	}
 }
 country_event = {
@@ -2058,19 +2143,23 @@ country_event = {
 		name = belarus.73.a
 		add_ideas = BLR_king_pilsudksi
 		country_event = belarus.76
+		load_focus_tree = belarus_rada_izgnanie_tt
 		POL = { country_event = belarus.75 }
-		end_exile = yes
 		become_exiled_in = { target = POL legitimacy = 30 }
-		POL = { puppet = BLR }
-		#add_country_leader_role = {
-		#	character = Józef Pilsudski
-		#	promote_leader = yes
-		#	country_leader = {
-		#		ideology = authoritarism
-		#		expire = "1965.1.1.1"
-		#		traits = { LIT_king_of_lithuania }
-		#	}
-		#}
+		create_wargoal = {
+			type = annex_everything  
+			target = LIT
+		}
+		add_country_leader_role = {
+			character = "Józef Pilsudski"
+			promote_leader = yes
+			country_leader = {
+				ideology = authoritarism
+				expire = "1965.1.1.1"
+				traits = { LIT_king_of_lithuania }
+			}
+		}
+		set_country_flag = BLR_sozdanie_litbel
 		set_politics = {
 			ruling_party = authoritarism
 			elections_allowed = no
@@ -2094,7 +2183,7 @@ country_event = {
 			name = BLR_krajowcy_party
 		}
 		set_party_name = {
-			ideology =market_liberalism
+			ideology = market_liberalism
 			long_name = BLR_belarus_rada_vilno_or_grodno_party_long
 			name = BLR_belarus_rada_vilno_or_grodno_party
 		}
@@ -2201,18 +2290,6 @@ country_event = {
 			name = Anton_Luckevich
 			desc = "BLR_Anton_Luckevich_DESC"
 			picture = GFX_Portrait_Anton_Luckevich
-			expire = "1965.1.1"
-			ideology = authoritarism_ideology
-			traits = {
-			}
-		}
-	}
-	option = {
-		name = belarus.76.b
-		create_country_leader = {
-			name = Stanislav_Narutovich
-			desc = "BLR_Stanislav_Narutovich_DESC"
-			picture = GFX_Portrait_Stanislav_Narutovich
 			expire = "1965.1.1"
 			ideology = authoritarism_ideology
 			traits = {
@@ -2696,9 +2773,10 @@ country_event = {
 	picture = GFX_report_event_001
 	
 	trigger = {
+	    tag = BLR
 		LIT = {
 			has_war_with = RUS
-			surrender_progress > 0.80
+			surrender_progress > 0.70
 		}
 	}
 	
@@ -2716,5 +2794,225 @@ country_event = {
 	option = {
 		name = belarus.88.b
 		add_war_support = 0.05
+	}
+}
+country_event = {
+	id = belarus.89
+	title = belarus.89.t
+	desc = belarus.89.d
+	picture = GFX_report_event_generic_handshake
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.89.a
+		hidden_effect = {
+		country_event = { id = belarus.90 days = 10 }
+		}
+	}
+}
+country_event = {
+	id = belarus.90
+	title = belarus.90.t
+	desc = belarus.90.d
+	picture = GFX_report_event_generic_rally2
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.90.a
+		add_manpower = -24
+		add_stability = -0.06
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = -0.06
+		}
+	}
+	option = {
+		name = belarus.90.b
+		add_political_power = -40
+		add_popularity = {
+			ideology = radical_socialism
+			popularity = 0.07
+		}
+		add_popularity = {
+			ideology = authoritarism
+			popularity = -0.04
+		}
+	}
+}
+country_event = {
+	id = belarus.91
+	title = belarus.91.t
+	desc = belarus.91.d
+	picture = GFX_report_event_generic_truck
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.91.a #da
+		BLR = { country_event = belarus.92 }
+			add_timed_idea = {
+				idea = add_ideas = pay_Entente_credit_for_Russia_for_poland
+				days = 120
+			}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = belarus.91.b #net
+		BLR = { country_event = belarus.93 }
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+country_event = {
+	id = belarus.92
+	title = belarus.92.t
+	desc = belarus.92.d
+	picture = GFX_report_event_generic_truck
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.92.a
+			add_timed_idea = {
+				idea = pay_Entente_credit_for_Russia_for_belarussian
+				days = 120
+			}
+		POL = {
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = 2200
+				target = BLR
+			}
+		}
+		POL = {
+			send_equipment = {
+				equipment = artillery_equipment
+				amount = 260
+				target = BLR
+			}
+			send_equipment = {
+				equipment = field_guns_equipment
+				amount = 260
+				target = BLR
+			}
+		}
+	}
+}
+country_event = {
+	id = belarus.93
+	title = belarus.93.t
+	desc = belarus.93.d
+	picture = GFX_report_event_generic_truck
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.91.a
+	}
+}
+country_event = {
+	id = belarus.94
+	title = belarus.94.t
+	desc = belarus.94.d
+	picture = GFX_report_event_generic_parliament
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.94.a
+		add_ideas = BLR_seim
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.03
+		}
+	}
+}
+country_event = {
+	id = belarus.95
+	title = belarus.95.t
+	desc = belarus.95.d
+	picture = GFX_BLR_territory
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.95.a
+		BLR = { country_event = belarus.96 }
+        ai_chance = {
+            factor = 42652
+			modifier = {
+				factor = 1.1
+				BLR = { has_army_size = { size < 20 } }
+			}
+			modifier = {
+				factor = 1.1
+				BLR = { has_army_size = { size > 19 } }
+			}
+        }
+	}
+	option = {
+		name = belarus.95.b
+		BLR = { country_event = belarus.97 }
+        ai_chance = {
+            factor = 42652
+			modifier = {
+				BLR = { has_army_size = { size > 19 } }
+				factor = 1.1
+			}
+			modifier = {
+				BLR = { has_army_size = { size < 10 } }
+				factor = 1.1
+			}
+        }
+	}
+}
+country_event = {
+	id = belarus.96
+	title = belarus.96.t
+	desc = belarus.96.d
+	picture = GFX_BLR_territory
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.96.a
+		declare_war_on = {
+			target = LIT
+			type = annex_everything
+		}
+		ai_chance = {
+			base = 100
+		}
+	}
+	option = {
+		name = belarus.96.b
+			create_wargoal = {
+				type = annex_everything  
+				target = LIT
+			}
+		ai_chance = {
+			base = 0
+		}
+	}
+}
+country_event = {
+	id = belarus.97
+	title = belarus.97.t
+	desc = belarus.97.d
+	picture = GFX_BLR_territory
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.97.a
+		annex_country = {
+			target = LIT
+			transfer_troops = yes
+		}
 	}
 }
