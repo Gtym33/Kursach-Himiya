@@ -2194,27 +2194,8 @@ country_event = {
 		name = poland.47.a
 		POL = { country_event = { id = poland.48 days = 1 } }
 		ai_chance = {
-			factor = 1
-			modifier = { factor = 2 has_opinion = { target = POL value > -1 } }
-			modifier = { factor = 2 has_opinion = { target = POL value > 9 } }
-			modifier = { factor = 2 has_opinion = { target = POL value > 19 } }
-			modifier = { factor = 3 has_opinion = { target = POL value > 29 } }
-			modifier = { factor = 3 has_opinion = { target = POL value > 49 } }
-			modifier = { factor = 4 has_opinion = { target = POL value > 69 } }
-			modifier = { factor = 4 has_opinion = { target = POL value > 79 } }
-			modifier = { factor = 5 has_opinion = { target = POL value > 89 } }
-			modifier = { factor = 5 has_opinion = { target = POL value > 99 } }
-			AUH = {
-                modifier = { factor = 1 has_opinion = { target = POL value > -1 } }
-			    modifier = { factor = 1 has_opinion = { target = POL value > 9 } }
-			    modifier = { factor = 1 has_opinion = { target = POL value > 19 } }
-			    modifier = { factor = 2 has_opinion = { target = POL value > 29 } }
-			    modifier = { factor = 2 has_opinion = { target = POL value > 49 } }
-			    modifier = { factor = 3 has_opinion = { target = POL value > 69 } }
-			    modifier = { factor = 3 has_opinion = { target = POL value > 79 } }
-			    modifier = { factor = 4 has_opinion = { target = POL value > 89 } }
-			    modifier = { factor = 4 has_opinion = { target = POL value > 99 } }
-			}
+			factor = 5
+			modifier = { factor = 2 has_stability < 0.4 }
 		}
 	}
 	option = {
@@ -2222,9 +2203,41 @@ country_event = {
 		add_stability = -0.03
 		POL = { add_opinion_modifier = { target = GER modifier = BLR_Ylychenie_otnocheniy } }
 		POL = { country_event = { id = poland.49 days = 1 } }
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					AND = {
+						is_owned_by = RUS
+						is_controlled_by = ROOT
+					}
+				}
+				NOT = { is_core_of = ROOT }
+				is_core_of = POL
+			}
+			POL = { transfer_state = PREV }
+		}
+		IF = {
+		    limit = { country_exists = AUH }
+			AUH = { country_event = poland.57 }
+			AUH = {
+			    set_state_controller = 88
+			    set_state_controller = 925
+			    set_state_owner = 88
+			    set_state_owner = 925
+			}
+		}
 		ai_chance = {
-			factor = 4
-			modifier = { factor = 1 has_stability < 0.4 }
+			factor = 1
+			modifier = { factor = 1 has_opinion = { target = POL value > -1 } }
+			modifier = { factor = 1 has_opinion = { target = POL value > 9 } }
+			modifier = { factor = 1 has_opinion = { target = POL value > 19 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 29 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 49 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 69 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 79 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 89 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 99 } }
 		}
 	}
 }
@@ -2256,7 +2269,9 @@ country_event = {
 	
 	option = {
 		name = poland.49.a
-		
+		add_ideas = POL_Military_ruin
+		add_ideas = collapse_of_railway_system_1
+		GER = { add_ideas = collapse_of_railway_system_1 }
 	}
 }
 country_event = {
@@ -2294,6 +2309,7 @@ country_event = {
 		set_country_flag = POL_vozzvanie_k_pol
 		mark_focus_tree_layout_dirty = yes
 		remove_ideas = POL_Kingdom_that_failed
+		hidden_effect = { GER = { remove_ideas = POL_vopros } AUH = { remove_ideas = POL_vopros } RUS = { remove_ideas = POL_vopros_r } }
 	}
 }
 country_event = {
@@ -2322,6 +2338,7 @@ country_event = {
 	option = {
 		name = poland.53.a
 		add_war_support = 0.03
+		add_ideas = POL_Military_ruin
 	}
 }
 country_event = {
@@ -2358,6 +2375,45 @@ country_event = {
 		clr_country_flag = POL_arest_pil
 		add_popularity = { ideology = despotism popularity = 0.05 }
 		recruit_character = POL_Jusef_Pilsudsky
+			hidden_effect = {
+			    division_template = {
+				    name = "Chasti Pol'skoj voennoj organizacii"
+				    regiments = {
+					    infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+				    }
+				    support = {
+					    engineer = { x = 0 y = 0 }
+						artillery = { x = 0 y = 1 }
+				    }
+			    }  
+			    capital_scope = {
+				    create_unit = {
+					    division = "name = \"1-polskij polk POWa\" division_template = \"Chasti Pol'skoj voennoj organizacii\" start_experience_factor = 0.35 start_equipment_factor = 1 start_manpower_factor = 1"
+					    owner = POL
+				    }
+				    create_unit = {
+					    division = "name = \"2-polskij polk POWa\" division_template = \"Chasti Pol'skoj voennoj organizacii\" start_experience_factor = 0.35 start_equipment_factor = 1 start_manpower_factor = 1"
+					    owner = POL
+				    }
+				    create_unit = {
+					    division = "name = \"3-polskij polk POWa\" division_template = \"Chasti Pol'skoj voennoj organizacii\" start_experience_factor = 0.35 start_equipment_factor = 1 start_manpower_factor = 1"
+					    owner = POL
+				    }
+				    create_unit = {
+					    division = "name = \"4-polskij polk POWa\" division_template = \"Chasti Pol'skoj voennoj organizacii\" start_experience_factor = 0.35 start_equipment_factor = 1 start_manpower_factor = 1"
+					    owner = POL
+				    }
+				    create_unit = {
+					    division = "name = \"4-polskij polk POWa\" division_template = \"Chasti Pol'skoj voennoj organizacii\" start_experience_factor = 0.35 start_equipment_factor = 1 start_manpower_factor = 1"
+					    owner = POL
+				    }
+			    }
+			}
 	}
 }
 country_event = { #Начальник государства
@@ -2378,7 +2434,7 @@ country_event = { #Начальник государства
 	}
 	
 	mean_time_to_happen = {
-		days = 1
+		hours = 1
 	}
 	
 	fire_only_once = yes
@@ -2386,8 +2442,8 @@ country_event = { #Начальник государства
 	option = {
 		name = poland.56.a
 		add_war_support = 0.05
-        add_popularity = { ideology = despotism popularity = 0.15 }
-		create_country_leader = { name = "Józef Pilsudski" desc = POL_Jusef_Pilsudsky_DESC picture = "gfx/leaders/POL/Portrait_Jusef_Pilsudsky.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { Chief_of_the_Polish_State nationalistic_freedom_fighter GER_supreme_leader } }
+        add_popularity = { ideology = despotism popularity = 0.05 }
+		create_country_leader = { name = "Józef Pilsudski" desc = POL_Jusef_Pilsudsky_DESC picture = "gfx/leaders/POL/Portrait_Jusef_Pilsudsky.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { nationalistic_freedom_fighter GER_supreme_leader } }
 		set_politics = {
 			ruling_party = despotism
 			elections_allowed = no
@@ -2396,5 +2452,1518 @@ country_event = { #Начальник государства
 		mark_focus_tree_layout_dirty = yes
 		remove_ideas = POL_left_prav
 		add_ideas = peasant_and_land_and_bread_question_0_5
+		add_ideas = POL_loskut_army
+		remove_ideas = POL_regent_sover
+		swap_ideas = {
+		    remove_idea = limited_monarchy_gov_form
+			add_idea = military_dictatorship_gov_form
+		}
+		add_ideas = emergency_laws_b_law
+		set_party_name = { ideology = despotism long_name = POL_despotism_pilsudski_party_long name = POL_despotism_pilsudski_party }
+	}
+}
+country_event = {
+	id = poland.57 #Польская просьба
+	title = poland.57.t
+	desc = poland.57.d
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.57.b
+		add_stability = -0.03
+		POL = { add_opinion_modifier = { target = AUH modifier = BLR_Ylychenie_otnocheniy } }
+		every_state = {
+			limit = {
+				OR = {
+					is_owned_by = ROOT
+					AND = {
+						is_owned_by = RUS
+						is_controlled_by = ROOT
+					}
+				}
+				NOT = { is_core_of = ROOT }
+				is_core_of = POL
+			}
+			POL = { transfer_state = PREV }
+		}
+		if = {
+		    limit = { or = { set_state_owner = 88 set_state_owner = 925 } }
+			hidden_effect = {
+		        set_state_owner = 88
+		        set_state_owner = 925
+		        set_state_controller = 88
+		        set_state_controller = 925
+		    }
+		}
+	}
+}
+country_event = {
+	id = poland.58 #Рабочие советы
+	title = poland.58.t
+	desc = poland.58.d
+
+	picture = GFX_report_event_pol_soveti
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.58.a
+		add_popularity = { ideology = communism popularity = 0.03 }
+		add_ideas = POL_rab_sovet
+		hidden_effect = { country_event = { id = poland.54 days = 4 } }
+	}
+}
+country_event = {
+	id = poland.59 #Декрет о высшей законодательной власти
+	title = poland.59.t
+	desc = poland.59.d
+
+	picture = GFX_report_event_pol_decret_marochevskogo
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.59.a
+		add_stability = 0.03
+		add_country_leader_trait = Chief_of_the_Polish_State
+		swap_ideas = {
+		    add_idea = presidential_republic_gov_form
+			remove_idea = military_dictatorship_gov_form
+		}
+	}
+}
+country_event = {
+	id = poland.60 #Социальное законодательство
+	title = poland.60.t
+	desc = poland.60.d
+
+	picture = GFX_report_event_pol_soc_zakon
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.60.a
+		add_political_power = -60
+		add_popularity = { ideology = communism popularity = 0.03 }
+		add_popularity = { ideology = radical_socialism popularity = 0.03 }
+		add_popularity = { ideology = social_democracy popularity = 0.03 }
+		swap_ideas = {
+		    remove_idea = minimum_legislation
+			add_idea = acceptable_legislation 
+		}
+	}
+	option = {
+		name = poland.60.b
+		add_stability = -0.03
+		add_political_power = 30
+		add_popularity = { ideology = communism popularity = -0.03 }
+		add_popularity = { ideology = radical_socialism popularity = -0.03 }
+		add_popularity = { ideology = social_democracy popularity = -0.03 }
+		set_country_flag = POL_social_zakon_ne_prinyati
+	}
+}
+country_event = {
+	id = poland.61 #Переговоры с правительством Дмовским
+	title = poland.61.t
+	desc = poland.61.d
+
+	picture = GFX_report_event_pol_PNK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.61.a
+		add_stability = -0.03
+		set_country_flag = POL_peregovor_s_PNK_yes
+		add_popularity = { ideology = conservatism popularity = 0.03 }
+		add_popularity = { ideology = despotism popularity = 0.03 }
+		add_popularity = { ideology = fascism popularity = 0.03 }
+		ai_chance = {
+			factor = 5
+		}
+	}
+	option = {
+		name = poland.61.b
+		add_war_support = 0.03
+		set_country_flag = POL_peregovor_s_PNK_net
+		add_popularity = { ideology = conservatism popularity = -0.03 }
+		add_popularity = { ideology = despotism popularity = -0.03 }
+		add_popularity = { ideology = fascism popularity = -0.03 }
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = poland.62 #Военные чё то мутят
+	title = poland.62.t
+	desc = poland.62.d
+
+	picture = GFX_report_event_pol_army
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.62.a
+		set_country_flag = POL_pilsudski_ne_vmeshivaetsa
+		ai_chance = {
+			factor = 5
+		}
+	}
+	option = {
+		name = poland.62.b
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = poland.63 #Заговор Сапеги–Янушайтиса
+	title = poland.63.t
+	desc = poland.63.d
+
+	picture = GFX_report_event_pol_perevorot
+	
+	trigger = {
+	    original_tag = POL
+		has_country_flag = POL_pilsudski_ne_vmeshivaetsa
+		NOT = { has_country_flag = POL_pilsudski_ne_vmeshivaetsa }
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.63.a
+		add_stability = -0.05
+		custom_effect_tooltip = POL_smeshenie_morachev
+		hidden_effect = { remove_ideas = Enjay_Morachevsky }
+	}
+}
+country_event = {
+	id = poland.64 #Заговор Сапеги–Янушайтиса и смещение Пилсудского
+	title = poland.64.t
+	desc = poland.64.d
+
+	picture = GFX_report_event_pol_perevorot
+	
+	trigger = {
+	    original_tag = POL
+		has_country_flag = POL_pilsudski_ne_vmeshivaetsa
+		has_country_flag = POL_peregovor_s_PNK_net
+	}
+	
+	mean_time_to_happen = {
+		days = 3
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.64.a
+		country_event = poland.66
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = poland.64.b
+		country_event = poland.65
+        trigger = {
+		    NOT = { has_country_flag = POL_social_zakon_ne_prinyati }
+		}
+		ai_chance = {
+			factor = 5
+		}
+	}
+}
+country_event = {
+	id = poland.65 #Неудачная попытка переворота
+	title = poland.65.t
+	desc = poland.65.d
+
+	picture = GFX_report_event_pol_perevorot_2
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.65.a
+		add_stability = -0.05
+		add_popularity = { ideology = conservatism popularity = -0.03 }
+		add_manpower = -86
+		custom_effect_tooltip = POL_smeshenie_morachev_1
+		add_ideas = Ignacy_Paderewski
+		hidden_effect = { add_ideas = Ignacy_Paderewski_1 }
+	}
+}
+country_event = {
+	id = poland.66 #Разгром правительства
+	title = poland.66.t
+	desc = poland.66.d
+
+	picture = GFX_report_event_pol_perevorot_2
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.66.a
+		add_stability = -0.05
+		add_popularity = { ideology = conservatism popularity = 0.03 }
+		add_manpower = -102
+		custom_effect_tooltip = POL_smeshenie_morachev_2
+		hidden_effect = { remove_ideas = Enjay_Morachevsky remove_ideas = Jusef_Pilsudsky remove_ideas = Leon_Wasilewski }
+		set_country_flag = POL_arest_pil
+		set_country_flag = POL_arest_marochev
+		country_event = { id = poland.67 days = 1 }
+	}
+}
+country_event = {
+	id = poland.67 #На следующий день
+	title = poland.67.t
+	desc = poland.67.d
+
+	picture = GFX_report_event_pol_dmovski-galler
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.67.a
+		add_popularity = { ideology = conservatism popularity = 0.03 }
+		create_country_leader = { name = "Roman Dmowski" desc = POL_Roman_Dmowski_DESC picture = "gfx/leaders/POL/Portrait_Roman_Dmowski.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { nationalistic_freedom_fighter } }
+		set_politics = {
+			ruling_party = conservatism
+			elections_allowed = yes
+		}
+	}
+	option = {
+		name = poland.67.b
+		add_popularity = { ideology = despotism popularity = 0.03 }
+		IF = {
+		    limit = { NOT = { has_country_flag = POL_galler_pribl_pol } }
+			custom_effect_tooltip = POL_effect_galler_tt
+		}
+		IF = {
+		    limit = { has_country_flag = POL_galler_pribl_pol }
+			create_country_leader = { name = "Jozef Haller" desc = POL_Jozef_Haller_DESC picture = "gfx/leaders/POL/Portrait_Jozef_Haller.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { knight_of_honor_n_duty warmonger_old_general } }
+		    set_party_name = { ideology = despotism long_name = POL_koalicia_gallera_party_long name = POL_koalicia_gallera_party }
+		}
+	}
+}
+country_event = {
+	id = poland.68 #На следующий день
+	title = poland.68.t
+	desc = {
+		text = poland.68.d
+		trigger = {
+			has_country_leader = { name = "Józef Pilsudski" ruling_only = yes }
+		}
+	}
+	desc = {
+		text = poland.68.de
+		trigger = {
+			has_country_leader = { name = "Roman Dmowski" ruling_only = yes }
+		}
+	}
+	desc = {
+		text = poland.68.dec
+		trigger = {
+			has_country_leader = { name = "Jozef Haller" ruling_only = yes }
+		}
+	}
+
+	picture = GFX_report_event_pol_malya_const
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.68.a
+		add_stability = 0.03
+		swap_ideas = {
+		    remove_idea = emergency_laws_b_law
+			add_idea = constitution_b_law
+		}
+		IF = {
+		    limit = { has_country_leader = { name = "Józef Pilsudski" ruling_only = yes } }
+			add_popularity = { ideology = despotism popularity = 0.03 }
+		}
+		IF = {
+		    limit = { has_country_leader = { name = "Roman Dmowski" ruling_only = yes } }
+			add_popularity = { ideology = conservatism popularity = 0.03 }
+		}
+		IF = {
+		    limit = { has_country_leader = { name = "Jozef Haller" ruling_only = yes } }
+			add_popularity = { ideology = despotism popularity = 0.03 }
+			add_country_leader_trait = Chief_of_the_Polish_State
+		}
+	}
+}
+country_event = {
+	id = poland.69 #Украинцы в Галиции
+	title = poland.69.t
+	desc = poland.69.d
+
+	picture = GFX_report_event_pol_pols-ukr_war
+	
+	trigger = {
+	    original_tag = POL
+		is_subject = no
+		has_global_flag = WWI_AUH_HAS_CAPITULATED
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+		country_exists = GAL
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.69.a
+		hidden_effect = { country_event = { id = poland.70 days = 10 } }
+	}
+}
+country_event = {
+	id = poland.70 #Наступление в Галицию
+	title = poland.70.t
+	desc = poland.70.d
+
+	picture = GFX_report_event_pol_pols-ukr_war2
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.70.a
+		add_war_support = 0.03
+		declare_war_on = { target = GAL type = annex_everything }
+		GAL = { country_event = ukraine.121 }
+	}
+}
+country_event = {
+	id = poland.71 #Великопольское восстание
+	title = poland.71.t
+	desc = poland.71.d
+
+	picture = GFX_report_event_pol_velik_pol_vosst
+	
+	trigger = {
+	    original_tag = GER
+		POL = { is_subject = no }
+		has_global_flag = WWI_AUH_HAS_CAPITULATED
+		has_global_flag = WWI_GER_HAS_CAPITULATED
+		country_exists = POL
+	}
+	
+	mean_time_to_happen = {
+		days = 18
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.71.a
+		POL = { country_event = poland.72 }
+		every_country = {
+			POL = { every_unit_leader = { limit = { OR = { has_id = 88174 } } set_nationality = PVA } }
+		}
+		GPU = { set_state_owner = 86 }
+		set_state_controller = 86
+		GPU = {
+		    set_province_controller = 6558
+		    set_province_controller = 3532
+			set_province_controller = 388
+			set_province_controller = 17
+			add_state_core = 86
+		}
+		GPU = {
+		load_oob = GPU_1919
+		add_ideas = POL_wosstavh_army
+		add_ideas = POL_werhovni_narodny_sovet
+		add_ideas = POL_velikopolska
+		86 = {
+		create_unit = {
+			division = "name = \"1.Wildecka kompania Straży Ludowej\" division_template = \"Grazhdanskaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			location = 6558
+			owner = GPU
+		} 
+		create_unit = {
+			division = "name = \"2.Wildecka kompania Straży Ludowej\" division_template = \"Grazhdanskaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			location = 6558
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"1.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+			location = 6558
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"2.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+			location = 17
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"1.Kompania milicji\" division_template = \"Polskaya miliciya\" start_experience_factor = 0.0 start_equipment_factor = 1.0"
+			location = 3532
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"2.Kompania milicji\" division_template = \"Polskaya miliciya\" start_experience_factor = 0.0 start_equipment_factor = 1.0"
+			location = 388
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"3.Kompania milicji\" division_template = \"Polskaya miliciya\" start_experience_factor = 0.0 start_equipment_factor = 1.0"
+			location = 388
+			owner = GPU
+		}
+		}
+		}
+		division_template = {
+			name = "Freikor"
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 1 }
+			}
+			priority = 1
+		}
+		68 = {
+		    create_unit = {
+			    division = "name = \"1.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"2.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"7.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"8.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		}
+		62 = {
+		    create_unit = {
+			    division = "name = \"4.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"6.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"9.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    }
+		}
+		66 = {
+		    create_unit = {
+			    division = "name = \"3.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"5.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"10.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		}
+		declare_war_on = { target = GPU type = annex_everything }
+		GPU = { create_corps_commander = {  name = "Józef Dowbor-Muśnicki" id = 88201 portrait_path = "gfx/leaders/POL/Portrait_Jozef_Dowbor-Musnicki.dds" traits = { Brilliant_Strategist Career_Officer Harsh_Leader Infantry_Leader Skilled_Staffer } skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 3 logistics_skill = 2  }}
+	}
+	option = {
+		name = poland.71.b
+		POL = { country_event = poland.72 }
+		every_country = {
+			POL = { every_unit_leader = { limit = { OR = { has_id = 88174 } } set_nationality = PVA } }
+		}
+		GPU = { set_state_owner = 86 }
+		set_state_controller = 86
+		GPU = {
+		    set_province_controller = 6558
+		    set_province_controller = 3532
+			set_province_controller = 388
+			set_province_controller = 17
+			add_state_core = 86
+		}
+		GPU = {
+		load_oob = GPU_1919
+		add_ideas = POL_wosstavh_army
+		add_ideas = POL_werhovni_narodny_sovet
+		add_ideas = POL_velikopolska
+		86 = {
+		create_unit = {
+			division = "name = \"1.Wildecka kompania Straży Ludowej\" division_template = \"Grazhdanskaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			location = 6558
+			owner = GPU
+		} 
+		create_unit = {
+			division = "name = \"2.Wildecka kompania Straży Ludowej\" division_template = \"Grazhdanskaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			location = 6558
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"1.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+			location = 6558
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"2.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+			location = 17
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"1.Kompania milicji\" division_template = \"Polskaya miliciya\" start_experience_factor = 0.0 start_equipment_factor = 1.0"
+			location = 3532
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"2.Kompania milicji\" division_template = \"Polskaya miliciya\" start_experience_factor = 0.0 start_equipment_factor = 1.0"
+			location = 388
+			owner = GPU
+		}
+		create_unit = {
+			division = "name = \"3.Kompania milicji\" division_template = \"Polskaya miliciya\" start_experience_factor = 0.0 start_equipment_factor = 1.0"
+			location = 388
+			owner = GPU
+		}
+		}
+		}
+		division_template = {
+			name = "Freikor"
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+			}
+			support = {
+				engineer = { x = 0 y = 1 }
+			}
+			priority = 1
+		}
+		68 = {
+		    create_unit = {
+			    division = "name = \"1.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"2.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"7.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"8.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		}
+		62 = {
+		    create_unit = {
+			    division = "name = \"4.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"6.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"9.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    }
+		}
+		66 = {
+		    create_unit = {
+			    division = "name = \"3.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"5.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"10.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		}
+		declare_war_on = { target = GPU type = annex_everything }
+		GPU = { change_tag_from = GER }
+		GPU = { create_corps_commander = {  name = "Józef Dowbor-Muśnicki" id = 88201 portrait_path = "gfx/leaders/POL/Portrait_Jozef_Dowbor-Musnicki.dds" traits = { Brilliant_Strategist Career_Officer Harsh_Leader Infantry_Leader Skilled_Staffer } skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 3 logistics_skill = 2  }}
+	}
+}
+country_event = {
+	id = poland.72 #Великопольское восстание Польша
+	title = poland.72.t
+	desc = poland.72.d
+
+	picture = GFX_report_event_pol_velik_pol_vosst
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.72.a
+		hidden_effect = { GPU = { country_event = { id = poland.73 days = 3 } } }
+	}
+	option = {
+		name = poland.72.b
+		GPU = { change_tag_from = POL }
+		hidden_effect = { GPU = { country_event = { id = poland.73 days = 3 } } }
+	}
+}
+country_event = {
+	id = poland.73 #Главнокомандующий Великой Польши
+	title = poland.73.t
+	desc = poland.73.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.73.a
+		add_ideas = Stanislav_Tachak 
+		hidden_effect = { GPU = { country_event = { id = poland.74 days = 2 } } }
+        random_unit_leader = {
+            limit = { has_id = 69113 }
+			gain_xp = 500
+			add_unit_leader_trait = Unyielding_Defender
+		}
+		GPU = { set_country_flag = GPU_nachalo_peregovor activate_mission = GPU_peregovbor_s_ger }
+	}
+	option = {
+		name = poland.73.b
+		add_ideas = Vladislav_Anders
+		hidden_effect = { GPU = { country_event = { id = poland.74 days = 2 } } }
+        random_unit_leader = {
+            limit = { has_id = 69112 }
+			gain_xp = 500
+			add_unit_leader_trait = Aggressive_Assaulter
+		}
+		GPU = { set_country_flag = GPU_nachalo_peregovor activate_mission = GPU_peregovbor_s_ger }
+	}
+}
+country_event = {
+	id = poland.74 #Немецкий 6-й гренадерский полк
+	title = poland.74.t
+	desc = poland.74.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.74.a
+		hidden_effect = { GPU = { country_event = { id = poland.75 days = 7 } } }
+        add_stability = -0.03
+		add_political_power = -20
+        random_list = {
+			seed = random
+			40 = {
+			    country_event = { id = poland.76 days = 1 }
+			}
+			60 = {
+			    country_event = { id = poland.77 days = 1 }
+			}
+		}
+	}
+	option = {
+		name = poland.74.b
+		hidden_effect = { GPU = { country_event = { id = poland.75 days = 7 } } }
+		add_stability = 0.03
+        add_political_power = 40
+	}
+}
+country_event = {
+	id = poland.75 #КНРС берёт власть
+	title = poland.75.t
+	desc = poland.75.d
+
+	picture = GFX_report_event_pol_velik_pol_vosst
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.75.a
+		hidden_effect = { GPU = { country_event = { id = poland.78 days = 7 } } }
+		add_stability = -0.03
+		add_popularity = { ideology = despotism popularity = 0.05 }
+		remove_ideas = POL_werhovni_narodny_sovet
+		add_ideas = Jozef_Dowbor-Musnicki_1
+		create_country_leader = { name = "Józef Dowbor-Muśnicki" desc = POL_Jozef_Dowbor-Musnicki_DESC picture = "gfx/leaders/POL/Portrait_Jozef_Dowbor-Musnicki.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { warmonger_old_general army_organizator } }
+	}
+}
+country_event = {
+	id = poland.76 #Полк даёт бой
+	title = poland.76.t
+	desc = poland.76.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.76.a
+        add_manpower = -89
+		add_war_support = -0.05
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 260
+		}
+		add_equipment_to_stockpile = {
+			type = support_equipment
+			amount = 37
+		}
+		add_equipment_to_stockpile = {
+			type = artillery_equipment
+			amount = 12
+		}
+		add_equipment_to_stockpile = {
+			type = field_guns_equipment
+			amount = 12
+		}
+	}
+}
+country_event = {
+	id = poland.77 #Полк подчиняется
+	title = poland.77.t
+	desc = poland.77.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.77.a
+        add_political_power = -30
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 640
+		}
+		add_equipment_to_stockpile = {
+			type = support_equipment
+			amount = 60
+		}
+		add_equipment_to_stockpile = {
+			type = artillery_equipment
+			amount = 36
+		}
+		add_equipment_to_stockpile = {
+			type = field_guns_equipment
+			amount = 36
+		}
+	}
+}
+country_event = {
+	id = poland.78 #Призыв в Великую польскую армию
+	title = poland.78.t
+	desc = poland.78.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.78.a
+		add_stability = -0.03
+		add_manpower = 10000
+		rise_mobilization_law = yes
+		capital_scope = {
+		    create_unit = {
+			    division = "name = \"3.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.1 start_equipment_factor = 1.0"
+			    owner = GPU
+		    }
+            create_unit = {
+			    division = "name = \"4.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			    owner = GPU
+		    }	
+            create_unit = {
+			    division = "name = \"5.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			    owner = GPU
+		    }
+            create_unit = {
+			    division = "name = \"6.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			    owner = GPU
+		    }
+            create_unit = {
+			    division = "name = \"7.pułk Straż Ludowa\" division_template = \"Narodnaya gvardiya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			    owner = GPU
+		    }			
+		}
+	}
+}
+country_event = {
+	id = poland.79 #Великополяки хотят переговоров
+	title = poland.79.t
+	desc = poland.79.d
+
+	picture = GFX_report_event_pol_velik_pol_vosst
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.79.a
+		add_stability = 0.03
+		GPU = { country_event = poland.80 }
+		POL = { country_event = poland.80 }
+		country_event = { id = poland.82 days = 3 }
+		add_ideas = GPU_process_peregovor_ger
+		ai_chance = {
+			factor = 4
+			modifier = { factor = 2 GER = { has_stability < 0.3 } }
+			modifier = { factor = 2 GER = { has_war_support < 0.3 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.8 } }
+		}
+	}
+	option = {
+		name = poland.79.b
+		add_ideas = GPU_prodolsh_vosst
+		custom_effect_tooltip = GPU_koflict_prodolsh
+		GPU = { country_event = poland.81 }
+		FRA = { country_event = { id = poland.90 days = 10 } }
+		set_country_flag = GER_Prodolsh_boevy_deistv
+		ai_chance = {
+			factor = 1
+			modifier = { factor = 2 GPU = { surrender_progress > 0.40 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.35 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.30 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.25 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.20 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.15 } }
+		}
+	}
+}
+country_event = {
+	id = poland.80 #Немцы идут на переговоры
+	title = poland.80.t
+	desc = poland.80.d
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.80.a
+		IF = {
+		    limit = { original_tag = GPU }
+		    add_stability = 0.05
+			add_ideas = GPU_process_peregovor
+		    activate_mission = GPU_itogi_peregovor
+		    set_country_flag = GPU_nachalo_peregovor
+		}
+	}
+}
+country_event = {
+	id = poland.81 #Немцы продолжают боевые действия
+	title = poland.81.t
+	desc = poland.81.d
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.81.a
+	}
+}
+country_event = {
+	id = poland.82 #Наши требования
+	title = poland.82.t
+	desc = poland.82.d
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.82.a
+		ai_chance = {
+			factor = 4
+			modifier = { factor = 2 GER = { has_stability < 0.3 } }
+			modifier = { factor = 2 GER = { has_war_support < 0.3 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.8 } }
+		}
+	}
+	option = {
+		name = poland.82.b
+		POL = { country_event = { id = poland.83 days = 1 } } 
+		custom_effect_tooltip = GPU_ger_trebovania_tt
+        ai_chance = {
+			factor = 2
+			modifier = { factor = 2 GPU = { surrender_progress > 0.40 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.35 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.30 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.25 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.20 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.15 } }
+		}
+	}
+}
+country_event = {
+	id = poland.83 #Германия выдвигает требования
+	title = poland.83.t
+	desc = poland.83.d
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.83.a
+		FRA = { country_event = poland.84 }
+		ai_chance = {
+			factor = 4
+			modifier = { factor = 2 GER = { has_stability < 0.3 } }
+			modifier = { factor = 2 GER = { has_war_support < 0.3 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.8 } }
+		}
+	}
+	option = {
+		name = poland.83.b
+		GER = { country_event = { id = poland.87 days = 1 } } 
+		GPU = { country_event = { id = poland.87 days = 1 } } 
+		custom_effect_tooltip = GPU_ger_trebovania_tt
+        ai_chance = {
+			factor = 1
+			modifier = { factor = 2 GPU = { surrender_progress > 0.40 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.35 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.30 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.25 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.20 } }
+			modifier = { factor = 2 GPU = { surrender_progress > 0.15 } }
+		}
+	}
+}
+country_event = {
+	id = poland.84 #Польша просит вмешаться
+	title = poland.84.t
+	desc = poland.84.d
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.84.a
+		POL = { country_event = poland.85 }
+		GER = { country_event = poland.85 }
+		GPU = { country_event = poland.85 }
+		ai_chance = {
+			factor = 3
+			modifier = { factor = 2 has_opinion = { target = POL value > -1 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 19 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 29 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 49 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 69 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 79 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 89 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 99 } }
+			modifier = { factor = 2 POL = { has_country_flag = POL_peregovor_s_PNK_yes } }
+		}
+	}
+	option = {
+		name = poland.84.b
+		POL = { country_event = poland.86 }
+		GER = { country_event = poland.86 }
+		GPU = { country_event = poland.86 }
+		custom_effect_tooltip = GPU_ger_trebovania_tt
+        ai_chance = {
+			factor = 3
+		}
+	}
+}
+country_event = {
+	id = poland.85 #Франция поддерживает Польшу
+	title = poland.85.t
+    desc = {
+		text = poland.85.d
+		trigger = {
+			original_tag = POL
+		}
+	}
+    desc = {
+		text = poland.85.de
+		trigger = {
+			original_tag = GER
+		}
+	}
+    desc = {
+		text = poland.85.dec
+		trigger = {
+			original_tag = GPU
+		}
+	}
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor2
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.85.a
+		trigger = { original_tag = POL }
+		custom_effect_tooltip = POL_polska_polushit_oschk_tt
+		add_opinion_modifier = { target = FRA modifier = BLR_Ylychenie_otnocheniy }
+	}
+	option = {
+		name = poland.85.b
+		trigger = { original_tag = GER }
+		custom_effect_tooltip = POL_polska_polushit_oschk_tt
+		add_opinion_modifier = { target = FRA modifier = BLR_yhytshenie_otnocheniy }
+		
+	}
+	option = {
+		name = poland.85.c
+		trigger = { original_tag = GPU }
+		custom_effect_tooltip = POL_polska_polushit_oschk_tt
+		add_opinion_modifier = { target = FRA modifier = BLR_Ylychenie_otnocheniy }
+		POL_reset_oshko = yes
+		POL_polska_polushaet_oshko = yes
+	}
+}
+country_event = {
+	id = poland.86 #Франция поддерживает Германию
+	title = poland.86.t
+    desc = {
+		text = poland.86.d
+		trigger = {
+			original_tag = POL
+		}
+	}
+    desc = {
+		text = poland.86.de
+		trigger = {
+			original_tag = GER
+		}
+	}
+    desc = {
+		text = poland.86.dec
+		trigger = {
+			original_tag = GPU
+		}
+	}
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor2
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.86.a
+		trigger = { original_tag = POL }
+		add_opinion_modifier = { target = FRA modifier = BLR_yhytshenie_otnocheniy }
+		custom_effect_tooltip = POL_germ_polushit_oschk_tt
+	}
+	option = {
+		name = poland.86.b
+		trigger = { original_tag = GER }
+		add_opinion_modifier = { target = FRA modifier = BLR_Ylychenie_otnocheniy }
+		custom_effect_tooltip = POL_germ_polushit_oschk_tt
+	}
+	option = {
+		name = poland.86.c
+		trigger = { original_tag = GPU }
+		add_opinion_modifier = { target = FRA modifier = BLR_yhytshenie_otnocheniy }
+		custom_effect_tooltip = POL_germ_polushit_oschk_tt
+		POL_reset_oshko = yes
+		POL_germ_polushaet_oshko = yes
+	}
+}
+country_event = {
+	id = poland.87 #Поляки соглашаются на требования
+	title = poland.87.t
+    desc = {
+		text = poland.87.d
+		trigger = {
+			original_tag = GER
+		}
+	}
+    desc = {
+		text = poland.87.de
+		trigger = {
+			original_tag = GPU
+		}
+	}
+
+	picture = GFX_report_event_pol_gpu_ger_peregovor2
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.87.a
+		trigger = { original_tag = GER }
+		custom_effect_tooltip = POL_germ_polushit_oschk_tt
+	}
+	option = {
+		name = poland.87.b
+		custom_effect_tooltip = POL_germ_polushit_oschk_tt
+		POL_reset_oshko = yes
+		POL_germ_polushaet_oshko = yes
+		trigger = { OR = { original_tag = GPU } }
+	}
+}
+country_event = {
+	id = poland.88 #Итоги переговоров - победа поляков
+	title = poland.88.t
+    desc = {
+		text = poland.88.d
+		trigger = {
+			original_tag = GER
+		}
+	}
+    desc = {
+		text = poland.88.de
+		trigger = {
+		    OR = {
+			    original_tag = GPU
+				original_tag = POL
+			}
+		}
+	}
+
+	picture = GFX_report_event_bul_german_policy
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = { #ладно
+		name = poland.88.a
+		trigger = { original_tag = GER }
+		ai_chance = {
+			factor = 4
+			modifier = { factor = 2 GER = { has_stability < 0.3 } }
+			modifier = { factor = 2 GER = { has_war_support < 0.3 } }
+		}
+		white_peace = GPU
+		GPU = { country_event = { id = poland.95 days = 31 } }
+		POL = { country_event = { id = poland.95 days = 32 } }
+	}
+	option = { #цэ война
+		name = poland.88.b
+		trigger = { original_tag = GER }
+		add_war_support = -0.05
+		add_ideas = GPU_prodolsh_vosst
+		FRA = { country_event = poland.90 }
+		POL = { country_event = poland.90 }
+		GPU = { country_event = poland.90 }
+		remove_ideas = GPU_process_peregovor_ger
+		GPU = { remove_ideas = GPU_process_peregovor }
+		ai_chance = {
+			factor = 0
+			modifier = { factor = 1 GER = { has_army_manpower = { size > 9999 } } }
+			modifier = { factor = 1 GER = { has_army_manpower = { size > 19999 } } }
+			modifier = { factor = 1 GER = { has_army_manpower = { size > 29999 } } }
+			modifier = { factor = 1 GER = { has_army_manpower = { size > 39999 } } }
+			modifier = { factor = 2 GER = { has_army_manpower = { size > 49999 } } }
+			modifier = { factor = 2 GER = { has_army_manpower = { size > 59999 } } }
+			modifier = { factor = 2 GER = { has_army_manpower = { size > 69999 } } }
+			modifier = { factor = 2 GER = { has_army_manpower = { size > 79999 } } }
+			modifier = { factor = 2 GER = { has_army_manpower = { size > 89999 } } }
+			modifier = { factor = 2 GER = { has_army_manpower = { size > 99999 } } }
+		}
+	}
+	option = {
+		name = poland.88.c
+		GPU = { white_peace = GER }
+		trigger = { OR = { original_tag = POL original_tag = GPU } }
+	}
+}
+country_event = {
+	id = poland.89 #Итоги переговоров - победа немцев
+	title = poland.89.t
+    desc = {
+		text = poland.89.d
+		trigger = {
+			original_tag = GER
+		}
+	}
+    desc = {
+		text = poland.89.de
+		trigger = {
+		    OR = {
+			    original_tag = GPU
+				original_tag = POL
+			}
+		}
+	}
+
+	picture = GFX_report_event_bul_german_policy
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = { 
+		name = poland.89.a
+		trigger = { original_tag = GER }
+		white_peace = GPU
+		add_stability = 0.03
+		add_war_support = 0.03
+	}
+	option = { #ладно
+		name = poland.89.b
+		trigger = { OR = { original_tag = POL original_tag = GPU } }
+		GPU = { white_peace = GER }
+		GPU = {
+            delete_unit_template_and_units = {
+			    division_template = "Narodnaya gvardiya"
+			    disband = yes
+			}
+			delete_unit_template_and_units = {
+			    division_template = "Velikaya gvardiya"
+			    disband = yes
+			}
+			delete_unit_template_and_units = {
+			    division_template = "Polskie ulany"
+			    disband = yes
+			}
+			delete_unit_template_and_units = {
+			    division_template = "Polskaya miliciya"
+			    disband = yes
+			}
+		}
+		POL = {
+		    add_political_power = -50
+			add_cic = -4000
+		}
+		GER = {
+		    add_political_power = 50
+			add_cic = 4000
+		}
+		GPU = { country_event = { id = poland.95 days = 31 } }
+		POL = { country_event = { id = poland.95 days = 32 } }
+		ai_chance = {
+			factor = 4
+			modifier = { factor = 2 GER = { has_stability < 0.3 } }
+			modifier = { factor = 2 GER = { has_war_support < 0.3 } }
+		}
+	}
+	option = { #цэ война курва
+		name = poland.89.c
+		trigger = { original_tag = GPU }
+		FRA = { country_event = poland.91 }
+		POL = { country_event = poland.91 }
+		GER = { country_event = poland.91 }
+		add_ideas = GPU_prodolsh_vosst_pol
+		remove_ideas = GPU_process_peregovor
+		GER = { remove_ideas = GPU_process_peregovor_ger }
+		ai_chance = {
+			factor = 0
+			modifier = { factor = 1 GPU = { has_army_manpower = { size > 9999 } } }
+			modifier = { factor = 1 GPU = { has_army_manpower = { size > 19999 } } }
+			modifier = { factor = 1 GPU = { has_army_manpower = { size > 29999 } } }
+			modifier = { factor = 1 GPU = { has_army_manpower = { size > 39999 } } }
+			modifier = { factor = 2 GPU = { has_army_manpower = { size > 49999 } } }
+			modifier = { factor = 2 GPU = { has_army_manpower = { size > 59999 } } }
+			modifier = { factor = 2 GPU = { has_army_manpower = { size > 69999 } } }
+			modifier = { factor = 2 GPU = { has_army_manpower = { size > 79999 } } }
+			modifier = { factor = 2 GPU = { has_army_manpower = { size > 89999 } } }
+			modifier = { factor = 2 GPU = { has_army_manpower = { size > 99999 } } }
+		}
+	}
+}
+country_event = {
+	id = poland.90 #Германия продолжает боевые действия
+	title = poland.90.t
+    desc = {
+		text = poland.90.d
+		trigger = {
+		    OR = {
+			    original_tag = GPU
+				original_tag = POL
+			}
+		}
+	}
+    desc = {
+		text = poland.90.de
+		trigger = {
+            original_tag = FRA
+		}
+	}
+
+	picture = GFX_report_event_lit_german_help_hand
+	
+	fire_only_once = no
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.90.a
+		trigger = { OR = { original_tag = GPU original_tag = POL} }
+	}
+	option = {
+		name = poland.90.b
+		trigger = { original_tag = FRA }
+		add_opinion_modifier = { target = GER modifier = BLR_yhytshenie_otnocheniy }
+		GER = { add_stability = -0.03 }
+		ai_chance = {
+			factor = 0
+			modifier = { factor = 5 GER = { has_stability < 0.3 } }
+			modifier = { factor = 5 GER = { has_war_support < 0.3 } }
+		}
+	}
+	option = {
+		name = poland.90.c
+		trigger = { original_tag = FRA }
+		GPU = { country_event = { id = poland.92 days = 10 } }
+		POL = { country_event = { id = poland.92 days = 10 } }
+		GER = { country_event = { id = poland.92 days = 10 } }
+		ai_chance = {
+			factor = 5
+			modifier = { factor = 5 GER = { has_country_flag = GER_Prodolsh_boevy_deistv } }
+		}
+	}
+}
+country_event = {
+	id = poland.91 #Великопольша продолжает боевые действия
+	title = poland.91.t
+    desc = poland.91.d
+
+	picture = GFX_report_event_lit_german_help_hand
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.91.a
+		trigger = { OR = { original_tag = GER original_tag = POL} }
+	}
+	option = {
+		name = poland.91.b
+		trigger = { original_tag = FRA }
+		add_opinion_modifier = { target = GPU modifier = BLR_yhytshenie_otnocheniy }
+		add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy }
+		GPU = { add_stability = -0.03 }
+		POL = { add_stability = -0.03 }
+		ai_chance = {
+			factor = 0
+			modifier = { factor = 5 GER = { has_stability < 0.3 } }
+			modifier = { factor = 5 GER = { has_war_support < 0.3 } }
+		}
+	}
+	option = {
+		name = poland.91.c
+		trigger = { original_tag = FRA }
+		GPU = { country_event = { id = poland.92 days = 10 } }
+		POL = { country_event = { id = poland.92 days = 10 } }
+		GER = { country_event = { id = poland.92 days = 10 } }
+		ai_chance = {
+			factor = 5
+		}
+	}
+}
+country_event = {
+	id = poland.92 #Франция вмешиваться в конфликт
+	title = poland.92.t
+    desc = poland.92.d
+
+	picture = GFX_report_event_lit_german_help_hand
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.92.a
+		trigger = { OR = { original_tag = GER original_tag = GPU} }
+	}
+	option = {
+		name = poland.92.b
+		trigger = { original_tag = POL }
+		GPU = { 
+		    white_peace = GER 
+			remove_ideas = GPU_prodolsh_vosst_pol
+		}
+		GER = { remove_ideas = GPU_prodolsh_vosst }
+		GPU = { country_event = { id = poland.95 days = 31 } }
+		POL = { country_event = { id = poland.95 days = 32 } }
+	}
+}
+country_event = {
+	id = poland.93 #Разгром Великопольши
+	title = poland.93.t
+	desc = poland.93.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	trigger = {
+	    original_tag = GER
+		has_war_with = GPU
+		has_full_control_of_state = 86
+	}
+	
+	mean_time_to_happen = {
+		hours = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = poland.93.a
+		add_war_support = 0.05
+		POL = { country_event = poland.94 }
+		every_country = { every_unit_leader = { limit = { OR = { has_id = 69113 has_id = 69111 has_id = 69112 has_id = 88201 } } set_nationality = POL } }
+		set_state_controller = 86
+		set_state_owner = 86
+		white_peace = GPU
+	}
+}
+country_event = {
+	id = poland.94 #Поражение Великопольского восстания
+	title = poland.94.t
+    desc = poland.94.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.94.a
+		add_war_support = -0.03
+	}
+}
+country_event = {
+	id = poland.95 #Познанская автономия
+	title = poland.95.t
+    desc = poland.95.d
+
+	picture = GFX_report_event_pol_velik_pol_v
+	
+	is_triggered_only = yes
+	
+	fire_only_once = no
+	
+	option = {
+		name = poland.95.a
+		IF = {
+		    limit = { original_tag = POL }
+		    add_war_support = 0.03
+		    every_country = { every_unit_leader = { limit = { OR = { has_id = 69113 has_id = 69111 has_id = 69112 has_id = 88201 } } set_nationality = POL } }
+		    set_state_controller = 86
+		    set_state_owner = 86
+		}
 	}
 }

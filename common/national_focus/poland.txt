@@ -308,8 +308,8 @@ focus_tree = {
 		    add_stability = 0.05
 		    add_political_power = -60
 		    swap_ideas = {
-			    remove_idea = minimum_legislation
-				add_idea = acceptable_legislation 
+			    remove_idea = no_legislation
+				add_idea = minimum_legislation
 			}
 		}
 	}
@@ -327,48 +327,31 @@ focus_tree = {
 			focus = POL_pol_obrsh
 		}
 		available = {
-		has_global_flag = WWI_is_now
-        GER = {
-		OR = {
-			has_war_with = FRA
-			has_war_with = ENG
-		}
-		OR = {
-			AND = {
-				has_war_with = FRA
-				FRA = { controls_state = 16 }
+		    has_global_flag = WWI_is_now
+		    GER = { 
+		        has_completed_focus = GER_peace_with_Entente
 			}
-			AND = {
-				NOT = {
-					has_war_with = FRA
-					FRA = { controls_state = 16 }
+			GER = {
+			    OR = {
+		        OR = {
+			        check_variable = { summe_stab_n_ruling_coalition_pop < 0.65 }
+			        AND = {
+				        check_variable = { summe_stab_n_ruling_coalition_pop < 0.75 }
+				        has_country_flag = GER_peace_negotiations_with_Entente
+				    }
 				}
-				FRA = { is_puppet = yes }
+				GER = { has_country_flag = GER_monarchy_fall }
+				}
+			    has_stability < 0.25
+			    has_war_support < 0.25
 			}
-			AND = {
-				NOT = { has_war_with = FRA }
-				FRA = { is_puppet = no }
-			}
-			has_global_flag = WWI_GER_HAS_CAPITULATED
-		}
-		NOT = { has_country_flag = GER_monarchy_fall }
-		OR = {
-			check_variable = { summe_stab_n_ruling_coalition_pop < 0.75 }
-			AND = {
-				check_variable = { summe_stab_n_ruling_coalition_pop < 0.85 }
-				has_country_flag = GER_peace_negotiations_with_Entente
-			}
-			has_stability < 0.25
-			has_war_support < 0.25
-			check_variable = { summe_stab_n_war_support < 0.5 }
-		}
-		}
         }
 		x = 11
 		y = 7
 		completion_reward = {
 		    country_event = { id = poland.51 days = 1 }
 			hidden_effect = { country_event = { id = poland.55 days = 5 } }
+			hidden_effect = { country_event = { id = poland.58 days = 3 } }
 		}
 	}
 	focus = {
@@ -385,7 +368,7 @@ focus_tree = {
 			focus = POL_vozzvan_k_narod_pol
 		}
 		available = {
-		    NOT = { has_country_flag = GER_monarchy_fall }
+		    GER = { NOT = { has_country_flag = GER_monarchy_fall } }
 		    NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
 			NOT = { has_global_flag = WWI_is_now }
 			OR = { 
@@ -413,7 +396,7 @@ focus_tree = {
 	focus = {
 		id = POL_podshinenie_pol_wermacht
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 1
+		cost = 0.8
 		prerequisite = {
 			focus = POL_vozzvan_k_narod_pol
 		}
@@ -459,7 +442,7 @@ focus_tree = {
 	focus = {
 		id = POL_naznschenie_kom
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.8
+		cost = 0.6
 		prerequisite = {
 			focus = POL_vozzvan_k_narod_pol
 		}
@@ -571,6 +554,651 @@ focus_tree = {
 		    add_stability = 0.05
 			add_war_support = 0.05
 		    custom_effect_tooltip = POL_smestit_bezeler_tt
+		}
+	}
+	
+	#############################
+	###   Древо Пилсудского   ###
+	#############################
+	
+	focus = {
+		id = POL_form_prav
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 1
+		available = {
+            has_country_flag = POL_focus_tree_pilsudski
+        }
+        allow_branch = {
+			has_country_flag = POL_focus_tree_pilsudski
+		}
+		x = 15
+		y = 0
+		completion_reward = {
+		    add_political_power = 50
+			add_ideas = Enjay_Morachevsky
+			add_ideas = Jan_Kantiy_Stechkovsky
+			add_ideas = Jusef_Pilsudsky
+			add_ideas = Leon_Wasilewski
+			hidden_effect = { country_event = { id = poland.62 days = 20 } }
+		}
+	}
+	focus = {
+		id = POL_polsk_nota
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 1.2
+        available = {
+			ENG = { is_subject = no }
+			FRA = { is_subject = no }
+			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_GER_HAS_CAPITULATED }
+			NOT = {has_war_with = ENG has_war_with = USA has_war_with = FRA}
+		}
+		prerequisite = {
+			focus = POL_form_prav
+		}
+		x = 16
+		y = 1
+		completion_reward = {
+		    set_country_flag = rcw_country_asks_foreing_help
+			unlock_decision_category_tooltip = rcw_intervention_help_white_desisions
+			ENG = { country_event = { id = rcw.204 days = 1 } }
+			FRA = { country_event = { id = rcw.204 days = 1 } }
+			USA = { country_event = { id = rcw.204 days = 1 } }
+			ITA = { country_event = { id = rcw.204 days = 1 } }
+			GER = { country_event = { id = rcw.204 days = 1 } }
+		}
+	}
+	focus = {
+		id = POL_peregovor_s_pnk
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_polsk_nota
+		}
+		x = 16
+		y = 2
+		completion_reward = {
+		    country_event = { id = poland.61 days = 1 }
+		}
+	}
+	focus = {
+		id = POL_decret_marochevsk
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 1.5
+		prerequisite = {
+			focus = POL_form_prav
+		}
+		available = {
+		    has_idea = Enjay_Morachevsky
+		}
+		x = 14
+		y = 1
+		completion_reward = {
+		    country_event = { id = poland.59 days = 1 }
+		}
+	}
+	focus = {
+		id = POL_social_zakon
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2.2
+		prerequisite = {
+			focus = POL_decret_marochevsk
+		}
+		x = 14
+		y = 2
+		completion_reward = {
+		    country_event = { id = poland.60 days = 1 }
+		}
+	}
+	focus = {
+		id = POL_malya_const
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 1.5
+		prerequisite = {
+			focus = POL_peregovor_s_pnk
+		}
+		prerequisite = {
+			focus = POL_social_zakon
+		}
+		available = {
+		    OR = {
+		        has_country_leader = { name = "Józef Pilsudski" ruling_only = yes }
+				has_country_leader = { name = "Roman Dmowski" ruling_only = yes }
+				has_country_leader = { name = "Jozef Haller" ruling_only = yes }
+			}
+			NOT = { has_country_flag = POL_arest_pil }
+		}
+		x = 15
+		y = 3
+		completion_reward = {
+		    country_event = poland.68
+		}
+	}
+	focus = {
+		id = POL_support_velik_pol_vosst
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_malya_const
+		}
+		x = 13
+		y = 4
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_prod_na_vosst
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_malya_const
+		}
+		x = 15
+		y = 4
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_inostran_supp
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_malya_const
+		}
+		x = 17
+		y = 4
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_polsk_che_gran
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_malya_const
+		}
+		x = 18
+		y = 5
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_vzaim_s_lit
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_prod_na_vosst
+		}
+		x = 14
+		y = 5
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_davl_na_ukr
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_prod_na_vosst
+		}
+		x = 16
+		y = 5
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_vost_terr_polit
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_davl_na_ukr
+		}
+		prerequisite = {
+			focus = POL_vzaim_s_lit
+		}
+		x = 15
+		y = 6
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_triumf_national
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_vost_terr_polit
+		}
+        mutually_exclusive = {
+			focus = POL_union_meshdmorja
+		}
+		x = 13
+		y = 7
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_union_meshdmorja
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_vost_terr_polit
+		}
+        mutually_exclusive = {
+			focus = POL_triumf_national
+		}
+		x = 17
+		y = 7
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_borb_s_part
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_triumf_national
+		}
+		x = 12
+		y = 8
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_polon_white_rus
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_borb_s_part
+		}
+		x = 12
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_wiwesti_resurs_of_ukr
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_borb_s_part
+		}
+		x = 10
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_national_ukr
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_wiwesti_resurs_of_ukr
+		}
+		x = 10
+		y = 10
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_svyaz_s_rva
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_triumf_national
+			focus = POL_union_meshdmorja
+		}
+		x = 15
+		y = 8
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_support_rusk_form_pol
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_svyaz_s_rva
+		}
+		x = 14
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_priznan_rpk
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_support_rusk_form_pol
+		}
+		x = 14
+		y = 10
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_priznan_pol_amb
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_svyaz_s_rva
+		}
+		x = 16
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_sovmest_borb
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_priznan_pol_amb
+		}
+		x = 16
+		y = 10
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_ravnoprav_sogl
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_union_meshdmorja
+		}
+		x = 18
+		y = 8
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_priznan_bel_rad
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_ravnoprav_sogl
+		}
+		x = 18
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_support_wpk
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_priznan_bel_rad
+		}
+		x = 18
+		y = 10
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_union_ukr
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_ravnoprav_sogl
+		}
+		x = 20
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_prizv_ukr_strelcev
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_union_ukr
+		}
+		x = 20
+		y = 10
+		completion_reward = {
+		    
+		}
+	}
+	
+	focus = {
+		id = POL_sozd_fin_sistem
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_malya_const
+		}
+		x = 9
+		y = 4
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_polon_gos_apparat
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_malya_const
+		}
+		x = 11
+		y = 4
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_vosst_prom
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_sozd_fin_sistem
+		}
+		x = 9
+		y = 5
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_resh_sydbi_sovet
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_polon_gos_apparat
+		}
+		x = 11
+		y = 5
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_new_prom_centr
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_resh_sydbi_sovet
+		}
+		prerequisite = {
+			focus = POL_vosst_prom
+		}
+		x = 10
+		y = 6
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_create_arms_konglomirate
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_new_prom_centr
+		}
+		x = 10
+		y = 7
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_reshit_transport
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_vosst_prom
+		}
+		x = 8
+		y = 6
+		completion_reward = {
+		    
+		}
+	}
+	
+	focus = {
+		id = POL_form_arm_ministr
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_malya_const
+		}
+		x = 20
+		y = 4
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_create_pol_genstb
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_form_arm_ministr
+		}
+		x = 20
+		y = 5
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_org_priziv
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_create_pol_genstb
+		}
+		x = 19
+		y = 6
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_general_okrug
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_create_pol_genstb
+		}
+		x = 21
+		y = 6
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_union_kzvo
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_general_okrug
+		}
+		x = 23
+		y = 7
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_form_polk_new_priziv
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_org_priziv
+		}
+		x = 19
+		y = 7
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_lit_bel_div
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_general_okrug
+		}
+		x = 21
+		y = 7
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_unification_arm_sil
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_lit_bel_div
+		}
+		prerequisite = {
+			focus = POL_form_polk_new_priziv
+		}
+		x = 20
+		y = 8
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_otlov_dizertiv
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 0.5
+		prerequisite = {
+			focus = POL_lit_bel_div
+		}
+		prerequisite = {
+			focus = POL_form_polk_new_priziv
+		}
+		x = 23
+		y = 8
+		completion_reward = {
+		    
 		}
 	}
 }
