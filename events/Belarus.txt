@@ -71,6 +71,9 @@ country_event = {
 		name = belarus.3.a
 		add_stability = 0.10
 		add_war_support = 0.10
+	    ai_will_do = {
+			factor = 0
+		}
 	}
 	
 	option = {
@@ -83,11 +86,18 @@ country_event = {
 		}
 		complete_national_focus = BLR_pokidanie_Minska
 		set_country_flag = RCW_exiled_gov
+		set_country_flag = BLR_pokidaet_strany
+	    ai_will_do = {
+			factor = 5
+		}
 	}
 	
 	option = {
 		trigger = { has_country_flag = BLR_flag_arms }
 		name = belarus.3.c
+	    ai_will_do = {
+			factor = 1
+		}
 		add_stability = 0.08
 		add_war_support = 0.15
 		create_country_leader = {
@@ -3014,5 +3024,352 @@ country_event = {
 			target = LIT
 			transfer_troops = yes
 		}
+	}
+}
+country_event = {
+	id = belarus.98
+	title = belarus.98.t
+	desc = belarus.98.d
+	picture = GFX_report_event_blr_sozdanie_ssrb
+	
+	trigger = {
+		tag = RSR
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = BLR
+		NOT = { any_other_country = { original_tag = BLR is_subject_of = ROOT } }
+		NOT = { BLR = { any_other_country = { original_tag = PREV has_war_with = PREV } } }
+		any_state = {
+			is_owned_by = BLR
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = belarus.98.a
+		add_war_support = 0.03
+		add_to_variable = { center_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = center_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+		create_dynamic_country = {
+			original_tag = BLR
+			save_global_event_target_as = BLR_CW
+			country_event = { id = belarus.100 days = 3 }
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				create_country_leader = { name = "Dmitry Zhilunovich" desc = BLR_Dmitry_Zhilunovich_DESC picture = "gfx/leaders/BLR/Portrait_Tishka_Gartny.dds" expire = "1935.1.1" ideology = leninism  traits = { political_commisar } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = BLR
+							is_claimed_by = BLR
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = BLR
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:BLR_CW = { set_state_owner = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = BLR
+				type = annex_everything
+			}
+			add_civil_war_target = BLR
+			set_cosmetic_tag = BLR_SOV
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:BLR_CW } }
+				declare_war_on = {
+					target = event_target:BLR_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:BLR_CW } }
+				event_target:BLR_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:BLR_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+						    is_claimed_by = BLR
+							is_claimed_by = event_target:BLR_CW
+							is_owned_by = BLR
+							is_owned_by = event_target:BLR_CW
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = BLR
+							}
+						}
+					}
+					set_state_province_controller = {
+						controller = event_target:BLR_CW
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+				}
+			}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+			set_capital = { state = 242 }
+		}
+		BLR = {
+			transfer_units_fraction= {
+				target = event_target:BLR_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		clear_global_event_target = BLR_CW
+		ai_chance = {
+			factor = 5
+		}
+	}
+	option = {
+		name = belarus.98.b
+		add_war_support = 0.03
+		country_event = { id = belarus.100 days = 1 }
+		add_to_variable = { center_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = center_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+		ai_chance = {
+			factor = 5
+		}
+		create_dynamic_country = {
+			original_tag = BLR
+			save_global_event_target_as = BLR_CW
+			country_event = { id = belarus.100 days = 3 }
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				create_country_leader = { name = "Dmitry Zhilunovich" desc = BLR_Dmitry_Zhilunovich_DESC picture = "gfx/leaders/BLR/Portrait_Tishka_Gartny.dds" expire = "1935.1.1" ideology = leninism  traits = { political_commisar } }
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = BLR
+							is_claimed_by = BLR
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = BLR
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:BLR_CW = { set_state_owner = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = BLR
+				type = annex_everything
+			}
+			set_capital = { state = 242 }
+			add_civil_war_target = BLR
+			set_cosmetic_tag = BLR_SOV
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:BLR_CW } }
+				declare_war_on = {
+					target = event_target:BLR_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:BLR_CW } }
+				event_target:BLR_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:BLR_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+						    is_claimed_by = BLR
+							is_claimed_by = event_target:BLR_CW
+							is_owned_by = BLR
+							is_owned_by = event_target:BLR_CW
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = BLR
+							}
+						}
+					}
+					set_state_province_controller = {
+						controller = event_target:BLR_CW
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+				}
+			}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+			set_capital = { state = 242 }
+		}
+		
+		event_target:BLR_CW = { change_tag_from = RUS }
+		
+		BLR = {
+			transfer_units_fraction= {
+				target = event_target:BLR_CW
+				size = 0.15
+				stockpile_ratio = 0.15
+				army_ratio = 0.15
+				navy_ratio = 0
+				air_ratio = 0
+				keep_unit_leaders_trigger = { always = yes }
+			}
+		}
+		clear_global_event_target = BLR_CW
+	}
+	option = {
+		name = belarus.98.c
+		add_stability = -0.03
+		add_to_variable = { var = Trotskiy_power value = -1 }
+		add_to_variable = { left_faction_party_compositon = 0.05 }
+		custom_effect_tooltip = left_fact_party_comp_plus_5
+		check_overlap_of_party_composition = yes
+		ai_chance = {
+			factor = 0
+			modifier = { add = 999 NOT = { has_country_flag = reds_want_to_create_more_republics } }
+		}
+	}
+
+}
+country_event = {
+	id = belarus.99
+	title = belarus.99.t
+	desc = belarus.99.d
+	picture = GFX_report_event_blr_sozdanie_ssrb
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.99.a
+		trigger = { BLR = { NOT = { has_country_flag = BLR_pokidaet_strany } } }
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = belarus.99.b
+		IF = { 
+		    limit = { BLR = { NOT = { has_country_flag = BLR_pokidaet_strany } } }
+			random_other_country = {
+				limit = { original_tag = ROOT }
+				ROOT = {
+					PREV = { change_tag_from = BLR }
+				}
+			}
+		}
+		IF = { 
+		    limit = { BLR = { has_country_flag = BLR_pokidaet_strany } }
+			random_other_country = {
+				limit = { original_tag = ROOT }
+				ROOT = {
+					PREV = { change_tag_from = BLR }
+					PREV = { annex_country = { target = BLR transfer_troops = no } }
+				}
+			}
+		}
+		ai_chance = {
+			factor = 5
+		}
+	}
+	option = {
+		name = belarus.99.c
+			random_other_country = {
+				limit = { original_tag = ROOT }
+				ROOT = {
+					PREV = { 				
+					    every_state = {
+					        limit = {
+						        OR = {
+							        is_owned_by = BLR
+							        is_owned_by = PREV
+							        AND = {
+								        OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								        is_core_of = BLR
+							        }
+						        }
+					        }
+					        set_state_province_controller = {
+						        controller = PREV
+						        limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					        }
+				        } 
+				    }
+				}
+			}
+		trigger = { BLR = { has_country_flag = BLR_pokidaet_strany } }
+		ai_chance = {
+			factor = 999
+		}
+	}
+}
+country_event = {
+	id = belarus.100
+	title = belarus.100.t
+	desc = belarus.100.d
+	picture = GFX_report_event_blr_create_sovet_bel
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.100.a
 	}
 }

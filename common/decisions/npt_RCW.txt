@@ -1596,15 +1596,8 @@ rcw_intervention_help_white_desisions = {
 				limit = {
 					has_focus_tree = Russia_Volunteer_army_focus
 				}
-				has_completed_focus = LIT_podsos_ant
-				FROM = { NOT = { OR = { is_in_faction_with = GER is_in_faction_with = AUH } } }
-			}
-			if = {
-				limit = {
-					NOT = { has_country_flag = LIT_tainy_union }
-				}
 				has_completed_focus = RVA_appeal_allies
-				FROM = { NOT = { OR = { is_in_faction_with = GER } } }
+				FROM = { NOT = { OR = { is_in_faction_with = GER is_in_faction_with = AUH } } }
 			}
 			if = {
 				limit = {
@@ -1850,8 +1843,183 @@ rcw_intervention_help_white_desisions = {
 		}
 	}
 }
+rcw_military_missions_in_Poland = { #Военные миссии иностранных держав
+	rcw_ask_for_military_mission = {
+		icon = generic_decision
+		targets = { ENG ITA USA }
+		visible = {
+			is_ai = no
+			NOT = { has_country_flag = rcw_hide_sended_equipment_effects }
+			NOT = {
+                is_in_array = {
+				    array = FROM.rcw_supported_states_mission
+				    value = POL.id
+			    }
+			}
+		}
+		available = {
+		    FROM = { exists = yes NOT = { has_war_with = ROOT is_socialist_country = yes } }
+		}
+		cost = 30
+		days_remove = 0
+		fire_only_once = no
+		
+		ai_will_do = {
+			factor = 0
+		}
+		
+		complete_effect = {
+			
+		}
+	}
+}
 
 rcw_intervention_help_allies_desisions = {
+ ######Миссия на поддержку Францией Польшу
+	rcw_french_arms_shipments = {
+		icon = generic_industry
+        targets = { POL }
+		target_root_trigger = { always = no }
+        activation = {
+		    has_country_flag = POL_fra_support_pol
+			has_country_flag = POL_fra_vosobnovlyaet_post
+	    }
+		visible = {
+			has_country_flag = POL_fra_support_pol
+			NOT = { has_country_flag = POL_fra_otmenyat_postavki }
+		}
+		available = {
+		    OR = {
+			    has_country_flag = POL_fra_otmenyat_postavki
+				POL = {
+		            NOT = {
+		                exists = yes
+			        }
+			        has_capitulated = yes
+				}
+			}
+		}
+		
+		fire_only_once = yes
+		
+		is_good = yes
+		
+		days_mission_timeout = 28
+		
+		timeout_effect = {
+			POL = { country_event = poland.102 }
+			hidden_effect = {
+			    remove_mission = rcw_french_arms_shipments
+				activate_mission = rcw_french_arms_shipments
+				if = {
+					limit = { POL = { has_country_flag = rcw_hide_sended_equipment_effects } }
+			        send_equipment = {
+				        equipment = infantry_equipment
+				        amount = 2100
+				        target = POL
+			        }
+			        send_equipment = {
+				        equipment = support_equipment
+				        amount = 200
+				        target = POL
+			        }
+			        send_equipment = {
+				        equipment = motorized_equipment
+				        amount = 100
+				        target = POL
+			        }
+			        send_equipment = {
+				        equipment = armored_car_equipment
+				        amount = 50
+				        target = POL
+			        }
+			        send_equipment = {
+				        equipment = heavy_tank_chassis
+				        amount = 50
+				        target = POL
+			        }
+			        send_equipment = {
+			          	equipment = biplane_plane_airframe
+				        amount = 30
+				        target = POL
+			        }
+			        send_equipment = {
+				        equipment = field_guns_equipment
+				        amount = 80
+				        target = POL
+			        }
+			        send_equipment = {
+				        equipment = artillery_equipment
+				        amount = 80
+				        target = POL
+			        }
+				}
+			}
+		}	
+	}
+	rcw_stop_arms_shipments = { ######Прекратить крупные поставки в Польшу
+		icon = generic_decision
+		targets = { POL }
+		visible = {
+		    has_country_flag = POL_fra_support_pol
+			NOT = { has_country_flag = rcw_hide_sended_equipment_effect }
+		}
+		cost = 0
+		days_remove = 0
+		fire_only_once = no
+		
+		ai_will_do = {
+			factor = 0
+			modifier = { factor = 2 POL = { has_country_flag = POL_peregovor_s_PNK_net } }
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value < -80 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value < -50 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value < -30 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value < -10 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { infantry_equipment > -199 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { armored_car_equipment > -199 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { heavy_tank_chassis > -199 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { artillery_equipment > -199 } } }
+			modifier = { factor = 1 FRA = { has_equipment = { field_guns_equipment > -199 } } }
+			modifier = { factor = 1 FRA = { has_equipment = { support_equipment > -199 } } }
+		}
+		
+		complete_effect = {
+		    POL = { country_event = poland.100 }
+			set_country_flag = rcw_hide_sended_equipment_effect
+			remove_mission = rcw_french_arms_shipments
+		}
+	}
+	rcw_resume_arms_supplies = { ######Возобновить крупные поставки в Польшу
+		icon = generic_decision
+		targets = { POL }
+		visible = {
+		    has_country_flag = POL_fra_support_pol
+			has_country_flag = rcw_hide_sended_equipment_effect
+		}
+		cost = 0
+		days_remove = 0
+		fire_only_once = no
+		
+		ai_will_do = {
+			factor = 0
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value > 30 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value > 50 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value > 70 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = FRA value > 90 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { infantry_equipment > 199 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { armored_car_equipment > 199 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { heavy_tank_chassis > 199 } } }
+			modifier = { factor = 2 FRA = { has_equipment = { artillery_equipment > 199 } } }
+			modifier = { factor = 1 FRA = { has_equipment = { field_guns_equipment > 199 } } }
+			modifier = { factor = 1 FRA = { has_equipment = { support_equipment > 199 } } }
+		}
+		
+		complete_effect = {
+		    POL = { country_event = poland.101 }
+			clr_country_flag = rcw_hide_sended_equipment_effect
+			activate_mission = rcw_french_arms_shipments
+		}
+	}
 	rcw_support_by_guns = {
 		icon = generic_industry
 		
