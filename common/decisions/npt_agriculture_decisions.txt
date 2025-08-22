@@ -1,7 +1,7 @@
 foodstuffs_supply_crisis_decisions = {
 	foodstuffs_supply_crisis_food_import = {
 
-		icon = generic_army_support
+		icon = generic_fundraising
 
 		available = {
 			NOT = { has_idea = closed_economy }
@@ -11,7 +11,7 @@ foodstuffs_supply_crisis_decisions = {
 		days_remove = 70
 		
 		ai_will_do = {
-			factor = 0
+			factor = 20
 		}
 		
 		remove_effect = {
@@ -20,7 +20,7 @@ foodstuffs_supply_crisis_decisions = {
 	}
 	foodstuffs_supply_crisis_food_requisitions = {
 
-		icon = generic_army_support
+		icon = generic_confiscation
 
 		available = {
 		}
@@ -29,7 +29,7 @@ foodstuffs_supply_crisis_decisions = {
 		days_remove = 49
 		
 		ai_will_do = {
-			factor = 0
+			factor = 20
 		}
 		
 		complete_effect = {
@@ -55,7 +55,7 @@ foodstuffs_supply_crisis_decisions = {
 	}
 	foodstuffs_supply_crisis_food_rationing = {
 
-		icon = generic_army_support
+		icon = generic_decision
 
 		available = {
 			NOT = { has_country_flag = foodstuffs_supply_crisis_food_rationing_flag }
@@ -65,7 +65,7 @@ foodstuffs_supply_crisis_decisions = {
 		days_remove = 35
 		
 		ai_will_do = {
-			factor = 0
+			factor = 20
 		}
 		
 		complete_effect = {
@@ -82,6 +82,168 @@ foodstuffs_supply_crisis_decisions = {
 		}
 		remove_effect = {
 			fall_foodstuffs_supply_crisis = yes
+		}
+	}
+	foodstuffs_supply_crisis_rob_the_colonies = {
+
+		icon = generic_belgian_colonial_helmet
+
+		available = {
+			any_other_country = {
+				is_subject_of = ROOT
+				compare_autonomy_state < autonomy_semi_independent
+				custom_trigger_tooltip = {
+					tooltip = total_population_50_percent_trigger_tt
+					set_temp_variable = { population_of_ROOT = ROOT.max_manpower_k }
+					divide_temp_variable = { population_of_ROOT = 2 }
+					check_variable = {
+						var = population_of_ROOT
+						value = THIS.max_manpower_k
+						compare = less_than_or_equals
+					}
+				}
+			}
+		}
+		visible = {
+			NOT = { has_country_flag = foodstuffs_supply_crisis_rob_the_colonies_flag }
+		}
+		
+		cost = 100
+		days_remove = 35
+		
+		ai_will_do = {
+			factor = 20
+		}
+		
+		remove_effect = {
+			set_country_flag = {
+				flag = foodstuffs_supply_crisis_rob_the_colonies_flag
+				days = 730
+				value = 1
+			}
+			custom_effect_tooltip = unlock_foodstuffs_supply_crisis_confiscation_from_tag_tt
+		}
+	}
+	foodstuffs_supply_crisis_confiscation_from_tag = {
+
+		icon = generic_belgian_colonial_helmet
+
+		target_array = subjects
+		target_root_trigger = { has_country_flag = foodstuffs_supply_crisis_rob_the_colonies_flag }
+		target_trigger = {
+			FROM = {
+				set_temp_variable = { population_of_ROOT = ROOT.max_manpower_k }
+				divide_temp_variable = { population_of_ROOT = 2 }
+				check_variable = {
+					var = population_of_ROOT
+					value = THIS.max_manpower_k
+					compare = less_than_or_equals
+				}
+			}
+		}
+		available = {
+			has_equipment = {
+				train_equipment > 19
+			}
+			if = {
+				limit = { NOT = { any_home_area_neighbor_country = { tag = FROM } } }
+				has_equipment = {
+					convoy > 9
+				}
+			}
+			FROM = {
+				compare_autonomy_state < autonomy_semi_independent
+				NOT = { has_idea = foodstuffs_supply_crisis_5 }
+			}
+		}
+		cost = 50
+		days_remove = 50
+		
+		ai_will_do = {
+			factor = 20
+		}
+		
+		complete_effect = {
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = -20
+			}
+			if = {
+				limit = { NOT = { any_home_area_neighbor_country = { tag = FROM } } }
+				add_equipment_to_stockpile = {
+					type = convoy_1
+					amount = -10
+				}
+			}
+		}
+		remove_effect = {
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = 20
+			}
+			if = {
+				limit = { NOT = { any_home_area_neighbor_country = { tag = FROM } } }
+				add_equipment_to_stockpile = {
+					type = convoy_1
+					amount = 10
+				}
+			}
+			fall_foodstuffs_supply_crisis = yes
+			FROM = { country_event = agriculture.11 }
+		}
+	}
+	foodstuffs_supply_crisis_rob_the_occupied_zones = {
+
+		icon = generic_assassination
+
+		target_array = enemies
+		target_root_trigger = { num_occupied_states > 10 }
+		target_trigger = {
+			FROM = {
+				any_owned_state = {
+					is_core_of = PREV
+					is_controlled_by = ROOT
+					set_temp_variable = { occ_state_1 = THIS }
+				}
+				any_owned_state = {
+					is_core_of = PREV
+					is_controlled_by = ROOT
+					NOT = { state = var:occ_state_1 }
+					set_temp_variable = { occ_state_2 = THIS }
+				}
+				any_owned_state = {
+					is_core_of = PREV
+					is_controlled_by = ROOT
+					NOT = { state = var:occ_state_1 }
+					NOT = { state = var:occ_state_2 }
+					set_temp_variable = { occ_state_3 = THIS }
+				}
+				any_owned_state = {
+					is_core_of = PREV
+					is_controlled_by = ROOT
+					NOT = { state = var:occ_state_1 }
+					NOT = { state = var:occ_state_2 }
+					NOT = { state = var:occ_state_3 }
+				}
+				check_variable = { FROM.num_owned_states > 5 }
+			}
+		}
+		available = {
+			FROM = {
+				NOT = { has_idea = foodstuffs_supply_crisis_5 }
+			}
+		}
+		
+		cost = 70
+		days_remove = 70
+		
+		ai_will_do = {
+			factor = 0
+		}
+		
+		remove_effect = {
+			hidden_effect = { FROM = { save_global_event_target_as = agriculture_12_FROM } }
+			country_event = agriculture.12
 		}
 	}
 }
