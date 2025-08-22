@@ -1732,7 +1732,7 @@ country_event = {
 	option = {
 		name = poland.26.a
 		IF = {
-		    limit = { has_country_flag = POL_galler_in_RUS }
+		    limit = { has_global_flag = POL_galler_in_RUS }
 			every_unit_leader = { limit = { has_id = 69002 } set_nationality = RUS }
 		}
 			create_corps_commander = {  name = "Józef Dowbor-Muśnicki" id = 88201 portrait_path = "gfx/leaders/POL/Portrait_Jozef_Dowbor-Musnicki.dds" traits = { Brilliant_Strategist Career_Officer Harsh_Leader Infantry_Leader Skilled_Staffer } skill = 3 attack_skill = 2 defense_skill = 3 planning_skill = 3 logistics_skill = 2 }
@@ -2025,7 +2025,7 @@ country_event = {
 	    original_tag = FRA
 	    has_country_flag = POL_galler_rezbit
 		has_war_with = GER
-		NOT = { has_country_flag = POL_galler_in_RUS }
+		NOT = { has_global_flag = POL_galler_in_RUS }
 	}
 	
 	mean_time_to_happen = {
@@ -2037,7 +2037,7 @@ country_event = {
 	option = {
 		name = poland.39.a
 		every_unit_leader = { limit = { has_id = 69002 } set_nationality = FRA }
-		set_country_flag = POL_galler_on_FRA
+		set_global_flag = POL_galler_on_FRA
 	}
 }
 country_event = {
@@ -2076,7 +2076,7 @@ country_event = {
 	
 	option = {
 		name = poland.41.a
-        set_country_flag = POL_galler_in_RUS
+        set_global_flag = POL_galler_in_RUS
 		custom_effect_tooltip = POL_galler_in_RUS_tt
 	}
 }
@@ -2203,29 +2203,28 @@ country_event = {
 		add_stability = -0.03
 		POL = { add_opinion_modifier = { target = GER modifier = BLR_Ylychenie_otnocheniy } }
 		POL = { country_event = { id = poland.49 days = 1 } }
-		every_state = {
-			limit = {
-				OR = {
-					is_owned_by = ROOT
-					AND = {
-						is_owned_by = RUS
-						is_controlled_by = ROOT
-					}
-				}
-				NOT = { is_core_of = ROOT }
-				is_core_of = POL
-			}
-			POL = { transfer_state = PREV }
-		}
+		    every_state = {
+			    limit = {
+				    OWNER = { OR = { tag = POL tag = AUH } }
+				    OR = {
+				        OR = {
+					        state = 90
+					        state = 92
+				        }
+			        }
+			    }
+			    AUH = { transfer_state = POL }
+		    }
+		    every_owned_state = {
+			    limit = {
+				    NOT = { is_core_of = GER }
+				    is_core_of = GER
+			    }
+			    GER = { transfer_state = POL }
+		    }
 		IF = {
 		    limit = { country_exists = AUH }
 			AUH = { country_event = poland.57 }
-			AUH = {
-			    set_state_controller = 88
-			    set_state_controller = 925
-			    set_state_owner = 88
-			    set_state_owner = 925
-			}
 		}
 		ai_chance = {
 			factor = 1
@@ -2311,10 +2310,11 @@ country_event = { #«К польскому народу»
 		remove_ideas = POL_Kingdom_that_failed
 		hidden_effect = { GER = { remove_ideas = POL_vopros } AUH = { remove_ideas = POL_vopros } RUS = { remove_ideas = POL_vopros_r } }
 		if = {
-		    limit = { NOT = { has_country_flag = POL_galler_in_RUS}
-			has_country_flag = POL_galler_on_FRA
+		    limit = { 
+			    NOT = { has_global_flag = POL_galler_in_RUS}
+			    has_global_flag = POL_galler_on_FRA
 			}
-			hidden_effect = { country_event = { id = poland.96 days 140 } }
+			hidden_effect = { country_event = { id = poland.96 days = 140 } }
 		}
 	}
 }
@@ -2429,21 +2429,7 @@ country_event = { #Начальник государства
 
 	picture = GFX_report_event_pol_nashalnik_gos
 	
-	trigger = {
-	    original_tag = POL
-		has_completed_focus = POL_podshinenie_pol_wermacht
-		has_completed_focus = POL_naznschenie_kom
-		has_completed_focus = POL_rasorush_auh_garr
-		has_completed_focus = POL_rasorush_ger_garr
-		has_completed_focus = POL_nazn_pil_glav_army
-		has_completed_focus = POL_smestit_bezeler
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	fire_only_once = yes
+	is_triggered_only = yes
 	
 	option = {
 		name = poland.56.a
@@ -2483,29 +2469,6 @@ country_event = {
 		name = poland.57.b
 		add_stability = -0.03
 		POL = { add_opinion_modifier = { target = AUH modifier = BLR_Ylychenie_otnocheniy } }
-		every_state = {
-			limit = {
-				OR = {
-					is_owned_by = ROOT
-					AND = {
-						is_owned_by = RUS
-						is_controlled_by = ROOT
-					}
-				}
-				NOT = { is_core_of = ROOT }
-				is_core_of = POL
-			}
-			POL = { transfer_state = PREV }
-		}
-		if = {
-		    limit = { or = { set_state_owner = 88 set_state_owner = 925 } }
-			hidden_effect = {
-		        set_state_owner = 88
-		        set_state_owner = 925
-		        set_state_controller = 88
-		        set_state_controller = 925
-		    }
-		}
 	}
 }
 country_event = {
@@ -2649,11 +2612,10 @@ country_event = {
 	trigger = {
 	    original_tag = POL
 		has_country_flag = POL_pilsudski_ne_vmeshivaetsa
-		NOT = { has_country_flag = POL_pilsudski_ne_vmeshivaetsa }
 	}
 	
 	mean_time_to_happen = {
-		days = 3
+		days = 1
 	}
 	
 	fire_only_once = yes
@@ -2679,7 +2641,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		days = 3
+		days = 1
 	}
 	
 	fire_only_once = yes
@@ -2901,7 +2863,7 @@ country_event = {
 			add_state_core = 86
 		}
 		GPU = {
-		oob = GPU_1919
+		load_oob = GPU_1919
 		add_ideas = POL_wosstavh_army
 		add_ideas = POL_werhovni_narodny_sovet
 		add_ideas = POL_velikopolska
@@ -2967,6 +2929,10 @@ country_event = {
 			    division = "name = \"7.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
 			    owner = GER
 		    } 
+		    create_unit = {
+			    division = "name = \"8.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
 		}
 		62 = {
 		    create_unit = {
@@ -2977,6 +2943,10 @@ country_event = {
 			    division = "name = \"6.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
 			    owner = GER
 		    } 
+		    create_unit = {
+			    division = "name = \"9.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
 		}
 		66 = {
 		    create_unit = {
@@ -2985,6 +2955,10 @@ country_event = {
 		    } 
 		    create_unit = {
 			    division = "name = \"5.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"10.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
 			    owner = GER
 		    } 
 		}
@@ -3007,7 +2981,7 @@ country_event = {
 			add_state_core = 86
 		}
 		GPU = {
-		oob = GPU_1919
+		load_oob = GPU_1919
 		add_ideas = POL_wosstavh_army
 		add_ideas = POL_werhovni_narodny_sovet
 		add_ideas = POL_velikopolska
@@ -3073,6 +3047,10 @@ country_event = {
 			    division = "name = \"7.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
 			    owner = GER
 		    }  
+		    create_unit = {
+			    division = "name = \"8.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
 		}
 		62 = {
 		    create_unit = {
@@ -3081,6 +3059,10 @@ country_event = {
 		    } 
 		    create_unit = {
 			    division = "name = \"6.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 
+		    create_unit = {
+			    division = "name = \"9.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
 			    owner = GER
 		    } 
 		}
@@ -3092,7 +3074,11 @@ country_event = {
 		    create_unit = {
 			    division = "name = \"5.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
 			    owner = GER
-		    }  
+		    } 
+		    create_unit = {
+			    division = "name = \"10.Freikor-Regiment\" division_template = \"Freikor\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+			    owner = GER
+		    } 			
 		}
 		declare_war_on = { target = GPU type = annex_everything }
 		GPU = { change_tag_from = GER }
@@ -4457,7 +4443,7 @@ country_event = {
 		add_war_support = -0.05
 		custom_effect_tooltip = POL_polski_pohod_lit_tt
 		add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy }
-        hidden_effect = { POL = { country_event = { id = poland.111 days = 6 } country_event = { id = poland.112 days = 15 } } }
+        POL = { country_event = { id = poland.111 days = 6 } }
 		ai_will_do = {
 			factor = 5
 		}
@@ -4527,62 +4513,50 @@ country_event = {
 		    limit = {
 			    original_tag = LIT
 			}
-			hidden_effect = { POL = { country_event = { id = poland.111 days = 6 } country_event = { id = poland.112 days = 15 } } }
+			POL = { country_event = { id = poland.111 days = 6 } }
 		}
 	}
 }
 country_event = {
-	id = poland.111 #Скрытный ивент
+	id = poland.111 #Войско Польское занимает Гродно
 	title = poland.111.t
     desc = poland.111.d
 
-	picture = GFX_report_event_pol_lit-pol_pogran_2
+	picture = GFX_report_event_pol_army_pol_v_grodno
 	
 	is_triggered_only = yes
-	
-	hidden = yes
 	
 	option = {
 		name = poland.111.a
-	    set_state_controller = 910
-		set_state_owner = 910
+		every_state = {
+			limit = {
+				OWNER = { OR = { tag = LIT tag = POL tag = BLR } }
+				OR = {
+				    OR = {
+					    state = 1442
+					    state = 910
+					    state = 1366
+					    state = 95
+					    state = 1440
+				    }
+			    }
+			}
+			POL = { transfer_state = PREV }
+		}
 	}
 }
 country_event = {
-	id = poland.112 #Скрытный ивент
+	id = poland.112 #Войско Польское занимает Гродно
 	title = poland.112.t
     desc = poland.112.d
 
-	picture = GFX_report_event_pol_lit-pol_pogran_2
+	picture = GFX_report_event_pol_army_pol_v_grodno
 	
 	is_triggered_only = yes
 	
-	hidden = yes
-	
 	option = {
 		name = poland.112.a
-	    set_state_controller = 1442
-		set_state_owner = 1442
-		set_state_controller = 95
-		set_state_owner = 95
-		hidden_effect = { country_event = { id = poland.113 days = 3 } }
-	}
-}
-country_event = {
-	id = poland.113 #Скрытный ивент
-	title = poland.113.t
-    desc = poland.113.d
-
-	picture = GFX_report_event_pol_lit-pol_pogran_2
-	
-	is_triggered_only = yes
-	
-	hidden = yes
-	
-	option = {
-		name = poland.112.a
-	    set_state_controller = 1440
-		set_state_owner = 1440
+		add_stability = -0.03
 	}
 }
 country_event = {
@@ -4620,6 +4594,2197 @@ country_event = {
 			modifier = { factor = 2 POL = { has_opinion = { target = CZE value > 50 } } }
 			modifier = { factor = 2 POL = { has_opinion = { target = CZE value > 70 } } }
 			modifier = { factor = 2 POL = { has_opinion = { target = CZE value > 90 } } }
+		}
+	}
+}
+country_event = {
+	id = poland.115 #Вопрос Тешинской Силезии
+	title = poland.115.t
+    desc = poland.115.d
+
+	picture = GFX_report_event_pol_teshinski_vopros
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.115.a
+
+	}
+	option = {
+		name = poland.115.b
+
+	}
+}
+country_event = {
+	id = poland.116 #Вопрос Тешинской Силезии
+	title = poland.116.t
+    desc = poland.116.d
+
+	picture = GFX_report_event_pol_teshinski_vopros
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.116.a
+
+	}
+	option = {
+		name = poland.116.b
+
+	}
+}
+country_event = {
+	id = poland.117 #Литовский вопрос
+	title = poland.117.t
+    desc = poland.117.d
+
+	picture = GFX_report_event_pol_vopros_s_lit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.117.a
+		LIT = { country_event = poland.118 }
+		add_stability = -0.03
+		LIT = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+		hidden_effect = { FRA = { country_event = { id =  days = 3 } } ENG = { country_event = { id =  days = 3 } } USA = { country_event = { id =  days = 3 } } }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = despotism }
+			modifier = { factor = 5 has_government = authoritarism }
+		}
+	}
+	option = {
+		name = poland.117.b
+		LIT = { country_event = poland.119 }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = social_democracy }
+			modifier = { factor = 5 has_government = social_liberalismm }
+			modifier = { factor = 5 has_government = conservatism }
+		}
+	}
+	option = {
+		name = poland.117.c
+		hidden_effect = { FRA = { country_event = { id =  days = 3 } } }
+		LIT = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+		LIT = { country_event = poland.120 }
+			start_border_war = {
+			    change_state_after_war = no
+			    attacker = {
+				    state = 95
+				    num_provinces = 2
+				    on_win = poland.121
+				    on_lose = poland.122
+			    }
+			    defender = {
+				    state = 1441
+				    num_provinces = 1
+				    on_win = poland.121
+				    on_lose = poland.122
+			    }
+		    }
+		trigger = {
+		    OR = {
+			    owns_state = 95
+				controls_state = 95
+				owns_state = 1440
+				controls_state = 1440
+			}
+			LIT = { controls_state = 784 }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 2 POL = { has_opinion = { target = LIT value < 10 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = LIT value < -10 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = LIT value < -30 } } }
+			modifier = { factor = 2 POL = { has_opinion = { target = LIT value < -50 } } }
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+}
+country_event = {
+	id = poland.118 #Поляки переходят границу
+	title = poland.118.t
+    desc = poland.118.d
+
+	picture = GFX_report_event_pol_pogran_s_litvoi
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.118.a
+		add_war_support = 0.05
+		add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy }
+	}
+}
+country_event = {
+	id = poland.119 #Польша выдвигает предложение
+	title = poland.119.t
+    desc = poland.119.d
+
+	picture = GFX_report_event_pol_vopros_s_lit
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.119.a
+		POL = { country_event = { id = poland.124 days = 1 } }
+		ai_will_do = {
+			factor = 1
+			modifier = { add = 2 has_completed_focus = LIT_podsos_bol }
+			modifier = { add = 4 has_completed_focus = LIT_antipsheck }
+			modifier = { add = 1 has_army_manpower = { size > 9999 } }
+			modifier = { add = 2 has_army_manpower = { size > 19999 } }
+			modifier = { add = 2 has_army_manpower = { size > 29999 } }
+			modifier = { add = 2 has_army_manpower = { size > 39999 } }
+			modifier = { add = 2 has_army_manpower = { size > 49999 } }
+			modifier = { add = 2 has_army_manpower = { size > 59999 } }
+			modifier = { add = 3 has_army_manpower = { size > 69999 } }
+			modifier = { add = 3 has_army_manpower = { size > 79999 } }
+			modifier = { add = 3 has_army_manpower = { size > 89999 } }
+			modifier = { add = 3 has_army_manpower = { size > 99999 } }
+		}
+	}
+	option = {
+		name = poland.119.b
+		set_country_flag = POL_lit_prisoedinyaetsa_meshdmr
+		POL = { country_event = { id = poland.123 days = 1 } }
+        ai_will_do = {
+			factor = 3
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 90 } } }
+		}
+	}
+}
+country_event = {
+	id = poland.120 #Поляки движутся к Вильнюсу
+	title = poland.120.t
+    desc = poland.120.d
+
+	picture = GFX_report_event_pol_pogran_s_litvoi
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.120.a
+		add_war_support = 0.05
+		add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy }
+	}
+}
+country_event = {
+	id = poland.121 #Победа в конфликте
+	title = poland.121.t
+    desc = poland.121.d
+
+	picture = GFX_report_event_pol_pogran_s_litvoi
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.121.a
+		if = {
+		    limit = { original_tag = POL NOT = { OR = { owns_state = 1441 controls_state = 1441 } } }
+		    every_state = {
+			    limit = {
+				    OWNER = { OR = { tag = LIT tag = POL tag = BLR } }
+				    OR = {
+					    state = 1441
+				    }
+			    }
+				POL = { transfer_state = PREV }
+			}
+			start_border_war = {
+			    change_state_after_war = yes
+			    attacker = {
+				    state = 1441
+				    num_provinces = 2
+				    on_win = poland.121
+				    on_lose = poland.122
+			    }
+			    defender = {
+				    state = 784
+				    num_provinces = 1
+				    on_win = poland.121
+				    on_lose = poland.122
+			    }
+		    }
+		}
+	}
+}
+country_event = {
+	id = poland.122 #Поражение в конфликте
+	title = poland.122.t
+    desc = poland.122.d
+
+	picture = GFX_report_event_pol_pogran_s_litvoi
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.122.a
+	    add_war_support = -0.03
+	}
+}
+country_event = {
+	id = poland.123 #Литва соглашается
+	title = poland.123.t
+    desc = poland.123.d
+
+	picture = GFX_report_event_lit_anti_pol_pogran
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.123.a
+	    LIT = { THIS_country_will_be_recognized_by_PREV = yes }
+		IF = { 
+		    limit = { is_in_faction = no }
+			create_faction = LIT_meshdmore
+		}
+		add_to_faction = LIT
+		POL = {
+			add_opinion_modifier = {
+                target = LIT
+                modifier = BLR_Ylychenie_otnocheniy
+            }
+		}
+	}
+}
+country_event = {
+	id = poland.124 #Литва отказывается
+	title = poland.124.t
+    desc = poland.124.d
+
+	picture = GFX_report_event_lit_anti_pol_pogran
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.124.a
+		declare_war_on = {
+			target = LIT
+			type = annex_everything
+		}
+		IF = {
+		    limit = {
+			    OR = {
+			        is_in_array = {
+				        array = ENG.rcw_supported_states
+				        value = LIT.id
+			        }
+					is_in_array = {
+				        array = FRA.rcw_supported_states
+				        value = LIT.id
+			        }
+					is_in_array = {
+				        array = USA.rcw_supported_states
+				        value = LIT.id
+			        }
+					is_in_array = {
+				        array = ITA.rcw_supported_states
+				        value = LIT.id
+			        }
+				}		
+			}
+			custom_effect_tooltip = POL_antanta_ne_dovolnya_tt
+            random_list = {
+			    seed = random
+			    40 = {
+			        FROM = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    60 = {
+			       FROM = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}
+        ai_will_do = {
+			factor = 3
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 1 has_army_manpower = { size > 119999 } }
+			modifier = { add = 1 has_army_manpower = { size > 129999 } }
+			modifier = { add = 1 has_army_manpower = { size > 139999 } }
+			modifier = { add = 1 has_army_manpower = { size > 149999 } }
+			modifier = { add = 1 has_army_manpower = { size > 159999 } }
+			modifier = { add = 1 has_army_manpower = { size > 169999 } }
+			modifier = { add = 1 has_army_manpower = { size > 179999 } }
+			modifier = { add = 1 has_army_manpower = { size > 189999 } }
+		}
+	}
+	option = {
+		name = poland.124.b
+		add_war_support = -0.03
+        ai_will_do = {
+			factor = 0
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 90 } } }
+			modifier = { add = 5 is_in_array = { array = ENG.rcw_supported_states value = LIT.id } }
+			modifier = { add = 5 is_in_array = { array = FRA.rcw_supported_states value = LIT.id } }
+			modifier = { add = 5 is_in_array = { array = USA.rcw_supported_states value = LIT.id } }
+			modifier = { add = 5 is_in_array = { array = ITA.rcw_supported_states value = LIT.id } }
+		}
+	}
+}
+country_event = {
+	id = poland.125 #Поляки подчиняют наши активы
+	title = poland.125.t
+    desc = poland.125.d
+
+	picture = GFX_report_event_pol_soc_zakon
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.125.a
+		add_stability = -0.03
+		ai_will_do = {
+			factor = 3
+			modifier = { add = 1 has_army_manpower = { size < 9999 } }
+			modifier = { add = 2 has_army_manpower = { size < 19999 } }
+			modifier = { add = 2 has_army_manpower = { size < 29999 } }
+			modifier = { add = 2 has_army_manpower = { size < 39999 } }
+		}
+	}
+	option = {
+		name = poland.125.b
+		POL = { country_event = { id = poland.126 days = 1 } }
+        ai_will_do = {
+			factor = 1
+			modifier = { add = 2 ROOT = { has_opinion = { target = POL value > -30 } } }
+			modifier = { add = 2 ROOT = { has_opinion = { target = POL value > -50 } } }
+			modifier = { add = 2 ROOT = { has_opinion = { target = POL value > -70 } } }
+			modifier = { add = 2 ROOT = { has_opinion = { target = POL value > -90 } } }
+		}
+	}
+}
+country_event = {
+	id = poland.126 #Поляки подчиняют наши активы
+	title = poland.126.t
+    desc = poland.126.d
+
+	picture = GFX_report_event_pol_soc_zakon
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.126.a
+		declare_war_on = {
+            target = FROM
+            type = annex_everything
+        }
+		ai_will_do = {
+			factor = 3
+			modifier = { add = 1 has_army_manpower = { size < 9999 } }
+			modifier = { add = 2 has_army_manpower = { size < 19999 } }
+			modifier = { add = 2 has_army_manpower = { size < 29999 } }
+			modifier = { add = 2 has_army_manpower = { size < 39999 } }
+		}
+	}
+	option = {
+		name = poland.126.b
+		LIT = { add_ideas = interventionalism_law }
+		remove_ideas = POL_podshinen_activ
+        ai_will_do = {
+			factor = 1
+
+		}
+	}
+}
+country_event = {
+	id = poland.128 #Соприкосновение с Большевиками
+	title = poland.128.t
+    desc = poland.128.d
+
+	picture = GFX_report_event_pol_sov-pol_peregovor
+	
+	trigger = {
+	    original_tag = POL
+		RUS = { OR = { has_government = radical_socialism has_government = communism } }
+		has_completed_focus = POL_prod_na_vosst
+		OR = {
+            is_neighbor_of = RUS
+		    any_country = { original_tag = BLR OR = { has_government = radical_socialism has_government = communism } is_neighbor_of = POL }
+		    any_country = { original_tag = LIT OR = { has_government = radical_socialism has_government = communism } is_neighbor_of = POL }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = poland.128.a
+		RSR = { country_event = { id = poland.132 days = 10 } }
+		hidden_effect = { country_event = { id = poland.129 days = 5 } }
+		ai_will_do = {
+			factor = 0
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 2 has_army_manpower = { size > 129999 } }
+			modifier = { add = 2 has_army_manpower = { size > 149999 } }
+			modifier = { add = 2 has_army_manpower = { size > 169999 } }
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+	option = {
+		name = poland.128.b
+		RSR = { country_event = { id = poland.132 days = 10 } }
+		hidden_effect = { country_event = { id = poland.129 days = 5 } }
+		set_country_flag = POL_polska_idyt_na_peregovor
+        ai_will_do = {
+			factor = 0
+			modifier = { factor = 2 has_government = social_democracy }
+			modifier = { factor = 2 has_government = social_liberalismm }
+			modifier = { factor = 2 has_government = conservatism }
+		}
+	}
+}
+country_event = {
+	id = poland.129 #Расстрел советской миссии Красного Креста
+	title = poland.129.t
+    desc = poland.129.d
+
+	picture = GFX_report_event_pol_kill_krasny_krest
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.129.a
+		add_stability = -0.03
+		ai_will_do = {
+			factor = 3
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+	option = {
+		name = poland.129.b
+		custom_effect_tooltip = POL_agresiv_polit_tt
+		set_country_flag = POL_rastrel_srasny_krest
+		trigger = { NOT = { has_country_flag = POL_polska_idyt_na_peregovor } }
+		add_stability = -0.03
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = ENG.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    20 = {
+			        ENG = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    80 = {
+			       ENG = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = FRA.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    20 = {
+			        FRA = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    80 = {
+			       FRA = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}	
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = USA.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    20 = {
+			        USA = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    80 = {
+			       USA = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}	
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = ITA.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    20 = {
+			        ITA = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    80 = {
+			       ITA = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}
+        ai_will_do = {
+			factor = 0
+
+		}
+	}
+}
+country_event = {
+	id = poland.130 #приостанавливает поддержку
+	title = poland.130.t
+    desc = poland.130.d
+
+	picture = GFX_report_event_pol_fra_support
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.130.a
+	}
+}
+country_event = {
+	id = poland.131 #Агрессивная политика Польши
+	title = poland.131.t
+    desc = poland.131.d
+
+	picture = GFX_report_event_pol_nashalnik_gos
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.131.a
+        POL = { country_event = poland.130 }
+		remove_from_array = { rcw_supported_states = POL.id }
+        ai_will_do = {
+			factor = 999
+		}
+	}
+	option = {
+		name = poland.131.b
+        FROM = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+		ai_will_do = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = poland.132 #Польская делегация и переговоры
+    title = {
+		text = poland.132.t #за переговоры
+		trigger = {
+		    POL = {
+		        NOT = {
+			        has_country_flag = POL_rastrel_srasny_krest
+			    }
+			    has_country_flag = POL_polska_idyt_na_peregovor
+			}
+		}
+	}
+    title = {
+		text = poland.132.te #против
+		trigger = {
+		    POL = {
+			    has_country_flag = POL_rastrel_srasny_krest
+				NOT = { has_country_flag = POL_polska_idyt_na_peregovor }
+			}
+		}
+	}
+    desc = {
+		text = poland.132.d #за переговоры
+		trigger = {
+		    POL = {
+		        NOT = {
+			        has_country_flag = POL_rastrel_srasny_krest
+			    }
+			    has_country_flag = POL_polska_idyt_na_peregovor
+			}
+		}
+	}
+    desc = {
+		text = poland.132.de #против
+		trigger = {
+		    POL = {
+			    has_country_flag = POL_rastrel_srasny_krest
+			}
+		}
+	}
+
+	picture = GFX_report_event_pol_pregevoros_s_rsr
+	
+	is_triggered_only = yes
+	
+	option = { #Польский пан не получит и дюйма нашей земли
+		name = poland.132.a
+        trigger = {
+		    POL = {
+			    NOT = { has_country_flag = POL_rastrel_srasny_krest }
+			}
+		}
+		POL = { country_event = poland.133 }
+		ai_will_do = {
+			factor = 0
+			modifier = { add = 1 surrender_progress > 0.80 }
+			modifier = { add = 1 has_war_support > 0.8 }
+			modifier = { add = 1 has_army_manpower = { size > 299999 } }
+			modifier = { add = 2 has_army_manpower = { size > 499999 } }
+			modifier = { add = 3 has_army_manpower = { size > 599999 } }
+			modifier = { add = 4 has_army_manpower = { size > 799999 } }
+		}
+	}
+	option = { #Предложим им лишь малые уступки
+		name = poland.132.b
+        trigger = {
+		    POL = {
+			    NOT = { has_country_flag = POL_rastrel_srasny_krest }
+			}
+		}
+		POL = { country_event = poland.134 }
+		ai_will_do = {
+			factor = 2
+			modifier = { add = 1 has_army_manpower = { size < 199999 } }
+			modifier = { add = 1 has_army_manpower = { size < 299999 } }
+			modifier = { add = 1 num_of_factories > 17 }
+			modifier = { add = 1 num_of_factories > 19 }
+			modifier = { add = 1 num_of_factories > 21 }
+			modifier = { add = 1 surrender_progress < 0.60 }
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+	option = { #Мы отдадим всё, лишь бы избежать войны
+		name = poland.132.e
+		POL = { country_event = poland.137 }
+        trigger = {
+		    POL = {
+			    NOT = { has_country_flag = POL_rastrel_srasny_krest }
+			}
+		}
+		ai_will_do = {
+		    factor = 0
+			modifier = { add = 1 surrender_progress < 0.40 }
+			modifier = { add = 1 surrender_progress < 0.20 }
+			modifier = { add = 1 has_army_manpower = { size < 9999 } }
+			modifier = { add = 1 has_army_manpower = { size < 19999 } }
+			modifier = { add = 1 has_army_manpower = { size < 29999 } }
+			modifier = { add = 1 has_army_manpower = { size < 39999 } }
+			modifier = { add = 1 has_army_manpower = { size < 49999 } }
+			modifier = { add = 1 has_army_manpower = { size < 59999 } }
+			modifier = { add = 1 has_army_manpower = { size < 69999 } }
+			modifier = { add = 1 has_army_manpower = { size < 79999 } }
+			modifier = { add = 1 has_army_manpower = { size < 99999 } }
+			modifier = { add = 1 has_army_manpower = { size < 199999 } }
+			modifier = { add = 2 num_of_factories < 0 }
+			modifier = { add = 2 num_of_factories < 1 }
+			modifier = { add = 2 num_of_factories < 2 }
+			modifier = { add = 2 num_of_factories < 3 }
+			modifier = { add = 2 num_of_factories < 5 }
+			modifier = { add = 2 num_of_factories < 7 }
+			modifier = { add = 2 num_of_factories < 9 }
+			modifier = { add = 1 num_of_factories < 10 }
+			modifier = { add = 1 num_of_factories < 12 }
+			modifier = { add = 1 num_of_factories < 14 }
+			modifier = { add = 1 num_of_factories < 17 }
+		}
+	}
+	option = { #Похоже, войны не избежать...
+		name = poland.132.с
+        trigger = {
+		    POL = {
+			    has_country_flag = POL_rastrel_srasny_krest
+			}
+		}
+		news_event = { id = news_n.1005 hours = 1 }
+		set_global_flag = soviet_polish_War
+		POL = {
+		    declare_war_on = {
+			    target = RSR
+			    type = annex_everything
+		    }
+		}
+		ai_will_do = {
+			factor = 999
+		}
+	}
+}
+country_event = {
+	id = poland.133 #Россия отказывается от переговоров
+	title = poland.133.t
+    desc = poland.133.d
+
+	picture = GFX_report_event_pol_pregevoros_s_rsr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.133.a
+		news_event = { id = news_n.1005 hours = 1 }
+		set_global_flag = soviet_polish_War
+		declare_war_on = {
+			target = RSR
+			type = annex_everything
+		}
+		ai_will_do = {
+			factor = 999
+		}
+	}
+	option = {
+		name = poland.133.b
+		custom_effect_tooltip = POL_otkas_ot_war
+		add_war_support = -0.1
+		add_stability = -0.08
+		add_popularity = { ideology = this popularity = -0.10 }
+		add_popularity = { ideology = communism popularity = 0.03 } 
+		add_popularity = { ideology = radical_socialism popularity = 0.03 } 
+		add_popularity = { ideology = social_democracy popularity = 0.03 } 
+		add_popularity = { ideology = fascism popularity = 0.03 } 
+		ai_will_do = {
+			factor = 0
+		}
+	}
+}
+country_event = {
+	id = poland.134 #Россия предлагает уступки
+	title = poland.134.t
+    desc = poland.134.d
+
+	picture = GFX_report_event_pol_pregevoros_s_rsr
+	
+	is_triggered_only = yes
+	
+	option = { #Потребуем больше
+		name = poland.134.a
+		RSR = { country_event = { id = poland.136 days = 1 } }
+		ai_will_do = {
+			factor = 2
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 2 has_army_manpower = { size > 129999 } }
+			modifier = { add = 2 has_army_manpower = { size > 149999 } }
+			modifier = { add = 2 has_army_manpower = { size > 169999 } }
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+	option = { #Этого будет достаточно
+		name = poland.134.b
+		RSR = { country_event = { id = poland.135 days = 1 } }
+		ai_will_do = {
+			factor = 0
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 199999 } }}
+			modifier = { add = 1 RSR = {has_army_manpower = { size < 299999 } }}
+			modifier = { add = 1 RSR = {num_of_factories > 17 }}
+			modifier = { add = 1 RSR = {num_of_factories > 19 }}
+			modifier = { add = 1 RSR = {num_of_factories > 21 }}
+			modifier = { add = 1 RSR = {surrender_progress < 0.60 } }
+		}
+	}
+	option = { #Лучше уж мы сами придём, и заберём своё
+		name = poland.134.c
+		custom_effect_tooltip = POL_antanta_ne_dovolnya_tt
+		set_country_flag = POL_rastrel_srasny_krest
+		trigger = { NOT = { has_country_flag = POL_polska_idyt_na_peregovor } }
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = ENG.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    70 = {
+			        ENG = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    30 = {
+			       ENG = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = FRA.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    70 = {
+			        FRA = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    30 = {
+			       FRA = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}	
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = USA.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    70 = {
+			        USA = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    30 = {
+			       USA = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}	
+		IF = {
+		    limit = {
+			    is_in_array = {
+				    array = ITA.rcw_supported_states
+				    value = POL.id
+			    }
+			}
+            random_list = {
+			    seed = random
+			    70 = {
+			        ITA = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    30 = {
+			       ITA = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = { add = 1 RSR = { surrender_progress < 0.40 } }
+			modifier = { add = 1 RSR = { surrender_progress < 0.20 } }
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 9999 } } }
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 19999 } } } 
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 29999 } }}
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 39999 } }}
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 49999 } }}
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 59999 } }}
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 69999 } }}
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 79999 } }}
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 99999 } }}
+			modifier = { add = 1 RSR = { has_army_manpower = { size < 199999 } }}
+			modifier = { add = 2 RSR = { num_of_factories < 0 }}
+			modifier = { add = 2 RSR = { num_of_factories < 1 }}
+			modifier = { add = 2 RSR = { num_of_factories < 2 }}
+			modifier = { add = 2 RSR = { num_of_factories < 3 }}
+			modifier = { add = 2 RSR = { num_of_factories < 5 }}
+			modifier = { add = 2 RSR = { num_of_factories < 7 }}
+			modifier = { add = 2 RSR = { num_of_factories < 9 }}
+			modifier = { add = 1 RSR = { num_of_factories < 10 }}
+			modifier = { add = 1 RSR = { num_of_factories < 12 }}
+			modifier = { add = 1 RSR = { num_of_factories < 14 }}
+			modifier = { add = 1 RSR = { num_of_factories < 17 }}
+		}
+	}
+}
+country_event = {
+	id = poland.135 #Польша соглашается
+	title = poland.135.t
+    desc = poland.135.d
+
+	picture = GFX_report_event_pol_pregevoros_s_rsr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.135.a
+		set_global_flag = POL_RUS_peace_fired
+            diplomatic_relation = {
+                country = POL
+                relation = non_aggression_pact
+                active = YES
+            }
+		every_country = {
+			limit = {
+				OVERLORD = { OR = { tag = ROOT tag = FROM } }
+				OR = {
+					AND = {
+						original_tag = BLR
+						NOT = {
+							206 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = LIT
+						NOT = {
+							11 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = LAT
+						NOT = {
+							12 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = EST
+						NOT = {
+							812 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						former_russian_empire_ukraine_country = yes
+						NOT = {
+							202 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							221 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							192 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							227 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							196 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+				}
+			}
+			OVERLORD = {
+				annex_country = {
+					target = PREV
+					transfer_troops = yes
+				}
+			}
+		}
+		every_state = {
+			limit = {
+				is_owned_by = FROM
+				OR = {
+					state = 1004
+					region = 37
+					region = 130
+					region = 302
+					region = 303
+					state = 206
+					state = 1401
+					state = 924
+					state = 1168
+					state = 922
+					state = 94
+					state = 240
+					region = 306
+					region = 132
+				}
+				NOT = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+					is_core_of = LIT
+					is_claimed_by = LIT
+				}
+			}
+			ROOT = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = {
+				OR = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+					is_core_of = LIT
+					is_claimed_by = LIT
+				}
+				OR = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			}
+			FROM = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = {
+				is_subject_of = FROM
+				OR = {
+					original_tag = BLR
+					original_tag = UKR
+					original_tag = COU
+					original_tag = LIT
+					original_tag = LAT
+					original_tag = EST
+					original_tag = CRI
+				}
+			}
+			every_owned_state = {
+				limit = {
+					OR = {
+						is_core_of = FROM
+						is_claimed_by = FROM
+						is_core_of = LIT
+						is_claimed_by = LIT
+					}
+				}
+				FROM = { transfer_state = PREV }
+			}
+			FROM = { end_puppet = PREV }
+		}
+		every_country = {
+			limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+			FROM = { THIS_white_peace_PREV_buffer = yes }
+			remove_wargoal = {
+				type = all
+				target = ROOT
+			}
+			ROOT = {
+				remove_wargoal = {
+					type = all
+					target = PREV
+				}
+			}
+		}
+		if = {
+			limit = { LIT = { has_war_with = ROOT } }
+			every_country = {
+				limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+				LIT = { THIS_white_peace_PREV_buffer = yes }
+				remove_wargoal = {
+					type = all
+					target = LIT
+				}
+				LIT = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LAT = { has_war_with = ROOT } }
+			every_country = {
+				limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+				LAT = { THIS_white_peace_PREV_buffer = yes }
+				remove_wargoal = {
+					type = all
+					target = LAT
+				}
+				LAT = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LAT
+				}
+				LAT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { EST = { has_war_with = ROOT } }
+			every_country = {
+				limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+				EST = { THIS_white_peace_PREV_buffer = yes }
+				remove_wargoal = {
+					type = all
+					target = EST
+				}
+				EST = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = EST
+				}
+				EST = { transfer_state = PREV }
+			}
+		}
+	}
+}
+country_event = {
+	id = poland.136 #Польша требует больших уступок
+	title = poland.136.t
+    desc = poland.136.d
+
+	picture = GFX_report_event_pol_pregevoros_s_rsr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.136.a
+		news_event = { id = news_n.1005 hours = 1 }
+		set_global_flag = soviet_polish_War
+		declare_war_on = {
+			target = POL
+			type = annex_everything
+		}
+		ai_will_do = {
+		    factor = 3
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 2 has_army_manpower = { size > 129999 } }
+			modifier = { add = 2 has_army_manpower = { size > 149999 } }
+			modifier = { add = 2 has_army_manpower = { size > 169999 } }
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+	option = {
+		name = poland.136.b
+		set_global_flag = POL_RUS_peace_fired
+            diplomatic_relation = {
+                country = POL
+                relation = non_aggression_pact
+                active = YES
+            }
+		every_country = {
+			limit = {
+				OVERLORD = { OR = { tag = ROOT tag = FROM } }
+				OR = {
+					AND = {
+						original_tag = BLR
+						NOT = {
+							206 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = LIT
+						NOT = {
+							11 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = LAT
+						NOT = {
+							12 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = EST
+						NOT = {
+							812 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						former_russian_empire_ukraine_country = yes
+						NOT = {
+							202 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							221 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							192 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							227 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							196 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+				}
+			}
+			OVERLORD = {
+				annex_country = {
+					target = PREV
+					transfer_troops = yes
+				}
+			}
+		}
+		every_country = {
+			limit = {
+				is_subject_of = FROM
+				OR = {
+					original_tag = BLR
+					original_tag = UKR
+					original_tag = COU
+					original_tag = LIT
+				}
+			}
+			every_state = {
+				limit = {
+					OR = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+					OR = {
+						is_core_of = PREV
+						is_claimed_by = PREV
+					}
+				}
+				PREV = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				OR = { OWNER = { OR = { tag = ROOT is_subject_of = ROOT } } CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+				OR = {
+					is_core_of = FROM
+					is_claimed_by = FROM
+					is_core_of = BLR
+					is_claimed_by = BLR
+					is_core_of = LIT
+					is_claimed_by = LIT
+					is_core_of = COU
+					is_claimed_by = COU
+					is_core_of = UKR
+					is_claimed_by = UKR
+				}
+			}
+			FROM = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = {
+				OVERLORD = { OR = { tag = ROOT tag = FROM } }
+				OR = {
+					AND = {
+						original_tag = BLR
+						NOT = {
+							206 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = LIT
+						NOT = {
+							11 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = LAT
+						NOT = {
+							12 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						original_tag = EST
+						NOT = {
+							812 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+					AND = {
+						former_russian_empire_ukraine_country = yes
+						NOT = {
+							202 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							221 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							192 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							227 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+							196 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = FROM is_subject_of = FROM tag = ROOT is_subject_of = ROOT } } } }
+						}
+					}
+				}
+			}
+			OVERLORD = {
+				annex_country = {
+					target = PREV
+					transfer_troops = yes
+				}
+			}
+		}
+		if = {
+			limit = { LIT = { has_war_with = ROOT } }
+			every_country = {
+				limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+				LIT = { THIS_white_peace_PREV_buffer = yes }
+				remove_wargoal = {
+					type = all
+					target = LIT
+				}
+				LIT = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LAT = { has_war_with = ROOT } }
+			every_country = {
+				limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+				LAT = { THIS_white_peace_PREV_buffer = yes }
+				remove_wargoal = {
+					type = all
+					target = LAT
+				}
+				LAT = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = LAT
+				}
+				LAT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { EST = { has_war_with = ROOT } }
+			every_country = {
+				limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+				EST = { THIS_white_peace_PREV_buffer = yes }
+				remove_wargoal = {
+					type = all
+					target = EST
+				}
+				EST = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = ROOT
+					is_core_of = EST
+				}
+				EST = { transfer_state = PREV }
+			}
+		}
+		every_country = {
+			limit = { OR = { tag = ROOT is_in_faction_with = ROOT } }
+			FROM = { THIS_white_peace_PREV_buffer = yes }
+			remove_wargoal = {
+				type = all
+				target = FROM
+			}
+			FROM = {
+				remove_wargoal = {
+					type = all
+					target = PREV
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = { add = 1 surrender_progress < 0.40 }
+			modifier = { add = 1 surrender_progress < 0.20 }
+			modifier = { add = 1 has_army_manpower = { size < 9999 } }
+			modifier = { add = 1 has_army_manpower = { size < 19999 } }
+			modifier = { add = 1 has_army_manpower = { size < 29999 } }
+			modifier = { add = 1 has_army_manpower = { size < 39999 } }
+			modifier = { add = 1 has_army_manpower = { size < 49999 } }
+			modifier = { add = 1 has_army_manpower = { size < 59999 } }
+			modifier = { add = 1 has_army_manpower = { size < 69999 } }
+			modifier = { add = 1 has_army_manpower = { size < 79999 } }
+			modifier = { add = 1 has_army_manpower = { size < 99999 } }
+			modifier = { add = 1 has_army_manpower = { size < 199999 } }
+			modifier = { add = 1 num_of_factories < 0 }
+			modifier = { add = 1 num_of_factories < 1 }
+			modifier = { add = 1 num_of_factories < 2 }
+			modifier = { add = 1 num_of_factories < 3 }
+			modifier = { add = 1 num_of_factories < 5 }
+			modifier = { add = 1 num_of_factories < 7 }
+			modifier = { add = 1 num_of_factories < 9 }
+		}
+	}
+}
+country_event = {
+	id = poland.137 #Россия идёт на большие уступки
+	title = poland.137.t
+    desc = poland.137.d
+
+	picture = GFX_report_event_pol_pregevoros_s_rsr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.137.a
+		set_global_flag = POL_RUS_peace_fired
+            diplomatic_relation = {
+                country = POL
+                relation = non_aggression_pact
+                active = YES
+            }
+		every_country = {
+			limit = {
+				OVERLORD = { OR = { tag = FROM tag = ROOT } }
+				OR = {
+					AND = {
+						original_tag = BLR
+						NOT = {
+							206 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						original_tag = LIT
+						NOT = {
+							11 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						original_tag = LAT
+						NOT = {
+							12 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						original_tag = EST
+						NOT = {
+							812 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						former_russian_empire_ukraine_country = yes
+						NOT = {
+							202 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							221 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							192 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							227 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							196 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+				}
+			}
+			OVERLORD = {
+				annex_country = {
+					target = PREV
+					transfer_troops = yes
+				}
+			}
+		}
+		every_country = {
+			limit = {
+				is_subject_of = ROOT
+				OR = {
+					original_tag = BLR
+					original_tag = UKR
+					original_tag = COU
+					original_tag = LIT
+				}
+			}
+			every_state = {
+				limit = {
+					OR = { OWNER = { OR = { tag = FROM is_subject_of = FROM } } CONTROLLER = { OR = { tag = FROM is_subject_of = FROM } } }
+					OR = {
+						is_core_of = PREV
+						is_claimed_by = PREV
+					}
+				}
+				PREV = { transfer_state = PREV }
+			}
+		}
+		every_state = {
+			limit = {
+				OR = { OWNER = { OR = { tag = FROM is_subject_of = FROM } } CONTROLLER = { OR = { tag = FROM is_subject_of = FROM } } }
+				OR = {
+					is_core_of = ROOT
+					is_claimed_by = ROOT
+					is_core_of = BLR
+					is_claimed_by = BLR
+					is_core_of = LIT
+					is_claimed_by = LIT
+					is_core_of = COU
+					is_claimed_by = COU
+					is_core_of = UKR
+					is_claimed_by = UKR
+				}
+			}
+			ROOT = { transfer_state = PREV }
+		}
+		every_country = {
+			limit = {
+				OVERLORD = { OR = { tag = FROM tag = ROOT } }
+				OR = {
+					AND = {
+						original_tag = BLR
+						NOT = {
+							206 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						original_tag = LIT
+						NOT = {
+							11 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						original_tag = LAT
+						NOT = {
+							12 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						original_tag = EST
+						NOT = {
+							812 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+					AND = {
+						former_russian_empire_ukraine_country = yes
+						NOT = {
+							202 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							221 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							192 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							227 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+							196 = { OR = { OWNER = { tag = PREV.PREV } CONTROLLER = { has_war_with = PREV.PREV NOT = { tag = ROOT is_subject_of = ROOT tag = FROM is_subject_of = FROM } } } }
+						}
+					}
+				}
+			}
+			OVERLORD = {
+				annex_country = {
+					target = PREV
+					transfer_troops = yes
+				}
+			}
+		}
+		if = {
+			limit = { LIT = { has_war_with = FROM } }
+			every_country = {
+				limit = { OR = { tag = FROM is_in_faction_with = FROM } }
+				white_peace = LIT
+				remove_wargoal = {
+					type = all
+					target = LIT
+				}
+				LIT = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = FROM
+					is_core_of = LIT
+				}
+				LIT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { LAT = { has_war_with = FROM } }
+			every_country = {
+				limit = { OR = { tag = FROM is_in_faction_with = FROM } }
+				white_peace = LAT
+				remove_wargoal = {
+					type = all
+					target = LAT
+				}
+				LAT = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = FROM
+					is_core_of = LAT
+				}
+				LAT = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = { EST = { has_war_with = FROM } }
+			every_country = {
+				limit = { OR = { tag = FROM is_in_faction_with = FROM } }
+				white_peace = EST
+				remove_wargoal = {
+					type = all
+					target = EST
+				}
+				EST = {
+					remove_wargoal = {
+						type = all
+						target = PREV
+					}
+				}
+			}
+			every_state = {
+				limit = {
+					is_owned_by = FROM
+					is_core_of = EST
+				}
+				EST = { transfer_state = PREV }
+			}
+		}
+		every_country = {
+			limit = { OR = { tag = FROM is_in_faction_with = FROM } }
+			ROOT = { THIS_white_peace_PREV_buffer = yes }
+			remove_wargoal = {
+				type = all
+				target = ROOT
+			}
+			ROOT = {
+				remove_wargoal = {
+					type = all
+					target = PREV
+				}
+			}
+		}
+	}
+}
+country_event = {
+	id = poland.138 #Белорусская государственность
+	title = poland.138.t
+    desc = poland.138.d
+
+	picture = GFX_BLR_belarus_ukrain_army
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.138.a
+		declare_war_on = {
+			target = BLR
+			type = annex_everything
+		}
+		add_stability = -0.03
+		BLR = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+		hidden_effect = { FRA = { country_event = { id =  days = 3 } } ENG = { country_event = { id =  days = 3 } } USA = { country_event = { id =  days = 3 } } }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = despotism }
+			modifier = { factor = 5 has_government = authoritarism }
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+	option = {
+		name = poland.138.b
+		BLR = { country_event = poland.140 }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = social_democracy }
+			modifier = { factor = 5 has_government = social_liberalismm }
+			modifier = { factor = 5 has_government = conservatism }
+		}
+	}
+}
+country_event = {
+	id = poland.139 #Белорусская рада
+	title = poland.139.t
+    desc = poland.139.d
+
+	picture = GFX_BLR_belarus_ukrain_army
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.139.a
+		add_stability = -0.03
+		set_country_flag = POL_not_otnsh_blr_rada
+		BLR = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+		hidden_effect = { FRA = { country_event = { id =  days = 3 } } ENG = { country_event = { id =  days = 3 } } USA = { country_event = { id =  days = 3 } } }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = despotism }
+			modifier = { factor = 5 has_government = authoritarism }
+			modifier = { factor = 999 BLR = { is_ai = yes } is_historical_focus_on = yes }
+		}
+	}
+	option = {
+		name = poland.139.b
+		BLR = { country_event = poland.140 }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = social_democracy }
+			modifier = { factor = 5 has_government = social_liberalismm }
+			modifier = { factor = 5 has_government = conservatism }
+		}
+	}
+}
+country_event = {
+	id = poland.140 #Переговоры с Варшавой
+	title = poland.140.t
+    desc = poland.140.d
+
+	picture = GFX_report_event_pol_nashalnik_gos
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.140.a
+		POL = { country_event = { id = poland.142 days = 1 } }
+		ai_will_do = {
+			factor = 1
+			modifier = { add = 1 has_army_manpower = { size > 9999 } }
+			modifier = { add = 2 has_army_manpower = { size > 19999 } }
+			modifier = { add = 2 has_army_manpower = { size > 29999 } }
+			modifier = { add = 2 has_army_manpower = { size > 39999 } }
+			modifier = { add = 2 has_army_manpower = { size > 49999 } }
+			modifier = { add = 2 has_army_manpower = { size > 59999 } }
+			modifier = { add = 3 has_army_manpower = { size > 69999 } }
+			modifier = { add = 3 has_army_manpower = { size > 79999 } }
+			modifier = { add = 3 has_army_manpower = { size > 89999 } }
+			modifier = { add = 3 has_army_manpower = { size > 99999 } }
+		}
+	}
+	option = {
+		name = poland.140.b
+		POL = { country_event = { id = poland.143 days = 1 } }
+		set_country_flag = POL_blr_prisoedinyaetsa_meshdmr
+        ai_will_do = {
+			factor = 3
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 90 } } }
+			modifier = { factor = 1 surrender_progress < 0.8 } }
+			modifier = { factor = 1 surrender_progress < 0.6 } }
+			modifier = { factor = 2 surrender_progress < 0.4 } }
+			modifier = { factor = 2 surrender_progress < 0.3 } }
+		}
+	}
+}
+country_event = {
+	id = poland.141 #Сейм Польского государства
+	title = poland.141.t
+    desc = poland.141.d
+
+	picture = GFX_report_event_pol_seim
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.141.a
+		add_popularity = { ideology = radical_socialism popularity = 0.03 }
+		add_popularity = { ideology = communism popularity = 0.03 }
+	}
+	option = {
+		name = poland.141.b
+		add_popularity = { ideology = social_liberalism popularity = 0.03 }
+		add_popularity = { ideology = market_liberalism popularity = 0.03 }
+	}
+	option = {
+		name = poland.141.c
+		add_popularity = { ideology = conservatism popularity = 0.03 }
+	}
+	option = {
+		name = poland.141.e
+		trigger = { has_country_leader = { name = "Józef Pilsudski" ruling_only = yes } }
+		add_popularity = { ideology = despotism popularity = 0.03 }
+	}
+	option = {
+		name = poland.141.g
+		trigger = { has_country_leader = { name = "Jozef Haller" ruling_only = yes } }
+		add_popularity = { ideology = despotism popularity = 0.03 }
+	}
+	option = {
+		name = poland.141.f
+		add_popularity = { ideology = fascism popularity = 0.03 }
+		add_popularity = { ideology = syndicalism popularity = 0.03 }
+	}
+}
+country_event = {
+	id = poland.142 #Белорусское правительство отказывается
+	title = poland.142.t
+    desc = poland.142.d
+
+	picture = GFX_report_event_union_blr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.142.a
+		declare_war_on = {
+			target = BLR
+			type = annex_everything
+		}
+		IF = {
+		    limit = {
+			    OR = {
+			        is_in_array = {
+				        array = ENG.rcw_supported_states
+				        value = BLR.id
+			        }
+					is_in_array = {
+				        array = FRA.rcw_supported_states
+				        value = BLR.id
+			        }
+					is_in_array = {
+				        array = USA.rcw_supported_states
+				        value = BLR.id
+			        }
+					is_in_array = {
+				        array = ITA.rcw_supported_states
+				        value = BLR.id
+			        }
+				}		
+			}
+			custom_effect_tooltip = POL_antanta_ne_dovolnya_tt
+            random_list = {
+			    seed = random
+			    40 = {
+			        FROM = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    60 = {
+			       FROM = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}
+        ai_will_do = {
+			factor = 3
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 1 has_army_manpower = { size > 119999 } }
+			modifier = { add = 1 has_army_manpower = { size > 129999 } }
+			modifier = { add = 1 has_army_manpower = { size > 139999 } }
+			modifier = { add = 1 has_army_manpower = { size > 149999 } }
+			modifier = { add = 1 has_army_manpower = { size > 159999 } }
+			modifier = { add = 1 has_army_manpower = { size > 169999 } }
+			modifier = { add = 1 has_army_manpower = { size > 179999 } }
+			modifier = { add = 1 has_army_manpower = { size > 189999 } }
+		}
+	}
+	option = {
+		name = poland.142.b
+		add_war_support = -0.03
+        ai_will_do = {
+			factor = 0
+			modifier = { add = 1 BLR = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 BLR = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 BLR = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 BLR = { has_opinion = { target = POL value > 90 } } }
+			modifier = { add = 5 is_in_array = { array = ENG.rcw_supported_states value = BLR.id } }
+			modifier = { add = 5 is_in_array = { array = FRA.rcw_supported_states value = BLR.id } }
+			modifier = { add = 5 is_in_array = { array = USA.rcw_supported_states value = BLR.id } }
+			modifier = { add = 5 is_in_array = { array = ITA.rcw_supported_states value = BLR.id } }
+		}
+	}
+}
+country_event = {
+	id = poland.143 #Белорусское правительство соглашается
+	title = poland.143.t
+    desc = poland.143.d
+
+	picture = GFX_report_event_union_blr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.143.a
+		set_country_flag = POL_dogovor_s_blr
+	    BLR = { THIS_country_will_be_recognized_by_PREV = yes }
+		IF = { 
+		    limit = { is_in_faction = no }
+			create_faction = LIT_meshdmore
+		}
+		add_to_faction = BLR
+		add_opinion_modifier = {
+            target = BLR
+            modifier = BLR_Ylychenie_otnocheniy
+        }
+	}
+}
+
+country_event = {
+	id = poland.144 #Украинская республика
+	title = poland.144.t
+    desc = poland.144.d
+
+	picture = GFX_report_event_pol_peregovor_s_ukr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.144.a
+		add_stability = -0.03
+		declare_war_on = {
+			target = UKR
+			type = annex_everything
+		}
+		UKR = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = despotism }
+			modifier = { factor = 5 has_government = authoritarism }
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 1 has_army_manpower = { size > 119999 } }
+			modifier = { add = 1 has_army_manpower = { size > 129999 } }
+			modifier = { add = 1 has_army_manpower = { size > 139999 } }
+			modifier = { add = 1 has_army_manpower = { size > 149999 } }
+			modifier = { add = 1 has_army_manpower = { size > 159999 } }
+			modifier = { add = 1 has_army_manpower = { size > 169999 } }
+			modifier = { add = 1 has_army_manpower = { size > 179999 } }
+			modifier = { add = 1 has_army_manpower = { size > 189999 } }
+		}
+	}
+	option = {
+		name = poland.144.b
+		UKR = { country_event = poland.145 }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+			modifier = { factor = 5 has_government = despotism }
+			modifier = { factor = 5 has_government = authoritarism }
+		}
+	}
+	option = {
+		name = poland.144.c
+		UKR = { country_event = poland.146 }
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 5 has_government = social_democracy }
+			modifier = { factor = 5 has_government = social_liberalismm }
+			modifier = { factor = 5 has_government = conservatism }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 90 } } }
+		}
+	}
+}
+country_event = {
+	id = poland.145 #Предложение о союзе
+	title = poland.145.t
+    desc = poland.145.d
+
+	picture = GFX_report_event_pol_nashalnik_gos
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.145.a
+		POL = { country_event = { id = poland.147 days = 1 } }
+		ai_will_do = {
+			factor = 1
+			modifier = { add = 1 has_army_manpower = { size > 59999 } }
+			modifier = { add = 1 has_army_manpower = { size > 69999 } }
+			modifier = { add = 1 has_army_manpower = { size > 79999 } }
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 1 has_army_manpower = { size > 99999 } }
+			modifier = { add = 2 has_army_manpower = { size > 129999 } }
+		}
+	}
+	option = {
+		name = poland.145.b
+		POL = { country_event = { id = poland.148 days = 1 } }
+		set_country_flag = POL_ukr_prisoedinyaetsa_meshdmr
+        ai_will_do = {
+			factor = 1
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 LIT = { has_opinion = { target = POL value > 90 } } }
+			modifier = { factor = 999 UKR = { is_ai = yes } is_historical_focus_on = yes }
+			modifier = { factor = 1 surrender_progress < 0.8 } }
+			modifier = { factor = 1 surrender_progress < 0.6 } }
+			modifier = { factor = 2 surrender_progress < 0.4 } }
+			modifier = { factor = 2 surrender_progress < 0.3 } }
+		}
+	}
+}
+country_event = {
+	id = poland.146 #Предложение о равноправном союзе
+	title = poland.146.t
+    desc = poland.146.d
+
+	picture = GFX_report_event_pol_nashalnik_gos
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.146.a
+		POL = { country_event = { id = poland.147 days = 1 } }
+		ai_will_do = {
+			factor = 1
+			modifier = { add = 1 has_army_manpower = { size > 59999 } }
+			modifier = { add = 1 has_army_manpower = { size > 69999 } }
+			modifier = { add = 1 has_army_manpower = { size > 79999 } }
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 1 has_army_manpower = { size > 99999 } }
+			modifier = { add = 2 has_army_manpower = { size > 129999 } }
+		}
+	}
+	option = {
+		name = poland.146.b
+		POL = { country_event = { id = poland.149 days = 1 } }
+		set_country_flag = POL_ukr_prisoedinyaetsa_meshdmr
+        ai_will_do = {
+			factor = 1
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 90 } } }
+			modifier = { factor = 1 surrender_progress < 0.8 } }
+			modifier = { factor = 1 surrender_progress < 0.6 } }
+			modifier = { factor = 2 surrender_progress < 0.4 } }
+			modifier = { factor = 2 surrender_progress < 0.3 } }
+		}
+	}
+}
+country_event = {
+	id = poland.147 #Украинское правительство отказывается
+	title = poland.147.t
+    desc = poland.147.d
+
+	picture = GFX_report_event_pol_ukr_protiv_union
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.147.a
+		declare_war_on = {
+			target = UKR
+			type = annex_everything
+		}
+		IF = {
+		    limit = {
+			    OR = {
+			        is_in_array = {
+				        array = ENG.rcw_supported_states
+				        value = UKR.id
+			        }
+					is_in_array = {
+				        array = FRA.rcw_supported_states
+				        value = UKR.id
+			        }
+					is_in_array = {
+				        array = USA.rcw_supported_states
+				        value = UKR.id
+			        }
+					is_in_array = {
+				        array = ITA.rcw_supported_states
+				        value = UKR.id
+			        }
+				}		
+			}
+			custom_effect_tooltip = POL_antanta_ne_dovolnya_tt
+            random_list = {
+			    seed = random
+			    40 = {
+			        FROM = { add_opinion_modifier = { target = POL modifier = BLR_yhytshenie_otnocheniy } }
+			    }
+			    60 = {
+			       FROM = { country_event = { id = poland.131 days = 1 } }
+			    }
+		    }
+		}
+        ai_will_do = {
+			factor = 3
+			modifier = { add = 1 has_army_manpower = { size > 89999 } }
+			modifier = { add = 1 has_army_manpower = { size > 119999 } }
+			modifier = { add = 1 has_army_manpower = { size > 129999 } }
+			modifier = { add = 1 has_army_manpower = { size > 139999 } }
+			modifier = { add = 1 has_army_manpower = { size > 149999 } }
+			modifier = { add = 1 has_army_manpower = { size > 159999 } }
+			modifier = { add = 1 has_army_manpower = { size > 169999 } }
+			modifier = { add = 1 has_army_manpower = { size > 179999 } }
+			modifier = { add = 1 has_army_manpower = { size > 189999 } }
+		}
+	}
+	option = {
+		name = poland.147.b
+		add_war_support = -0.03
+        ai_will_do = {
+			factor = 0
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 30 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 50 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 70 } } }
+			modifier = { add = 1 UKR = { has_opinion = { target = POL value > 90 } } }
+			modifier = { add = 5 is_in_array = { array = ENG.rcw_supported_states value = UKR.id } }
+			modifier = { add = 5 is_in_array = { array = FRA.rcw_supported_states value = UKR.id } }
+			modifier = { add = 5 is_in_array = { array = USA.rcw_supported_states value = UKR.id } }
+			modifier = { add = 5 is_in_array = { array = ITA.rcw_supported_states value = UKR.id } }
+		}
+	}
+}
+country_event = {
+	id = poland.148 #Украинское правительство соглашается - хист
+	title = poland.148.t
+    desc = poland.148.d
+
+	picture = GFX_report_event_pol_union_ukr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.148.a
+		set_country_flag = POL_dogovor_s_blr
+		set_country_flag = POL_blr_prisoedinyaetsa_meshdmr
+	    UKR = { THIS_country_will_be_recognized_by_PREV = yes }
+		IF = { 
+		    limit = { is_in_faction = no }
+			create_faction = LIT_meshdmore
+		}
+		UKR = { subjecting_script_with_transfer_parties_colony = yes }
+		add_to_faction = UKR
+		every_state = {
+			limit = {
+				OWNER = { OR = { tag = UKR tag = POL } }
+				OR = {
+					state = 93
+					state = 204
+					state = 1443
+					state = 1437
+					state = 194
+			    }
+			}
+			POL = { transfer_state = PREV }
+		}
+		add_opinion_modifier = {
+            target = UKR
+            modifier = BLR_Ylychenie_otnocheniy
+        }
+	}
+}
+country_event = {
+	id = poland.149 #Украинское правительство соглашается
+	title = poland.149.t
+    desc = poland.149.d
+
+	picture = GFX_report_event_pol_union_ukr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.149.a
+	    UKR = { THIS_country_will_be_recognized_by_PREV = yes }
+		IF = { 
+		    limit = { is_in_faction = no }
+			create_faction = LIT_meshdmore
+		}
+		add_to_faction = UKR
+		add_opinion_modifier = {
+            target = UKR
+            modifier = BLR_Ylychenie_otnocheniy
+        }
+	}
+}
+country_event = {
+	id = poland.150 #Смена Белорусского правительства
+	title = poland.150.t
+    desc = poland.150.d
+
+	picture = GFX_report_event_pol_union_ukr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.150.a
+	    BLR = {
+			set_politics = {
+				ruling_party = social_democracy
+				elections_allowed = no
+			}
+		    create_country_leader = { name = Anton_Luckevich desc = "BLR_Anton_Luckevich_DESC" picture = "gfx/leaders/BLR/Portrait_Anton_Luckevich" ideology = social_reformism traits = { } }
+		}
+	}
+	option = {
+		name = poland.150.b
+	    BLR = {
+			set_politics = {
+				ruling_party = despotism
+				elections_allowed = no
+			}
+		    create_country_leader = { name = "Hasan Konopacki" desc = "BLR_Hasan_Konopacki_DESC" picture = "gfx/leaders/BLR/Portrait_Hasan_Konopacki" ideology = despotism_ideology traits = { warmonger_old_general } }
+		}
+	}
+	option = {
+		name = poland.150.c
+	    trigger = { has_country_flag = BLR_pol_verbyyt_bulak }
+		BLR = {
+			set_politics = {
+				ruling_party = despotism
+				elections_allowed = no
+			}
+		    create_country_leader = { name = "Stanislav Bulak-Balahovich" desc = "Bulak_Balahovich_DESC" picture = "gfx/leaders/BLR/Portrait_Bulak_Balahovich.dds" expire = "1965.1.1" ideology = despotism_ideology traits = { warmonger min_1_local_tyrant partisan_raider } }
 		}
 	}
 }
