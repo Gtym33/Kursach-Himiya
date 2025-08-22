@@ -490,3 +490,92 @@ country_event = {
 		}
 	}
 }
+
+# Изъятие урожая в столицу
+country_event = {
+	id = agriculture.11
+	title = agriculture.11.t
+	desc = agriculture.11.desc
+	picture = GFX_report_event_izyatie_urozhaya_v_stolitsu
+	is_triggered_only = yes
+	
+	option = {
+		name = agriculture.11.a
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						set_temp_variable = { population_of_FROM = FROM.max_manpower_k }
+						multiply_temp_variable = { population_of_FROM = 4 }
+						check_variable = {
+							var = population_of_FROM
+							value = THIS.max_manpower_k
+							compare = greater_than_or_equals
+						}
+					}
+					has_idea = RAJ_risk_of_famine
+				}
+			}
+			rise_foodstuffs_supply_crisis_2 = yes
+			else = {
+				rise_foodstuffs_supply_crisis = yes
+			}
+		}
+		add_autonomy_score = {
+			value = 150
+			localization = autonomy_loc_izyatie_urozhaya_v_stolitsu
+		}
+	}
+}
+# Реквизиции в зоне оккупации
+country_event = {
+	id = agriculture.12
+	title = agriculture.12.t
+	desc = agriculture.12.desc
+	picture = GFX_report_event_izyatie_urozhaya_v_stolitsu
+	is_triggered_only = yes
+	
+	option = {
+		name = agriculture.12.a
+		fall_foodstuffs_supply_crisis = yes
+		every_controlled_state = {
+			limit = {
+				OR = {
+					is_core_of = event_target:agriculture_12_FROM
+					is_owned_by = event_target:agriculture_12_FROM
+				}
+			}
+			add_resistance = 15
+		}
+		clear_global_event_target = agriculture_12_FROM
+	}
+	option = {
+		name = agriculture.12.b
+		fall_foodstuffs_supply_crisis_2 = yes
+		every_controlled_state = {
+			limit = {
+				OR = {
+					is_core_of = event_target:agriculture_12_FROM
+					is_owned_by = event_target:agriculture_12_FROM
+				}
+			}
+			add_resistance = 30
+		}
+		event_target:agriculture_12_FROM = { country_event = agriculture.13 }
+		clear_global_event_target = agriculture_12_FROM
+	}
+}
+# Враг грабит страну
+country_event = {
+	id = agriculture.13
+	title = agriculture.13.t
+	desc = agriculture.13.desc
+	picture = GFX_report_event_izyatie_urozhaya_v_stolitsu
+	is_triggered_only = yes
+	
+	option = {
+		name = agriculture.13.a
+		rise_foodstuffs_supply_crisis = yes
+		add_war_support = 0.04
+	}
+}
