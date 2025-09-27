@@ -5726,12 +5726,12 @@ country_event = {
 			type = annex_everything
 		}
 		ai_will_do = {
-		    factor = 3
+		    factor = 5
 			modifier = { add = 1 has_army_manpower = { size > 89999 } }
 			modifier = { add = 2 has_army_manpower = { size > 129999 } }
 			modifier = { add = 2 has_army_manpower = { size > 149999 } }
 			modifier = { add = 2 has_army_manpower = { size > 169999 } }
-			modifier = { factor = 999 POL = { is_ai = yes } is_historical_focus_on = yes }
+			modifier = { factor = 999 RUS = { is_ai = yes } is_historical_focus_on = yes }
 		}
 	}
 	option = {
@@ -6836,11 +6836,13 @@ country_event = {
 	
 	option = { #Советская власть победит!
 		name = poland.152.a
-	    (Открывает категорию решений “Сейм Польского Государства”, открывает решения коммунистов)
+	    set_country_flag = POL_seim_commun
+		custom_effect_tooltip = POL_seim_commun_tt
 	}
 	option = { #Вперёд польское крестьянство
 		name = poland.152.b
-	    (Открывает категорию решений “Сейм Польского Государства”, открывает решения рад.соцев)
+	    set_country_flag = POL_seim_radsoc
+		custom_effect_tooltip = POL_seim_radsoc_tt
 	}
 }
 country_event = {
@@ -6905,5 +6907,286 @@ country_event = {
 	option = { #Юзеф Галлер наведёт порядок! 
 		name = poland.156.a
 	    set_party_name = { ideology = despotism long_name = POL_koalicia_gallera_party_long name = POL_koalicia_gallera_party }
+	}
+}
+country_event = {
+	id = poland.157 #Освобождение за большевизм
+	title = poland.157.t
+    desc = poland.157.d
+
+	picture = GFX_report_event_pol_fredom_bolsh
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.157.a
+		POL_inf_p_bar = yes
+		POL_reset_seim_antogonism = yes
+		POL_antogonism_seim_rise_04 = yes
+	}
+}
+country_event = {
+	id = poland.158 #Обращение польских крестьян
+	title = poland.158.t
+    desc = poland.158.d
+
+	picture = GFX_report_event_pol_obrsh_krestyan
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.158.a
+		add_political_power = 5
+	}
+}
+country_event = {
+	id = poland.159 #Привет польских крестьян
+	title = poland.159.t
+    desc = poland.159.d
+
+	picture = GFX_report_event_pol_obrsh_krestyan
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.159.a
+		add_political_power = 5
+	}
+}
+country_event = {
+	id = poland.160 #“Освобождение” требует власть
+	title = poland.160.t
+    desc = poland.160.d
+
+	picture = GFX_report_event_pol_radsoc_vlast
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.160.a
+		add_stability = -0.03
+		POL_inf_p_bar = yes
+		POL_reset_seim_antogonism = yes
+		POL_antogonism_seim_rise_05 = yes
+		set_politics = {
+			ruling_party = radical_socialism
+			elections_allowed = no
+		}
+	}
+}
+country_event = {
+	id = poland.161 #Угроза крестьянского мятежа
+	title = poland.161.t
+    desc = poland.161.d
+
+	picture = GFX_report_event_pol_obrsh_krestyan
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.161.a
+		add_political_power = -17
+		trigger = {
+		    NOT = {
+			    radical_socialism > party_popularity@communism
+			    radical_socialism > party_popularity@market_liberalism
+				radical_socialism > party_popularity@social_liberalism
+				radical_socialism > party_popularity@social_democracy
+				radical_socialism > party_popularity@despotism
+				radical_socialism > party_popularity@authoritarism
+				radical_socialism > party_popularity@conservatism
+				radical_socialism > party_popularity@fascism
+				radical_socialism > party_popularity@national_syndicalism
+			}
+		}
+	}
+	option = {
+		name = poland.161.b
+		add_stability = -0.03
+		set_politics = {
+			ruling_party = radical_socialism
+			elections_allowed = no
+		}
+		trigger = {
+			radical_socialism > party_popularity@communism
+		    radical_socialism > party_popularity@market_liberalism
+			radical_socialism > party_popularity@social_liberalism
+			radical_socialism > party_popularity@social_democracy
+			radical_socialism > party_popularity@despotism
+			radical_socialism > party_popularity@authoritarism
+			radical_socialism > party_popularity@conservatism
+			radical_socialism > party_popularity@fascism
+			radical_socialism > party_popularity@national_syndicalism
+		}
+	}
+}
+country_event = {
+	id = poland.162 #Восстание польских крестьян
+	title = poland.162.t
+    desc = poland.162.d
+
+	picture = GFX_report_event_pol_krestyan_vosst
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.162.a
+		trigger = {
+		    has_country_flag = POL_seim_radsoc
+			OR = {
+			    has_country_flag = POL_seim_radsoc_yacheiki_1
+				has_country_flag = POL_seim_radsoc_yacheiki_2
+				has_country_flag = POL_radsoc_sabotash_pra
+				has_country_flag = POL_tainy_shron_v_syolah
+				has_country_flag = POL_podgotov_k_deistv
+				has_country_flag = POL_seim_radsoc_yacheiki
+			}
+		}
+		start_civil_war = {
+			ideology = radical_socialism
+			size = 0.6
+			capital = 88
+			states = { 88 90 1117 92 925 904 }
+			keep_political_leader = no
+			add_civil_war_target = POL
+			division_template = {
+				name = "Krestyanskoe opolchenie"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 1 y = 0 }
+					militia = { x = 0 y = 1 }
+				}
+				is_locked = no
+			}
+			every_state = {
+				create_unit = {
+					division = "name = \"Milicja Chłopska\" division_template = \"Krestyanskoe opolchenie\" start_experience_factor = 0.0 start_equipment_factor = 1"
+					owner = PREV
+					count = 2
+				}
+			}
+		}
+		random_other_country = {
+			limit = { original_tag = ROOT }
+			every_unit_leader = { limit = { OR = { has_id = 69006 has_id = 69009 has_id = 69091 has_id = 69004 has_id = 69065 has_id = 69101 has_id = 69005 has_id = 69092 has_id = 69007 has_id = 69012 } } set_nationality = ROOT }
+		}
+		random_other_country = {
+			limit = { original_tag = ROOT }
+			change_tag_from = ROOT
+		}
+	}
+	option = {
+		name = poland.162.b
+		trigger = {
+		    NOT = {
+			    has_country_flag = POL_seim_radsoc
+			}
+		}
+		start_civil_war = {
+			ideology = radical_socialism
+			size = 0.6
+			capital = 88
+			states = { 88 90 1117 92 925 904 }
+			keep_political_leader = no
+			add_civil_war_target = POL
+			division_template = {
+				name = "Krestyanskoe opolchenie"
+				regiments = {
+					militia = { x = 0 y = 0 }
+					militia = { x = 1 y = 0 }
+					militia = { x = 0 y = 1 }
+				}
+				is_locked = no
+			}
+			every_state = {
+				create_unit = {
+					division = "name = \"Milicja Chłopska\" division_template = \"Krestyanskoe opolchenie\" start_experience_factor = 0.0 start_equipment_factor = 1"
+					owner = PREV
+					count = 2
+				}
+			}
+		}
+		random_other_country = {
+			limit = { original_tag = ROOT }
+			every_unit_leader = { limit = { OR = { has_id = 69006 has_id = 69009 has_id = 69091 has_id = 69004 has_id = 69065 has_id = 69101 has_id = 69005 has_id = 69092 has_id = 69007 has_id = 69012 } } set_nationality = ROOT }
+		}
+	}
+}
+country_event = {
+	id = poland.163 #Просьба польских товарищей
+	title = poland.163.t
+    desc = poland.163.d
+
+	picture = GFX_report_event_pol_polsky_rabochi
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.163.a
+		add_political_power = -35
+		POL = { add_popularity = { ideology = communism popularity = 0.04 } }
+		ai_will_do = {
+		    modifier = 999
+		}
+	}
+	option = {
+		name = poland.163.b
+		POL = { add_popularity = { ideology = communism popularity = -0.01 } }
+		ai_will_do = {
+		    modifier = 0
+		}
+	}
+}
+country_event = {
+	id = poland.164 #Обращение польских рабочих 
+	title = poland.164.t
+    desc = poland.164.d
+
+	picture = GFX_report_event_pol_polsky_rabochi
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.164.a
+		add_political_power = 5
+	}
+}
+country_event = {
+	id = poland.165 #Привет польских рабочих
+	title = poland.165.t
+    desc = poland.165.d
+
+	picture = GFX_report_event_pol_polsky_rabochi
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.165.a
+		add_war_support = 0.02
+	}
+}
+country_event = {
+	id = poland.166 #Красные рвуться к власти
+	title = poland.166.t
+    desc = poland.166.d
+
+	picture = GFX_report_event_pol_krasny_rvytsya_vlast
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.166.a
+		add_stability = -0.03
+		custom_effect_tooltip = POL_radsoc_ugroz_prav_tt
+		hidden_effect = {
+		   POL_inf_p_bar = yes
+		   POL_reset_seim_antogonism = yes
+		   POL_antogonism_seim_rise_05 = yes
+		   POL_antogonism_seim_rise_05 = yes
+		}
+		set_politics = {
+			ruling_party = communism
+			elections_allowed = no
+		}
 	}
 }
