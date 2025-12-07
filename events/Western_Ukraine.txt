@@ -1,0 +1,444 @@
+###########################
+# Western Ukrainian Events
+###########################
+
+add_namespace = Western_Ukraine
+
+country_event = { #Польша идет войной
+	id = w_ukraine.1
+	title = w_ukraine.1.t
+	desc = w_ukraine.1.desc
+	picture = GFX_report_event_pol_pols-ukr_war2
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.1.a
+		add_war_support = 0.05
+    }
+}
+
+country_event = { #Проведение Украинского национального совета
+	id = w_ukraine.2
+	title = w_ukraine.2.t
+	desc = w_ukraine.2.desc
+	picture = GFX_report_event_ukr_zunr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.2.a
+		IF = {
+		    limit = { original_tag = GAL }
+			load_oob = GAL_1918
+		}
+		trigger = {
+		    OR = {
+		        original_tag = GAL
+			    original_tag = UKR
+			}
+		}
+    }
+	
+	option = {
+		name = w_ukraine.2.c
+		trigger = {
+			original_tag = AUH
+		}
+    }
+	
+	option = {
+		name = w_ukraine.2.b
+		GAL = { change_tag_from = ROOT }
+		trigger = {
+		    OR = {
+		        original_tag = AUH
+			    original_tag = UKR
+			}
+		}
+    }
+}
+
+country_event = { #Создание Западной Украинской Народной Республики                                                                                                                                                                                                        
+	id = w_ukraine.3
+	title = w_ukraine.3.t
+	desc = w_ukraine.3.desc
+	picture = GFX_report_event_ukr_nezaleshnost_zunr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.3.a
+		add_stability = 0.03
+		remove_ideas = GAL_formal_gos
+    }
+}
+
+country_event = { #Добровольцы в ЗУНР
+	id = w_ukraine.4
+	title = w_ukraine.4.t
+	desc = w_ukraine.4.desc
+	picture = GFX_report_event_ukr_dobrovolci
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.4.a
+		GAL = { country_event = w_ukraine.5 }
+		add_manpower = -5000
+	    add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 300
+		}
+		add_equipment_to_stockpile = {
+			type = support_equipment
+			amount = 40
+		}
+		ai_chance = {
+			factor = 1
+			modifier = { factor = 2 has_opinion = { target = GAL value > -1 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 19 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 29 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 49 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 69 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 79 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 89 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 99 } }
+		}
+    }
+	option = {
+		name = w_ukraine.4.b
+		GAL = { country_event = w_ukraine.6 }
+		ai_chance = {
+			factor = 3
+        }
+    }
+}
+country_event = { #Украина посылает добровольцев
+	id = w_ukraine.5
+	title = w_ukraine.5.t
+	desc = w_ukraine.5.desc
+	picture = GFX_report_event_ukr_dobrovolci
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.5.a
+		add_opinion_modifier = { target = UKR modifier = BLR_Ylychenie_otnocheniy }
+		custom_effect_tooltip = GAL_ukr_dobrovolci_tt
+		hidden_effect = {
+			capital_scope = {
+			    create_unit = {
+			        division = "name = \"1-j Polk ukraїns'kih dobrovol'cіv\" division_template = \"Galitsiski strelkovyy polk\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			        owner = GAL
+		        }
+			    create_unit = {
+			        division = "name = \"2-j Polk ukraїns'kih dobrovol'cіv\" division_template = \"Galitsiski strelkovyy polk\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			        owner = GAL
+		        }
+			}
+		}
+    }
+}
+country_event = { #Украина отказывает в добровольцах
+	id = w_ukraine.6
+	title = w_ukraine.6.t
+	desc = w_ukraine.6.desc
+	picture = GFX_report_event_ukr_dobrovolci
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.6.a
+		
+    }
+}
+country_event = { #Галицкая армия
+	id = w_ukraine.7
+	title = w_ukraine.7.t
+	desc = w_ukraine.7.desc
+	picture = GFX_report_event_ukr_galicka_army
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.7.a
+		add_war_support = 0.05
+    }
+}
+country_event = {
+	id = w_ukraine.8 #Галицская армия выходит из подполья
+	title = w_ukraine.8.t
+	desc = w_ukraine.8.d
+
+	picture = GFX_report_event_ukr_galicka_army
+	
+	trigger = {
+	    original_tag = GAL
+		has_completed_focus = GAL_Partizane
+		has_idea = GAL_Partiz
+		OR = {
+		    has_war = no
+			surrender_progress < 0.05
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = w_ukraine.8.a
+		add_stability = 0.08
+		remove_ideas = GAL_Partiz
+	}
+}
+country_event = {
+	id = w_ukraine.9 #Письмо в Киев
+	title = w_ukraine.9.t
+	desc = w_ukraine.9.d
+
+	picture = GFX_report_event_ukr_galicka_army
+	
+	trigger = {
+	    original_tag = GAL
+		has_completed_focus = GAL_Pismo_kiev
+		
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = w_ukraine.9.a
+		add_stability = 0.08
+	}
+}
+country_event = { #Польша идет войной
+	id = w_ukraine.1
+	title = w_ukraine.1.t
+	desc = w_ukraine.1.desc
+	picture = GFX_report_event_pol_pols-ukr_war2
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.1.a
+		add_war_support = 0.05
+    }
+}
+
+country_event = { #Проведение Украинского национального совета
+	id = w_ukraine.2
+	title = w_ukraine.2.t
+	desc = w_ukraine.2.desc
+	picture = GFX_report_event_ukr_zunr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.2.a
+		IF = {
+		    limit = { original_tag = GAL }
+			load_oob = GAL_1918
+		}
+		trigger = {
+		    OR = {
+		        original_tag = GAL
+			    original_tag = UKR
+			}
+		}
+    }
+	
+	option = {
+		name = w_ukraine.2.c
+		trigger = {
+			original_tag = AUH
+		}
+    }
+	
+	option = {
+		name = w_ukraine.2.b
+		GAL = { change_tag_from = ROOT }
+		trigger = {
+		    OR = {
+		        original_tag = AUH
+			    original_tag = UKR
+			}
+		}
+    }
+}
+
+country_event = { #Создание Западной Украинской Народной Республики                                                                                                                                                                                                        
+	id = w_ukraine.3
+	title = w_ukraine.3.t
+	desc = w_ukraine.3.desc
+	picture = GFX_report_event_ukr_nezaleshnost_zunr
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.3.a
+		add_stability = 0.03
+		remove_ideas = GAL_formal_gos
+    }
+}
+
+country_event = { #Добровольцы в ЗУНР
+	id = w_ukraine.4
+	title = w_ukraine.4.t
+	desc = w_ukraine.4.desc
+	picture = GFX_report_event_ukr_dobrovolci
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.4.a
+		GAL = { country_event = w_ukraine.5 }
+		add_manpower = -5000
+	    add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 300
+		}
+		add_equipment_to_stockpile = {
+			type = support_equipment
+			amount = 40
+		}
+		ai_chance = {
+			factor = 1
+			modifier = { factor = 2 has_opinion = { target = GAL value > -1 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 19 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 29 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 49 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 69 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 79 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 89 } }
+			modifier = { factor = 2 has_opinion = { target = GAL value > 99 } }
+		}
+    }
+	option = {
+		name = w_ukraine.4.b
+		GAL = { country_event = w_ukraine.6 }
+		ai_chance = {
+			factor = 3
+        }
+    }
+}
+country_event = { #Украина посылает добровольцев
+	id = w_ukraine.5
+	title = w_ukraine.5.t
+	desc = w_ukraine.5.desc
+	picture = GFX_report_event_ukr_dobrovolci
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.5.a
+		add_opinion_modifier = { target = UKR modifier = BLR_Ylychenie_otnocheniy }
+		custom_effect_tooltip = GAL_ukr_dobrovolci_tt
+		hidden_effect = {
+			capital_scope = {
+			    create_unit = {
+			        division = "name = \"1-j Polk ukraїns'kih dobrovol'cіv\" division_template = \"Galitsiski strelkovyy polk\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			        owner = GAL
+		        }
+			    create_unit = {
+			        division = "name = \"2-j Polk ukraїns'kih dobrovol'cіv\" division_template = \"Galitsiski strelkovyy polk\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			        owner = GAL
+		        }
+			}
+		}
+    }
+}
+country_event = { #Украина отказывает в добровольцах
+	id = w_ukraine.6
+	title = w_ukraine.6.t
+	desc = w_ukraine.6.desc
+	picture = GFX_report_event_ukr_dobrovolci
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.6.a
+		
+    }
+}
+country_event = { #Галицкая армия
+	id = w_ukraine.7
+	title = w_ukraine.7.t
+	desc = w_ukraine.7.desc
+	picture = GFX_report_event_ukr_galicka_army
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.7.a
+		add_war_support = 0.05
+    }
+}
+country_event = {
+	id = w_ukraine.8 #Галицская армия выходит из подполья
+	title = w_ukraine.8.t
+	desc = w_ukraine.8.d
+
+	picture = GFX_report_event_ukr_galicka_army
+	
+	trigger = {
+	    original_tag = GAL
+		has_completed_focus = GAL_Partizane
+		has_idea = GAL_Partiz
+		OR = {
+		    has_war = no
+			surrender_progress < 0.05
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = w_ukraine.8.a
+		add_stability = 0.08
+		remove_ideas = GAL_Partiz
+	}
+}
+
+
+
+
+
+country_event = {
+	id = w_ukraine.14 #Восстание поляков
+	title = w_ukraine.14.t
+	desc = w_ukraine.14.d
+
+	picture = GFX_report_event_ukr_galicka_army
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = w_ukraine.14.a
+		add_stability = -0.03
+		add_manpower = -
+		223 = {
+			damage_building = {
+				type = arms_factory
+				damage = 1
+			}
+			damage_building = {
+				type = infrastructure
+				damage = 1
+			}
+		}
+	}
+}
