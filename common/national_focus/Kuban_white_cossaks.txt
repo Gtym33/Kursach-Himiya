@@ -548,9 +548,14 @@ focus_tree = {
 		icon = GFX_goal_KUB_cooperation_with_officer_organizations
 		cost = 2
 		available = {
-			NOT = { any_other_country = { has_focus_tree = Don_white_cossaks_focus } }
-			NOT = { any_other_country = { has_focus_tree = DON_CCA_focus_tree } }
-			RVA = { exists = no }
+			NOT = { country_exists = RVA }
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = white_DON_not_exists
+					NOT = { any_other_country = { has_focus_tree = Don_white_cossaks_focus } }
+				}
+				DON = { has_idea = DON_Peoples_army_presence_idea }
+			}
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -690,9 +695,7 @@ focus_tree = {
 		cost = 3
 		available = {
 			has_idea = DON_volunteer_recruitment_network_idea
-			NOT = { any_other_country = { has_focus_tree = Don_white_cossaks_focus } }
-			NOT = { any_other_country = { has_focus_tree = DON_CCA_focus_tree } }
-			RVA = { exists = no }
+			NOT = { country_exists = RVA }
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -712,17 +715,32 @@ focus_tree = {
 			hidden_effect = {
 				RVA = {
 					if = {
-						limit = { NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } } }
-						retire_country_leader = yes
-						if = {
-							limit = { NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } } }
-							create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Portrait_Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero russian_sulla goal_in_politics } }
+						limit = { NOT = { has_country_leader = { character = RUS_Lavr_Kornilov ruling_only = no } } }
+						add_country_leader_role = {
+							character = RUS_Lavr_Kornilov
+							promote_leader = yes
+							country_leader = {
+								desc = RUS_Lavr_Kornilov_DESC
+								ideology = despotism_ideology
+								traits = { great_war_hero russian_sulla goal_in_politics }
+							}
 						}
 					}
+					promote_character = RUS_Lavr_Kornilov
 				}
 			}
 			add_ideas = DON_Volunteer_army_presence_idea
-			REB = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = ROOT } }
+			REB = {
+				if = {
+					limit = { has_character = RUS_Anton_Denikin }
+					RUS_Anton_Denikin = { set_nationality = ROOT }
+				}
+				if = {
+					limit = { has_character = RUS_Lavr_Kornilov }
+					RUS_Lavr_Kornilov = { set_nationality = ROOT }
+				}
+			}
+			REB = { every_unit_leader = { limit = { OR = { has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = ROOT } }
 			delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy batal'yon" }
 			if = {
 				limit = { NOT = { has_template = "Dobrovol'cheskiy Kazachiy Polk" } }
@@ -832,7 +850,7 @@ focus_tree = {
 		cost = 4
 		available = {
 			has_idea = DON_Volunteer_army_presence_idea
-			RVA = { exists = no }
+			NOT = { country_exists = RVA }
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -894,10 +912,16 @@ focus_tree = {
 		icon = GFX_goal_KUB_constituent_assembly_defense_units
 		cost = 2
 		available = {
-			CCA = { exists = no }
 			NOT = { has_global_flag = CCA_fired }
-			NOT = { has_idea = DON_Volunteer_army_presence_idea }
-			any_country = { NOT = { has_idea = DON_Volunteer_army_presence_idea } }
+			NOT = { country_exists = CCA }
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = white_DON_not_exists
+					NOT = { any_other_country = { has_focus_tree = Don_white_cossaks_focus } }
+				}
+				DON = { has_idea = DON_Volunteer_army_presence_idea }
+				DON = { has_completed_focus = DON_young_army }
+			}
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -950,10 +974,15 @@ focus_tree = {
 		cost = 4
 		available = {
 			NOT = { has_global_flag = CCA_fired }
-			CCA = { exists = no }
-			NOT = { any_other_country = { has_focus_tree = Don_white_cossaks_focus } }
-			NOT = { any_other_country = { has_focus_tree = DON_CCA_focus_tree } }
-			NOT = { has_idea = DON_Volunteer_army_presence_idea }
+			NOT = { country_exists = CCA }
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = white_DON_not_exists
+					NOT = { any_other_country = { has_focus_tree = Don_white_cossaks_focus } }
+				}
+				DON = { has_idea = DON_Volunteer_army_presence_idea }
+				DON = { has_completed_focus = DON_young_army }
+			}
 		}
 		cancel_if_invalid = yes
 		ai_will_do = {
@@ -974,6 +1003,14 @@ focus_tree = {
 		}
 		x = 1
 		y = 6
+		select_effect = {
+			hidden_effect = {
+				if = {
+					limit = { has_idea = DON_Volunteer_army_presence_idea }
+					country_event = rcw_nc.47
+				}
+			}
+		}
 		completion_reward = {
 			set_global_flag = CCA_fired
 			hidden_effect = {
@@ -2215,7 +2252,7 @@ focus_tree = {
 		available = {
 			controls_state = 234
 			always = no
-			RVA = { exists = no }
+			NOT = { country_exists = RVA }
 			any_country = { NOT = { has_idea = DON_Volunteer_army_presence_idea } }
 			DON = { NOT = { has_completed_focus = DON_Cazakiya } }
 		}

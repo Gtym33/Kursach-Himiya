@@ -443,7 +443,7 @@ focus_tree = {
 		available = {
 			RVA = { exists = no }
 			RUS = {
-				NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } }
+				NOT = { has_country_leader = { character = RUS_Lavr_Kornilov ruling_only = yes } }
 			}
 		}
 		cancel_if_invalid = yes
@@ -460,7 +460,13 @@ focus_tree = {
 		x = 1
 		y = 1
 		completion_reward = {
-			REB = { every_unit_leader = { limit = { OR = { has_id = 76547 has_id = 76321 } } set_nationality = ROOT } }
+			REB = {
+				if = {
+					limit = { has_character = RUS_Lavr_Kornilov }
+					RUS_Lavr_Kornilov = { set_nationality = ROOT }
+				}
+				every_unit_leader = { limit = { has_id = 76321 } set_nationality = ROOT }
+			}
 			add_ideas = Mikhail_Alexeev_6
 			add_ideas = Lavr_Kornilov_army_chief
 		}
@@ -472,7 +478,7 @@ focus_tree = {
 		available = {
 			RVA = { exists = no }
 			RUS = {
-				NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } }
+				NOT = { has_country_leader = { character = RUS_Lavr_Kornilov ruling_only = yes } }
 			}
 		}
 		cancel_if_invalid = yes
@@ -501,7 +507,7 @@ focus_tree = {
 			RVA = { exists = no }
 			any_unit_leader = { has_id = 77659 }
 			RUS = {
-				NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } }
+				NOT = { has_country_leader = { character = RUS_Lavr_Kornilov ruling_only = yes } }
 			}
 		}
 		cancel_if_invalid = yes
@@ -530,7 +536,7 @@ focus_tree = {
 		cost = 2
 		available = {
 			RVA = { exists = no }
-			RUS = { NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } } }
+			RUS = { NOT = { has_country_leader = { character = RUS_Lavr_Kornilov ruling_only = yes } } }
 			NOT = { has_idea = DON_Peoples_army_presence_idea }
 			has_idea = DON_volunteer_recruitment_network_idea
 		}
@@ -548,17 +554,32 @@ focus_tree = {
 			hidden_effect = {
 				RVA = {
 					if = {
-						limit = { NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } } }
-						retire_country_leader = yes
-						if = {
-							limit = { NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } } }
-							create_country_leader = { name = "Lavr Kornilov" desc = RUS_Lavr_Kornilov_DESC picture = "gfx/leaders/RUS/Portrait_Lavr_Kornilov.dds" expire = "1935.1.1" ideology = despotism_ideology traits = { great_war_hero russian_sulla goal_in_politics } }
+						limit = { NOT = { has_country_leader = { character = RUS_Lavr_Kornilov ruling_only = no } } }
+						add_country_leader_role = {
+							character = RUS_Lavr_Kornilov
+							promote_leader = yes
+							country_leader = {
+								desc = RUS_Lavr_Kornilov_DESC
+								ideology = despotism_ideology
+								traits = { great_war_hero russian_sulla goal_in_politics }
+							}
 						}
 					}
+					promote_character = RUS_Lavr_Kornilov
 				}
 			}
 			add_ideas = DON_Volunteer_army_presence_idea
-			REB = { every_unit_leader = { limit = { OR = { has_id = 76428 has_id = 76547 has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = ROOT } }
+			REB = {
+				if = {
+					limit = { has_character = RUS_Anton_Denikin }
+					RUS_Anton_Denikin = { set_nationality = ROOT }
+				}
+				if = {
+					limit = { has_character = RUS_Lavr_Kornilov }
+					RUS_Lavr_Kornilov = { set_nationality = ROOT }
+				}
+			}
+			REB = { every_unit_leader = { limit = { OR = { has_id = 76321 has_id = 77652 has_id = 77654 has_id = 77659 } } set_nationality = ROOT } }
 			delete_unit_template_and_units = { division_template = "Dobrovol'cheskiy batal'yon" }
 			if = {
 				limit = { NOT = { has_template = "Dobrovol'cheskiy pekhotnyy polk" } }
@@ -637,7 +658,7 @@ focus_tree = {
 			modifier = {
 				factor = 0
 				RVA = { exists = no }
-				RUS = { NOT = { has_country_leader = { name = "Lavr Kornilov" ruling_only = yes } } }
+				RUS = { NOT = { has_country_leader = { character = RUS_Lavr_Kornilov ruling_only = yes } } }
 				NOT = { has_idea = DON_Peoples_army_presence_idea }
 				NOT = { has_completed_focus = DON_proclamation_of_Volunteer_Army }
 				NOT = { has_completed_focus = DON_creation_of_Peoples_Army }
@@ -956,7 +977,7 @@ focus_tree = {
 		}
 	}
 
-	focus = {
+	focus = { #Перекат на ДА
 		id = DON_Armed_forces_of_South_of_Russia
 		icon = GFX_goal_return_whites2
 		cost = 4
@@ -1008,8 +1029,8 @@ focus_tree = {
 				RVA = { save_global_event_target_as = UNITED_COUNTRY drop_cosmetic_tag = yes }
 				RVA = { inherit_technology = ROOT }
 				RVA = {
-					create_country_leader = { name = "Victor Manakin" desc = "RUS_Victor_Manakin_DESC" picture = "gfx/leaders/DON/Portrait_Victor_Manakin.dds" expire = "1935.1.1" ideology = national_syndicalism_ideology traits = { } }				
-					set_politics = { ruling_party = despotism } 
+					create_country_leader = { name = "Victor Manakin" desc = "RUS_Victor_Manakin_DESC" picture = "gfx/leaders/DON/Portrait_Victor_Manakin.dds" ideology = national_syndicalism_ideology traits = { } }
+					set_politics = { ruling_party = despotism }
 				}
 				party_populatiry_addition_script_1 = yes
 				hidden_effect = { random_state = { limit = { is_owned_by = ROOT } RVA = { transfer_state = PREV } } }
@@ -1406,7 +1427,7 @@ focus_tree = {
 				if = {
 					limit = { has_country_leader = { name = "Pyotr Krasnov" ruling_only = no } }
 					kill_ideology_leader = fascism
-					create_country_leader = { name = "Pyotr Krasnov" desc = DON_Pyotr_Krasnov_DESC picture = "gfx/leaders/DON/portrait_Pyotr_Krasnov_president.dds" expire = "1935.1.1" ideology = fascism_ideology traits = { warmonger_old_general like_GER } }
+					create_country_leader = { name = "Pyotr Krasnov" desc = DON_Pyotr_Krasnov_DESC picture = "gfx/leaders/DON/portrait_Pyotr_Krasnov_president.dds" ideology = fascism_ideology traits = { warmonger_old_general like_GER } }
 				}
 			}
 		}
