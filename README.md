@@ -14,6 +14,8 @@ Discord: https://discordapp.com/invite/fURwGgx
 
 Youtube: https://www.youtube.com/@RorStream
 
-no eng
+No English lang in this version
 
-(some people made eng instead of us https://steamcommunity.com/sharedfiles/filedetails/?id=2894670317 but i hasnt tested it)
+English version from community: https://steamcommunity.com/sharedfiles/filedetails/?id=2894670317
+
+Chinese traslation from community (革命还是反动：俄罗斯的崛起中文汉化版): https://steamcommunity.com/sharedfiles/filedetails/?id=3656071420
