@@ -212,8 +212,10 @@
 			factor = 1
 		}
 		bypass = {
-			has_country_flag = UKR_directory_win
-			has_country_flag = UKR_white
+			OR = {
+				has_country_flag = UKR_directory_win
+				has_country_flag = UKR_white
+			}
 		}
 		x = 6
 		y = 4
@@ -235,6 +237,9 @@
 		cost = 5
 		ai_will_do = {
 			factor = 1
+		}
+		bypass = {
+			any_unit_leader = { has_id = 91035 }
 		}
 		mutually_exclusive = {
 			focus = UKR_reliance_on_old_shots
@@ -335,7 +340,7 @@
 		icon = GFX_focus_generic_treaty
 		cost = 5
 		available = {
-			has_war = no
+			#has_war = no
 			OR = {
 				NOT = { has_country_flag = UKR_unstable_hetman }
 				has_country_flag = UKR_directory_win
@@ -347,11 +352,37 @@
 		prerequisite = {
 			focus = UKR_mobilization
 		}
-		x = 6
+		x = 5
 		y = 7
 		available_if_capitulated = no
 		completion_reward = {
 			custom_effect_tooltip = UKR_cossacks
+		}
+	}
+	
+	shared_focus = {
+		id = UKR_end_of_atamanshina
+		icon = GFX_focus_generic_treaty
+		cost = 5
+		available = {
+			surrender_progress < 0.05
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = UKR_mobilization
+		}
+		x = 7
+		y = 7
+		available_if_capitulated = no
+		completion_reward = {
+			add_political_power = -50
+			remove_ideas = UKR_cruel_atamanshina
+			delete_unit_template_and_units = {
+				division_template = "Povstancheskaya kavaleriyskaya diviziya"
+				disband = yes
+			}
 		}
 	}
 	
@@ -371,7 +402,7 @@
 		ai_will_do = {
 			factor = 1
 		}
-		x = 4
+		x = 3
 		y = 7
 		available_if_capitulated = no
 		completion_reward = {
@@ -399,7 +430,7 @@
 		prerequisite = {
 			focus = UKR_akt_zluky
 		}
-		x = 4
+		x = 3
 		y = 8
 		available_if_capitulated = no
 		completion_reward = {
@@ -440,7 +471,7 @@
 		ai_will_do = {
 			factor = 1
 		}
-		x = 8
+		x = 9
 		y = 7
 		available_if_capitulated = no
 		completion_reward = {
@@ -490,7 +521,7 @@
 		ai_will_do = {
 			factor = 1
 		}
-		x = 8
+		x = 9
 		y = 8
 		available_if_capitulated = no
 		completion_reward = {
@@ -528,6 +559,7 @@
 			has_war = yes
 			surrender_progress > 0.2
 			has_country_flag = UKR_directory_win
+			NOT = { has_completed_focus = UKR_end_of_atamanshina }
 		}
 		ai_will_do = {
 			factor = 1
@@ -536,15 +568,16 @@
 		y = 5
 		available_if_capitulated = no
 		completion_reward = {
-			#set_country_flag
-			add_stability = -0.2
+			if = {
+				limit = { NOT = { has_idea = UKR_cruel_atamanshina } }
+				add_ideas = UKR_cruel_atamanshina
+			}
 			division_template = {
 				name = "Povstancheskaya kavaleriyskaya diviziya"		# Cavalry
 				regiments = {
-					cavalry = { x = 0 y = 0 }
-					cavalry = { x = 0 y = 1 }
-					cavalry = { x = 1 y = 0 }
-					cavalry = { x = 1 y = 1 }
+					irregular_cavalry = { x = 0 y = 0 }
+					irregular_cavalry = { x = 0 y = 1 }
+					irregular_cavalry = { x = 0 y = 2 }
 				}
 				support = {
 					recon = { x = 0 y = 0 }
@@ -713,7 +746,7 @@
 		available_if_capitulated = no
 		completion_reward = {
 			add_stability = 0.05
-			add_political_power = 25
+			add_political_power = 50
 			add_to_variable = {
 				var = UKR_is_RUS
 				value = 1
