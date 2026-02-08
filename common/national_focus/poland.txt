@@ -232,7 +232,15 @@ focus_tree = {
 			focus = POL_obr_ger_hoz
 		}
 		available = {
-		    has_country_leader = { name = "Jan Kantiy Stechkovsky" ruling_only = yes }
+		    is_puppet = yes
+			NOT = { has_global_flag = WWI_AUH_HAS_CAPITULATED }
+			NOT = { has_global_flag = WWI_GER_HAS_CAPITULATED }
+		}
+		bypass = {
+		    OR = {
+			    has_global_flag = WWI_AUH_HAS_CAPITULATED
+			    has_global_flag = WWI_GER_HAS_CAPITULATED
+			}
 		}
 		ai_will_do = {
 			base = 3
@@ -295,7 +303,10 @@ focus_tree = {
 			focus = POL_rezvit_nolog_set
 		}
 		available = {
-		    has_idea = foodstuffs_supply_crisis_1
+			OR = { has_idea = foodstuffs_supply_crisis_1 has_idea = foodstuffs_supply_crisis_2 has_idea = foodstuffs_supply_crisis_3 has_idea = foodstuffs_supply_crisis_4 has_idea = foodstuffs_supply_crisis_5 }
+		}
+		bypass = {
+		    NOT = { OR = { has_idea = foodstuffs_supply_crisis_1 has_idea = foodstuffs_supply_crisis_2 has_idea = foodstuffs_supply_crisis_3 has_idea = foodstuffs_supply_crisis_4 has_idea = foodstuffs_supply_crisis_5 } }
 		}
 		x = 9
 		y = 6
@@ -342,10 +353,10 @@ focus_tree = {
         available = {
             has_global_flag = WWI_is_now
             GER = {
-			    OR = {
+                OR = {
                     has_completed_focus = GER_peace_with_Entente
-				    has_global_flag = WWI_GER_HAS_CAPITULATED
-				}
+                    has_global_flag = WWI_GER_HAS_CAPITULATED
+                }
             }
             GER = {
                 OR = {
@@ -355,13 +366,13 @@ focus_tree = {
                             check_variable = { summe_stab_n_ruling_coalition_pop < 0.75 }
                             has_country_flag = GER_peace_negotiations_with_Entente
                         }
-					}
-					GER = { has_country_flag = GER_monarchy_fall } 
+                    }
+                    GER = { has_country_flag = GER_monarchy_fall } 
                 }
                 has_stability < 0.25
                 has_war_support < 0.25
             }
-		}
+        }
 		x = 11
 		y = 8
 		completion_reward = {
@@ -613,6 +624,7 @@ focus_tree = {
 		cost = 1
 		available = {
             has_country_flag = POL_focus_tree_pilsudski
+			has_country_flag = POL_rashorushit_garnison_ger_auh
         }
         allow_branch = {
 			has_country_flag = POL_focus_tree_pilsudski
@@ -712,7 +724,6 @@ focus_tree = {
 				has_country_leader = { name = "Roman Dmowski" ruling_only = yes }
 				has_country_leader = { name = "Jozef Haller" ruling_only = yes }
 			}
-			NOT = { has_country_flag = POL_arest_pil }
 		}
 		x = 15
 		y = 3
@@ -938,6 +949,23 @@ focus_tree = {
 		}
 		prerequisite = {
 			focus = POL_vzaim_s_lit
+		}
+		available = {
+		    has_war = no
+			OR = {
+			    OR = {
+			        has_subject = LIT
+				    has_subject = UKR
+				    has_subject = BLR
+				}
+				OR = {
+				    NOT = {
+					    country_exists = LIT
+					    country_exists = UKR
+					    country_exists = BLR
+					}
+				}
+			}
 		}
 		x = 15
 		y = 6
@@ -1168,7 +1196,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_malya_const
 		}
-		x = 9
+		x = 8
 		y = 4
 		completion_reward = {
 		    add_political_power = 50
@@ -1186,7 +1214,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_malya_const
 		}
-		x = 11
+		x = 10
 		y = 4
 		completion_reward = {
 		    add_stability = 0.05
@@ -1206,7 +1234,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_sozd_fin_sistem
 		}
-		x = 7
+		x = 6
 		y = 5
 		completion_reward = {
 		    add_stability = 0.05
@@ -1229,7 +1257,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_sozd_fin_sistem
 		}
-		x = 9
+		x = 8
 		y = 5
 		completion_reward = {
 		    custom_effect_tooltip = POL_vost_economy_tt
@@ -1247,10 +1275,45 @@ focus_tree = {
 			focus = POL_polon_gos_apparat
 			focus = POL_sozd_fin_sistem
 		}
-		x = 11
+		x = 10
 		y = 5
 		completion_reward = {
 		    country_event = poland.186
+		}
+	}
+	focus = {
+		id = POL_borba_s_kommun
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2.5
+		available = {
+		    has_country_flag = POL_reshitelny_meri
+		    NOT = { 
+				has_government = communism 
+				has_government = radical_socialism
+			}
+			OR = {
+				any_country = { has_war_with = ROOT has_government = communism }
+				custom_trigger_tooltip = {
+			        tooltip = "Антагонизм сейма более 40%"
+                    check_variable = { POL_seim_antogonism > 0.40 }
+		        }
+				OR = {
+			        communism > 0.15
+				    radical_socialism > 0.15
+			    }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 999 OR = { communism > 0.15 radical_socialism > 0.15 } check_variable = { POL_seim_antogonism > 0.25 } }
+		}
+		prerequisite = {
+			focus = POL_resh_sydbi_sovet
+		}
+		x = 11
+		y = 6
+		completion_reward = {
+		    country_event = poland.187
 		}
 	}
 	focus = {
@@ -1263,7 +1326,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_vosst_prom
 		}
-		x = 10
+		x = 9
 		y = 6
 		completion_reward = {
 		    unlock_decision_tooltip = POL_prom_cenrt
@@ -1276,7 +1339,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_new_prom_centr
 		}
-		x = 10
+		x = 9
 		y = 7
 		completion_reward = {
 		    unlock_decision_tooltip = POL_arms_prom_cenrt
@@ -1289,7 +1352,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_vosst_prom
 		}
-		x = 8
+		x = 7
 		y = 6
 		completion_reward = {
 		    

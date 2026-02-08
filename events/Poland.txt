@@ -2647,6 +2647,7 @@ country_event = {
 		    remove_idea = minimum_legislation
 			add_idea = acceptable_legislation 
 		}
+		set_country_flag = POL_social_zakon_prinyati
 	}
 	option = {
 		name = poland.60.b
@@ -2734,6 +2735,7 @@ country_event = {
 	trigger = {
 	    original_tag = POL
 		has_country_flag = POL_pilsudski_ne_vmeshivaetsa
+		NOT = { has_country_flag = POL_peregovor_s_PNK_net }
 	}
 	
 	mean_time_to_happen = {
@@ -2779,7 +2781,7 @@ country_event = {
 		name = poland.64.b
 		country_event = poland.65
         trigger = {
-		    NOT = { has_country_flag = POL_social_zakon_ne_prinyati }
+		    has_country_flag = POL_social_zakon_prinyati
 		}
 		ai_chance = {
 			factor = 5
@@ -2837,10 +2839,10 @@ country_event = {
 	
 	option = {
 		name = poland.67.a
-		add_popularity = { ideology = conservatism popularity = 0.03 }
-		create_country_leader = { name = "Roman Dmowski" desc = POL_Roman_Dmowski_DESC picture = "gfx/leaders/POL/Portrait_Roman_Dmowski.dds" expire = "1935.1.1" ideology = conservatism_ideology traits = { nationalistic_freedom_fighter } }
+		add_popularity = { ideology = market_liberalism popularity = 0.03 }
+		create_country_leader = { name = "Roman Dmowski" desc = POL_Roman_Dmowski_DESC picture = "gfx/leaders/POL/Portrait_Roman_Dmowski.dds" expire = "1935.1.1" ideology = national_liberalism traits = { nationalistic_freedom_fighter } }
 		set_politics = {
-			ruling_party = conservatism
+			ruling_party = market_liberalism
 			elections_allowed = yes
 		}
 	}
@@ -2850,11 +2852,19 @@ country_event = {
 		IF = {
 		    limit = { NOT = { has_country_flag = POL_galler_pribl_pol } }
 			custom_effect_tooltip = POL_effect_galler_tt
+		    create_country_leader = { name = "Roman Dmowski" desc = POL_Roman_Dmowski_DESC picture = "gfx/leaders/POL/Portrait_Roman_Dmowski.dds" expire = "1935.1.1" ideology = national_liberalism traits = { nationalistic_freedom_fighter } }
+		    set_country_flag = POL_galler_its_leader
+			set_party_name = { ideology = authoritarism long_name = POL_koalicia_gallera_party_long name = POL_koalicia_gallera_party }
+			set_politics = {
+			    ruling_party = market_liberalism
+			    elections_allowed = yes
+		    }
 		}
 		IF = {
 		    limit = { has_country_flag = POL_galler_pribl_pol }
-			create_country_leader = { name = "Jozef Haller" desc = POL_Jozef_Haller_DESC picture = "gfx/leaders/POL/Portrait_Jozef_Haller.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { knight_of_honor_n_duty warmonger_old_general } }
+			create_country_leader = { name = "Jozef Haller" desc = POL_Jozef_Haller_DESC picture = "gfx/leaders/POL/Portrait_Jozef_Haller_blue.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { knight_of_honor_n_duty warmonger_old_general blue_general } }
 			set_politics = { ruling_party = authoritarism }
+			set_party_name = { ideology = authoritarism long_name = POL_koalicia_gallera_party_long name = POL_koalicia_gallera_party }
 		}
 	}
 }
@@ -2891,6 +2901,10 @@ country_event = {
 		swap_ideas = {
 		    remove_idea = emergency_laws_b_law
 			add_idea = constitution_b_law
+		}
+		swap_ideas = {
+		    remove_idea = ban_all_parties_law
+			add_idea = poliparty_system_law
 		}
 		IF = {
 		    limit = { has_country_leader = { name = "Józef Pilsudski" ruling_only = yes } }
@@ -2959,6 +2973,7 @@ country_event = {
 	
 	trigger = {
 	    original_tag = GER
+		NOT = { POL = { controls_state = 88 } }
 		POL = { is_subject = no }
 		has_global_flag = WWI_AUH_HAS_CAPITULATED
 		has_global_flag = WWI_GER_HAS_CAPITULATED
@@ -4087,6 +4102,11 @@ country_event = {
         custom_effect_tooltip = POL_pribitie_army_galler_tt
 		custom_effect_tooltip = POL_pribitie_army_galler_1_tt
 		custom_effect_tooltip = POL_pribitie_army_galler_2_tt
+		IF = {
+		    limit = { has_country_flag = POL_galler_its_leader }
+			create_country_leader = { name = "Jozef Haller" desc = POL_Jozef_Haller_DESC picture = "gfx/leaders/POL/Portrait_Jozef_Haller_blue.dds" expire = "1935.1.1" ideology = authoritarism_ideology traits = { knight_of_honor_n_duty warmonger_old_general blue_general } }
+			set_politics = { ruling_party = authoritarism }
+		}
 		hidden_effect = {
 		    division_template = {
 			    name = "Korpus Polski"
@@ -7064,7 +7084,6 @@ country_event = {
 		name = poland.156.a
 		set_country_flag = POL_seim_author
 		custom_effect_tooltip = POL_seim_author_tt
-	    set_party_name = { ideology = authoritarism long_name = POL_koalicia_gallera_party_long name = POL_koalicia_gallera_party }
 		POL_seim_reset_effect_idea = yes
 		hidden_effect = {
 		    activate_mission = POL_radsoc_mission_miting
@@ -7882,7 +7901,118 @@ country_event = {
 	
 	option = {
 		name = poland.185.a
-		
+		add_political_power = 150
+		set_country_flag = POL_konec_party_epoh
+		add_popularity = { ideology = this popularity = 0.1 }
+		hidden_effect = {
+remove_mission = POL_radsoc_mission_miting
+remove_mission = POL_radsoc_mission_yacheiki
+remove_mission = POL_radsoc_mission_union_yacheiki
+remove_mission = POL_radsoc_mission_ukrep_party
+remove_mission = POL_radsoc_mission_create_propo
+remove_mission = POL_radsoc_mission_debation_seim
+remove_mission = POL_radsoc_mission_union_kpp
+remove_mission = POL_radsoc_mission_russ_revolut
+remove_mission = POL_radsoc_mission_ger_revolut
+remove_mission = POL_radsoc_mission_hun_revolut
+remove_mission = POL_radsoc_mission_sabotation
+remove_mission = POL_radsoc_mission_create_shron
+remove_mission = POL_radsoc_mission_kritic_prav
+remove_mission = POL_radsoc_mission_deistv
+remove_mission = POL_radsoc_mission_vosst_krest
+remove_mission = POL_radsoc_mission_krestyan_myatesh
+
+remove_mission = POL_commun_mission_miting
+remove_mission = POL_commun_mission_kritic
+remove_mission = POL_commun_mission_agitation
+remove_mission = POL_commun_mission_kritic_socdem
+remove_mission = POL_commun_mission_create_yacheik
+remove_mission = POL_commun_mission_union_yacheik
+remove_mission = POL_commun_mission_profunion
+remove_mission = POL_commun_mission_ukrep_party
+remove_mission = POL_commun_mission_supp_rus
+remove_mission = POL_commun_mission_zapros_sup_rus
+remove_mission = POL_commun_mission_propogant
+remove_mission = POL_commun_mission_debation_seim
+remove_mission = POL_commun_mission_ger_revolut
+remove_mission = POL_commun_mission_hun_revolut
+remove_mission = POL_commun_mission_sabotation
+remove_mission = POL_commun_mission_create_shron
+remove_mission = POL_commun_mission_vosst_krest
+remove_mission = POL_commun_mission_krestyan_myatesh
+
+remove_mission = POL_socdem_mission_miting_rab
+remove_mission = POL_socdem_mission_kritic_trud
+remove_mission = POL_socdem_mission_zavod_yacheik
+remove_mission = POL_socdem_mission_union_yacheik
+remove_mission = POL_socdem_mission_profunion
+remove_mission = POL_socdem_mission_ukrep_party
+remove_mission = POL_socdem_mission_protiv_rev
+remove_mission = POL_socdem_mission_protiv_prav
+remove_mission = POL_socdem_mission_rab_milit
+remove_mission = POL_socdem_mission_milit_deistv
+remove_mission = POL_socdem_mission_debation_seim
+remove_mission = POL_socdem_mission_org_zabastovk
+remove_mission = POL_socdem_mission_create_kabinet_pps
+
+remove_mission = POL_soclib_mission_miting_kres
+remove_mission = POL_soclib_mission_zavod_yacheik
+remove_mission = POL_soclib_mission_union_yacheik
+remove_mission = POL_soclib_mission_ukrep_party
+remove_mission = POL_soclib_mission_otdel_propogant
+remove_mission = POL_soclib_mission_debation_seim
+remove_mission = POL_soclib_mission_peregovor
+remove_mission = POL_soclib_mission_peregovor_pps
+remove_mission = POL_soclib_mission_primirit_ritorik
+remove_mission = POL_soclib_mission_debation_seimm
+remove_mission = POL_soclib_mission_protest_land
+remove_mission = POL_soclib_mission_create_kabinet_pps
+
+remove_mission = POL_mrklib_mission_new_yacheik
+remove_mission = POL_mrklib_mission_propogand_nat
+remove_mission = POL_mrklib_mission_support_katolick
+remove_mission = POL_mrklib_mission_debation_seim
+remove_mission = POL_mrklib_mission_debation_seimm
+remove_mission = POL_mrklib_mission_protiv_pils
+remove_mission = POL_mrklib_mission_protiv_rev
+remove_mission = POL_mrklib_mission_protiv_left
+remove_mission = POL_mrklib_mission_companion
+remove_mission = POL_mrklib_mission_ultr_prav_ritorick
+remove_mission = POL_mrklib_mission_contakt_arms
+remove_mission = POL_mrklib_mission_authoritet_pil
+remove_mission = POL_mrklib_mission_ispol_army
+remove_mission = POL_mrklib_mission_smenit_prav_siloi
+remove_mission = POL_mrklib_mission_smenit_kabinet
+
+remove_mission = POL_conser_mission_propogand_katol
+remove_mission = POL_conser_mission_party_press
+remove_mission = POL_conser_mission_katolik_shools
+remove_mission = POL_conser_mission_support_papy_rome
+remove_mission = POL_conser_mission_support_national
+remove_mission = POL_conser_mission_agitanion_evrei
+remove_mission = POL_conser_mission_protiv_rev
+remove_mission = POL_conser_mission_protiv_left
+remove_mission = POL_conser_mission_debation_seim
+remove_mission = POL_conser_mission_primirit_ritorik
+remove_mission = POL_conser_mission_debation_seimm
+remove_mission = POL_conser_mission_create_kabinet_pps
+
+remove_mission = POL_despot_mission_propogand_kult
+remove_mission = POL_despot_mission_sobranie_legion
+remove_mission = POL_despot_mission_kritic_prot
+remove_mission = POL_despot_mission_supp_nach
+remove_mission = POL_despot_mission_kritick_seim
+remove_mission = POL_despot_mission_legioner_left
+remove_mission = POL_despot_mission_propogant_edinstv
+remove_mission = POL_despot_mission_peregovor_pps
+remove_mission = POL_despot_mission_sluhi_fascist
+remove_mission = POL_despot_mission_podgotov_army
+remove_mission = POL_despot_mission_reshim_sanation
+		}
+		swap_ideas = {
+		    remove_idea = poliparty_system_law
+			add_idea = dominant_party_system_law
+		}
 	}
 }
 country_event = {
@@ -7896,6 +8026,7 @@ country_event = {
 	
 	option = {
 		name = poland.186.a
+		set_country_flag = POL_reshitelny_meri
 		add_stability = -0.1
 		add_political_power = -30
 		add_popularity = { ideology = communism popularity = 0.05 }
@@ -7907,5 +8038,39 @@ country_event = {
 		name = poland.186.b
 		remove_ideas = POL_rab_sovet
 		add_timed_idea = { idea = POL_leave_rab_sovet days = 90 }
+	}
+}
+country_event = {
+	id = poland.187 #Борьба с коммунистами
+	title = poland.187.t
+    desc = poland.187.d
+
+	picture = GFX_report_event_pol_borbya_s_communist
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.187.a
+		add_stability = -0.08
+		add_political_power = -30
+		custom_effect_tooltip = POL_zapret_commun_tt
+		set_country_flag = POL_zapret_commun
+		add_popularity = { ideology = communism popularity = -0.05 }
+		add_popularity = { ideology = radical_socialism popularity = -0.05 }
+	}
+}
+country_event = {
+	id = poland.188 #Конец немецкой оккупации
+	title = poland.188.t
+    desc = poland.188.d
+
+	picture = GFX_report_event_pol_end_ger_okkupation
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.188.a
+		add_stability = 0.05
+		custom_effect_tooltip = POL_smestit_bezeler_tt
 	}
 }
