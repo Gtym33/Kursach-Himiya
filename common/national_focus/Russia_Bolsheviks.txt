@@ -97,7 +97,7 @@ focus_tree = {
 	focus = {
 		id = RUS_break_brest_peace
 		icon = GFX_goal_RUS_break_brest_peace
-		cost = 1
+		cost = 0
 		available = {
 			has_country_flag = RUS_brest_peace_fired
 			controls_state = 195
@@ -2950,7 +2950,7 @@ focus_tree = {
 	focus = {
 		id = RUS_WPRA
 		icon = GFX_goal_RUS_WPRA
-		cost = 5
+		cost = 4
 		ai_will_do = {
 			factor = 99999
 			modifier = {
@@ -2976,28 +2976,29 @@ focus_tree = {
 			}
 			if = {
 				limit = { has_idea = disorganization_of_army }
-				effect_tooltip = {
-					swap_ideas = {
-						remove_idea = disorganization_of_army
-						add_idea = RUS_new_red_army_idea
-					}
-				}
-				hidden_effect = {
-					remove_ideas = disorganization_of_army
-					add_ideas = RUS_new_red_army_idea
-				}
-				else = {
-					add_ideas = RUS_new_red_army_idea
-				}
+				remove_ideas = disorganization_of_army
 			}
+			add_ideas = RUS_reds_unorganized_military_training_idea
 			if = {
 				limit = { has_idea = disarmed_nation }
 				rise_mobilization_law = yes
 			}
-			remove_ideas = RUS_Order_N_1_1
-			remove_ideas = RUS_Order_N_1_2
-			remove_ideas = RUS_Order_N_1_3
-			remove_ideas = RUS_Order_N_1_4
+			if = {
+				limit = { has_idea = RUS_Order_N_1_1 }
+				remove_ideas = RUS_Order_N_1_1
+			}
+			if = {
+				limit = { has_idea = RUS_Order_N_1_2 }
+				remove_ideas = RUS_Order_N_1_2
+			}
+			if = {
+				limit = { has_idea = RUS_Order_N_1_3 }
+				remove_ideas = RUS_Order_N_1_3
+			}
+			if = {
+				limit = { has_idea = RUS_Order_N_1_4 }
+				remove_ideas = RUS_Order_N_1_4
+			}
 			division_template = {
 				name = "Krasnoarmeyskaya Diviziya"
 				regiments = {
@@ -3094,7 +3095,7 @@ focus_tree = {
 			controls_state = 195
 		}
 		ai_will_do = {
-			factor = 1
+			factor = 10
 		}
 		prerequisite = {
 			focus = RUS_old_army_demobilisation
@@ -3106,8 +3107,8 @@ focus_tree = {
 			add_popularity = { ideology = radical_socialism popularity = 0.03 }
 			load_oob = KRN_1917_Praetorians
 		}
-
 	}
+	
 	focus = {
 		id = RUS_mobilization_of_red_guard
 		icon = GFX_goal_RUS_mobilization_of_red_guard
@@ -3116,12 +3117,19 @@ focus_tree = {
 			has_completed_focus = RUS_struggle_against_counterrevolution #потом убрать
 		}
 		ai_will_do = {
-			factor = 99999
+			factor = 10
+			modifier = {
+				factor = 0
+				OR = {
+					NOT = { has_completed_focus = RUS_cancellation_of_election_of_officers }
+					NOT = { has_completed_focus = RUS_power_of_elected_committees }
+				}
+			}
 		}
 		prerequisite = {
 			focus = RUS_WPRA
 		}
-		x = -1
+		x = 3
 		y = 1
 		relative_position_id = RUS_WPRA
 		completion_reward = {
@@ -3293,51 +3301,17 @@ focus_tree = {
 				1053 = { set_variable = { mob_red_guard_industrial_complex = 0 } set_variable = { mob_red_guard_arms_factory = 0 } }
 			}
 		}
-
-	}
-	focus = {
-		id = RUS_military_commissars
-		icon = GFX_goal_RUS_military_commissars
-		cost = 2
-		available = {
-			has_completed_focus = RUS_struggle_against_counterrevolution #потом убрать
-		}
-		ai_will_do = {
-			factor = 99999
-			modifier = {
-				factor = 0
-				NOT = { has_completed_focus = RUS_mobilization_of_red_guard }
-			}
-		}
-		prerequisite = {
-			focus = RUS_WPRA
-		}
-		x = 1
-		y = 1
-		relative_position_id = RUS_WPRA
-		completion_reward = {
-			add_political_power = 30
-			add_war_support = 0.05
-			add_ideas = RUS_military_commissars_idea
-			add_stability = 0.02
-			custom_effect_tooltip = lack_of_officers_fall_2_tt
-			hidden_effect = {
-				lack_of_officers_fall = yes
-				lack_of_officers_fall = yes
-			}
-		}
-
 	}
 
 	focus = {
 		id = RUS_red_partisanism
 		icon = GFX_goal_RUS_red_partisanism
-		cost = 3
+		cost = 2
 		available = {
 			
 		}
 		ai_will_do = {
-			factor = 99999
+			factor = 10
 			modifier = {
 				factor = 0
 				NOT = { has_completed_focus = RUS_red_interbrigades }
@@ -3345,13 +3319,14 @@ focus_tree = {
 			}
 		}
 		prerequisite = {
-			focus = RUS_mobilization_of_red_guard
+			focus = RUS_WPRA
 		}
-		x = -2
-		y = 2
+		x = -3
+		y = 1
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			add_political_power = 30
+			create_template_Krasnaya_Gvardiya = yes
 			unlock_decision_category_tooltip = SOV_mobilization_of_red_neirfront_militia_desisions
 			hidden_effect = {
 				213 = { set_state_flag = mob_red_neirfront_militia_flag }
@@ -3518,7 +3493,7 @@ focus_tree = {
 			}
 		}
 	}
-	
+
 	focus = {
 		id = RUS_stuffing_of_spent_cartridges
 		icon = GFX_goal_RUS_stuffing_of_spent_cartridges
@@ -3530,7 +3505,9 @@ focus_tree = {
 			factor = 10
 			modifier = {
 				factor = 0
-				NOT = { has_completed_focus = RUS_vsevobuch }
+				has_equipment = {
+					infantry_equipment > 0
+				}
 			}
 		}
 		prerequisite = {
@@ -3545,69 +3522,6 @@ focus_tree = {
 	}
 
 	focus = {
-		id = RUS_fight_against_deserters
-		icon = GFX_goal_RUS_fight_against_deserters
-		cost = 3
-		available = {
-			
-		}
-		ai_will_do = {
-			factor = 99999
-			modifier = {
-				factor = 0
-				NOT = { has_completed_focus = RUS_red_interbrigades }
-				NOT = { has_completed_focus = RUS_sailors_of_revolution }
-			}
-		}
-		prerequisite = {
-			focus = RUS_military_commissars
-		}
-		x = 2
-		y = 2
-		relative_position_id = RUS_WPRA
-		completion_reward = {
-			add_political_power = 70
-			add_ideas = RUS_fight_against_deserters_idea
-			add_to_variable = {
-				var = global.RCW_green_var_Russian_SFSR
-				value = -1
-			}
-		}
-	}
-	
-	focus = {
-		id = RUS_collection_of_weapons
-		icon = GFX_goal_RUS_collection_of_weapons
-		cost = 4
-		available = {
-			NOT = { has_government = radical_socialism }
-		}
-		ai_will_do = {
-			factor = 10
-			modifier = {
-				factor = 0
-				NOT = { has_completed_focus = RUS_vsevobuch }
-			}
-		}
-		prerequisite = {
-			focus = RUS_fight_against_deserters
-		}
-		x = 3
-		y = 3
-		relative_position_id = RUS_WPRA
-		completion_reward = {
-			add_popularity = { ideology = communism popularity = -0.05 }
-			add_stability = 0.05
-			add_equipment_to_stockpile = {
-				type = infantry_equipment_great_war
-				amount = 6500
-				producer = RUS
-			}
-		}
-
-	}
-
-	focus = {
 		id = RUS_vsevobuch
 		icon = GFX_goal_RUS_vsevobuch
 		cost = 2
@@ -3615,28 +3529,33 @@ focus_tree = {
 			
 		}
 		ai_will_do = {
-			factor = 99999
+			factor = 10
 			modifier = {
 				factor = 0
-				NOT = { has_completed_focus = RUS_red_interbrigades }
-				NOT = { has_completed_focus = RUS_sailors_of_revolution }
+				OR = {
+					NOT = { has_completed_focus = RUS_cancellation_of_election_of_officers }
+					NOT = { has_completed_focus = RUS_power_of_elected_committees }
+				}
 			}
 		}
 		prerequisite = {
-			focus = RUS_mobilization_of_red_guard
-			focus = RUS_military_commissars
+			focus = RUS_WPRA
 		}
-		x = 0
+		x = -2
 		y = 2
 		relative_position_id = RUS_WPRA
 		completion_reward = {
-			add_political_power = 30
-			add_ideas = RUS_vsevobuch_idea
+			if = {
+				limit = { has_idea = RUS_reds_unorganized_military_training_idea }
+				swap_ideas = {
+					remove_idea = RUS_reds_unorganized_military_training_idea
+					add_idea = RUS_vsevobuch_idea
+				}
+				else = { add_ideas = RUS_vsevobuch_idea }
+			}
 			add_war_support = 0.05
 		}
-
 	}
-
 	focus = {
 		id = RUS_power_of_elected_committees
 		icon = GFX_goal_RUS_power_of_elected_committees
@@ -3656,16 +3575,10 @@ focus_tree = {
 			focus = RUS_cancellation_of_election_of_officers
 		}
 		prerequisite = {
-			focus = RUS_red_partisanism
-		}
-		prerequisite = {
-			focus = RUS_vsevobuch
-		}
-		prerequisite = {
-			focus = RUS_fight_against_deserters
+			focus = RUS_WPRA
 		}
 		x = -1
-		y = 3
+		y = 1
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			custom_effect_tooltip = wartime_officers_rise_2_tt
@@ -3675,8 +3588,131 @@ focus_tree = {
 			}
 			add_popularity = { ideology = radical_socialism popularity = 0.05 }
 		}
-
 	}
+	focus = {
+		id = RUS_cancellation_of_election_of_officers
+		icon = GFX_goal_RUS_cancellation_of_election_of_officers
+		cost = 3
+		available = {
+			NOT = { has_government = radical_socialism }
+		}
+		ai_will_do = {
+			factor = 99999
+		}
+		mutually_exclusive = {
+			focus = RUS_power_of_elected_committees
+		}
+		prerequisite = {
+			focus = RUS_WPRA
+		}
+		x = 1
+		y = 1
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_war_support = -0.025
+			add_political_power = 100
+			add_stability = 0.03
+			if = {
+				limit = { has_government = communism }
+				add_ideas = {
+					Lev_Trotsky_6
+				}
+				add_to_variable = { var = Trotskiy_power value = 1 }
+			}
+			custom_effect_tooltip = lack_of_officers_fall_1_tt
+			hidden_effect = {
+				lack_of_officers_fall = yes
+			}
+			hidden_effect = {
+				set_division_template_lock = {
+					division_template = "Krasnoarmeyskaya Brigada"
+					is_locked = no
+				}
+			}
+		}
+	}
+	focus = {
+		id = RUS_vseroglavshtab
+		icon = GFX_goal_RUS_vseroglavshtab
+		cost = 1
+		available = {
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		prerequisite = {
+			focus = RUS_power_of_elected_committees
+			focus = RUS_cancellation_of_election_of_officers
+		}
+		x = 0
+		y = 2
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_command_power = 200
+			custom_effect_tooltip = lack_of_officers_fall_1_tt
+			hidden_effect = {
+				lack_of_officers_fall = yes
+			}
+		}
+	}
+	
+	focus = {
+		id = RUS_collection_of_weapons
+		icon = GFX_goal_RUS_collection_of_weapons
+		cost = 5
+		available = {
+			NOT = { has_government = radical_socialism }
+		}
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				has_equipment = {
+					infantry_equipment > 0
+				}
+			}
+		}
+		prerequisite = {
+			focus = RUS_mobilization_of_red_guard
+		}
+		x = 3
+		y = 2
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_popularity = { ideology = communism popularity = -0.05 }
+			add_stability = 0.05
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_great_war
+				amount = 16000
+				producer = RUS
+			}
+		}
+	}
+
+	focus = {
+		id = RUS_military_commissars
+		icon = GFX_goal_RUS_military_commissars
+		cost = 2
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		prerequisite = {
+			focus = RUS_red_volunteer_army
+			focus = RUS_forced_mobilization
+		}
+		x = 0
+		y = 4
+		relative_position_id = RUS_WPRA
+		completion_reward = {
+			add_political_power = 50
+			add_ideas = RUS_military_commissars_idea
+			unlock_decision_category_tooltip = RSR_red_uprisings
+		}
+	}
+
+	
 	focus = {
 		id = RUS_red_volunteer_army
 		icon = GFX_goal_RUS_red_volunteer_army
@@ -3691,16 +3727,23 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
+			focus = RUS_vsevobuch
+		}
+		prerequisite = {
 			focus = RUS_power_of_elected_committees
 			focus = RUS_cancellation_of_election_of_officers
 		}
-		x = -2
-		y = 4
+		prerequisite = {
+			focus = RUS_vseroglavshtab
+		}
+		x = -1
+		y = 3
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			custom_effect_tooltip = RUS_red_volunteer_army_tt
-			custom_effect_tooltip = wartime_officers_rise_1_tt
+			custom_effect_tooltip = wartime_officers_rise_2_tt
 			hidden_effect = {
+				wartime_officers_rise = yes
 				wartime_officers_rise = yes
 			}
 		}
@@ -3769,7 +3812,7 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_village_self-defense_groups
 		}
-		x = 0
+		x = -1
 		y = 1
 		relative_position_id = RUS_village_self-defense_groups
 		completion_reward = {
@@ -3779,54 +3822,6 @@ focus_tree = {
 		}
 	}
 
-	focus = {
-		id = RUS_cancellation_of_election_of_officers
-		icon = GFX_goal_RUS_cancellation_of_election_of_officers
-		cost = 3
-		available = {
-			NOT = { has_government = radical_socialism }
-		}
-		ai_will_do = {
-			factor = 99999
-		}
-		mutually_exclusive = {
-			focus = RUS_power_of_elected_committees
-		}
-		prerequisite = {
-			focus = RUS_red_partisanism
-		}
-		prerequisite = {
-			focus = RUS_vsevobuch
-		}
-		prerequisite = {
-			focus = RUS_fight_against_deserters
-		}
-		x = 1
-		y = 3
-		relative_position_id = RUS_WPRA
-		completion_reward = {
-			add_war_support = -0.025
-			add_political_power = 100
-			add_stability = 0.03
-			if = {
-				limit = { has_government = communism }
-				add_ideas = {
-					Lev_Trotsky_6
-				}
-				add_to_variable = { var = Trotskiy_power value = 1 }
-			}
-			custom_effect_tooltip = lack_of_officers_fall_1_tt
-			hidden_effect = {
-				lack_of_officers_fall = yes
-			}
-			hidden_effect = {
-				set_division_template_lock = {
-					division_template = "Krasnoarmeyskaya Brigada"
-					is_locked = no
-				}
-			}
-		}
-	}
 	focus = {
 		id = RUS_forced_mobilization
 		icon = GFX_goal_RUS_forced_mobilization
@@ -3838,14 +3833,17 @@ focus_tree = {
 			}
 		}
 		ai_will_do = {
-			factor = 99999
+			factor = 10
 		}
 		prerequisite = {
 			focus = RUS_power_of_elected_committees
 			focus = RUS_cancellation_of_election_of_officers
 		}
-		x = 2
-		y = 4
+		prerequisite = {
+			focus = RUS_vseroglavshtab
+		}
+		x = 1
+		y = 3
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			rise_mobilization_law = yes
@@ -3876,6 +3874,34 @@ focus_tree = {
 		}
 	}
 	focus = {
+		id = RUS_fight_against_deserters
+		icon = GFX_goal_RUS_fight_against_deserters
+		cost = 3
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 10
+		}
+		mutually_exclusive = {
+			focus = RUS_no_mercy_to_deserters
+		}
+		prerequisite = {
+			focus = RUS_forced_mobilization
+		}
+		x = 0
+		y = 2
+		relative_position_id = RUS_forced_mobilization
+		completion_reward = {
+			add_war_support = 0.05
+			add_ideas = RUS_fight_against_deserters_idea
+			add_to_variable = {
+				var = global.RCW_green_var_Russian_SFSR
+				value = -1
+			}
+		}
+	}
+	focus = {
 		id = RUS_shtrafbat
 		icon = GFX_goal_RUS_shtrafbat
 		cost = 3
@@ -3892,9 +3918,9 @@ focus_tree = {
 		prerequisite = {
 			focus = RUS_forced_mobilization
 		}
-		x = 3
-		y = 5
-		relative_position_id = RUS_WPRA
+		x = 2
+		y = 1
+		relative_position_id = RUS_forced_mobilization
 		completion_reward = {
 			add_war_support = -0.03
 			spawn_shtrafbat = yes
@@ -3926,12 +3952,15 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		mutually_exclusive = {
+			focus = RUS_fight_against_deserters
+		}
 		prerequisite = {
 			focus = RUS_shtrafbat
 		}
-		x = 3
-		y = 6
-		relative_position_id = RUS_WPRA
+		x = 0
+		y = 1
+		relative_position_id = RUS_shtrafbat
 		completion_reward = {
 			add_ideas = RUS_no_mercy_to_deserters_idea
 			spawn_shtrafbat = yes
@@ -3946,39 +3975,6 @@ focus_tree = {
 		}
 	}
 
-	focus = {
-		id = RUS_vseroglavshtab
-		icon = GFX_goal_RUS_vseroglavshtab
-		cost = 3
-		available = {
-			if = {
-				limit = { has_country_flag = RUS_flag_soviet_power }
-				OR = {
-					has_country_flag = RUS_RKP_b_VIII_non_decist_war_plan
-					has_country_flag = RUS_RKP_b_VIII_decist_war_plan
-				}
-			}
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		prerequisite = {
-			focus = RUS_power_of_elected_committees
-			focus = RUS_cancellation_of_election_of_officers
-		}
-		x = 0
-		y = 4
-		relative_position_id = RUS_WPRA
-		completion_reward = {
-			add_command_power = 200
-			custom_effect_tooltip = lack_of_officers_fall_1_tt
-			hidden_effect = {
-				lack_of_officers_fall = yes
-			}
-			unlock_decision_category_tooltip = RSR_red_uprisings
-		}
-
-	}
 
 	focus = {
 		id = RUS_schools_of_red_cadets
@@ -3991,10 +3987,10 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_vseroglavshtab
+			focus = RUS_military_commissars
 		}
 		x = 0
-		y = 5
+		y = 6
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			custom_effect_tooltip = lack_of_officers_fall_2_tt
@@ -4016,10 +4012,10 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_schools_of_red_cadets
+			focus = RUS_military_commissars
 		}
-		x = 0
-		y = 6
+		x = -1
+		y = 5
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			if = {
@@ -4073,10 +4069,10 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_power_of_elected_committees
+			focus = RUS_schools_of_red_cadets
 		}
 		prerequisite = {
-			focus = RUS_vseroglavshtab
+			focus = RUS_mobile_military_formations
 		}
 		mutually_exclusive = {
 			focus = RUS_reform_of_high_command_structure
@@ -4103,10 +4099,7 @@ focus_tree = {
 			factor = 1
 		}
 		prerequisite = {
-			focus = RUS_cancellation_of_election_of_officers
-		}
-		prerequisite = {
-			focus = RUS_vseroglavshtab
+			focus = RUS_schools_of_red_cadets
 		}
 		mutually_exclusive = {
 			focus = RUS_red_autonomous_units
@@ -4116,10 +4109,6 @@ focus_tree = {
 		relative_position_id = RUS_WPRA
 		completion_reward = {
 			add_command_power = 100
-			remove_ideas = RUS_new_red_army_idea
-			remove_ideas = RUS_vsevobuch_idea
-			remove_ideas = RUS_fight_against_deserters_idea
-			remove_ideas = RUS_military_commissars_idea
 		}
 	}
 
