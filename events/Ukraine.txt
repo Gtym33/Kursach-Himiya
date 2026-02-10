@@ -202,9 +202,9 @@ country_event = {
 				}
 			}
 		}
-		add_opinion_modifier = { target = UKR modifier = UKR_white_no_coop }
-		UKR = {
-			add_opinion_modifier = { target = DON modifier = UKR_white_no_coop }
+		add_opinion_modifier = { target = FROM modifier = UKR_white_no_coop }
+		FROM = {
+			add_opinion_modifier = { target = ROOT modifier = UKR_white_no_coop }
 			country_event = ukraine.-67
 		}
 	}
@@ -229,21 +229,76 @@ country_event = {
 		add_stability = -0.05
 		add_war_support = -0.05
 		hidden_effect = {
-			set_capital = { state = 202 }
-			UKR = {
-				every_unit_leader = {
-					set_nationality = RVA
-				}
-			}
-			annex_country = {
-				target = UKR
-				transfer_troops = yes
-			}
 			every_state = {
-				limit = { is_core_of = UKR }
-				add_core_of = RVA
+				limit = { is_core_of = FROM }
+				add_core_of = ROOT
 			}
 			create_country_leader = { name = "Fyodor Keller" desc = "RUS_Fyodor_Keller_DESC" picture = "gfx/leaders/RUS/Portrait_Fyodor_Keller.dds" ideology = authoritarism_ideology traits = { warmonger_old_general } }
+			if = {
+				limit = { FROM = { has_civil_war = yes } }
+				FROM = {
+					every_state = {
+						limit = { is_core_of = PREV }
+						remove_core_of = PREV
+					}
+					random_other_country = {
+						limit = { original_tag = PREV has_war_with = PREV }
+						ROOT = {
+							declare_war_on = {
+								target = PREV
+								type = annex_everything
+							}
+						}
+						every_controlled_state = {
+							set_state_province_controller = {
+								limit = { tag = FROM }
+								controller = ROOT
+							}
+						}
+					}
+					every_controlled_state = {
+						set_state_province_controller = {
+							limit = { tag = FROM }
+							controller = ROOT
+						}
+					}
+					transfer_units_fraction= {
+						target = ROOT
+						size = 1
+						stockpile_ratio = 1
+						army_ratio = 1
+						navy_ratio = 1
+						air_ratio = 1
+						keep_unit_leaders_trigger = { always = no }
+					}
+					random_other_country = {
+						limit = { original_tag = PREV has_war_with = PREV }
+						annex_country = {
+							target = FROM
+							transfer_troops = no
+						}
+					}
+				}
+				else = {
+					FROM = {
+						every_unit_leader = {
+							set_nationality = ROOT
+						}
+						drop_cosmetic_tag = yes
+						set_politics = {
+							ruling_party = fascism
+							elections_allowed = no
+						}
+						clr_country_flag = UKR_white
+						remove_ideas = UKR_resistance_of_Ukrainian_elements
+					}
+					annex_country = {
+						target = FROM
+						transfer_troops = yes
+					}
+				}
+			}
+			set_capital = { state = 202 }
 		}
 	}
 }
