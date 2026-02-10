@@ -345,15 +345,19 @@ country_event = {
 				}
 			}
 		}
-		EST = {
-			transfer_units_fraction= {
-				target = event_target:EST_CW
-				size = 0.15
-				stockpile_ratio = 0.15
-				army_ratio = 0.15
-				navy_ratio = 0
-				air_ratio = 0
-				keep_unit_leaders_trigger = { always = yes }
+		event_target:EST_CW = {
+			create_template_Krasnaya_Gvardiya = yes
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
 			}
 		}
 		clear_global_event_target = EST_CW
@@ -1627,7 +1631,7 @@ country_event = {
 	}
 }
 
-# Параход "Саратов" (Эстония)
+# Параход "Саратов" (Эстония) (Ульманис просит помощи у эстонцев)
 country_event = {
 	id = rcw_bfk.25
 	title = rcw_bfk.25.t
@@ -1639,6 +1643,20 @@ country_event = {
 	option = {
 		name = rcw_bfk.25.a
 		set_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		hidden_effect = {
+			if = {
+				limit = {
+					any_state = {
+						is_controlled_by = ROOT
+						NOT = { state = 811 }
+						any_neighbor_state = {
+							is_controlled_by = LAT
+						}
+					}
+				}
+				country_event = { id = rcw_bfk.26 hours = 1 }
+			}
+		}
 		ai_chance = {
 			factor = 7
 		}
@@ -1648,6 +1666,10 @@ country_event = {
 		reverse_add_opinion_modifier = { target = FROM modifier = EST_is_friend_for_LAT_Niedra }
 		ai_chance = {
 			factor = 3
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
 		}
 	}
 }
@@ -1661,8 +1683,7 @@ country_event = {
 	
 	trigger = {
 		tag = EST
-		NOT = { has_war_with = LAT }
-		any_other_country = { original_tag = LAT has_government = authoritarism has_country_flag = LAT_ger_gov }
+		any_other_country = { original_tag = LAT NOT = { has_war_with = ROOT } has_government = authoritarism has_country_flag = LAT_ger_gov }
 		has_country_flag = EST_will_help_Ulmanism_to_retake_LAT
 		any_state = {
 			is_controlled_by = ROOT
@@ -1761,7 +1782,11 @@ country_event = {
 		if = {
 			limit = { EST = { has_country_flag = EST_will_help_Ulmanism_to_retake_LAT } }
 			EST = {
-				white_peace = LAT
+				if = {
+					limit = { has_war_with = LAT }
+					white_peace = LAT
+				}
+				clr_country_flag = EST_will_help_Ulmanism_to_retake_LAT
 				country_event = rcw_bfk.28
 			}
 		}
@@ -1804,18 +1829,45 @@ country_event = {
 	
 	option = {
 		name = rcw_bfk.28.a
-		clr_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		every_owned_state = {
+			limit = { is_core_of = LAT }
+			transfer_state_to = LAT
+		}
 	}
 }
 
-# скрытое объявление войны
+# Передача регионов Ульманису если не было
 country_event = {
 	id = rcw_bfk.29
 	
 	trigger = {
 		tag = EST
-		NOT = { has_war_with = LAT }
-		any_other_country = { original_tag = LAT has_government = authoritarism has_country_flag = LAT_ger_gov }
+		any_other_country = { original_tag = LAT NOT = { has_war_with = ROOT } has_government = authoritarism has_country_flag = LAT_ger_gov }
+		has_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		any_owned_state = { is_core_of = LAT }
+	}
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	option = {
+		clr_country_flag = EST_will_help_Ulmanism_to_retake_LAT
+		every_owned_state = {
+			limit = { is_core_of = LAT }
+			transfer_state_to = LAT
+		}
+	}
+}
+
+# скрытое объявление войны
+country_event = {
+	id = rcw_bfk.30
+	
+	trigger = {
+		tag = EST
+		NOT = { any_other_country = { original_tag = LAT has_government = authoritarism has_country_flag = LAT_ger_gov } }
+		any_other_country = { original_tag = LAT NOT = { has_war_with = ROOT } }
 		has_country_flag = EST_will_help_Ulmanism_to_retake_LAT
 	}
 	
@@ -1837,140 +1889,6 @@ country_event = {
 }
 
 
-# Литовская советская республика
-country_event = {
-	id = rcw_bfk.30
-	title = rcw_bfk.161.t
-	desc = rcw_bfk.161.d
-	picture = GFX_report_event_north_corps_Pskov
-	
-	trigger = {
-		tag = RSR
-		NOT = { has_global_flag = RUS_civil_war_over }
-		has_country_flag = RUS_Oktober_revolution_fired
-		has_war_with = LIT
-		NOT = { any_other_country = { original_tag = LIT is_subject_of = ROOT } }
-		NOT = { LIT = { any_other_country = { original_tag = PREV has_war_with = PREV } } }
-		any_state = {
-			is_owned_by = LIT
-			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
-		}
-	}
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = rcw_bfk.9.a
-		create_dynamic_country = {
-			original_tag = LIT
-			save_global_event_target_as = LIT_CW
-			hidden_effect = {
-				add_random_ministers = yes
-				add_random_ministers = yes
-				#create_country_leader
-				every_state = {
-					limit = {
-						OR = {
-							is_owned_by = LIT
-							AND = {
-								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
-								is_core_of = LIT
-							}
-						}
-						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
-					}
-					event_target:LIT_CW = { set_state_owner = PREV }
-				}
-				set_politics = {
-					ruling_party = communism
-					election_frequency = 36
-					elections_allowed = no
-				}
-				set_popularities = {
-					communism = 100
-				}
-			}
-			declare_war_on = {
-				target = LIT
-				type = annex_everything
-			}
-			add_civil_war_target = LIT
-			set_cosmetic_tag = LIT_sovrep
-			every_country = {
-				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
-				declare_war_on = {
-					target = event_target:LIT_CW
-					type = annex_everything
-				}
-			}
-			every_country = {
-				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
-				event_target:LIT_CW = {
-					declare_war_on = {
-						target = PREV
-						type = annex_everything
-					}
-				}
-			}
-			ROOT = { event_target:LIT_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
-			hidden_effect = {
-				every_state = {
-					limit = {
-						OR = {
-							is_owned_by = LIT
-							is_owned_by = event_target:LIT_CW
-							AND = {
-								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
-								is_core_of = LIT
-							}
-						}
-					}
-					set_state_province_controller = {
-						controller = event_target:LIT_CW
-						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
-					}
-				}
-			}
-			hidden_effect = {
-				every_country = {
-					limit = {
-						NOT = {
-							tag = PREV
-							is_any_former_russian_empire_country = yes
-							former_russian_empire_baltic_states_country = yes tag = HRB
-						}
-					}
-					set_THIS_country_non_recognize_PREV = yes
-				}
-			}
-		}
-		LIT = {
-			transfer_units_fraction= {
-				target = event_target:LIT_CW
-				size = 0.15
-				stockpile_ratio = 0.15
-				army_ratio = 0.15
-				navy_ratio = 0
-				air_ratio = 0
-				keep_unit_leaders_trigger = { always = yes }
-			}
-		}
-		clear_global_event_target = LIT_CW
-		ai_chance = {
-			factor = 999
-		}
-	}
-	option = {
-		name = rcw_bfk.9.b
-		ai_chance = {
-			factor = 0
-		}
-	}
-}
 
 # Латвийская социалистическая советская республика
 country_event = {
@@ -2083,15 +2001,19 @@ country_event = {
 				}
 			}
 		}
-		LAT = {
-			transfer_units_fraction= {
-				target = event_target:LAT_CW
-				size = 0.15
-				stockpile_ratio = 0.15
-				army_ratio = 0.15
-				navy_ratio = 0
-				air_ratio = 0
-				keep_unit_leaders_trigger = { always = yes }
+		event_target:LAT_CW = {
+			create_template_Krasnaya_Gvardiya = yes
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
 			}
 		}
 		clear_global_event_target = LAT_CW
@@ -4287,6 +4209,146 @@ country_event = {
 		LIT = { country_event = lithuania.79 }
 		ai_chance = {
 			factor = 1
+		}
+	}
+}
+
+
+# Литовская советская республика
+country_event = {
+	id = rcw_bfk.161
+	title = rcw_bfk.161.t
+	desc = rcw_bfk.161.d
+	picture = GFX_report_event_north_corps_Pskov
+	
+	trigger = {
+		tag = RSR
+		NOT = { has_global_flag = RUS_civil_war_over }
+		has_country_flag = RUS_Oktober_revolution_fired
+		has_war_with = LIT
+		NOT = { any_other_country = { original_tag = LIT is_subject_of = ROOT } }
+		NOT = { LIT = { any_other_country = { original_tag = PREV has_war_with = PREV } } }
+		any_state = {
+			is_owned_by = LIT
+			CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = rcw_bfk.9.a
+		create_dynamic_country = {
+			original_tag = LIT
+			save_global_event_target_as = LIT_CW
+			hidden_effect = {
+				add_random_ministers = yes
+				add_random_ministers = yes
+				#create_country_leader
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LIT
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LIT
+							}
+						}
+						CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+					event_target:LIT_CW = { set_state_owner = PREV }
+				}
+				set_politics = {
+					ruling_party = communism
+					election_frequency = 36
+					elections_allowed = no
+				}
+				set_popularities = {
+					communism = 100
+				}
+			}
+			declare_war_on = {
+				target = LIT
+				type = annex_everything
+			}
+			add_civil_war_target = LIT
+			set_cosmetic_tag = LIT_sovrep
+			every_country = {
+				limit = { has_offensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
+				declare_war_on = {
+					target = event_target:LIT_CW
+					type = annex_everything
+				}
+			}
+			every_country = {
+				limit = { has_defensive_war_with = ROOT NOT = { has_war_with = event_target:LIT_CW } }
+				event_target:LIT_CW = {
+					declare_war_on = {
+						target = PREV
+						type = annex_everything
+					}
+				}
+			}
+			ROOT = { event_target:LIT_CW = { subjecting_script_with_transfer_parties_dominion = yes } }
+			hidden_effect = {
+				every_state = {
+					limit = {
+						OR = {
+							is_owned_by = LIT
+							is_owned_by = event_target:LIT_CW
+							AND = {
+								OWNER = { OR = { tag = ROOT is_subject_of = ROOT } }
+								is_core_of = LIT
+							}
+						}
+					}
+					set_state_province_controller = {
+						controller = event_target:LIT_CW
+						limit = { OR = { tag = ROOT is_subject_of = ROOT is_in_faction_with = ROOT } }
+					}
+				}
+			}
+			hidden_effect = {
+				every_country = {
+					limit = {
+						NOT = {
+							tag = PREV
+							is_any_former_russian_empire_country = yes
+							former_russian_empire_baltic_states_country = yes tag = HRB
+						}
+					}
+					set_THIS_country_non_recognize_PREV = yes
+				}
+			}
+		}
+		event_target:LIT_CW = {
+			create_template_Krasnaya_Gvardiya = yes
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+			random_controlled_state = {
+				spawn_red_guard_in_state_CONTROLLER = yes
+			}
+		}
+		clear_global_event_target = LIT_CW
+		ai_chance = {
+			factor = 999
+		}
+	}
+	option = {
+		name = rcw_bfk.9.b
+		ai_chance = {
+			factor = 0
 		}
 	}
 }
