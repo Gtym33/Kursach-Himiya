@@ -4,7 +4,7 @@
 
 add_namespace = generic
 
-# President dies
+# COUNTRY INFLUENCING OUR POLITICS
 country_event = {
 	id = generic.1
 	title = generic.1.t
@@ -42,6 +42,9 @@ country_event = {
 country_event = {
 	id = generic.2
 	title = generic.2.t
+	trigger = {
+		country_exists = FROM
+	}
 	desc = { # FROM and ROOT are Democratic
 		text = generic.2.d.a
 		trigger = {
@@ -116,6 +119,8 @@ country_event = {
 	option = { #Agree / Both Democratic
 		name = generic.2.a
 		trigger = {
+			has_rule = can_join_factions
+			FROM = { has_rule = can_join_factions }
 			AND = {
 				FROM = {
 					is_democratic_country = yes
@@ -138,6 +143,8 @@ country_event = {
 	option = { #Agree / Both Fascist
 		name = generic.2.b
 		trigger = {
+			has_rule = can_join_factions
+			FROM = { has_rule = can_join_factions }
 			AND = {
 				FROM = {
 					is_reactionary_country = yes
@@ -153,13 +160,17 @@ country_event = {
 		FROM = { country_event = { id = generic.3 hours = 6 } }
 		hidden_effect = {
 			set_country_flag = alliance_inviter@ROOT
-			FROM = { set_country_flag = alliance_applicant@ROOT }
+			FROM = { 
+				set_country_flag = alliance_applicant@ROOT
+			}
 			news_event = { id = news.289 hours = 12 }
 		}
 	}
 	option = { #Agree / Both Communist
 		name = generic.2.c
 		trigger = {
+			has_rule = can_join_factions
+			FROM = { has_rule = can_join_factions }
 			AND = {
 				FROM = {
 					is_socialist_country = yes
@@ -175,7 +186,9 @@ country_event = {
 		FROM = { country_event = { id = generic.3 hours = 6 } }
 		hidden_effect = {
 			set_country_flag = alliance_inviter@ROOT
-			FROM = { set_country_flag = alliance_applicant@ROOT }
+			FROM = { 
+				set_country_flag = alliance_applicant@ROOT
+			}
 			news_event = { id = news.289 hours = 12 }
 		}
 	}
@@ -236,12 +249,19 @@ country_event = {
 			FROM = { set_country_flag = alliance_applicant@ROOT }
 			news_event = { id = news.289 hours = 12 }
 		}
+		FROM = {
+			add_ai_strategy = {
+				type = alliance
+				id = ROOT
+				value = 200
+			}
+		}
 	}
 	
 	option = { #Reject
 		name = generic.2.f
 		ai_chance = {
-			factor = 50
+			base = 25
 			
 			modifier = {
 				factor = 0.5
@@ -295,6 +315,16 @@ country_event = {
 				factor = 0.1
 				FROM = {
 					is_major = yes
+				}
+			}
+
+			modifier = {
+				factor = 10
+				FROM = {
+					OR = {
+						is_subject = yes
+						is_in_faction = yes
+					}
 				}
 			}
 		}
@@ -515,18 +545,21 @@ country_event = {
 
 	immediate = {
 		hidden_effect = {
+			FROM = { save_event_target_as = alliance_inviter }
 			save_event_target_as = alliance_applicant
-			FROM = {
-				save_event_target_as = alliance_inviter
-			}
 		}
 	}
+
+
 
 	is_triggered_only = yes
 	
 	option = { #Agree / Both Democratic
 		name = generic.5.a
 		trigger = {
+			has_rule = can_join_factions
+			FROM = { has_rule = can_join_factions }
+			is_in_faction = no
 			AND = {
 				FROM = {
 					is_democratic_country = yes
@@ -537,9 +570,16 @@ country_event = {
 		ai_chance = {
 			base = 100
 		}
-		FROM = { 
-			add_to_faction = ROOT
+		FROM = {
+			faction_leader = {
+				add_to_faction = ROOT
+			}
 			country_event = { id = generic.6 hours = 6 } 
+		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = 200
 		}
 		hidden_effect = {
 			set_country_flag = alliance_applicant@ROOT
@@ -550,6 +590,9 @@ country_event = {
 	option = { #Agree / Both Fascist
 		name = generic.5.b
 		trigger = {
+			has_rule = can_join_factions
+			FROM = { has_rule = can_join_factions }
+			is_in_faction = no
 			AND = {
 				FROM = {
 					is_reactionary_country = yes
@@ -564,6 +607,11 @@ country_event = {
 			add_to_faction = ROOT
 			country_event = { id = generic.6 hours = 6 } 
 		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = 200
+		}
 		hidden_effect = {
 			set_country_flag = alliance_applicant@ROOT
 			FROM = { set_country_flag = alliance_inviter@ROOT }
@@ -573,6 +621,9 @@ country_event = {
 	option = { #Agree / Both Communist
 		name = generic.5.c
 		trigger = {
+			has_rule = can_join_factions
+			FROM = { has_rule = can_join_factions }
+			is_in_faction = no
 			AND = {
 				FROM = {
 					is_socialist_country = yes
@@ -587,6 +638,11 @@ country_event = {
 			add_to_faction = ROOT
 			country_event = { id = generic.6 hours = 6 }
 		}
+		add_ai_strategy = {
+			type = alliance
+			id = FROM
+			value = 200
+		}
 		hidden_effect = {
 			set_country_flag = alliance_applicant@ROOT
 			FROM = { set_country_flag = alliance_inviter@ROOT }
@@ -596,6 +652,9 @@ country_event = {
 	option = { #Agree / Both different
 		name = generic.5.e
 		trigger = {
+			has_rule = can_join_factions
+			FROM = { has_rule = can_join_factions }
+			is_in_faction = no
 			NOT = {
 				AND = {
 					FROM = {
@@ -628,12 +687,12 @@ country_event = {
 				}
 			}
 			
-			modifier = {
-				factor = 0.5
-				NOT = {
-					is_authoritarian_country = yes
-				}
-			}
+			#modifier = {
+			#	factor = 0.5
+			#	NOT = {
+			#		is_authoritarian_country = yes
+			#	}
+			#}
 			
 			modifier = {
 				factor = 0.75
@@ -643,7 +702,10 @@ country_event = {
 			}
 		}
 		FROM = { 
-			add_to_faction = ROOT
+			faction_leader = {
+				add_to_faction = ROOT
+			}
+			
 			country_event = { id = generic.6 hours = 6 }
 		}
 		add_ai_strategy = {
@@ -660,8 +722,11 @@ country_event = {
 	
 	option = { #Reject
 		name = generic.2.f
+		trigger = {
+			is_in_faction = no
+		}
 		ai_chance = {
-			factor = 50
+			factor = 45
 			
 			modifier = {
 				factor = 0.5
@@ -717,6 +782,16 @@ country_event = {
 					is_major = yes
 				}
 			}
+		}
+		FROM = { 
+			country_event = { id = generic.7 hours = 6 }
+		}
+	}
+
+	option = { #Reject if in faction
+		name = generic.2.g
+		trigger = {
+			is_in_faction = yes
 		}
 		FROM = { 
 			country_event = { id = generic.7 hours = 6 }
@@ -864,8 +939,8 @@ country_event = {
 			}
 		}
 	}
-}
 
+}
 
 # Race for the Bomb success event
 country_event = {
@@ -1410,4 +1485,340 @@ country_event = {
 			add_offsite_building = { type = arms_factory level = 2 }
 		}
 	}	
+}
+
+#Become a puppet
+country_event = {
+	id = generic.20
+	title = generic.20.t
+	desc = {
+		text = generic.20.d_friends
+		trigger = {
+			has_opinion = {
+				target = FROM
+				value = 150
+			}
+		}
+	}
+	desc = {
+		text = generic.20.d_enemies
+		trigger = {
+			NOT = { 
+				has_opinion = {
+					target = FROM
+					value = 150
+				}
+			}
+		}
+	}
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+
+	option = {
+		name = generic.20.a
+		trigger = {
+			NOT = { 
+				has_opinion = {
+					target = FROM
+					value = 150
+				}
+			}
+		}
+		ai_chance = {
+			factor = 20
+			modifier = {
+				threat > 20
+				factor = 2
+			}
+			modifier = {
+				is_in_faction = no
+				factor = 2
+			}
+			modifier = {
+				is_in_faction_with = FROM
+				factor = 2
+			}
+			modifier = {
+				is_in_faction = yes
+				NOT = { is_in_faction_with = FROM }
+				factor = 0.5
+			}
+		}
+		effect_tooltip = { 
+			FROM = { puppet = ROOT }
+			if = {
+				limit = {
+					FROM = { is_in_faction = yes }
+				}
+				random_country = {
+					limit = { 
+						is_in_faction_with = FROM 
+						is_faction_leader = yes
+					}
+					add_to_faction = ROOT
+				}
+			}
+		}
+		hidden_effect = {
+			FROM = { country_event = { id = generic.21 hours = 6 } }
+		}
+	}
+
+	option = {
+		name = generic.20.b
+		trigger = {
+			has_opinion = {
+				target = FROM
+				value = 150
+			}
+		}
+		ai_chance = {
+			factor = 25
+			modifier = {
+				threat > 20
+				factor = 2
+			}
+			modifier = {
+				is_in_faction = no
+				factor = 2
+			}
+			modifier = {
+				is_in_faction_with = FROM
+				factor = 2
+			}
+			modifier = {
+				is_in_faction = yes
+				NOT = { is_in_faction_with = FROM }
+				factor = 0.5
+			}
+		}
+		effect_tooltip = { 
+			FROM = { puppet = ROOT }
+			if = {
+				limit = {
+					FROM = { is_in_faction = yes }
+				}
+				random_country = {
+					limit = { 
+						is_in_faction_with = FROM 
+						is_faction_leader = yes
+					}
+					add_to_faction = ROOT
+				}
+			}
+		}
+		hidden_effect = {
+			FROM = { country_event = { id = generic.21 hours = 6 } }
+		}
+	}
+
+	option = {
+		name = generic.20.c
+		ai_chance = {
+			factor = 30
+			modifier = {
+				is_in_faction = yes
+				NOT = { is_in_faction_with = FROM }
+				factor = 2
+			}
+			modifier = {
+				threat < 20
+				factor = 2
+			}
+		}
+		effect_tooltip = { 
+			FROM = { 
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = ROOT
+				}
+			}
+		}
+		hidden_effect = {
+			FROM = { country_event = { id = generic.22 hours = 6 } }
+		}
+	}
+
+}
+
+#Became puppet
+country_event = {
+	id = generic.21
+	title = generic.21.t
+	desc = generic.21.d
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+
+	option = {
+		name = generic.21.a
+		ai_chance = {
+			factor = 1
+		}
+		ROOT = { puppet = FROM }
+		if = {
+			limit = {
+				ROOT = { is_in_faction = yes }
+			}
+			random_country = {
+				limit = { 
+					is_in_faction_with = ROOT 
+					is_faction_leader = yes
+				}
+				add_to_faction = FROM
+			}
+		}
+	}
+
+}
+
+#Denied puppet
+country_event = {
+	id = generic.22
+	title = generic.22.t
+	desc = generic.22.d
+	picture = GFX_report_event_generic_read_write
+	
+	is_triggered_only = yes
+
+	option = {
+		name = generic.22.a
+		ai_chance = {
+			factor = 1
+		}
+		ROOT = { 
+			create_wargoal = {
+				type = puppet_wargoal_focus
+				target = FROM
+			}
+		}
+	}
+
+}
+
+# generic event for demanding territory
+country_event = {
+	id = generic.23
+	title = generic.23.t
+	desc = generic.23.d
+	
+	picture = GFX_report_event_czech_soldiers_01
+
+	is_triggered_only = yes
+
+	option = {
+		name = generic.23.a
+		ai_chance = {
+			factor = 90
+			modifier = { # If they stand a chance they will fight
+				factor = 0
+				strength_ratio = {
+					tag = FROM
+					ratio > 0.75
+				}
+				NOT = {
+					any_neighbor_country = {
+						NOT = { tag = FROM }
+						is_in_faction_with = FROM
+					}
+				}
+			}
+			modifier = {
+				factor = 0 #if you lead a faction, fight
+				is_faction_leader = yes
+			}
+			modifier = {
+				factor = 0.5 #if you are in a faction, maybe fight
+				is_faction_leader = no
+				is_in_faction = yes
+			}
+			modifier = { # Increase it again if other bordering nations are in the enemy faction
+				any_neighbor_country = {
+					NOT = { tag = FROM }
+					is_in_faction_with = FROM
+				}
+				factor = 2.0
+			}
+		}
+		effect_tooltip = {
+			FROM = { transfer_state = event_target:demanded_prov_target }
+			if = {
+				limit = {
+					event_target:demanded_prov_target = { has_state_flag = give_core_to_state_flag }
+				}
+			event_target:demanded_prov_target = { add_core_of = FROM }
+			}
+		}
+		hidden_effect = {
+			FROM = { country_event = generic.24 }
+		}
+	}
+
+	option = {
+		name = generic.23.b
+		ai_chance = { 
+			factor = 10 
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+					tag = FROM
+					ratio < 0.5
+				}
+			}
+		}
+		custom_effect_tooltip = maybe_war_tt
+		hidden_effect = {
+			FROM = { country_event = generic.25 }
+		}
+	}
+}
+
+# accepted demands
+country_event = {
+	id = generic.24
+	title = generic.24.t
+	desc = generic.24.d
+	
+	picture = GFX_report_event_czech_soldiers_01
+
+	is_triggered_only = yes
+
+	option = {
+		name = excellent
+		THIS = { transfer_state = event_target:demanded_prov_target }
+		if = {
+			limit = {
+				event_target:demanded_prov_target = { has_state_flag = give_core_to_state_flag }
+			}
+			event_target:demanded_prov_target = { 
+				add_core_of = THIS
+				clr_state_flag = give_core_to_state_flag
+			}
+		}
+		hidden_effect = { clear_global_event_target = demanded_prov_target }
+	}
+}
+
+# accepted demands
+country_event = {
+	id = generic.25
+	title = generic.25.t
+	desc = generic.25.d
+	
+	picture = GFX_report_event_czech_soldiers_01
+
+	is_triggered_only = yes
+
+	option = {
+		name = generic.25.a
+		ai_chance = {
+			factor = 90
+		}
+		create_wargoal = {
+			type = annex_everything 
+			target = FROM
+		}
+		hidden_effect = { clear_global_event_target = demanded_prov_target }
+	}
 }
