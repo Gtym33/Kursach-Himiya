@@ -147,7 +147,6 @@ country_event = {
 					NOT = { is_left_country = yes }
 				}
 				has_capitulated = no
-				has_war = no
 			}
 			country_event = rcw_all_rus_NA.2
 		}
@@ -211,7 +210,6 @@ country_event = {
 					NOT = { is_reactionary_country = yes }
 				}
 				has_capitulated = no
-				has_war = no
 			}
 			country_event = rcw_all_rus_NA.2
 		}
@@ -266,7 +264,6 @@ country_event = {
 				is_former_russian_empire_russian_country = yes
 				NOT = { has_war_with = ROOT }
 				has_capitulated = no
-				has_war = no
 			}
 			country_event = rcw_all_rus_NA.2
 		}
@@ -437,10 +434,6 @@ country_event = {
 			add_to_variable = { global.all_rus_NA_gov_form_rep = 1 }
 			set_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
 			if = {
-				limit = { tag = RVA }
-				set_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
-			}
-			if = {
 				limit = {
 					NOT = { any_country = { has_country_flag = RCW_Allrussian_national_assembly_member NOT = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon } } }
 				}
@@ -491,10 +484,6 @@ country_event = {
 			add_to_variable = { global.all_rus_NA_gov_form_rep = 1 }
 			add_to_variable = { global.all_rus_NA_gov_form_rep_compromise = 1 }
 			set_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
-			if = {
-				limit = { tag = RVA }
-				set_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
-			}
 			set_country_flag = RCW_Allrussian_national_assembly_vote_for_rep_compromise
 			if = {
 				limit = {
@@ -557,10 +546,6 @@ country_event = {
 			add_to_variable = { global.all_rus_NA_gov_form_mon = 1 }
 			set_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
 			if = {
-				limit = { tag = RVA }
-				set_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon
-			}
-			if = {
 				limit = {
 					NOT = { any_country = { has_country_flag = RCW_Allrussian_national_assembly_member NOT = { has_country_flag = RCW_Allrussian_national_assembly_vote_for_rep has_country_flag = RCW_Allrussian_national_assembly_vote_for_mon } } }
 				}
@@ -611,10 +596,6 @@ country_event = {
 			add_to_variable = { global.all_rus_NA_gov_form_mon = 1 }
 			add_to_variable = { global.all_rus_NA_gov_form_mon_compromise = 1 }
 			set_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
-			if = {
-				limit = { tag = RVA }
-				set_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon
-			}
 			set_country_flag = RCW_Allrussian_national_assembly_vote_for_mon_compromise
 			if = {
 				limit = {
@@ -1363,10 +1344,10 @@ country_event = {
 			clr_country_flag = RCW_Allrussian_national_assembly_loyal
 			clr_country_flag = RCW_Allrussian_national_assembly_disloyal
 			clr_country_flag = RCW_Allrussian_national_assembly_member
-			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep
-			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon
-			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_rep_compromise
-			clr_country_flag = RVA_RCW_Allrussian_national_assembly_vote_for_mon_compromise
+			clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep
+			clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon
+			clr_country_flag = RCW_Allrussian_national_assembly_vote_for_rep_compromise
+			clr_country_flag = RCW_Allrussian_national_assembly_vote_for_mon_compromise
 		}
 		clr_country_flag = RCW_Allrussian_national_assembly_member
 		clr_global_flag = RCW_Allrussian_national_assembly_rep_wins
@@ -1904,7 +1885,12 @@ country_event = {
 		trigger = {
 			OR = {
 				is_in_faction = no
-				has_war = no
+				NOT = {
+					any_other_country = {
+						has_war_with = ROOT
+						OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+					}
+				}
 			}
 		}
 		name = rcw_all_rus_NA.30.a
@@ -1939,13 +1925,21 @@ country_event = {
 				AND = {
 					has_stability > 0.25
 					OR = {
-						has_war = no
+						NOT = {
+							any_other_country = {
+								has_war_with = ROOT
+								OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+							}
+						}
 						is_in_faction = no
 					}
 					event_target:Moscow_allience = { NOT = { has_government = ROOT } }
 				}
 				AND = {
-					has_war = yes
+					any_other_country = {
+						has_war_with = ROOT
+						OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+					}
 					is_in_faction = yes
 				}
 			}
@@ -1954,7 +1948,12 @@ country_event = {
 		if = {
 			limit = {
 				OR = {
-					has_war = no
+					NOT = {
+						any_other_country = {
+							has_war_with = ROOT
+							OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+						}
+					}
 					is_in_faction = no
 				}
 				event_target:Moscow_allience = { NOT = { has_government = ROOT } }
@@ -2010,7 +2009,10 @@ country_event = {
 		}
 		if = {
 			limit = {
-				has_war = yes
+				any_other_country = {
+					has_war_with = ROOT
+					OR = { has_country_flag = RCW_Allrussian_national_assembly_loyal has_country_flag = RCW_Allrussian_national_assembly_disloyal }
+				}
 				is_in_faction = yes
 			}
 			if = {
