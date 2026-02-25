@@ -43,26 +43,39 @@ ideas = {
 		use_list_view = yes
 		
 		control_of_field_commanders_law = {
-			level = 10
+			level = 9
 			
-			cost = -600
+			cost = -500
 			
 			available = {
 				num_of_military_factories < 1
-				num_of_civilian_factories < 2
+				if = {
+					limit = { has_idea = feudal_economy_law }
+					num_of_civilian_factories < 3
+					else = {
+						num_of_civilian_factories < 2
+					}
+				}
 			}
 			allowed_to_remove = {
 				num_of_military_factories > 1
 				num_of_civilian_factories > 2
 			}
-			removal_cost = 50
+			visible = {
+				OR = {
+					has_idea = control_of_field_commanders_law
+					num_of_military_factories < 1
+					num_of_civilian_factories < 2
+				}
+			}
+			removal_cost = -1
 			modifier = {
 				global_building_slots_factor = -0.2
 				industrial_factory_donations = 2
 				military_factory_donations = 1
 				stability_factor = -0.15
 				resistance_growth = 0.1
-				production_speed_buildings_factor = -0.2
+				production_speed_buildings_factor = -0.5
 				industrial_capacity_factory = -0.5
 				production_lack_of_resource_penalty_factor = -0.3
 				consumer_goods_factor = -0.1
@@ -71,33 +84,50 @@ ideas = {
 				factor = 100
 				modifier = {
 					factor = 0
-					OR = {
-						num_of_military_factories > 0
-						num_of_civilian_factories > 0
-					}
+					num_of_military_factories > 0
+				}
+				modifier = {
+					factor = 0
+					num_of_civilian_factories > 2
 				}
 			}
 			cancel_if_invalid = no
 		}
 		
 		feudal_economy_law = {
-			level = 9
+			level = 8
 			
-			cost = 50
+			cost = 100
 			
 			available = {
 				has_idea = control_of_field_commanders_law
+				OR = {
+					has_government = conservatism
+					has_government = despotism
+					has_government = authoritarism
+					has_government = fascism
+					has_government = national_syndicalism
+				}
+			}
+			visible = {
+				OR = {
+					has_idea = feudal_economy_law
+					has_idea = control_of_field_commanders_law
+				}
 			}
 			removal_cost = -1
 			modifier = {
 				global_building_slots_factor = -0.2
 				industrial_factory_donations = 2
-				production_speed_buildings_factor = -0.2
-				industrial_capacity_factory = -0.1
+				production_speed_buildings_factor = -0.5
 				consumer_goods_factor = -0.1
 			}
 			ai_will_do = {
-				factor = 0
+				factor = 100
+				modifier = {
+					factor = 0
+					NOT = { num_of_military_factories > 1 }
+				}
 			}
 			cancel_if_invalid = no
 		}
@@ -105,9 +135,7 @@ ideas = {
 		corporatocracy_law = {
 			level = 8
 			
-			cost = 50
-			
-			available = {
+			allowed = {
 				always = no
 			}
 			allowed_to_remove = {
@@ -147,9 +175,6 @@ ideas = {
 				min_export = 0.1
 				consumer_goods_factor = -0.05
 			}
-			ai_will_do = {
-				factor = 0
-			}
 			cancel_if_invalid = no
 		}
 		laissez_faire_law = {
@@ -159,79 +184,30 @@ ideas = {
 			
 			available = {
 				if = {
-					limit = { has_idea = feudal_economy_law }
-					NOT = {
-						has_government = authoritarism
-						has_government = fascism
+					limit = { has_idea = feudal_economy_law OR = { has_government = authoritarism has_government = fascism } }
+					OR = {
+						num_of_civilian_factories > 5
+						AND = {
+							num_of_civilian_factories > 2
+							NOT = { has_government = authoritarism has_government = fascism }
+						}
 					}
-					num_of_civilian_factories > 1
 				}
 				if = {
-					limit = { has_idea = interventionalism_law }
+					limit = { has_idea = feudal_economy_law NOT = { has_government = authoritarism has_government = fascism } }
+					num_of_civilian_factories > 2
+				}
+				if = {
+					limit = { NOT = { has_idea = feudal_economy_law has_idea = corporatocracy_law has_idea = control_of_field_commanders_law } }
 					OR = {
+						has_government = social_liberalism
 						has_government = market_liberalism
 						has_government = conservatism
 						has_government = despotism
+						has_government = authoritarism
+						has_government = fascism
 					}
 					has_war = no
-				}
-				if = {
-					limit = { has_idea = corporatocracy_law }
-					is_subject = no
-					not_has_foreign_economic_exploitation = yes
-					not_has_monocultural_agriculture_all = yes
-					if = {
-						limit = { has_idea = NIC_bryan_chamorro_treaty }
-						NOT = { has_idea = NIC_bryan_chamorro_treaty }
-					}
-					if = {
-						limit = { has_idea = pay_Entente_credit_for_Russia_for_Russia_5 }
-						NOT = { has_idea = pay_Entente_credit_for_Russia_for_Russia_5 }
-					}
-					if = {
-						limit = { has_idea = pay_Entente_credit_for_Russia_for_Russia_4 }
-						NOT = { has_idea = pay_Entente_credit_for_Russia_for_Russia_4 }
-					}
-					if = {
-						limit = { has_idea = pay_Entente_credit_for_Russia_for_Russia_3 }
-						NOT = { has_idea = pay_Entente_credit_for_Russia_for_Russia_3 }
-					}
-					if = {
-						limit = { has_idea = pay_Entente_credit_for_Russia_for_Russia_2 }
-						NOT = { has_idea = pay_Entente_credit_for_Russia_for_Russia_2 }
-					}
-					if = {
-						limit = { has_idea = pay_Entente_credit_for_Russia_for_Russia_1 }
-						NOT = { has_idea = pay_Entente_credit_for_Russia_for_Russia_1 }
-					}
-				}
-				if = {
-					limit = { NOT = { has_idea = feudal_economy_law has_idea = interventionalism_law } }
-					OR = {
-						AND = {
-							has_idea = interventionalism_law
-							OR = {
-								has_government = market_liberalism
-								has_government = conservatism
-								has_government = despotism
-							}
-							has_war = no
-						}
-						AND = {
-							has_idea = feudal_economy_law
-							NOT = {
-								has_government = authoritarism
-								has_government = fascism
-							}
-							num_of_civilian_factories > 1
-						}
-					}
-				}
-			}
-			allowed_to_remove = {
-				OR = {
-					NOT = { has_government = market_liberalism }
-					has_war = yes
 				}
 			}
 			removal_cost = -1
@@ -241,7 +217,11 @@ ideas = {
 				consumer_goods_factor = -0.05
 			}
 			ai_will_do = {
-				factor = 0
+				factor = 100
+				modifier = {
+					factor = 0
+					NOT = { has_idea = corporatocracy_law }
+				}
 			}
 			cancel_if_invalid = no
 		}
@@ -251,24 +231,33 @@ ideas = {
 			cost = 100
 			
 			available = {
+				NOT = { has_government = fascism }
 				if = {
-					limit = { has_idea = feudal_economy_law }
-					NOT = {
-						has_government = authoritarism
-						has_government = fascism
+					limit = { has_idea = feudal_economy_law OR = { has_government = authoritarism has_government = fascism } }
+					OR = {
+						num_of_civilian_factories > 5
+						AND = {
+							num_of_civilian_factories > 2
+							NOT = { has_government = authoritarism has_government = fascism }
+						}
 					}
-					num_of_civilian_factories > 1
 				}
-				OR = {
-					has_idea = laissez_faire_law
-					has_idea = corporatocracy_law
-					AND = {
-						NOT = { has_government = radical_socialism }
-						NOT = { has_government = communism }
-						NOT = { has_government = social_democracy }
-						NOT = { has_government = social_liberalism }
+				if = {
+					limit = { has_idea = feudal_economy_law NOT = { has_government = authoritarism has_government = fascism } }
+					num_of_civilian_factories > 2
+				}
+				if = {
+					limit = { has_idea = laissez_faire_law }
+					OR = {
+						NOT = { has_government = market_liberalism }
+						has_war = yes
 					}
-					has_idea = control_of_field_commanders_law
+				}
+				if = {
+					limit = { NOT = { has_idea = feudal_economy_law has_idea = corporatocracy_law has_idea = control_of_field_commanders_law has_idea = laissez_faire_law } }
+					NOT = { has_government = radical_socialism }
+					NOT = { has_government = communism }
+					NOT = { has_government = social_democracy }
 				}
 			}
 			default = yes
@@ -280,75 +269,41 @@ ideas = {
 			}
 			cancel_if_invalid = no
 		}
-		mixed_economy_law = {
+		state_capitalism_law = {
 			level = 5
 			
 			cost = 100
 			
 			available = {
 				if = {
-					limit = { has_idea = feudal_economy_law }
-					num_of_civilian_factories > 1
-				}
-				OR = {
-					has_government = radical_socialism
-					has_government = communism
-					has_government = social_democracy
-					has_government = social_liberalism
-					has_government = despotism
-				}
-			}
-			allowed_to_remove = {
-				OR = {
-					has_government = market_liberalism
-					has_government = radical_socialism
-					has_government = communism
-					has_government = social_democracy
-					AND = {
-						has_country_flag = political_despotism_social_democratic_coalition
-						has_government = despotism
+					limit = { has_idea = feudal_economy_law OR = { has_government = authoritarism has_government = fascism } }
+					OR = {
+						num_of_civilian_factories > 5
+						AND = {
+							num_of_civilian_factories > 2
+							NOT = { has_government = authoritarism has_government = fascism }
+						}
 					}
-					AND = {
-						has_government = despotism
-						has_country_flag = junta_chicago_school_of_economics
+				}
+				if = {
+					limit = { has_idea = feudal_economy_law NOT = { has_government = authoritarism has_government = fascism } }
+					num_of_civilian_factories > 2
+				}
+				if = {
+					limit = { OR = { has_idea = laissez_faire_law has_idea = interventionalism_law } }
+					OR = {
+						NOT = { has_government = market_liberalism }
+						has_war = yes
 					}
+				}
+				if = {
+					limit = { OR = { has_idea = mixed_economy_law has_idea = planed_economy_law has_idea = commanding_heights_law has_idea = workers_control_law } }
+					NOT = { is_socialist_country = yes }
 				}
 			}
 			removal_cost = -1
 			modifier = {
 				global_building_slots_factor = 0.1
-				production_speed_infrastructure_factor = 0.15
-				production_speed_rail_way_factor = 0.15
-				production_lack_of_resource_penalty_factor = -0.1
-			}
-			ai_will_do = {
-				factor = 0
-			}
-			cancel_if_invalid = no
-		}
-		state_capitalism_law = {
-			level = 4
-			
-			cost = 150
-			
-			available = {
-				if = {
-					limit = { has_idea = feudal_economy_law }
-					NOT = {
-						has_government = authoritarism
-						has_government = fascism
-					}
-					num_of_civilian_factories > 1
-				}
-				OR = {
-					is_socialist_country = yes
-					has_government = authoritarism
-					has_government = despotism
-				}
-			}
-			removal_cost = -1
-			modifier = {
-				global_building_slots_factor = 0.2
 				stability_factor = 0.05
 				production_speed_buildings_factor = 0.15
 				production_factory_efficiency_gain_factor = 0.01
@@ -359,21 +314,63 @@ ideas = {
 			}
 			cancel_if_invalid = no
 		}
+		mixed_economy_law = {
+			level = 4
+			
+			cost = 100
+			
+			available = {
+				if = {
+					limit = { has_idea = feudal_economy_law OR = { has_government = authoritarism has_government = fascism } }
+					OR = {
+						num_of_civilian_factories > 5
+						AND = {
+							num_of_civilian_factories > 2
+							NOT = { has_government = authoritarism has_government = fascism }
+						}
+					}
+				}
+				if = {
+					limit = { has_idea = feudal_economy_law NOT = { has_government = authoritarism has_government = fascism } }
+					num_of_civilian_factories > 2
+				}
+				if = {
+					limit = { NOT = { has_idea = planed_economy_law has_idea = commanding_heights_law has_idea = workers_control_law } }
+					NOT = { has_government = market_liberalism }
+				}
+				if = {
+					limit = { OR = { has_idea = planed_economy_law has_idea = commanding_heights_law has_idea = workers_control_law } }
+					NOT = { has_government = radical_socialism }
+					NOT = { has_government = communism }
+				}
+			}
+			removal_cost = -1
+			modifier = {
+				global_building_slots_factor = 0.2
+				production_speed_infrastructure_factor = 0.15
+				production_speed_rail_way_factor = 0.15
+				production_lack_of_resource_penalty_factor = -0.1
+			}
+			ai_will_do = {
+				factor = 0
+			}
+			cancel_if_invalid = no
+		}
 		planed_economy_law = {
 			level = 3
 			
-			cost = 300
+			cost = 200
 			
 			available = {
 				if = {
 					limit = { has_idea = feudal_economy_law }
-					NOT = {
-						has_government = authoritarism
-						has_government = fascism
-					}
-					num_of_civilian_factories > 1
+					num_of_civilian_factories > 2
 				}
 				OR = {
+					if = {
+						limit = { OR = { has_idea = workers_control_law has_idea = commanding_heights_law } }
+						has_government = national_syndicalism
+					}
 					is_socialist_country = yes
 					AND = {
 						is_socdem_country = yes
@@ -383,14 +380,11 @@ ideas = {
 						}
 					}
 				}
-				NOT = { has_idea = absolute_monarchy_gov_form }
-				NOT = { has_idea = confederal_gov_terr }
-			}
-			allowed_to_remove = {
-				NOT = {
-					is_socialist_country = yes
-					has_government = social_democracy
+				if = {
+					limit = { OR = { has_idea = commanding_heights_law has_idea = workers_control_law } }
+					NOT = { has_government = radical_socialism }
 				}
+				NOT = { has_idea = confederal_gov_terr }
 			}
 			removal_cost = -1
 			modifier = {
@@ -407,39 +401,26 @@ ideas = {
 		commanding_heights_law = {
 			level = 2
 			
-			cost = 300
+			cost = 100
 			
 			available = {
 				if = {
 					limit = { has_idea = feudal_economy_law }
-					num_of_civilian_factories > 1
+					num_of_civilian_factories > 2
 				}
 				OR = {
-					AND = {
-						OR = {
-							is_socialist_country = yes
-						}
-						has_idea = workers_control_law
+					if = {
+						limit = { OR = { has_idea = workers_control_law has_idea = planed_economy_law } }
+						has_government = national_syndicalism
 					}
+					is_socialist_country = yes
 					AND = {
-						OR = {
-							has_government = radical_socialism
-							has_government = communism
-							has_government = social_democracy
-						}
-						if = {
-							limit = { has_country_flag = RUS_flag_soviet_power }
-							has_country_flag = RUS_soviet_power_set_workers_control
+						is_socdem_country = yes
+						custom_trigger_tooltip = {
+							tooltip = socialist_parties_more_then_50_tt
+							check_variable = { socialist_parties > 0.5 }
 						}
 					}
-					AND = {
-						has_government = social_liberalism
-						has_country_flag = political_social_liberals_in_socialist_coalition
-					}
-				}
-				custom_trigger_tooltip = {
-					tooltip = socialist_parties_more_then_50_tt
-					check_variable = { socialist_parties > 0.5 }
 				}
 			}
 			modifier = {
@@ -456,42 +437,32 @@ ideas = {
 		workers_control_law = {
 			level = 1
 			
-			cost = 300
+			cost = 100
 			
 			available = {
 				if = {
 					limit = { has_idea = feudal_economy_law }
-					num_of_civilian_factories > 1
+					num_of_civilian_factories > 2
 				}
 				OR = {
+					if = {
+						limit = { OR = { has_idea = planed_economy_law has_idea = commanding_heights_law } }
+						has_government = national_syndicalism
+					}
+					is_socialist_country = yes
 					AND = {
-						is_socialist_country = yes
-						if = {
-							limit = { has_country_flag = RUS_flag_soviet_power }
-							has_country_flag = RUS_soviet_power_set_workers_control
+						is_socdem_country = yes
+						custom_trigger_tooltip = {
+							tooltip = socialist_parties_more_then_50_tt
+							check_variable = { socialist_parties > 0.5 }
 						}
 					}
-					AND = {
-						has_government = social_liberalism
-						has_country_flag = political_social_liberals_in_socialist_coalition
-					}
-				}
-				custom_trigger_tooltip = {
-					tooltip = socialist_parties_more_then_50_tt
-					check_variable = { socialist_parties > 0.5 }
 				}
 				OR = {
-					has_idea = constitution_b_law
-					has_idea = uncodified_constitution_b_law
-					has_idea = local_assembly_decisions_b_law
-				}
-			}
-			allowed_to_remove = {
-				OR = {
-					NOT = { has_government = radical_socialism }
-					if = {
-						limit = { has_country_flag = RUS_flag_soviet_power }
-						NOT = { has_country_flag = RUS_soviet_power_set_workers_control }
+					has_idea = confederal_gov_terr
+					NOT = {
+						has_idea = emergency_laws_b_law
+						has_idea = decrees_of_ruler_b_law
 					}
 				}
 			}
@@ -538,6 +509,7 @@ ideas = {
 					NOT = { has_idea = RSS_state_unions_idea }
 				}
 			}
+			default = yes
 			allowed_to_remove = {
 				NOT = { has_idea = corporatocracy_law }
 			}
@@ -597,7 +569,6 @@ ideas = {
 					NOT = { has_idea = RSS_state_unions_idea }
 				}
 			}
-			default = yes
 			
 			modifier = {
 				consumer_goods_factor = 0.02
