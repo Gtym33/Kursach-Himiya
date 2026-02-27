@@ -180,7 +180,7 @@ ideas = {
 		laissez_faire_law = {
 			level = 7
 			
-			cost = 100
+			cost = 150
 			
 			available = {
 				if = {
@@ -224,7 +224,7 @@ ideas = {
 		interventionalism_law = {
 			level = 6
 			
-			cost = 100
+			cost = 150
 			
 			available = {
 				if = {
@@ -267,7 +267,7 @@ ideas = {
 		state_capitalism_law = {
 			level = 5
 			
-			cost = 100
+			cost = 150
 			
 			available = {
 				if = {
@@ -314,7 +314,7 @@ ideas = {
 		mixed_economy_law = {
 			level = 4
 			
-			cost = 100
+			cost = 150
 			
 			available = {
 				if = {
@@ -356,30 +356,19 @@ ideas = {
 		planed_economy_law = {
 			level = 3
 			
-			cost = 200
+			cost = 250
 			
 			available = {
 				if = {
 					limit = { has_idea = feudal_economy_law }
 					num_of_civilian_factories > 2
 				}
-				OR = {
-					if = {
-						limit = { OR = { has_idea = workers_control_law has_idea = commanding_heights_law } }
-						has_government = national_syndicalism
-					}
-					is_socialist_country = yes
-					AND = {
-						is_socdem_country = yes
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_more_then_50_tt
-							check_variable = { socialist_parties > 0.5 }
-						}
-					}
-				}
 				if = {
-					limit = { OR = { has_idea = commanding_heights_law has_idea = workers_control_law } }
-					NOT = { has_government = radical_socialism }
+					limit = { NOT = { has_idea = commanding_heights_law has_idea = workers_control_law } }
+					is_socialist_country = yes
+					else = {
+						is_left_country = yes
+					}
 				}
 				NOT = { has_idea = confederal_gov_terr }
 			}
@@ -405,18 +394,11 @@ ideas = {
 					limit = { has_idea = feudal_economy_law }
 					num_of_civilian_factories > 2
 				}
-				OR = {
-					if = {
-						limit = { OR = { has_idea = workers_control_law has_idea = planed_economy_law } }
-						has_government = national_syndicalism
-					}
+				if = {
+					limit = { NOT = { has_idea = workers_control_law has_idea = planed_economy_law } }
 					is_socialist_country = yes
-					AND = {
-						is_socdem_country = yes
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_more_then_50_tt
-							check_variable = { socialist_parties > 0.5 }
-						}
+					else = {
+						is_left_country = yes
 					}
 				}
 			}
@@ -441,18 +423,11 @@ ideas = {
 					limit = { has_idea = feudal_economy_law }
 					num_of_civilian_factories > 2
 				}
-				OR = {
-					if = {
-						limit = { OR = { has_idea = planed_economy_law has_idea = commanding_heights_law } }
-						has_government = national_syndicalism
-					}
+				if = {
+					limit = { NOT = { has_idea = commanding_heights_law has_idea = planed_economy_law } }
 					is_socialist_country = yes
-					AND = {
-						is_socdem_country = yes
-						custom_trigger_tooltip = {
-							tooltip = socialist_parties_more_then_50_tt
-							check_variable = { socialist_parties > 0.5 }
-						}
+					else = {
+						is_left_country = yes
 					}
 				}
 				OR = {
@@ -483,16 +458,11 @@ ideas = {
 		no_legislation = {
 			
 			cost = 150
+			level = 1
 			
 			removal_cost = -1
 			available = {
-				NOT = {
-					has_government = radical_socialism
-					has_government = communism
-					has_government = social_democracy
-					has_government = social_liberalism
-					has_government = national_syndicalism
-				}
+				NOT = { is_left_country = yes }
 				custom_trigger_tooltip = {
 					tooltip = socialist_parties_less_then_10_tt
 					check_variable = { socialist_parties < 0.1 }
@@ -507,9 +477,6 @@ ideas = {
 				}
 			}
 			default = yes
-			allowed_to_remove = {
-				NOT = { has_idea = corporatocracy_law }
-			}
 			modifier = {
 				production_factory_efficiency_gain_factor = 0.005
 				monthly_population = -0.05
@@ -522,6 +489,7 @@ ideas = {
 		minimum_legislation = {
 			
 			cost = 150
+			level = 2
 			
 			removal_cost = -1
 			available = {
@@ -530,9 +498,7 @@ ideas = {
 						has_idea = no_legislation
 					}
 					OR = {
-						is_socialist_country = yes
-						is_socdem_country = yes
-						is_democratic_country = yes
+						NOT = { is_reactionary_country = yes }
 						custom_trigger_tooltip = {
 							tooltip = socialist_parties_more_then_10_tt
 							check_variable = { socialist_parties > 0.1 }
@@ -547,11 +513,7 @@ ideas = {
 					limit = {
 						NOT = { has_idea = no_legislation }
 					}
-					OR = {
-						is_democratic_country = yes
-						is_authoritarian_country = yes
-						is_reactionary_country = yes
-					}
+					NOT = { is_left_country = yes }
 					custom_trigger_tooltip = {
 						tooltip = socialist_parties_less_then_20_tt
 						check_variable = { socialist_parties < 0.2 }
@@ -578,8 +540,7 @@ ideas = {
 					factor = 10
 					has_idea = no_legislation
 					OR = {
-						is_socialist_country = yes
-						is_socdem_country = yes
+						is_left_country = yes
 						AND = {
 							is_democratic_country = yes
 							OR = {
@@ -594,11 +555,22 @@ ideas = {
 		acceptable_legislation = {
 			
 			cost = 150
+			level = 3
 			
 			removal_cost = -1
 			available = {
-				NOT = { has_idea = control_of_field_commanders_law }
-				NOT = { has_idea = feudal_economy_law }
+				if = {
+					limit = { has_idea = control_of_field_commanders_law }
+					NOT = { has_idea = control_of_field_commanders_law }
+				}
+				if = {
+					limit = { OR = { has_idea = control_of_field_commanders_law has_idea = feudal_economy_law } }
+					NOT = { has_idea = feudal_economy_law }
+				}
+				if = {
+					limit = { has_idea = corporatocracy_law }
+					NOT = { has_idea = corporatocracy_law }
+				}
 				if = {
 					limit = {
 						OR = {
@@ -607,20 +579,14 @@ ideas = {
 						}
 					}
 					OR = {
-						is_socialist_country = yes
-						is_socdem_country = yes
-						AND = {
-							is_democratic_country = yes
-							OR = {
-								custom_trigger_tooltip = {
-									tooltip = socialist_parties_more_then_20_tt
-									check_variable = { socialist_parties > 0.2 }
-								}
-								custom_trigger_tooltip = {
-									tooltip = socdem_parties_more_then_20_tt
-									check_variable = { socdem_parties > 0.2 }
-								}
-							}
+						NOT = { is_reactionary_country = yes }
+						custom_trigger_tooltip = {
+							tooltip = socialist_parties_more_then_20_tt
+							check_variable = { socialist_parties > 0.2 }
+						}
+						custom_trigger_tooltip = {
+							tooltip = socdem_parties_more_then_20_tt
+							check_variable = { socdem_parties > 0.2 }
 						}
 					}
 				}
@@ -631,18 +597,10 @@ ideas = {
 							has_idea = minimum_legislation
 						}
 					}
-					OR = {
-						is_democratic_country = yes
-						is_authoritarian_country = yes
-						is_reactionary_country = yes
-					}
+					NOT = { is_socialist_country = yes }
 					custom_trigger_tooltip = {
 						tooltip = socialist_parties_less_then_20_tt
 						check_variable = { socialist_parties < 0.2 }
-					}
-					custom_trigger_tooltip = {
-						tooltip = socdem_parties_less_then_20_tt
-						check_variable = { socdem_parties < 0.2 }
 					}
 				}
 			}
@@ -663,8 +621,7 @@ ideas = {
 						has_idea = minimum_legislation
 					}
 					OR = {
-						is_socialist_country = yes
-						is_socdem_country = yes
+						is_left_country = yes
 						AND = {
 							is_democratic_country = yes
 							OR = {
@@ -679,19 +636,38 @@ ideas = {
 		good_legislation = {
 			
 			cost = 150
+			level = 4
 			
 			removal_cost = -1
 			available = {
-				NOT = { has_idea = control_of_field_commanders_law }
-				NOT = { has_idea = feudal_economy_law }
-				NOT = { has_idea = corporatocracy_law }
+				if = {
+					limit = { has_idea = control_of_field_commanders_law }
+					NOT = { has_idea = control_of_field_commanders_law }
+				}
+				if = {
+					limit = { OR = { has_idea = control_of_field_commanders_law has_idea = feudal_economy_law } }
+					NOT = { has_idea = feudal_economy_law }
+				}
+				if = {
+					limit = { has_idea = corporatocracy_law }
+					NOT = { has_idea = corporatocracy_law }
+				}
 				if = {
 					limit = { NOT = { has_idea = great_legislation } }
+					if {
+						limit = { is_reactionary_country = yes }
+						NOT = { is_reactionary_country = yes }
+					}
 					OR = {
-						has_government = radical_socialism
-						has_government = communism
-						has_government = social_democracy
-						has_government = social_liberalism
+						is_left_country = yes
+						custom_trigger_tooltip = {
+							tooltip = socialist_parties_more_then_20_tt
+							check_variable = { socialist_parties > 0.2 }
+						}
+						custom_trigger_tooltip = {
+							tooltip = socdem_parties_more_then_20_tt
+							check_variable = { socdem_parties > 0.2 }
+						}
 					}
 				}
 			}
@@ -707,11 +683,7 @@ ideas = {
 				factor = 1
 				modifier = {
 					factor = 10
-					OR = {
-						has_idea = no_legislation
-						has_idea = minimum_legislation
-						has_idea = acceptable_legislation
-					}
+					NOT = { has_idea = great_legislation }
 					OR = {
 						has_government = radical_socialism
 						has_government = communism
@@ -722,25 +694,35 @@ ideas = {
 		great_legislation = {
 			
 			cost = 150
+			level = 5
 			
 			removal_cost = -1
 			available = {
-				NOT = { has_idea = control_of_field_commanders_law }
-				NOT = { has_idea = feudal_economy_law }
-				NOT = { has_idea = corporatocracy_law }
-				OR = {
-					has_government = radical_socialism
-					has_government = communism
-					has_government = social_democracy
-					has_government = social_liberalism
+				if = {
+					limit = { has_idea = control_of_field_commanders_law }
+					NOT = { has_idea = control_of_field_commanders_law }
 				}
+				if = {
+					limit = { OR = { has_idea = control_of_field_commanders_law has_idea = feudal_economy_law } }
+					NOT = { has_idea = feudal_economy_law }
+				}
+				if = {
+					limit = { has_idea = corporatocracy_law }
+					NOT = { has_idea = corporatocracy_law }
+				}
+				NOT = { has_idea = laissez_faire_law }
+				is_left_country = yes
 			}
 			allowed_to_remove = {
 				NOT = { has_government = radical_socialism }
-				NOT = { is_socialist_country = yes }
-				custom_trigger_tooltip = {
-					tooltip = socialist_parties_less_then_40_tt
-					check_variable = { socialist_parties < 0.4 }
+				if = {
+					limit = {
+						NOT = { is_socialist_country = yes }
+					}
+					custom_trigger_tooltip = {
+						tooltip = socialist_parties_less_then_40_tt
+						check_variable = { socialist_parties < 0.4 }
+					}
 				}
 			}
 			modifier = {
@@ -804,7 +786,10 @@ ideas = {
 			
 			
 			available = {
-				NOT = { has_idea = corporatocracy_law }
+				if = {
+					limit = { has_idea = corporatocracy_law }
+					NOT = { has_idea = corporatocracy_law }
+				}
 			}
 		
 			cost = 150
@@ -836,10 +821,17 @@ ideas = {
 			
 			
 			available = {
+				if = {
+					limit = { has_idea = control_of_field_commanders_law }
+					NOT = { has_idea = control_of_field_commanders_law }
+				}
+				if = {
+					limit = { has_idea = corporatocracy_law }
+					NOT = { has_idea = corporatocracy_law }
+				}
 				has_war = yes
-				NOT = { has_idea = control_of_field_commanders_law }
-				NOT = { has_idea = corporatocracy_law }
 				NOT = { has_idea = laissez_faire_law }
+				NOT = { has_idea_with_trait = min_1_corporate_suit }
 				NOT = { has_idea_with_trait = min_2_corporations_puppet }
 			}
 			
@@ -876,16 +868,16 @@ ideas = {
 		use_list_view = yes
 		
 		undisturbed_isolation = {
-			
-			
+
+
 			allowed = {
 				always = no
 			}
 			level = 7
 			removal_cost = -1
-		
+
 			modifier = {
-				consumer_goods_factor = 0.50
+				consumer_goods_expected_value = 0.50
 				production_speed_industrial_complex_factor = -0.5
 				production_speed_arms_factory_factor = -0.5
 				production_speed_dockyard_factor = -0.5
@@ -899,6 +891,7 @@ ideas = {
 				max_fuel_factor = -0.45
 				fuel_gain_factor = -0.6
 				agency_upgrade_time = 1.0
+				factory_energy_consumption = -0.3
 			}
 			
 			allowed_to_remove = {
@@ -907,22 +900,20 @@ ideas = {
 					has_war = yes
 				}
 			}
-			
+
 			cancel_if_invalid = no
 		}
 		
 		isolation = {
-			
-			
-			
+
 			allowed = {
 				always = no
 			}
 			level = 6
 			removal_cost = -1
-			
+
 			modifier = {
-				consumer_goods_factor = 0.4
+				consumer_goods_expected_value = 0.4
 				production_speed_industrial_complex_factor = -0.4
 				production_speed_arms_factory_factor = -0.4
 				production_speed_dockyard_factor = -0.4
@@ -930,11 +921,13 @@ ideas = {
 				conversion_cost_mil_to_civ_factor = 0.4
 				generate_wargoal_tension = 1.00
 				join_faction_tension = 0.20
+				lend_lease_tension = 0.10
 				send_volunteers_tension = 0.20
 				guarantee_tension = 0.5
 				max_fuel_factor = -0.35
 				fuel_gain_factor = -0.5
 				agency_upgrade_time = 0.8
+				factory_energy_consumption = -0.3
 			}
 			allowed_to_remove = {
 				OR = {
@@ -942,41 +935,39 @@ ideas = {
 					has_war = yes
 				}
 			}
-			
-				
-			
+
 			cancel_if_invalid = no
 		}
 		
 		civilian_economy = {
-			
-		
+
+
 			level = 5
+			cost = 150
 			removal_cost = -1
-			
+
 			modifier = {
+				consumer_goods_expected_value = 0.3
 				production_speed_industrial_complex_factor = 0.15
 				production_speed_synthetic_refinery_factor = 0.1
 				production_speed_fuel_silo_factor = 0.1
 				production_factory_efficiency_gain_factor = -0.05
-				consumer_goods_factor = 0.3
 				production_speed_infrastructure_factor = 0.3
 				production_speed_arms_factory_factor = -0.3
 				conversion_cost_civ_to_mil_factor= 0.3
 				conversion_cost_mil_to_civ_factor = 0.3
 				max_fuel_factor = -0.25
 				fuel_gain_factor = -0.4
+				factory_energy_consumption = -0.3
 			}
-			
-				
-			
+
 			default = yes
-			
+
 			cancel_if_invalid = no
 		}
 		
 		low_economic_mobilisation = {
-			
+
 			available = {
 				OR = {
 					has_war_support > 0.15
@@ -985,17 +976,19 @@ ideas = {
 					has_idea = tot_economic_mobilisation
 				}
 			}
-			
+
 			level = 4
+			cost = 150
 			removal_cost = -1
 			
 			modifier = {
-				consumer_goods_factor = 0.25
+				consumer_goods_expected_value = 0.25
 				production_speed_infrastructure_factor = 0.1
 				production_speed_arms_factory_factor = -0.1
 				fuel_gain_factor = -0.25
+				factory_energy_consumption = -0.15
 			}
-			
+
 			cancel_if_invalid = no
 
 			ai_will_do = {
@@ -1003,7 +996,7 @@ ideas = {
 
 				modifier = {
 					factor = 20
-					
+
 					is_major = yes
 				}
 			}
@@ -1020,12 +1013,13 @@ ideas = {
 			}
 
 			level = 3
+			cost = 150
 			removal_cost = -1
-			
+
 			modifier = {
-				political_power_factor = -0.05
-				consumer_goods_factor = 0.2
-				industry_repair_factor = 0.1				production_speed_arms_factory_factor = 0.1
+				consumer_goods_expected_value = 0.2
+				industry_repair_factor = 0.1
+				production_speed_arms_factory_factor = 0.1
 				conversion_cost_civ_to_mil_factor= -0.1
 				conversion_cost_mil_to_civ_factor = -0.1
 				fuel_gain_factor = -0.1
@@ -1045,9 +1039,21 @@ ideas = {
 		}
 		
 		war_economy = {
-			
-			
+
+
 			available = {
+				if = {
+					limit = { has_idea = control_of_field_commanders_law }
+					NOT = { has_idea = control_of_field_commanders_law }
+				}
+				if = {
+					limit = { OR = { has_idea = control_of_field_commanders_law has_idea = feudal_economy_law } }
+					NOT = { has_idea = feudal_economy_law }
+				}
+				if = {
+					limit = { has_idea = corporatocracy_law }
+					NOT = { has_idea = corporatocracy_law }
+				}
 				OR = {
 					has_war_support > 0.5
 					has_idea = tot_economic_mobilisation
@@ -1064,25 +1070,25 @@ ideas = {
 						}
 					}
 				}
-				NOT = { has_idea = control_of_field_commanders_law }
-				NOT = { has_idea = feudal_economy_law }
-				NOT = { has_idea = corporatocracy_law }
 				NOT = { has_idea = laissez_faire_law }
 			}
-		
+
 			level = 2
+			cost = 150
 			removal_cost = -1
-			
+
 			modifier = {
-				political_power_factor = -0.15
-				consumer_goods_factor = 0.15
-				industry_repair_factor = 0.2				production_speed_arms_factory_factor = 0.2
+				consumer_goods_expected_value = 0.15
+				conscription = -0.01
+				industry_repair_factor = 0.2
+				production_speed_arms_factory_factor = 0.2
 				conversion_cost_civ_to_mil_factor= -0.2
 				conversion_cost_mil_to_civ_factor = -0.2
+				factory_energy_consumption = 0.25
 				#stability_weekly = -0.002
-				conscription = -0.01
+				political_power_factor = -0.15
 			}
-			
+
 			cancel_if_invalid = no
 			
 			ai_will_do = {
@@ -1097,9 +1103,21 @@ ideas = {
 		}
 		
 		tot_economic_mobilisation = {
-			
-			
+
+
 			available = {
+				if = {
+					limit = { has_idea = control_of_field_commanders_law }
+					NOT = { has_idea = control_of_field_commanders_law }
+				}
+				if = {
+					limit = { OR = { has_idea = control_of_field_commanders_law has_idea = feudal_economy_law } }
+					NOT = { has_idea = feudal_economy_law }
+				}
+				if = {
+					limit = { has_idea = corporatocracy_law }
+					NOT = { has_idea = corporatocracy_law }
+				}
 				has_war = yes
 				has_war_support > 0.8
 				any_enemy_country = {
@@ -1108,9 +1126,6 @@ ideas = {
 						ratio > 0.5
 					}
 				}
-				NOT = { has_idea = control_of_field_commanders_law }
-				NOT = { has_idea = feudal_economy_law }
-				NOT = { has_idea = corporatocracy_law }
 				NOT = { has_idea = laissez_faire_law }
 				NOT = { has_idea = interventionalism_law }
 			}
@@ -1140,20 +1155,22 @@ ideas = {
 					}
 				}
 			}
-			
+
 			level = 1
+			cost = 150
 			removal_cost = -1
-			
+
 			modifier = {
-				political_power_factor = -0.3
-				consumer_goods_factor = 0.05
+				consumer_goods_expected_value = 0.05
 				conscription = -0.03
 				industry_repair_factor = 0.3
 				production_speed_industrial_complex_factor = -0.1
 				production_speed_arms_factory_factor = 0.3
 				conversion_cost_civ_to_mil_factor= -0.3
 				conversion_cost_mil_to_civ_factor = -0.3
+				factory_energy_consumption = 0.5
 				#stability_weekly = -0.002
+				political_power_factor = -0.3
 			}
 			
 			cancel_if_invalid = no
