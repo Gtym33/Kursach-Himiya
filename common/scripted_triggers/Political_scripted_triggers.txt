@@ -1,19 +1,3 @@
-#is_democratic_country#	Example:
-#
-#	example_trigger = {
-#		tag = GER
-#		is_ai = no
-#	}
-#
-#
-#	In a script file:
-#
-#	trigger = {
-#		exampel_trigger = yes
-#	}
-#
-
-
 #is_socialist_country
 #is_socdem_country
 #is_liberal_country
@@ -24,6 +8,7 @@
 #is_democratic_country
 #is_centrist_country
 #is_reactionary_country
+#is_radical_country
 
 can_lose_unity = {
 	has_stability > 60
@@ -43,20 +28,19 @@ can_lose_democracy_support = {
 
 is_socialist_country = {
 	OR = {
+		custom_trigger_tooltip = {
+			tooltip = political_radical_socialists_in_socialist_coalition_tt
+			AND = {
+				NOT = { has_country_flag = political_radical_socialists_in_socdem_coalition }
+				has_government = radical_socialism
+			}
+		}
 		has_government = communism
-		has_government = radical_socialism
 		custom_trigger_tooltip = {
 			tooltip = political_social_democrats_in_socialist_coalition_tt
 			AND = {
 				has_country_flag = political_social_democrats_in_socialist_coalition
 				has_government = social_democracy
-			}
-		}
-		custom_trigger_tooltip = {
-			tooltip = political_social_liberals_in_socialist_coalition_tt
-			AND = {
-				has_country_flag = political_social_liberals_in_socialist_coalition
-				has_government = social_liberalism
 			}
 		}
 		custom_trigger_tooltip = {
@@ -72,6 +56,13 @@ is_socialist_country = {
 is_socdem_country = {
 	OR = {
 		custom_trigger_tooltip = {
+			tooltip = political_radical_socialists_in_socdem_coalition_tt
+			AND = {
+				has_country_flag = political_radical_socialists_in_socdem_coalition
+				has_government = radical_socialism
+			}
+		}
+		custom_trigger_tooltip = {
 			tooltip = political_social_democrats_not_in_socialist_n_not_in_liberal_coalition_tt
 			AND = {
 				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
@@ -80,9 +71,8 @@ is_socdem_country = {
 			}
 		}
 		custom_trigger_tooltip = {
-			tooltip = political_social_liberals_not_in_socialist_n_not_in_liberal_coalition_tt
+			tooltip = political_social_liberals_not_in_liberal_coalition_tt
 			AND = {
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
 				has_country_flag = political_social_liberals_not_in_liberal_coalition
 				has_government = social_liberalism
 			}
@@ -140,8 +130,8 @@ is_authoritarian_country = {
 				has_government = conservatism
 			}
 		}
-		has_government = authoritarism
 		has_government = despotism
+		has_government = authoritarism
 	}
 }
 
@@ -158,31 +148,54 @@ is_fascist_country = {
 	}
 }
 
+
+
+# Социалисты + эсдеки
 is_left_country = {
-	custom_trigger_tooltip = {
-		tooltip = is_left_country_tt
-		OR = {
-			is_socialist_country = yes
-			is_socdem_country = yes
+	OR = {
+		has_government = radical_socialism
+		has_government = communism
+		custom_trigger_tooltip = {
+			tooltip = political_social_democrats_not_in_liberal_coalition_tt
+			AND = {
+				NOT = { has_country_flag = political_social_democrats_in_liberal_coalition }
+				has_government = social_democracy
+			}
+		}
+		custom_trigger_tooltip = {
+			tooltip = political_social_liberals_not_in_liberal_coalition_tt
+			AND = {
+				has_country_flag = political_social_liberals_not_in_liberal_coalition
+				has_government = social_liberalism
+			}
+		}
+		custom_trigger_tooltip = {
+			tooltip = political_national_syndicalism_in_socialist_coalition_tt
+			AND = {
+				has_country_flag = political_national_syndicalism_in_socialist_coalition
+				has_government = national_syndicalism
+			}
 		}
 	}
 }
+# Эсдеки + либералы
 is_democratic_country = {
 	OR = {
 		custom_trigger_tooltip = {
-			tooltip = political_social_democrats_not_in_socialist_tt
+			tooltip = political_radical_socialists_in_socdem_coalition_tt
+			AND = {
+				has_country_flag = political_radical_socialists_in_socdem_coalition
+				has_government = radical_socialism
+			}
+		}
+		custom_trigger_tooltip = {
+			tooltip = political_social_democrats_not_in_socialist_coalition_tt
 			AND = {
 				NOT = { has_country_flag = political_social_democrats_in_socialist_coalition }
 				has_government = social_democracy
 			}
 		}
-		custom_trigger_tooltip = {
-			tooltip = political_social_liberals_not_in_socialist_tt
-			AND = {
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
-				has_government = social_liberalism
-			}
-		}
+		has_government = social_liberalism
 		custom_trigger_tooltip = {
 			tooltip = political_market_liberals_in_liberal_coalition_tt
 			AND = {
@@ -199,6 +212,7 @@ is_democratic_country = {
 		}
 	}
 }
+# Либералы + авторитаристы
 is_centrist_country = {
 	OR = {
 		custom_trigger_tooltip = {
@@ -211,29 +225,64 @@ is_centrist_country = {
 		custom_trigger_tooltip = {
 			tooltip = political_social_liberals_in_liberal_coalition_tt
 			AND = {
-				NOT = { has_country_flag = political_social_liberals_in_socialist_coalition }
 				NOT = { has_country_flag = political_social_liberals_not_in_liberal_coalition }
 				has_government = social_liberalism
 			}
 		}
 		has_government = market_liberalism
 		has_government = conservatism
-		has_government = authoritarism
 		has_government = despotism
+		has_government = authoritarism
 	}
 }
+# Авторитаристы + фашисты
 is_reactionary_country = {
-	custom_trigger_tooltip = {
-		tooltip = is_reactionary_country_tt
-		OR = {
-			is_authoritarian_country = yes
-			is_fascist_country = yes
+	OR = {
+		custom_trigger_tooltip = {
+			tooltip = political_market_liberals_not_in_liberal_coalition_tt
+			AND = {
+				has_country_flag = political_market_liberals_not_in_liberal_coalition
+				has_government = market_liberalism
+			}
+		}
+		custom_trigger_tooltip = {
+			tooltip = political_conservatives_not_in_liberal_coalition_tt
+			AND = {
+				NOT = { has_country_flag = political_conservatives_in_liberal_coalition }
+				has_government = conservatism
+			}
+		}
+		has_government = despotism
+		has_government = authoritarism
+		has_government = fascism
+		custom_trigger_tooltip = {
+			tooltip = political_national_syndicalism_not_in_socialist_coalition_tt
+			AND = {
+				has_government = national_syndicalism
+				NOT = { has_country_flag = political_national_syndicalism_in_socialist_coalition }
+			}
 		}
 	}
 }
+# Крайние партии
 is_radical_country = {
 	OR = {
-		is_socialist_country = yes
-		is_fascist_country = yes
+		custom_trigger_tooltip = {
+			tooltip = political_radical_socialists_in_socialist_coalition_tt
+			AND = {
+				NOT = { has_country_flag = political_radical_socialists_in_socdem_coalition }
+				has_government = radical_socialism
+			}
+		}
+		has_government = communism
+		custom_trigger_tooltip = {
+			tooltip = political_social_democrats_in_socialist_coalition_tt
+			AND = {
+				has_country_flag = political_social_democrats_in_socialist_coalition
+				has_government = social_democracy
+			}
+		}
+		has_government = fascism
+		has_government = national_syndicalism
 	}
 }
