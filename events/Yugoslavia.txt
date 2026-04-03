@@ -1,1 +1,316 @@
-﻿
+﻿add_namespace = yugoslavian_angry_in_AUH
+
+# Декларация югославского клуба 
+country_event = {
+	id = yugoslavian_angry_in_AUH.1
+	title = yugoslavian_angry_in_AUH.1.t
+	desc = yugoslavian_angry_in_AUH.1.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = AUH
+		has_global_flag = WWI_is_now
+		RUS = {
+			OR = {
+				NOT = { has_country_flag = RUS_monarchy_not_fall }
+				has_war_with = KRN
+				has_idea = RUS_1917_spring_offensive
+				has_global_flag = the_fourteen_points_flag
+			}
+		}
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 49
+		modifier = {
+			factor = 0.7
+			RUS = { has_war_with = KRN }
+		}
+		modifier = {
+			factor = 0.3
+			RUS = { has_idea = RUS_1917_spring_offensive }
+		}
+		modifier = {
+			factor = 0.14
+			has_global_flag = the_fourteen_points_flag
+		}
+	}
+	
+	option = {
+		name = yugoslavian_angry_in_AUH.1.a #Мы подумаем над этим
+		news_event = { id = news_auh.1 hours = 1 }
+		set_country_flag = yugoslavian_angry_in_AUH_zagreb_declaration_ban
+		SER = { country_event = yugoslavian_angry_in_AUH.2 }
+	}
+	
+	option = {
+		name = yugoslavian_angry_in_AUH.1.b #Необходимо запретить распространение декларации 
+		news_event = { id = news_auh.1 hours = 1 }
+		add_stability = -0.05
+		add_political_power = -30
+		SER = { country_event = yugoslavian_angry_in_AUH.2 }
+	}
+}
+
+# Реакция на австрийскую декларацию
+country_event = {
+	id = yugoslavian_angry_in_AUH.2
+	title = yugoslavian_angry_in_AUH.2.t
+	desc = yugoslavian_angry_in_AUH.2.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = yugoslavian_angry_in_AUH.2.a #Нельзя потерять инициативу в объединении славян
+		country_event = { id = yugoslavian_angry_in_AUH.3 days = 35 }
+	}
+}
+
+# Подготовка Корфской декларации
+country_event = {
+	id = yugoslavian_angry_in_AUH.3
+	title = yugoslavian_angry_in_AUH.3.t
+	desc = yugoslavian_angry_in_AUH.3.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { RUS = { has_country_flag = RUS_monarchy_not_fall has_war_with = AUH } }
+		name = yugoslavian_angry_in_AUH.3.a #Россия поддержит претензии Великой Сербии
+		add_war_support = 0.1
+		set_country_flag = SER_great_SER_declaration
+		news_event = { id = news_auh.2 hours = 1 }
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = yugoslavian_angry_in_AUH.3.b #Сейчас возможен лишь компромисс
+		add_political_power = 25
+		set_country_flag = SER_corfu_declaration
+		news_event = { id = news_auh.3 hours = 1 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = yugoslavian_angry_in_AUH.3.c #Сербы обойдутся без "комитетов"
+		add_popularity = {
+			ideology = authoritarism
+			popularity = 0.1
+		}
+		add_popularity = {
+			ideology = fascism
+			popularity = 0.05
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+
+# Давление на ГСХС
+country_event = {
+	id = yugoslavian_angry_in_AUH.4
+	title = yugoslavian_angry_in_AUH.4.t
+	desc = yugoslavian_angry_in_AUH.4.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		country_exists = CRO
+	}
+	
+	is_triggered_only = yes
+
+	option = {
+		name = yugoslavian_angry_in_AUH.4.a #Загреб должен подчиниться
+		CRO = { country_event = { id = yugoslavian_angry_in_AUH.5 days = 1 } }
+	}
+}
+
+# Требования сербов
+country_event = {
+	id = yugoslavian_angry_in_AUH.5
+	title = yugoslavian_angry_in_AUH.5.t
+	desc = yugoslavian_angry_in_AUH.5.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = yugoslavian_angry_in_AUH.5.a #У нас нет выхода
+		if = {
+			limit = {
+				any_owned_state = {
+					NOT = { state = 104 state = 804 state = 45 state = 1374 state = 1449 state = 1450 }
+				}
+			}
+			FROM = { add_ideas = SER_CRO_ethnic_separatism }
+		}
+		every_character = { set_nationality = FROM }
+		FROM = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+		}
+		if = {
+			limit = { is_ai = no }
+			FROM = { change_tag_from = ROOT }
+		}
+		ai_chance = {
+			factor = 2
+		}
+	}
+	option = {
+		name = yugoslavian_angry_in_AUH.5.b #Эти условия неприемлемы, договора не будет
+		add_ideas = RSS_disjointed_government_after
+		FROM = {
+			country_event = { id = yugoslavian_angry_in_AUH.6 days = 1 }
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+# Отказ Загреба
+country_event = {
+	id = yugoslavian_angry_in_AUH.6
+	title = yugoslavian_angry_in_AUH.6.t
+	desc = yugoslavian_angry_in_AUH.6.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = yugoslavian_angry_in_AUH.6.a #Вперёд, в Боснию
+		reverse_add_opinion_modifier = { target = FROM modifier = SER_CRO_annexions }
+		if = {
+			limit = {
+				FROM = {
+					any_owned_state = {
+						NOT = { state = 104 state = 804 state = 45 state = 1374 state = 1449 state = 1450 }
+					}
+				}
+			}
+			FROM = {
+				every_owned_state = {
+					limit = {
+						OR = { state = 104 state = 804 state = 45 state = 1374 state = 1449 state = 1450 }
+					}
+					transfer_state_to = ROOT
+				}
+			}
+			else = {
+				annex_country = {
+					target = FROM
+					transfer_troops = no
+				}
+			}
+		}
+	}
+}
+
+
+# Подтверждение Корфской декларации
+country_event = {
+	id = yugoslavian_angry_in_AUH.7
+	title = yugoslavian_angry_in_AUH.7.t
+	desc = yugoslavian_angry_in_AUH.7.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		country_exists = CRO
+	}
+	
+	is_triggered_only = yes
+
+	option = {
+		name = yugoslavian_angry_in_AUH.7.a #Пришло время объединяться 
+		CRO = { country_event = { id = yugoslavian_angry_in_AUH.8 days = 7 } }
+	}
+}
+
+# Вопрос объединения 
+country_event = {
+	id = yugoslavian_angry_in_AUH.8
+	title = yugoslavian_angry_in_AUH.8.t
+	desc = yugoslavian_angry_in_AUH.8.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = yugoslavian_angry_in_AUH.8.a #Главное чтоб не стало хуже
+		every_character = { set_nationality = FROM }
+		FROM = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			set_cosmetic_tag = SCS_MONARCHY
+		}
+		if = {
+			limit = { is_ai = no }
+			FROM = { change_tag_from = ROOT }
+		}
+	}
+}
+
+# Продолжить наступление
+country_event = {
+	id = yugoslavian_angry_in_AUH.9
+	title = yugoslavian_angry_in_AUH.9.t
+	desc = yugoslavian_angry_in_AUH.9.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		country_exists = CRO
+	}
+	
+	is_triggered_only = yes
+
+	option = {
+		name = yugoslavian_angry_in_AUH.9.a #Вперёд, на Загреб
+		declare_war_on = {
+			target = CRO
+			type = annex_everything
+		}
+	}
+}
+
+
+# Загребская резолюция
+country_event = {
+	id = yugoslavian_angry_in_AUH.11
+	title = yugoslavian_angry_in_AUH.11.t
+	desc = yugoslavian_angry_in_AUH.11.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = AUH
+		has_global_flag = WWI_is_now
+		has_country_flag = yugoslavian_angry_in_AUH_zagreb_declaration_ban
+		has_stability < 0.5
+	}
+	
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	option = {
+		name = yugoslavian_angry_in_AUH.11.a #«Югославский клуб» действует всё решительней
+		add_ideas = AUH_CRO_separatists
+	}
+}
