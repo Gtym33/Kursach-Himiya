@@ -435,6 +435,8 @@ country_event = {
 						has_id = 77480
 						has_id = 77481
 						has_id = 77482
+						has_id = 88198
+						has_id = 88197
 					}
 				}
 				set_nationality = REB
@@ -442,6 +444,8 @@ country_event = {
 		}
 		else = {
 			REB = { every_unit_leader = { limit = { OR = { has_id = 77653 } } set_nationality = UKR } }
+			recruit_character = RUS_Mikhail_Sobolevsky
+			recruit_character = RUS_Lev_Boboshko
 			create_corps_commander = { name = "Ignatiy Vasilchenko" id = 77473 portrait_path = "gfx/leaders/RUS/Portrait_Ignatiy_Vasilchenko.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
 			create_corps_commander = { name = "Mikhail Volkhovskiy" id = 77475 portrait_path = "gfx/leaders/RUS/Portrait_Mikhail_Volkhovskiy.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
 			create_corps_commander = { name = "Lev Davydov" id = 77476 portrait_path = "gfx/leaders/Russia/Portrait_Russia_Generic_25.dds" traits = { guerilla_fighter trait_reckless } skill = 1 attack_skill = 3 defense_skill = 3 planning_skill = 3 logistics_skill = 3 }
@@ -464,6 +468,8 @@ country_event = {
 						has_id = 77480
 						has_id = 77481
 						has_id = 77482
+						has_id = 88198
+						has_id = 88197
 					}
 				}
 				set_nationality = REB
@@ -951,6 +957,8 @@ country_event = {
 						state = 916
 					}
 				}
+				recruit_character = RUS_Mikhail_Sobolevsky
+			    recruit_character = RUS_Lev_Boboshko
 				keep_unit_leaders_trigger = { NOT = { has_id = 91034 has_id = 91035 has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 } }
 			}
 			else = {
@@ -1955,6 +1963,14 @@ country_event = {
 		add_political_power = 25
 		set_country_flag = GAL_agree_zluky
 		add_opinion_modifier = { target = GAL modifier = UKR_akt_zluky }
+        if = { limit = { NOT = { OR = { is_subject_of = POL is_in_faction_with = POL } } GAL = { has_war_with = POL } }
+			POL = {
+				declare_war_on = {
+                    target = UKR
+                    type = annex_everything
+                }
+			}
+		}
 		GAL = {
 			add_opinion_modifier = { target = UKR modifier = UKR_akt_zluky }
 		}
@@ -1974,10 +1990,16 @@ country_event = {
 		name = ukraine.-28.a
 		trigger = { always = no }
 		UKR = { country_event = ukraine.-30 }
+		ai_chance = {
+			factor = 0
+		}
 	}
 	
 	option = {
 		name = ukraine.-28.b
+		ai_chance = {
+			factor = 100
+		}
 		UKR = { country_event = ukraine.-29 }
 	}
 }
@@ -5274,6 +5296,8 @@ country_event = {
 					has_id = 77480
 					has_id = 77481
 					has_id = 77482
+					has_id = 88197
+					has_id = 88198
 				}
 			}
 			set_nationality = REB
@@ -6847,6 +6871,31 @@ country_event = {
 				random_controlled_state = { spawn_red_guard_in_state_CONTROLLER = yes }
 				random_controlled_state = { spawn_red_guard_in_state_CONTROLLER = yes }
 			}
+		    if = {
+			    limit = {
+				    BLR = {
+					    exists = yes
+					    OR = { has_government = communism has_government = radical_socialism }
+				    }
+			    }
+			    every_state = {
+				    limit = { 
+						is_core_of = BLR OR = { CONTROLLER = { OR = { tag = RUS is_subject_of = RUS } } OWNER = { OR = { tag = RUS is_subject_of = RUS } }}
+				        OR = {
+				 	        OR = {
+					            state = 922
+					            state = 955
+					            state = 94
+					            state = 1437
+					            state = 194
+					            state = 204
+					            state = 1443
+			                }
+				        }
+				    }
+				    BLR = { transfer_state = prev }
+			    }
+		    }
 		}
 		UKR = { country_event = { id = ukraine.131 days = 1 } }
 	}
@@ -7003,7 +7052,20 @@ country_event = {
 				}
 			}
 			every_state = {
-				limit = { is_owned_by = USR is_core_of = BLR }
+				limit = { 
+					is_core_of = BLR OR = { CONTROLLER = { OR = { tag = RUS is_subject_of = RUS } } OWNER = { OR = { tag = RUS is_subject_of = RUS } }}
+				    OR = {
+				 	    OR = {
+					        state = 922
+					        state = 955
+					        state = 94
+					        state = 1437
+					        state = 194
+					        state = 204
+					        state = 1443
+			            }
+				    }
+				}
 				BLR = { transfer_state = prev }
 			}
 		}
@@ -7078,10 +7140,6 @@ country_event = { #Проведение Украинского национал�
 	
 	option = {
 		name = ukraine.122.a
-		IF = {
-		    limit = { original_tag = GAL }
-			load_oob = GAL_1918
-		}
 		trigger = {
 		    OR = {
 		        original_tag = GAL

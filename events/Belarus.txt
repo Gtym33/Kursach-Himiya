@@ -52,7 +52,20 @@ country_event = {
 	title = belarus.3.t
 	desc = belarus.3.d
 	picture = GFX_BLR_new_zasedanie_rada_01
-	is_triggered_only = yes
+
+	trigger = {
+		tag = BLR
+		NOT = { OR = { has_government = communism has_government = radical_socialism } }
+		has_war_with = RUS
+		RUS = { OR = { has_government = communism has_government = radical_socialism } }
+		surrender_progress > 0.10
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
 	
 	option = {
 		name = belarus.3.a
@@ -74,6 +87,10 @@ country_event = {
 		complete_national_focus = BLR_pokidanie_Minska
 		set_country_flag = RCW_exiled_gov
 		set_country_flag = BLR_pokidaet_strany
+		if = {
+		    limit = { has_civil_war = yes }
+            add_war_support = -0.15
+		}
 	    ai_chance = {
 			factor = 999
 		}
@@ -260,18 +277,8 @@ country_event = {
 	title = belarus.11.t
 	desc = belarus.11.d
 	picture = GFX_BLR_retirement_ivan_sereda
-	
-	trigger = {
-		tag = BLR
-		NOT = { has_completed_focus = BLR_Skirmunt }
-		has_completed_focus = BLR_new_zasedanie_rada
-	}
-	
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
+
+	is_triggered_only = yes
 	
 	option = {
 		name = belarus.11.a
@@ -820,16 +827,6 @@ country_event = {
 			long_name = BLR_Party_Socialist_Revolutionary_long
 			name = BLR_Party_Socialist_Revolutionary
 		}
-		create_country_leader = {
-			name = Poluta_Aleksandrovna_Bodunova
-			desc = "BLR_Poluta_Aleksandrovna_Bodunova_DESC"
-			picture = GFX_Portrait_Aleksandrovna_Bodunova
-			expire = "1965.1.1"
-			ideology = democratic_socialism
-			traits = {
-			    first_lady
-			}
-		}
 		add_popularity = {
 			ideology = radical_socialism
 			popularity = 0.1
@@ -895,16 +892,6 @@ country_event = {
 	
 	option = { 
 		name = belarus.39.a 
-		create_country_leader = {
-			name = Roman_Skirmunt
-			desc = "BLR_Raman_Skirmunt_DESC"
-			picture = GFX_Portrait_Roman_Skirmunt
-			expire = "1965.1.1"
-			ideology = conservatism_ideology
-			traits = { 
-				Popular_Figurehead
-			}
-		}
 		set_politics = {
 			ruling_party = conservatism
 			elections_allowed = no
@@ -1196,15 +1183,6 @@ country_event = {
 			long_name = BLR_Social_Federalist_Party_long
 			name = BLR_Social_Federalist_Party
 		}
-		create_country_leader = {
-			name = Vasily_Zakharko
-			desc = "BLR_Vasily_Zakharko_DESC"
-			picture = GFX_Portrait_Vasily_Zakharko
-			expire = "1965.1.1"
-			ideology = conservatism_ideology
-			traits = { 
-			}
-		}
 		set_party_name = {
 			ideology = social_democracy
 			long_name = BLR_BLR_social_democracy_party_long
@@ -1317,11 +1295,22 @@ country_event = {
 		name = belarus.51.a 
 		add_stability = 0.06
 		end_exile = yes
-		set_state_controller = 95
-		set_state_controller = 1440
-		set_state_controller = 1441
+		every_state = {
+			limit = {
+				OWNER = { OR = { tag = LIT } }
+				OR = {
+					state = 1441
+					state = 95
+					state = 1440
+					state = 1442
+					state = 910
+					state = 97
+				}
+			}
+			BLR = { transfer_state = PREV }
+		}
 		puppet = LIT
-		LIT = { BLR = { subjecting_script_with_transfer_parties_poster_government = yes } }
+		LIT = { BLR = { subjecting_script_with_transfer_parties_integrated_puppet = yes } }
 	}
 }
 country_event = {
@@ -1362,7 +1351,10 @@ country_event = {
 		name = belarus.54.a
 		activate_mission = BLR_dvishenie_balahovicha
 		hidden_effect = {
-			country_event = { id = belarus.56 days = 40 }
+			if = {
+			    limit = { BLR = { NOT = { OR = { is_subject_of = POL is_in_faction_with = POL } } } }
+				country_event = { id = belarus.56 days = 40 }
+			}
 		}
 	}
 }
@@ -1378,6 +1370,59 @@ country_event = {
 	
 	option = {
 		name = belarus.55.a
+		every_country = {
+			NWA = { every_unit_leader = { limit = { OR = { has_id = 88174 } } set_nationality = POL } }
+		}
+		division_template = {
+			name = "Kavaleristskiy otryad"
+			regiments = {
+				cavalry = { x = 0 y = 0 }
+				cavalry = { x = 0 y = 1 }
+			}
+			support = {
+				recon = { x = 0 y = 0 }
+			}
+		}
+		division_template = {
+			name = "Pekhotnyy polk"
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+			}
+			support = {
+				artillery = { x = 0 y = 0 }
+			}
+			priority = 1
+		}
+		division_template = {
+			name = "Krestyanskaya diviziya"
+			regiments = {
+				militia = { x = 0 y = 0 }
+			}
+		}
+		capital_scope = {
+		create_unit = {
+			division = "name = \"Kavalerijskaya diviziya\" division_template = \"Kavaleristskiy otryad\" start_experience_factor = 0.8 start_equipment_factor = 1.0"
+			owner = BLR
+		} 
+		create_unit = {
+			division = "name = \"Diviziya smerti\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.8 start_equipment_factor = 1.0"
+			owner = BLR
+		}
+		create_unit = {
+			division = "name = \"Krestyanskaya brigada\" division_template = \"Krestyanskaya diviziya\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			owner = BLR
+		}
+		create_unit = {
+			division = "name = \"2-ya pekhotnaya diviziya\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+			owner = BLR
+		}
+		create_unit = {
+			division = "name = \"Volzhskaya diviziya\" division_template = \"Pekhotnyy polk\" start_experience_factor = 0.5 start_equipment_factor = 1.0"
+			owner = BLR
+		}
+		}
 	}
 }
 ###Булака Балаховича имеют поляки и вербуют его
@@ -1835,59 +1880,17 @@ country_event = {
 country_event = {
 	id = belarus.66
 	title = belarus.66.t
-	desc = {
-		text = belarus.66.d
-		trigger = { NOT = { has_focus_tree = Belarus_focus } }
-	}
-	desc = {
-		text = belarus.66.d_1
-		trigger = { has_focus_tree = Belarus_focus NOT = { has_war_with = FROM } }
-	}
-	desc = {
-		text = belarus.66.d_2
-		trigger = { has_focus_tree = Belarus_focus has_war_with = FROM }
-	}
+	desc = belarus.66.d
+	
 	picture = GFX_BLR_zrada
 	
 	is_triggered_only = yes
 	
 	option = {
-		trigger = { NOT = { has_focus_tree = Belarus_focus } }
 		name = belarus.66.a
-		POL = {
-			add_opinion_modifier = {
-				target = BLR
-				modifier = BLR_Ylychenie_otnocheniy
-			}
-		}
-		add_opinion_modifier = {
-			target = POL
-			modifier = BLR_Ylychenie_otnocheniy
-		}
-		hidden_effect = {
-		white_peace = POL
-		}
-		white_peace = FROM
-		FROM = { country_event = { id = belarus.66 days = 1 } }
 		ai_chance = {
 			factor = 1
 		}
-	}
-	option = {
-		trigger = { NOT = { has_focus_tree = Belarus_focus } }
-		name = belarus.66.b
-		FROM = { country_event = { id = belarus.66 days = 1 } }
-		ai_chance = {
-			factor = 0
-		}
-	}
-	option = {
-		trigger = { has_focus_tree = Belarus_focus NOT = { has_war_with = FROM } }
-		name = belarus.66.a
-	}
-	option = {
-		trigger = { has_focus_tree = Belarus_focus has_war_with = FROM }
-		name = belarus.66.c
 	}
 }
 country_event = {
@@ -1978,11 +1981,11 @@ country_event = {
 				NOT = { country_exists = POL }
 				NOT = {
 					POL = {
-						has_opinion = {
-							target = BLR
-							value > 49
-							value > 30
-						}
+				        has_opinion = {
+					        target = BLR
+					        value > 30
+					        value < 50
+				        }
 					}
 				}
 			}
@@ -2025,6 +2028,7 @@ country_event = {
 				has_opinion = {
 					target = BLR
 					value > 30
+					value < 50
 				}
 			}
 		}
@@ -2085,7 +2089,6 @@ country_event = {
 		name = belarus.71.b
         BLR = {
 		end_exile = yes
-		become_exiled_in = { target = POL legitimacy = 30 }
 		POL = { puppet = BLR }
 		POL = {
 			add_opinion_modifier = {
@@ -2165,9 +2168,7 @@ country_event = {
 		name = belarus.73.a
 		add_ideas = BLR_king_pilsudksi
 		country_event = belarus.76
-		load_focus_tree = belarus_rada_izgnanie_tt
 		POL = { country_event = belarus.75 }
-		become_exiled_in = { target = POL legitimacy = 30 }
 		create_wargoal = {
 			type = annex_everything  
 			target = LIT
@@ -2263,16 +2264,6 @@ country_event = {
 	option = {
 		name = belarus.74.a
 		add_war_support = 0.03
-			POL = {
-				add_opinion_modifier = {
-					target = BLR
-					modifier = BLR_Ylychenie_otnocheniy
-				}
-			}
-			add_opinion_modifier = {
-				target = POL
-				modifier = BLR_Ylychenie_otnocheniy
-			}
 	}
 }
 country_event = {
@@ -2726,6 +2717,9 @@ country_event = {
 	
 	hidden = yes
 	
+	mean_time_to_happen = {
+		days = 1
+	}
 	option = {
 		name = belarus.86.a
 		POL = {
@@ -2733,6 +2727,10 @@ country_event = {
 				division_template = "Pekhotnya divisia"
 				disband = yes
 			}
+			set_nationality = {
+                target_country = BLR
+                character = BLR_Hasan_Konopacki
+            }
 		}
 		division_template = {
 			name = "Pekhotnya divisia"
@@ -2740,7 +2738,6 @@ country_event = {
 				infantry = { x = 0 y = 0 }
 				infantry = { x = 0 y = 1 }
 				infantry = { x = 0 y = 2 }
-				infantry = { x = 0 y = 3 }
 			}
 			support = {
 				artillery = { x = 0 y = 0 }
@@ -2752,7 +2749,7 @@ country_event = {
 		capital_scope = {
 			create_unit = {
 				division = "name = \"Pervaya belorusskaya diviziya\" division_template = \"Pekhotnya divisia\" start_experience_factor = 0.8 start_equipment_factor = 1.0"
-				owner = POL
+				owner = BLR
 			}
 		}
 	}
@@ -2796,9 +2793,11 @@ country_event = {
 	
 	trigger = {
 	    tag = BLR
+		NOT = { has_country_flag = BLR_yhod_k_polsk }
+		is_government_in_exile = yes
 		LIT = {
 			has_war_with = RUS
-			surrender_progress > 0.70
+			surrender_progress > 0.40
 		}
 		NOT = {
 		    OR = {
@@ -2816,6 +2815,7 @@ country_event = {
 	
 	option = {
 		name = belarus.88.a
+		set_country_flag = BLR_yhod_k_polsk
 		end_exile = yes
 		become_exiled_in = { target = POL legitimacy = 30 }
 	}
@@ -3072,7 +3072,7 @@ country_event = {
 	option = {
 		name = belarus.98.a
 		add_war_support = 0.03
-		BLR = { country_event = { id = belarus.3 days = 1 } country_event = { id = belarus.99 days = 4 } }
+		BLR = { country_event = { id = belarus.99 days = 1 } }
 		add_to_variable = { center_faction_party_compositon = 0.05 }
 		custom_effect_tooltip = center_fact_party_comp_plus_5
 		check_overlap_of_party_composition = yes
@@ -3222,7 +3222,7 @@ country_event = {
 	option = {
 		name = belarus.98.b
 		add_war_support = 0.03
-		BLR = { country_event = { id = belarus.3 days = 1 } country_event = { id = belarus.99 days = 4 } }
+		BLR = { country_event = { id = belarus.99 days = 1 } }
 		add_to_variable = { center_faction_party_compositon = 0.05 }
 		custom_effect_tooltip = center_fact_party_comp_plus_5
 		check_overlap_of_party_composition = yes
@@ -3380,7 +3380,6 @@ country_event = {
 		add_to_variable = { left_faction_party_compositon = 0.05 }
 		custom_effect_tooltip = left_fact_party_comp_plus_5
 		check_overlap_of_party_composition = yes
-		hidden_effect = { BLR = { country_event = { id = belarus.3 days = 1 } } }
 		ai_chance = {
 			factor = 0
 			modifier = { add = 999 NOT = { has_country_flag = reds_want_to_create_more_republics } }
@@ -3400,7 +3399,7 @@ country_event = {
 		name = belarus.99.a
 		trigger = { BLR = { NOT = { has_country_flag = BLR_pokidaet_strany } } }
 		ai_chance = {
-			factor = 0
+			factor = 100
 		}
 	}
 	option = {
@@ -3414,67 +3413,8 @@ country_event = {
 				}
 			}
 		}
-		IF = { 
-		    limit = { BLR = { has_country_flag = BLR_pokidaet_strany } }
-			random_other_country = {
-				limit = { original_tag = ROOT }
-				ROOT = {
-					PREV = { change_tag_from = BLR }
-					random_other_country = {
-				        limit = { original_tag = ROOT }
-				        ROOT = {
-					        PREV = { 				
-					            annex_country = { target = BLR transfer_troops = no }
-				            }
-							if = {
-							    limit = { NOT = { owns_state = 1442 owns_state = 95 }								
-					            set_state_owner = 1442
-					            set_state_owner = 95
-							}
-					        set_state_owner = 1440
-					        PREV = {
-					            set_state_controller = 1440
-						        set_state_controller = 95
-						        set_state_controller = 1442
-								declare_war_on = {
-                                    target = ROOT
-                                    type = annex_everything
-                                }
-					        }
-				        }
-			        }
-				}
-			}
-		}
 		ai_chance = {
 			factor = 5
-		}
-	}
-	option = {
-		name = belarus.99.c
-			random_other_country = {
-				limit = { original_tag = ROOT }
-				ROOT = {
-					PREV = { 				
-					    annex_country = { target = BLR transfer_troops = no }
-				    }
-					set_state_owner = 1442
-					set_state_owner = 95
-					set_state_owner = 1440
-					PREV = {
-					    set_state_controller = 1440
-						set_state_controller = 95
-						set_state_controller = 1442
-						declare_war_on = {
-                            target = ROOT
-                            type = annex_everything
-                        }
-					}
-				}
-			}
-		trigger = { BLR = { has_country_flag = BLR_pokidaet_strany } }
-		ai_chance = {
-			factor = 999
 		}
 	}
 }
@@ -4097,7 +4037,7 @@ country_event = { #Создание ЛитБел ССР
 		}
 		every_state = {
 			limit = {
-				OWNER = { OR = { tag = ROOT tag = RUS is_subject_of = ROOT } }
+				OWNER = { OR = { tag = ROOT tag = RUS is_subject_of = ROOT is_in_faction = RUS } }
 				RUS = { has_country_flag = BLR_rsfsr_zabiraet_ves_vostok } 
 				OR = {
 				    OR = {
@@ -4115,21 +4055,52 @@ country_event = { #Создание ЛитБел ССР
 			}
 			RUS = { transfer_state = PREV }
 		}
-		every_state = {
+		if = {
 			limit = {
-				CONTROLLER = { OR = { tag = RUS is_subject_of = RUS } } 
-				OR = {
-					state = 922
-					state = 955
-					state = 94
-					state = 1437
-					state = 194
-					state = 204
-					state = 1443
-			    }
+				BLR = {
+					exists = yes
+					OR = { has_government = communism has_government = radical_socialism }
+				}
 			}
-			FROM = {
-			    set_state_controller = PREV
+		    every_state = {
+			    limit = {
+				    OWNER = { OR = { tag = BLR tag = RUS } }
+				    OR = {
+					    state = 96
+					    state = 1401
+					    state = 924
+						state = 1168
+						state = 206
+						state = 1167
+						state = 1056
+			        }
+				}
+				BLR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = {
+				BLR = {
+					exists = yes
+					OR = { has_government = communism has_government = radical_socialism }
+				}
+			}
+			every_state = {
+				limit = { 
+					is_core_of = BLR OR = { CONTROLLER = { OR = { tag = RUS is_subject_of = RUS is_in_faction = RUS } } OWNER = { OR = { tag = RUS is_subject_of = RUS is_in_faction = RUS } }}
+				    OR = {
+				 	    OR = {
+					        state = 922
+					        state = 955
+					        state = 94
+					        state = 1437
+					        state = 194
+					        state = 204
+					        state = 1443
+			            }
+				    }
+				}
+				BLR = { transfer_state = prev }
 			}
 		}
 	}
@@ -4174,7 +4145,7 @@ country_event = { #Создание ЛитБел ССР
 		}
 		every_state = {
 			limit = {
-				OWNER = { OR = { tag = ROOT tag = RUS } }
+				OWNER = { OR = { tag = ROOT tag = RUS is_subject_of = ROOT is_in_faction = ROOT } }
 				RUS = { has_country_flag = BLR_rsfsr_zabiraet_ves_vostok } 
 				OR = {
 				    OR = {
@@ -4192,21 +4163,52 @@ country_event = { #Создание ЛитБел ССР
 			}
 			RUS = { transfer_state = PREV }
 		}
-		every_state = {
+		if = {
 			limit = {
-				CONTROLLER = { OR = { tag = RUS is_subject_of = RUS } } 
-				OR = {
-					state = 922
-					state = 955
-					state = 94
-					state = 1437
-					state = 194
-					state = 204
-					state = 1443
-			    }
+				BLR = {
+					exists = yes
+					OR = { has_government = communism has_government = radical_socialism }
+				}
 			}
-			FROM = {
-			    set_state_controller = PREV
+		    every_state = {
+			    limit = {
+				    OWNER = { OR = { tag = BLR tag = RUS } }
+				    OR = {
+					    state = 96
+					    state = 1401
+					    state = 924
+						state = 1168
+						state = 206
+						state = 1167
+						state = 1056
+			        }
+				}
+				BLR = { transfer_state = PREV }
+			}
+		}
+		if = {
+			limit = {
+				BLR = {
+					exists = yes
+					OR = { has_government = communism has_government = radical_socialism }
+				}
+			}
+			every_state = {
+				limit = {
+					is_core_of = BLR OR = { CONTROLLER = { OR = { tag = RUS is_subject_of = RUS is_in_faction = RUS } } OWNER = { OR = { tag = RUS is_subject_of = RUS is_in_faction = RUS } }}
+				    OR = {
+				 	    OR = {
+					        state = 922
+					        state = 955
+					        state = 94
+					        state = 1437
+					        state = 194
+					        state = 204
+					        state = 1443
+			            }
+				    }
+				}
+				BLR = { transfer_state = prev }
 			}
 		}
 	}
@@ -4234,7 +4236,7 @@ country_event = { #РСФСР забирает часть территорий
 		}
 		every_state = {
 			limit = {
-				OWNER = { OR = { tag = ROOT tag = RUS is_subject_of = ROOT } }
+				OWNER = { OR = { tag = ROOT tag = RUS is_subject_of = ROOT is_in_faction = ROOT } }
 				RUS = { has_country_flag = BLR_rsfsr_zabiraet_ves_vostok } 
 				OR = {
 				    OR = {
@@ -4460,6 +4462,388 @@ country_event = { #Смена кабинета власти
 		set_politics = {
 			ruling_party = social_democracy
 			elections_allowed = no
+		}
+	}
+}
+country_event = { #Белорусские формирования
+	id = belarus.124
+	title = belarus.124.t
+    desc = {
+		text = belarus.124.d
+		trigger = {
+			original_tag = POL
+		}
+	}
+    desc = {
+		text = belarus.124.de
+		trigger = {
+			original_tag = BLR
+		}
+	}
+	picture = GFX_report_event_blr_belorus_army_form
+	
+	fire_only_once = no
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.124.a
+		trigger = {
+		    original_tag = POL
+		}
+		division_template = {
+			name = "Pekhotnya divisia"
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 2 }
+			}
+			support = {
+				artillery = { x = 0 y = 0 }
+				engineer = { x = 0 y = 1 }
+			}
+			is_locked = yes
+			priority = 1
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Pervaya belorusskaya diviziya\" division_template = \"Pekhotnya divisia\" start_experience_factor = 0.8 start_equipment_factor = 1.0"
+				owner = POL
+			}
+		}
+		recruit_character = BLR_Hasan_Konopacki
+	}
+	option = {
+		name = belarus.124.b
+		trigger = {
+		    original_tag = BLR
+		}
+	}
+}
+country_event = { #Белорусская армия
+	id = belarus.125
+	title = belarus.125.t
+    desc = belarus.125.d
+
+	picture = GFX_report_event_blr_army
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.125.a
+		BLR = { country_event = belarus.126 }
+		ai_chance = {
+			factor = 5
+		}
+	}
+	option = {
+		name = belarus.125.b
+        BLR = { country_event = belarus.127 }
+		delete_unit_template_and_units = {
+			division_template = "Dywizja Litewsko-białoruska"
+			disband = yes
+		}
+		set_nationality = {
+            target_country = BLR
+            character = POL_Waclaw_Iwaszkiewicz
+        }
+		set_nationality = {
+            target_country = BLR
+            character = POL_Jan_Rozdkovsky
+        }
+		set_nationality = {
+            target_country = BLR
+            character = POL_Adam_Nieniewski
+        }
+		ai_chance = {
+			factor = 100
+		}
+	}
+}
+country_event = { #Поляки против реорганизации
+	id = belarus.126
+	title = belarus.126.t
+    desc = belarus.126.d
+
+	picture = GFX_report_event_blr_army
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.126.a
+	}
+
+}
+country_event = { #Поляки реорганизуют белорусскую армию
+	id = belarus.127
+	title = belarus.127.t
+    desc = belarus.127.d
+
+	picture = GFX_report_event_blr_army
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.127.a
+		add_command_power = 40
+		custom_effect_tooltip = lack_of_officers_fall_2_tt
+		hidden_effect = {
+			lack_of_officers_fall = yes
+			lack_of_officers_fall = yes
+		}
+        add_doctrine_cost_reduction = {
+			name = LIT_reform_committee
+			cost_reduction = 0.5
+			uses = 1
+			category = land_doctrine
+		}
+        random_unit_leader = {
+            limit = { has_id = 69157 }
+			gain_xp = 160
+        }
+        random_unit_leader = {
+            limit = { has_id = 69673 }
+			gain_xp = 160
+        }
+        random_unit_leader = {
+            limit = { has_id = 69667 }
+			gain_xp = 160
+        }
+		division_template = {
+		    name = "Dywizja Litewsko-białoruska"
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 1 y = 0 }
+				infantry = { x = 1 y = 1 }
+			}
+			support = {
+		        engineer = { x = 0 y = 0 }
+		        artillery = { x = 0 y = 1 }
+			}
+			is_locked = yes
+		}
+		capital_scope = {
+			create_unit = {
+			    division = "name = \"1. Dywizja Litewsko-białoruska\" division_template = \"Dywizja Litewsko-białoruska\" start_experience_factor = 0.4 start_equipment_factor = 1.0"
+			    owner = BLR
+			}
+			create_unit = {
+			    division = "name = \"2. Dywizja Litewsko-białoruska\" division_template = \"Dywizja Litewsko-białoruska\" start_experience_factor = 0.4 start_equipment_factor = 1.0"
+			    owner = BLR
+			}
+			create_unit = {
+			    division = "name = \"3. Dywizja Litewsko-białoruska\" division_template = \"Dywizja Litewsko-białoruska\" start_experience_factor = 0.4 start_equipment_factor = 1.0"
+			    owner = BLR
+			}
+		}
+	}
+
+}
+country_event = { #Первые белорусские полки в Литве
+	id = belarus.128
+	title = belarus.128.t
+    desc = belarus.128.d
+
+	picture = GFX_BLR_belarus_german_army
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.128.a
+		if = {
+		    limit = { original_tag = BLR }
+			set_country_flag = BLR_lit_form_bel_polk
+			activate_decision = BLR_LIT_divizion
+		}
+		if = {
+		    limit = { original_tag = BLR BLR = { is_government_in_exile = yes } }
+            set_nationality = {
+                target_country = LIT
+                character = BLR_ezovitov_konstantin
+            }
+		}
+	}
+}
+country_event = { #Белорусские полки отбывают в Беларусь
+	id = belarus.129
+	title = belarus.129.t
+    desc = belarus.129.d
+
+	picture = GFX_BLR_belarus_german_army
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.129.a
+        set_nationality = {
+            target_country = BLR
+            character = BLR_ezovitov_konstantin
+        }
+	}
+}
+country_event = {
+	id = belarus.130
+	title = belarus.130.t
+	desc = belarus.130.d
+
+	picture = GFX_report_event_FIN_finnish_generals
+	
+	trigger = {
+		tag = BLR
+		NOT = { OR = { has_government = radical_socialism has_government = communism } }
+		NOT = { has_country_flag = BLR_yhod_k_polsk }
+		has_completed_focus = BLR_pokidanie_Minska
+		is_government_in_exile = yes
+		has_legitimacy > 29
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = belarus.130.a
+		recruit_character = BLR_Vital_Kazloy
+		BLR = {
+		    add_trait = {
+                character = BLR_Vital_Kazloy
+                slot = high_command
+                trait = Exiled_Leader
+            }
+		}
+		ai_chance = {
+			factor = 1
+		}		
+	}
+}
+country_event = {
+	id = belarus.131
+	title = belarus.131.t
+	desc = belarus.131.d
+
+	picture = GFX_report_event_FIN_finnish_generals
+	
+	trigger = {
+		tag = BLR
+		NOT = { OR = { has_government = radical_socialism has_government = communism } }
+		NOT = { has_country_flag = BLR_yhod_k_polsk }
+		has_completed_focus = BLR_pokidanie_Minska
+		is_government_in_exile = yes
+		has_legitimacy > 59
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = belarus.131.a
+		recruit_character = BLR_Alaksandar_Ruzancou
+		BLR = {
+		    add_trait = {
+                character = BLR_Alaksandar_Ruzancou
+                slot = high_command
+                trait = Exiled_Leader
+            }
+		}
+		ai_chance = {
+			factor = 1
+		}		
+	}
+}
+country_event = {
+	id = belarus.132
+	title = belarus.132.t
+	desc = belarus.132.d
+
+	picture = GFX_report_event_FIN_finnish_generals
+	
+	trigger = {
+		tag = BLR
+		NOT = { OR = { has_government = radical_socialism has_government = communism } }
+		NOT = { has_country_flag = BLR_yhod_k_polsk }
+		has_completed_focus = BLR_pokidanie_Minska
+		is_government_in_exile = yes
+		has_legitimacy > 89
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = belarus.132.a
+		recruit_character = BLR_Aleh_Vasilkouski
+		BLR = {
+		    add_trait = {
+                character = BLR_Aleh_Vasilkouski
+                slot = high_command
+                trait = Exiled_Leader
+            }
+		}
+		ai_chance = {
+			factor = 1
+		}		
+	}
+}
+country_event = { #Литва силой сменяет режим
+	id = belarus.133
+	title = belarus.133.t
+    desc = belarus.133.d
+
+	picture = GFX_report_event_lit_voenny_perevarot
+	
+	fire_only_once = yes
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = belarus.133.a
+		if = { 
+			limit = { LIT = { OR = { has_government = despotism has_government = authoritarism } } }
+			rerecruit_character = BLR_Alaksandar_Ruzancou
+			set_politics = {
+			    ruling_party = despotism
+			    elections_allowed = no
+			    last_election = "1922.12.17"
+			    election_frequency = 48
+				long_name = PRM_despotism_party_long
+			    name = PRM_despotism_party
+		    }
+			add_popularity = { ideology = despotism popularity = 0.1 }
+			add_popularity = { ideology = authoritarism popularity = 0.1 }
+			LIT = { BLR = { subjecting_script_with_transfer_parties_supervised_state = yes } }
+			create_country_leader = { name = "Aleksandras Ružancovas" desc = "BLR_Alaksandar_Ruzancou_DESC" picture = "gfx/leaders/BLR/Portrait_Alaksandar_Ruzancou.dds" ideology = despotism_ideology traits = { warmonger_old_general } }
+		}
+		if = { 
+			limit = { LIT = { has_government = fascism } }
+			add_popularity = { ideology = fascism popularity = 0.1 }
+			LIT = { BLR = { subjecting_script_with_transfer_parties_supervised_state = yes } }
+			set_politics = {
+			    ruling_party = fascism
+			    elections_allowed = no
+			    last_election = "1922.12.17"
+			    election_frequency = 48
+				long_name = PRM_despotism_party_long
+			    name = PRM_despotism_party
+		    }
 		}
 	}
 }

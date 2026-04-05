@@ -93,7 +93,7 @@ focus_tree = {
 		x = 12
 		y = 2
 		completion_reward = {
-			GER = { country_event = { id = poland.30 days = 130 } }
+			GER = { country_event = { id = poland.30 days = 1 } }
 		}
 	}
 	focus = {
@@ -162,6 +162,9 @@ focus_tree = {
 		    is_puppet = yes
 			country_exists = AUH
 		}
+		bypass = {
+			NOT = { country_exists = AUH }
+		}
 		x = 13
 		y = 5
 		completion_reward = {
@@ -178,6 +181,9 @@ focus_tree = {
 		available = {
 		    is_puppet = yes
 			country_exists = GER
+		}
+		bypass = {
+			NOT = { country_exists = GER }
 		}
 		x = 15
 		y = 5
@@ -196,6 +202,9 @@ focus_tree = {
 		    is_puppet = yes
 			country_exists = GER
 		}
+		bypass = {
+			NOT = { country_exists = GER }
+		}
 		x = 15
 		y = 6
 		completion_reward = {
@@ -213,6 +222,9 @@ focus_tree = {
 		available = {
 		    is_puppet = yes
 			country_exists = AUH
+		}
+		bypass = {
+			NOT = { country_exists = AUH }
 		}
 		x = 13
 		y = 6
@@ -238,8 +250,14 @@ focus_tree = {
 		}
 		bypass = {
 		    OR = {
-			    has_global_flag = WWI_AUH_HAS_CAPITULATED
-			    has_global_flag = WWI_GER_HAS_CAPITULATED
+			    OR = {
+			        has_global_flag = WWI_AUH_HAS_CAPITULATED
+					NOT = { country_exists = AUH }
+				}
+				OR = {
+			        has_global_flag = WWI_GER_HAS_CAPITULATED
+					NOT = { country_exists = GER }
+			    }
 			}
 		}
 		ai_will_do = {
@@ -330,7 +348,7 @@ focus_tree = {
 		y = 7
 		completion_reward = {
 		    add_stability = 0.05
-		    add_political_power = -60
+		    add_political_power = -30
 		    swap_ideas = {
 			    remove_idea = no_legislation
 				add_idea = minimum_legislation
@@ -351,27 +369,7 @@ focus_tree = {
 			focus = POL_pol_obrsh
 		}
         available = {
-            has_global_flag = WWI_is_now
-            GER = {
-                OR = {
-                    has_completed_focus = GER_peace_with_Entente
-                    has_global_flag = WWI_GER_HAS_CAPITULATED
-                }
-            }
-            GER = {
-                OR = {
-                    OR = {
-                        check_variable = { summe_stab_n_ruling_coalition_pop < 0.65 }
-                        AND = {
-                            check_variable = { summe_stab_n_ruling_coalition_pop < 0.75 }
-                            has_country_flag = GER_peace_negotiations_with_Entente
-                        }
-                    }
-                    GER = { has_country_flag = GER_monarchy_fall } 
-                }
-                has_stability < 0.25
-                has_war_support < 0.25
-            }
+            is_puppet = no
         }
 		x = 11
 		y = 8
@@ -413,7 +411,7 @@ focus_tree = {
 		x = 13
 		y = 8
 		completion_reward = {
-		    
+		    custom_effect_tooltip = work_in_progress
 		}
 	}
 	
@@ -793,6 +791,7 @@ focus_tree = {
 			focus = POL_malya_const
 		}
         available = {
+			OR = { any_state = { impassable = no is_coastal = yes is_controlled_by = POL } any_country = { OR = { is_in_faction_with = ROOT is_subject_of = ROOT } any_state = { impassable = no is_coastal = yes } } }
 			ENG = { is_subject = no }
 			FRA = { is_subject = no }
 			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_GER_HAS_CAPITULATED }
@@ -822,8 +821,8 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_malya_const
 		}
-		x = 18
-		y = 5
+		x = 19
+		y = 4
 		completion_reward = {
 		    country_event = { id = poland.114 days = 1 }
 		}
@@ -845,7 +844,7 @@ focus_tree = {
 			is_neighbor_of = LIT
 		}
 		ai_will_do = {
-			factor = 3
+			factor = 1000
 			modifier = { factor = 2 has_government = despotism }
 			modifier = { factor = 2 has_government = authoritarism }
 		}
@@ -855,6 +854,7 @@ focus_tree = {
 			        exists = no
 				    has_capitulated = yes
 				    is_puppet = yes
+					OR = { has_government = radical_socialism has_government = communism }
 				}
 			}
 		}
@@ -874,22 +874,20 @@ focus_tree = {
 		}
 		available = {
 		    BLR = { 
-			    exists = yes
 				is_puppet = no
 				OR = {
 				    has_capitulated = no
-					is_exile_host = yes
+					is_government_in_exile  = yes
 				}
 				NOT = { OR = { has_government = radical_socialism has_government = communism } }
 			}
-			is_neighbor_of = BLR
 		}
 		ai_will_do = {
-			factor = 3
+			factor = 1000
 			modifier = { factor = 2 has_government = despotism }
 			modifier = { factor = 2 has_government = authoritarism }
 		}
-		x = 13
+		x = 15
 		y = 6
 		completion_reward = {
 		    if = {
@@ -900,7 +898,7 @@ focus_tree = {
 			}
 		    else_if = {
 			    limit = {
-				    BLR = { is_government_in_exile = no has_capitulated = no }
+				    BLR = { is_government_in_exile = no }
 				}
 				country_event = poland.139
 			}
@@ -920,6 +918,10 @@ focus_tree = {
 				is_puppet = no
 				NOT = { OR = { has_government = radical_socialism has_government = communism } }
 			}
+			OR = {
+				UKR = { has_country_flag = GAL_agree_zluky has_completed_focus = UKR_enforce_a_contract }
+				GAL = { OR = { exists = no has_capitulated = yes } }
+			}
 			is_neighbor_of = UKR
 		}
 		bypass = {
@@ -931,13 +933,13 @@ focus_tree = {
 				}
 			}
 		}
-		x = 16
-		y = 5
 		ai_will_do = {
-			factor = 3
+			factor = 1000
 			modifier = { factor = 2 has_government = despotism }
 			modifier = { factor = 2 has_government = authoritarism }
 		}
+		x = 16
+		y = 5
 		completion_reward = {
 		    country_event = poland.144
 		}
@@ -962,14 +964,15 @@ focus_tree = {
 				}
 				OR = {
 				    NOT = {
-					    country_exists = LIT
-					    country_exists = UKR
-					    country_exists = BLR
+					    is_in_faction_with = LIT
+					    is_in_faction_with = UKR
+					    is_in_faction_with = BLR
 					}
 				}
+				has_country_flag = POL_RUS_peace_fired_hist
 			}
 		}
-		x = 15
+		x = 13
 		y = 6
 		completion_reward = {
 		    
@@ -978,80 +981,95 @@ focus_tree = {
 	focus = {
 		id = POL_triumf_national
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2
 		prerequisite = {
 			focus = POL_vost_terr_polit
 		}
-        mutually_exclusive = {
+		mutually_exclusive = {
 			focus = POL_union_meshdmorja
 		}
-		x = 13
+		available = {
+		    
+		}
+		x = 11
 		y = 7
 		completion_reward = {
 		    
 		}
 	}
 	focus = {
-		id = POL_union_meshdmorja
+		id = POL_podshinenie_blr_ukr
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2
 		prerequisite = {
-			focus = POL_vost_terr_polit
-		}
-        mutually_exclusive = {
 			focus = POL_triumf_national
 		}
-		x = 17
-		y = 7
-		completion_reward = {
+		available = {
 		    
 		}
-	}
-	focus = {
-		id = POL_borb_s_part
-		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
-		prerequisite = {
-			focus = POL_triumf_national
-		}
-		x = 12
+		x = 11
 		y = 8
 		completion_reward = {
 		    
 		}
 	}
 	focus = {
-		id = POL_polon_white_rus
+		id = POL_hard_polonization
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2
 		prerequisite = {
-			focus = POL_borb_s_part
+			focus = POL_triumf_national
 		}
-		x = 12
+		available = {
+		    
+		}
+		x = 9
+		y = 8
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_supp_apostol_polinization
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_podshinenie_blr_ukr
+		}
+		available = {
+		    
+		}
+		x = 9
 		y = 9
 		completion_reward = {
 		    
 		}
 	}
 	focus = {
-		id = POL_wiwesti_resurs_of_ukr
+		id = POL_war_partiz
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2
 		prerequisite = {
-			focus = POL_borb_s_part
+			focus = POL_podshinenie_blr_ukr
 		}
-		x = 10
+		available = {
+		    
+		}
+		x = 11
 		y = 9
 		completion_reward = {
 		    
 		}
 	}
 	focus = {
-		id = POL_national_ukr
+		id = POL_gal_avtonomy
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2
 		prerequisite = {
-			focus = POL_wiwesti_resurs_of_ukr
+			focus = POL_podshinenie_blr_ukr
+		}
+		available = {
+		    
 		}
 		x = 10
 		y = 10
@@ -1060,12 +1078,47 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = POL_svyaz_s_rva
+		id = POL_rekvezition_west
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2
 		prerequisite = {
-			focus = POL_triumf_national
+			focus = POL_podshinenie_blr_ukr
+		}
+		available = {
+		    
+		}
+		x = 7
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_evrei_vopros
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
 			focus = POL_union_meshdmorja
+			focus = POL_triumf_national
+		}
+		available = {
+		    
+		}
+		x = 13
+		y = 8
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_voploshenie_promoteisma
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_union_meshdmorja
+		}
+		available = {
+		    
 		}
 		x = 15
 		y = 8
@@ -1074,120 +1127,201 @@ focus_tree = {
 		}
 	}
 	focus = {
-		id = POL_support_rusk_form_pol
+		id = POL_perestroyka_alliance
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2
 		prerequisite = {
-			focus = POL_svyaz_s_rva
+			focus = POL_voploshenie_promoteisma
 		}
-		x = 14
+		available = {
+		    
+		}
+		x = 13
 		y = 9
 		completion_reward = {
 		    
+		}
+	}
+	focus = {
+		id = POL_rashirenie_pol_mesdumorya
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_voploshenie_promoteisma
+		}
+		available = {
+		    
+		}
+		x = 15
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_polit_sohranenya_narod
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_voploshenie_promoteisma
+		}
+		available = {
+		    
+		}
+		x = 17
+		y = 9
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_form_zeml_meshd_mor
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_rashirenie_pol_mesdumorya
+		}
+		mutually_exclusive = {
+			focus = POL_severennyi_mesdumorye
+		}
+		available = {
+		    
+		}
+		x = 14
+		y = 10
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_severennyi_mesdumorye
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_rashirenie_pol_mesdumorya
+		}
+		mutually_exclusive = {
+			focus = POL_form_zeml_meshd_mor
+		}
+		available = {
+		    
+		}
+		x = 16
+		y = 10
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_union_meshdmorja
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_vost_terr_polit
+		}
+		mutually_exclusive = {
+			focus = POL_triumf_national
+		}
+		available = {
+		    
+		}
+		x = 14
+		y = 7
+		completion_reward = {
+		    
+		}
+	}
+	focus = {
+		id = POL_svyaz_s_rva
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 2
+		prerequisite = {
+			focus = POL_davl_na_ukr
+		}
+		prerequisite = {
+			focus = focus = POL_vzaim_s_lit
+		}
+		available = {
+			has_completed_focus = POL_belarus_obrs
+			country_exists = RVA
+			AND = { OR = { tag = POL is_subject_of = POL is_in_faction_with = POL } NOT = { has_war_with = RVA } }
+			has_war_with = RUS
+			RUS = { OR = { has_government = communism has_government = radical_socialism }}
+		}
+		x = 18
+		y = 6
+		completion_reward = {
+		    country_event = { id = poland.203 days = 3 }
+		}
+	}
+	focus = {
+		id = POL_support_rusk_form_pol
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 1.8
+		available = { has_country_flag = POL_polska_sotr_s_rva }
+		prerequisite = {
+			focus = POL_svyaz_s_rva
+		}
+		x = 17
+		y = 7
+		completion_reward = {
+		    unlock_decision_category_tooltip = POL_rusk_form_in_poland
+			set_country_flag = { flag = POL_bredovsky_pohod value = 1 days = 32 }
 		}
 	}
 	focus = {
 		id = POL_priznan_rpk
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2.5
+		available = { has_country_flag = POL_polska_sotr_s_rva }
 		prerequisite = {
 			focus = POL_support_rusk_form_pol
 		}
-		x = 14
-		y = 10
+		x = 17
+		y = 8
 		completion_reward = {
-		    
+			if = {
+				limit = { has_country_flag = POL_savinkov_leader_rpk }
+				country_event = poland.213
+			}
+		    unlock_decision_tooltip = POL_ylyshenie_oficeer_korpus
+			unlock_decision_tooltip = POL_provedenie_sovmestn_podgotovk
+			unlock_decision_tooltip = POL_support_form_army_rpk
 		}
 	}
 	focus = {
 		id = POL_priznan_pol_amb
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 2.3
+		available = { has_country_flag = POL_polska_sotr_s_rva country_exists = RVA }
 		prerequisite = {
 			focus = POL_svyaz_s_rva
 		}
-		x = 16
-		y = 9
+		x = 19
+		y = 7
 		completion_reward = {
-		    
+		    RVA = { country_event = poland.214 }
 		}
 	}
 	focus = {
 		id = POL_sovmest_borb
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
+		cost = 3.5
+		available = { 
+			has_country_flag = POL_polska_sotr_s_rva 
+			has_country_flag = POL_rva_priznali_pol 
+			country_exists = RVA
+			has_war_with = RUS
+			RUS = { OR = { has_government = communism has_government = radical_socialism } }
+		}
 		prerequisite = {
 			focus = POL_priznan_pol_amb
 		}
-		x = 16
-		y = 10
-		completion_reward = {
-		    
-		}
-	}
-	focus = {
-		id = POL_ravnoprav_sogl
-		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
-		prerequisite = {
-			focus = POL_union_meshdmorja
-		}
-		x = 18
+		x = 19
 		y = 8
 		completion_reward = {
-		    
-		}
-	}
-	focus = {
-		id = POL_priznan_bel_rad
-		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
-		prerequisite = {
-			focus = POL_ravnoprav_sogl
-		}
-		x = 18
-		y = 9
-		completion_reward = {
-		    
-		}
-	}
-	focus = {
-		id = POL_support_wpk
-		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
-		prerequisite = {
-			focus = POL_priznan_bel_rad
-		}
-		x = 18
-		y = 10
-		completion_reward = {
-		    
-		}
-	}
-	focus = {
-		id = POL_union_ukr
-		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
-		prerequisite = {
-			focus = POL_ravnoprav_sogl
-		}
-		x = 20
-		y = 9
-		completion_reward = {
-		    
-		}
-	}
-	focus = {
-		id = POL_prizv_ukr_strelcev
-		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 0.5
-		prerequisite = {
-			focus = POL_union_ukr
-		}
-		x = 20
-		y = 10
-		completion_reward = {
-		    
+            add_timed_idea = { idea = POL_shudo_na_visle days = 95 }
+		    custom_effect_tooltip = POL_unlock_razvorashivat_army_rpk_tt
 		}
 	}
 	
@@ -1236,16 +1370,99 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_sozd_fin_sistem
 		}
-		x = 6
+		available = {
+			OR = {
+			    has_idea = peasant_and_land_and_bread_question_0_5
+				has_idea = peasant_and_land_and_bread_question_0_25
+				has_idea = peasant_and_land_and_bread_question
+			}
+		}
+		x = 5
 		y = 5
 		completion_reward = {
-		    add_stability = 0.05
-		    add_popularity = { ideology = despotism popularity = 0.03 }
-			custom_effect_tooltip = POL_ministr_tt
-			hidden_effect = { add_ideas = Vladislav_Rachkevich }
-			custom_effect_tooltip = POL_seim_vlinyanie_tt
-			POL = {
-				add_to_variable = { POL_seim_vlinyanie = 1 }
+		    country_event = { id = poland.200 days = 3 }
+		}
+	}
+	focus = {
+		id = POL_support_urbanization
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 4
+		prerequisite = {
+			focus = POL_Polsky_malozemelye
+		}
+		available = {
+			has_country_flag = POL_urbanization
+		    NOT = {
+				OR = {
+					has_government = communism
+					has_government = radical_socialism
+					has_government = social_democracy
+					has_government = social_liberalism
+				}
+			}
+		}
+		allow_branch = {
+			has_country_flag = POL_urbanization
+		}
+		x = 5
+		y = 6
+		completion_reward = {
+		    country_event = { id = poland.201 days = 3 }
+			peasant_and_land_and_bread_question_fall = yes
+		}
+	}
+	focus = {
+		id = POL_uglublenie_partilyation
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 5
+		prerequisite = {
+			focus = POL_Polsky_malozemelye
+		}
+		available = {
+			has_country_flag = POL_partylation
+		}
+		allow_branch = {
+			has_country_flag = POL_partylation
+		}
+		x = 5
+		y = 6
+		completion_reward = {
+			add_political_power = -70
+		    peasant_and_land_and_bread_question_fall = yes
+		    swap_ideas = {
+			    remove_idea = landlordism
+			    add_idea = individual_homesteads
+		    }
+		}
+	}
+	focus = {
+		id = POL_kollectivization_selsk_hoz
+		icon = GFX_focus_POL_expand_polish_intelligence
+		cost = 5
+		prerequisite = {
+			focus = POL_Polsky_malozemelye
+		}
+		available = {
+			has_country_flag = POL_kollectiv_hoz
+			OR = {
+				has_government = communism
+				has_government = radical_socialism
+				has_government = social_democracy
+				has_government = social_liberalism
+				has_government = despotism
+			}
+		}
+		allow_branch = {
+			has_country_flag = POL_kollectiv_hoz
+		}
+		x = 5
+		y = 6
+		completion_reward = {
+		    country_event = { id = poland.202 days = 3 }
+			remove_ideas = peasant_and_land_and_bread_question_0_5
+			hidden_effect = {
+				remove_ideas = peasant_and_land_and_bread_question
+				remove_ideas = peasant_and_land_and_bread_question_0_25
 			}
 		}
 	}
@@ -1362,14 +1579,32 @@ focus_tree = {
 	focus = {
 		id = POL_reshit_transport
 		icon = GFX_focus_POL_expand_polish_intelligence
-		cost = 4
+		cost = 3
 		prerequisite = {
 			focus = POL_vosst_prom
+		}
+		available = {
+		    custom_trigger_tooltip = {
+			    tooltip = "Обладает национальным духом: Транспортная проблема"
+			    OR = {
+				    has_idea = collapse_of_railway_systemss_1
+					has_idea = collapse_of_railway_systemss_2
+					has_idea = collapse_of_railway_systemss_3
+					has_idea = collapse_of_railway_systemss_4
+					has_idea = collapse_of_railway_systemss_5
+					has_idea = collapse_of_railway_systemss_6
+					has_idea = collapse_of_railway_systemss_7
+					has_idea = collapse_of_railway_systemss_8
+					has_idea = collapse_of_railway_systemss_9
+				}
+		    }
 		}
 		x = 7
 		y = 6
 		completion_reward = {
-		    
+		    add_stability = 0.03
+		    POL_collapse_of_railway_systemss_rise = yes
+			POL_collapse_of_railway_systemss_rise = yes
 		}
 	}
 	
@@ -1380,7 +1615,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_malya_const
 		}
-		x = 20
+		x = 22
 		y = 4
 		ai_will_do = {
 			factor = 1
@@ -1411,7 +1646,7 @@ focus_tree = {
 			factor = 1
 			modifier = { factor = 100 has_army_manpower = { size < 100000 } }
 		}
-		x = 20
+		x = 22
 		y = 5
 		completion_reward = {
 		    add_command_power = 25
@@ -1452,7 +1687,7 @@ focus_tree = {
 			modifier = { factor = 100 has_army_manpower = { size < 100000 } }
 			modifier = { factor = 500 has_war = yes }
 		}
-		x = 19
+		x = 22
 		y = 6
 		completion_reward = {
 		    rise_mobilization_law = yes
@@ -1529,7 +1764,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_create_pol_genstb
 		}
-		x = 21
+		x = 24
 		y = 6
 		ai_will_do = {
 			factor = 1
@@ -1545,9 +1780,9 @@ focus_tree = {
 		icon = GFX_focus_POL_expand_polish_intelligence
 		cost = 2.4
 		prerequisite = {
-			focus = POL_general_okrug
+			focus = POL_org_priziv
 		}
-		x = 23
+		x = 25
 		y = 7
 		ai_will_do = {
 			factor = 1
@@ -1595,7 +1830,7 @@ focus_tree = {
 		prerequisite = {
 			focus = POL_org_priziv
 		}
-		x = 19
+		x = 21
 		y = 7
 		ai_will_do = {
 			factor = 1
@@ -1636,9 +1871,9 @@ focus_tree = {
 		icon = GFX_focus_POL_expand_polish_intelligence
 		cost = 2.6
 		prerequisite = {
-			focus = POL_general_okrug
+			focus = POL_org_priziv
 		}
-		x = 21
+		x = 23
 		y = 7
 		ai_will_do = {
 			factor = 1
@@ -1648,13 +1883,27 @@ focus_tree = {
 		completion_reward = {
 		    custom_effect_tooltip = POL_lit_bel_div_tt
 			hidden_effect = {
+			    division_template = {
+			        name = "Dywizja Litewsko-białoruska"
+			        regiments = {
+				        infantry = { x = 0 y = 0 }
+				        infantry = { x = 0 y = 1 }
+				        infantry = { x = 1 y = 0 }
+				        infantry = { x = 1 y = 1 }
+			        }
+			        support = {
+		                engineer = { x = 0 y = 0 }
+		                artillery = { x = 0 y = 1 }
+			        }
+					is_locked = yes
+		        }
 			    capital_scope = {
 					create_unit = {
-			            division = "name = \"1. Dywizja Litewsko-białoruska\" division_template = \"Dywizja Wojska Polskiego\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			            division = "name = \"1. Dywizja Litewsko-białoruska\" division_template = \"Dywizja Litewsko-białoruska\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
 			            owner = POL
 					}
 					create_unit = {
-			            division = "name = \"2. Dywizja Litewsko-białoruska\" division_template = \"Dywizja Wojska Polskiego\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+			            division = "name = \"2. Dywizja Litewsko-białoruska\" division_template = \"Dywizja Litewsko-białoruska\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
 			            owner = POL
 					}
 				}
@@ -1674,7 +1923,7 @@ focus_tree = {
 		available = {
 		    has_idea = POL_loskut_army
 		}
-		x = 20
+		x = 22
 		y = 8
 		completion_reward = {
 		    add_war_support = 0.03
@@ -1688,14 +1937,15 @@ focus_tree = {
 		id = POL_otlov_dizertiv
 		icon = GFX_focus_POL_expand_polish_intelligence
 		cost = 2.4
-		prerequisite = {
-			focus = POL_lit_bel_div
+		available = {
+		    has_manpower < 80000
 		}
 		prerequisite = {
-			focus = POL_form_polk_new_priziv
+			focus = POL_create_pol_genstb
 		}
-		x = 23
-		y = 8
+
+		x = 20
+		y = 6
 		completion_reward = {
 		    add_ideas = POL_otlov_dizertir
 		}

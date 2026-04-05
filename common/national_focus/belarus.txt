@@ -100,7 +100,7 @@ focus_tree = {
 		completion_reward = {
 			country_event = belarus.10
 			create_country_leader = {
-			name = "Jan Sereda"
+			    name = "Jan Sereda"
 		  		desc = "Iosif_Voronko_DESC"
 				picture = GFX_Portrait_Jan_Sereda
 				ideology = social_reformism
@@ -357,6 +357,10 @@ focus_tree = {
 		y = 7
 		completion_reward = {
 			country_event = { id = belarus.2  days = 3 }
+			if = {
+				limit = { NOT = { has_completed_focus = BLR_Skirmunt } }
+				hidden_effect = { country_event = { id = belarus.11 days = 3 } }
+			}
 		}
 	}
 	
@@ -386,7 +390,7 @@ focus_tree = {
 	focus = {
 		id = BLR_lit_credits
 		icon = GFX_BLR_lit_credits
-		cost = 4
+		cost = 2
 		prerequisite = {
 			focus = BLR_pokidanie_Minska
 		}
@@ -413,7 +417,7 @@ focus_tree = {
 	focus = {
 		id = BLR_sozdanie_bel_army_litva
 		icon = GFX_BLR_sozdanie_bel_army_litva
-		cost = 5
+		cost = 3.2
 		prerequisite = {
 			focus = BLR_pokidanie_Minska
 		}
@@ -421,9 +425,13 @@ focus_tree = {
 			has_completed_focus = BLR_pokidanie_Minska
 		}
 		available = {
-			is_government_in_exile = yes
 			country_exists = LIT
+			NOT = { has_country_flag = BLR_yhod_k_polsk }
 			NOT = { has_war_with = LIT }
+			NOT = { LIT = { has_completed_focus = LIT_form_bel_army } }
+		}
+		bypass = {
+		    LIT = { has_completed_focus = LIT_form_bel_army }
 		}
 		x = 14
 		y = 9
@@ -432,30 +440,61 @@ focus_tree = {
 	
 		completion_reward = {
 			add_legitimacy = 10
-			division_template = {
-				name = "Army Regiment"
-				regiments = {
-					infantry = { x = 0 y = 0 }
-					infantry = { x = 0 y = 1 }
-				}
-				support = {
-					recon = { x = 0 y = 0 }
-					engineer = { x = 0 y = 1 }
-				}
-				is_locked = no
+			if = {
+				limit = { is_government_in_exile = no }
+			    division_template = {
+				    name = "Belarusian infantry regiments"
+				    regiments = {
+					    infantry = { x = 0 y = 0 }
+					    infantry = { x = 0 y = 1 }
+				    }
+				    support = {
+					    recon = { x = 0 y = 0 }
+					    engineer = { x = 0 y = 1 }
+				    }
+				    is_locked = yes
+			    }
+			    capital_scope = {
+				    create_unit = {
+					    division = "name = \"Pervyj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					    owner = BLR
+				    } 
+				    create_unit = {
+					    division = "name = \"Vtoroj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					    owner = BLR
+				    }
+			    }
 			}
-			LIT = {
-				capital_scope = {
-					create_unit = {
-						division = "name = \"Pervyj belorusskij polk\" division_template = \"Army Regiment\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
-						owner = BLR
-						allow_spawning_on_enemy_provs = yes
-					}
-					create_unit = {
-						division = "name = \"Vtoroj belorusskij polk\" division_template = \"Army Regiment\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
-						owner = BLR
-						allow_spawning_on_enemy_provs = yes
-					}
+			else_if = {
+				limit = { is_government_in_exile = yes }
+				LIT = { country_event = belarus.128 }
+				LIT = {
+			        division_template = {
+				        name = "Belarusian infantry regiments"
+				        regiments = {
+					        infantry = { x = 0 y = 0 }
+					        infantry = { x = 0 y = 1 }
+				        }
+				        support = {
+					        recon = { x = 0 y = 0 }
+					        engineer = { x = 0 y = 1 }
+				        }
+				        is_locked = yes
+			        }
+                    set_nationality = {
+                        target_country = LIT
+                        character = BLR_ezovitov_konstantin
+                    }
+			        capital_scope = {
+				        create_unit = {
+					        division = "name = \"Pervyj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					        owner = LIT
+				        } 
+				        create_unit = {
+					        division = "name = \"Vtoroj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					        owner = LIT
+				        }
+			        }
 				}
 			}
 		}
@@ -463,7 +502,7 @@ focus_tree = {
 	focus = {
 		id = BLR_rechit_problem_cadrs
 		icon = GFX_BLR_rechit_problem_cadrs
-		cost = 5
+		cost = 3
 		prerequisite = {
 			focus = BLR_pokidanie_Minska
 		}
@@ -474,9 +513,9 @@ focus_tree = {
 			has_political_power > 20
 			is_government_in_exile = yes
 		}
+		
 		x = 4
 		y = 9
-		
 		available_if_capitulated = yes
 	
 		completion_reward = {
@@ -488,7 +527,7 @@ focus_tree = {
 	focus = {
 		id = BLR_vopros_ob_aftonomii
 		icon = GFX_BLR_vopros_ob_aftonomii
-		cost = 4
+		cost = 3
 		prerequisite = {
 			focus = BLR_rechit_problem_cadrs
 		}
@@ -496,6 +535,10 @@ focus_tree = {
 			is_government_in_exile = yes
 			country_exists = LIT
 			NOT = { has_war_with = LIT }
+			NOT = { 
+				is_in_faction_with = POL 
+			    is_puppet_of = POL
+			} 
 			LIT = {
 				has_opinion = {
 					target = BLR
@@ -516,12 +559,11 @@ focus_tree = {
 	focus = {
 		id = BLR_anti_sovet_propogand
 		icon = GFX_BLR_anti_sovet_propogand
-		cost = 5
+		cost = 2
 		prerequisite = {
 			focus = BLR_rechit_problem_cadrs
 		}
 		available = {
-			is_government_in_exile = yes
 		}		 
 		x = 4
 		y = 10
@@ -597,12 +639,11 @@ focus_tree = {
 	focus = {
 		id = BLR_organizovat_vosstanie_regions
 		icon = GFX_BLR_organizovat_vosstanie_regions
-		cost = 5
+		cost = 3.5
 		prerequisite = {
 			focus = BLR_anti_sovet_propogand
 		}
 		available = {
-			is_government_in_exile = yes
 		}
 		x = 4
 		y = 11
@@ -617,18 +658,20 @@ focus_tree = {
 	focus = {
 		id = BLR_delegation_or_CHE
 		icon = GFX_BLR_delegation_or_CHE
-		cost = 4
+		cost = 2
 		prerequisite = {
 			focus = BLR_lit_credits
 		}
 		available = {
-			is_government_in_exile = yes
 			country_exists = CZE
 			NOT = { has_war_with = CZE }
 		}	
 		ai_will_do = {
 			base = 1
-		}		
+		}
+        bypass = {
+		    NOT = { country_exists = CZE }
+        }		
 		x = 6
 		y = 10
 		
@@ -643,7 +686,7 @@ focus_tree = {
 	focus = {
 		id = BLR_baltic_priznanie
 		icon = GFX_BLR_baltic_priznanie
-		cost = 4
+		cost = 2
 		prerequisite = {
 			focus = BLR_delegation_or_CHE
 		}
@@ -658,8 +701,13 @@ focus_tree = {
 					NOT = { has_war_with = LAT }
 				}
 			}
-			is_government_in_exile = yes
 		}
+		bypass = {
+		    AND = {
+		        LAT = { OR = { has_government = communism has_government = radical_socialism } }
+			    EST = { OR = { has_government = communism has_government = radical_socialism } }
+			}
+        }	
 		ai_will_do = {
 			base = 1
 		}
@@ -669,27 +717,34 @@ focus_tree = {
 		available_if_capitulated = yes
 	
 		completion_reward = {
-			LAT = {
-				country_event = rcw.204
+		    if = {
+			    limit = { LAT = { country_exists = yes NOT = { OR = { has_government = communism has_government = radical_socialism } } } }
+			    LAT = {
+				    country_event = rcw.204
+			    }
 			}
-			EST = {
-				country_event = rcw.204
+		    if = {
+			    limit = { EST = { country_exists = yes NOT = { OR = { has_government = communism has_government = radical_socialism } } } }
+			    EST = {
+				    country_event = rcw.204
+			    }
 			}
 		}
 	}
 	focus = {
 		id = BLR_peregovors_balahovich
 		icon = GFX_BLR_peregovors_balahovich
-		cost = 5
+		cost = 2.8
 		prerequisite = {
 			focus = BLR_baltic_priznanie
 		}
 		available = {
 			NOT = { country_exists = NWA }
-			is_government_in_exile = yes
 		}
 		ai_will_do = {
-			base = 1
+			base = 10
+			modifier = { add = 10 NOT = { country_exists = NWA } }
+			modifier = { add = 999 date > 1919.10.1 }
 		}
 		x = 4
 		y = 12
@@ -703,14 +758,13 @@ focus_tree = {
 	focus = {
 		id = BLR_polyshenie_ukr_credits
 		icon = GFX_BLR_polyshenie_ukr_credits
-		cost = 4
+		cost = 2
 		prerequisite = {
 			focus = BLR_baltic_priznanie
 		}
 		available = {
 			country_exists = UKR
 			NOT = { has_war_with = UKR }
-			is_government_in_exile = yes
 		}
 		x = 6
 		y = 12
@@ -734,14 +788,13 @@ focus_tree = {
 	focus = {
 		id = BLR_delegation_or_to_paris
 		icon = GFX_BLR_delegation_or_to_paris
-		cost = 4
+		cost = 2.8
 		prerequisite = {
 			focus = BLR_lit_credits
 		}		
 		available = {
 			country_exists = FRA
 			has_political_power > 50
-			is_government_in_exile = yes
 			OR = { has_global_flag = WWI_is_now has_global_flag = WWI_GER_HAS_CAPITULATED }
 			NOT = { has_war_with = ENG has_war_with = USA has_war_with = FRA }
 		}
@@ -758,13 +811,12 @@ focus_tree = {
 	focus = {
 		id = BLR_prosit_ob_priznanii
 		icon = GFX_BLR_prosit_ob_priznanii
-		cost = 5
+		cost = 3
 		prerequisite = {
 			focus = BLR_delegation_or_to_paris
 		}
 		available = {
-			is_government_in_exile = yes
-			is_puppet = no
+			OR = { NOT = { is_in_faction_with = POL } NOT = { is_puppet_of = POL } }
 			country_exists = FRA
 			FRA = {
 				has_opinion = {
@@ -789,7 +841,7 @@ focus_tree = {
 	focus = {
 		id = BLR_obosnovatsa_v_grodno
 		icon = GFX_BLR_obosnovatsa_v_grodno
-		cost = 5
+		cost = 2
 		prerequisite = {
 			focus = BLR_lit_credits
 		}
@@ -808,18 +860,13 @@ focus_tree = {
 	focus = {
 		id = BLR_polsko_bel_dogovor
 		icon = GFX_BLR_polsko_bel_dogovor
-		cost = 5
+		cost = 2.6
 		prerequisite = {
 			focus = BLR_obosnovatsa_v_grodno
 		}
-		mutually_exclusive = {
-			focus = BLR_poderschka_vilno_rada
-		}
+
 		available = {
-			is_government_in_exile = yes
 			country_exists = POL
-		}
-		bypass = {
 			NOT = { has_war_with = POL }
 		}
 		x = 10
@@ -828,7 +875,7 @@ focus_tree = {
 		available_if_capitulated = yes
 	
 		completion_reward = {
-			POL = { country_event = { id = belarus.66 days = 1 } }
+			country_event = { id = belarus.66 days = 1 }
 		}
 		
 		ai_will_do = {
@@ -838,14 +885,15 @@ focus_tree = {
 	focus = {
 		id = BLR_siezd_grodno_or_vilno
 		icon = GFX_BLR_siezd_grodno_or_vilno
-		cost = 4
+		cost = 2.2
 		prerequisite = {
 			focus = BLR_polsko_bel_dogovor
 		}	
 		available = {
-			is_government_in_exile = yes
+			OR = { is_in_faction_with = POL is_puppet_of = POL }
 			country_exists = POL
 			NOT = { has_war_with = POL }
+			NOT = { has_completed_focus = BLR_poderschka_vilno_rada }
 		}
 		x = 8
 		y = 12
@@ -862,12 +910,11 @@ focus_tree = {
 	focus = {
 		id = BLR_peregovor_warshawa
 		icon = GFX_BLR_peregovor_warshawa
-		cost = 4
+		cost = 3
 		prerequisite = {
 			focus = BLR_polsko_bel_dogovor
 		}		
 		available = {
-			is_government_in_exile = yes
 			country_exists = POL
 			NOT = { has_war_with = POL }
 		}
@@ -883,14 +930,13 @@ focus_tree = {
 	focus = {
 		id = BLR_sozdanie_bel_var_comission
 		icon = GFX_BLR_sozdanie_bel_var_comission
-		cost = 4
+		cost = 2.8
 		prerequisite = {
 			focus = BLR_siezd_grodno_or_vilno
 		}
 		available = {
-			is_government_in_exile = yes
 			country_exists = POL
-			NOT = { has_war_with = POL }
+			OR = { is_in_faction_with = POL is_puppet_of = POL }
 		}
 		x = 8
 		y = 13
@@ -898,20 +944,20 @@ focus_tree = {
 		available_if_capitulated = yes
 	
 		completion_reward = {
-			POL = { country_event = belarus.74 }
+			add_ideas = BLR_bvk
 		}
 	}
 	focus = {
 		id = BLR_army_or_poland
 		icon = GFX_BLR_army_or_poland
-		cost = 5
+		cost = 3.6
 		prerequisite = {
 			focus = BLR_sozdanie_bel_var_comission
 		}
 		available = {
-			is_government_in_exile = yes
 			country_exists = POL
 			NOT = { has_war_with = POL }
+			OR = { is_in_faction_with = POL is_puppet_of = POL }
 		}
 		x = 7
 		y = 14
@@ -919,15 +965,20 @@ focus_tree = {
 		available_if_capitulated = yes
 	
 		completion_reward = {
-			custom_effect_tooltip = BLR_divizia_polska_tt
-			POL = {
+		    country_event = belarus.124
+		    IF = {
+			    limit = { is_government_in_exile = yes }
+			    custom_effect_tooltip = BLR_divizia_polska_tt
+                POL = { country_event = belarus.124 }
+			}
+			else_if = {
+			    limit = { is_government_in_exile = no }
 				division_template = {
 					name = "Pekhotnya divisia"
 					regiments = {
 						infantry = { x = 0 y = 0 }
 						infantry = { x = 0 y = 1 }
 						infantry = { x = 0 y = 2 }
-						infantry = { x = 0 y = 3 }
 					}
 					support = {
 						artillery = { x = 0 y = 0 }
@@ -939,22 +990,49 @@ focus_tree = {
 				capital_scope = {
 					create_unit = {
 						division = "name = \"Pervaya belorusskaya diviziya\" division_template = \"Pekhotnya divisia\" start_experience_factor = 0.8 start_equipment_factor = 1.0"
-						owner = POL
+						owner = BLR
 						allow_spawning_on_enemy_provs = yes
 					}
 				}
+				recruit_character = BLR_Hasan_Konopacki
 			}
+		}
+	}
+	focus = {
+		id = BLR_lit_bel_div
+		icon = GFX_BLR_lit_bel_div
+		cost = 2.3
+		prerequisite = {
+			focus = BLR_army_or_poland
+		}
+		available = {
+			country_exists = POL
+			OR = { is_in_faction_with = POL is_puppet_of = POL }
+			is_government_in_exile = no
+			POL = { has_completed_focus = POL_lit_bel_div }
+		}
+		ai_will_do = {
+			factor = 999
+		}
+		x = 7
+		y = 15
+		
+		available_if_capitulated = yes
+	
+		completion_reward = {
+            POL = { country_event = belarus.125 }
 		}
 	}
 	focus = {
 		id = BLR_soziv_rada_blr
 		icon = GFX_goal_unknown
-		cost = 5
+		cost = 3.8
 		prerequisite = {
 			focus = BLR_sozdanie_bel_var_comission
 		}
 		available = {
-			is_government_in_exile = yes
+		    NOT = { OR = { has_government = despotism has_government = authoritarism } }
+		    OR = { is_in_faction_with = POL is_puppet_of = POL }
 		}		
 		x = 9
 		y = 14
@@ -969,17 +1047,21 @@ focus_tree = {
 	focus = {
 		id = BLR_poderschka_vilno_rada
 		icon = GFX_BLR_poderschka_vilno_rada
-		cost = 5
+		cost = 2.8
 		prerequisite = {
 			focus = BLR_obosnovatsa_v_grodno
-		}
-		mutually_exclusive = {
-			focus = BLR_polsko_bel_dogovor
 		}	
 		available = {
-			is_government_in_exile = yes
-			has_country_flag = BLR_Skirmunt_vlast
+			NOT = { has_country_flag = BLR_yhod_k_polsk }
 			NOT = { has_war_with = LIT }
+			NOT = { 
+				is_in_faction_with = POL 
+			    is_puppet_of = POL
+			} 
+		}
+		ai_will_do = {
+			factor = 0
+			modifier = { factor = 100 LIT = { has_completed_focus = LIT_democration_litva } }
 		}
 		x = 12
 		y = 11
@@ -999,12 +1081,11 @@ focus_tree = {
 	focus = {
 		id = BLR_usilit_kraevci
 		icon = GFX_BLR_usilit_kraevci
-		cost = 5
+		cost = 2.6
 		prerequisite = {
 			focus = BLR_poderschka_vilno_rada
 		}	
 		available = {
-			is_government_in_exile = yes
 		}		
 		x = 12
 		y = 12
@@ -1022,12 +1103,11 @@ focus_tree = {
 	focus = {
 		id = BLR_idea_federalization
 		icon = GFX_BLR_idea_federalization
-		cost = 4
+		cost = 3
 		prerequisite = {
 			focus = BLR_usilit_kraevci
 		}	
 		available = {
-			is_government_in_exile = yes
 		}		
 		x = 12
 		y = 13
@@ -1050,7 +1130,7 @@ focus_tree = {
 	focus = {
 		id = BLR_pokypka_armors
 		icon = GFX_BLR_pokypka_armors
-		cost = 4
+		cost = 2.6
 		prerequisite = {
 			focus = BLR_sozdanie_bel_army_litva
 		}	
@@ -1058,6 +1138,11 @@ focus_tree = {
 			is_government_in_exile = yes
 			country_exists = LIT
 			NOT = { has_war_with = LIT }
+			NOT = { has_country_flag = BLR_yhod_k_polsk }
+			NOT = { 
+				is_in_faction_with = POL 
+			    is_puppet_of = POL
+			} 
 			LIT = {
 				has_opinion = {
 					target = BLR
@@ -1078,12 +1163,11 @@ focus_tree = {
 	focus = {
 		id = BLR_razvitie_program_kaevci
 		icon = GFX_BLR_razvitie_program_kaevci
-		cost = 5
+		cost = 2.6
 		prerequisite = {
 			focus = BLR_usilit_kraevci
 		}	
 		available = {
-			is_government_in_exile = yes
 		}		
 		x = 14
 		y = 13
@@ -1101,7 +1185,7 @@ focus_tree = {
 	focus = {
 		id = BLR_sobranie_lit_ot_bel
 		icon = GFX_BLR_sobranie_lit_ot_bel
-		cost = 5
+		cost = 3.8
 		prerequisite = {
 			focus = BLR_idea_federalization
 		}
@@ -1109,7 +1193,6 @@ focus_tree = {
 			focus = BLR_razvitie_program_kaevci
 		}	
 		available = {
-			is_government_in_exile = yes
 			country_exists = LIT
 			NOT = { has_war_with = LIT }
 			LIT = {
@@ -1132,7 +1215,7 @@ focus_tree = {
 	focus = {
 		id = BLR_vernutsa_domoi
 		icon = GFX_BLR_Reorganization_military_Rada
-		cost = 5
+		cost = 2
 		prerequisite = {
 			focus = BLR_sobranie_lit_ot_bel
 			focus = BLR_soziv_rada_blr
@@ -1155,12 +1238,13 @@ focus_tree = {
 	focus = {
 		id = BLR_mobilization_oficerstva
 		icon = GFX_BLR_mobilization_oficerstva
-		cost = 4
+		cost = 1.8
 		prerequisite = {
 			focus = BLR_sozdanie_bel_army_litva
 		}
 		available = {
 			is_government_in_exile = yes
+			NOT = { has_country_flag = BLR_yhod_k_polsk }
 		}
 		x = 15
 		y = 10
@@ -1168,21 +1252,23 @@ focus_tree = {
 		available_if_capitulated = yes
 	
 		completion_reward = {
-			add_war_support = 0.10
+			add_war_support = 0.05
+			army_experience = 20
+			lack_of_officers_fall = yes
 			create_corps_commander = { name = "Joseph Pozharsky" id = 78902 portrait_path = "gfx/leaders/BLR/Portrait_Joseph_Pozharsky.dds" traits = { Infantry_Expert } skill = 3 attack_skill = 3 defense_skill = 3 planning_skill = 4 logistics_skill = 2 }
 			create_corps_commander = { name = "Pavel Jaurit" id = 78903 portrait_path = "gfx/leaders/BLR/Portrait_pavel_jaurit.dds" traits = { Ambusher } skill = 2 attack_skill = 2 defense_skill = 3 planning_skill = 2 logistics_skill = 2 }
-			create_corps_commander = { name = "Hasan Konopacki" id = 78904 portrait_path = "gfx/leaders/BLR/Portrait_Hasan_Konopacki.dds" traits = { Adaptable } skill = 1 attack_skill = 3 defense_skill = 2 planning_skill = 1 logistics_skill = 1 }
 		}
 	}
 	focus = {
 		id = BLR_verbovka_lydei
 		icon = GFX_BLR_verbovka_lydei
-		cost = 5
+		cost = 2.8
 		prerequisite = {
 			focus = BLR_mobilization_oficerstva
 		}
 		available = {
 			is_government_in_exile = yes
+			NOT = { has_country_flag = BLR_yhod_k_polsk }
 		}
 		x = 15
 		y = 11
@@ -1190,7 +1276,7 @@ focus_tree = {
 		available_if_capitulated = yes
 	
 		completion_reward = {
-			add_political_power = -0.50
+			add_political_power = -50
 			add_manpower = 10000
 			rise_mobilization_law = yes
 		}
@@ -1772,7 +1858,7 @@ focus_tree = {
 		y = 11
 		completion_reward = {
 			custom_effect_tooltip = BLR_Recruit_regiments_greentooth_tt
-			create_corps_commander = { name = "Uladzimir Ksianievic" id = 78901 portrait_path = "gfx/leaders/BLR/Portrait_Uladzimir_Ksianievic.dds" traits = { trait_engineer } skill = 1 attack_skill = 1 defense_skill = 3 planning_skill = 1 logistics_skill = 2 }
+			create_corps_commander = { name = "Uladzimir Ksianievic" id = 78901 portrait_path = "gfx/leaders/BLR/Portrait_Uladzimir_Ksianievic_military.dds" traits = { trait_engineer } skill = 1 attack_skill = 1 defense_skill = 3 planning_skill = 1 logistics_skill = 2 }
 			set_country_flag = BLR_zeleno_dubci_vostan
 		}
 	}
