@@ -14,7 +14,9 @@ Discord: https://discordapp.com/invite/fURwGgx
 
 Youtube: https://www.youtube.com/@RorStream
 
-No English lang in this version
+Only Russian in this version
+
+Multilingual translation from community (including english): https://steamcommunity.com/sharedfiles/filedetails/?id=3734162859
 
 English version from community: https://steamcommunity.com/sharedfiles/filedetails/?id=2894670317
 
