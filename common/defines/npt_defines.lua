@@ -100,7 +100,7 @@ NDefines.NDiplomacy.IDEOLOGY_JOIN_FACTION_MIN_LEVEL = -1
 NDefines_Graphics.NGraphics.POLITICAL_GRID_SMALL_BOX_LIMIT = 12
 
 
-NDefines.NCharacter.OFFICER_CORP_ADVISOR_ENTRIES_IN_MENU = { }
+NDefines.NCharacter.OFFICER_CORP_ADVISOR_ENTRIES_IN_MENU = { "theorist", "air_chief", "navy_chief" }
 
 
 NDefines.NSupply.CAPITAL_SUPPLY_BASE = 0.3
