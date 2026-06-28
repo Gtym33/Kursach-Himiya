@@ -183,6 +183,10 @@
 			NOT = { has_country_flag = LIT_fascism }
 			has_government = authoritarism
 		}
+		ai_will_do = {
+			factor = 0
+			modifier = { factor = 999 has_global_flag = WWI_GER_sieg_im_Weltkrieg }
+		}
 		x = 28
 		y = 1
 		completion_reward = {
@@ -448,6 +452,7 @@
 		prerequisite = {
 			focus = LIT_ushemlenie_pravoslavia
 		}
+		available = { OR = { controls_state = 95 controls_state = 1440 } }
 		x = 24
 		y = 9
 		completion_reward = {
@@ -519,10 +524,6 @@
 				has_government = social_liberalism
 				has_government = social_democracy
 			}
-		}
-		allow_branch = {
-			NOT = { has_country_flag = LIT_monarh }
-			NOT = { has_country_flag = LIT_win_national }
 		}
 		x = 19
 		y = 5
@@ -720,6 +721,11 @@
 		completion_reward = {
 			army_experience = 5
 			add_war_support = 0.05
+			custom_effect_tooltip = LIT_war_ministr_tt
+			hidden_effect = {
+				add_ideas = Mykolas_Velykis
+				add_ideas = Silvestras_Zukauskas
+			}
 		}
 	}
 	focus = {
@@ -770,13 +776,13 @@
 				division_template = {
 					name = "Lietuvos kariuomenė"
 					regiments = {
-						militia = { x = 0 y = 0 }
+						infantry = { x = 0 y = 0 }
 						militia = { x = 0 y = 1 }
 					}
 				}
 			}
 			capital_scope = {
-				create_unit = { division = "name = \"Lietuvos kariuomenė\" division_template = \"Lietuvos kariuomenė\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 2 owner = LIT }
+				create_unit = { division = "name = \"Lietuvos kariuomenė\" division_template = \"Lietuvos kariuomenė\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 3 owner = LIT }
 			}
 		}
 	}
@@ -800,8 +806,16 @@
 		completion_reward = {
 			add_stability = -0.03
 			add_war_support = 0.05
+			hidden_effect = {
+				division_template = {
+					name = "Pėstininkų batalionas"
+					regiments = {
+						infantry = { x = 0 y = 0 }
+					}
+				}
+			}
 			capital_scope = {
-				create_unit = { division = "name = \"Lietuvos kariuomenė\" division_template = \"Lietuvos kariuomenė\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 6 owner = LIT }
+				create_unit = { division = "name = \"Pėstininkų batalionas\" division_template = \"Pėstininkų batalionas\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 6 owner = LIT }
 			}
 		}
 	}
@@ -819,8 +833,14 @@
 		y = 8
 		completion_reward = {
 			add_war_support = 0.05
-			army_experience = 20
+			army_experience = 30
 			lack_of_officers_fall = yes
+            add_doctrine_cost_reduction = {
+				name = LIT_reform_committee
+				cost_reduction = 0.5
+				uses = 2
+				category = land_doctrine
+			}
 		}
 	}
 	focus = {
@@ -985,22 +1005,28 @@
 					}
 				}
 				# Отправлять уведомления о повышенном сопротивлении странам окуппантам
-			every_other_country = {
-				limit = {
-					has_war_with = ROOT 
-					OR = {
-						1167 = {is_controlled_by = PREV }
-						96 = {is_controlled_by = PREV }
-						956 = {is_controlled_by = PREV }
-						998 = {is_controlled_by = PREV }
-						1056 = {is_controlled_by = PREV }
-						95 = {is_controlled_by = PREV }
-					}
+			if = {
+			    limit = {
+				    has_war = yes
+					has_war_with = RUS
 				}
-				country_event = {
-					id = lithuania.54
-					hours = 2
-					random_hours = 12
+			    every_other_country = {
+				    limit = {
+					    has_war_with = ROOT 
+					    OR = {
+						    1167 = {is_controlled_by = PREV }
+						    96 = {is_controlled_by = PREV }
+						    956 = {is_controlled_by = PREV }
+						    998 = {is_controlled_by = PREV }
+						    1056 = {is_controlled_by = PREV }
+						    95 = {is_controlled_by = PREV }
+					    }
+				    }
+				    country_event = {
+					    id = lithuania.54
+					    hours = 2
+					    random_hours = 12
+				    }
 				}
 			}
 		}
@@ -1008,12 +1034,16 @@
 	focus = {
 		id = LIT_form_bel_army
 		icon = GFX_LIT_form_bel_army
-		cost = 3.5
+		cost = 2.5
 		prerequisite = {
 			focus = LIT_create_milition
 		}
 		available = {
 			has_war_with = RUS
+		    NOT = { BLR = { has_completed_focus = BLR_sozdanie_bel_army_litva } }
+		}
+		bypass = {
+			BLR = { has_completed_focus = BLR_sozdanie_bel_army_litva }
 		}
 		x = 8
 		y = 6
@@ -1024,23 +1054,30 @@
 					modifier = BLR_Ylychenie_otnocheniy
 				}
 			}
+			BLR = { country_event = belarus.128 }
+            set_nationality = {
+                target_country = LIT
+                character = BLR_ezovitov_konstantin
+            }
 			division_template = {
-				name = "Army Regiment"
+				name = "Belarusian infantry regiments"
 				regiments = {
 					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
 				}
 				support = {
 					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
 				}
 				is_locked = yes
 			}
 			capital_scope = {
 				create_unit = {
-					division = "name = \"Pervyj belorusskij polk\" division_template = \"Army Regiment\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					division = "name = \"Pervyj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
 					owner = LIT
 				} 
 				create_unit = {
-					division = "name = \"Vtoroj belorusskij polk\" division_template = \"Army Regiment\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					division = "name = \"Vtoroj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
 					owner = LIT
 				}
 			}
@@ -1227,9 +1264,13 @@
 		available = {
 			country_exists = POL
 			is_puppet = no
+			is_in_faction = no
 			POL = { is_puppet = no has_opinion = { target = LIT value > 59 } }
 			NOT = { has_war_with = POL }
 			POL = { NOT = { has_government = communism has_government = radical_socialism } }
+		}
+		allow_branch = {
+		    is_in_faction_with = POL
 		}
 		x = 12
 		y = 13
@@ -1386,6 +1427,7 @@
 			focus = LIT_nemts_dopomog
 		}
 		available = {
+		    is_in_faction = no
 			EST = {
 				exists = yes
 				NOT = { has_war_with = LIT }
@@ -2928,6 +2970,11 @@
 		completion_reward = {
 			army_experience = 15
 			add_war_support = 0.05
+			custom_effect_tooltip = LIT_war_ministr_tt
+			hidden_effect = {
+				add_ideas = Mykolas_Velykis
+				add_ideas = Silvestras_Zukauskas
+			}
 		}
 	}
  	focus = {
@@ -2982,13 +3029,13 @@
 				division_template = {
 					name = "Lietuvos kariuomenė"
 					regiments = {
-						militia = { x = 0 y = 0 }
+						infantry = { x = 0 y = 0 }
 						militia = { x = 0 y = 1 }
 					}
 				}
 			}
 			capital_scope = {
-				create_unit = { division = "name = \"Lietuvos kariuomenė\" division_template = \"Lietuvos kariuomenė\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 2 owner = LIT }
+				create_unit = { division = "name = \"Lietuvos kariuomenė\" division_template = \"Lietuvos kariuomenė\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 3 owner = LIT }
 			}
 		}
 	}
@@ -3014,8 +3061,14 @@
 		completion_reward = {
 			add_stability = -0.03
 			add_war_support = 0.05
+			division_template = {
+				name = "Pėstininkų batalionas"
+				regiments = {
+					infantry = { x = 0 y = 0 }
+				}
+			}
 			capital_scope = {
-				create_unit = { division = "name = \"Lietuvos kariuomenė\" division_template = \"Lietuvos kariuomenė\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 6 owner = LIT }
+				create_unit = { division = "name = \"Pėstininkų batalionas\" division_template = \"Pėstininkų batalionas\" start_experience_factor = 0.15 start_equipment_factor = 1" count = 6 owner = LIT }
 			}
 		}
 	}
@@ -3270,23 +3323,30 @@
 					modifier = BLR_Ylychenie_otnocheniy
 				}
 			}
+			BLR = { country_event = belarus.128 }
+            set_nationality = {
+                target_country = LIT
+                character = BLR_ezovitov_konstantin
+            }
 			division_template = {
-				name = "Army Regiment"
+				name = "Belarusian infantry regiments"
 				regiments = {
 					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
 				}
 				support = {
 					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
 				}
 				is_locked = yes
 			}
 			capital_scope = {
 				create_unit = {
-					division = "name = \"Pervyj belorusskij polk\" division_template = \"Army Regiment\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					division = "name = \"Pervyj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
 					owner = LIT
 				} 
 				create_unit = {
-					division = "name = \"Vtoroj belorusskij polk\" division_template = \"Army Regiment\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
+					division = "name = \"Vtoroj belorusskij polk\" division_template = \"Belarusian infantry regiments\" start_experience_factor = 0.2 start_equipment_factor = 1.0"
 					owner = LIT
 				}
 			}
@@ -3400,8 +3460,14 @@
 		y = 7
 		completion_reward = {
 			add_war_support = 0.05
-			army_experience = 20
+			army_experience = 30
 			lack_of_officers_fall = yes
+			add_doctrine_cost_reduction = {
+				name = LIT_reform_committee
+				cost_reduction = 0.5
+				uses = 2
+				category = land_doctrine
+			}
 		}
 	}
 	
