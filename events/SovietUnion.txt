@@ -53,14 +53,13 @@ country_event = {
 	
 	option = {
 		name = soviet.1.a
-		every_country = {
+		every_other_country = {
 			limit = {
-				NOT = { tag = ROOT }
 				OR = {
 					is_subject_of = ROOT
 					AND = {
 						is_in_faction_with = ROOT
-						has_government = communism
+						OR = { has_government = radical_socialism has_government = communism }
 						OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes original_tag = FIN original_tag = POL original_tag = BUL }
 					}
 				}
@@ -80,6 +79,13 @@ country_event = {
 					transfer_troops = yes
 				}
 			}
+		}
+		every_other_country = {
+			limit = {
+				OR = { is_any_former_russian_empire_country = yes former_russian_empire_baltic_states_country = yes original_tag = FIN original_tag = POL original_tag = BUL }
+				OR = { has_government = radical_socialism has_government = communism }
+			}
+			country_event = soviet.2
 		}
 		set_cosmetic_tag = SOV
 		if = {
@@ -120,5 +126,60 @@ country_event = {
 		#clear_global_event_target = INTEGRATING_COUNTRY_MAJOR
 		#clear_global_event_target = INTEGRATING_COUNTRY_MINOR
 		#clear_global_event_target = UNITED_COUNTRY
+	}
+}
+
+
+country_event = {
+	id = soviet.2
+	title = soviet.2.t
+	desc = soviet.2.desc
+	picture = GFX_report_event_sov_palace_sturm
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = soviet.2.a
+		ai_chance = {
+			factor = 0
+		}
+	}
+	option = {
+		name = soviet.2.b
+		every_state = {
+			limit = {
+				is_core_of = ROOT
+			}
+			#remove_core_of = RUS
+			remove_core_of = CCA
+			remove_core_of = RSS
+			add_core_of = FROM
+		}
+		FROM = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			country_event = soviet.3
+			if = {
+				limit = { is_ai = yes }
+				change_tag_from = ROOT
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+country_event = {
+	id = soviet.3
+	title = soviet.3.t
+	desc = soviet.3.desc
+	picture = GFX_report_event_sov_palace_sturm
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = soviet.3.a
 	}
 }
