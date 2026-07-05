@@ -53,6 +53,11 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 0
+				tag = AUH
+				NOT = { has_country_flag = polish_question_territory_formal_trasnfer_ban }
+			}
 		}
 	}
 	option = {
@@ -87,6 +92,19 @@ country_event = {
 		}
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 0
+				tag = GER
+				has_opinion = { target = POL value < 0 }
+			}
+			modifier = { factor = 2 has_opinion = { target = POL value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 19 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 29 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 49 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 69 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 79 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 89 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 99 } }
 		}
 	}
 }
@@ -172,6 +190,10 @@ country_event = {
 		reverse_add_opinion_modifier = { target = FROM modifier = GER_AUH_POL_dispute }
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 0
+				tag = AUH
+			}
 		}
 	}
 	option = {
@@ -180,6 +202,19 @@ country_event = {
 		set_country_flag = polish_question_territory_formal_trasnfer
 		ai_chance = {
 			factor = 1
+			modifier = {
+				factor = 0
+				tag = GER
+				has_opinion = { target = POL value < 0 }
+			}
+			modifier = { factor = 2 has_opinion = { target = POL value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 19 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 29 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 49 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 69 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 79 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 89 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 99 } }
 		}
 	}
 }
@@ -266,7 +301,6 @@ country_event = {
 	}
 }
 
-
 #Австро-польское требование
 country_event = {
 	id = poland.6
@@ -296,7 +330,11 @@ country_event = {
 		every_state = {
 			limit = {
 				is_core_of = POL
-				NOT = { is_core_of = GER region = 131 region = 37 state = 1001 state = 1019 state = 86 }
+				OR = {
+					region = 38
+					state = 92
+				}
+				NOT = { is_core_of = ROOT state = 1001 state = 1119 }
 			}
 			if = {
 				limit = { is_owned_by = GER }
@@ -421,6 +459,9 @@ country_event = {
 		}
 	}
 }
+
+
+
 
 country_event = {
 	id = poland.11
@@ -3026,69 +3067,104 @@ country_event = {
 	}
 }
 country_event = {
-	id = poland.47 #Польская просьба
-	title = poland.47.t
-	desc = poland.47.d
+	id = poland.47 #Польская просьба/Передача ключей
+	title = {
+		text = poland.47.t
+		trigger = { has_country_flag = polish_question_territory_formal_trasnfer_ban }
+	}
+	title = {
+		text = poland.47.t_1
+		trigger = { has_country_flag = polish_question_territory_formal_trasnfer }
+	}
+	desc = {
+		text = poland.47.desc
+		trigger = { has_country_flag = polish_question_territory_formal_trasnfer_ban }
+	}
+	desc = {
+		text = poland.47.desc_1
+		trigger = { tag = GER has_country_flag = polish_question_territory_formal_trasnfer }
+	}
+	desc = {
+		text = poland.47.desc_2
+		trigger = { NOT = { tag = GER } has_country_flag = polish_question_territory_formal_trasnfer }
+	}
 
 	picture = GFX_report_event_pol_prosb_k_ger
 	
 	is_triggered_only = yes
 	
 	option = {
+		trigger = { has_country_flag = polish_question_territory_formal_trasnfer_ban }
 		name = poland.47.a
-		POL = { country_event = { id = poland.48 days = 1 } }
 		ai_chance = {
-			factor = 5
-			modifier = { factor = 2 has_stability < 0.4 }
-			modifier = { factor = 999 is_historical_focus_on = yes }
+			factor = 1
 		}
 	}
 	option = {
-		trigger = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer_ban } }
+		trigger = { tag = GER has_country_flag = polish_question_territory_formal_trasnfer }
 		name = poland.47.b
-		add_stability = -0.03
-		POL = { add_opinion_modifier = { target = GER modifier = BLR_Ylychenie_otnocheniy } }
-		POL = { country_event = { id = poland.49 days = 1 } }
-		POL = {
-			transfer_state = 92
-			transfer_state = 90
-		}
+		reverse_add_opinion_modifier = { target = POL modifier = BLR_Ylychenie_otnocheniy }
 		every_state = {
 			limit = {
-				OR = {
-					is_owned_by = ROOT
-					AND = {
-						is_owned_by = RUS
-						is_controlled_by = ROOT
-					}
-				}
-				NOT = { is_core_of = ROOT }
 				is_core_of = POL
+				OR = {
+					region = 38
+					state = 92
+				}
+				NOT = { is_core_of = ROOT state = 1001 state = 1119 }
 			}
-			POL = { transfer_state = PREV }
+			if = {
+				limit = { is_owned_by = ROOT }
+				set_state_owner_to = POL
+			}
+			if = {
+				limit = { is_controlled_by = ROOT }
+				set_state_controller_to = POL
+			}
 		}
-		IF = {
-			limit = { is_in_faction_with = AUH }
-			AUH = { country_event = poland.57 }
+		rise_collapse_of_railway_system = yes
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { NOT = { tag = GER } has_country_flag = polish_question_territory_formal_trasnfer }
+		name = poland.47.b
+		reverse_add_opinion_modifier = { target = POL modifier = BLR_Ylychenie_otnocheniy }
+		every_state = {
+			limit = {
+				is_core_of = POL
+				OR = {
+					region = 38
+					state = 92
+				}
+				NOT = { is_core_of = ROOT state = 1001 state = 1119 }
+			}
+			if = {
+				limit = { is_owned_by = ROOT }
+				set_state_owner_to = POL
+			}
+			if = {
+				limit = { is_controlled_by = ROOT }
+				set_state_controller_to = POL
+			}
 		}
 		ai_chance = {
-			factor = 0
-			modifier = { add = 1 has_opinion = { target = POL value > -1 } }
-			modifier = { factor = 2 has_opinion = { target = POL value > 9 } }
-			modifier = { factor = 2 has_opinion = { target = POL value > 19 } }
-			modifier = { factor = 3 has_opinion = { target = POL value > 29 } }
-			modifier = { factor = 3 has_opinion = { target = POL value > 49 } }
-			modifier = { factor = 3 has_opinion = { target = POL value > 69 } }
-			modifier = { factor = 4 has_opinion = { target = POL value > 79 } }
-			modifier = { factor = 4 has_opinion = { target = POL value > 89 } }
-			modifier = { factor = 4 has_opinion = { target = POL value > 99 } }
+			factor = 1
 		}
 	}
 }
 country_event = {
-	id = poland.48 #Ответ Берлина нет
+	id = poland.48 #Отказ Берлина (вместо "Стечковский подаёт в отставку")
 	title = poland.48.t
-	desc = poland.48.d
+	desc = {
+		text = poland.48.desc
+		trigger = { AUH = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer } } }
+	}
+	desc = {
+		text = poland.48.desc_1
+		trigger = { AUH = { has_country_flag = polish_question_territory_formal_trasnfer } }
+	}
 
 	picture = GFX_report_event_pol_prosb_k_ger
 	
@@ -3096,16 +3172,19 @@ country_event = {
 	
 	option = {
 		name = poland.48.a
-		IF = {
-			limit = { has_country_leader = { name = "Jan Kantiy Stechkovsky" ruling_only = yes } }
-			POL = { country_event = { id = poland.50 days = 1 } }
-		}
 	}
 }
 country_event = {
-	id = poland.49 #Ответ Берлина да
+	id = poland.49 #Передача ключей (Польша)
 	title = poland.49.t
-	desc = poland.49.d
+	desc = {
+		text = poland.49.desc
+		trigger = { AUH = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer } } }
+	}
+	desc = {
+		text = poland.49.desc_1
+		trigger = { AUH = { has_country_flag = polish_question_territory_formal_trasnfer } }
+	}
 
 	picture = GFX_report_event_pol_prosb_k_ger
 	
@@ -3114,10 +3193,10 @@ country_event = {
 	option = {
 		name = poland.49.a
 		add_ideas = POL_Military_ruin
-		add_ideas = collapse_of_railway_system_1
-		GER = { add_ideas = collapse_of_railway_system_1 }
+		rise_collapse_of_railway_system = yes
 	}
 }
+#Если немцы отказались давать территории (polish_question_territory_formal_trasnfer_ban), то по фокусу POL_peredyacha_adm_vlast этот ивент
 country_event = {
 	id = poland.50 #Стечковский подаёт в отставку
 	title = poland.50.t
@@ -3307,21 +3386,8 @@ country_event = { #Начальник государства
 		set_party_name = { ideology = despotism long_name = POL_despotism_pilsudski_party_long name = POL_despotism_pilsudski_party }
 	}
 }
-country_event = {
-	id = poland.57 #Польская просьба
-	title = poland.57.t
-	desc = poland.57.d
 
-	picture = GFX_report_event_pol_prosb_k_ger
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = poland.57.a
-		add_stability = -0.03
-		POL = { add_opinion_modifier = { target = AUH modifier = BLR_Ylychenie_otnocheniy } }
-	}
-}
+
 country_event = {
 	id = poland.58 #Рабочие советы
 	title = poland.58.t
