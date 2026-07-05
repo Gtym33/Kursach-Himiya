@@ -2748,9 +2748,9 @@ POL_polsy_seim = {
 		remove_effect = {
 			add_popularity = { ideology = market_liberalism popularity = 0.01 }
 			add_popularity = { ideology = despotism popularity = -0.02 }
-			custom_effect_tooltip = POL_seim_vlinyanie_tt
+			custom_effect_tooltip = POL_seim_vlinyanie_minus_tt
 			POL = {
-				add_to_variable = { POL_seim_vlinyanie = 1 }
+				add_to_variable = { POL_seim_vlinyanie = -1 }
 			}
 			POL_inf_p_bar = yes
 			POL_reset_seim_antogonism = yes
@@ -4352,12 +4352,13 @@ POL_polsy_seim = {
 		
 		remove_effect = {
 			unlock_decision_tooltip = POL_fascism_ustroit_perevorot
+			set_country_flag = POL_fascism_ustroit_perevorot_unlock_flag
 		}
 	}
 	POL_fascism_ustroit_perevorot = {
 		icon = GFX_decision_SWI_consolidate_council_power
 		
-		visible = { has_country_flag = POL_seim_fascism always = no }
+		visible = { has_country_flag = POL_seim_fascism has_country_flag = POL_fascism_ustroit_perevorot_unlock_flag }
 		available = { 
 		}
 		cost = 20
@@ -4552,12 +4553,13 @@ POL_polsy_seim = {
 		
 		remove_effect = {
 			unlock_decision_tooltip = POL_natsynd_ustroit_perevorot
+			set_country_flag = POL_natsynd_ustroit_perevorot_unlock_flag
 		}
 	}
 	POL_natsynd_ustroit_perevorot = {
 		icon = GFX_decision_SWI_consolidate_council_power
 		
-		visible = { has_country_flag = POL_seim_natsynd always = no }
+		visible = { has_country_flag = POL_seim_natsynd has_country_flag = POL_natsynd_ustroit_perevorot_unlock_flag }
 		available = { 
 		}
 		cost = 20
@@ -4579,18 +4581,10 @@ POL_polsy_seim = {
 	POL_seim_decisions_zapret_commun = {
 		icon = GFX_decision_oppression_rev
 		
-		visible = { 
-			NOT = { 
-				OR = { 
-					has_government = radical_socialism 
-					has_government = communism 
-				} 
-			}
-			OR = {
-				has_government = social_democracy
-				has_government = social_liberalism
-				AND = { has_government = market_liberalism NOT = { has_country_flag = POL_galler_its_leader has_country_flag = POL_seim_author } }
-				has_government = conservatism
+		visible = {
+			NOT = {
+				has_government = radical_socialism 
+				has_government = communism
 			}
 			OR = {
 				has_country_flag = POL_seim_commun
@@ -4604,12 +4598,10 @@ POL_polsy_seim = {
 				has_country_flag = POL_seim_soclib
 			}
 		}
-		available = { 
-			NOT = { 
-				OR = { 
-					has_government = radical_socialism 
-					has_government = communism 
-				} 
+		available = {
+			NOT = {
+				has_government = radical_socialism
+				has_government = communism
 			}
 			OR = {
 				any_country = { has_war_with = ROOT has_government = communism }
@@ -4638,12 +4630,10 @@ POL_polsy_seim = {
 	POL_seim_decisions_zapret_fascism = {
 		icon = GFX_decision_oppression_fascism
 		
-		visible = { 
-			NOT = { 
-				OR = { 
-					has_government = fascism
-					has_government = national_syndicalism
-				} 
+		visible = {
+			NOT = {
+				has_government = fascism
+				has_government = national_syndicalism
 			}
 			OR = {
 				has_government = communism
@@ -4666,11 +4656,9 @@ POL_polsy_seim = {
 			}
 		}
 		available = { 
-			NOT = { 
-				OR = { 
-					has_government = fascism
-					has_government = national_syndicalism
-				} 
+			NOT = {
+				has_government = fascism
+				has_government = national_syndicalism
 			}
 			custom_trigger_tooltip = {
 				tooltip = "Антагонизм сейма более 60%"
@@ -7551,7 +7539,7 @@ POL_polsy_seim = {
 					remove_mission = POL_soclib_mission_debation_seimm
 				}
 				else_if = {
-					limit = { NOT = { OR = { has_idea = has_idea = peasant_and_land_and_bread_question_1 has_idea = peasant_and_land_and_bread_question_0_5 has_idea = peasant_and_land_and_bread_question_0_25 } } }
+					limit = { NOT = { has_idea = has_idea = peasant_and_land_and_bread_question_1 has_idea = peasant_and_land_and_bread_question_0_5 has_idea = peasant_and_land_and_bread_question_0_25 } }
 					activate_mission = POL_soclib_mission_miting_kres
 					remove_mission = POL_soclib_mission_debation_seimm
 					set_country_flag = POL_soclib_mission
@@ -15375,7 +15363,7 @@ POL_rusk_form_in_poland = {
 			add_popularity = { ideology = national_syndicalism popularity = 0.01 }
 			country_event = belarus.58
 			if = {
-				limit = { BLR = { NOT = { OR = { has_government = communism has_government = radical_socialism is_subject_of = RUS } } } }
+				limit = { BLR = { NOT = { has_government = communism has_government = radical_socialism is_subject_of = RUS } } }
 				BLR = { country_event = belarus.58 }
 			}
 		}
@@ -15962,7 +15950,10 @@ POL_influence_the_polish_question = {
 			clear_variable = POL.polish_question_AUH_influence
 			hidden_effect = { initiate_verification_of_the_popularity_of_coalitions = yes }
 			ruling_coalition = yes
-			load_focus_tree = generic_focus
+			if = {
+				limit = { has_focus_tree = Poland_focus }
+				load_focus_tree = generic_focus
+			}
 		}
 	}
 }
