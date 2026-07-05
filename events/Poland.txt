@@ -1,5 +1,426 @@
 ﻿add_namespace = poland
 
+
+#технический ивент на удаление "Польского вопроса"
+country_event = {
+	id = poland.0
+	trigger = {
+		tag = POL
+		has_variable = polish_question_GER_influence
+		OR = {
+			NOT = { is_subject_of = GER is_subject_of = AUH }
+			GER = { has_war_with = AUH }
+		}
+	}
+	hidden = yes
+	fire_only_once = yes
+	immediate = {
+		GER = { clr_country_flag = polish_question_des_cat_flag }
+		AUH = { clr_country_flag = polish_question_des_cat_flag }
+		clear_variable = POL.polish_question_GER_influence
+		clear_variable = POL.polish_question_AUH_influence
+	}
+}
+
+#Польское обращение (не Польская просьба)
+country_event = {
+	id = poland.1
+	title = poland.1.t
+	desc = {
+		text = poland.1.desc
+		trigger = { tag = GER }
+	}
+	desc = {
+		text = poland.1.desc_1
+		trigger = { NOT = { tag = GER } }
+	}
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer } }
+		name = poland.1.a #Отказать
+		set_country_flag = polish_question_territory_formal_trasnfer_ban
+		if = {
+			limit = { tag = GER }
+			POL = { country_event = { id = poland.2 hours = 6 } }
+			else = {
+				POL = { country_event = { id = poland.2 hours = 9 } }
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer_ban } }
+		name = poland.1.b #Согласиться на формальную передачу
+		set_country_flag = polish_question_territory_formal_trasnfer
+		reverse_add_opinion_modifier = { target = POL modifier = BLR_Ylychenie_otnocheniy }
+		if = {
+			limit = { tag = GER }
+			hidden_effect = {
+				add_to_variable = { POL.polish_question_GER_influence = 3 }
+				if {
+					limit = { check_variable { POL.polish_question_GER_influence > 10 } }
+					set_variable = { POL.polish_question_GER_influence = 10 }
+				}
+			}
+			custom_effect_tooltip = polish_question_GER_influence_plus_3
+			POL = { country_event = { id = poland.3 hours = 6 } }
+			AUH = { country_event = { id = poland.4 hours = 12 } }
+			else = {
+				hidden_effect = {
+					add_to_variable = { POL.polish_question_AUH_influence = 3 }
+					if {
+						limit = { check_variable { POL.polish_question_AUH_influence > 10 } }
+						set_variable = { POL.polish_question_AUH_influence = 10 }
+					}
+				}
+				custom_effect_tooltip = polish_question_AUH_influence_plus_3
+				POL = { country_event = { id = poland.3 hours = 9 } }
+				GER = { country_event = { id = poland.4 hours = 15 } }
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+#Ответ нет
+country_event = {
+	id = poland.2
+	title = {
+		text = poland.2.t
+		trigger = { FROM = { tag = GER } }
+	}
+	title = {
+		text = poland.2.t_1
+		trigger = { FROM = { NOT = { tag = GER } } }
+	}
+	desc = {
+		text = poland.2.desc
+		trigger = { FROM = { tag = GER } }
+	}
+	desc = {
+		text = poland.2.desc_1
+		trigger = { FROM = { NOT = { tag = GER } } }
+	}
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.2.a
+	}
+}
+#Ответ да
+country_event = {
+	id = poland.3
+	title = {
+		text = poland.3.t
+		trigger = { FROM = { tag = GER } }
+	}
+	title = {
+		text = poland.3.t_1
+		trigger = { FROM = { NOT = { tag = GER } } }
+	}
+	desc = {
+		text = poland.3.desc
+		trigger = { FROM = { tag = GER } }
+	}
+	desc = {
+		text = poland.3.desc_1
+		trigger = { FROM = { NOT = { tag = GER } } }
+	}
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.3.a
+	}
+}
+#Вмешательство в польские дела
+country_event = {
+	id = poland.4
+	title = poland.4.t
+	desc = {
+		text = poland.4.desc
+		trigger = { FROM = { tag = GER } }
+	}
+	desc = {
+		text = poland.4.desc_1
+		trigger = { FROM = { NOT = { tag = GER } } }
+	}
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer } }
+		name = poland.4.a #Они совершают ошибку
+		set_country_flag = polish_question_territory_formal_trasnfer_ban
+		reverse_add_opinion_modifier = { target = POL modifier = GER_AUH_POL_dispute }
+		add_opinion_modifier = { target = FROM modifier = GER_AUH_POL_dispute }
+		reverse_add_opinion_modifier = { target = FROM modifier = GER_AUH_POL_dispute }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer_ban } }
+		name = poland.4.b #Их жест можно приветствовать
+		set_country_flag = polish_question_territory_formal_trasnfer
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#Перераспределение полномочий в Польше
+country_event = {
+	id = poland.5
+	title = poland.5.t
+	desc = poland.5.desc
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = { tag = AUH }
+				GER = {
+					if = {
+						limit = { controls_state = 1120 controls_state = 1166 controls_state = 1116 }
+						if = {
+							limit = { has_war_with = RUS }
+							RUS = { set_state_owner = 10 }
+						}
+						if = {
+							limit = { 10 = { CONTROLLER = { NOT = { tag = GER has_war_with = GER } } } }
+							set_state_controller = 10
+						}
+					}
+				}
+				AUH = { POL = { subject_owner_change_script_check_ideology_and_transfer_parties = yes } }
+				subtract_from_variable = { POL.polish_question_GER_influence = 5 }
+				if {
+					limit = { check_variable { POL.polish_question_GER_influence < 0 } }
+					set_variable = { POL.polish_question_GER_influence = 0 }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = poland.5.a
+		effect_tooltip = {
+			GER = { end_puppet = POL }
+			AUH = { puppet = POL }
+		}
+		custom_effect_tooltip = polish_question_GER_influence_minus_5
+		if = {
+			limit = { tag = GER }
+			add_stability = -0.05
+			add_opinion_modifier = { target = AUH modifier = GER_AUH_POL_stealing }
+			every_controlled_state = {
+				limit = { is_core_of = POL NOT = { is_core_of = GER } }
+				add_compliance = -50
+			}
+			every_other_country = {
+				limit = { OR = { tag = LIT tag = UKR } is_subject_of = GER }
+				add_autonomy_score = {
+					value = 200
+					localization = poland_5_autonomy_tt
+				}
+			}
+		}
+		if = {
+			limit = { tag = AUH }
+			effect_tooltip = {
+				reverse_add_opinion_modifier = { target = GER modifier = GER_AUH_POL_stealing }
+				POL = {
+					add_autonomy_score = {
+						value = 300
+						localization = poland_5_autonomy_tt
+					}
+				}
+			}
+		}
+		if = {
+			limit = { tag = POL }
+			add_autonomy_score = {
+				value = 300
+				localization = poland_5_autonomy_tt
+			}
+		}
+	}
+}
+
+
+#Австро-польское требование
+country_event = {
+	id = poland.6
+	title = poland.6.t
+	desc = poland.6.desc
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.6.a #Пусть сами разбираются в этом дерьме
+		remove_opinion_modifier = {
+			target = AUH
+			modifier = GER_AUH_POL_stealing
+		}
+		remove_opinion_modifier = {
+			target = AUH
+			modifier = GER_AUH_POL_dispute
+		}
+		AUH = {
+			remove_opinion_modifier = {
+				target = GER
+				modifier = GER_AUH_POL_dispute
+			}
+		}
+		every_state = {
+			limit = {
+				is_core_of = POL
+				NOT = { is_core_of = GER region = 131 region = 37 state = 1001 state = 1019 state = 86 }
+			}
+			if = {
+				limit = { is_owned_by = GER }
+				set_state_owner_to = POL
+			}
+			if = {
+				limit = { is_controlled_by = GER }
+				set_state_controller_to = POL
+			}
+		}
+		AUH = {
+			if = {
+				limit = { NOT = { is_in_faction_with = GER } }
+				create_faction_from_template = {
+					template = faction_template_european_dominance_monarchist
+					name = AUS_Viena_pact
+					icon = GFX_faction_logo_generic_2
+					color = { 100 100 150 }
+				}
+				POL = {
+					if = {
+						limit = { is_in_faction_with = GER }
+						leave_faction = yes
+					}
+				}
+				add_to_faction = POL
+			}
+		}
+		POL = { add_opinion_modifier = { target = AUH modifier = GER_AUH_POL_AUH_support } }
+		GER = { clr_country_flag = polish_question_des_cat_flag }
+		AUH = { clr_country_flag = polish_question_des_cat_flag }
+		clear_variable = POL.polish_question_GER_influence
+		clear_variable = POL.polish_question_AUH_influence
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = poland.6.b #Этому не бывать
+		POL = {
+			create_wargoal = {
+				type = take_state_focus
+				target = GER
+				generator = { 10 1166 87 1115 1117 98 1120 1118 1116 1120 90 92 }
+				expire = 0
+			}
+		}
+		if = {
+			limit = { NOT = { has_global_flag = WWI_is_now } }
+			AUH = {
+				if = {
+					limit = { is_in_faction_with = GER }
+					leave_faction = yes
+				}
+			}
+			POL = {
+				if = {
+					limit = { is_in_faction_with = GER }
+					leave_faction = yes
+				}
+			}
+			AUH = {
+				create_faction_from_template = {
+					template = faction_template_european_dominance_monarchist
+					name = AUS_Viena_pact
+					icon = GFX_faction_logo_generic_2
+					color = { 100 100 150 }
+				}
+				add_to_faction = POL
+			}
+		}
+		POL = { add_opinion_modifier = { target = AUH modifier = GER_AUH_POL_AUH_support } }
+		GER = { clr_country_flag = polish_question_des_cat_flag }
+		AUH = { clr_country_flag = polish_question_des_cat_flag }
+		clear_variable = POL.polish_question_GER_influence
+		clear_variable = POL.polish_question_AUH_influence
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+
+#Разгон правительства
+country_event = {
+	id = poland.7
+	title = poland.7.t
+	desc = {
+		text = poland.7.desc
+		trigger = { is_subject_of = GER }
+	}
+	desc = {
+		text = poland.7.desc_1
+		trigger = { NOT = { is_subject_of = GER } }
+	}
+
+	picture = GFX_report_event_pol_prosb_k_ger
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = poland.7.a #Мы сделали всё что можно
+		GER = { clr_country_flag = polish_question_des_cat_flag }
+		AUH = { clr_country_flag = polish_question_des_cat_flag }
+		clear_variable = POL.polish_question_GER_influence
+		clear_variable = POL.polish_question_AUH_influence
+		if = {
+			limit = { OVERLORD = { has_war_with = RUS } }
+			every_owned_state = {
+				limit = { NOT = { state = 1466 state = 1467 state = 925 state = 88 is_core_of = GAL } }
+				set_state_owner_to = RUS
+			}
+		}
+		OVERLORD = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = yes
+			}
+			if = {
+				limit = { is_ai = yes }
+				change_tag_from = ROOT
+			}
+		}
+	}
+}
+
 country_event = {
 	id = poland.11
 	title = poland.11.t
@@ -873,7 +1294,7 @@ country_event = {
 			modifier = { add = 3 202 = { OR = { OWNER = { OR = { tag = RUS is_subject_of = RUS } } CONTROLLER = { OR = { tag = RUS is_subject_of = RUS } } } } }
 			modifier = { add = 5 war_length_with = { tag = POL months > 12 } }
 			modifier = { add = 5 war_length_with = { tag = RUS months > 12 } }
-			modifier = { factor = 999 is_ai = yes is_historical_focus_on = yes }
+			modifier = { factor = 999 is_historical_focus_on = yes }
 			modifier = { add = 5 has_army_manpower = { size < 9999 } }
 			modifier = { add = 5 has_army_manpower = { size < 19999 } }
 			modifier = { add = 5 has_army_manpower = { size < 29999 } }
@@ -1186,7 +1607,7 @@ country_event = {
 			modifier = { add = 3 202 = { OR = { OWNER = { OR = { tag = POL is_subject_of = POL } } CONTROLLER = { OR = { tag = POL is_subject_of = POL } } } } }
 			modifier = { add = 5 war_length_with = { tag = POL months > 12 } }
 			modifier = { add = 5 war_length_with = { tag = RUS months > 12 } }
-			modifier = { factor = 999 is_ai = yes is_historical_focus_on = yes }
+			modifier = { factor = 999 is_historical_focus_on = yes }
 			modifier = { add = 5 has_army_manpower = { size < 9999 } }
 			modifier = { add = 5 has_army_manpower = { size < 19999 } }
 			modifier = { add = 5 has_army_manpower = { size < 29999 } }
@@ -2068,7 +2489,13 @@ country_event = {
 		add_ideas = POL_WGR
 		add_ideas = Jozef_Mikulowski-Pomorski
 		custom_effect_tooltip = POL_minister_1_tt
-		hidden_effect = { country_event = poland.23 add_ideas = Jozef_Higersberger add_ideas = Jozef_Higersberger add_ideas = Francis_Pius_Radziwill add_ideas = Vladislav_Studnitsky add_ideas = Eustachy_Sapieha }
+		hidden_effect = {
+			if = {
+				limit = { NOT = { has_character = POL_Jusef_Pilsudsky } }
+				country_event = poland.23
+			}
+			add_ideas = Jozef_Higersberger add_ideas = Jozef_Higersberger add_ideas = Francis_Pius_Radziwill add_ideas = Vladislav_Studnitsky add_ideas = Eustachy_Sapieha
+		}
 	}
 }
 country_event = {
@@ -2612,10 +3039,11 @@ country_event = {
 		ai_chance = {
 			factor = 5
 			modifier = { factor = 2 has_stability < 0.4 }
-			modifier = { factor = 999 is_ai = yes is_historical_focus_on = yes }
+			modifier = { factor = 999 is_historical_focus_on = yes }
 		}
 	}
 	option = {
+		trigger = { NOT = { has_country_flag = polish_question_territory_formal_trasnfer_ban } }
 		name = poland.47.b
 		add_stability = -0.03
 		POL = { add_opinion_modifier = { target = GER modifier = BLR_Ylychenie_otnocheniy } }
@@ -2639,18 +3067,18 @@ country_event = {
 			POL = { transfer_state = PREV }
 		}
 		IF = {
-			limit = { country_exists = AUH }
+			limit = { is_in_faction_with = AUH }
 			AUH = { country_event = poland.57 }
 		}
 		ai_chance = {
 			factor = 0
-			modifier = { factor = 1 has_opinion = { target = POL value > -1 } }
-			modifier = { factor = 1 has_opinion = { target = POL value > 9 } }
-			modifier = { factor = 1 has_opinion = { target = POL value > 19 } }
-			modifier = { factor = 2 has_opinion = { target = POL value > 29 } }
-			modifier = { factor = 2 has_opinion = { target = POL value > 49 } }
+			modifier = { add = 1 has_opinion = { target = POL value > -1 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 9 } }
+			modifier = { factor = 2 has_opinion = { target = POL value > 19 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 29 } }
+			modifier = { factor = 3 has_opinion = { target = POL value > 49 } }
 			modifier = { factor = 3 has_opinion = { target = POL value > 69 } }
-			modifier = { factor = 3 has_opinion = { target = POL value > 79 } }
+			modifier = { factor = 4 has_opinion = { target = POL value > 79 } }
 			modifier = { factor = 4 has_opinion = { target = POL value > 89 } }
 			modifier = { factor = 4 has_opinion = { target = POL value > 99 } }
 		}
