@@ -9,15 +9,11 @@ add_namespace = stability
 #low stability selector event, hidden
 country_event = {
 	id = stability.3
-	title = stability.3.t	
-	desc = stability.3.desc	#
-	picture = GFX_					# 
 	
 	hidden = yes
 
 	trigger = {
 		has_war = yes
-		is_government_in_exile = no # strikes etc shouldn't affect you if you are not there... 
 		OR = {
 			has_stability < 0.4
 			has_war_support < 0.4
@@ -25,16 +21,10 @@ country_event = {
 		NOT = {
 			has_country_flag = crisis_in_progress
 		}
-		NOT = { # Don't fire stability events if the country is not mobilising at all
-			OR = {
-				has_idea = disarmed_nation
-				has_idea = volunteer_only
-			}
-			OR = {
-				has_idea = undisturbed_isolation
-				has_idea = isolation
-				has_idea = civilian_economy
-			}
+		OR = {
+			NOT = { has_country_flag = draft_dodging_resolved is_government_in_exile = yes has_idea = disarmed_nation has_idea = volunteer_only }
+			NOT = { has_country_flag = strikes_resolved is_government_in_exile = yes has_idea = undisturbed_isolation has_idea = isolation has_idea = civilian_economy }
+			NOT = { has_country_flag = mutiny_resolved }
 		}
 	}
 
@@ -42,15 +32,13 @@ country_event = {
 		days = 270
 		modifier = {
 			factor = 2.0
-			has_civil_war = yes
-		}
-		modifier = {
-			factor = 2.0
-			has_civil_war = no
-			AND = {
-				is_major = yes
-				all_enemy_country = {
-					is_major = no
+			OR = {
+				has_civil_war = yes
+				AND = {
+					is_major = yes
+					all_enemy_country = {
+						is_major = no
+					}
 				}
 			}
 		}
@@ -206,20 +194,24 @@ country_event = {
 		}
 	}
 
-	immediate = { 
+	immediate = {
+		set_country_flag = crisis_in_progress
 		random_list = {
 			20 = { #draft dodging
+				modifier = {
+					factor = 0
+					is_government_in_exile = yes # strikes etc shouldn't affect you if you are not there... 
+				}
 				modifier = {
 					factor = 0
 					has_country_flag = draft_dodging_resolved
 				}
 				modifier = {
 					factor = 0
-					has_idea = disarmed_nation
-				}
-				modifier = {
-					factor = 0
-					has_idea = volunteer_only
+					OR = {
+						has_idea = disarmed_nation
+						has_idea = volunteer_only
+					}
 				}
 				modifier = {
 					factor = 0.5
@@ -251,7 +243,19 @@ country_event = {
 			20 = { #strikes
 				modifier = {
 					factor = 0
+					is_government_in_exile = yes
+				}
+				modifier = {
+					factor = 0
 					has_country_flag = strikes_resolved
+				}
+				modifier = {
+					factor = 0 # Don't fire stability events if the country is not mobilising at all
+					OR = {
+						has_idea = undisturbed_isolation
+						has_idea = isolation
+						has_idea = civilian_economy
+					}
 				}
 				modifier = {
 					factor = 0.1
@@ -291,31 +295,14 @@ country_event = {
 					has_idea = RUS_Order_N_1_3
 				}
 				modifier = {
-					factor = 0
+					factor = 0.05
 					has_idea = RUS_Order_N_1_4
 				}
 				add_ideas = mutiny_1 
 				country_event = stability.23
 			}
 		}
-		if = {
-			limit = {
-				NOT = {
-					has_country_flag = crisis_in_progress
-				}
-			}
-			set_country_flag = crisis_in_progress
-		}
 	}
-	
-	option = { 
-		name = stability.3.a
-		ai_chance = {
-			
-		}
-		
-	}
-
 }
 
 
