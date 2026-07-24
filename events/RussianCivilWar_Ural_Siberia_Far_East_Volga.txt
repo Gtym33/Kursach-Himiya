@@ -1810,12 +1810,8 @@ country_event = {
 				}
 			}
 				if = {
-					limit = { has_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					RSS = { set_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					if = {
-						limit = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } }
-						RSS = { create_country_leader = { name = "Dmitriy II Romanov" desc = "RUS_Dmitriy_Pavlovich_Romanov_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Pavlovich_Romanov.dds" ideology = monarchism traits = { inexperienced_monarch anti_democrat murder_of_Rasputin olympian_rider } } }
-					}
+					limit = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } }
+					RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = RSS promote_character = yes }
 				}
 				if = {
 					limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
@@ -5133,11 +5129,21 @@ country_event = {
 	
 	is_triggered_only = yes
 	
-	immediate = { set_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
+	immediate = {
+		hidden_effect = {
+			REB = {
+				if = {
+					limit = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+					RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = ROOT }
+				}
+			}
+		}
+	}
 	
 	option = {
 		name = rcw_usfev.89.a
 		add_stability = 0.05
+		effect_tooltip = { recruit_character = RUS_Dmitriy_Pavlovich_Romanov }
 		country_event = { id = rcw_usfev.261 days = 30 }
 		hidden_effect = {
 			if = {
@@ -9488,7 +9494,8 @@ country_event = {
 			NOT = { RUS = { has_country_flag = Nikolay_Nikolayevich_Romanov_dead } has_country_flag = Nikolay_Nikolayevich_Romanov_is_here }
 			NOT = { RUS = { has_country_flag = Mikhail_Alexandrovich_Romanov_dead } has_country_flag = Mikhail_Alexandrovich_Romanov_is_here }
 			NOT = { RUS = { has_country_flag = Kirill_Vladimirovich_Romanov_dead } has_country_flag = Kirill_Vladimirovich_Romanov_is_here }
-			NOT = { RUS = { has_country_flag = Dmitriy_Pavlovich_Romanov_dead } has_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
+			any_other_country = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+			REB = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
 		}
 	}
 	
@@ -9571,21 +9578,16 @@ country_event = {
 			}
 		}
 		if = {
-			limit = { RUS = { NOT = { has_country_flag = Dmitriy_Pavlovich_Romanov_dead } } NOT = { has_country_flag = Dmitriy_Pavlovich_Romanov_is_here } }
-			if = {
-				limit = {
-					NOT = { any_country = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } } }
-					NOT = { any_country = { has_country_leader = { name = "Dmitriy Pavlovich Romanov" ruling_only = yes } } }
-				}
+			limit = { any_other_country = { has_character = RUS_Dmitriy_Pavlovich_Romanov } }
+			random_other_country = {
+				limit = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+				country_event = { id = rcw_usfev.253 days = 1 }
+			}
+			else_if = {
+				limit = { REB = { has_character = RUS_Dmitriy_Pavlovich_Romanov } }
 				random_list = {
 					70 = { country_event = { id = rcw_usfev.258 days = 1 } }
 					30 = { }
-				}
-				else = {
-					random_other_country = {
-						limit = { OR = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } has_country_leader = { name = "Dmitriy Pavlovich Romanov" ruling_only = yes } has_country_flag = Dmitriy_Pavlovich_Romanov_is_here } }
-						country_event = { id = rcw_usfev.253 days = 1 }
-					}
 				}
 			}
 		}
@@ -9647,12 +9649,7 @@ country_event = {
 			FROM = { country_event = { id = rcw_usfev.257 days = 2 } }
 		}
 		else_if = {
-			limit = {
-				OR = {
-					has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes }
-					has_country_leader = { name = "Dmitriy Pavlovich Romanov" ruling_only = yes }
-				}
-			}
+			limit = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
 			FROM = { country_event = { id = rcw_usfev.258 days = 2 } }
 		}
 		ai_chance = {
@@ -9906,48 +9903,41 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
+		trigger = { FROM = { tag = ROOT } }
+		name = rcw_usfev.258.a
+		hidden_effect = { REB = { RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = ROOT } } }
+		effect_tooltip = { recruit_character = RUS_Dmitriy_Pavlovich_Romanov }
+	}
+	option = {
+		trigger = { FROM = { NOT = { tag = ROOT } } }
 		name = rcw_usfev.258.a
 		add_popularity = { ideology = authoritarism popularity = 0.03 }
-		FROM = { clr_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-		set_country_flag = Dmitriy_Pavlovich_Romanov_is_here
-		#FROM = { remove_ideas = Dmitriy_Pavlovich_Romanov_army_chief }
-		#FROM = { every_unit_leader = { limit = { has_id = 77401 } set_nationality = ROOT } }
-		#REB = { every_unit_leader = { limit = { has_id = 77401 } set_nationality = ROOT } }
 		if = {
-			limit = {
-				FROM = {
-					OR = {
-						has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes }
-						has_country_leader = { name = "Dmitriy Pavlovich Romanov" ruling_only = yes }
-					}
+			limit = { FROM = { original_tag = CCA has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } } }
+			FROM = { RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = ROOT } }
+			FROM = {
+				transfer_units_fraction= {
+					target = ROOT
+					size = 1
+					stockpile_ratio = 1
+					army_ratio = 1
+					navy_ratio = 1
+					air_ratio = 1
 				}
+				every_character = { set_nationality = ROOT }
 			}
-			if = {
-				limit = { FROM = { original_tag = CCA } }
-				FROM = {
-					transfer_units_fraction= {
-						target = ROOT
-						size = 1
-						stockpile_ratio = 1
-						army_ratio = 1
-						navy_ratio = 1
-						air_ratio = 1
-					}
-				}
-				annex_country = {
-					target = FROM
-					transfer_troops = yes
-				}
-				else = { FROM = { subjecting_script_with_transfer_parties_puppet = yes retire_country_leader = yes } }
+			annex_country = {
+				target = FROM
+				transfer_troops = yes
 			}
-			else = {
-				hidden_effect = {
-					every_country = {
-						limit = { OR = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = no } has_country_leader = { name = "Dmitriy Pavlovich Romanov" ruling_only = no } } }
-						retire_ideology_leader = authoritarism
-					}
-				}
-			}
+		}
+		else_if = {
+			limit = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } }
+			FROM = { RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = ROOT } }
+			FROM = { subjecting_script_with_transfer_parties_puppet = yes }
+		}
+		else = {
+			FROM = { RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = ROOT } }
 		}
 	}
 }
@@ -9963,7 +9953,12 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			set_country_flag = Dmitriy_Pavlovich_Romanov_is_here
+			REB = {
+				if = {
+					limit = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+					RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = ROOT }
+				}
+			}
 		}
 	}
 	
@@ -9974,10 +9969,7 @@ country_event = {
 		}
 		set_cosmetic_tag = SIB_MONARCHY
 		set_politics = { ruling_party = authoritarism elections_allowed = no }
-		if = {
-			limit = { NOT = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } } }
-			create_country_leader = { name = "Dmitriy II Romanov" desc = "RUS_Dmitriy_Pavlovich_Romanov_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Pavlovich_Romanov.dds" ideology = monarchism traits = { inexperienced_monarch anti_democrat murder_of_Rasputin olympian_rider } }
-		}
+		promote_character = RUS_Dmitriy_Pavlovich_Romanov
 		add_ideas = limited_monarchy_gov_form
 		add_ideas = decrees_of_ruler_b_law
 	}
@@ -13714,12 +13706,8 @@ country_event = {
 			country_event = { id = rcw_usfev.1919 hours = 1 }
 			
 				if = {
-					limit = { has_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					RSS = { set_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					if = {
-						limit = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } }
-						RSS = { create_country_leader = { name = "Dmitriy II Romanov" desc = "RUS_Dmitriy_Pavlovich_Romanov_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Pavlovich_Romanov.dds"ideology = monarchism traits = { inexperienced_monarch anti_democrat murder_of_Rasputin olympian_rider } } }
-					}
+					limit = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } }
+					RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = RSS promote_character = yes }
 				}
 				if = {
 					limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
@@ -13823,12 +13811,8 @@ country_event = {
 			set_ruling_party_for_uniting_country_script = yes
 			country_event = { id = rcw_usfev.1919 hours = 1 }
 			if = {
-				limit = { has_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-				RSS = { set_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-				if = {
-					limit = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } }
-					RSS = { create_country_leader = { name = "Dmitriy II Romanov" desc = "RUS_Dmitriy_Pavlovich_Romanov_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Pavlovich_Romanov.dds" ideology = monarchism traits = { inexperienced_monarch anti_democrat murder_of_Rasputin olympian_rider } } }
-				}
+				limit = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } }
+				RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = RSS promote_character = yes }
 			}
 			if = {
 				limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
@@ -15810,12 +15794,8 @@ country_event = {
 				}
 			}
 				if = {
-					limit = { has_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					RSS = { set_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					if = {
-						limit = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } }
-						RSS = { create_country_leader = { name = "Dmitriy II Romanov" desc = "RUS_Dmitriy_Pavlovich_Romanov_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Pavlovich_Romanov.dds"ideology = monarchism traits = { inexperienced_monarch anti_democrat murder_of_Rasputin olympian_rider } } }
-					}
+					limit = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } }
+					RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = RSS promote_character = yes }
 				}
 				if = {
 					limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
@@ -15959,12 +15939,8 @@ country_event = {
 					}
 				}
 				if = {
-					limit = { has_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					RSS = { set_country_flag = Dmitriy_Pavlovich_Romanov_is_here }
-					if = {
-						limit = { has_country_leader = { name = "Dmitriy II Romanov" ruling_only = yes } }
-						RSS = { create_country_leader = { name = "Dmitriy II Romanov" desc = "RUS_Dmitriy_Pavlovich_Romanov_DESC" picture = "gfx/leaders/RUS/Portrait_Dmitriy_Pavlovich_Romanov.dds"ideology = monarchism traits = { inexperienced_monarch anti_democrat murder_of_Rasputin olympian_rider } } }
-					}
+					limit = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } }
+					RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = RSS promote_character = yes }
 				}
 				if = {
 					limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }

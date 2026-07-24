@@ -1,8 +1,532 @@
-﻿###########################
-# Versailles Peace Treaty Events
-###########################
+﻿add_namespace = petrograd_war_conference_Entente
+
+# Петроградская конференция
+country_event = {
+	id = petrograd_war_conference_Entente.1
+	title = petrograd_war_conference_Entente.1.t
+	desc = petrograd_war_conference_Entente.1.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = petrograd_war_conference_Entente.1.a
+		if = {
+			limit = { tag = RUS }
+			hidden_effect = { news_event = news_versailles.1 }
+			country_event = { id = petrograd_war_conference_Entente.2 days = 3 }
+		}
+	}
+}
+# Наша позиция на конференции (Россия)
+country_event = {
+	id = petrograd_war_conference_Entente.2
+	title = petrograd_war_conference_Entente.2.t
+	desc = petrograd_war_conference_Entente.2.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { has_country_flag = RUS_ovrtrw_mon_12_a }
+		name = petrograd_war_conference_Entente.2.a # Мы участвуем наравне со всеми
+		every_other_country = {
+			limit = {
+				OR = {
+					tag = FRA
+					tag = ENG
+					tag = ITA
+					tag = ROM
+				}
+				is_in_faction_with = ROOT
+			}
+			country_event = petrograd_war_conference_Entente.3
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		trigger = { always = no NOT = { has_idea = RUS_1917_tsarist_defense_focus } } #Механ на поддержку пока не сделан
+		name = petrograd_war_conference_Entente.2.b # Сначала помощь - потом наступление
+		set_variable = { global.petrograd_war_conference_members = 0 }
+		set_variable = { global.petrograd_war_conference_vote_support_RUS = 0 }
+		set_variable = { global.petrograd_war_conference_vote_not_support_RUS = 0 }
+		set_variable = { global.petrograd_war_conference_votes = 0 }
+		every_other_country = {
+			limit = {
+				OR = {
+					tag = FRA
+					tag = ENG
+					tag = ITA
+					tag = ROM
+				}
+				is_in_faction_with = ROOT
+			}
+			add_to_variable = { global.petrograd_war_conference_members = 1 }
+			country_event = petrograd_war_conference_Entente.4
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+	option = {
+		trigger = { has_idea = RUS_1917_tsarist_defense_focus }
+		name = petrograd_war_conference_Entente.2.c # Оборонительная стратегия предпочтительна
+		every_other_country = {
+			limit = {
+				OR = {
+					tag = FRA
+					tag = ENG
+					tag = ITA
+					tag = ROM
+				}
+				is_in_faction_with = ROOT
+			}
+			country_event = petrograd_war_conference_Entente.7
+		}
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Россия готова наступать
+country_event = {
+	id = petrograd_war_conference_Entente.3
+	title = petrograd_war_conference_Entente.3.t
+	desc = petrograd_war_conference_Entente.3.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = petrograd_war_conference_Entente.3.a
+		add_war_support = 0.04
+		if = {
+			limit = { tag = FRA }
+			country_event = petrograd_war_conference_Entente.8 #Секретный договор с Россией
+		}
+	}
+}
+
+# Россия требует поддержки
+country_event = {
+	id = petrograd_war_conference_Entente.4
+	title = petrograd_war_conference_Entente.4.t
+	desc = petrograd_war_conference_Entente.4.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = petrograd_war_conference_Entente.4.a #Всё необходимое итак направлено в Россию!
+		add_to_variable = { global.petrograd_war_conference_vote_support_RUS = 1 }
+		add_to_variable = { global.petrograd_war_conference_votes = 1 }
+		if = {
+			limit = { check_variable = { global.petrograd_war_conference_votes = global.petrograd_war_conference_members } }
+			if = {
+				limit = {
+					OR {
+						check_variable = { global.petrograd_war_conference_vote_support_RUS > global.petrograd_war_conference_vote_not_support_RUS }
+						AND = {
+							NOT = { check_variable = { global.petrograd_war_conference_vote_support_RUS < global.petrograd_war_conference_vote_not_support_RUS } }
+							FRA = { has_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
+						}
+					}
+				}
+				RUS = { country_event = petrograd_war_conference_Entente.6 } #Союзная поддержка наступления 
+				else = {
+					RUS = { country_event = petrograd_war_conference_Entente.5 } # Отказ в поддержке наступления
+				}
+			}
+			FRA = { clr_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
+			clear_variable = global.petrograd_war_conference_members
+			clear_variable = global.petrograd_war_conference_vote_support_RUS
+			clear_variable = global.petrograd_war_conference_vote_not_support_RUS
+			clear_variable = global.petrograd_war_conference_votes
+		}
+	}
+	option = {
+		name = petrograd_war_conference_Entente.4.b #Программа помощи русским должна быть расширена
+		if = {
+			limit = { tag = FRA }
+			set_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS
+			country_event = petrograd_war_conference_Entente.8 #Секретный договор с Россией
+		}
+		add_to_variable = { global.petrograd_war_conference_vote_not_support_RUS = 1 }
+		add_to_variable = { global.petrograd_war_conference_votes = 1 }
+		if = {
+			limit = { check_variable = { global.petrograd_war_conference_votes = global.petrograd_war_conference_members } }
+			if = {
+				limit = {
+					OR {
+						check_variable = { global.petrograd_war_conference_vote_support_RUS > global.petrograd_war_conference_vote_not_support_RUS }
+						AND = {
+							NOT = { check_variable = { global.petrograd_war_conference_vote_support_RUS < global.petrograd_war_conference_vote_not_support_RUS } }
+							FRA = { has_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
+						}
+					}
+				}
+				RUS = { country_event = petrograd_war_conference_Entente.6 } #Союзная поддержка наступления 
+				else = {
+					RUS = { country_event = petrograd_war_conference_Entente.5 } # Отказ в поддержке наступления
+				}
+			}
+			FRA = { clr_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
+			clear_variable = global.petrograd_war_conference_members
+			clear_variable = global.petrograd_war_conference_vote_support_RUS
+			clear_variable = global.petrograd_war_conference_vote_not_support_RUS
+			clear_variable = global.petrograd_war_conference_votes
+		}
+	}
+}
+
+# Отказ в поддержке наступления (Россия)
+country_event = {
+	id = petrograd_war_conference_Entente.5
+	title = petrograd_war_conference_Entente.5.t
+	desc = petrograd_war_conference_Entente.5.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = petrograd_war_conference_Entente.5.a
+		every_other_country = {
+			limit = {
+				OR = {
+					tag = FRA
+					tag = ENG
+					tag = ITA
+					#tag = ROM
+				}
+				is_in_faction_with = ROOT
+			}
+			reverse_add_opinion_modifier = { target = ROOT modifier = petrograd_war_conference_Entente_not_support_RUS }
+		}
+	}
+}
+# Союзная поддержка наступления (Россия)
+country_event = {
+	id = petrograd_war_conference_Entente.6
+	title = petrograd_war_conference_Entente.6.t
+	desc = petrograd_war_conference_Entente.6.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = petrograd_war_conference_Entente.6.a
+		add_political_power = 10
+		# механ поддержки сделать
+	}
+}
+
+# Русская армия останется на месте
+country_event = {
+	id = petrograd_war_conference_Entente.7
+	title = petrograd_war_conference_Entente.7.t
+	desc = petrograd_war_conference_Entente.7.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = petrograd_war_conference_Entente.7.a
+		add_war_support = -0.04
+		add_opinion_modifier = { target = FROM modifier = petrograd_war_conference_Entente_RUS_will_not_attack }
+	}
+}
+
+# Секретный договор с Россией (Франция)
+country_event = {
+	id = petrograd_war_conference_Entente.8
+	title = petrograd_war_conference_Entente.8.t
+	desc = petrograd_war_conference_Entente.8.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = petrograd_war_conference_Entente.8.a #Россия и Франция поделят Европу 
+		RUS = { country_event = { id = petrograd_war_conference_Entente.9 days = 10 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+
+	option = {
+		name = petrograd_war_conference_Entente.8.b #Всё решиться на послевоенных переговорах!
+		add_political_power = -10
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+			modifier = {
+				factor = 0
+				always = yes #гипотетически почему Франция может отказать?
+			}
+		}
+	}
+}
+
+# Секретный договор с Францией (Россия)
+country_event = {
+	id = petrograd_war_conference_Entente.9
+	title = petrograd_war_conference_Entente.9.t
+	desc = petrograd_war_conference_Entente.9.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		has_country_flag = RUS_monarchy_not_fall
+	}
+	
+	is_triggered_only = yes
+
+	option = {
+		name = petrograd_war_conference_Entente.9.a
+		set_global_flag = petrograd_war_conference_Entente_RUS_FRA_secret_pact
+	}
+}
+
+# Технический ивент на сброс флага если Чехия так и не была оккупирована. Вызывается по ивенту austro-hungarian.102 через 70 дней.
+country_event = {
+	id = petrograd_war_conference_Entente.10
+
+	is_triggered_only = yes
+
+	immediate = {
+		clr_global_flag = petrograd_war_conference_Entente_RUS_FRA_secret_pact
+	}
+}
+
+
+# Направление войск в Чехию (Россия)
+country_event = {
+	id = petrograd_war_conference_Entente.11
+	title = petrograd_war_conference_Entente.11.t
+	desc = petrograd_war_conference_Entente.11.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		tag = RUS
+		has_global_flag = petrograd_war_conference_Entente_RUS_FRA_secret_pact
+		NOT = { has_government = radical_socialism has_government = communism }
+		any_country = {
+			OR = {
+				tag = ROOT
+				is_subject_of = ROOT
+			}
+			is_neighbor_of = CZE
+		}
+		NOT = { has_war_with = CZE }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+
+	fire_only_once = yes
+
+	option = {
+		name = petrograd_war_conference_Entente.11.a # Прага - встречай!
+		CZE = { country_event = petrograd_war_conference_Entente.12 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = petrograd_war_conference_Entente.11.b # Всё решиться на переговорах
+		add_political_power = -25
+		ai_chance = {
+			factor = 0
+		}
+	}
+}
+
+# Русская армия в Чехии (Чехословакия)
+country_event = {
+	id = petrograd_war_conference_Entente.12
+	title = petrograd_war_conference_Entente.12.t
+	desc = petrograd_war_conference_Entente.12.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	is_triggered_only = yes
+
+	option = {
+		name = petrograd_war_conference_Entente.12.a
+		FROM = { ROOT = { subjecting_script_with_transfer_parties_dominion = yes } }
+		hidden_effect = { news_event = { id = news_versailles.1 days = 1 } }
+		if = {
+			limit = {
+				RUS = {
+					OR = {
+						has_government = authoritarism
+						has_idea = RUS_Nikolay_II_idea
+						has_idea = RUS_Mikhail_II_idea
+						has_idea = RUS_Dmitriy_II_idea
+					}
+					has_country_flag = RUS_v_CZE_u_nas_svoi_plany
+				}
+			}
+			hidden_effect = { RUS = { country_event = petrograd_war_conference_Entente.13 } }
+		}
+	}
+}
+
+# Царство Чешское и Словацкое (Россия)
+country_event = {
+	id = petrograd_war_conference_Entente.13
+	title = petrograd_war_conference_Entente.13.t
+	desc = petrograd_war_conference_Entente.13.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	trigger = { is_subject_of = RUS }
+	
+	is_triggered_only = yes
+
+	option = {
+		trigger = {
+			OR = {
+				has_character = RUS_Dmitriy_Pavlovich_Romanov
+				REB = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+				SIB = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+			}
+			NOT = { any_country = { OR = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } has_idea = RUS_Dmitriy_II_idea } } }
+		}
+		name = petrograd_war_conference_Entente.13.a
+		CZE = { country_event = { id = petrograd_war_conference_Entente.14 days = 3 } }
+	}
+
+	option = {
+		trigger = {
+			OR = {
+				NOT = {
+					has_character = RUS_Dmitriy_Pavlovich_Romanov
+					REB = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+					SIB = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+				}
+				any_country = { OR = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } has_idea = RUS_Dmitriy_II_idea } }
+			}
+		}
+		name = petrograd_war_conference_Entente.13.b
+		CZE = { country_event = { id = petrograd_war_conference_Entente.14 days = 3 } }
+	}
+}
+
+# Смена флагов (Чехословакия)
+country_event = {
+	id = petrograd_war_conference_Entente.14
+	title = petrograd_war_conference_Entente.14.t
+	desc = petrograd_war_conference_Entente.14.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+	
+	trigger = { is_subject_of = RUS }
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			initiate_verification_of_the_popularity_of_coalitions = yes
+			if = {
+				limit = { NOT = { any_country = { OR = { has_country_leader = { character = RUS_Dmitriy_Pavlovich_Romanov ruling_only = yes } has_idea = RUS_Dmitriy_II_idea } } } }
+				every_possible_country = {
+					if = {
+						limit = { has_character = RUS_Dmitriy_Pavlovich_Romanov }
+						RUS_Dmitriy_Pavlovich_Romanov = { set_nationality = ROOT promote_character = yes }
+					}
+				}
+				else = {
+					create_country_leader = { name = "Mikhail Alexandrovich Romanov" desc = RUS_Mikhail_Romanov_DESC picture = "gfx/leaders/RUS/Portrait_Mikhail_Romanov.dds" ideology = monarchism traits = { inexperienced_imperialist } }
+				}
+			}
+		}
+	}
+
+	option = {
+		name = petrograd_war_conference_Entente.14.a
+		set_politics = { ruling_party = authoritarism elections_allowed = no }
+		hidden_effect = {
+			set_temp_variable = { radical_socialism_party_temp = radical_socialism_party }
+			set_temp_variable = { communism_party_temp = communism_party }
+			set_temp_variable = { social_democracy_party_temp = social_democracy_party }
+			set_temp_variable = { social_liberalism_party_temp = social_liberalism_party }
+			set_temp_variable = { market_liberalism_party_temp = market_liberalism_party }
+			set_temp_variable = { conservatism_party_temp = conservatism_party }
+			set_temp_variable = { authoritarism_party_temp = authoritarism_party }
+			set_temp_variable = { despotism_party_temp = despotism_party }
+			set_temp_variable = { fascism_party_temp = fascism_party }
+			set_temp_variable = { national_syndicalism_party_temp = national_syndicalism_party }
+			multiply_temp_variable = { radical_socialism_party_temp = 100 }
+			multiply_temp_variable = { communism_party_temp = 100 }
+			multiply_temp_variable = { social_democracy_party_temp = 100 }
+			multiply_temp_variable = { social_liberalism_party_temp = 100 }
+			multiply_temp_variable = { market_liberalism_party_temp = 100 }
+			multiply_temp_variable = { conservatism_party_temp = 100 }
+			multiply_temp_variable = { authoritarism_party_temp = 100 }
+			multiply_temp_variable = { despotism_party_temp = 100 }
+			multiply_temp_variable = { fascism_party_temp = 100 }
+			multiply_temp_variable = { national_syndicalism_party_temp = 100 }
+			set_temp_variable = { authoritarism_party_temp = 100 }
+			subtract_from_temp_variable = { authoritarism_party_temp = radical_socialism_party_temp }
+			subtract_from_temp_variable = { authoritarism_party_temp = communism_party_temp }
+			subtract_from_temp_variable = { authoritarism_party_temp = social_democracy_party_temp }
+			subtract_from_temp_variable = { authoritarism_party_temp = social_liberalism_party_temp }
+			subtract_from_temp_variable = { authoritarism_party_temp = market_liberalism_party_temp }
+			subtract_from_temp_variable = { authoritarism_party_temp = national_syndicalism_party_temp }
+			set_popularities = {
+				radical_socialism = var:radical_socialism_party_temp
+				communism = var:communism_party_temp
+				social_democracy = var:social_democracy_party_temp
+				social_liberalism = var:social_liberalism_party_temp
+				market_liberalism = var:market_liberalism_party_temp
+				conservatism = 0
+				authoritarism = var:authoritarism_party_temp
+				despotism = 0
+				fascism = 0
+				national_syndicalism = var:national_syndicalism_party_temp
+			}
+			initiate_verification_of_the_popularity_of_coalitions = yes
+		}
+		custom_effect_tooltip = petrograd_war_conference_Entente_14_a_tt
+		add_popularity = { ideology = authoritarism popularity = 0.01 }
+		set_cosmetic_tag = CZE_TSARDOM
+		add_ideas = absolute_monarchy_gov_form
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 add_namespace = versailles
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Инициация Болгарии
 country_event = {
