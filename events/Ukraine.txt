@@ -6712,6 +6712,23 @@ country_event = {
 				limit = { OR = { state = 202 state = 959 state = 1217 state = 193 state = 259 state = 916 state = 1323 state = 200 } is_owned_by = UKR }
 				set_state_owner_to = ROOT
 			}
+			every_state = {
+				limit = { OWNER = { OR = { tag = USR tag = RUS is_subject_of = RUS } } }
+				set_temp_variable = { current_state = THIS }
+				set_temp_variable = { red_divs_in_state = USR.num_armies_in_state@var:current_state }
+				add_to_temp_variable = { red_divs_in_state = RUS.num_armies_in_state@var:current_state }
+				set_temp_variable = { white_divs_in_state = UKR.num_armies_in_state@var:current_state }
+				if = {
+					limit = {
+						NOT = { check_variable = { white_divs_in_state > red_divs_in_state } }
+					}
+					set_state_province_controller = {
+						controller = OWNER
+						limit = { tag = UKR }
+					}
+				}
+			}
+			set_capital = { state = 202 }
 			if = {
 				limit = {
 					DNB = { exists = yes NOT = { has_war_with = ROOT } OR = { has_government = radical_socialism has_government = communism } }
@@ -6728,7 +6745,6 @@ country_event = {
 					DNB = { transfer_state = PREV }
 				}
 			}
-			set_capital = { state = 202 }
 		}
 	}
 	option = {
