@@ -8721,36 +8721,71 @@ country_event = {
 country_event = {
 	id = rcw_usfev.204
 	title = rcw_usfev.204.t
-	desc = rcw_usfev.204.desc
+	desc = {
+		text = rcw_usfev.204.desc
+		trigger = {
+			has_country_flag = Nikolay_Alexandrovich_Romanov_is_here
+		}
+	}
+	desc = {
+		text = rcw_usfev.204.desc_1
+		trigger = {
+			NOT = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
+		}
+	}
 
 	picture = GFX_report_event_comre_reorgonize_of_headquarters
 	
 	is_triggered_only = yes
 	
 	immediate = {
-		every_country = {
-			clr_country_flag = Nikolay_Alexandrovich_Romanov_rescue
-			clr_country_flag = Nikolay_Alexandrovich_Romanov_is_here
+		hidden_effect = {
+			if = {
+				limit = {
+					OR = {
+						SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+						RVA = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+						OCH = { has_country_flag = Nikolay_Alexandrovich_Romanov_rescue }
+						SIB = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
+						RVA = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
+						OCH = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here }
+					}
+				}
+				every_other_country = {
+					clr_country_flag = Nikolay_Alexandrovich_Romanov_rescue
+					clr_country_flag = Nikolay_Alexandrovich_Romanov_is_here
+				}
+				set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
+				set_country_flag = Nikolay_Alexandrovich_Romanov_is_here
+				RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
+			}
 		}
-		RUS = { clr_country_flag = Nikolay_Alexandrovich_Romanov_Tobolsk clr_country_flag = Nikolay_Alexandrovich_Romanov_Ekat }
-		set_country_flag = Nikolay_Alexandrovich_Romanov_rescue
-		set_country_flag = Nikolay_Alexandrovich_Romanov_is_here
 	}
 	
 	option = { #Николай, Николай, Коооляяяя.....
+		trigger = {
+			has_country_flag = Nikolay_Alexandrovich_Romanov_is_here
+		}
 		name = rcw_usfev.204.a
-		hidden_effect = { remove_authoritarism_leader = yes }
 		create_country_leader = { name = "Nikolay II Romanov" desc = RUS_Nikolay_II_DESC picture = "gfx/leaders/RUS/Portrait_Nikolay_II_Romanov_military.dds" ideology = monarchism traits = { inexperienced_imperialist } }
 		create_field_marshal = { name = "Nikolay II Romanov" id = 77401 portrait_path = "gfx/leaders/RUS/Portrait_Nikolay_II_Romanov_military.dds" traits = { old_guard } skill = 1 attack_skill = 2 defense_skill = 2 planning_skill = 2 logistics_skill = 2 }
-		remove_ideas = RUS_Nikolay_II_idea
+		if = {
+			limit = { has_idea = RUS_Nikolay_II_idea }
+			remove_ideas = RUS_Nikolay_II_idea
+		}
 		add_war_support = -0.05
 		add_ideas = absolute_monarchy_gov_form
+		if = {
+			limit = { NOT = { has_government = authoritarism } }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+		}
 	}
 	
 	option = {
+		trigger = { any_character = { has_id = 88150 } }
 		name = rcw_usfev.204.b
 		if = {
-			limit = { NOT = { has_country_leader = { name = "Vladimir Kappel" ruling_only = yes } } }
+			limit = { NOT = { has_country_leader = { name = "Vladimir Kappel" ruling_only = no } } }
 			create_country_leader = {
 				name = "Vladimir Kappel"
 				desc = "RUS_Vladimir_Kappel_DESC"
@@ -8759,36 +8794,63 @@ country_event = {
 				traits = { warmonger_old_general staunch_monarchist min_2_ideological_crusader }
 			}
 		}
+		if = {
+			limit = { NOT = { has_government = authoritarism } }
+			set_politics = { ruling_party = authoritarism elections_allowed = no }
+		}
 		add_ideas = limited_monarchy_gov_form
-		add_ideas = RUS_Nikolay_II_idea
+		if = {
+			limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here NOT = { has_idea = RUS_Nikolay_II_idea } }
+			remove_ideas = RUS_Nikolay_II_idea
+		}
 	}
 	
 	option = {
+		trigger = { any_character = { has_id = 88149 } }
 		name = rcw_usfev.204.c
-		hidden_effect = { remove_authoritarism_leader = yes }
-		create_country_leader = {
-			name = "Pavel Petrov"
-			desc = "RUS_Pavel_Pertov_DESC"
-			picture = "gfx/leaders/RUS/Portrait_Pavel_Petrov.dds"
-			ideology = authoritarism_ideology
-			traits = { warmonger_old_general }
+		if = {
+			limit = { NOT = { has_country_leader = { name = "Pavel Petrov" ruling_only = no } } }
+			create_country_leader = {
+				name = "Pavel Petrov"
+				desc = "RUS_Pavel_Pertov_DESC"
+				picture = "gfx/leaders/RUS/Portrait_Pavel_Petrov.dds"
+				ideology = despotism_ideology
+				traits = { }
+			}
+		}
+		if = {
+			limit = { NOT = { has_government = despotism } }
+			set_politics = { ruling_party = despotism elections_allowed = no }
 		}
 		add_ideas = limited_monarchy_gov_form
-		add_ideas = RUS_Nikolay_II_idea
+		if = {
+			limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here NOT = { has_idea = RUS_Nikolay_II_idea } }
+			remove_ideas = RUS_Nikolay_II_idea
+		}
 	}
 	
 	option = {
+		trigger = { any_character = { has_id = 88152 } }
 		name = rcw_usfev.204.e
-		hidden_effect = { remove_authoritarism_leader = yes }
-		create_country_leader = {
-			name = "Vasiliy Boldyrev"
-			desc = "RUS_Vasiliy_Boldyrev_DESC"
-			picture = "gfx/leaders/RUS/Portrait_Vasiliy_Boldyrev.dds"
-			ideology = authoritarism_ideology
-			traits = { warmonger_old_general }
+		if = {
+			limit = { NOT = { has_country_leader = { name = "Vasiliy Boldyrev" ruling_only = no } } }
+			create_country_leader = {
+				name = "Vasiliy Boldyrev"
+				desc = "RUS_Vasiliy_Boldyrev_DESC"
+				picture = "gfx/leaders/RUS/Portrait_Vasiliy_Boldyrev.dds"
+				ideology = despotism_ideology
+				traits = { warmonger_old_general }
+			}
+		}
+		if = {
+			limit = { NOT = { has_government = despotism } }
+			set_politics = { ruling_party = despotism elections_allowed = no }
 		}
 		add_ideas = limited_monarchy_gov_form
-		add_ideas = RUS_Nikolay_II_idea
+		if = {
+			limit = { has_country_flag = Nikolay_Alexandrovich_Romanov_is_here NOT = { has_idea = RUS_Nikolay_II_idea } }
+			remove_ideas = RUS_Nikolay_II_idea
+		}
 	}
 }
 
