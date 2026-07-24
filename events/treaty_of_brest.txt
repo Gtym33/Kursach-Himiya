@@ -1065,7 +1065,13 @@ country_event = {
 		trigger = {
 			NOT = { controls_state = 195 }
 			NOT = { controls_state = 219 }
-			RUS = { NOT = { surrender_progress < 0.22 } }
+			OR = {
+				RUS = { NOT = { surrender_progress < 0.22 } }
+				AND = {
+					RUS = { NOT = { surrender_progress < 0.16 } }
+					OR = { controls_state = 209 controls_state = 242 controls_state = 210 controls_state = 263 }
+				}
+			}
 		}
 		add_war_support = -0.05
 		add_stability = -0.05
@@ -1090,14 +1096,20 @@ country_event = {
 			NOT = { controls_state = 195 }
 			NOT = { controls_state = 219 }
 			RUS = { NOT = { surrender_progress < 0.1 } }
-			RUS = { surrender_progress < 0.22 }
+			OR = {
+				RUS = { surrender_progress < 0.16 }
+				AND = {
+					RUS = { surrender_progress < 0.22 }
+					NOT = { controls_state = 209 controls_state = 242 controls_state = 210 controls_state = 263 }
+				}
+			}
 		}
 		if = {
 			limit = {
 				OR = {
 					AND = {
-						NOT = { controls_state = 808 }
-						controls_state = 206
+						NOT = { controls_state = 209 controls_state = 808 controls_state = 812 }
+						RUS = { NOT = { controls_state = 206 } }
 					}
 					has_global_flag = GER_average_peace_brest_alt_demand_tech_flag
 				}
@@ -1105,30 +1117,22 @@ country_event = {
 			RUS = {
 				set_country_flag = brest_average
 				set_country_flag = brest_average_alt
-				if = {
-					limit = { has_focus_tree = Russia_Bolsheviks_focus }
-					hidden_effect = {
-						USA = { country_event = treaty_of_brest.58 }
-						country_event = { id = treaty_of_brest.61 days = 3 }
-					}
-					else = {
-						hidden_effect = { country_event = { id = treaty_of_brest.62 days = 3 } }
-					}
-				}
 			}
 			else = {
 				RUS = {
 					set_country_flag = brest_average
-					if = {
-						limit = { has_focus_tree = Russia_Bolsheviks_focus }
-						hidden_effect = {
-							USA = { country_event = treaty_of_brest.58 }
-							country_event = { id = treaty_of_brest.61 days = 3 }
-						}
-						else = {
-							hidden_effect = { country_event = { id = treaty_of_brest.62 days = 3 } }
-						}
-					}
+				}
+			}
+		}
+		RUS = {
+			if = {
+				limit = { has_focus_tree = Russia_Bolsheviks_focus }
+				hidden_effect = {
+					USA = { country_event = treaty_of_brest.58 }
+					country_event = { id = treaty_of_brest.61 days = 3 }
+				}
+				else = {
+					hidden_effect = { country_event = { id = treaty_of_brest.62 days = 3 } }
 				}
 			}
 		}
@@ -1549,13 +1553,6 @@ country_event = {
 			diplomatic_relation = { country = TUR relation = non_aggression_pact active = no }
 			diplomatic_relation = { country = UKR relation = non_aggression_pact active = no }
 			leave_faction = yes
-			if = {
-				limit = { NOT = { original_tag = CRI original_tag = SLT } NOT = { has_war_with = UKR } }
-				create_wargoal = {
-					type = annex_everything
-					target = UKR
-				}
-			}
 		}
 		treaty_of_brest_kill_SLT = yes
 		
@@ -2183,13 +2180,6 @@ country_event = {
 			diplomatic_relation = { country = TUR relation = non_aggression_pact active = no }
 			diplomatic_relation = { country = UKR relation = non_aggression_pact active = no }
 			leave_faction = yes
-			if = {
-				limit = { NOT = { original_tag = CRI original_tag = SLT } NOT = { has_war_with = UKR } }
-				create_wargoal = {
-					type = annex_everything
-					target = UKR
-				}
-			}
 		}
 		treaty_of_brest_kill_SLT = yes
 		
@@ -2604,13 +2594,6 @@ country_event = {
 					diplomatic_relation = { country = TUR relation = non_aggression_pact active = no }
 					diplomatic_relation = { country = UKR relation = non_aggression_pact active = no }
 					leave_faction = yes
-					if = {
-						limit = { NOT = { has_war_with = UKR } }
-						create_wargoal = {
-							type = annex_everything
-							target = UKR
-						}
-					}
 				}
 				ODS = {
 					diplomatic_relation = { country = GER relation = non_aggression_pact active = no }
@@ -2619,13 +2602,6 @@ country_event = {
 					diplomatic_relation = { country = TUR relation = non_aggression_pact active = no }
 					diplomatic_relation = { country = UKR relation = non_aggression_pact active = no }
 					leave_faction = yes
-					if = {
-						limit = { NOT = { has_war_with = UKR } }
-						create_wargoal = {
-							type = annex_everything
-							target = UKR
-						}
-					}
 				}
 				DNB = {
 					diplomatic_relation = { country = GER relation = non_aggression_pact active = no }
@@ -2634,13 +2610,6 @@ country_event = {
 					diplomatic_relation = { country = TUR relation = non_aggression_pact active = no }
 					diplomatic_relation = { country = UKR relation = non_aggression_pact active = no }
 					leave_faction = yes
-					if = {
-						limit = { NOT = { has_war_with = UKR } }
-						create_wargoal = {
-							type = annex_everything
-							target = UKR
-						}
-					}
 				}
 				CRI = {
 					diplomatic_relation = { country = GER relation = non_aggression_pact active = no }
@@ -2651,7 +2620,7 @@ country_event = {
 					leave_faction = yes
 				}
 				if = {
-					limit = { UKR = { NOT = { is_subject_of = GER } } }
+					limit = { UKR = { has_war_with = RUS NOT = { is_subject_of = GER } } }
 					RUS = { white_peace = UKR }
 				}
 			}
