@@ -505,7 +505,189 @@ country_event = {
 
 
 
+add_namespace = secret_diplomacy_Entente
 
+# Сообщения о соглашении союзников (Турция)
+country_event = {
+	id = secret_diplomacy_Entente.1
+	title = secret_diplomacy_Entente.1.t
+	desc = secret_diplomacy_Entente.1.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.1.a
+		add_war_support = 0.05
+		if = {
+			limit = {
+				has_variable = enver_power
+			}
+			add_to_variable = { var = enver_power value = 2 }
+			custom_effect_tooltip = TUR_add_infl_enver_2
+		}
+	}
+}
+# Истинные цели Антанты (Хиджаз)
+country_event = {
+	id = secret_diplomacy_Entente.2
+	title = secret_diplomacy_Entente.2.t
+	desc = secret_diplomacy_Entente.2.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.2.a #Видимо, нас обманули
+		add_war_support = -0.07
+		add_political_power = -30
+		add_opinion_modifier = { target = ENG modifier = secret_diplomacy_Entente_Sykes_Picot_Agreement }
+		add_opinion_modifier = { target = FRA modifier = secret_diplomacy_Entente_Sykes_Picot_Agreement }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	
+	option = {
+		trigger = {
+			907 = { CONTROLLER = { NOT = { has_war_with = TUR } } }
+		}
+		name = secret_diplomacy_Entente.2.b #Пора заканчивать эту войну
+		TUR = { country_event = { id = secret_diplomacy_Entente.3 days = 7 } }
+		ai_chance = {
+			factor = 2
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
+# Тайное послание арабских вождей (Турция)
+country_event = {
+	id = secret_diplomacy_Entente.3
+	title = secret_diplomacy_Entente.3.t
+	desc = secret_diplomacy_Entente.3.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.3.a # "Восстание должно быть раздавлено"
+		HJZ = { country_event = { id = secret_diplomacy_Entente.4 days = 1 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				HZJ = { NOT = { surrender_progress > 0.4 } }
+			}
+		}
+	}
+	
+	option = {
+		name = secret_diplomacy_Entente.3.b # "Предательство подданных будет прощено"
+		HJZ = { country_event = { id = turkey.3 days = 1 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				HZJ = { surrender_progress > 0.8 }
+			}
+			modifier = {
+				factor = 0.5
+				HZJ = { surrender_progress > 0.7 }
+			}
+			modifier = {
+				factor = 0.5
+				HZJ = { surrender_progress > 0.6 }
+			}
+			modifier = {
+				factor = 0.5
+				HZJ = { surrender_progress > 0.5 }
+			}
+		}
+	}
+}
+# Османы отвергли переговоры (Хиджаз)
+country_event = {
+	id = secret_diplomacy_Entente.4
+	title = secret_diplomacy_Entente.4.t
+	desc = secret_diplomacy_Entente.4.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.4.a
+		add_war_support = 0.1
+		add_country_leader_trait = cornered_fox
+	}
+}
+# Наши претензии раскрыты (Франция и Великобритания)
+country_event = {
+	id = secret_diplomacy_Entente.5
+	title = secret_diplomacy_Entente.5.t
+	desc = secret_diplomacy_Entente.5.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	immediate = {
+		set_variable = { ruling_party_popularity_change = -0.04 } 
+	}
+	
+	option = {
+		name = secret_diplomacy_Entente.5.a
+		add_war_support = -0.05
+		add_political_power = -30
+		add_ruling_party_popularity = yes
+		clear_variable = ruling_party_popularity_change
+	}
+}
+# Декларация Бальфура (Великобритания)
+country_event = {
+	id = secret_diplomacy_Entente.6
+	title = secret_diplomacy_Entente.6.t
+	desc = secret_diplomacy_Entente.6.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	trigger = {
+		has_start_date < 1918.7.2
+		has_global_flag = WWI_is_now
+		tag = ENG
+		count_triggers = {
+			amount = 3
+			1142 = { CONTROLLER = { OR = { tag = ROOT is_subject_of = ROOT } } }
+			1138 = { CONTROLLER = { NOT = { tag = ROOT is_subject_of = ROOT } } }
+			1139 = { CONTROLLER = { NOT = { tag = ROOT is_subject_of = ROOT } } }
+			1140 = { CONTROLLER = { NOT = { tag = ROOT is_subject_of = ROOT } } }
+			1137 = { CONTROLLER = { NOT = { tag = ROOT is_subject_of = ROOT } } }
+			1141 = { CONTROLLER = { NOT = { tag = ROOT is_subject_of = ROOT } } }
+			454 = { CONTROLLER = { NOT = { tag = ROOT is_subject_of = ROOT } } }
+		}
+	}
+
+	fire_only_once = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.6.a #Наши намерения будут озвучены публично
+		set_global_flag = ENG_support_zionism
+		news_event = { id = news_versailles.5 days = 1 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = secret_diplomacy_Entente.6.b #Не стоит рисковать поддержкой арабов
+		add_political_power = -15
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 0
+				is_historical_focus_on = yes
+			}
+		}
+	}
+}
 
 
 

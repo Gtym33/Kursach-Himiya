@@ -137,16 +137,25 @@ country_event = {
 	fire_only_once = yes
 	
 	option = {
-		name = turkey.3.a
-		add_stability = -0.1
-		add_war_support = -0.1
-		add_political_power = -50
+		name = turkey.3.a # "У нас нет выхода"
+		effect_tooltip = {
+			leave_faction = yes
+			white_peace = TUR
+			add_ideas = HJZ_traitor_of_national_movement
+			remove_country_leader_trait = nationalist_symbol
+			create_country_leader = { name = "Feisal bin Al-Hussein bin Ali Al-Hashimi" desc = HJZ_Feisal_bin_Al-Hussein_bin_Ali_Al-Hashimi_DESC picture = "gfx/leaders/IRQ/Portrait_Feisal_bin_Al-Hussein_bin_Ali.dds" ideology = authoritarism_ideology  traits = { } }
+			remove_ideas = {
+				HJZ_arabian_uprising
+				HJZ_britain_advisors
+			}
+			every_unit_leader = { limit = { has_id = 38007 } set_nationality = ENG }
+		}
 		TUR = { country_event = turkey.4 }
 	}
 	
 	option = {
-		name = turkey.3.b
-		add_war_support = 0.05
+		name = turkey.3.b # "Это неприемлемо, мы сражаемся до конца"
+		add_country_leader_trait = cornered_fox
 		TUR = { country_event = turkey.5 }
 	}
 }
@@ -169,25 +178,39 @@ country_event = {
 	
 	option = {
 		name = turkey.4.a
+		hidden_effect = { news_event = { id = news_versailles.4 days = 1 } }
 		add_political_power = 15
-		855 = {
+		every_state = {
+			limit = { is_core_of = HJZ }
 			remove_claim_by = TUR
 		}
-		679 = {
-			remove_claim_by = TUR
+		every_controlled_state = {
+			limit = { OR = { is_core_of = SYR is_core_of = IRQ is_core_of = HJZ is_core_of = JOR is_core_of = PAL is_core_of = LEB } }
+			add_resistance = -5
 		}
 		HJZ = {
+			if = {
+				limit = { is_subject = yes }
+				OVERLORD = { end_puppet = ROOT }
+			}
+			leave_faction = yes
 			add_ideas = HJZ_traitor_of_national_movement
 			remove_country_leader_trait = nationalist_symbol
+			create_country_leader = { name = "Feisal bin Al-Hussein bin Ali Al-Hashimi" desc = HJZ_Feisal_bin_Al-Hussein_bin_Ali_Al-Hashimi_DESC picture = "gfx/leaders/IRQ/Portrait_Feisal_bin_Al-Hussein_bin_Ali.dds" ideology = authoritarism_ideology  traits = { } }
 			remove_ideas = {
 				HJZ_arabian_uprising
 				HJZ_britain_advisors
 			}
 			every_unit_leader = { limit = { has_id = 38007 } set_nationality = ENG }
-			white_peace = GER
-			leave_faction = yes
-			subjecting_script_with_transfer_parties_semi_independent = yes
+			effect_tooltip = { white_peace = TUR }
 		}
+		hidden_effect = {
+			every_country = {
+				limit = { OR = { tag = TUR is_in_faction_with = TUR is_subject_of = TUR } has_war_with = HJZ }
+				HJZ = { white_peace = PREV }
+			}
+		}
+		TUR = { HJZ = { subjecting_script_with_transfer_parties_semi_independent = yes } }
 	}
 }
 
