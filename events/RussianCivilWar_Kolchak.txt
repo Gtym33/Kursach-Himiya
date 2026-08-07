@@ -1031,13 +1031,21 @@ country_event = {
 					limit = { original_tag = PRM NOT = { has_country_flag = Vologodskiy_came_there } }
 					country_event = { id = rcw_kolchak.25 days = 28 } #Колчак собирается сам, поэтому дольше
 				}
-				if = {
+				else_if = {
 					limit = { original_tag = PRM has_country_flag = Vologodskiy_came_there }
 					country_event = { id = rcw_kolchak.26 days = 28 } #Колчак сразу едет в Сибирь, но с остановкой
 				}
-				if = {
-					limit = { NOT = { original_tag = PRM } }
-					set_country_flag = Alexandr_Kolchak_was_here country_event = { id = rcw_kolchak.27 days = 35 } #Колчак сразу едет в Сибирь
+				else = {
+					random_other_country = {
+						limit = {
+							OR = {
+								original_tag = SIB
+								original_tag = RSS
+							}
+							NOT = { has_government = radical_socialism has_government = communism }
+						}
+						country_event = { id = rcw_kolchak.27 days = 35 } #Колчак сразу едет в Сибирь
+					}
 				}
 			}
 		}
@@ -1156,9 +1164,7 @@ country_event = {
 				set_character_flag = dismissed_flag
 				set_nationality = REB
 			}
-			clr_country_flag = Alexandr_Kolchak_is_here
 		}
-		set_country_flag = Alexandr_Kolchak_was_here
 		if = {
 			limit = { is_subject = yes }
 			OVERLORD = { country_event = { id = rcw_kolchak.27 days = 7 } }
@@ -1185,24 +1191,35 @@ country_event = {
 		}
 		NOT = { has_government = radical_socialism has_government = communism }
 		NOT = { has_character = RUS_Alexandr_Kolchak }
-		NOT = { has_country_flag = Alexandr_Kolchak_is_here }
 		OR = {
-			PRM = { has_country_flag = Alexandr_Kolchak_was_here }
-			JAP = { has_country_flag = Alexandr_Kolchak_was_here }
+			PRM = { has_country_flag = Alexandr_Kolchak_is_here }
+			JAP = { has_country_flag = Alexandr_Kolchak_is_here }
 		}
 	}
 	
 	mean_time_to_happen = {
 		days = 14
 		modifier = {
-			factor = 3
-			JAP = { has_country_flag = Alexandr_Kolchak_was_here }
+			factor = 1.5
+			original_tag = SIB
+		}
+		modifier = {
+			factor = 2
+			JAP = { has_country_flag = Alexandr_Kolchak_is_here }
+		}
+		modifier = {
+			factor = 0.5
+			has_completed_focus = RSS_temporary_capital
+		}
+		modifier = {
+			factor = 0.1
+			has_completed_focus = RSS_united_government
 		}
 	}
 	
 	fire_only_once = yes
 	
-	immediate = { hidden_effect = { every_other_country = { clr_country_flag = Alexandr_Kolchak_was_here clr_country_flag = Alexandr_Kolchak_is_here } } }
+	immediate = { hidden_effect = { every_other_country = { clr_country_flag = Alexandr_Kolchak_is_here } } }
 	
 	option = {
 		name = rcw_kolchak.27.a #Пусть остаётся в Сибири
