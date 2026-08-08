@@ -49,10 +49,8 @@ country_event = {
 	option = {
 		trigger = { always = no NOT = { has_idea = RUS_1917_tsarist_defense_focus } } #Механ на поддержку пока не сделан
 		name = petrograd_war_conference_Entente.2.b # Сначала помощь - потом наступление
-		set_variable = { global.petrograd_war_conference_members = 0 }
 		set_variable = { global.petrograd_war_conference_vote_support_RUS = 0 }
 		set_variable = { global.petrograd_war_conference_vote_not_support_RUS = 0 }
-		set_variable = { global.petrograd_war_conference_votes = 0 }
 		every_other_country = {
 			limit = {
 				OR = {
@@ -63,7 +61,7 @@ country_event = {
 				}
 				is_in_faction_with = ROOT
 			}
-			add_to_variable = { global.petrograd_war_conference_members = 1 }
+			set_country_flag = petrograd_war_conference_member
 			country_event = petrograd_war_conference_Entente.4
 		}
 		ai_chance = {
@@ -124,64 +122,98 @@ country_event = {
 	is_triggered_only = yes
 	
 	option = {
-		name = petrograd_war_conference_Entente.4.a #Всё необходимое итак направлено в Россию!
-		add_to_variable = { global.petrograd_war_conference_vote_support_RUS = 1 }
-		add_to_variable = { global.petrograd_war_conference_votes = 1 }
+		name = petrograd_war_conference_Entente.4.a #Всё необходимое и так направлено в Россию!
+		add_to_variable = { global.petrograd_war_conference_vote_not_support_RUS = 1 }
 		if = {
-			limit = { check_variable = { global.petrograd_war_conference_votes = global.petrograd_war_conference_members } }
-			if = {
-				limit = {
-					OR {
-						check_variable = { global.petrograd_war_conference_vote_support_RUS > global.petrograd_war_conference_vote_not_support_RUS }
-						AND = {
-							NOT = { check_variable = { global.petrograd_war_conference_vote_support_RUS < global.petrograd_war_conference_vote_not_support_RUS } }
-							FRA = { has_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
+			limit = {
+				any_other_country = { has_country_flag = petrograd_war_conference_member
+				NOT = { has_country_flag = petrograd_war_conference_vote_support_RUS has_country_flag = petrograd_war_conference_vote_not_support_RUS } }
+			}
+			set_country_flag = petrograd_war_conference_vote_not_support_RUS
+			else = {
+				if = {
+					limit = {
+						OR {
+							check_variable = { global.petrograd_war_conference_vote_support_RUS > global.petrograd_war_conference_vote_not_support_RUS }
+							AND = {
+								NOT = { check_variable = { global.petrograd_war_conference_vote_support_RUS < global.petrograd_war_conference_vote_not_support_RUS } }
+								FRA = { has_country_flag = petrograd_war_conference_vote_support_RUS }
+							}
 						}
 					}
+					RUS = { country_event = { id = petrograd_war_conference_Entente.6 days = 1 } } #Союзная поддержка наступления 
+					else = {
+						RUS = { country_event = { id = petrograd_war_conference_Entente.5 days = 1 } } # Отказ в поддержке наступления
+					}
 				}
-				RUS = { country_event = petrograd_war_conference_Entente.6 } #Союзная поддержка наступления 
-				else = {
-					RUS = { country_event = petrograd_war_conference_Entente.5 } # Отказ в поддержке наступления
+				clear_variable = global.petrograd_war_conference_vote_support_RUS
+				clear_variable = global.petrograd_war_conference_vote_not_support_RUS
+				hidden_effect = {
+					every_possible_country = {
+						clr_country_flag = petrograd_war_conference_member
+						clr_country_flag = petrograd_war_conference_vote_support_RUS
+						clr_country_flag = petrograd_war_conference_vote_not_support_RUS
+					}
 				}
 			}
-			FRA = { clr_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
-			clear_variable = global.petrograd_war_conference_members
-			clear_variable = global.petrograd_war_conference_vote_support_RUS
-			clear_variable = global.petrograd_war_conference_vote_not_support_RUS
-			clear_variable = global.petrograd_war_conference_votes
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					tag = FRA
+					tag = ROM
+				}
+			}
 		}
 	}
 	option = {
 		name = petrograd_war_conference_Entente.4.b #Программа помощи русским должна быть расширена
 		if = {
 			limit = { tag = FRA }
-			set_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS
 			country_event = petrograd_war_conference_Entente.8 #Секретный договор с Россией
 		}
-		add_to_variable = { global.petrograd_war_conference_vote_not_support_RUS = 1 }
-		add_to_variable = { global.petrograd_war_conference_votes = 1 }
+		add_to_variable = { global.petrograd_war_conference_vote_support_RUS = 1 }
 		if = {
-			limit = { check_variable = { global.petrograd_war_conference_votes = global.petrograd_war_conference_members } }
-			if = {
-				limit = {
-					OR {
-						check_variable = { global.petrograd_war_conference_vote_support_RUS > global.petrograd_war_conference_vote_not_support_RUS }
-						AND = {
-							NOT = { check_variable = { global.petrograd_war_conference_vote_support_RUS < global.petrograd_war_conference_vote_not_support_RUS } }
-							FRA = { has_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
+			limit = {
+				any_other_country = { has_country_flag = petrograd_war_conference_member
+				NOT = { has_country_flag = petrograd_war_conference_vote_support_RUS has_country_flag = petrograd_war_conference_vote_not_support_RUS } }
+			}
+			set_country_flag = petrograd_war_conference_vote_support_RUS
+			else = {
+				if = {
+					limit = {
+						OR {
+							check_variable = { global.petrograd_war_conference_vote_support_RUS > global.petrograd_war_conference_vote_not_support_RUS }
+							AND = {
+								NOT = { check_variable = { global.petrograd_war_conference_vote_support_RUS < global.petrograd_war_conference_vote_not_support_RUS } }
+								OR = { tag = FRA FRA = { has_country_flag = petrograd_war_conference_vote_support_RUS } }
+							}
 						}
 					}
+					RUS = { country_event = { id = petrograd_war_conference_Entente.6 days = 1 } } #Союзная поддержка наступления 
+					else = {
+						RUS = { country_event = { id = petrograd_war_conference_Entente.5 days = 1 } } # Отказ в поддержке наступления
+					}
 				}
-				RUS = { country_event = petrograd_war_conference_Entente.6 } #Союзная поддержка наступления 
-				else = {
-					RUS = { country_event = petrograd_war_conference_Entente.5 } # Отказ в поддержке наступления
+				clear_variable = global.petrograd_war_conference_vote_support_RUS
+				clear_variable = global.petrograd_war_conference_vote_not_support_RUS
+				hidden_effect = {
+					every_possible_country = {
+						clr_country_flag = petrograd_war_conference_member
+						clr_country_flag = petrograd_war_conference_vote_support_RUS
+						clr_country_flag = petrograd_war_conference_vote_not_support_RUS
+					}
 				}
 			}
-			FRA = { clr_country_flag = FRA_petrograd_war_conference_Entente_secret_pact_RUS }
-			clear_variable = global.petrograd_war_conference_members
-			clear_variable = global.petrograd_war_conference_vote_support_RUS
-			clear_variable = global.petrograd_war_conference_vote_not_support_RUS
-			clear_variable = global.petrograd_war_conference_votes
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = ITA
+			}
 		}
 	}
 }
@@ -631,16 +663,15 @@ country_event = {
 	picture = GFX_report_event_germany_civil_war_soldiers
 
 	is_triggered_only = yes
-	immediate = {
-		set_variable = { ruling_party_popularity_change = -0.04 } 
-	}
 	
 	option = {
 		name = secret_diplomacy_Entente.5.a
 		add_war_support = -0.05
 		add_political_power = -30
-		add_ruling_party_popularity = yes
-		clear_variable = ruling_party_popularity_change
+		add_popularity = {
+			ideology = ROOT
+			popularity = -0.04
+		}
 	}
 }
 # Декларация Бальфура (Великобритания)
@@ -705,19 +736,1197 @@ country_event = {
 	}
 }
 
+# Поездка за миром (США)
+country_event = {
+	id = secret_diplomacy_Entente.11
+	title = secret_diplomacy_Entente.11.t
+	desc = secret_diplomacy_Entente.11.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_start_date < 1919.1.1
+		tag = USA
+		has_global_flag = secret_diplomacy_Entente_USA_14_points_speech
+		OR = {
+			NOT = { has_global_flag = WWI_is_now }
+			AND = {
+				has_global_flag = WWI_GER_HAS_CAPITULATED
+				has_global_flag = WWI_AUH_HAS_CAPITULATED
+			}
+		}
+		NOT = { has_global_flag = WWI_GER_sieg_im_Weltkrieg }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	option = {
+		name = secret_diplomacy_Entente.11.a # В первую очередь Париж!
+		every_country = {
+			limit = {
+				OR = {
+					tag = USA
+					tag = FRA
+					tag = ENG
+					tag = ITA
+					tag = RUS
+				}
+				is_in_faction_with = ROOT
+			}
+			set_country_flag = european_peace_conference_member
+			if = {
+				limit = { is_in_faction_with = ENG }
+				set_variable = { global.european_peace_conference_vote_dominions_participate = 0 }
+				set_variable = { global.european_peace_conference_vote_dominions_not_participate = 0 }
+				country_event = { id = secret_diplomacy_Entente.12 days = 14 } # Вопрос участия доминионов
+				else = {
+					country_event = { id = secret_diplomacy_Entente.17 days = 14 } # Выбор места конференции
+					set_variable = { global.european_peace_conference_vote_paris = 0 }
+					set_variable = { global.european_peace_conference_vote_london = 0 }
+					set_variable = { global.european_peace_conference_vote_petrograd = 0 }
+					set_variable = { global.european_peace_conference_vote_roma = 0 }
+				}
+			}
+		}
+		news_event = { id = news_versailles.7 days = 10 }
+	}
+}
 
 
+# Вопрос участия доминионов
+country_event = {
+	id = secret_diplomacy_Entente.12
+	title = secret_diplomacy_Entente.12.t
+	desc = {
+		text = secret_diplomacy_Entente.12.desc
+		trigger = { NOT = { tag = ENG } }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.12.desc_1
+		trigger = { tag = ENG }
+	}
+	picture = GFX_report_event_germany_civil_war_soldiers
 
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.12.a #Доминионы получат право голоса
+		add_to_variable = { global.european_peace_conference_vote_dominions_participate = 1 }
+		set_country_flag = european_peace_conference_vote_dominions_participate
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = { has_country_flag = european_peace_conference_vote_dominions_participate has_country_flag = european_peace_conference_vote_dominions_not_participate }
+					}
+				}
+			}
+			if = {
+				limit = {
+					OR {
+						check_variable = { global.european_peace_conference_vote_dominions_participate > global.european_peace_conference_vote_dominions_not_participate }
+						AND = {
+							NOT = { check_variable = { global.european_peace_conference_vote_dominions_participate < global.european_peace_conference_vote_dominions_not_participate } }
+							ENG = { has_country_flag = european_peace_conference_vote_dominions_participate }
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						OR = {
+							has_country_flag = european_peace_conference_member
+							AND = {
+								is_subject_of = ENG
+								OR = {
+									AND = {
+										tag = RAJ
+										has_autonomy_state = autonomy_colony
+									}
+									has_autonomy_state = autonomy_dominion
+									has_autonomy_state = autonomy_associated_dominion
+								}
+							}
+						}
+					}
+					set_country_flag = european_peace_conference_member
+					country_event = { id = secret_diplomacy_Entente.13 days = 1 } #Полноправное участие доминионов
+				}
+				else = {
+					every_country = {
+						limit = {
+							OR = {
+								has_country_flag = european_peace_conference_member
+								AND = {
+									is_subject_of = ENG
+									OR = {
+										AND = {
+											tag = RAJ
+											has_autonomy_state = autonomy_colony
+										}
+										has_autonomy_state = autonomy_dominion
+										has_autonomy_state = autonomy_associated_dominion
+									}
+								}
+							}
+						}
+						country_event = { id = secret_diplomacy_Entente.14 days = 1 } #Лондонская прерогатива
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = secret_diplomacy_Entente.12.b #За доминионы говорить будет Англия
+		add_to_variable = { global.european_peace_conference_vote_dominions_not_participate = 1 }
+		set_country_flag = european_peace_conference_vote_dominions_not_participate
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = { has_country_flag = european_peace_conference_vote_dominions_participate has_country_flag = european_peace_conference_vote_dominions_not_participate }
+					}
+				}
+			}
+			if = {
+				limit = {
+					OR {
+						check_variable = { global.european_peace_conference_vote_dominions_participate > global.european_peace_conference_vote_dominions_not_participate }
+						AND = {
+							NOT = { check_variable = { global.european_peace_conference_vote_dominions_participate < global.european_peace_conference_vote_dominions_not_participate } }
+							ENG = { has_country_flag = european_peace_conference_vote_dominions_participate }
+						}
+					}
+				}
+				every_country = {
+					limit = {
+						OR = {
+							has_country_flag = european_peace_conference_member
+							AND = {
+								is_subject_of = ENG
+								OR = {
+									AND = {
+										tag = RAJ
+										has_autonomy_state = autonomy_colony
+									}
+									has_autonomy_state = autonomy_dominion
+									has_autonomy_state = autonomy_associated_dominion
+								}
+							}
+						}
+					}
+					set_country_flag = european_peace_conference_member
+					country_event = { id = secret_diplomacy_Entente.13 days = 1 } #Полноправное участие доминионов
+				}
+				else = {
+					every_country = {
+						limit = {
+							OR = {
+								has_country_flag = european_peace_conference_member
+								AND = {
+									is_subject_of = ENG
+									OR = {
+										AND = {
+											tag = RAJ
+											has_autonomy_state = autonomy_colony
+										}
+										has_autonomy_state = autonomy_dominion
+										has_autonomy_state = autonomy_associated_dominion
+									}
+								}
+							}
+						}
+						country_event = { id = secret_diplomacy_Entente.14 days = 1 } #Лондонская прерогатива
+					}
+				}
+			}
+		}
+	}
+}
+
+# Полноправное участие доминионов
+country_event = {
+	id = secret_diplomacy_Entente.13
+	title = {
+		text = secret_diplomacy_Entente.13.t
+		trigger = {
+			OR = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+	}
+	title = {
+		text = secret_diplomacy_Entente.13.t_1
+		trigger = {
+			NOT = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+	}
+	desc = {
+		text = secret_diplomacy_Entente.13.desc
+		trigger = {
+			OR = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+	}
+	desc = {
+		text = secret_diplomacy_Entente.13.desc_1
+		trigger = {
+			NOT = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+	}
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			OR = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+		name = secret_diplomacy_Entente.13.a #Мы это заслужили
+		add_political_power = 30
+		add_autonomy_score = {
+			value = 150
+			localization = european_peace_conference_dominions_participate
+		}
+	}
+	option = {
+		trigger = {
+			NOT = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+		name = secret_diplomacy_Entente.13.b #Приветствуем страны-победительницы
+		if = {
+			limit = { tag = ENG }
+			hidden_effect = {
+				clear_variable = global.european_peace_conference_vote_dominions_participate
+				clear_variable = global.european_peace_conference_vote_dominions_not_participate
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_vote_dominions_participate
+					clr_country_flag = european_peace_conference_vote_dominions_not_participate
+				}
+				set_variable = { global.european_peace_conference_vote_paris = 0 }
+				set_variable = { global.european_peace_conference_vote_london = 0 }
+				set_variable = { global.european_peace_conference_vote_petrograd = 0 }
+				set_variable = { global.european_peace_conference_vote_roma = 0 }
+				every_country = {
+					limit = { has_country_flag = european_peace_conference_member }
+					if = {
+						limit = {
+							OR = {
+								tag = ENG
+								tag = FRA
+								tag = USA
+								tag = RUS
+								tag = ITA
+							}
+						}
+						set_variable = { vote_power = 2 }
+						else = { set_variable = { vote_power = 1 } }
+					}
+					country_event = { id = secret_diplomacy_Entente.17 } #Выбор места конференции
+				}
+			}
+		}
+	}
+}
+
+# Лондонская прерогатива
+country_event = {
+	id = secret_diplomacy_Entente.14
+	title = secret_diplomacy_Entente.14.t
+	desc = {
+		text = secret_diplomacy_Entente.14.desc
+		trigger = {
+			OR = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+	}
+	desc = {
+		text = secret_diplomacy_Entente.14.desc_1
+		trigger = {
+			NOT = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+	}
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			OR = {
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+		name = secret_diplomacy_Entente.13.a #Это повод бороться за новый статус!
+		add_political_power = -70
+		add_stability = -0.05
+		add_opinion_modifier = { target = ENG modifier = european_peace_conference_dominions_not_participate_opinion }
+		add_autonomy_score = {
+			value = 300
+			localization = european_peace_conference_dominions_not_participate_strong
+		}
+		ENG = {
+			country_event = { id = secret_diplomacy_Entente.15 days = 1 random_hours = 48 }
+		}
+	}
+	option = {
+		trigger = {
+			OR = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+		name = secret_diplomacy_Entente.13.a #Ограничимся протестом
+		add_political_power = -25
+		add_autonomy_score = {
+			value = 100
+			localization = european_peace_conference_dominions_not_participate
+		}
+		ENG = {
+			country_event = { id = secret_diplomacy_Entente.16 days = 1 random_hours = 48 }
+		}
+	}
+	option = {
+		trigger = {
+			NOT = {
+				AND = {
+					tag = RAJ
+					has_autonomy_state = autonomy_colony
+				}
+				has_autonomy_state = autonomy_dominion
+				has_autonomy_state = autonomy_associated_dominion
+			}
+		}
+		name = secret_diplomacy_Entente.13.c #Пока что главенствовать будет Лондон
+		if = {
+			limit = { tag = ENG }
+			hidden_effect = {
+				clear_variable = global.european_peace_conference_vote_dominions_participate
+				clear_variable = global.european_peace_conference_vote_dominions_not_participate
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_vote_dominions_participate
+					clr_country_flag = european_peace_conference_vote_dominions_not_participate
+				}
+				set_variable = { global.european_peace_conference_vote_paris = 0 }
+				set_variable = { global.european_peace_conference_vote_london = 0 }
+				set_variable = { global.european_peace_conference_vote_petrograd = 0 }
+				set_variable = { global.european_peace_conference_vote_roma = 0 }
+				every_country = {
+					limit = { has_country_flag = european_peace_conference_member }
+					if = {
+						limit = {
+							tag = ENG
+						}
+						set_variable = { vote_power = 3 }
+					}
+					else_if = {
+						limit = {
+							OR = {
+								tag = FRA
+								tag = USA
+								tag = RUS
+								tag = ITA
+							}
+						}
+						set_variable = { vote_power = 2 }
+					}
+					else = { set_variable = { vote_power = 1 } }
+					country_event = { id = secret_diplomacy_Entente.17 } #Выбор места конференции
+				}
+			}
+		}
+	}
+}
+
+# [Страна] заявляет претензии
+country_event = {
+	id = secret_diplomacy_Entente.15
+	title = secret_diplomacy_Entente.15.t
+	desc = secret_diplomacy_Entente.15.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.15.a #Это не к добру
+		add_stability = -0.03
+		add_political_power = -20
+		add_popularity = {
+			ideology = ROOT
+			popularity = -0.04
+		}
+	}
+}
+# [Страна] заявляет протест
+country_event = {
+	id = secret_diplomacy_Entente.16
+	title = secret_diplomacy_Entente.16.t
+	desc = secret_diplomacy_Entente.16.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.16.a #Могло быть и хуже
+		add_stability = -0.01
+		add_political_power = -10
+		add_popularity = {
+			ideology = ROOT
+			popularity = -0.02
+		}
+	}
+}
+
+
+# Выбор места конференции
+country_event = {
+	id = secret_diplomacy_Entente.17
+	title = secret_diplomacy_Entente.17.t
+	desc = secret_diplomacy_Entente.17.desc
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { FRA = { is_in_faction_with = ROOT } }
+		name = secret_diplomacy_Entente.17.a #Париж
+		add_to_variable = { global.european_peace_conference_vote_paris = vote_power }
+		set_country_flag = european_peace_conference_vote_paris
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = {
+							has_country_flag = european_peace_conference_vote_paris
+							has_country_flag = european_peace_conference_vote_london
+							has_country_flag = european_peace_conference_vote_petrograd
+							has_country_flag = european_peace_conference_vote_roma
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_petrograd }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_petrograd }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_roma }
+					}
+				}
+				set_global_flag = european_peace_conference_roma #Открытие Римской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_petrograd }
+					}
+				}
+				set_global_flag = european_peace_conference_petrograd #Открытие Петроградской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_london < global.european_peace_conference_vote_paris }
+					}
+					OR {
+						check_variable = { global.european_peace_conference_vote_london > global.european_peace_conference_vote_paris }
+						USA = { has_country_flag = european_peace_conference_vote_london }
+					}
+				}
+				set_global_flag = european_peace_conference_london #Открытие Лондонской конференции
+			}
+			else = {
+				set_global_flag = european_peace_conference_paris #Открытие Парижской конференции
+			}
+			every_country = {
+				limit = {
+					OR = {
+						has_country_flag = european_peace_conference_member
+						AND = {
+							is_in_faction_with = ROOT
+							is_subject = no
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_country_flag = european_peace_conference_member } }
+					set_country_flag = european_peace_conference_member
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = secret_diplomacy_Entente.18 days = 1 } #Открытие Парижской/Лондонской/Петроградской/Римской конференции
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = ENG
+			}
+		}
+	}
+	option = {
+		trigger = { ENG = { is_in_faction_with = ROOT } }
+		name = secret_diplomacy_Entente.17.b #Лондон
+		add_to_variable = { global.european_peace_conference_vote_london = vote_power }
+		set_country_flag = european_peace_conference_vote_london
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = {
+							has_country_flag = european_peace_conference_vote_paris
+							has_country_flag = european_peace_conference_vote_london
+							has_country_flag = european_peace_conference_vote_petrograd
+							has_country_flag = european_peace_conference_vote_roma
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_petrograd }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_petrograd }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_roma }
+					}
+				}
+				set_global_flag = european_peace_conference_roma #Открытие Римской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_petrograd }
+					}
+				}
+				set_global_flag = european_peace_conference_petrograd #Открытие Петроградской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_london < global.european_peace_conference_vote_paris }
+					}
+					OR {
+						check_variable = { global.european_peace_conference_vote_london > global.european_peace_conference_vote_paris }
+						USA = { has_country_flag = european_peace_conference_vote_london }
+					}
+				}
+				set_global_flag = european_peace_conference_london #Открытие Лондонской конференции
+			}
+			else = {
+				set_global_flag = european_peace_conference_paris #Открытие Парижской конференции
+			}
+			every_country = {
+				limit = {
+					OR = {
+						has_country_flag = european_peace_conference_member
+						AND = {
+							is_in_faction_with = ROOT
+							is_subject = no
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_country_flag = european_peace_conference_member } }
+					set_country_flag = european_peace_conference_member
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = secret_diplomacy_Entente.18 days = 1 } #Открытие Парижской/Лондонской/Петроградской/Римской конференции
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = USA
+			}
+			modifier = {
+				factor = 0
+				tag = FRA
+			}
+			modifier = {
+				factor = 0
+				tag = RUS
+			}
+		}
+	}
+	option = {
+		trigger = { RUS = { is_in_faction_with = ROOT } }
+		name = secret_diplomacy_Entente.17.c #Петроград
+		add_to_variable = { global.european_peace_conference_vote_petrograd = vote_power }
+		set_country_flag = european_peace_conference_vote_petrograd
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = {
+							has_country_flag = european_peace_conference_vote_paris
+							has_country_flag = european_peace_conference_vote_london
+							has_country_flag = european_peace_conference_vote_petrograd
+							has_country_flag = european_peace_conference_vote_roma
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_petrograd }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_petrograd }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_roma }
+					}
+				}
+				set_global_flag = european_peace_conference_roma #Открытие Римской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_petrograd }
+					}
+				}
+				set_global_flag = european_peace_conference_petrograd #Открытие Петроградской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_london < global.european_peace_conference_vote_paris }
+					}
+					OR {
+						check_variable = { global.european_peace_conference_vote_london > global.european_peace_conference_vote_paris }
+						USA = { has_country_flag = european_peace_conference_vote_london }
+					}
+				}
+				set_global_flag = european_peace_conference_london #Открытие Лондонской конференции
+			}
+			else = {
+				set_global_flag = european_peace_conference_paris #Открытие Парижской конференции
+			}
+			every_country = {
+				limit = {
+					OR = {
+						has_country_flag = european_peace_conference_member
+						AND = {
+							is_in_faction_with = ROOT
+							is_subject = no
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_country_flag = european_peace_conference_member } }
+					set_country_flag = european_peace_conference_member
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = secret_diplomacy_Entente.18 days = 1 } #Открытие Парижской/Лондонской/Петроградской/Римской конференции
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = ENG
+			}
+		}
+	}
+	option = {
+		trigger = { ITA = { is_in_faction_with = ROOT } }
+		name = secret_diplomacy_Entente.17.d #Рим
+		add_to_variable = { global.european_peace_conference_vote_roma = vote_power }
+		set_country_flag = european_peace_conference_vote_roma
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = {
+							has_country_flag = european_peace_conference_vote_paris
+							has_country_flag = european_peace_conference_vote_london
+							has_country_flag = european_peace_conference_vote_petrograd
+							has_country_flag = european_peace_conference_vote_roma
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_petrograd }
+						check_variable = { global.european_peace_conference_vote_roma < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_petrograd }
+							check_variable = { global.european_peace_conference_vote_roma > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_roma }
+					}
+				}
+				set_global_flag = european_peace_conference_roma #Открытие Римской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_paris }
+						check_variable = { global.european_peace_conference_vote_petrograd < global.european_peace_conference_vote_london }
+					}
+					OR {
+						AND = {
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_paris }
+							check_variable = { global.european_peace_conference_vote_petrograd > global.european_peace_conference_vote_london }
+						}
+						USA = { has_country_flag = european_peace_conference_vote_petrograd } 
+					}
+				}
+				set_global_flag = european_peace_conference_petrograd #Открытие Петроградской конференции
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						check_variable = { global.european_peace_conference_vote_london < global.european_peace_conference_vote_paris }
+					}
+					OR {
+						check_variable = { global.european_peace_conference_vote_london > global.european_peace_conference_vote_paris }
+						USA = { has_country_flag = european_peace_conference_vote_london }
+					}
+				}
+				set_global_flag = european_peace_conference_london #Открытие Лондонской конференции
+			}
+			else = {
+				set_global_flag = european_peace_conference_paris #Открытие Парижской конференции
+			}
+			every_country = {
+				limit = {
+					OR = {
+						has_country_flag = european_peace_conference_member
+						AND = {
+							is_in_faction_with = ROOT
+							is_subject = no
+						}
+					}
+				}
+				if = {
+					limit = { NOT = { has_country_flag = european_peace_conference_member } }
+					set_country_flag = european_peace_conference_member
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = secret_diplomacy_Entente.18 days = 1 } #Открытие Парижской/Лондонской/Петроградской/Римской конференции
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = USA
+			}
+			modifier = {
+				factor = 0
+				tag = RUS
+			}
+		}
+	}
+}
+
+# Открытие Парижской/Лондонской/Петроградской/Римской конференции
+country_event = {
+	id = secret_diplomacy_Entente.18
+	title = {
+		text = secret_diplomacy_Entente.18.t_paris
+		trigger = { has_global_flag = european_peace_conference_paris }
+	}
+	title = {
+		text = secret_diplomacy_Entente.18.t_london
+		trigger = { has_global_flag = european_peace_conference_london }
+	}
+	title = {
+		text = secret_diplomacy_Entente.18.t_petrograd
+		trigger = { has_global_flag = european_peace_conference_petrograd }
+	}
+	title = {
+		text = secret_diplomacy_Entente.18.t_roma
+		trigger = { has_global_flag = european_peace_conference_roma }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.18.desc_paris
+		trigger = { has_global_flag = european_peace_conference_paris }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.18.desc_london
+		trigger = { has_global_flag = european_peace_conference_london }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.18.desc_petrograd
+		trigger = { has_global_flag = european_peace_conference_petrograd }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.18.desc_roma
+		trigger = { has_global_flag = european_peace_conference_roma }
+	}
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.18.a #Ожидаем открытия
+		news_event = { id = news_versailles.8 days = 14 }
+		if = {
+			limit = {
+				OR = {
+					AND = {
+						has_global_flag = european_peace_conference_paris
+						tag = FRA
+					}
+					AND = {
+						has_global_flag = european_peace_conference_london
+						tag = ENG
+					}
+					AND = {
+						has_global_flag = european_peace_conference_petrograd
+						tag = RUS
+					}
+					AND = {
+						has_global_flag = european_peace_conference_roma
+						tag = ITA
+					}
+				}
+			}
+			set_variable = { european_peace_conference_host = THIS }
+			add_political_power = 70
+			add_popularity = {
+				ideology = ROOT
+				popularity = 0.05
+			}
+			add_to_variable = { vote_power = 1 }
+			hidden_effect = {
+				clear_variable = global.european_peace_conference_vote_paris
+				clear_variable = global.european_peace_conference_vote_london
+				clear_variable = global.european_peace_conference_vote_petrograd
+				clear_variable = global.european_peace_conference_vote_roma
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_vote_paris
+					clr_country_flag = european_peace_conference_vote_london
+					clr_country_flag = european_peace_conference_vote_petrograd
+					clr_country_flag = european_peace_conference_vote_roma
+				}
+				#if = {
+				#	limit = { RUS = { is_in_faction_with = ROOT } }
+					set_variable = { global.european_peace_conference_league_of_nations_vote_arbitrage = 0 }
+					set_variable = { global.european_peace_conference_league_of_nations_vote_military = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = versailles.1 days = 21 } #Вопрос Лиги наций
+					}
+				#	else = {
+				#		set_variable = { global.european_peace_conference_RUS_not_participate = 0 }
+				#		set_variable = { global.european_peace_conference_RUS_participate = 0 }
+				#		every_country = {
+				#			limit = { has_country_flag = european_peace_conference_member }
+				#			country_event = { id = secret_diplomacy_Entente.19 days = 21 } #Вопрос российского представителя
+				#		}
+				#	}
+				#}
+			}
+		}
+	}
+}
 
 
 
 add_namespace = versailles
 
 
+#Вопрос «Лиги наций»
+country_event = {
+	id = versailles.1
+	title = versailles.1.t
+	desc = versailles.1.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = versailles.1.a
+		add_to_variable = { global.european_peace_conference_league_of_nations_vote_arbitrage = vote_power }
+		set_country_flag = european_peace_conference_league_of_nations_vote_arbitrage
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = {
+							has_country_flag = european_peace_conference_league_of_nations_vote_arbitrage
+							has_country_flag = european_peace_conference_league_of_nations_vote_military
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					OR {
+						check_variable = { global.european_peace_conference_league_of_nations_vote_military > global.european_peace_conference_league_of_nations_vote_arbitrage }
+						AND = {
+							NOT = { check_variable = { global.european_peace_conference_league_of_nations_vote_military < global.european_peace_conference_league_of_nations_vote_arbitrage } }
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_league_of_nations_vote_military }
+						}
+					}
+				}
+				set_global_flag = european_peace_conference_league_of_nations_military
+				else = {
+					set_global_flag = european_peace_conference_league_of_nations_arbitrage
+				}
+			}
+			hidden_effect = {
+				clear_variable = global.european_peace_conference_league_of_nations_vote_arbitrage
+				clear_variable = global.european_peace_conference_league_of_nations_vote_military
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_league_of_nations_vote_arbitrage
+					clr_country_flag = european_peace_conference_league_of_nations_vote_military
+				}
+				every_country = {
+					limit = { has_country_flag = european_peace_conference_member }
+					country_event = { id = versailles.2 days = 7 } #Вопрос мандатных территорий
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+		}
+	}
+	option = {
+		name = versailles.1.b
+		add_to_variable = { global.european_peace_conference_league_of_nations_vote_military = vote_power }
+		set_country_flag = european_peace_conference_league_of_nations_vote_military
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = {
+							has_country_flag = european_peace_conference_league_of_nations_vote_arbitrage
+							has_country_flag = european_peace_conference_league_of_nations_vote_military
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					OR {
+						check_variable = { global.european_peace_conference_league_of_nations_vote_military > global.european_peace_conference_league_of_nations_vote_arbitrage }
+						AND = {
+							NOT = { check_variable = { global.european_peace_conference_league_of_nations_vote_military < global.european_peace_conference_league_of_nations_vote_arbitrage } }
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_league_of_nations_vote_military }
+						}
+					}
+				}
+				set_global_flag = european_peace_conference_league_of_nations_military
+				else = {
+					set_global_flag = european_peace_conference_league_of_nations_arbitrage
+				}
+			}
+			hidden_effect = {
+				clear_variable = global.european_peace_conference_league_of_nations_vote_arbitrage
+				clear_variable = global.european_peace_conference_league_of_nations_vote_military
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_league_of_nations_vote_arbitrage
+					clr_country_flag = european_peace_conference_league_of_nations_vote_military
+				}
+				every_country = {
+					limit = { has_country_flag = european_peace_conference_member }
+					country_event = { id = versailles.2 days = 7 } #Вопрос мандатных территорий
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = USA
+			}
+		}
+	}
+}
 
-
-
-
+#Вопрос мандатных территорий
+country_event = {
+	id = versailles.2
+	title = versailles.2.t
+	desc = versailles.2.desc
+	is_triggered_only = yes
+	fire_only_once = yes
+	option = {
+		name = versailles.2.a
+		custom_effect_tooltip = versailles_2_tt
+		if = {
+			limit = { tag = ENG }
+			transfer_state = 725
+			AST = {
+				transfer_state = 523
+				transfer_state = 737
+			}
+		}
+		if = {
+			limit = { tag = AST ENG = { NOT = { has_country_flag = european_peace_conference_member } } }
+			transfer_state = 725
+			transfer_state = 523
+			transfer_state = 737
+		}
+		if = {
+			limit = { tag = FRA ENG = { NOT = { has_country_flag = european_peace_conference_member } } AST = { NOT = { has_country_flag = european_peace_conference_member } } }
+			transfer_state = 725
+			transfer_state = 523
+			transfer_state = 737
+		}
+		if = {
+			limit = { tag = USA FRA = { NOT = { has_country_flag = european_peace_conference_member } } ENG = { NOT = { has_country_flag = european_peace_conference_member } } AST = { NOT = { has_country_flag = european_peace_conference_member } } }
+			transfer_state = 725
+			transfer_state = 523
+			transfer_state = 737
+		}
+		if = {
+			limit = { tag = JAP }
+			custom_effect_tooltip = versailles_2_tt_FSM
+			hidden_effect = {
+				every_state = {
+					limit = { OR = { state = 647 state = 646 state = 633 state = 684 } OWNER = { OR = { tag = GER is_in_faction_with = ROOT } NOT = { tag = ROOT } } }
+					transfer_state_to = ROOT
+				}
+				if = {
+					limit = { NOT = { country_exists = FSM } }
+					release_puppet = FSM
+					FSM = { subjecting_script_with_transfer_parties_class_C_mandate_territory = yes }
+					FSM = {
+						set_cosmetic_tag = FSM_JAP
+						set_capital = { state = 647 }
+					}
+					else = {
+						create_dynamic_country = {
+							original_tag = FSM
+							JAP = {
+								every_owned_state = {
+									limit = { is_core_of = PREV.PREV }
+									transfer_state_to = PREV.PREV
+								}
+								puppet = PREV
+								PREV = { subjecting_script_with_transfer_parties_class_C_mandate_territory = yes }
+							}
+							set_cosmetic_tag = FSM_JAP
+							set_capital = { state = 647 }
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 
 
