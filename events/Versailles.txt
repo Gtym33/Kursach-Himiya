@@ -1432,15 +1432,11 @@ country_event = {
 			factor = 1
 			modifier = {
 				factor = 0
-				tag = USA
-			}
-			modifier = {
-				factor = 0
-				tag = FRA
-			}
-			modifier = {
-				factor = 0
-				tag = RUS
+				OR = {
+					tag = USA
+					tag = FRA
+					tag = RUS
+				}
 			}
 		}
 	}
@@ -1628,11 +1624,10 @@ country_event = {
 			factor = 1
 			modifier = {
 				factor = 0
-				tag = USA
-			}
-			modifier = {
-				factor = 0
-				tag = RUS
+				OR = {
+					tag = USA
+					tag = RUS
+				}
 			}
 		}
 	}
@@ -1752,7 +1747,6 @@ country_event = {
 	title = versailles.1.t
 	desc = versailles.1.desc
 	is_triggered_only = yes
-	fire_only_once = yes
 	option = {
 		name = versailles.1.a
 		add_to_variable = { global.european_peace_conference_league_of_nations_vote_arbitrage = vote_power }
@@ -1791,6 +1785,8 @@ country_event = {
 					clr_country_flag = european_peace_conference_league_of_nations_vote_arbitrage
 					clr_country_flag = european_peace_conference_league_of_nations_vote_military
 				}
+				set_variable = { global.european_peace_conference_africa_mandate_vote_yes = 0 }
+				set_variable = { global.european_peace_conference_africa_mandate_vote_no = 0 }
 				every_country = {
 					limit = { has_country_flag = european_peace_conference_member }
 					country_event = { id = versailles.2 days = 7 } #Вопрос мандатных территорий
@@ -1839,6 +1835,8 @@ country_event = {
 					clr_country_flag = european_peace_conference_league_of_nations_vote_arbitrage
 					clr_country_flag = european_peace_conference_league_of_nations_vote_military
 				}
+				set_variable = { global.european_peace_conference_africa_mandate_vote_yes = 0 }
+				set_variable = { global.european_peace_conference_africa_mandate_vote_no = 0 }
 				every_country = {
 					limit = { has_country_flag = european_peace_conference_member }
 					country_event = { id = versailles.2 days = 7 } #Вопрос мандатных территорий
@@ -1861,67 +1859,982 @@ country_event = {
 	title = versailles.2.t
 	desc = versailles.2.desc
 	is_triggered_only = yes
-	fire_only_once = yes
 	option = {
 		name = versailles.2.a
-		custom_effect_tooltip = versailles_2_tt
 		if = {
-			limit = { tag = ENG }
-			transfer_state = 725
-			AST = {
+			limit = { tag = AST }
+			transfer_state = 523
+			transfer_state = 737
+		}
+		if = {
+			limit = {
+				OR = {
+					tag = ENG
+					AND = {
+						tag = FRA
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = USA
+						FRA = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = JAP
+						USA = { NOT = { has_country_flag = european_peace_conference_member } }
+						FRA = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = POR
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+						USA = { NOT = { has_country_flag = european_peace_conference_member } }
+						FRA = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = HOL
+						POR = { NOT = { has_country_flag = european_peace_conference_member } }
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+						USA = { NOT = { has_country_flag = european_peace_conference_member } }
+						FRA = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+				}
+			}
+			if = {
+				limit = { is_in_faction_with = AST AST = { NOT = { has_country_flag = european_peace_conference_member } } }
+				AST = {
+					transfer_state = 523
+					transfer_state = 737
+				}
+			}
+			if = {
+				limit = { NOT = { is_in_faction_with = AST } }
 				transfer_state = 523
 				transfer_state = 737
 			}
-		}
-		if = {
-			limit = { tag = AST ENG = { NOT = { has_country_flag = european_peace_conference_member } } }
-			transfer_state = 725
-			transfer_state = 523
-			transfer_state = 737
-		}
-		if = {
-			limit = { tag = FRA ENG = { NOT = { has_country_flag = european_peace_conference_member } } AST = { NOT = { has_country_flag = european_peace_conference_member } } }
-			transfer_state = 725
-			transfer_state = 523
-			transfer_state = 737
-		}
-		if = {
-			limit = { tag = USA FRA = { NOT = { has_country_flag = european_peace_conference_member } } ENG = { NOT = { has_country_flag = european_peace_conference_member } } AST = { NOT = { has_country_flag = european_peace_conference_member } } }
-			transfer_state = 725
-			transfer_state = 523
-			transfer_state = 737
-		}
-		if = {
-			limit = { tag = JAP }
-			custom_effect_tooltip = versailles_2_tt_FSM
-			hidden_effect = {
-				every_state = {
-					limit = { OR = { state = 647 state = 646 state = 633 state = 684 } OWNER = { OR = { tag = GER is_in_faction_with = ROOT } NOT = { tag = ROOT } } }
-					transfer_state_to = ROOT
+			if = {
+				limit = {
+					NOT = { tag = ENG }
+					is_in_faction_with = ENG
 				}
+				ENG = { transfer_state = 725 }
+				else = { transfer_state = 725 }
+			}
+		}
+		custom_effect_tooltip = versailles_2_tt
+		if = {
+			limit = {
+				OR = {
+					tag = JAP
+					AND = {
+						tag = ENG
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = AST
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = FRA
+						AST = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = USA
+						FRA = { NOT = { has_country_flag = european_peace_conference_member } }
+						AST = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = POR
+						USA = { NOT = { has_country_flag = european_peace_conference_member } }
+						FRA = { NOT = { has_country_flag = european_peace_conference_member } }
+						AST = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+					AND = {
+						tag = HOL
+						POR = { NOT = { has_country_flag = european_peace_conference_member } }
+						USA = { NOT = { has_country_flag = european_peace_conference_member } }
+						FRA = { NOT = { has_country_flag = european_peace_conference_member } }
+						AST = { NOT = { has_country_flag = european_peace_conference_member } }
+						ENG = { NOT = { has_country_flag = european_peace_conference_member } }
+						JAP = { NOT = { has_country_flag = european_peace_conference_member } }
+					}
+				}
+			}
+			every_state = {
+				limit = { OR = { state = 647 state = 646 state = 633 state = 684 } OWNER = { OR = { tag = GER is_in_faction_with = ROOT } NOT = { tag = ROOT } } }
+				transfer_state_to = ROOT
+			}
+			custom_effect_tooltip = versailles_tt_FSM
+			hidden_effect = {
 				if = {
 					limit = { NOT = { country_exists = FSM } }
 					release_puppet = FSM
 					FSM = { subjecting_script_with_transfer_parties_class_C_mandate_territory = yes }
 					FSM = {
-						set_cosmetic_tag = FSM_JAP
 						set_capital = { state = 647 }
 					}
 					else = {
 						create_dynamic_country = {
 							original_tag = FSM
-							JAP = {
-								every_owned_state = {
-									limit = { is_core_of = PREV.PREV }
-									transfer_state_to = PREV.PREV
-								}
+							transfer_state = 647
+							ROOT = {
 								puppet = PREV
 								PREV = { subjecting_script_with_transfer_parties_class_C_mandate_territory = yes }
 							}
-							set_cosmetic_tag = FSM_JAP
+							OVERLORD = {
+								every_owned_state = {
+									limit = { is_core_of = FSM }
+									transfer_state_to = PREV.PREV
+								}
+							}
 							set_capital = { state = 647 }
 						}
 					}
+				}
+				if = {
+					limit = { tag = JAP }
+					random_other_country = {
+						limit = { is_subject_of = ROOT original_tag = FSM }
+						set_cosmetic_tag = FSM_JAP
+					}
+				}
+			}
+		}
+		country_event = versailles.3
+	}
+}
+
+
+#Вопрос мандатов в Африке
+country_event = {
+	id = versailles.3
+	title = versailles.3.t
+	desc = versailles.3.desc
+	is_triggered_only = yes
+	option = {
+		name = versailles.3.a
+		add_to_variable = { global.european_peace_conference_africa_mandate_vote_yes = vote_power }
+		set_country_flag = european_peace_conference_africa_mandate_vote_yes
+		custom_effect_tooltip = versailles_vote_tt
+		if = {
+			limit = { is_in_faction_with = ENG }
+			custom_effect_tooltip = versailles_tt_TZN_ENG
+		}
+		if = {
+			limit = { NOT = { is_in_faction_with = BEL } is_in_faction_with = ENG }
+			custom_effect_tooltip = versailles_tt_RWA_BRD_ENG
+			else = {
+				custom_effect_tooltip = versailles_tt_RWA_BRD_BEL
+			}
+		}
+		if = {
+			limit = { is_in_faction_with = ENG is_in_faction_with = FRA }
+			custom_effect_tooltip = versailles_tt_TOG
+			custom_effect_tooltip = versailles_tt_CMR
+		}
+		if = {
+			limit = { NOT = { is_in_faction_with = ENG } is_in_faction_with = FRA }
+			custom_effect_tooltip = versailles_tt_TOG_FRA
+			custom_effect_tooltip = versailles_tt_CMR_FRA
+		}
+		if = {
+			limit = { is_in_faction_with = ENG NOT = { is_in_faction_with = FRA } }
+			custom_effect_tooltip = versailles_tt_TOG_ENG
+			custom_effect_tooltip = versailles_tt_CMR_ENG
+		}
+		if = {
+			limit = { NOT = { is_in_faction_with = ENG is_in_faction_with = FRA } }
+			custom_effect_tooltip = versailles_tt_TOG_POR
+			custom_effect_tooltip = versailles_tt_CMR_BEL
+		}
+		if = {
+			limit = { is_in_faction_with = ENG is_in_faction_with = SAF }
+			effect_tooltip = { SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 } }
+		}
+		if = {
+			limit = { is_in_faction_with = ENG NOT = { is_in_faction_with = SAF } }
+			effect_tooltip = { ENG = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 } }
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_africa_mandate_vote_yes
+								has_country_flag = european_peace_conference_africa_mandate_vote_no
+							}
+						}
+					}
+				}
+				if = {
+					limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } NOT = { is_in_faction_with = BEL } is_in_faction_with = ENG }
+					set_global_flag = european_peace_conference_ruanda_ENG
+				}
+				if = {
+					limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } is_in_faction_with = ENG }
+					set_global_flag = european_peace_conference_tangaica_ENG
+				}
+				if = {
+					limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } is_in_faction_with = ENG }
+					ENG = { transfer_state = 546 }
+				}
+				if = {
+					limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } OR = { is_in_faction_with = BEL NOT = { is_in_faction_with = ENG } } }
+					BEL = { transfer_state = 768 transfer_state = 769 }
+				}
+				if = {
+					limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } NOT = { is_in_faction_with = BEL } is_in_faction_with = ENG }
+					ENG = { transfer_state = 768 transfer_state = 769 }
+				}
+				if = {
+					limit = { is_in_faction_with = ENG is_in_faction_with = SAF }
+					SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				if = {
+					limit = { is_in_faction_with = ENG NOT = { is_in_faction_with = SAF } }
+					ENG = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				if = {
+					limit = { is_in_faction_with = ENG }
+					ENG = { transfer_state = 1233 transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 }
+				}
+				if = {
+					limit = { is_in_faction_with = FRA }
+					FRA = { transfer_state = 777 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 }
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = ENG } is_in_faction_with = FRA }
+					FRA = { transfer_state = 1233 transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 }
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = FRA } is_in_faction_with = ENG }
+					ENG = { transfer_state = 777 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 }
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = FRA is_in_faction_with = ENG } }
+					POR = { transfer_state = 1233 transfer_state = 777 }
+					BEL = { transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 }
+				}
+				if = {
+					limit = {
+						always = yes
+						OR {
+							check_variable = { global.european_peace_conference_africa_mandate_vote_yes > global.european_peace_conference_africa_mandate_vote_no }
+							AND = {
+								NOT = { check_variable = { global.european_peace_conference_africa_mandate_vote_yes < global.european_peace_conference_africa_mandate_vote_no } }
+								var:european_peace_conference_host = { has_country_flag = european_peace_conference_africa_mandate_vote_yes }
+							}
+						}
+					}
+					set_global_flag = european_peace_conference_africa_mandate_yes
+					if = {
+						limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } }
+						if = {
+							limit = { is_in_faction_with = ENG }
+							ENG = {
+								if = {
+									limit = { NOT = { country_exists = TZN } }
+									release_puppet = TZN
+									TZN = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									else = {
+										create_dynamic_country = {
+											original_tag = TZN
+											transfer_state = 546
+											PREV = {
+												puppet = PREV
+												PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+											}
+											OVERLORD = {
+												every_owned_state = {
+													limit = { is_core_of = TZN }
+													transfer_state_to = PREV.PREV
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						769 = {
+							OWNER = {
+								if = {
+									limit = { NOT = { country_exists = BRD } }
+									release_puppet = BRD
+									every_owned_state = {
+										limit = { OR = { is_core_of = BRD is_core_of = RWA } }
+										transfer_state_to = BRD
+									}
+									BRD = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									else = {
+										create_dynamic_country = {
+											original_tag = BRD
+											transfer_state = 769
+											PREV = {
+												puppet = PREV
+												PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+											}
+											OVERLORD = {
+												every_owned_state = {
+													limit = { OR = { is_core_of = BRD is_core_of = RWA } }
+													transfer_state_to = PREV.PREV
+												}
+											}
+										}
+									}
+								}
+								random_other_country = {
+									limit = { is_subject_of = PREV original_tag = BRD }
+									set_cosmetic_tag = RWA_BRD
+								}
+							}
+						}
+					}
+					777 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { country_exists = TOG } }
+								release_puppet = TOG
+								every_owned_state = {
+									limit = { is_core_of = TOG }
+									transfer_state_to = TOG
+								}
+								TOG = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+								else = {
+									create_dynamic_country = {
+										original_tag = TOG
+										transfer_state = 777
+										PREV = {
+											puppet = PREV
+											PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+										}
+										OVERLORD = {
+											every_owned_state = {
+												limit = { is_core_of = TOG }
+												transfer_state_to = PREV.PREV
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					1233 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { original_tag = TOG } }
+								create_dynamic_country = {
+									original_tag = TOG
+									transfer_state = 1233
+									PREV = {
+										puppet = PREV
+										PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									}
+									OVERLORD = {
+										every_owned_state = {
+											limit = { is_core_of = TOG }
+											transfer_state_to = PREV.PREV
+										}
+									}
+								}
+							}
+						}
+					}
+					773 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { country_exists = CMR } }
+								release_puppet = CMR
+								every_owned_state = {
+									limit = { is_core_of = CMR }
+									transfer_state_to = CMR
+								}
+								CMR = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+								else = {
+									create_dynamic_country = {
+										original_tag = CMR
+										transfer_state = 773
+										PREV = {
+											puppet = PREV
+											PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+										}
+										OVERLORD = {
+											every_owned_state = {
+												limit = { is_core_of = CMR }
+												transfer_state_to = PREV.PREV
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					1007 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { original_tag = CMR } }
+								create_dynamic_country = {
+									original_tag = CMR
+									transfer_state = 1007
+									transfer_state = 1008
+									transfer_state = 1009
+									PREV = {
+										puppet = PREV
+										PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									}
+									OVERLORD = {
+										every_owned_state = {
+											limit = { is_core_of = CMR }
+											transfer_state_to = PREV.PREV
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				clear_variable = global.european_peace_conference_africa_mandate_vote_yes
+				clear_variable = global.european_peace_conference_africa_mandate_vote_no
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_africa_mandate_vote_yes
+					clr_country_flag = european_peace_conference_africa_mandate_vote_no
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = ENG } }
+					set_variable = { global.european_peace_conference_tangaica_vote_BEL = 0 }
+					set_variable = { global.european_peace_conference_tangaica_vote_POR = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = versailles.4 days = 1 } #Контроль Тангаики
+					}
+					set_variable = { global.european_peace_conference_namibia_vote_POR = 0 }
+					set_variable = { global.european_peace_conference_namibia_vote_SAF = 0 }
+					set_variable = { global.european_peace_conference_namibia_vote_split = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = versailles.5 days = 2 } #Контроль Юго-Западной Африки
+					}
+				}
+				#every_country = {
+				#	limit = { has_country_flag = european_peace_conference_member }
+				#	country_event = { id = versailles.6 days = 1 } #Мандат на ближневосточные территории
+				#}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					tag = ENG
+					tag = FRA
+				}
+			}
+		}
+	}
+	option = {
+		name = versailles.3.b
+		add_to_variable = { global.european_peace_conference_africa_mandate_vote_no = vote_power }
+		set_country_flag = european_peace_conference_africa_mandate_vote_no
+		custom_effect_tooltip = versailles_vote_tt
+		if = {
+			limit = { is_in_faction_with = ENG }
+			effect_tooltip = { ENG = { transfer_state = 546 } }
+		}
+		if = {
+			limit = { NOT = { is_in_faction_with = BEL } is_in_faction_with = ENG }
+			effect_tooltip = { ENG = { transfer_state = 768 transfer_state = 769 } }
+			else = {
+				effect_tooltip = { BEL = { transfer_state = 768 transfer_state = 769 } }
+			}
+		}
+		if = {
+			limit = { is_in_faction_with = ENG is_in_faction_with = FRA }
+			effect_tooltip = { FRA = { transfer_state = 777 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 } }
+			effect_tooltip = { ENG = { transfer_state = 1233 transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 } }
+		}
+		if = {
+			limit = { NOT = { is_in_faction_with = ENG } is_in_faction_with = FRA }
+			effect_tooltip = { FRA = { transfer_state = 777 transfer_state = 1233 transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 } }
+		}
+		if = {
+			limit = { is_in_faction_with = ENG NOT = { is_in_faction_with = FRA } }
+			effect_tooltip = { ENG = { transfer_state = 777 transfer_state = 1233 transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 } }
+		}
+		if = {
+			limit = { NOT = { is_in_faction_with = ENG is_in_faction_with = FRA } }
+			effect_tooltip = { POR = { transfer_state = 777 transfer_state = 1233 } }
+			effect_tooltip = { BEL = { transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 } }
+		}
+		if = {
+			limit = { is_in_faction_with = ENG is_in_faction_with = SAF }
+			effect_tooltip = { SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 } }
+		}
+		if = {
+			limit = { is_in_faction_with = ENG NOT = { is_in_faction_with = SAF } }
+			effect_tooltip = { ENG = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 } }
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_africa_mandate_vote_yes
+								has_country_flag = european_peace_conference_africa_mandate_vote_no
+							}
+						}
+					}
+				}
+				if = {
+					limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } NOT = { is_in_faction_with = BEL } is_in_faction_with = ENG }
+					set_global_flag = european_peace_conference_ruanda_ENG
+				}
+				if = {
+					limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } is_in_faction_with = ENG }
+					set_global_flag = european_peace_conference_tangaica_ENG
+				}
+				if = {
+					limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } is_in_faction_with = ENG }
+					ENG = { transfer_state = 546 }
+				}
+				if = {
+					limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } OR = { is_in_faction_with = BEL NOT = { is_in_faction_with = ENG } } }
+					BEL = { transfer_state = 768 transfer_state = 769 }
+				}
+				if = {
+					limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } NOT = { is_in_faction_with = BEL } is_in_faction_with = ENG }
+					ENG = { transfer_state = 768 transfer_state = 769 }
+				}
+				if = {
+					limit = { is_in_faction_with = ENG is_in_faction_with = SAF }
+					SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				if = {
+					limit = { is_in_faction_with = ENG NOT = { is_in_faction_with = SAF } }
+					ENG = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				if = {
+					limit = { is_in_faction_with = ENG }
+					ENG = { transfer_state = 1233 transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 }
+				}
+				if = {
+					limit = { is_in_faction_with = FRA }
+					FRA = { transfer_state = 777 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 }
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = ENG } is_in_faction_with = FRA }
+					FRA = { transfer_state = 1233 transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 }
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = FRA } is_in_faction_with = ENG }
+					ENG = { transfer_state = 777 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 }
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = FRA is_in_faction_with = ENG } }
+					POR = { transfer_state = 1233 transfer_state = 777 }
+					BEL = { transfer_state = 1007 transfer_state = 1008 transfer_state = 1009 transfer_state = 773 transfer_state = 1010 transfer_state = 990 transfer_state = 1011 transfer_state = 1012 }
+				}
+				if = {
+					limit = {
+						always = yes
+						OR {
+							check_variable = { global.european_peace_conference_africa_mandate_vote_yes > global.european_peace_conference_africa_mandate_vote_no }
+							AND = {
+								NOT = { check_variable = { global.european_peace_conference_africa_mandate_vote_yes < global.european_peace_conference_africa_mandate_vote_no } }
+								var:european_peace_conference_host = { has_country_flag = european_peace_conference_africa_mandate_vote_yes }
+							}
+						}
+					}
+					set_global_flag = european_peace_conference_africa_mandate_yes
+					if = {
+						limit = { NOT = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } } }
+						if = {
+							limit = { is_in_faction_with = ENG }
+							ENG = {
+								if = {
+									limit = { NOT = { country_exists = TZN } }
+									release_puppet = TZN
+									TZN = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									else = {
+										create_dynamic_country = {
+											original_tag = TZN
+											transfer_state = 546
+											PREV = {
+												puppet = PREV
+												PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+											}
+											OVERLORD = {
+												every_owned_state = {
+													limit = { is_core_of = TZN }
+													transfer_state_to = PREV.PREV
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						769 = {
+							OWNER = {
+								if = {
+									limit = { NOT = { country_exists = BRD } }
+									release_puppet = BRD
+									every_owned_state = {
+										limit = { OR = { is_core_of = BRD is_core_of = RWA } }
+										transfer_state_to = BRD
+									}
+									BRD = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									else = {
+										create_dynamic_country = {
+											original_tag = BRD
+											transfer_state = 769
+											PREV = {
+												puppet = PREV
+												PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+											}
+											OVERLORD = {
+												every_owned_state = {
+													limit = { OR = { is_core_of = BRD is_core_of = RWA } }
+													transfer_state_to = PREV.PREV
+												}
+											}
+										}
+									}
+								}
+								random_other_country = {
+									limit = { is_subject_of = PREV original_tag = BRD }
+									set_cosmetic_tag = RWA_BRD
+								}
+							}
+						}
+					}
+					777 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { country_exists = TOG } }
+								release_puppet = TOG
+								every_owned_state = {
+									limit = { is_core_of = TOG }
+									transfer_state_to = TOG
+								}
+								TOG = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+								else = {
+									create_dynamic_country = {
+										original_tag = TOG
+										transfer_state = 777
+										PREV = {
+											puppet = PREV
+											PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+										}
+										OVERLORD = {
+											every_owned_state = {
+												limit = { is_core_of = TOG }
+												transfer_state_to = PREV.PREV
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					1233 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { original_tag = TOG } }
+								create_dynamic_country = {
+									original_tag = TOG
+									transfer_state = 1233
+									PREV = {
+										puppet = PREV
+										PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									}
+									OVERLORD = {
+										every_owned_state = {
+											limit = { is_core_of = TOG }
+											transfer_state_to = PREV.PREV
+										}
+									}
+								}
+							}
+						}
+					}
+					773 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { country_exists = CMR } }
+								release_puppet = CMR
+								every_owned_state = {
+									limit = { is_core_of = CMR }
+									transfer_state_to = CMR
+								}
+								CMR = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+								else = {
+									create_dynamic_country = {
+										original_tag = CMR
+										transfer_state = 773
+										PREV = {
+											puppet = PREV
+											PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+										}
+										OVERLORD = {
+											every_owned_state = {
+												limit = { is_core_of = CMR }
+												transfer_state_to = PREV.PREV
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					1007 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { original_tag = CMR } }
+								create_dynamic_country = {
+									original_tag = CMR
+									transfer_state = 1007
+									transfer_state = 1008
+									transfer_state = 1009
+									PREV = {
+										puppet = PREV
+										PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									}
+									OVERLORD = {
+										every_owned_state = {
+											limit = { is_core_of = CMR }
+											transfer_state_to = PREV.PREV
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				clear_variable = global.european_peace_conference_africa_mandate_vote_yes
+				clear_variable = global.european_peace_conference_africa_mandate_vote_no
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_africa_mandate_vote_yes
+					clr_country_flag = european_peace_conference_africa_mandate_vote_no
+				}
+				if = {
+					limit = { NOT = { is_in_faction_with = ENG } }
+					set_variable = { global.european_peace_conference_tangaica_vote_BEL = 0 }
+					set_variable = { global.european_peace_conference_tangaica_vote_POR = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = versailles.4 days = 1 } #Контроль Тангаики
+					}
+					set_variable = { global.european_peace_conference_namibia_vote_POR = 0 }
+					set_variable = { global.european_peace_conference_namibia_vote_SAF = 0 }
+					set_variable = { global.european_peace_conference_namibia_vote_split = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = versailles.5 days = 2 } #Контроль Юго-Западной Африки
+					}
+				}
+				#every_country = {
+				#	limit = { has_country_flag = european_peace_conference_member }
+				#	country_event = { id = versailles.6 days = 1 } #Мандат на ближневосточные территории
+				#}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = USA
+			}
+		}
+	}
+}
+
+#Контроль Тангаики
+country_event = {
+	id = versailles.4
+	title = versailles.4.t
+	desc = versailles.4.desc
+	is_triggered_only = yes
+	option = {
+		name = versailles.4.a
+		add_to_variable = { global.european_peace_conference_tangaica_vote_BEL = vote_power }
+		set_country_flag = european_peace_conference_tangaica_vote_BEL
+		custom_effect_tooltip = versailles_vote_tt
+		if = {
+			limit = { has_global_flag = european_peace_conference_africa_mandate_yes }
+			custom_effect_tooltip = versailles_tt_TZN_BEL
+			else = {
+				effect_tooltip = { BEL = { transfer_state = 546 } }
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					any_other_country = {
+						has_country_flag = european_peace_conference_member
+						NOT = {
+							has_country_flag = european_peace_conference_tangaica_vote_POR
+							has_country_flag = european_peace_conference_tangaica_vote_BEL
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					OR {
+						check_variable = { global.european_peace_conference_tangaica_vote_POR > global.european_peace_conference_tangaica_vote_BEL }
+						AND = {
+							NOT = { check_variable = { global.european_peace_conference_tangaica_vote_POR < global.european_peace_conference_tangaica_vote_BEL } }
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_tangaica_vote_POR }
+						}
+					}
+				}
+				else = {
+					if = {
+						limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } }
+						set_global_flag = european_peace_conference_tangaica_vote_BEL
+						else = {
+							BEL = { transfer_state = 546 }
+						}
+					}
+				}
+				if = {
+					limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } }
+					set_global_flag = european_peace_conference_tangaica_vote_POR
+					else = {
+						POR = { transfer_state = 546 }
+					}
+				}
+			}
+			if = {
+				limit = { has_global_flag = european_peace_conference_africa_mandate_yes }
+				546 = {
+					OWNER = {
+						if = {
+							limit = { NOT = { country_exists = TZN } }
+							release_puppet = TZN
+							TZN = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+							else = {
+								create_dynamic_country = {
+									original_tag = TZN
+									PREV = {
+										every_owned_state = {
+											limit = { is_core_of = TZN }
+											transfer_state_to = PREV.PREV
+										}
+										puppet = PREV
+										PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			hidden_effect = {
+				clear_variable = global.european_peace_conference_tangaica_vote_POR
+				clear_variable = global.european_peace_conference_tangaica_vote_BEL
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_tangaica_vote_POR
+					clr_country_flag = european_peace_conference_tangaica_vote_BEL
+				}
+			}
+		}
+	}
+	option = {
+		name = versailles.4.b
+		add_to_variable = { global.european_peace_conference_tangaica_vote_POR = vote_power }
+		set_country_flag = european_peace_conference_tangaica_vote_POR
+		custom_effect_tooltip = versailles_vote_tt
+		if = {
+			limit = { has_global_flag = european_peace_conference_africa_mandate_yes }
+			custom_effect_tooltip = versailles_tt_TZN_POR
+			else = {
+				effect_tooltip = { POR = { transfer_state = 546 } }
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_tangaica_vote_POR
+								has_country_flag = european_peace_conference_tangaica_vote_BEL
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						OR {
+							check_variable = { global.european_peace_conference_tangaica_vote_POR > global.european_peace_conference_tangaica_vote_BEL }
+							AND = {
+								NOT = { check_variable = { global.european_peace_conference_tangaica_vote_POR < global.european_peace_conference_tangaica_vote_BEL } }
+								var:european_peace_conference_host = { has_country_flag = european_peace_conference_tangaica_vote_POR }
+							}
+						}
+					}
+					else = {
+						if = {
+							limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } }
+							set_global_flag = european_peace_conference_tangaica_vote_BEL
+							else = {
+								BEL = { transfer_state = 546 }
+							}
+						}
+					}
+					if = {
+						limit = { any_country = { has_country_flag = OAF_GER_WWI_in_Africa } }
+						set_global_flag = european_peace_conference_tangaica_vote_POR
+						else = {
+							POR = { transfer_state = 546 }
+						}
+					}
+				}
+				if = {
+					limit = { has_global_flag = european_peace_conference_africa_mandate_yes }
+					546 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { country_exists = TZN } }
+								release_puppet = TZN
+								TZN = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+								else = {
+									create_dynamic_country = {
+										original_tag = TZN
+										PREV = {
+											every_owned_state = {
+												limit = { is_core_of = TZN }
+												transfer_state_to = PREV.PREV
+											}
+											puppet = PREV
+											PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				clear_variable = global.european_peace_conference_tangaica_vote_POR
+				clear_variable = global.european_peace_conference_tangaica_vote_BEL
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_tangaica_vote_POR
+					clr_country_flag = european_peace_conference_tangaica_vote_BEL
 				}
 			}
 		}
@@ -1929,10 +2842,205 @@ country_event = {
 }
 
 
-
-
-
-
+#Контроль Юго-Западной Африки
+country_event = {
+	id = versailles.5
+	title = versailles.5.t
+	desc = versailles.5.desc
+	is_triggered_only = yes
+	option = {
+		name = versailles.5.a
+		add_to_variable = { global.european_peace_conference_namibia_vote_POR = vote_power }
+		set_country_flag = european_peace_conference_namibia_vote_POR
+		custom_effect_tooltip = versailles_vote_tt
+		effect_tooltip = { POR = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 } }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_namibia_vote_POR
+								has_country_flag = european_peace_conference_namibia_vote_SAF
+								has_country_flag = european_peace_conference_namibia_vote_split
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						NOT = {
+							check_variable = { global.european_peace_conference_namibia_vote_POR < global.european_peace_conference_namibia_vote_split }
+							check_variable = { global.european_peace_conference_namibia_vote_POR < global.european_peace_conference_namibia_vote_SAF }
+						}
+						OR {
+							AND = {
+								check_variable = { global.european_peace_conference_namibia_vote_POR > global.european_peace_conference_namibia_vote_split }
+								check_variable = { global.european_peace_conference_namibia_vote_POR > global.european_peace_conference_namibia_vote_SAF }
+							}
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_namibia_vote_POR }
+						}
+					}
+					POR = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				else_if = {
+					limit = {
+						NOT = {
+							check_variable = { global.european_peace_conference_namibia_vote_split < global.european_peace_conference_namibia_vote_SAF }
+						}
+						OR {
+							check_variable = { global.european_peace_conference_namibia_vote_split > global.european_peace_conference_namibia_vote_SAF }
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_namibia_vote_split }
+						}
+					}
+					POR = { transfer_state = 894 transfer_state = 895 }
+					SAF = { transfer_state = 893 transfer_state = 541 }
+				}
+				else = {
+					SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				clear_variable = global.european_peace_conference_namibia_vote_POR
+				clear_variable = global.european_peace_conference_namibia_vote_SAF
+				clear_variable = global.european_peace_conference_namibia_vote_split
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_namibia_vote_POR
+					clr_country_flag = european_peace_conference_namibia_vote_SAF
+					clr_country_flag = european_peace_conference_namibia_vote_split
+				}
+			}
+		}
+	}
+	option = {
+		name = versailles.5.b
+		add_to_variable = { global.european_peace_conference_namibia_vote_SAF = vote_power }
+		set_country_flag = european_peace_conference_namibia_vote_SAF
+		custom_effect_tooltip = versailles_vote_tt
+		effect_tooltip = { SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 } }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_namibia_vote_POR
+								has_country_flag = european_peace_conference_namibia_vote_SAF
+								has_country_flag = european_peace_conference_namibia_vote_split
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						NOT = {
+							check_variable = { global.european_peace_conference_namibia_vote_POR < global.european_peace_conference_namibia_vote_split }
+							check_variable = { global.european_peace_conference_namibia_vote_POR < global.european_peace_conference_namibia_vote_SAF }
+						}
+						OR {
+							AND = {
+								check_variable = { global.european_peace_conference_namibia_vote_POR > global.european_peace_conference_namibia_vote_split }
+								check_variable = { global.european_peace_conference_namibia_vote_POR > global.european_peace_conference_namibia_vote_SAF }
+							}
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_namibia_vote_POR }
+						}
+					}
+					POR = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				else_if = {
+					limit = {
+						NOT = {
+							check_variable = { global.european_peace_conference_namibia_vote_split < global.european_peace_conference_namibia_vote_SAF }
+						}
+						OR {
+							check_variable = { global.european_peace_conference_namibia_vote_split > global.european_peace_conference_namibia_vote_SAF }
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_namibia_vote_split }
+						}
+					}
+					POR = { transfer_state = 894 transfer_state = 895 }
+					SAF = { transfer_state = 893 transfer_state = 541 }
+				}
+				else = {
+					SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				clear_variable = global.european_peace_conference_namibia_vote_POR
+				clear_variable = global.european_peace_conference_namibia_vote_SAF
+				clear_variable = global.european_peace_conference_namibia_vote_split
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_namibia_vote_POR
+					clr_country_flag = european_peace_conference_namibia_vote_SAF
+					clr_country_flag = european_peace_conference_namibia_vote_split
+				}
+			}
+		}
+	}
+	option = {
+		name = versailles.5.c
+		add_to_variable = { global.european_peace_conference_namibia_vote_split = vote_power }
+		set_country_flag = european_peace_conference_namibia_vote_split
+		custom_effect_tooltip = versailles_vote_tt
+		effect_tooltip = {
+			POR = { transfer_state = 894 transfer_state = 895 }
+			SAF = { transfer_state = 893 transfer_state = 541 }
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_namibia_vote_POR
+								has_country_flag = european_peace_conference_namibia_vote_SAF
+								has_country_flag = european_peace_conference_namibia_vote_split
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						NOT = {
+							check_variable = { global.european_peace_conference_namibia_vote_POR < global.european_peace_conference_namibia_vote_split }
+							check_variable = { global.european_peace_conference_namibia_vote_POR < global.european_peace_conference_namibia_vote_SAF }
+						}
+						OR {
+							AND = {
+								check_variable = { global.european_peace_conference_namibia_vote_POR > global.european_peace_conference_namibia_vote_split }
+								check_variable = { global.european_peace_conference_namibia_vote_POR > global.european_peace_conference_namibia_vote_SAF }
+							}
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_namibia_vote_POR }
+						}
+					}
+					POR = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				else_if = {
+					limit = {
+						NOT = {
+							check_variable = { global.european_peace_conference_namibia_vote_split < global.european_peace_conference_namibia_vote_SAF }
+						}
+						OR {
+							check_variable = { global.european_peace_conference_namibia_vote_split > global.european_peace_conference_namibia_vote_SAF }
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_namibia_vote_split }
+						}
+					}
+					POR = { transfer_state = 894 transfer_state = 895 }
+					SAF = { transfer_state = 893 transfer_state = 541 }
+				}
+				else = {
+					SAF = { transfer_state = 893 transfer_state = 541 transfer_state = 894 transfer_state = 895 }
+				}
+				clear_variable = global.european_peace_conference_namibia_vote_POR
+				clear_variable = global.european_peace_conference_namibia_vote_SAF
+				clear_variable = global.european_peace_conference_namibia_vote_split
+				every_possible_country = {
+					clr_country_flag = european_peace_conference_namibia_vote_POR
+					clr_country_flag = european_peace_conference_namibia_vote_SAF
+					clr_country_flag = european_peace_conference_namibia_vote_split
+				}
+			}
+		}
+	}
+}
 
 
 # Инициация Болгарии

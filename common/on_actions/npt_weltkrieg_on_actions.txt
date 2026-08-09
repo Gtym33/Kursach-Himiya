@@ -32,7 +32,7 @@ on_actions = {
 				ROOT = {
 					leave_faction = yes
 					add_ideas = neutral_foreign_policy_law
-					clr_country_flag = TRG_IKZ_Kaocen_revolt
+					clr_country_flag = OAF_GER_WWI_in_Africa
 					delete_unit = { disband = yes }
 					remove_all_foreing_locked_templates_from_liberated_country = yes
 					transfer_units_fraction = {
@@ -56,7 +56,14 @@ on_actions = {
 							state = 769
 						}
 					}
-					random_country = { limit = { owns_state = 718 } transfer_state = PREV }
+					if = {
+						limit = { has_global_flag = european_peace_conference_ruanda_ENG }
+						ENG = { transfer_state = PREV }
+						clr_global_flag = european_peace_conference_ruanda_ENG
+						else = {
+							BEL = { transfer_state = PREV }
+						}
+					}
 				}
 				every_state = {
 					limit = {
@@ -65,9 +72,80 @@ on_actions = {
 							state = 546
 						}
 					}
-					random_country = { limit = { owns_state = 547 } transfer_state = PREV }
+					if = {
+						limit = { has_global_flag = european_peace_conference_tangaica_POR }
+						POR = { transfer_state = PREV }
+					}
+					else_if = {
+						limit = { has_global_flag = european_peace_conference_tangaica_BEL }
+						BEL = { transfer_state = PREV }
+					}
+					else = {
+						ENG = { transfer_state = PREV }
+					}
 				}
 				FROM = { annex_country = { target = ROOT transfer_troops = no } }
+				if = {
+					limit = { has_global_flag = european_peace_conference_africa_mandate_yes }
+					if = {
+						limit = { OR = { has_global_flag = european_peace_conference_tangaica_ENG has_global_flag = european_peace_conference_tangaica_POR has_global_flag = european_peace_conference_tangaica_BEL } }
+						546 = {
+							OWNER = {
+								if = {
+									limit = { NOT = { country_exists = TZN } }
+									release_puppet = TZN
+									TZN = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+									else = {
+										create_dynamic_country = {
+											original_tag = TZN
+											PREV = {
+												every_owned_state = {
+													limit = { is_core_of = PREV.PREV }
+													transfer_state_to = PREV.PREV
+												}
+												puppet = PREV
+												PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					769 = {
+						OWNER = {
+							if = {
+								limit = { NOT = { country_exists = BRD } }
+								release_puppet = BRD
+								every_owned_state = {
+									limit = { OR = { is_core_of = BRD is_core_of = RWA } }
+									transfer_state_to = BRD
+								}
+								BRD = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+								else = {
+									create_dynamic_country = {
+										original_tag = BRD
+										PREV = {
+											every_owned_state = {
+												limit = { OR = { is_core_of = BRD is_core_of = RWA } }
+												transfer_state_to = PREV.PREV
+											}
+											puppet = PREV
+											PREV = { subjecting_script_with_transfer_parties_class_B_mandate_territory = yes }
+										}
+									}
+								}
+							}
+							random_other_country = {
+								limit = { is_subject_of = PREV original_tag = BRD }
+								set_cosmetic_tag = RWA_BRD
+							}
+						}
+					}
+				}
+				clr_global_flag = european_peace_conference_tangaica_ENG
+				clr_global_flag = european_peace_conference_tangaica_POR
+				clr_global_flag = european_peace_conference_tangaica_BEL
 			}
 			if = {
 				limit = {
