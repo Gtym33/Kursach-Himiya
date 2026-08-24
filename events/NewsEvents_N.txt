@@ -3284,3 +3284,78 @@ news_event = {
 		name = news_versailles.12.a # У нас есть 20 лет передышки
 	}
 }
+# Самозатопление германского флота
+news_event = {
+	id = news_versailles.13
+	title = news_versailles.13.t
+	desc = {
+		text = news_versailles.13.desc
+		trigger = { date < 1919.11.11 }
+	}
+	desc = {
+		text = news_versailles.13.desc_1
+		trigger = { NOT = { date < 1919.11.11 } date < 1920.11.11 }
+	}
+	desc = {
+		text = news_versailles.13.desc_2
+		trigger = { NOT = { date < 1920.11.11 } date < 1921.11.11 }
+	}
+	desc = {
+		text = news_versailles.13.desc_3
+		trigger = { NOT = { date < 1921.11.11 } }
+	}
+	picture = GFX_news_event_CCA_front
+	
+	major = yes
+	is_triggered_only = yes
+	
+	option = {
+		name = news_versailles.13.a # Немецкий флот погиб
+		custom_effect_tooltip = versailles_german_fleet_sink_tt
+		hidden_effect = {
+			if = {
+				limit = { tag = GER }
+				destroy_ships = {
+					type = support_ship_hull
+					count = all
+				}
+				destroy_ships = {
+					type = repair_ship_hull
+					count = all
+				}
+				destroy_ships = {
+					type = ship_hull_submarine
+					count = all
+				}
+				destroy_ships = {
+					type = ship_hull_carrier
+					count = all
+				}
+				set_temp_variable = { num_of_ship_hull_heavy = num_ships_with_type@battleship }
+				add_to_temp_variable = { num_of_ship_hull_heavy = num_ships_with_type@battle_cruiser }
+				while_loop_effect = {
+					limit = { check_variable = { num_of_ship_hull_heavy > 6 } }
+					add_to_temp_variable = { num_of_ship_hull_heavy = -1 }
+					destroy_ships = {
+						type = ship_hull_heavy
+						count = 1
+					}
+				}
+				while_loop_effect = {
+					limit = { check_variable = { num_ships_with_type@light_cruiser > 6 } }
+					destroy_ships = {
+						type = ship_hull_cruiser
+						count = 1
+					}
+				}
+				while_loop_effect = {
+					limit = { check_variable = { num_ships_with_type@destroyer > 24 } }
+					destroy_ships = {
+						type = ship_hull_light
+						count = 1
+					}
+				}
+			}
+		}
+	}
+}
