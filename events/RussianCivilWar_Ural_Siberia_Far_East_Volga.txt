@@ -7331,7 +7331,7 @@ country_event = {
 	
 	option = {
 		name = rcw_usfev.147.b #Визит в Берлин
-		trigger = { GER = { is_subject = no NOT = { OR = { GER = { has_government = communism has_government = radical_socialism } } } } }
+		trigger = { NOT = { has_country_flag = european_peace_conference_member } GER = { is_subject = no NOT = { OR = { GER = { has_government = communism has_government = radical_socialism } } } } }
 		add_political_power = -50
 		add_opinion_modifier = { target = GER modifier = sazonov_cca_1 }
 		GER = { country_event = { id = rcw_usfev.148 days = 1 } }
@@ -8880,7 +8880,7 @@ country_event = {
 	
 	option = { #Гермашка. Не, ну а вдруг?
 		name = rcw_usfev.205.b
-		trigger = {GER = {NOT = { has_country_flag = GER_monarchy_fall }}}
+		trigger = { NOT = { has_country_flag = european_peace_conference_member } GER = {NOT = { has_country_flag = GER_monarchy_fall }}}
 		GER = {country_event = rcw_usfev.206}
 		add_opinion_modifier = { target = GER modifier = sazonov_cca_1 }
 		add_political_power = -50
@@ -8899,11 +8899,12 @@ id = rcw_usfev.206
 	
 	option = { #А чоб собсна нет?
 		name = rcw_usfev.206.a
+		add_to_array = { rcw_supported_states = FROM.id } # добавить поддержку для отправителя
 		ROOT = {
-				add_opinion_modifier = { target = CCA modifier = sazonov_cca_2 }
+			add_opinion_modifier = { target = CCA modifier = sazonov_cca_2 }
 		}
 		add_political_power = 25
-		CCA = {country_event = rcw_usfev.207}
+		CCA = {country_event = rcw_usfev.207 }
 		every_country = {
 			limit = {
 				OR = {
@@ -8922,6 +8923,20 @@ id = rcw_usfev.206
 				FROM = {
 					THIS_country_will_be_recognized_by_PREV = yes
 				}
+			}
+		}
+		if = {
+			limit = { has_war_with = ENG }
+			every_country = {
+				limit = { OR = { tag = ENG is_subject_of = ENG is_in_faction_with = ENG } }
+				remove_from_array = { rcw_supported_states = FROM.id }
+			}
+		}
+		if = {
+			limit = { has_war_with = GER }
+			every_country = {
+				limit = { OR = { tag = GER is_subject_of = GER is_in_faction_with = GER } }
+				remove_from_array = { rcw_supported_states = FROM.id }
 			}
 		}
 	}

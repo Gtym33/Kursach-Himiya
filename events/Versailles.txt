@@ -1745,27 +1745,626 @@ country_event = {
 					clr_country_flag = european_peace_conference_vote_petrograd
 					clr_country_flag = european_peace_conference_vote_roma
 				}
-				#if = {
-				#	limit = { RUS = { is_in_faction_with = ROOT } }
+				if = {
+					limit = { RUS = { is_in_faction_with = ROOT } has_global_flag = secret_diplomacy_Entente_USA_14_points_speech }
 					set_variable = { global.european_peace_conference_league_of_nations_vote_arbitrage = 0 }
 					set_variable = { global.european_peace_conference_league_of_nations_vote_military = 0 }
 					every_country = {
 						limit = { has_country_flag = european_peace_conference_member }
 						country_event = { id = versailles.1 days = 21 } #Вопрос Лиги наций
 					}
-				#	else = {
-				#		set_variable = { global.european_peace_conference_RUS_not_participate = 0 }
-				#		set_variable = { global.european_peace_conference_RUS_participate = 0 }
-				#		every_country = {
-				#			limit = { has_country_flag = european_peace_conference_member }
-				#			country_event = { id = secret_diplomacy_Entente.19 days = 21 } #Вопрос российского представителя
-				#		}
-				#	}
-				#}
+				}
+				if = {
+					limit = { RUS = { is_in_faction_with = ROOT } NOT = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech } }
+					set_variable = { global.european_peace_conference_africa_mandate_vote_yes = 0 }
+					set_variable = { global.european_peace_conference_africa_mandate_vote_no = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = versailles.2 days = 7 } #Вопрос мандатных территорий
+					}
+					if = {
+						limit = { country_exists = AUS }
+						set_variable = { global.european_peace_conference_anschluss_vote_yes = 0 }
+						set_variable = { global.european_peace_conference_anschluss_vote_no = 0 }
+						if = {
+							limit = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+							AUS = { country_event = { id = versailles.34 days = 28 } }
+							else = {
+								AUS = { country_event = { id = versailles.34 days = 8 } }
+							}
+						}
+					}
+					set_variable = { global.european_peace_conference_germany_demilitarization_vote_yes = 0 }
+					set_variable = { global.european_peace_conference_germany_demilitarization_vote_no = 0 }
+				}
+				if = {
+					limit = { NOT = { RUS = { is_in_faction_with = ROOT } } }
+					set_variable = { global.european_peace_conference_RUS_vote_not_participate = 0 }
+					set_variable = { global.european_peace_conference_RUS_vote_participate = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = secret_diplomacy_Entente.19 days = 21 } #Вопрос российского представителя
+					}
+				}
 			}
 		}
 	}
 }
+
+
+
+
+#Вопрос российского представителя
+country_event = {
+	id = secret_diplomacy_Entente.19
+	title = secret_diplomacy_Entente.19.t
+	desc = {
+		text = secret_diplomacy_Entente.19.desc
+		trigger = { NOT = { country_exists = RSR } }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.19.desc_1
+		trigger = {
+			country_exists = RSR
+			any_country = { check_european_peace_conference_RUS_participate_possibility = yes }
+		}
+	}
+	desc = {
+		text = secret_diplomacy_Entente.19.desc_2
+		trigger = {
+			country_exists = RSR
+			NOT = {
+				any_country = { check_european_peace_conference_RUS_participate_possibility = yes }
+			}
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		name = secret_diplomacy_Entente.19.a
+		add_to_variable = { global.european_peace_conference_RUS_vote_not_participate = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote_not_participate
+		set_country_flag = { flag = european_peace_conference_RUS_vote_not_participate_delay days = 30 }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_RUS_vote_participate
+								has_country_flag = european_peace_conference_RUS_vote_not_participate
+							}
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.20 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = {
+			NOT = { country_exists = RSR }
+		}
+		name = secret_diplomacy_Entente.19.b
+		add_to_variable = { global.european_peace_conference_RUS_vote_participate = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote_participate
+		set_country_flag = { flag = european_peace_conference_RUS_vote_participate_delay days = 30 }
+		custom_effect_tooltip = versailles_vote_tt
+		RUS = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_RUS_vote_participate
+								has_country_flag = european_peace_conference_RUS_vote_not_participate
+							}
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.20 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = {
+			country_exists = RSR
+			any_country = { check_european_peace_conference_RUS_participate_possibility = yes }
+		}
+		name = secret_diplomacy_Entente.19.c
+		add_to_variable = { global.european_peace_conference_RUS_vote_participate = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote_participate
+		custom_effect_tooltip = versailles_vote_tt
+		effect_tooltip = { country_event = secret_diplomacy_Entente.22 } #Выбор российского представителя
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_RUS_vote_participate
+								has_country_flag = european_peace_conference_RUS_vote_not_participate
+							}
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.20 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = {
+			always = no
+			country_exists = RSR
+			NOT = {
+				any_country = { check_european_peace_conference_RUS_participate_possibility = yes }
+			}
+		}
+		name = secret_diplomacy_Entente.19.d
+		add_to_variable = { global.european_peace_conference_RUS_vote_participate = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote_participate
+		set_country_flag = { flag = european_peace_conference_RUS_vote_participate_delay days = 30 }
+		custom_effect_tooltip = versailles_vote_tt
+		RUS = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_RUS_vote_participate
+								has_country_flag = european_peace_conference_RUS_vote_not_participate
+							}
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.20 #Итог (скрытый ивент)
+			}
+		}
+	}
+}
+#Вопрос российского представителя Итог (скрытый ивент)
+country_event = {
+	id = secret_diplomacy_Entente.20
+	is_triggered_only = yes
+	hidden = yes
+	immediate = {
+		if = {
+			limit = {
+				NOT = {
+					check_variable = { global.european_peace_conference_RUS_vote_not_participate < global.european_peace_conference_RUS_vote_participate }
+				}
+				OR {
+					check_variable = { global.european_peace_conference_RUS_vote_not_participate > global.european_peace_conference_RUS_vote_participate }
+					var:european_peace_conference_host = { has_country_flag = european_peace_conference_RUS_vote_not_participate }
+				}
+			}
+			set_global_flag = european_peace_conference_RUS_not_participate
+			#if = {
+			#	limit = { NOT = { country_exists = RSR } }
+				RUS = { country_event = { id = secret_diplomacy_Entente.21 days = 3 } } #Россия без представительства
+				if = {
+					limit = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech }
+					set_variable = { global.european_peace_conference_league_of_nations_vote_arbitrage = 0 }
+					set_variable = { global.european_peace_conference_league_of_nations_vote_military = 0 }
+					every_country = {
+						limit = { has_country_flag = european_peace_conference_member }
+						country_event = { id = versailles.1 days = 21 } #Вопрос Лиги наций
+					}
+					else = {
+						set_variable = { global.european_peace_conference_africa_mandate_vote_yes = 0 }
+						set_variable = { global.european_peace_conference_africa_mandate_vote_no = 0 }
+						every_country = {
+							limit = { has_country_flag = european_peace_conference_member }
+							country_event = { id = versailles.2 days = 7 } #Вопрос мандатных территорий
+						}
+						if = {
+							limit = { country_exists = AUS }
+							set_variable = { global.european_peace_conference_anschluss_vote_yes = 0 }
+							set_variable = { global.european_peace_conference_anschluss_vote_no = 0 }
+							if = {
+								limit = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+								AUS = { country_event = { id = versailles.34 days = 28 } }
+								else = {
+									AUS = { country_event = { id = versailles.34 days = 8 } }
+								}
+							}
+						}
+						set_variable = { global.european_peace_conference_germany_demilitarization_vote_yes = 0 }
+						set_variable = { global.european_peace_conference_germany_demilitarization_vote_no = 0 }
+					}
+				}
+			#}
+			#if = {
+			#	limit = { country_exists = RSR }
+			#	#Политика в отношении России
+			#}
+		}
+		if = {
+			limit = {
+				NOT = {
+					check_variable = { global.european_peace_conference_RUS_vote_participate < global.european_peace_conference_RUS_vote_not_participate }
+				}
+				OR {
+					check_variable = { global.european_peace_conference_RUS_vote_participate > global.european_peace_conference_RUS_vote_not_participate }
+					var:european_peace_conference_host = { has_country_flag = european_peace_conference_RUS_vote_participate }
+				}
+			}
+			set_global_flag = european_peace_conference_RUS_participate
+			if = {
+				limit = { country_exists = RSR }
+				set_variable = { global.european_peace_conference_RUS_vote_no = 0 }
+				every_country = {
+					limit = {
+						check_european_peace_conference_RUS_participate_possibility = yes
+					}
+					set_country_flag = european_peace_conference_RUS_candidate
+					set_variable = { THIS.european_peace_conference_RUS_vote = 0 }
+				}
+				every_country = {
+					limit = { has_country_flag = european_peace_conference_member }
+					country_event = { id = secret_diplomacy_Entente.22 days = 1 } #Выбор российского представителя
+				}
+			}
+			if = {
+				limit = { NOT = { country_exists = RSR } }
+				RUS = { country_event = { id = secret_diplomacy_Entente.24 days = 1 } } #Приглашение на мирную конференцию
+			}
+		}
+		clear_variable = global.european_peace_conference_RUS_vote_not_participate
+		clear_variable = global.european_peace_conference_RUS_vote_participate
+		every_possible_country = {
+			clr_country_flag = european_peace_conference_RUS_vote_not_participate
+			clr_country_flag = european_peace_conference_RUS_vote_participate
+		}
+	}
+}
+
+#Россия без представительства (Россия)
+country_event = {
+	id = secret_diplomacy_Entente.21
+	title = secret_diplomacy_Entente.21.t
+	desc = secret_diplomacy_Entente.21.desc
+	is_triggered_only = yes
+	option = {
+		name = secret_diplomacy_Entente.21.a
+		every_country = {
+			limit = { has_country_flag = european_peace_conference_RUS_vote_not_participate_delay }
+			reverse_add_opinion_modifier = { target = RUS modifier = european_peace_conference_dominions_not_participate_opinion }
+		}
+	}
+}
+
+#Выбор российского представителя
+country_event = {
+	id = secret_diplomacy_Entente.22
+	title = secret_diplomacy_Entente.22.t
+	desc = secret_diplomacy_Entente.22.desc
+	immediate = {
+		if = {
+			limit = { NRR = { has_country_flag = european_peace_conference_RUS_candidate } }
+			custom_effect_tooltip = secret_diplomacy_Entente_22_desc_NRR
+		}
+		if = {
+			limit = { RVA = { has_country_flag = european_peace_conference_RUS_candidate } }
+			custom_effect_tooltip = secret_diplomacy_Entente_22_desc_RVA
+		}
+		if = {
+			limit = { NVA = { has_country_flag = european_peace_conference_RUS_candidate } }
+			custom_effect_tooltip = secret_diplomacy_Entente_22_desc_NVA
+		}
+		if = {
+			limit = { NWA = { has_country_flag = european_peace_conference_RUS_candidate } }
+			custom_effect_tooltip = secret_diplomacy_Entente_22_desc_NWA
+		}
+		if = {
+			limit = { CCA = { has_country_flag = european_peace_conference_RUS_candidate NOT = { has_focus_tree = His_Imperial_Majesty_Military_Committee_focus } } }
+			custom_effect_tooltip = secret_diplomacy_Entente_22_desc_CCA
+		}
+		if = {
+			limit = { CCA = { has_country_flag = european_peace_conference_RUS_candidate has_focus_tree = His_Imperial_Majesty_Military_Committee_focus } }
+			custom_effect_tooltip = secret_diplomacy_Entente_22_desc_CCA_mon
+		}
+		if = {
+			limit = { RSS = { has_country_flag = european_peace_conference_RUS_candidate } }
+			custom_effect_tooltip = secret_diplomacy_Entente_22_desc_RSS
+		}
+	}
+	is_triggered_only = yes
+	option = {
+		trigger = { NRR = { has_country_flag = european_peace_conference_RUS_candidate } }
+		name = secret_diplomacy_Entente.22.NRR
+		add_to_variable = { NRR.european_peace_conference_RUS_vote = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		custom_effect_tooltip = versailles_vote_tt
+		NRR = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = { RVA = { has_country_flag = european_peace_conference_RUS_candidate } }
+		name = secret_diplomacy_Entente.22.RVA
+		add_to_variable = { RVA.european_peace_conference_RUS_vote = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		custom_effect_tooltip = versailles_vote_tt
+		RVA = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = { NVA = { has_country_flag = european_peace_conference_RUS_candidate } }
+		name = secret_diplomacy_Entente.22.NVA
+		add_to_variable = { NVA.european_peace_conference_RUS_vote = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		custom_effect_tooltip = versailles_vote_tt
+		NVA = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = { NVA = { has_country_flag = european_peace_conference_RUS_candidate } }
+		name = secret_diplomacy_Entente.22.NWA
+		add_to_variable = { NWA.european_peace_conference_RUS_vote = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		custom_effect_tooltip = versailles_vote_tt
+		NWA = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = { CCA = { has_country_flag = european_peace_conference_RUS_candidate NOT = { has_focus_tree = His_Imperial_Majesty_Military_Committee_focus } } }
+		name = secret_diplomacy_Entente.22.CCA
+		add_to_variable = { CCA.european_peace_conference_RUS_vote = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		custom_effect_tooltip = versailles_vote_tt
+		CCA = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = { CCA = { has_country_flag = european_peace_conference_RUS_candidate has_focus_tree = His_Imperial_Majesty_Military_Committee_focus } }
+		name = secret_diplomacy_Entente.22.CCA_mon
+		add_to_variable = { CCA.european_peace_conference_RUS_vote = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		custom_effect_tooltip = versailles_vote_tt
+		CCA = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		trigger = { RSS = { has_country_flag = european_peace_conference_RUS_candidate } }
+		name = secret_diplomacy_Entente.22.RSS
+		add_to_variable = { RSS.european_peace_conference_RUS_vote = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		custom_effect_tooltip = versailles_vote_tt
+		RSS = { custom_effect_tooltip = secret_diplomacy_Entente_12_tt_a }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+	option = {
+		name = secret_diplomacy_Entente.22.no
+		add_to_variable = { global.european_peace_conference_RUS_vote_no = vote_power }
+		set_country_flag = european_peace_conference_RUS_vote
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = { has_country_flag = european_peace_conference_RUS_vote }
+						}
+					}
+				}
+				country_event = secret_diplomacy_Entente.23 #Итог (скрытый ивент)
+			}
+		}
+	}
+}
+
+#Выбор российского представителя Итог (скрытый ивент)
+country_event = {
+	id = secret_diplomacy_Entente.23
+	is_triggered_only = yes
+	#hidden = yes
+	immediate = {
+		set_temp_variable = { global.european_peace_conference_RUS_vote_max = 0 }
+		every_counrty = {
+			limit = {
+				has_country_flag = european_peace_conference_RUS_candidate
+				check_variable = { THIS.european_peace_conference_RUS_vote > global.european_peace_conference_RUS_vote_max }
+			}
+			set_temp_variable = { global.european_peace_conference_RUS_vote_max = THIS.european_peace_conference_RUS_vote }
+		}
+		random_other_country = {
+			limit = {
+				has_country_flag = european_peace_conference_RUS_candidate
+				check_variable = { THIS.european_peace_conference_RUS_vote = global.european_peace_conference_RUS_vote_max }
+				OR = {
+					tag = NRR
+					NRR = {
+						OR = {
+							NOT = { has_country_flag = european_peace_conference_RUS_candidate }
+							NOT = { check_variable = { THIS.european_peace_conference_RUS_vote = global.european_peace_conference_RUS_vote_max } }
+						}
+					}
+				}
+			}
+			country_event = { id = secret_diplomacy_Entente.24 days = 1 } #Приглашение на мирную конференцию
+		}
+		clear_variable = global.european_peace_conference_RUS_vote_no
+		every_possible_country = {
+			clr_country_flag = european_peace_conference_RUS_vote
+			clr_country_flag = european_peace_conference_RUS_candidate
+			clear_variable = european_peace_conference_RUS_vote
+		}
+	}
+}
+
+
+#Приглашение на мирную конференцию (Россия)
+country_event = {
+	id = secret_diplomacy_Entente.24
+	title = secret_diplomacy_Entente.24.t
+	desc = {
+		text = secret_diplomacy_Entente.24.desc
+		trigger = { NOT = { tag = RSR } }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.24.desc_1
+		trigger = { tag = RSR }
+	}
+	is_triggered_only = yes
+	immediate = {
+		hidden_effect = {
+			set_country_flag = european_peace_conference_member
+			set_variable = { vote_power = 1 }
+		}
+	}
+	option = {
+		#trigger = { NOT = { tag = RSR } }
+		name = secret_diplomacy_Entente.24.a
+		if = {
+			limit = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech }
+			set_variable = { global.european_peace_conference_league_of_nations_vote_arbitrage = 0 }
+			set_variable = { global.european_peace_conference_league_of_nations_vote_military = 0 }
+			every_country = {
+				limit = { has_country_flag = european_peace_conference_member }
+				country_event = { id = versailles.1 days = 21 } #Вопрос Лиги наций
+			}
+			else = {
+				set_variable = { global.european_peace_conference_africa_mandate_vote_yes = 0 }
+				set_variable = { global.european_peace_conference_africa_mandate_vote_no = 0 }
+				every_country = {
+					limit = { has_country_flag = european_peace_conference_member }
+					country_event = { id = versailles.2 days = 7 } #Вопрос мандатных территорий
+				}
+				if = {
+					limit = { country_exists = AUS }
+					set_variable = { global.european_peace_conference_anschluss_vote_yes = 0 }
+					set_variable = { global.european_peace_conference_anschluss_vote_no = 0 }
+					if = {
+						limit = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+						AUS = { country_event = { id = versailles.34 days = 28 } }
+						else = {
+							AUS = { country_event = { id = versailles.34 days = 8 } }
+						}
+					}
+				}
+				set_variable = { global.european_peace_conference_germany_demilitarization_vote_yes = 0 }
+				set_variable = { global.european_peace_conference_germany_demilitarization_vote_no = 0 }
+			}
+		}
+		every_country = {
+			limit = {
+				has_country_flag = european_peace_conference_RUS_vote_participate_delay
+				is_in_array = {
+					array = unrecognized_states
+					value = ROOT.id
+				}
+			}
+			ROOT = { THIS_country_will_be_recognized_by_PREV = yes }
+		}
+	}
+	# вариант отказа для большевиков
+	# вариант согласия для большевиков
+}
+
+# вариант отказа для большевиков, оповещение для Антанты
+# secret_diplomacy_Entente.25
+
+# вариант что большевики едут, оповещение для Антанты
+# secret_diplomacy_Entente.26
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1826,13 +2425,13 @@ country_event = {
 					limit = { country_exists = AUS }
 					set_variable = { global.european_peace_conference_anschluss_vote_yes = 0 }
 					set_variable = { global.european_peace_conference_anschluss_vote_no = 0 }
-					#if = {
-					#	limit = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-					#	AUS = { country_event = { id = versailles.34 days = 28 } }
-					#	else = {
+					if = {
+						limit = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+						AUS = { country_event = { id = versailles.34 days = 28 } }
+						else = {
 							AUS = { country_event = { id = versailles.34 days = 8 } }
-					#	}
-					#}
+						}
+					}
 				}
 				set_variable = { global.european_peace_conference_germany_demilitarization_vote_yes = 0 }
 				set_variable = { global.european_peace_conference_germany_demilitarization_vote_no = 0 }
@@ -1890,13 +2489,13 @@ country_event = {
 					limit = { country_exists = AUS }
 					set_variable = { global.european_peace_conference_anschluss_vote_yes = 0 }
 					set_variable = { global.european_peace_conference_anschluss_vote_no = 0 }
-					#if = {
-					#	limit = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
-					#	AUS = { country_event = { id = versailles.34 days = 28 } }
-					#	else = {
+					if = {
+						limit = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
+						AUS = { country_event = { id = versailles.34 days = 28 } }
+						else = {
 							AUS = { country_event = { id = versailles.34 days = 8 } }
-					#	}
-					#}
+						}
+					}
 				}
 				set_variable = { global.european_peace_conference_germany_demilitarization_vote_yes = 0 }
 				set_variable = { global.european_peace_conference_germany_demilitarization_vote_no = 0 }
