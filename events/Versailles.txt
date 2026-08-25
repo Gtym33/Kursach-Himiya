@@ -738,10 +738,12 @@ country_event = {
 
 	trigger = {
 		has_start_date < 1919.1.1
+		has_global_flag = WWI_is_now
 		tag = USA
 		#has_country_leader = { character = USA_Woodrow_Wilson ruling_only = yes }
 		OR = { has_war_with = GER has_war_with = AUH has_war_with = BUL has_war_with = TUR }
 		NOT = { has_war_with = ENG has_war_with = FRA }
+		NOT = { any_other_country = { has_country_flag = european_peace_conference_member } }
 		OR = {
 			country_exists = RSR
 			has_global_flag = WWI_GER_HAS_CAPITULATED
@@ -762,6 +764,115 @@ country_event = {
 		add_political_power = 25
 		set_global_flag = secret_diplomacy_Entente_USA_14_points_speech
 		news_event = { id = news_versailles.6 days = 1 }
+	}
+}
+
+# Конференция Европейцев инициация (скрытый ивент и без новостных)
+country_event = {
+	id = secret_diplomacy_Entente.8
+	fire_only_once = yes
+	hidden = yes
+	trigger = {
+		has_start_date < 1919.1.1
+		OR = {
+			tag = FRA
+			AND = {
+				tag = ENG
+				has_global_flag = WWI_FRA_HAS_CAPITULATED
+			}
+		}
+		NOT = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech }
+		OR = {
+			NOT = { has_global_flag = WWI_is_now }
+			AND = {
+				has_global_flag = WWI_GER_HAS_CAPITULATED
+				has_global_flag = WWI_AUH_HAS_CAPITULATED
+				TUR = { NOT = { has_war_with = ROOT has_war_with = FRA has_war_with = ENG } }
+			}
+		}
+		NOT = { has_global_flag = WWI_GER_sieg_im_Weltkrieg }
+	}
+	mean_time_to_happen = {
+		days = 1
+	}
+	immediate = {
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						tag = FRA
+						tag = ENG
+						tag = ITA
+						tag = RUS
+					}
+					is_in_faction_with = ROOT
+				}
+				set_country_flag = european_peace_conference_member
+			}
+		}
+		if = {
+			limit = { any_country = { is_in_faction_with = ENG has_country_flag = european_peace_conference_member } }
+			set_variable = { global.european_peace_conference_vote_dominions_participate = 0 }
+			set_variable = { global.european_peace_conference_vote_dominions_not_participate = 0 }
+			every_counrty = {
+				limit = { has_country_flag = european_peace_conference_member }
+				country_event = secret_diplomacy_Entente.9 # Конференция Европейцев (оповещение)
+				country_event = { id = secret_diplomacy_Entente.12 days = 14 } # Вопрос участия доминионов
+			}
+			else = {
+				every_counrty = {
+					limit = { has_country_flag = european_peace_conference_member }
+					country_event = secret_diplomacy_Entente.9 # Конференция Европейцев (оповещение)
+					country_event = { id = secret_diplomacy_Entente.17 days = 14 } # Выбор места конференции
+				}
+				set_variable = { global.european_peace_conference_vote_paris = 0 }
+				set_variable = { global.european_peace_conference_vote_london = 0 }
+				set_variable = { global.european_peace_conference_vote_petrograd = 0 }
+				set_variable = { global.european_peace_conference_vote_roma = 0 }
+			}
+		}
+	}
+}
+
+# Американский президент едет в Европу / Конференция Европейцев
+country_event = {
+	id = secret_diplomacy_Entente.9
+	title = secret_diplomacy_Entente.9.t
+	title = {
+		text = secret_diplomacy_Entente.9.t
+		trigger = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech }
+	}
+	title = {
+		text = secret_diplomacy_Entente.9.t_1
+		trigger = { NOT = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech } }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.9.desc
+		trigger = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.9.desc_1
+		trigger = { NOT = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech } any_country = { is_in_faction_with = ENG has_country_flag = european_peace_conference_member } }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.9.desc_2
+		trigger = { NOT = { has_global_flag = secret_diplomacy_Entente_USA_14_points_speech } NOT = { any_country = { is_in_faction_with = ENG has_country_flag = european_peace_conference_member } } }
+	}
+	picture = GFX_report_event_germany_civil_war_soldiers
+
+	is_triggered_only = yes
+	
+	option = {
+		name = secret_diplomacy_Entente.9.a
+		effect_tooltip = {
+			if = {
+				limit = { any_country = { is_in_faction_with = ENG has_country_flag = european_peace_conference_member } }
+				country_event = secret_diplomacy_Entente.12 # Вопрос участия доминионов
+				else = {
+					country_event = secret_diplomacy_Entente.17 # Выбор места конференции
+				}
+			}
+		}
 	}
 }
 
@@ -822,11 +933,13 @@ country_event = {
 			set_variable = { global.european_peace_conference_vote_dominions_not_participate = 0 }
 			every_counrty = {
 				limit = { has_country_flag = european_peace_conference_member }
+				country_event = secret_diplomacy_Entente.9 # Американский президент едет в Европу (оповещение)
 				country_event = { id = secret_diplomacy_Entente.12 days = 14 } # Вопрос участия доминионов
 			}
 			else = {
 				every_counrty = {
 					limit = { has_country_flag = european_peace_conference_member }
+					country_event = secret_diplomacy_Entente.9 # Американский президент едет в Европу (оповещение)
 					country_event = { id = secret_diplomacy_Entente.17 days = 14 } # Выбор места конференции
 				}
 				set_variable = { global.european_peace_conference_vote_paris = 0 }
@@ -1091,6 +1204,7 @@ country_event = {
 			}
 		}
 		name = secret_diplomacy_Entente.13.a #Мы это заслужили
+		effect_tooltip = { country_event = secret_diplomacy_Entente.17 } #Выбор места конференции
 		add_political_power = 30
 		add_autonomy_score = {
 			value = 150
@@ -1109,6 +1223,7 @@ country_event = {
 			}
 		}
 		name = secret_diplomacy_Entente.13.b #Приветствуем страны-победительницы
+		effect_tooltip = { country_event = secret_diplomacy_Entente.17 } #Выбор места конференции
 		if = {
 			limit = { tag = ENG }
 			hidden_effect = {
@@ -1230,6 +1345,7 @@ country_event = {
 			}
 		}
 		name = secret_diplomacy_Entente.13.c #Пока что главенствовать будет Лондон
+		effect_tooltip = { country_event = secret_diplomacy_Entente.17 } #Выбор места конференции
 		if = {
 			limit = { tag = ENG }
 			hidden_effect = {
@@ -2471,7 +2587,6 @@ country_event = {
 
 
 add_namespace = versailles
-
 
 #Вопрос «Лиги наций»
 country_event = {
@@ -4817,16 +4932,13 @@ country_event = {
 # Инициация Болгарии
 country_event = {
 	id = versailles.100
-	title = versailles.100.t
-	desc = versailles.100.d
-	picture = GFX_report_event_germany_civil_war_soldiers
 	
 	trigger = {
-		has_global_flag = versailles_peace_treaty_in_progress
 		NOT = { has_global_flag = WWI_is_now }
+		NOT = { has_global_flag = WWI_GER_sieg_im_Weltkrieg }
+		has_global_flag = WWI_BUL_HAS_CAPITULATED
 		has_country_flag = WWI_Entente_member
 		is_faction_leader = yes
-		has_global_flag = WWI_BUL_HAS_CAPITULATED
 	}
 
 	fire_only_once = yes
@@ -4836,16 +4948,35 @@ country_event = {
 	}
 	hidden = yes
 	
-	option = {
-		name = versailles.100.a
+	immediate = {
 		BUL = { leave_faction = yes }
-		hidden_effect = {
-			if = {
-				limit = { BUL = { NOT = { has_idea = BUL_interunion_commission_idea } } }
-				set_variable = { global.Entente_major_conf_members = 0 }
-				set_variable = { global.Entente_keep_white_peace_with_BUL = 0 }
-				set_variable = { global.Entente_not_keep_white_peace_with_BUL = 0 }
-				set_variable = { global.Entente_major_conf_votes = 0 }
+		set_variable = { global.Entente_major_conf_members = 0 }
+		set_variable = { global.Entente_major_conf_votes = 0 }
+		if = {
+			limit = { BUL = { NOT = { has_idea = BUL_interunion_commission_idea } } }
+			set_variable = { global.Entente_keep_white_peace_with_BUL = 0 }
+			set_variable = { global.Entente_not_keep_white_peace_with_BUL = 0 }
+			every_country = {
+				limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
+				if = {
+					limit = { OR = { tag = USA tag = RUS } }
+					add_to_variable = { global.Entente_major_conf_members = 3 }
+					set_variable = { vote_power = 3 }
+				}
+				else_if = {
+					limit = { OR = { tag = FRA tag = ENG } }
+					add_to_variable = { global.Entente_major_conf_members = 4 }
+					set_variable = { vote_power = 4 }
+				}
+				else = {
+					add_to_variable = { global.Entente_major_conf_members = 1 }
+					set_variable = { vote_power = 1 }
+				}
+				country_event = { id = versailles.101 days = 12 }
+			}
+			else = {
+				set_variable = { global.Entente_Dobruja_ROM = 0 }
+				set_variable = { global.Entente_Dobruja_not_fully_ROM = 0 }
 				every_country = {
 					limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
 					if = {
@@ -4862,31 +4993,7 @@ country_event = {
 						add_to_variable = { global.Entente_major_conf_members = 1 }
 						set_variable = { vote_power = 1 }
 					}
-					country_event = { id = versailles.101 days = 12 }
-				}
-				else = {
-					set_variable = { global.Entente_major_conf_members = 0 }
-					set_variable = { global.Entente_Dobruja_ROM = 0 }
-					set_variable = { global.Entente_Dobruja_not_fully_ROM = 0 }
-					set_variable = { global.Entente_major_conf_votes = 0 }
-					every_country = {
-						limit = { has_country_flag = WWI_Entente_member is_subject = no NOT = { tag = BUL } }
-						if = {
-							limit = { OR = { tag = USA tag = RUS } }
-							add_to_variable = { global.Entente_major_conf_members = 3 }
-							set_variable = { vote_power = 3 }
-						}
-						else_if = {
-							limit = { OR = { tag = FRA tag = ENG } }
-							add_to_variable = { global.Entente_major_conf_members = 4 }
-							set_variable = { vote_power = 4 }
-						}
-						else = {
-							add_to_variable = { global.Entente_major_conf_members = 1 }
-							set_variable = { vote_power = 1 }
-						}
-						country_event = { id = versailles.104 days = 12 }
-					}
+					country_event = { id = versailles.104 days = 12 }
 				}
 			}
 		}
@@ -6080,995 +6187,10 @@ country_event = {
 	}
 }
 
-###### Парижская мирная конференция ######
-
-# Начало конференции
-country_event = {
-	id = versailles.201
-	title = versailles.201.t
-	desc = versailles.201.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	trigger = {
-		always = no
-		OR = {
-			tag = FRA
-			tag = ENG
-		}
-		is_faction_leader = yes
-		has_global_flag = versailles_peace_treaty_in_progress
-		has_global_flag = WWI_GER_HAS_CAPITULATED
-		has_global_flag = WWI_AUH_HAS_CAPITULATED
-		has_global_flag = WWI_BUL_HAS_CAPITULATED
-	}
-
-	fire_only_once = yes
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = versailles.201.a
-		set_variable = { global.vers_peace_conf_members = 0 }
-		every_country = {
-			limit = { has_country_flag = WWI_Entente_member }
-			add_to_variable = { global.vers_peace_conf_members = 1 }
-			set_variable = { vote_power = 1 }
-		}
-		if = {
-			limit = {
-				RUS = {
-					NOT = { has_country_flag = WWI_Entente_member }
-					NOT = { has_country_flag = RUS_brest_peace_fired }
-				}
-			}
-			set_country_flag = WWI_Entente_member
-			add_to_variable = { global.vers_peace_conf_members = 1 }
-		}
-		if = {
-			limit = { RUS = { has_country_flag = WWI_Entente_member } }
-			add_to_variable = { global.vers_peace_conf_members = 3 }
-			RUS = { set_variable = { vote_power = 4 } }
-		}
-		if = {
-			limit = { FRA = { has_country_flag = WWI_Entente_member } }
-			add_to_variable = { global.vers_peace_conf_members = 2 }
-			FRA = { set_variable = { vote_power = 3 } }
-		}
-		if = {
-			limit = { ENG = { has_country_flag = WWI_Entente_member } }
-			add_to_variable = { global.vers_peace_conf_members = 2 }
-			ENG = { set_variable = { vote_power = 3 } }
-		}
-		if = {
-			limit = { USA = { has_country_flag = WWI_Entente_member } }
-			add_to_variable = { global.vers_peace_conf_members = 2 }
-			USA = { set_variable = { vote_power = 3 } }
-		}
-		if = {
-			limit = { SER = { has_country_flag = WWI_Entente_member } }
-			add_to_variable = { global.vers_peace_conf_members = 1 }
-			SER = { set_variable = { vote_power = 2 } }
-		}
-		if = {
-			limit = { ITA = { has_country_flag = WWI_Entente_member } RUS = { NOT = { has_country_flag = WWI_Entente_member } } }
-			add_to_variable = { global.vers_peace_conf_members = -1 }
-			clear_variable = vote_power
-			clr_country_flag = WWI_Entente_member
-		}
-		if = {
-			limit = { FRA = { has_country_flag = WWI_Entente_member } RUS = { has_country_flag = WWI_Entente_member } }
-			add_to_variable = { global.vers_peace_conf_members = 1 }
-			FRA = { set_variable = { vote_power = 4 } }
-		}
-		set_variable = { global.FRA_Alsace_Lorraine = 0 }
-		set_variable = { global.FRA_Saar_annex = 0 }
-		set_variable = { global.FRA_Saar_referendum = 0 }
-		set_variable = { global.FRA_Rheiland_annex = 0 }
-		set_variable = { global.FRA_Rheiland_demilitarization = 0 }
-		set_variable = { global.FRA_Rheiland_ind = 0 }
-		
-		set_variable = { global.BEL_Eupen_Malmedy = 0 }
-		
-		set_variable = { global.POL_Poznan = 0 }
-		set_variable = { global.POL_Upper_Silesia_annex = 0 }
-		set_variable = { global.POL_Upper_Silesia_referendum = 0 }
-		set_variable = { global.POL_Gdansk_annex = 0 }
-		set_variable = { global.POL_Gdansk_ind = 0 }
-		set_variable = { global.POL_West_Prussia = 0 }
-		
-		set_variable = { global.RUS_East_Prussia_annex = 0 }
-		set_variable = { global.RUS_East_Prussia_ind = 0 }
-		set_variable = { global.RUS_Lusatia_annex = 0 }
-		set_variable = { global.RUS_Lusatia_ind = 0 }
-		
-		set_variable = { global.DEN_Schleswig = 0 }
-		
-		set_variable = { global.LIT_Memelland = 0 }
-		
-		set_variable = { global.BAY_Bavaria = 0 }
-		
-		every_country = {
-			limit = { has_country_flag = WWI_Entente_member }
-			country_event = { id = versailles.202 days = 1 }
-			country_event = { id = versailles.203 days = 10 }
-			country_event = { id = versailles.204 days = 14 }
-			
-			country_event = { id = versailles.205 days = 20 }
-			
-			country_event = { id = versailles.206 days = 32 }
-			country_event = { id = versailles.207 days = 34 }
-			country_event = { id = versailles.208 days = 46 }
-			country_event = { id = versailles.209 days = 48 }
-			
-			country_event = { id = versailles.210 days = 54 }
-			country_event = { id = versailles.211 days = 56 }
-			
-			country_event = { id = versailles.212 days = 60 }
-			
-			country_event = { id = versailles.213 days = 74 }
-			
-			country_event = { id = versailles.214 days = 78 }
-			
-			hidden_effect = {
-				country_event = { id = versailles.220 days = 174 }
-				country_event = { id = versailles.221 days = 175 }
-			}
-		}
-	}
-}
-# Эльзас-Лоррейн
-country_event = {
-	id = versailles.202
-	title = versailles.202.t
-	desc = versailles.202.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Франции
-	option = {
-		name = versailles.202.a
-		add_to_variable = { global.FRA_Alsace_Lorraine = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		trigger = {
-			NOT = { tag = FRA }
-		}
-		name = versailles.202.b
-	}
-}
-# Саар
-country_event = {
-	id = versailles.203
-	title = versailles.203.t
-	desc = versailles.203.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Франции
-	option = {
-		name = versailles.203.a
-		add_to_variable = { global.FRA_Saar_annex = vote_power }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				OR = {
-					tag = ENG
-					tag = USA
-				}
-			}
-		}
-	}
-	
-	#Отдать Франции до референдума
-	option = {
-		name = versailles.203.b
-		add_to_variable = { global.FRA_Saar_referendum = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.203.c
-	}
-}
-# Рейнленд
-country_event = {
-	id = versailles.204
-	title = versailles.204.t
-	desc = versailles.204.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Франции
-	option = {
-		name = versailles.204.a
-		add_to_variable = { global.FRA_Rheiland_annex = vote_power }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				OR = {
-					tag = ENG
-					tag = USA
-				}
-			}
-		}
-	}
-	
-	#Демилитаризовать
-	option = {
-		name = versailles.204.b
-		add_to_variable = { global.FRA_Rheiland_demilitarization = vote_power }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				tag = FRA
-			}
-			modifier = {
-				factor = 999
-				OR = {
-					tag = ENG
-					tag = USA
-				}
-			}
-		}
-	}
-	
-	#Независимый Рейнленд
-	option = {
-		name = versailles.204.c
-		add_to_variable = { global.FRA_Rheiland_ind = vote_power }
-		ai_chance = {
-			factor = 0.5
-			modifier = {
-				factor = 2
-				tag = FRA
-			}
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.204.e
-	}
-}
-# Эйпен
-country_event = {
-	id = versailles.205
-	title = versailles.205.t
-	desc = versailles.205.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Бельгии
-	option = {
-		name = versailles.205.a
-		add_to_variable = { global.BEL_Eupen_Malmedy = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.205.b
-	}
-}
-# Познань
-country_event = {
-	id = versailles.206
-	title = versailles.206.t
-	desc = versailles.206.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Польше/России
-	option = {
-		name = versailles.206.a
-		add_to_variable = { global.POL_Poznan = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.206.b
-	}
-}
-# Верхняя Силезия
-country_event = {
-	id = versailles.207
-	title = versailles.207.t
-	desc = versailles.207.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Польше/России
-	option = {
-		name = versailles.207.a
-		add_to_variable = { global.POL_Upper_Silesia_annex = vote_power }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				RUS = { NOT = { has_country_flag = WWI_Entente_member } }
-			}
-		}
-	}
-	
-	#Референдум
-	option = {
-		name = versailles.207.b
-		add_to_variable = { global.POL_Upper_Silesia_referendum = vote_power }
-		ai_chance = {
-			factor = 2
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.207.c
-	}
-}
-# Данциг/Гданьск
-country_event = {
-	id = versailles.208
-	title = versailles.208.t
-	desc = versailles.208.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Польше/России
-	option = {
-		name = versailles.208.a
-		add_to_variable = { global.POL_Gdansk_annex = vote_power }
-	}
-	
-	#Вольный город
-	option = {
-		name = versailles.208.b
-		add_to_variable = { global.POL_Gdansk_ind = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.208.c
-	}
-}
-# Западная Прусия
-country_event = {
-	id = versailles.209
-	title = versailles.209.t
-	desc = versailles.209.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Польше/России
-	option = {
-		name = versailles.209.a
-		add_to_variable = { global.POL_West_Prussia = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.209.b
-	}
-}
-# Восточная Прусия
-country_event = {
-	id = versailles.210
-	title = versailles.210.t
-	desc = versailles.210.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Польше/России
-	option = {
-		name = versailles.210.a
-		add_to_variable = { global.RUS_East_Prussia_annex = vote_power }
-	}
-	
-	#Независимая Прусия
-	option = {
-		name = versailles.210.b
-		add_to_variable = { global.RUS_East_Prussia_ind = vote_power }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				RUS = { NOT = { has_country_flag = WWI_Entente_member } }
-				NOT = { tag = FRA }
-			}
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.210.c
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				tag = FRA
-			}
-		}
-	}
-}
-# Лужица
-country_event = {
-	id = versailles.211
-	title = versailles.211.t
-	desc = versailles.211.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Польше/России
-	option = {
-		name = versailles.211.a
-		add_to_variable = { global.RUS_Lusatia_annex = vote_power }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0
-				RUS = { NOT = { has_country_flag = WWI_Entente_member } }
-			}
-		}
-	}
-	
-	#Независимая Лужица
-	option = {
-		name = versailles.211.b
-		add_to_variable = { global.RUS_Lusatia_ind = vote_power }
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.211.c
-		ai_chance = {
-			factor = 1
-		}
-	}
-}
-# Шлезевиг
-country_event = {
-	id = versailles.212
-	title = versailles.212.t
-	desc = versailles.212.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Дании север Шлезевига
-	option = {
-		name = versailles.212.a
-		add_to_variable = { global.DEN_Schleswig = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Отдать Дании весь Шлезевиг
-	option = {
-		name = versailles.212.b
-		add_to_variable = { global.DEN_Schleswig_all = vote_power }
-		ai_chance = {
-			factor = 0.5
-			modifier = {
-				factor = 999
-				tag = DEN
-			}
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.212.c
-	}
-}
-# Мемель
-country_event = {
-	id = versailles.213
-	title = versailles.213.t
-	desc = versailles.213.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Отдать Литве/России
-	option = {
-		name = versailles.213.a
-		add_to_variable = { global.LIT_Memelland = vote_power }
-		ai_chance = {
-			factor = 1
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.213.b
-	}
-}
-# Бавария
-country_event = {
-	id = versailles.214
-	title = versailles.214.t
-	desc = versailles.214.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	#Независимая Бавария
-	option = {
-		name = versailles.214.a
-		add_to_variable = { global.BAY_Bavaria = vote_power }
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 5
-				tag = FRA
-			}
-		}
-	}
-	
-	#Оставить Германии
-	option = {
-		name = versailles.214.b
-		ai_chance = {
-			factor = 2
-		}
-	}
-}
-
-country_event = {
-	id = versailles.220
-	title = versailles.220.t
-	desc = versailles.220.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	hidden = yes
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = versailles.220.a
-		divide_variable = {
-			var = global.FRA_Alsace_Lorraine
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.FRA_Saar_annex
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.FRA_Saar_referendum
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.FRA_Rheiland_annex
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.FRA_Rheiland_demilitarization
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.FRA_Rheiland_ind
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.BEL_Eupen_Malmedy
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.POL_Poznan
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.POL_Upper_Silesia_annex
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.POL_Upper_Silesia_referendum
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.POL_Gdansk_annex
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.POL_Gdansk_ind
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.POL_West_Prussia
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.RUS_East_Prussia_annex
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.RUS_East_Prussia_ind
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.RUS_Lusatia_annex
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.RUS_Lusatia_ind
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.DEN_Schleswig
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.DEN_Schleswig_all
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.LIT_Memelland
-			value = global.vers_peace_conf_members
-		}
-		divide_variable = {
-			var = global.BAY_Bavaria
-			value = global.vers_peace_conf_members
-		}
-		
-		set_variable = { global.FRA_Rheiland_GER = 1 }
-		subtract_from_variable = { global.FRA_Rheiland_GER = global.FRA_Rheiland_annex }
-		subtract_from_variable = { global.FRA_Rheiland_GER = global.FRA_Rheiland_demilitarization }
-		subtract_from_variable = { global.FRA_Rheiland_GER = global.FRA_Rheiland_ind }
-		
-		set_variable = { global.FRA_Saar_GER = 1 }
-		subtract_from_variable = { global.FRA_Saar_GER = global.FRA_Saar_annex }
-		subtract_from_variable = { global.FRA_Saar_GER = global.FRA_Saar_referendum }
-		
-		set_variable = { global.POL_Upper_Silesia_GER = 1 }
-		subtract_from_variable = { global.POL_Upper_Silesia_GER = global.POL_Upper_Silesia_annex }
-		subtract_from_variable = { global.POL_Upper_Silesia_GER = global.POL_Upper_Silesia_referendum }
-		
-		set_variable = { global.POL_Gdansk_GER = 1 }
-		subtract_from_variable = { global.POL_Gdansk_GER = global.POL_Gdansk_annex }
-		subtract_from_variable = { global.POL_Gdansk_GER = global.POL_Gdansk_ind }
-		
-		set_variable = { global.RUS_East_Prussia_GER = 1 }
-		subtract_from_variable = { global.RUS_East_Prussia_GER = global.RUS_East_Prussia_annex }
-		subtract_from_variable = { global.RUS_East_Prussia_GER = global.RUS_East_Prussia_ind }
-		
-		set_variable = { global.RUS_Lusatia_GER = 1 }
-		subtract_from_variable = { global.RUS_Lusatia_GER = global.RUS_Lusatia_annex }
-		subtract_from_variable = { global.RUS_Lusatia_GER = global.RUS_Lusatia_ind }
-		
-		set_variable = { global.DEN_Schleswig_GER = 1 }
-		subtract_from_variable = { global.RUS_Lusatia_GER = global.DEN_Schleswig }
-		subtract_from_variable = { global.RUS_Lusatia_GER = global.DEN_Schleswig_all }
-		
-	}
-}
-
-country_event = {
-	id = versailles.221
-	title = versailles.221.t
-	desc = versailles.221.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = versailles.221.a
-		
-		if = {
-			limit = { check_variable = { global.FRA_Rheiland_GER < 0.5 } }
-			if = {
-				limit = { check_variable = { global.FRA_Rheiland_annex > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_annex > global.FRA_Rheiland_demilitarization } }
-				FRA = { transfer_state = 1266 transfer_state = 42 transfer_state = 51 }
-				else = {
-					if = {
-						limit = { check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex } }
-						GER = { transfer_state = 1266 transfer_state = 42 transfer_state = 50 transfer_state = 51 }
-						1266 = { set_demilitarized_zone = yes }
-						42 = { set_demilitarized_zone = yes }
-						50 = { set_demilitarized_zone = yes }
-						51 = { set_demilitarized_zone = yes }
-						else = {
-							RHI ={
-								transfer_state = 1266
-								transfer_state = 42
-								transfer_state = 51
-							}
-						}
-					}
-				}
-			}
-			else = {
-				GER = { transfer_state = 1266 transfer_state = 42 transfer_state = 50 transfer_state = 51 }
-			}
-		}
-		
-		if = {
-			limit = { check_variable = { global.FRA_Saar_GER < 0.5 } }
-			if = {
-				limit = { check_variable = { global.FRA_Saar_annex > global.FRA_Saar_referendum } }
-				FRA = { transfer_state = 1369 }
-				else = {
-					FRA = { transfer_state = 1369 set_country_flag = FRA_Saar_referendum }
-				}
-			}
-			else = {
-				if = {
-					limit = { check_variable = { global.FRA_Rheiland_GER < 0.5 } }
-					if = {
-						limit = { check_variable = { global.FRA_Rheiland_annex > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_annex > global.FRA_Rheiland_demilitarization } }
-						FRA = { transfer_state = 1369 }
-						else = {
-							if = {
-								limit = { check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex } }
-								GER = { transfer_state = 1369 }
-								1369 = { set_demilitarized_zone = yes }
-								else = {
-									RHI ={
-										transfer_state = 1369
-									}
-								}
-							}
-						}
-						else = {
-							GER = { transfer_state = 1369 }
-						}
-					}
-				}
-			}
-		}
-		if = {
-			limit = { check_variable = { global.POL_Upper_Silesia_GER < 0.5 } }
-			if = {
-				limit = { check_variable = { global.POL_Upper_Silesia_annex > global.POL_Upper_Silesia_referendum } }
-				if = {
-					limit = { country_exists = POL }
-					POL = { transfer_state = 67 transfer_state = 762 }
-					else = { RUS = { transfer_state = 67 transfer_state = 762 } }
-				}
-				else = {
-					GER = { transfer_state = 67 transfer_state = 762 set_country_flag = Upper_Silesia_referendum }
-				}
-			}
-			else = {
-				GER = { transfer_state = 67 transfer_state = 762 }
-			}
-		}
-		if = {
-			limit = { check_variable = { global.POL_Gdansk_GER < 0.5 } }
-			if = {
-				limit = { check_variable = { global.POL_Gdansk_annex > global.POL_Gdansk_ind } }
-				if = {
-					limit = { country_exists = POL }
-					POL = { transfer_state = 85 }
-					else = { RUS = { transfer_state = 85 } }
-				}
-				else = {
-					DNZ = { transfer_state = 85 }
-				}
-			}
-			else = {
-				if = { limit = { check_variable = { global.POL_West_Prussia < 0.5 } }
-					if = {
-						limit = { check_variable = { global.RUS_East_Prussia_GER < 0.5 } }
-						if = {
-							limit = { check_variable = { global.RUS_East_Prussia_annex > global.RUS_East_Prussia_ind } }
-							GER = { transfer_state = 85 }
-							else = {
-								PRE = { transfer_state = 85 }
-							}
-						}
-						else = {
-							GER = { transfer_state = 85 }
-						}
-					}
-					else = {
-						GER = { transfer_state = 85 }
-					}
-				}
-			}
-		}
-		if = {
-			limit = { check_variable = { global.RUS_East_Prussia_GER < 0.5 } }
-			if = {
-				limit = { check_variable = { global.RUS_East_Prussia_annex > global.RUS_East_Prussia_ind } }
-				if = {
-					limit = { country_exists = POL }
-					POL = { transfer_state = 5 transfer_state = 763 transfer_state = 1379 }
-					else = { RUS = { transfer_state = 5 transfer_state = 763 transfer_state = 1379 } }
-				}
-				else = {
-					PRE = { transfer_state = 5 transfer_state = 763 transfer_state = 1379 }
-				}
-			}
-			else = {
-				GER = { transfer_state = 5 transfer_state = 763 transfer_state = 1379 }
-			}
-		}
-		if = {
-			limit = { check_variable = { global.RUS_Lusatia_GER < 0.5 } }
-			if = {
-				limit = { check_variable = { global.RUS_Lusatia_annex > global.RUS_Lusatia_ind } }
-				if = {
-					limit = { country_exists = POL }
-					POL = { transfer_state = 65 }
-					else = { RUS = { transfer_state = 65 } }
-				}
-				#else = {
-				#	LZT = { transfer_state = 65 }
-				#}
-			}
-			else = {
-				GER = { transfer_state = 65 transfer_state = 762 }
-			}
-		}
-		if = {
-			limit = { check_variable = { global.FRA_Alsace_Lorraine < 0.5 } }
-			GER = { transfer_state = 28 }
-			else = {
-				FRA = { transfer_state = 28 }
-			}
-		}
-		if = {
-			limit = { check_variable = { global.BEL_Eupen_Malmedy < 0.5 } }
-			if = {
-				limit = { check_variable = { global.FRA_Rheiland_GER < 0.5 } }
-				if = {
-					limit = { check_variable = { global.FRA_Rheiland_annex > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_annex > global.FRA_Rheiland_demilitarization } }
-					FRA = { transfer_state = 992 }
-					else = {
-						if = {
-							limit = { check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_ind } check_variable = { global.FRA_Rheiland_demilitarization > global.FRA_Rheiland_annex } }
-							GER = { transfer_state = 992 }
-							992 = { set_demilitarized_zone = yes }
-							else = { RHI = { transfer_state = 992 } }
-						}
-					}
-					else = {
-						GER = { transfer_state = 992 }
-					}
-				}
-			}
-			else = {
-				BEL = { transfer_state = 992 }
-			}
-		}
-		if = {
-			limit = { check_variable = { global.POL_Poznan < 0.5 } }
-			GER = { transfer_state = 86 }
-			else = {
-				if = {
-					limit = { country_exists = POL }
-					POL = { transfer_state = 86 }
-					else = {
-						RUS = { transfer_state = 86 }
-					}
-				}
-			}
-		}
-		if = {
-			limit = { check_variable = { global.POL_West_Prussia < 0.5 } }
-			GER = { transfer_state = 807 transfer_state = 1271 }
-			else = {
-				if = {
-					limit = { country_exists = POL }
-					POL = { transfer_state = 807 transfer_state = 1271 }
-					else = {
-						RUS = { transfer_state = 807 transfer_state = 1271 }
-					}
-				}
-			}
-		}
-		if = {
-			limit = { check_variable = { global.DEN_Schleswig_GER < 0.5 } }
-			if = {
-				limit = { check_variable = { global.DEN_Schleswig_all < global.DEN_Schleswig } }
-				DEN = { transfer_state = 912 }
-				GER = { transfer_state = 909 }
-				else = {
-					DEN = { transfer_state = 912 transfer_state = 909 }
-				}
-			}
-			else = {
-				GER = { transfer_state = 912 transfer_state = 909 }
-			}
-		}
-		if = {
-			limit = { check_variable = { global.LIT_Memelland < 0.5 } }
-			if = {
-				limit = { check_variable = { global.RUS_East_Prussia_ind > global.RUS_East_Prussia_annex } check_variable = { global.RUS_East_Prussia_ind > global.RUS_East_Prussia_GER } }
-				PRE = { transfer_state = 188 }
-				else = {
-					every_country = {
-						limit = { controls_state = 189 }
-						transfer_state = 188
-					}
-				}
-			}
-			else = {
-				if = {
-					limit = { country_exists = LIT }
-					LIT = { transfer_state = 188 }
-					else = {
-						if = {
-							limit = { POL = { controls_state = 189 } }
-							POL = { transfer_state = 188 }
-							else = {
-								RUS = { transfer_state = 188 }
-							}
-						}
-					}
-				}
-			}
-		}
-		if = {
-			limit = { check_variable = { global.BAY_Bavaria < 0.5 } }
-			GER = {
-				transfer_state = 52
-				transfer_state = 53
-				transfer_state = 54
-			}
-			else = {
-				BAY = {
-					transfer_state = 52
-					transfer_state = 53
-					transfer_state = 54
-				}
-			}
-		}
-		if = {
-			limit = { country_exists = AUH }
-			AUH = { transfer_state = 153 transfer_state = 848 }
-			else = {
-				if = {
-					limit = { country_exists = AUS }
-					AUS = { transfer_state = 153 transfer_state = 848 }
-				}
-			}
-		}
-		clr_global_flag = versailles_peace_treaty_in_progress
-	}
-}
 
 # Конец Войны
 country_event = {
 	id = versailles.1918
-	title = versailles.1918.t
-	desc = versailles.1918.d
-	picture = GFX_report_event_germany_civil_war_soldiers
-	
 	hidden = yes
 	
 	trigger = {
@@ -7089,14 +6211,12 @@ country_event = {
 	option = {
 		name = versailles.1918.a
 		clr_global_flag = WWI_is_now
-		set_global_flag = versailles_peace_treaty_in_progress
 		if = {
 			limit = { has_global_flag = WWI_GER_sieg_im_Weltkrieg }
 			every_country = {
 				limit = { is_in_faction_with = GER is_subject = no OR = { tag = AUH tag = BUL tag = TUR tag = ITA tag = TUR tag = UKR } }
 				leave_faction = yes
 			}
-			else = { dismantle_faction = yes }
 		}
 		hidden_effect = {
 			GER = { add_threat = -60 }
@@ -7104,7 +6224,6 @@ country_event = {
 			FRA = { add_threat = -30 }
 			RUS = { add_threat = -20 }
 			AUH = { add_threat = -15 }
-
 			GER = { clr_country_flag = GER_keep_BUL clr_country_flag = flag_GER_BUL_recrute_BUL_generals clr_country_flag = flag_GER_BUL_unite_progerman_opposition }
 		}
 	}
