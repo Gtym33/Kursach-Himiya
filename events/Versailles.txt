@@ -726,10 +726,36 @@ country_event = {
 country_event = {
 	id = secret_diplomacy_Entente.7
 	title = secret_diplomacy_Entente.7.t
-	desc = secret_diplomacy_Entente.7.desc
+	desc = {
+		text = secret_diplomacy_Entente.7.desc
+		trigger = { country_exists = RSR }
+	}
+	desc = {
+		text = secret_diplomacy_Entente.7.desc_1
+		trigger = { NOT = { country_exists = RSR } }
+	}
 	picture = GFX_report_event_germany_civil_war_soldiers
 
-	is_triggered_only = yes
+	trigger = {
+		has_start_date < 1919.1.1
+		tag = USA
+		#has_country_leader = { character = USA_Woodrow_Wilson ruling_only = yes }
+		OR = { has_war_with = GER has_war_with = AUH has_war_with = BUL has_war_with = TUR }
+		NOT = { has_war_with = ENG has_war_with = FRA }
+		OR = {
+			country_exists = RSR
+			has_global_flag = WWI_GER_HAS_CAPITULATED
+			has_global_flag = WWI_AUH_HAS_CAPITULATED
+			has_global_flag = WWI_BUL_HAS_CAPITULATED
+			has_global_flag = WWI_TUR_HAS_CAPITULATED
+		}
+	}
+	
+	fire_only_once = yes
+	
+	mean_time_to_happen = {
+		days = 30
+	}
 	
 	option = {
 		name = secret_diplomacy_Entente.7.a #Этот документ заложит основу мира!
@@ -766,33 +792,47 @@ country_event = {
 	mean_time_to_happen = {
 		days = 1
 	}
+	immediate = {
+		hidden_effect = {
+			set_country_flag = european_peace_conference_member
+			every_country = {
+				limit = {
+					OR = {
+						tag = FRA
+						tag = ENG
+						tag = ITA
+						tag = RUS
+					}
+					OR = {
+						is_in_faction_with = ROOT
+						is_in_faction_with = FRA
+						is_in_faction_with = ENG
+					}
+				}
+				set_country_flag = european_peace_conference_member
+			}
+		}
+	}
 	
 	option = {
 		name = secret_diplomacy_Entente.11.a # В первую очередь Париж!
-		every_country = {
-			limit = {
-				OR = {
-					tag = USA
-					tag = FRA
-					tag = ENG
-					tag = ITA
-					tag = RUS
-				}
-				is_in_faction_with = ROOT
-			}
-			set_country_flag = european_peace_conference_member
-			if = {
-				limit = { is_in_faction_with = ENG }
-				set_variable = { global.european_peace_conference_vote_dominions_participate = 0 }
-				set_variable = { global.european_peace_conference_vote_dominions_not_participate = 0 }
+		if = {
+			limit = { any_country = { is_in_faction_with = ENG has_country_flag = european_peace_conference_member } }
+			set_variable = { global.european_peace_conference_vote_dominions_participate = 0 }
+			set_variable = { global.european_peace_conference_vote_dominions_not_participate = 0 }
+			every_counrty = {
+				limit = { has_country_flag = european_peace_conference_member }
 				country_event = { id = secret_diplomacy_Entente.12 days = 14 } # Вопрос участия доминионов
-				else = {
+			}
+			else = {
+				every_counrty = {
+					limit = { has_country_flag = european_peace_conference_member }
 					country_event = { id = secret_diplomacy_Entente.17 days = 14 } # Выбор места конференции
-					set_variable = { global.european_peace_conference_vote_paris = 0 }
-					set_variable = { global.european_peace_conference_vote_london = 0 }
-					set_variable = { global.european_peace_conference_vote_petrograd = 0 }
-					set_variable = { global.european_peace_conference_vote_roma = 0 }
 				}
+				set_variable = { global.european_peace_conference_vote_paris = 0 }
+				set_variable = { global.european_peace_conference_vote_london = 0 }
+				set_variable = { global.european_peace_conference_vote_petrograd = 0 }
+				set_variable = { global.european_peace_conference_vote_roma = 0 }
 			}
 		}
 		news_event = { id = news_versailles.7 days = 10 }
