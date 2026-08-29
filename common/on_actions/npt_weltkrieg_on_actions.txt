@@ -5,6 +5,31 @@ on_actions = {
 		effect = {
 			if = {
 				limit = {
+					ROOT = { has_country_flag = HJZ_great_arab_revolt }
+					FROM = { OR = { tag = TUR is_subject_of = TUR is_in_faction_with = TUR } }
+				}
+				ROOT = {
+					leave_faction = yes
+					add_ideas = neutral_foreign_policy_law
+					clr_country_flag = HJZ_great_arab_revolt
+					delete_unit = { disband = yes }
+					remove_all_foreing_locked_templates_from_liberated_country = yes
+					transfer_units_fraction = {
+						target = FROM
+						size = 0
+						stockpile_ratio = 1
+						army_ratio = 0
+						navy_ratio = 1
+						air_ratio = 0.5
+						keep_unit_leaders_trigger = { always = yes }
+					}
+				}
+				set_country_flag = capitulated_news_event_delay
+				news_event = { id = news_versailles.4 days = 0 } # Конец арабского восстания
+				TUR = { annex_country = { target = ROOT transfer_troops = no } }
+			}
+			if = {
+				limit = {
 					ROOT = { has_country_flag = TRG_IKZ_Kaocen_revolt }
 				}
 				ROOT = {
@@ -214,20 +239,15 @@ on_actions = {
 					random_country = { limit = { owns_state = 448 } transfer_state = PREV }
 				}
 			}
-		}
-	}
-	
-	# ROOT is capitulated country, FROM is winner
-	on_capitulation = {
-		effect = {
 			if = {
 				limit = {
 					has_global_flag = WWI_is_now
 					NOT = { has_global_flag = WWI_ENG_HAS_CAPITULATED }
 					ROOT = { tag = ENG }
 				}
+				#set_country_flag = capitulated_news_event_delay
+				#news_event = { id = news_n.113 days = 0 }
 				set_global_flag = WWI_ENG_HAS_CAPITULATED
-				news_event = { id = news_n.113 days = 0 }
 			}
 			if = {
 				limit = {
@@ -235,8 +255,9 @@ on_actions = {
 					NOT = { has_global_flag = WWI_FRA_HAS_CAPITULATED }
 					ROOT = { tag = FRA }
 				}
+				#set_country_flag = capitulated_news_event_delay
+				#news_event = { id = news_n.112 days = 0 }
 				set_global_flag = WWI_FRA_HAS_CAPITULATED
-				news_event = { id = news_n.112 days = 0 }
 			}
 			if = {
 				limit = {
@@ -244,7 +265,8 @@ on_actions = {
 					NOT = { has_global_flag = WWI_ITA_HAS_CAPITULATED }
 					ROOT = { tag = ITA }
 				}
-				news_event = { id = news_n.111 days = 0 }
+				#set_country_flag = capitulated_news_event_delay
+				#news_event = { id = news_n.111 days = 0 }
 				set_global_flag = WWI_ITA_HAS_CAPITULATED
 				ITA = { country_event = weltkrieg_frankfurt.15 }
 			}
@@ -254,6 +276,7 @@ on_actions = {
 					ROOT = { tag = BUL }
 					NOT = { has_global_flag = WWI_BUL_HAS_CAPITULATED }
 				}
+				set_country_flag = capitulated_news_event_delay
 				news_event = { id = news_n.101 days = 0 }
 				BUL = {
 					set_country_flag = WWI_forced_capitulation
@@ -266,13 +289,17 @@ on_actions = {
 					ROOT = { tag = TUR }
 					NOT = { has_global_flag = WWI_TUR_HAS_CAPITULATED }
 				}
-				news_event = { id = news_n.102 days = 0 }
+				#set_country_flag = capitulated_news_event_delay
+				#news_event = { id = news_n.102 days = 0 }
 				TUR = {
 					country_event = { id = compiegne_armistice.1 hours = 1 }
 				}
 			}
 		}
 	}
+	
+	# ROOT is capitulated country, FROM is winner
+	#on_capitulation = {
 	
 	#ROOT is the winner, FROM is the loser.
 	on_peaceconference_ended = {
