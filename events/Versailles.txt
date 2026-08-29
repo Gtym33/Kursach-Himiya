@@ -3637,8 +3637,7 @@ country_event = {
 		country_event = versailles.14 #Вопрос единого Арабского Государства
 		effect_tooltip = {
 			#country_event = versailles.18 #Создание еврейского государства
-			#country_event = versailles.22 #Создание курдского государства
-			#country_event = versailles.29 #Создание Ирака
+			country_event = versailles.22 #Создание курдского государства
 		}
 	}
 }
@@ -3655,7 +3654,10 @@ country_event = {
 		add_to_variable = { global.european_peace_conference_arab_vote_kill = vote_power }
 		set_country_flag = european_peace_conference_arab_vote_kill
 		custom_effect_tooltip = versailles_vote_tt
-		effect_tooltip = { HJZ = { country_event = versailles.17 } } #Крах амбиций
+		effect_tooltip = {
+			country_event = versailles.29 #Создание Ирака
+			HJZ = { country_event = versailles.17 } #Крах амбиций
+		}
 		hidden_effect = {
 			if = {
 				limit = {
@@ -3804,12 +3806,12 @@ country_event = {
 		#	limit = { has_country_flag = european_peace_conference_member }
 		#	country_event = { id = versailles.18 days = 7 } #Создание еврейского государства
 		#}
-		#set_variable = { global.european_peace_conference_kurd_vote_kill = 0 }
-		#set_variable = { global.european_peace_conference_kurd_vote_create = 0 }
-		#every_country = {
-		#	limit = { has_country_flag = european_peace_conference_member }
-		#	country_event = { id = versailles.22 days = 14 } #Создание курдского государства
-		#}
+		set_variable = { global.european_peace_conference_kurd_vote_kill = 0 }
+		set_variable = { global.european_peace_conference_kurd_vote_create = 0 }
+		every_country = {
+			limit = { has_country_flag = european_peace_conference_member }
+			country_event = { id = versailles.22 days = 14 } #Создание курдского государства
+		}
 		every_country = {
 			limit = { has_country_flag = european_peace_conference_member }
 			country_event = { id = versailles.31 days = 28 } #Раздел Германии
@@ -4059,7 +4061,7 @@ country_event = {
 	id = versailles.17
 	title = versailles.17.t
 	desc = versailles.17.desc
-	picture = GFX_report_event_partition_germany
+	picture = GFX_report_event_collapse_ambitions
 	is_triggered_only = yes
 	option = {
 		name = versailles.17.a
@@ -4091,7 +4093,7 @@ country_event = {
 	id = versailles.22
 	title = versailles.22.t
 	desc = versailles.22.desc
-	picture = GFX_report_event_mandate_middle_east_territories
+	picture = GFX_report_event_creation_kurdish_state
 	is_triggered_only = yes
 	option = {
 		name = versailles.22.a #Курды ещё не окрепли для собственной страны
@@ -4110,7 +4112,7 @@ country_event = {
 						}
 					}
 				}
-				country_event = versailles.15 #Итог (скрытый ивент)
+				country_event = versailles.23 #Итог (скрытый ивент)
 			}
 		}
 		ai_chance = {
@@ -4180,14 +4182,24 @@ country_event = {
 				limit = { is_core_of = KUR OWNER = { has_country_flag = european_peace_conference_member } }
 				add_resistance = 10
 			}
-			#set_variable = { global.european_peace_conference_iraq_vote_kill = 0 }
-			#set_variable = { global.european_peace_conference_iraq_vote_create = 0 }
-			#every_country = {
-			#	limit = { has_country_flag = european_peace_conference_member }
-			#	country_event = { id = versailles.29 days = 7 } #Создание Ирака
-			#}
 			else = {
 				set_global_flag = european_peace_conference_kurd_create
+				set_variable = { global.european_peace_conference_kurd_borders_vote_min = 0 }
+				set_variable = { global.european_peace_conference_kurd_borders_vote_mid = 0 }
+				set_variable = { global.european_peace_conference_kurd_borders_vote_max = 0 }
+				every_country = {
+					limit = { has_country_flag = european_peace_conference_member }
+					country_event = versailles.24 #Границы Курдистана
+				}
+			}
+		}
+		if = {
+			limit = { has_global_flag = european_peace_conference_kurd_kill NOT = { HJZ = { owns_state = 291 } } }
+			set_variable = { global.european_peace_conference_iraq_vote_kill = 0 }
+			set_variable = { global.european_peace_conference_iraq_vote_create = 0 }
+			every_country = {
+				limit = { has_country_flag = european_peace_conference_member }
+				country_event = { id = versailles.29 days = 7 } #Создание Ирака
 			}
 		}
 		clear_variable = global.european_peace_conference_kurd_vote_kill
@@ -4195,13 +4207,6 @@ country_event = {
 		every_possible_country = {
 			clr_country_flag = european_peace_conference_kurd_vote_kill
 			clr_country_flag = european_peace_conference_kurd_vote_create
-		}
-		set_variable = { global.european_peace_conference_kurd_borders_vote_min = 0 }
-		set_variable = { global.european_peace_conference_kurd_borders_vote_mid = 0 }
-		set_variable = { global.european_peace_conference_kurd_borders_vote_max = 0 }
-		every_country = {
-			limit = { has_country_flag = european_peace_conference_member }
-			country_event = versailles.24 #Границы Курдистана
 		}
 	}
 }
@@ -4211,14 +4216,22 @@ country_event = {
 	id = versailles.24
 	title = versailles.24.t
 	desc = versailles.24.desc
-	picture = GFX_report_event_mandate_middle_east_territories
+	picture = GFX_report_event_creation_kurdish_state
 	is_triggered_only = yes
 	option = {
 		name = versailles.24.a #Создать Малый Курдистан
 		add_to_variable = { global.european_peace_conference_kurd_borders_vote_min = vote_power }
 		set_country_flag = european_peace_conference_kurd_borders_vote_min
 		custom_effect_tooltip = versailles_vote_tt
-		
+		effect_tooltip = {
+			KUR = {
+				transfer_state = 1147
+				transfer_state = 1148
+				transfer_state = 350
+				transfer_state = 1406
+				transfer_state = 352
+			}
+		}
 		hidden_effect = {
 			if = {
 				limit = {
@@ -4253,6 +4266,16 @@ country_event = {
 		add_to_variable = { global.european_peace_conference_kurd_borders_vote_mid = vote_power }
 		set_country_flag = european_peace_conference_kurd_borders_vote_mid
 		custom_effect_tooltip = versailles_vote_tt
+		effect_tooltip = {
+			KUR = {
+				transfer_state = 1147
+				transfer_state = 1148
+				transfer_state = 350
+				transfer_state = 1406
+				transfer_state = 352
+				transfer_state = 676
+			}
+		}
 		
 		hidden_effect = {
 			if = {
@@ -4292,6 +4315,21 @@ country_event = {
 		add_to_variable = { global.european_peace_conference_kurd_borders_vote_max = vote_power }
 		set_country_flag = european_peace_conference_kurd_borders_vote_max
 		custom_effect_tooltip = versailles_vote_tt
+		effect_tooltip = {
+			KUR = {
+				transfer_state = 1147
+				transfer_state = 1148
+				transfer_state = 350
+				transfer_state = 1406
+				transfer_state = 352
+				transfer_state = 676
+				transfer_state = 291
+				if = {
+					limit = { 800 = { NOT = { is_owned_by = RUS is_owned_by = ARM } } }
+					transfer_state = 800
+				}
+			}
+		}
 		
 		hidden_effect = {
 			if = {
@@ -4338,6 +4376,13 @@ country_event = {
 		add_to_temp_variable = { global.kurd_borders_vote_not_max = global.european_peace_conference_kurd_borders_vote_min }
 		set_temp_variable = { global.kurd_borders_vote_not_min = global.european_peace_conference_kurd_borders_vote_mid }
 		add_to_temp_variable = { global.kurd_borders_vote_not_max = global.european_peace_conference_kurd_borders_vote_max }
+		every_state = {
+			limit = {
+				OR = { state = 1147 state = 1148 state = 350 state = 1406 state = 352 }
+				OWNER = { OR = { tag = TUR is_subject_of = TUR tag = HJZ is_subject_of = HJZ has_country_flag = european_peace_conference_member } }
+			}
+			transfer_state_to = KUR
+		}
 		if = {
 			limit = {
 				NOT = {
@@ -4349,6 +4394,7 @@ country_event = {
 				}
 			}
 			set_global_flag = european_peace_conference_kurd_borders_min
+			KUR = { load_oob = KUR_1919_1 }
 		}
 		else_if = {
 			limit = {
@@ -4361,19 +4407,40 @@ country_event = {
 				}
 			}
 			set_global_flag = european_peace_conference_kurd_borders_max
+			676 = {
+				if = {
+					limit = { OWNER = { OR = { tag = TUR is_subject_of = TUR tag = HJZ is_subject_of = HJZ has_country_flag = european_peace_conference_member } } }
+					transfer_state_to = KUR
+				}
+			}
+			800 = {
+				if = {
+					limit = { OWNER = { OR = { tag = TUR is_subject_of = TUR tag = HJZ is_subject_of = HJZ has_country_flag = european_peace_conference_member NOT = { tag = RUS tag = ARM } } } }
+					transfer_state_to = KUR
+				}
+			}
+			KUR = { load_oob = KUR_1919_3 }
 		}
 		else = {
 			set_global_flag = european_peace_conference_kurd_borders_mid
+			676 = {
+				if = {
+					limit = { OWNER = { OR = { tag = TUR is_subject_of = TUR tag = HJZ is_subject_of = HJZ has_country_flag = european_peace_conference_member } } }
+					transfer_state_to = KUR
+				}
+			}
+			KUR = { load_oob = KUR_1919_2 }
 		}
 		
 		if = {
 			limit = { NOT = { has_global_flag = european_peace_conference_kurd_borders_max } }
-			#set_variable = { global.european_peace_conference_iraq_vote_kill = 0 }
-			#set_variable = { global.european_peace_conference_iraq_vote_create = 0 }
-			#every_country = {
-			#	limit = { has_country_flag = european_peace_conference_member }
-			#	country_event = { id = versailles.29 days = 7 } #Создание Ирака
-			#}
+			set_variable = { global.european_peace_conference_iraq_vote_kill = 0 }
+			set_variable = { global.european_peace_conference_iraq_vote_create = 0 }
+			every_country = {
+				limit = { has_country_flag = european_peace_conference_member }
+				country_event = { id = versailles.29 days = 7 } #Создание Ирака
+			}
+			KUR = { add_ideas = KUR_great_KUR_ambition }
 			#else = {
 			#	266 = { OWNER = { country_event = versailles.26 } } # Антанта требует освободить курдов
 			#}
@@ -4392,6 +4459,122 @@ country_event = {
 
 # Антанта требует освободить курдов (Персия)
 # versailles.26
+# Отказ Персии по курдам
+# versailles.27
+# Ультиматум Антанты по курдам
+# versailles.28
+
+#Создание Ирака
+country_event = {
+	id = versailles.29
+	title = versailles.29.t
+	desc = versailles.29.desc
+	picture = GFX_report_event_creation_iraq
+	is_triggered_only = yes
+	option = {
+		name = versailles.29.a #Этого не произойдёт
+		add_to_variable = { global.european_peace_conference_iraq_vote_kill = vote_power }
+		set_country_flag = european_peace_conference_iraq_vote_kill
+		if = {
+			limit = { tag = ENG }
+			custom_effect_tooltip = versailles_29_tt
+		}
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_iraq_vote_kill
+								has_country_flag = european_peace_conference_iraq_vote_create
+							}
+						}
+					}
+				}
+				country_event = versailles.30 #Итог (скрытый ивент)
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = USA
+			}
+		}
+	}
+	option = {
+		name = versailles.29.b #Ещё одно государство!
+		add_to_variable = { global.european_peace_conference_iraq_vote_create = vote_power }
+		set_country_flag = european_peace_conference_iraq_vote_create
+		custom_effect_tooltip = versailles_vote_tt
+		effect_tooltip = { ENG = { release_puppet = IRQ } }
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = {
+						any_other_country = {
+							has_country_flag = european_peace_conference_member
+							NOT = {
+								has_country_flag = european_peace_conference_iraq_vote_kill
+								has_country_flag = european_peace_conference_iraq_vote_create
+							}
+						}
+					}
+				}
+				country_event = versailles.30 #Итог (скрытый ивент)
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				tag = ENG
+			}
+		}
+	}
+}
+
+#Создание Ирака Итог (скрытый ивент)
+country_event = {
+	id = versailles.30
+	is_triggered_only = yes
+	hidden = yes
+	immediate = {
+		if = {
+			limit = {
+				OR = {
+					ENG = { has_country_flag = european_peace_conference_iraq_vote_kill }
+					AND = {
+						NOT = { check_variable = { global.european_peace_conference_iraq_vote_create < global.european_peace_conference_iraq_vote_kill } }
+						OR {
+							check_variable = { global.european_peace_conference_iraq_vote_create > global.european_peace_conference_iraq_vote_kill }
+							var:european_peace_conference_host = { has_country_flag = european_peace_conference_iraq_vote_create }
+						}
+					}
+				}
+			}
+			set_global_flag = european_peace_conference_iraq_kill
+			every_state = {
+				limit = { is_core_of = IRQ OWNER = { has_country_flag = european_peace_conference_member } }
+				add_resistance = 40
+				add_compliance = -20
+			}
+			else = {
+				set_global_flag = european_peace_conference_iraq_create
+				ENG = {
+					release_puppet = IRQ
+				}
+			}
+		}
+		clear_variable = global.european_peace_conference_iraq_vote_kill
+		clear_variable = global.european_peace_conference_iraq_vote_create
+		every_possible_country = {
+			clr_country_flag = european_peace_conference_iraq_vote_kill
+			clr_country_flag = european_peace_conference_iraq_vote_create
+		}
+	}
+}
 
 #Раздел Германии
 country_event = {
@@ -5519,6 +5702,20 @@ country_event = {
 									}
 								}
 							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						country_exists = KUR
+						NOT = { has_global_flag = european_peace_conference_kurd_borders_vote_min }
+						has_global_flag = european_peace_conference_arab_create
+					}
+					HJZ = {
+						create_wargoal = {
+							type = annex_everything
+							target = KUR
+							expire = 90
 						}
 					}
 				}
