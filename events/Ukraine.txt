@@ -885,6 +885,14 @@ country_event = {
 			promote_character = RUS_Pyotr_Wrangel
 			else = { create_country_leader = { name = "Fyodor Keller" desc = "RUS_Fyodor_Keller_DESC" picture = "gfx/leaders/RUS/Portrait_Fyodor_Keller.dds" ideology = authoritarism_ideology traits = { warmonger_old_general } } }
 		}
+		if = {
+			limit = { NOT = { has_character = RUS_Mikhail_Sobolevsky } }
+			recruit_character = RUS_Mikhail_Sobolevsky
+		}
+		if = {
+			limit = { NOT = { has_character = RUS_Lev_Boboshko } }
+			recruit_character = RUS_Lev_Boboshko
+		}
 		load_focus_tree = UKR_Keller
 		set_cosmetic_tag = UKR_white
 		set_country_flag = UKR_white
@@ -893,10 +901,11 @@ country_event = {
 			military_dictatorship_gov_form
 		}
 		if = {
-			limit = { NOT = { has_idea = state_capitalism_law } }
-			rise_mobilization_economy_law = yes
-			add_ideas = state_capitalism_law
-			low_labor_legislation = yes
+			limit = { has_idea = disarmed_nation }
+			swap_ideas = {
+				remove_idea = disarmed_nation
+				add_idea = volunteer_only
+			}
 		}
 		hidden_effect = {
 			remove_ideas = {
@@ -915,22 +924,24 @@ country_event = {
 				UKR_reborn_cossaks
 				UKR_lack_of_officers
 			}
+			if = {
+				limit = { NOT = { has_completed_focus = UKR_reliance_on_old_shots } }
+				complete_national_focus = UKR_reliance_on_old_shots
+			}
 		}
 		if = {
 			limit = { NOT = { has_idea = UKR_russian_exiles } }
 			add_ideas = UKR_russian_exiles
 		}
-		add_ideas = UKR_resistance_of_Ukrainian_elements
 		if = {
-			limit = { has_country_flag = UKR_have_siege_real }
+			limit = { NOT = { has_idea = UKR_resistance_of_Ukrainian_elements } }
+			add_ideas = UKR_resistance_of_Ukrainian_elements
+		}
+		if = {
+			limit = { has_country_flag = UKR_have_siege_real NOT = { has_idea = UKR_cruel_atamanshina } }
 			add_ideas = UKR_cruel_atamanshina
 		}
-		add_war_support = 0.1
 		add_command_power = 50
-		if = {
-			limit = { NOT = { has_completed_focus = UKR_reliance_on_old_shots } }
-			complete_national_focus = UKR_reliance_on_old_shots
-		}
 		country_event = ukraine.-59
 		if = {
 			limit = { has_country_flag = UKR_whites_hard_victory }
@@ -963,9 +974,6 @@ country_event = {
 						state = 916
 					}
 				}
-				recruit_character = RUS_Mikhail_Sobolevsky
-			    recruit_character = RUS_Lev_Boboshko
-				keep_unit_leaders_trigger = { NOT = { has_id = 91034 is_character = UKR_Simon_Petlyura has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 } }
 			}
 			else = {
 				start_civil_war = {
@@ -998,34 +1006,53 @@ country_event = {
 							state = 259
 						}
 					}
-					keep_unit_leaders_trigger = { NOT = { has_id = 91034 is_character = UKR_Simon_Petlyura has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 } }
 				}
 			}
 		}
-		random_other_country = {
-			limit = {
-				original_tag = UKR
-				has_government = despotism
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					original_tag = UKR
+					has_government = despotism
+				}
+				save_global_event_target_as = UKR_CW_Petlyra
 			}
-			set_stability = 0.1
-			set_war_support = 0.7
-			save_global_event_target_as = UKR_CW_Petlyra
-			add_ideas = {
-				UKR_weak_cultural_influence
-				UKR_cruel_atamanshina
+			event_target:UKR_CW_Petlyra = {
+				set_capital = { state = 1371 }
+				set_stability = 0.1
+				set_war_support = 0.7
+				add_ideas = {
+					UKR_weak_cultural_influence
+					UKR_cruel_atamanshina
+				}
+				set_cosmetic_tag = UKR_yellow_blue
+				load_focus_tree = UKR_directory
+				every_unit_leader = {
+					limit = {
+						NOT = { is_character = UKR_Simon_Petlyura has_id = 91034 has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 }
+					}
+					set_nationality = ROOT
+				}
 			}
-			set_capital = { state = 1371 }
-		}
-		event_target:UKR_CW_Petlyra = {
-			set_cosmetic_tag = UKR_yellow_blue
-			load_focus_tree = UKR_directory
-		}
-		every_country = {
-			limit = {
-				has_war_with = UKR
-				NOT = { has_war_with = event_target:UKR_CW_Petlyra }
+			every_unit_leader = {
+				limit = {
+					OR = { is_character = UKR_Simon_Petlyura has_id = 91034 has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 }
+				}
+				set_nationality = event_target:UKR_CW_Petlyra
 			}
-			declare_war_on = { target = event_target:UKR_CW_Petlyra type = annex_everything }
+			every_country = {
+				limit = {
+					has_war_with = UKR
+					OR = {
+						is_any_former_russian_empire_country = yes
+						former_russian_empire_polish_region_country = yes
+						former_russian_empire_baltic_states_country = yes
+						original_tag = FIN
+					}
+					NOT = { has_war_with = event_target:UKR_CW_Petlyra }
+				}
+				declare_war_on = { target = event_target:UKR_CW_Petlyra type = annex_everything }
+			}
 		}
 		clear_global_event_target = UKR_CW_Petlyra
 	}
@@ -1040,6 +1067,14 @@ country_event = {
 			promote_character = RUS_Pyotr_Wrangel
 			else = { create_country_leader = { name = "Fyodor Keller" desc = "RUS_Fyodor_Keller_DESC" picture = "gfx/leaders/RUS/Portrait_Fyodor_Keller.dds" ideology = authoritarism_ideology traits = { warmonger_old_general } } }
 		}
+		if = {
+			limit = { NOT = { has_character = RUS_Mikhail_Sobolevsky } }
+			recruit_character = RUS_Mikhail_Sobolevsky
+		}
+		if = {
+			limit = { NOT = { has_character = RUS_Lev_Boboshko } }
+			recruit_character = RUS_Lev_Boboshko
+		}
 		load_focus_tree = UKR_Keller
 		set_cosmetic_tag = UKR_white
 		set_country_flag = UKR_white
@@ -1048,10 +1083,11 @@ country_event = {
 			military_dictatorship_gov_form
 		}
 		if = {
-			limit = { NOT = { has_idea = state_capitalism_law } }
-			rise_mobilization_economy_law = yes
-			add_ideas = state_capitalism_law
-			low_labor_legislation = yes
+			limit = { has_idea = disarmed_nation }
+			swap_ideas = {
+				remove_idea = disarmed_nation
+				add_idea = volunteer_only
+			}
 		}
 		hidden_effect = {
 			remove_ideas = {
@@ -1070,22 +1106,24 @@ country_event = {
 				UKR_reborn_cossaks
 				UKR_lack_of_officers
 			}
+			if = {
+				limit = { NOT = { has_completed_focus = UKR_reliance_on_old_shots } }
+				complete_national_focus = UKR_reliance_on_old_shots
+			}
 		}
 		if = {
 			limit = { NOT = { has_idea = UKR_russian_exiles } }
 			add_ideas = UKR_russian_exiles
 		}
-		add_ideas = UKR_resistance_of_Ukrainian_elements
 		if = {
-			limit = { has_country_flag = UKR_have_siege_real }
+			limit = { NOT = { has_idea = UKR_resistance_of_Ukrainian_elements } }
+			add_ideas = UKR_resistance_of_Ukrainian_elements
+		}
+		if = {
+			limit = { has_country_flag = UKR_have_siege_real NOT = { has_idea = UKR_cruel_atamanshina } }
 			add_ideas = UKR_cruel_atamanshina
 		}
-		add_war_support = 0.1
 		add_command_power = 50
-		if = {
-			limit = { NOT = { has_completed_focus = UKR_reliance_on_old_shots } }
-			complete_national_focus = UKR_reliance_on_old_shots
-		}
 		country_event = ukraine.-59
 		if = {
 			limit = { has_country_flag = UKR_whites_hard_victory }
@@ -1119,7 +1157,6 @@ country_event = {
 						state = 916
 					}
 				}
-				keep_unit_leaders_trigger = { NOT = { has_id = 91034 is_character = UKR_Simon_Petlyura has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 } }
 			}
 			else = {
 				start_civil_war = {
@@ -1153,35 +1190,55 @@ country_event = {
 							state = 259
 						}
 					}
-					keep_unit_leaders_trigger = { NOT = { has_id = 91034 is_character = UKR_Simon_Petlyura has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 } }
 				}
 			}
 		}
-		random_other_country = {
-			limit = {
-				original_tag = UKR
-				has_government = despotism
+		hidden_effect = {
+			random_other_country = {
+				limit = {
+					original_tag = UKR
+					has_government = despotism
+				}
+				save_global_event_target_as = UKR_CW_Petlyra
 			}
-			set_stability = 0.1
-			set_war_support = 0.7
-			save_global_event_target_as = UKR_CW_Petlyra
-			add_ideas = {
-				UKR_weak_cultural_influence
-				UKR_cruel_atamanshina
+			event_target:UKR_CW_Petlyra = {
+				set_capital = { state = 1371 }
+				set_stability = 0.1
+				set_war_support = 0.7
+				add_ideas = {
+					UKR_weak_cultural_influence
+					UKR_cruel_atamanshina
+				}
+				set_cosmetic_tag = UKR_yellow_blue
+				load_focus_tree = UKR_directory
+				every_unit_leader = {
+					limit = {
+						NOT = { is_character = UKR_Simon_Petlyura has_id = 91034 has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 }
+					}
+					set_nationality = ROOT
+				}
 			}
-			set_capital = { state = 1371 }
-		}
-		event_target:UKR_CW_Petlyra = {
-			set_cosmetic_tag = UKR_yellow_blue
-			load_focus_tree = UKR_directory
-		}
-		every_country = {
-			limit = {
-				has_war_with = UKR
-				NOT = { has_war_with = event_target:UKR_CW_Petlyra }
+			every_unit_leader = {
+				limit = {
+					OR = { is_character = UKR_Simon_Petlyura has_id = 91034 has_id = 91037 has_id = 91031 has_id = 91032 has_id = 91016 has_id = 91017 has_id = 91027 has_id = 91009 has_id = 9103 has_id = 91015 has_id = 91028 }
+				}
+				set_nationality = event_target:UKR_CW_Petlyra
 			}
-			declare_war_on = { target = event_target:UKR_CW_Petlyra type = annex_everything }
+			every_country = {
+				limit = {
+					has_war_with = UKR
+					OR = {
+						is_any_former_russian_empire_country = yes
+						former_russian_empire_polish_region_country = yes
+						former_russian_empire_baltic_states_country = yes
+						original_tag = FIN
+					}
+					NOT = { has_war_with = event_target:UKR_CW_Petlyra }
+				}
+				declare_war_on = { target = event_target:UKR_CW_Petlyra type = annex_everything }
+			}
 		}
+		event_target:UKR_CW_Petlyra = { change_tag_from = ROOT }
 		clear_global_event_target = UKR_CW_Petlyra
 	}
 }
