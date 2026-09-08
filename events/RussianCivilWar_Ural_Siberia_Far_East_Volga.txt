@@ -11462,7 +11462,6 @@ country_event = {
 				set_nationality = ROOT
 			}
 		}
-		clear_global_event_target = BKL_CW
 		ai_chance = {
 			factor = 1
 		}
@@ -11955,12 +11954,16 @@ country_event = {
 			leave_faction = yes
 		}
 		ai_chance = {
-			factor = 0
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { has_government = national_syndicalism has_government = fascism has_government = authoritarism has_government = despotism has_government = conservatism has_government = market_liberalism }
+			}
 		}
 	}
 	option = {
 		trigger = {
-			NOT = { has_government = radical_socialism has_government = social_liberalism }
+			NOT = { has_government = radical_socialism has_government = communism has_government = social_liberalism }
 		}
 		name = rcw_usfev.351.c #Распространение скрытого большевизма нужно пресечь
 		if = {
@@ -11971,12 +11974,16 @@ country_event = {
 			}
 		}
 		ai_chance = {
-			factor = 0
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { has_government = national_syndicalism has_government = fascism has_government = authoritarism has_government = despotism has_government = conservatism }
+			}
 		}
 	}
 	option = {
 		trigger = {
-			has_country_leader = { name = "Victor Chernov" ruling_only = yes }
+			OR = { has_country_leader = { name = "Victor Chernov" ruling_only = yes } has_government = social_democracy has_government = national_syndicalism }
 		}
 		name = rcw_usfev.351.d #Чума на оба ваших дома, право-левые большевики
 		if = {
@@ -12069,6 +12076,112 @@ country_event = {
 				}
 			}
 		}
+	}
+}
+
+# Поражение в Забайкалье
+country_event = {
+	id = rcw_usfev.354
+	title = rcw_usfev.354.t
+	desc = {
+		text = rcw_usfev.354.desc
+		trigger = { BLK = { NOT = { has_government = social_liberalism } } }
+	}
+	desc = {
+		text = rcw_usfev.354.desc_1
+		trigger = { BLK = { has_government = social_liberalism } }
+	}
+
+	picture = GFX_report_event_bkl_siberia-baikal_cooperation
+
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_usfev.354.a #Заканчиваем драку
+		BKL = { country_event = { id = rcw_usfev.355 hours = 2 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+
+	option = {
+		name = rcw_usfev.354.b
+		add_political_power = -20 #[BKL.GetLeader] — вне закона (Григорий Семёнов — вне закона)
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					has_government = market_liberalism
+					has_government = conservatism
+					has_government = despotism
+				}
+			}
+		}
+	}
+}
+# Сибирь предлагает перемирие
+country_event = {
+	id = rcw_usfev.355
+	title = rcw_usfev.355.t
+	desc = {
+		text = rcw_usfev.355.desc
+		trigger = { NOT = { has_government = social_liberalism } }
+	}
+	desc = {
+		text = rcw_usfev.355.desc_1
+		trigger = { has_government = social_liberalism }
+	}
+
+	picture = GFX_report_event_bkl_siberia-baikal_cooperation
+
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_usfev.355.a #Мы согласны
+		white_peace = FROM
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				FROM = {
+					OR = {
+						has_government = radical_socialism
+						has_government = communism
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = rcw_usfev.355.b #Никакого мира
+		add_political_power = -20
+		FROM = { country_event = rcw_usfev.356 }
+		ai_chance = {
+			factor = 1
+		}
+	}
+}
+# Отказ казаков от перемирия
+country_event = {
+	id = rcw_usfev.356
+	title = rcw_usfev.356.t
+	desc = {
+		text = rcw_usfev.356.desc
+		trigger = { FROM = { NOT = { has_government = social_liberalism } } }
+	}
+	desc = {
+		text = rcw_usfev.356.desc_1
+		trigger = { FROM = { has_government = social_liberalism } }
+	}
+
+	picture = GFX_report_event_bkl_siberia-baikal_cooperation
+
+	is_triggered_only = yes
+
+	option = {
+		name = rcw_usfev.356.a #Им же хуже
 	}
 }
 

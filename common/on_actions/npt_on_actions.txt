@@ -403,6 +403,47 @@ on_actions = {
 				}
 			}
 			if = {
+				limit = { ROOT = { OR = { tag = event_target:BKL_CW AND = { original_tag = BKL any_enemy_country = { tag = event_target:BKL_CW } } } } }
+				if = {
+					limit = {
+						any_other_country = {
+							OR = { tag = RSS tag = SIB } is_subject = no has_war_with = RSR NOT = { has_government = communism }
+							OR = {
+								ROOT = { is_subject_of = PREV }
+								has_war_with = event_target:BKL_CW
+							}
+						}
+					}
+					random_other_country = {
+						limit = {
+							OR = { tag = RSS tag = SIB } is_subject = no has_war_with = RSR NOT = { has_government = communism }
+							OR = {
+								ROOT = { is_subject_of = PREV }
+								has_war_with = event_target:BKL_CW
+							}
+						}
+						ROOT = {
+							every_unit_leader = { set_nationality = PREV }
+							transfer_units_fraction = {
+								target = PREV
+								size = 1
+								stockpile_ratio = 1
+								army_ratio = 1
+								navy_ratio = 1
+								air_ratio = 1
+								keep_unit_leaders_trigger = { always = yes }
+							}
+							if = {
+								limit = { is_ai = no PREV = { is_ai = yes } }
+								PREV = { change_tag_from = ROOT }
+							}
+						}
+						country_event = { id = rcw_usfev.354 hours = 1 }
+					}
+				}
+				clear_global_event_target = event_target:BKL_CW
+			}
+			if = {
 				limit = { NOT = { has_global_flag = RUS_civil_war_over } ROOT = { tag = BKL is_subject_of = HRB } }
 				every_unit_leader = { set_nationality = HRB }
 				transfer_units_fraction = {
