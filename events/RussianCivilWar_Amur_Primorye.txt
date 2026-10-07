@@ -3008,20 +3008,10 @@ country_event = {
 			factor = 999
 		}
 		SIB = { PRM = { subjecting_script_with_transfer_parties_semi_independent = yes } }
-		every_unit_leader = { limit = { OR = { has_id = 77400 } } set_nationality = SIB } # Mikhail Diterihs
-		set_country_flag = Vologodskiy_came_there
-		if = {
-			limit = {
-				has_character = RUS_Alexandr_Kolchak
-				NOT = {
-					has_country_leader = {
-						character = RUS_Alexandr_Kolchak
-						ruling_only = yes
-					}
-				}
-			}
-			country_event = rcw_kolchak.26
-		}
+		retire_charater = RUS_Pyotr_Derber
+		recruit_character = RUS_Arkady_Krakovetsky
+		promote_character = RUS_Arkady_Krakovetsky
+		remove_ideas = PRM_competition_among_siberial_governments
 	}
 	
 	option = {
@@ -3038,6 +3028,35 @@ country_event = {
 				}
 			}
 			country_event = rcw_kolchak.26
+		}
+		add_opinion_modifier = { target = SIB modifier = rejection_of_agreenemt }
+		if = {
+			limit = {
+				OR = {
+				    has_country_flag = PRM_Allies_against_Pleshkov
+                    has_country_flag = PRM_Were_stalling_for_time
+				}
+				has_stability < 0.35
+				OR = {
+					conservatism > 0.35
+					despotism > 0.35
+					authoritarism > 0.35
+					fascism > 0.35
+					national_syndicalism > 0.35
+				}
+				NOT = { 
+					has_government = conservatism
+					has_government = authoritarism
+					has_government = despotism
+					has_government = fascism
+					has_government = national_syndicalism
+				}
+				OR = {
+					has_idea = CCA_unloyal_officers
+					has_idea = RSS_atamanshina
+				}
+			}
+			country_event = { id = rcw_amrprm.123 days = 1 }
 		}
 	}
 }
@@ -3128,5 +3147,408 @@ country_event = {
     option = {
 		name = rcw_amrprm.115.b
 	    
+	}
+}
+#Хорват назначает Плешкова
+country_event = {
+	id = rcw_amrprm.116
+	title = rcw_amrprm.116.t
+	desc = rcw_amrprm.116.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.116.a
+		PRM = { country_event = rcw_amrprm.117 }
+	}
+}
+#Прибытие генерала Плешкова
+country_event = {
+	id = rcw_amrprm.117
+	title = rcw_amrprm.117.t
+	desc = rcw_amrprm.117.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.117.a
+		country_event = { days = 14 id = rcw_amrprm.118 }
+		add_ideas = CCA_unloyal_officers
+		ai_chance = {
+			factor = 10
+			modifier = { factor = 999 is_historical_focus_on = yes }
+		}
+	}
+	option = {
+		name = rcw_amrprm.117.b
+		add_war_support = 0.05
+		add_popularity = { ideology = conservatism popularity = 0.07 }
+		country_event = { days = 14 id = rcw_amrprm.119 }
+		every_possible_country = {
+			limit = { has_character = RUS_Mikhail_Pleshkov }
+			RUS_Mikhail_Pleshkov = { set_nationality = ROOT }
+		}
+		ai_chance = {
+			factor = 10
+		}
+	}
+}
+#Дело генерала Плешкова 
+country_event = {
+	id = rcw_amrprm.118
+	title = rcw_amrprm.118.t
+	desc = rcw_amrprm.118.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.118.a
+		add_political_power = -50
+		add_popularity = { ideology = conservatism popularity = 0.10 }
+		country_event = { days = 14 id = rcw_amrprm.119 }
+		remove_ideas = CCA_unloyal_officers
+		add_ideas = BKL_russian_volunteers_idea
+		every_possible_country = {
+			limit = { has_character = RUS_Mikhail_Pleshkov }
+			RUS_Mikhail_Pleshkov = { set_nationality = ROOT }
+		}
+		add_opinion_modifier = { target = HRB modifier = confession_pleshkov }
+	}
+	option = {
+		name = rcw_amrprm.118.b
+		add_political_power = -50
+		country_event = { days = 1 id = rcw_amrprm.120 }
+	}
+}
+#Решение конфликта с Хорватом
+country_event = {
+	id = rcw_amrprm.119
+	title = rcw_amrprm.119.t
+	desc = rcw_amrprm.119.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.119.a
+		add_war_support = 0.07
+        add_popularity = { ideology = conservatism popularity = 0.15 }
+		HRB = { country_event = rcw_amrprm.93 }
+		remove_ideas = CCA_unloyal_officers
+		every_possible_country = {
+			limit = { has_character = RUS_Dmitriy_Horvat }
+			RUS_Mikhail_Pleshkov = { set_nationality = ROOT }
+		}
+		promote_character = {
+            character = RUS_Dmitriy_Horvat
+            ideology = conservatism_ideology
+        }
+		RUS_Dmitriy_Horvat = {
+			gain_xp = 500
+			if = {
+				limit = { is_field_marshal = no }
+				promoto_leaders = yes
+			}
+		}
+	}
+	option = {
+		name = rcw_amrprm.119.b
+		set_country_flag = PRM_Were_stalling_for_time
+		add_stability = -0.05
+		add_war_support = -0.05
+		add_political_power = -25
+	}
+}
+#Союзники против Плешкова  
+country_event = {
+	id = rcw_amrprm.120
+	title = rcw_amrprm.120.t
+	desc = rcw_amrprm.120.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.120.a
+		set_country_flag = PRM_Allies_against_Pleshkov
+	    add_stability = -0.07
+		add_war_support = -0.12
+		add_political_power = -70
+		add_popularity = { ideology = this popularity = -0.10 }
+	}
+}
+#Прощание с Хорватом 
+country_event = {
+	id = rcw_amrprm.121
+	title = rcw_amrprm.121.t
+	desc = rcw_amrprm.121.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.121.a
+	    
+	}
+}
+#Власть атамана Калмыкова
+country_event = {
+	id = rcw_amrprm.122
+	title = rcw_amrprm.122.t
+	desc = rcw_amrprm.122.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	trigger = {
+		tag = PRM
+		controls_state = 409
+		NOT = { has_start_date > 1918.8.5 }
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = yes
+	
+	option = {
+		name = rcw_amrprm.122.a
+		add_ideas = RSS_atamanshina
+	}
+}
+#Правый переворот в Приморье 
+country_event = {
+	id = rcw_amrprm.123
+	title = rcw_amrprm.123.t
+	desc = rcw_amrprm.123.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.123.a
+	    if = {
+			limit = {
+				has_idea = PRM_vladivostok_is_under_allied_control
+			}
+			USA = { country_event = { id = rcw_amrprm.124 days = 2 } }
+			ENG = { country_event = { id = rcw_amrprm.124 days = 3 } }
+			JAP = { country_event = { id = rcw_amrprm.124 days = 4 } }
+		}
+		if = {
+			limit = {
+				NOT = { has_idea = PRM_vladivostok_is_under_allied_control }
+			}
+			if = {
+				limit = {
+				    despotism > party_popularity@authoritarism
+				    despotism > party_popularity@conservatism
+				    despotism > party_popularity@fascism
+				    despotism > party_popularity@national_syndicalism
+				}
+				set_politics = {
+			        ruling_party = despotism
+			        elections_allowed = no
+		        }
+			}
+			if = {
+				limit = {
+				    authoritarism > party_popularity@despotism
+				    authoritarism > party_popularity@conservatism
+				    authoritarism > party_popularity@fascism
+				    authoritarism > party_popularity@national_syndicalism
+				}
+				set_politics = {
+			        ruling_party = authoritarism 
+			        elections_allowed = no
+		        }
+			}
+			if = {
+				limit = {
+				    conservatism > party_popularity@despotism
+				    conservatism > party_popularity@authoritarism
+				    conservatism > party_popularity@fascism
+				    conservatism > party_popularity@national_syndicalism
+				}
+				set_politics = {
+			        ruling_party = conservatism
+			        elections_allowed = no
+		        }
+			}
+			if = {
+				limit = {
+				    fascism > party_popularity@despotism
+				    fascism > party_popularity@authoritarism
+				    fascism > party_popularity@conservatism
+				    fascism > party_popularity@national_syndicalism
+				}
+				set_politics = {
+			        ruling_party = fascism
+			        elections_allowed = no
+		        }
+			}
+			if = {
+				limit = {
+				    national_syndicalism > party_popularity@despotism
+				    national_syndicalism > party_popularity@authoritarism
+				    national_syndicalism > party_popularity@conservatism
+				    national_syndicalism > party_popularity@fascism
+				}
+				set_politics = {
+			        ruling_party = national_syndicalism
+			        elections_allowed = no
+		        }
+			}
+			add_ideas = SIB_eser_opposition
+			add_ideas = military_dictatorship_gov_form
+			add_ideas = control_of_field_commanders_law
+			add_ideas = emergency_laws_b_law
+			add_ideas = unitary_gov_terr
+			retire_charater = RUS_Pyotr_Derber
+			recruit_character = RUS_Arkady_Krakovetsky
+			promote_character = RUS_Arkady_Krakovetsky
+		}
+	}
+}
+#Беспорядки во Владивостоке
+country_event = {
+	id = rcw_amrprm.124
+	title = rcw_amrprm.124.t
+	desc = rcw_amrprm.124.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	fire_only_once = no
+	
+	option = {
+		name = rcw_amrprm.124.a
+	    country_event = { id = rcw_amrprm.125 days = 5 }
+		set_country_flag = PRM_interference_in_the_coup
+	}
+	option = {
+		name = rcw_amrprm.124.b
+	    if = { 
+			limit = {
+				AND = {
+					ENG = { NOT = { has_country_flag = PRM_interference_in_the_coup } }
+					JAP = { NOT = { has_country_flag = PRM_interference_in_the_coup } }
+					USA = { NOT = { has_country_flag = PRM_interference_in_the_coup } }
+				}
+			}
+			PRM = {
+				if = {
+				    limit = {
+				        despotism > party_popularity@authoritarism
+				        despotism > party_popularity@conservatism
+				        despotism > party_popularity@fascism
+				        despotism > party_popularity@national_syndicalism
+				    }
+				    set_politics = {
+			            ruling_party = despotism
+			            elections_allowed = no
+		            }
+			    }
+			    if = {
+				    limit = {
+				        authoritarism > party_popularity@despotism
+				        authoritarism > party_popularity@conservatism
+				        authoritarism > party_popularity@fascism
+				        authoritarism > party_popularity@national_syndicalism
+				    }
+				    set_politics = {
+			            ruling_party = authoritarism 
+			            elections_allowed = no
+		            }
+			    }
+			    if = {
+				    limit = {
+				        conservatism > party_popularity@despotism
+				        conservatism > party_popularity@authoritarism
+				        conservatism > party_popularity@fascism
+				        conservatism > party_popularity@national_syndicalism
+				    }
+				    set_politics = {
+			            ruling_party = conservatism
+			            elections_allowed = no
+		            } 
+			    }
+			    if = {
+				    limit = {
+				        fascism > party_popularity@despotism
+				        fascism > party_popularity@authoritarism
+				        fascism > party_popularity@conservatism
+				        fascism > party_popularity@national_syndicalism
+				    }
+				    set_politics = {
+			            ruling_party = fascism
+			            elections_allowed = no
+		            }
+			    }
+			    if = {
+				    limit = {
+				        national_syndicalism > party_popularity@despotism
+				        national_syndicalism > party_popularity@authoritarism
+				        national_syndicalism > party_popularity@conservatism
+				        national_syndicalism > party_popularity@fascism
+				    }
+				    set_politics = {
+			            ruling_party = national_syndicalism
+			            elections_allowed = no
+		            }
+			    }
+			    add_ideas = SIB_eser_opposition
+			    add_ideas = military_dictatorship_gov_form
+			    add_ideas = control_of_field_commanders_law
+			    add_ideas = emergency_laws_b_law
+			    add_ideas = unitary_gov_terr
+			    retire_charater = RUS_Pyotr_Derber
+			    recruit_character = RUS_Arkady_Krakovetsky
+			    promote_character = RUS_Arkady_Krakovetsky
+			}
+		}
+	}
+}
+#Новое вмешательство
+country_event = {
+	id = rcw_amrprm.125
+	title = rcw_amrprm.125.t
+	desc = rcw_amrprm.125.desc
+
+	picture = GFX_report_event_prm_diterikhs_coup
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.125.a
+	    add_stability = -0.05
+		add_war_support = -0.05
+		add_political_power = -100
+		add_popularity = { ideology = this popularity = -0.07 }
+		add_popularity = { ideology = conservatism popularity = -0.04 }
+		add_popularity = { ideology = despotism popularity = -0.04 }
+		add_popularity = { ideology = authoritarism popularity = -0.04 }
+		add_popularity = { ideology = fascism popularity = -0.04 }
+		add_popularity = { ideology = national_syndicalism popularity = -0.04 }
+		custom_effect_tooltip = lack_of_officers_fall_3_tt
+		hidden_effect = {
+	        lack_of_officers_fall = yes
+	        lack_of_officers_fall = yes
+			lack_of_officers_fall = yes
+		}
+		swap_ideas = {
+			remove_idea = PRM_vladivostok_is_under_allied_control
+			add_idea = PRM_vladivostok_is_under_allied_control_1
+		}
 	}
 }
