@@ -3618,6 +3618,7 @@ country_event = {
 	option = {
 		name = rcw_amrprm.127.a
 		clr_global_flag = RCW_beginning_great_Siberian_campaign
+		set_global_flag = RCW_end_great_Siberian_campaign
 		PRM = { country_event = rcw_amrprm.105 }
 		RUS = { country_event = rcw_amrprm.131 }
 		country_event = { id = rcw_amrprm.132 days = 14 }
@@ -4008,7 +4009,56 @@ country_event = {
 	
 	option = {
 		name = rcw_amrprm.132.a
-		
+		add_political_power = -50
+		add_war_support = -0.1
+		if = {
+			limit = { has_id = 88151 }
+			if = {
+				limit = { country_exists = RVA }
+				random_other_country = {
+				    limit = { OR = { original_tag = BKL } }
+				    every_unit_leader = { limit = { OR = { has_id = 88151 } } set_nationality = RVA }
+			    }
+			}
+			if = {
+				limit = { NOT = { country_exists = RVA } country_exists = CZE CZE = { is_puppet = no } }
+				random_other_country = {
+				    limit = { OR = { original_tag = BKL } }
+				    every_unit_leader = { limit = { OR = { has_id = 88151 } } set_nationality = CZE }
+			    }
+			}
+			if = {
+				limit = { NOT = { country_exists = RVA } OR = { NOT = { country_exists = CZE } CZE = { is_puppet = yes } } }
+				REB = {
+				    random_other_country = {
+				        limit = { OR = { original_tag = BKL } }
+				        every_unit_leader = { limit = { OR = { has_id = 88151 } } set_nationality = REB }
+			        }
+				}
+			}
+		}
+		random_other_country = {
+			limit = { OR = { original_tag = BKL } }
+			every_unit_leader = { limit = { OR = { has_id = 92347 } } set_nationality = HRB }
+		}
+		ai_chance = {
+			factor = 10
+			modifier = { factor = 999 is_historical_focus_on = yes }
+		}
+	}
+	option = {
+		name = rcw_amrprm.132.b
+		country_event = { id = rcw_amrprm.140 days = 14 }
+		trigger = {
+            has_id = 88151
+		}
+		ai_chance = {
+			factor = 10
+		}
+	}
+	option = {
+		name = rcw_amrprm.132.c
+		add_ideas = PRM_Siberian_partisan_detachment
 	}
 }
 
@@ -4299,5 +4349,118 @@ country_event = {
 		add_war_support = -0.05
 		add_popularity = { ideology = despotism popularity = -0.05 }
 		activate_mission = BKL_expeditionary_forces_heading_home
+	}
+}
+#Переворот Войцеховского
+country_event = {
+	id = rcw_amrprm.140
+	title = rcw_amrprm.140.t
+	desc = rcw_amrprm.140.desc
+
+	picture = GFX_report_event_prm_withdrawal_Suzuki_division
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = rcw_amrprm.140.a
+		retire_character = BKL_Grigoriy_Semyonov
+		create_country_leader = { name = "Sergey Wojciechowski" desc = "" picture = "gfx/leaders/CZE/Portrait_Sergey_Wojciechowski.dds" ideology = despotism_ideology traits = { warmonger min_1_pokrovsky dislikes_germany } }
+		set_politics = {
+			ruling_party = despotism
+			elections_allowed = no
+		}
+		set_party_name = { ideology = despotism long_name = BKL_kappelevcy_party_long name = BKL_kappelevcy_party }
+		add_ideas = presidential_republic_gov_form
+	}
+}
+#Переворот Пепеляева
+country_event = {
+	id = rcw_amrprm.141
+	title = rcw_amrprm.141.t
+	desc = rcw_amrprm.141.desc
+
+	picture = GFX_report_event_prm_Japanese_intervention_from_Manchuria
+	
+	trigger = {
+		tag = BKL
+		has_idea = PRM_Siberian_partisan_detachment
+		national_syndicalism > 0.15
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = no
+	
+	option = {
+		name = rcw_amrprm.141.a
+		retire_character = BKL_Grigoriy_Semyonov
+		create_country_leader = { name = "Victor Pepelyaev" desc = "" picture = "gfx/leaders/RUS/Portrait_Victor_Pepelyaev.dds" ideology = national_syndicalism  traits = { min_2_biased_intellectual ideological_crusader conservative_nationalist } }
+		set_politics = {
+			ruling_party = national_syndicalism
+			elections_allowed = no
+		}
+		set_party_name = { ideology = despotism long_name = BKL_avtonomisty_party_long name = BKL_avtonomisty_party }
+		remove_ideas = PRM_Siberian_partisan_detachment
+		division_template = {
+			name = "Sibirskij partizanskij otryad"
+			regiments = {
+				cavalry = { x = 0 y = 0 }
+				cavalry = { x = 0 y = 1 }
+				cavalry = { x = 0 y = 2 }
+				cavalry = { x = 1 y = 0 }
+				cavalry = { x = 1 y = 1 }
+				cavalry = { x = 1 y = 2 }
+			} 
+			support = {
+				recon = { x = 0 y = 0 }
+			}
+			is_locked = yes
+		}
+		capital_scope = {
+			create_unit = {
+				division = "name = \"Sibirskij partizanskij otryad\" division_template = \"Yaponskie ekspedicionnye sily\" start_experience_factor = 0.3 start_equipment_factor = 0.6"
+				count = 1
+				owner = BKL
+			}  
+		}
+		add_ideas = presidential_republic_gov_form
+	}
+}
+#Прибытие каппелевцев
+country_event = {
+	id = rcw_amrprm.142
+	title = rcw_amrprm.142.t
+	desc = rcw_amrprm.142.desc
+
+	picture = GFX_report_event_prm_Japanese_intervention_from_Manchuria
+	
+	trigger = {
+		tag = PRM
+		has_global_flag = RCW_end_great_Siberian_campaign
+		OR = {
+			NOT = { country_exists = BKL }
+			BKL = { has_capitulated = yes }
+		}
+		OR = { 
+			has_idea = PRM_vladivostok_is_under_allied_control
+			has_idea = PRM_vladivostok_is_under_allied_control_1
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 1
+	}
+	
+	fire_only_once = no
+	
+	option = {
+		name = rcw_amrprm.142.a
+		add_popularity = { ideology = despotism popularity = 0.10 }
+		random_other_country = {
+			limit = { OR = { original_tag = CCA original_tag = IZH original_tag = OCH original_tag = SIB original_tag = RSS } }
+			every_unit_leader = { limit = { OR = { has_id = 78406 } } set_nationality = PRM }
+		}
 	}
 }
